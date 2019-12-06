@@ -1,13 +1,6 @@
-import 'dart:async';
+// Copyright (c) 2019/11/25, 19:27:58 PM The Hellobike. All rights reserved.
+// Created by WeiZhongdan, weizhongdan06291@hellobike.com.
 
-import 'package:flutter/services.dart';
+library thrio_router;
 
-class ThrioRouter {
-  static const MethodChannel _channel =
-      const MethodChannel('thrio_router');
-
-  static Future<String> get platformVersion async {
-    final String version = await _channel.invokeMethod('getPlatformVersion');
-    return version;
-  }
-}
+export 'src/thrio_router.dart';
