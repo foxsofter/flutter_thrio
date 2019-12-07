@@ -3,16 +3,16 @@
 
 import 'dart:io';
 
-import 'package:flutter/widgets.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 
+import 'extension/stateful_widget.dart';
 import 'registry/registry_map.dart';
 import 'registry/registry_set.dart';
 import 'router_channel.dart';
 import 'router_container.dart';
 import 'router_navigator.dart';
 import 'router_predicate.dart';
-import 'extension/stateful_widget.dart';
 import 'router_route_settings.dart';
 
 /// Signature for a function that creates a page widget.
@@ -30,6 +30,29 @@ class Router {
 
   Router._();
 
+  static final _default = Router._();
+
+  RouterNavigator _navigator;
+
+  final _predicates = RegistrySet<RouterPredicate>();
+
+  final _pageBuilders = RegistryMap<String, PageBuilder>();
+
+  final _defaultUrl = '/';
+
+  final _channel = RouterChannel();
+
+  final _routerNavigatorKey = GlobalKey<RouterNavigatorState>();
+
+  /// Assigned when the `builder` method is called.
+  ///
+  RouterNavigator get navigator => _navigator;
+
+  /// Get current container.
+  ///
+  RouterContainer get current =>
+      _navigator.tryStateOf<RouterNavigatorState>()?.current;
+
   TransitionBuilder builder({
     TransitionBuilder builder,
     RouterRouteFactory willPush,
@@ -37,7 +60,7 @@ class Router {
   }) {
     if (Platform.isAndroid) {
       _channel.invokeMapMethod<String, dynamic>('pageOnStart').then((result) {
-        final routeSettings = _argumentsToRouteSettings(result);
+        final routeSettings = argumentsToRouteSettings(result);
         routeSettings ??
             _navigator
                 .tryStateOf<RouterNavigatorState>()
@@ -61,27 +84,27 @@ class Router {
     };
   }
 
-  /// Assigned when the `build` method is called.
+  /// Notify a page with `url` and `index`.
   ///
-  RouterNavigator get navigator => _navigator;
-
-  /// Push a page with `url` onto native navigator.
-  ///
-  Future<bool> push(
+  Future<bool> notify(
     String url, {
-    bool animated = true,
+    int index = 0,
     Map<String, dynamic> params = const {},
   }) async {
-    if (!await _canPush(url, animated, params)) {
+    if (!await _canNotify(
+      url,
+      index: index,
+      params: params,
+    )) {
       return false;
     }
 
     final arguments = <String, dynamic>{
       'url': url,
-      'animated': animated,
+      'index': index,
       'params': params,
     };
-    return _channel.invokeMethod('push', arguments);
+    return _channel.invokeMethod('notify', arguments);
   }
 
   /// Pop a page with `url` and `index` from native navigator.
@@ -122,74 +145,95 @@ class Router {
     return _channel.invokeMethod('popTo', arguments);
   }
 
-  /// Notify a page with `url` and `index`.
+  /// Push a page with `url` onto native navigator.
   ///
-  Future<bool> notify(
+  Future<bool> push(
     String url, {
-    int index = 0,
+    bool animated = true,
     Map<String, dynamic> params = const {},
   }) async {
-    if (!await _canNotify(
-      url,
-      index: index,
-      params: params,
-    )) {
+    if (!await _canPush(url, animated, params)) {
       return false;
     }
 
     final arguments = <String, dynamic>{
       'url': url,
-      'index': index,
+      'animated': animated,
       'params': params,
     };
-    return _channel.invokeMethod('notify', arguments);
+    return _channel.invokeMethod('push', arguments);
   }
 
-  /// Register an predicate for the router.
+  /// Register default page builder for the router.
   ///
-  /// Unregister by calling the return value `VoidCallback`.
+  /// Unregistry by calling the return value `VoidCallback`.
   ///
-  VoidCallback registerPredicate(RouterPredicate predicate) =>
-      _predicates.registry(predicate);
+  VoidCallback registryDefaultPageBuilder(PageBuilder builder) =>
+      _pageBuilders.registry(_defaultUrl, builder);
 
   /// Register an page builder for the router.
   ///
-  /// Unregister by calling the return value `VoidCallback`.
+  /// Unregistry by calling the return value `VoidCallback`.
   ///
-  VoidCallback registerPageBuilder(String url, PageBuilder builder) =>
+  VoidCallback registryPageBuilder(String url, PageBuilder builder) =>
       _pageBuilders.registry(url, builder);
 
   /// Register page builders for the router.
   ///
-  /// Unregister by calling the return value `VoidCallback`.
+  /// Unregistry by calling the return value `VoidCallback`.
   ///
-  VoidCallback registerPageBuilders(Map<String, PageBuilder> builders) =>
+  VoidCallback registryPageBuilders(Map<String, PageBuilder> builders) =>
       _pageBuilders.registryAll(builders);
 
-  /// Register default page builder for the router.
+  /// Register an predicate for the router.
   ///
-  /// Unregister by calling the return value `VoidCallback`.
+  /// Unregistry by calling the return value `VoidCallback`.
   ///
-  VoidCallback registerDefaultPageBuilder(PageBuilder builder) =>
-      _pageBuilders.registry(_defaultUrl, builder);
+  VoidCallback registryPredicate(RouterPredicate predicate) =>
+      _predicates.registry(predicate);
 
-  Future<bool> _canPush(
-    String url,
-    bool animated,
-    Map<String, dynamic> params,
-  ) async {
-    var canPush = true;
+  /// Converting arguments to route settings.
+  ///
+  RouterRouteSettings argumentsToRouteSettings(Map<String, dynamic> arguments) {
+    if ((arguments?.isNotEmpty ?? false) &&
+        arguments.containsKey('url') &&
+        arguments.containsKey('index')) {
+      final urlValue = arguments['url'];
+      final url = urlValue is String ? urlValue : null;
+      final indexValue = arguments['index'];
+      final index = indexValue is int ? indexValue : null;
+      final paramsValue = arguments['params'];
+      final params = paramsValue is Map
+          ? paramsValue.cast<String, dynamic>()
+          : <String, dynamic>{};
+      final builder = _pageBuilders[url] ?? _pageBuilders[_defaultUrl];
+      return RouterRouteSettings(
+        url: url,
+        index: index,
+        params: params,
+        builder: (context) => builder(url, index, params),
+      );
+    }
+    return null;
+  }
+
+  Future<bool> _canNotify(
+    String url, {
+    int index = 0,
+    Map<String, dynamic> params = const {},
+  }) async {
+    var canNotify = true;
     for (final it in _predicates) {
-      final result = await it.canPush(
+      final result = await it.canNotify(
         url,
-        animated: animated,
+        index: index,
         params: params,
       );
-      if (canPush) {
-        canPush = result;
+      if (canNotify) {
+        canNotify = result;
       }
     }
-    return canPush;
+    return canNotify;
   }
 
   Future<bool> _canPop(
@@ -230,60 +274,22 @@ class Router {
     return canPopTo;
   }
 
-  Future<bool> _canNotify(
-    String url, {
-    int index = 0,
-    Map<String, dynamic> params = const {},
-  }) async {
-    var canNotify = true;
+  Future<bool> _canPush(
+    String url,
+    bool animated,
+    Map<String, dynamic> params,
+  ) async {
+    var canPush = true;
     for (final it in _predicates) {
-      final result = await it.canNotify(
+      final result = await it.canPush(
         url,
-        index: index,
+        animated: animated,
         params: params,
       );
-      if (canNotify) {
-        canNotify = result;
+      if (canPush) {
+        canPush = result;
       }
     }
-    return canNotify;
+    return canPush;
   }
-
-  RouterRouteSettings _argumentsToRouteSettings(
-      Map<String, dynamic> arguments) {
-    if ((arguments?.isNotEmpty ?? false) &&
-        arguments.containsKey('url') &&
-        arguments.containsKey('index')) {
-      final urlValue = arguments['url'];
-      final url = urlValue is String ? urlValue : null;
-      final indexValue = arguments['index'];
-      final index = indexValue is int ? indexValue : null;
-      final paramsValue = arguments['params'];
-      final params = paramsValue is Map
-          ? paramsValue.cast<String, dynamic>()
-          : <String, dynamic>{};
-      final builder = _pageBuilders[url] ?? _pageBuilders[_defaultUrl];
-      return RouterRouteSettings(
-        url: url,
-        index: index,
-        params: params,
-        builder: (context) => builder(url, index, params),
-      );
-    }
-    return null;
-  }
-
-  RouterNavigator _navigator;
-
-  final _predicates = RegistrySet<RouterPredicate>();
-
-  final _pageBuilders = RegistryMap<String, PageBuilder>();
-
-  final _defaultUrl = '/';
-
-  final _channel = RouterChannel();
-
-  final _routerNavigatorKey = GlobalKey<RouterNavigatorState>();
-
-  static final _default = Router._();
 }

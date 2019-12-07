@@ -64,6 +64,33 @@ class RouterNavigatorState extends State<RouterNavigator> {
 
   bool get foreground => _foreground;
 
+  RouterContainer get current => _current;
+
+  void activate(RouterRouteSettings routeSettings) {
+    if (routeSettings == _current.routeSettings) {
+      return _onActivate(null, routeSettings);
+    }
+    final index =
+        _history.indexWhere((it) => it.routeSettings == routeSettings);
+    if (index > -1) {
+      _history.add(_current);
+      _current = _history.removeAt(index);
+
+      setState(() {});
+
+      RouterContainerObserver().onNavigationChanged(
+        _current.routeSettings,
+        RouterContainerNavigation.activate,
+      );
+    } else {
+      push(routeSettings);
+    }
+  }
+
+  void bringToFront() {
+    _foreground = true;
+  }
+
   @override
   Widget build(BuildContext context) => Overlay(
         key: _overlayKey,
@@ -81,38 +108,19 @@ class RouterNavigatorState extends State<RouterNavigator> {
     });
   }
 
-  @override
-  void setState(VoidCallback fn) {
-    if (SchedulerBinding.instance.schedulerPhase ==
-        SchedulerPhase.persistentCallbacks) {
-      SchedulerBinding.instance.addPostFrameCallback((duration) {
-        _refreshOverlayEntries();
-      });
-    } else {
-      _refreshOverlayEntries();
+  void pop() {
+    if (_history.isEmpty) {
+      return;
     }
+    final container = _current;
+    _current = _history.removeLast();
 
-    fn();
-  }
+    setState(() {});
 
-  void activate(RouterRouteSettings routeSettings) {
-    if (routeSettings == _current.routeSettings) {
-      return _onActivate(null, routeSettings);
-    }
-    final index =
-        _history.indexWhere((it) => it.routeSettings == routeSettings);
-    if (index > -1) {
-      _history.add(_current);
-      _current = _history.removeAt(index);
-
-      setState(() {});
-
-      for (final it in RouterContainerObserver().navigationHandlers) {
-        it(_current.routeSettings, RouterContainerNavigation.activate);
-      }
-    } else {
-      push(routeSettings);
-    }
+    RouterContainerObserver().onNavigationChanged(
+      container.routeSettings,
+      RouterContainerNavigation.pop,
+    );
   }
 
   void push(RouterRouteSettings routeSettings) {
@@ -125,23 +133,10 @@ class RouterNavigatorState extends State<RouterNavigator> {
 
     setState(() {});
 
-    for (final it in RouterContainerObserver().navigationHandlers) {
-      it(_current.routeSettings, RouterContainerNavigation.push);
-    }
-  }
-
-  void pop() {
-    if (_history.isEmpty) {
-      return;
-    }
-    final container = _current;
-    _current = _history.removeLast();
-
-    setState(() {});
-
-    for (final it in RouterContainerObserver().navigationHandlers) {
-      it(container.routeSettings, RouterContainerNavigation.pop);
-    }
+    RouterContainerObserver().onNavigationChanged(
+      routeSettings,
+      RouterContainerNavigation.push,
+    );
   }
 
   void remove(RouterRouteSettings routeSettings) {
@@ -154,24 +149,29 @@ class RouterNavigatorState extends State<RouterNavigator> {
     if (container != null) {
       _history.remove(container);
       setState(() {});
-      for (final it in RouterContainerObserver().navigationHandlers) {
-        it(container.routeSettings, RouterContainerNavigation.remove);
-      }
-    }
-  }
-
-  void bringToFront() {
-    _foreground = true;
-    for (final it in RouterContainerObserver().lifeCycleHandlers) {
-      it(_current.routeSettings, RouterContainerLifeCycle.foreground);
+      RouterContainerObserver().onNavigationChanged(
+        container.routeSettings,
+        RouterContainerNavigation.remove,
+      );
     }
   }
 
   void sendToBack() {
     _foreground = false;
-    for (final it in RouterContainerObserver().lifeCycleHandlers) {
-      it(_current.routeSettings, RouterContainerLifeCycle.background);
+  }
+
+  @override
+  void setState(VoidCallback fn) {
+    if (SchedulerBinding.instance.schedulerPhase ==
+        SchedulerPhase.persistentCallbacks) {
+      SchedulerBinding.instance.addPostFrameCallback((duration) {
+        _refreshOverlayEntries();
+      });
+    } else {
+      _refreshOverlayEntries();
     }
+
+    fn();
   }
 
   void _onActivate(
@@ -242,6 +242,8 @@ class _RouterContainerOverlayEntry extends OverlayEntry {
           maintainState: true,
         );
 
+  var _removed = false;
+
   @override
   void remove() {
     assert(!_removed);
@@ -253,6 +255,4 @@ class _RouterContainerOverlayEntry extends OverlayEntry {
     _removed = true;
     super.remove();
   }
-
-  var _removed = false;
 }

@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:thrio_router/src/router_route_settings.dart';
 
 import 'router.dart';
-import 'router_navigator.dart';
 import 'router_navigator_observer.dart';
 import 'router_route.dart';
 
@@ -63,21 +62,29 @@ class RouterContainer extends Navigator {
   final RouterRouteSettings routeSettings;
 
   @override
-  NavigatorState createState() => RouterContainerState();
+  StatefulElement createElement() => RouterContainerElement(this);
 
   @override
-  StatefulElement createElement() => RouterContainerElement(this);
+  NavigatorState createState() => RouterContainerState();
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.debug}) =>
       'RouterContainer:${routeSettings.url},${routeSettings.index}';
 }
 
+class RouterContainerElement extends StatefulElement {
+  RouterContainerElement(StatefulWidget widget) : super(widget);
+}
+
 class RouterContainerState extends NavigatorState {
+  final _routeHistory = <Route>[];
+
   RouterContainer get containerWidget {
     final widget = super.widget;
     return widget is RouterContainer ? widget : null;
   }
+
+  Future<bool> backPressed() => maybePop();
 
   @override
   void didUpdateWidget(Navigator oldWidget) {
@@ -91,6 +98,25 @@ class RouterContainerState extends NavigatorState {
     _findRouterNavigatorObserver(widget)?.clear();
     _routeHistory.clear();
     super.dispose();
+  }
+
+  @override
+  Future<bool> maybePop<T extends Object>([T result]) async {
+    if (mounted) {
+      final route = _routeHistory.last;
+      final disposition = await route.willPop();
+      switch (disposition) {
+        case RoutePopDisposition.pop:
+          pop(result);
+          return true;
+        case RoutePopDisposition.doNotPop:
+          return false;
+        case RoutePopDisposition.bubble:
+          pop(result);
+          return true;
+      }
+    }
+    return false;
   }
 
   @override
@@ -130,27 +156,6 @@ class RouterContainerState extends NavigatorState {
     return future;
   }
 
-  @override
-  Future<bool> maybePop<T extends Object>([T result]) async {
-    if (mounted) {
-      final route = _routeHistory.last;
-      final disposition = await route.willPop();
-      switch (disposition) {
-        case RoutePopDisposition.pop:
-          pop(result);
-          return true;
-        case RoutePopDisposition.doNotPop:
-          return false;
-        case RoutePopDisposition.bubble:
-          pop(result);
-          return true;
-      }
-    }
-    return false;
-  }
-
-  void backPressed() => maybePop();
-
   RouterNavigatorObserver _findRouterNavigatorObserver(Navigator navigator) {
     for (final observer in navigator.observers) {
       if (observer is RouterNavigatorObserver) {
@@ -159,10 +164,4 @@ class RouterContainerState extends NavigatorState {
     }
     return null;
   }
-
-  final _routeHistory = <Route>[];
-}
-
-class RouterContainerElement extends StatefulElement {
-  RouterContainerElement(StatefulWidget widget) : super(widget);
 }

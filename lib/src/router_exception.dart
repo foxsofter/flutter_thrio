@@ -11,10 +11,5 @@ class _RouterException implements RouterException {
   final String message;
 
   @override
-  String toString() {
-    if (message == null) {
-      return 'RouterException';
-    }
-    return 'RouterException: $message';
-  }
+  String toString() => 'RouterException: ${message ?? ''}';
 }

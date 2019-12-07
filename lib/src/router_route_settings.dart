@@ -42,7 +42,7 @@ class RouterRouteSettings {
   final WidgetBuilder builder;
 
   @override
-  String toString() => '$runtimeType("$url", $index, $params)';
+  int get hashCode => url.hashCode ^ index.hashCode;
 
   @override
   bool operator ==(other) =>
@@ -53,5 +53,5 @@ class RouterRouteSettings {
           index == other.index);
 
   @override
-  int get hashCode => url.hashCode ^ index.hashCode;
+  String toString() => '$runtimeType("$url", $index, $params)';
 }

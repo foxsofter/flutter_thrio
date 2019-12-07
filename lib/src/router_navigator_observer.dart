@@ -5,11 +5,11 @@ import 'package:flutter/material.dart';
 
 import 'registry/registry_set.dart';
 
-typedef DidPushHandler = void Function(
+typedef DidPopHandler = void Function(
   Route route,
   Route previousRoute,
 );
-typedef DidPopHandler = void Function(
+typedef DidPushHandler = void Function(
   Route route,
   Route previousRoute,
 );
@@ -23,28 +23,31 @@ typedef DidReplaceHandler = void Function(
 );
 
 class RouterNavigatorObserver extends NavigatorObserver {
-  VoidCallback registryDidPush(DidPushHandler handler) =>
-      _pushHandlers.registry(handler);
+  final _pushHandlers = RegistrySet<DidPushHandler>();
 
-  VoidCallback registryDidPop(DidPopHandler handler) =>
-      _popHandlers.registry(handler);
+  final _popHandlers = RegistrySet<DidPopHandler>();
 
-  VoidCallback registryDidRemove(DidRemoveHandler handler) =>
-      _removeHandlers.registry(handler);
+  final _removeHandlers = RegistrySet<DidRemoveHandler>();
 
-  VoidCallback registryDidReplace(DidReplaceHandler handler) =>
-      _replaceHandlers.registry(handler);
+  final _replaceHandlers = RegistrySet<DidReplaceHandler>();
 
-  @override
-  void didPush(Route route, Route previousRoute) {
-    for (final it in _pushHandlers) {
-      it(route, previousRoute);
-    }
+  void clear() {
+    _pushHandlers.clear();
+    _popHandlers.clear();
+    _removeHandlers.clear();
+    _replaceHandlers.clear();
   }
 
   @override
   void didPop(Route route, Route previousRoute) {
     for (final it in _popHandlers) {
+      it(route, previousRoute);
+    }
+  }
+
+  @override
+  void didPush(Route route, Route previousRoute) {
+    for (final it in _pushHandlers) {
       it(route, previousRoute);
     }
   }
@@ -63,15 +66,15 @@ class RouterNavigatorObserver extends NavigatorObserver {
     }
   }
 
-  void clear() {
-    _pushHandlers.unregistryAll();
-    _popHandlers.unregistryAll();
-    _removeHandlers.unregistryAll();
-    _replaceHandlers.unregistryAll();
-  }
+  VoidCallback registryDidPop(DidPopHandler handler) =>
+      _popHandlers.registry(handler);
 
-  final _pushHandlers = RegistrySet<DidPushHandler>();
-  final _popHandlers = RegistrySet<DidPopHandler>();
-  final _removeHandlers = RegistrySet<DidRemoveHandler>();
-  final _replaceHandlers = RegistrySet<DidReplaceHandler>();
+  VoidCallback registryDidPush(DidPushHandler handler) =>
+      _pushHandlers.registry(handler);
+
+  VoidCallback registryDidRemove(DidRemoveHandler handler) =>
+      _removeHandlers.registry(handler);
+
+  VoidCallback registryDidReplace(DidReplaceHandler handler) =>
+      _replaceHandlers.registry(handler);
 }

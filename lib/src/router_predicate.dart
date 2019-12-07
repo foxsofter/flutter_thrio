@@ -1,10 +1,10 @@
 // Copyright (c) 2019/11/28, 11:28:58 PM The Hellobike. All rights reserved.
 // Created by WeiZhongdan, weizhongdan06291@hellobike.com.
 
-/// Signature of predicate that can `ThrioRouter.push`.
-typedef PushPredicate = Future<bool> Function(
+/// Signature of predicate that can `ThrioRouter.notify` or not.
+typedef NotifyPredicate = Future<bool> Function(
   String url, {
-  bool animated,
+  int index,
   Map<String, dynamic> params,
 });
 
@@ -22,10 +22,11 @@ typedef PopToPredicate = Future<bool> Function(
   bool animated,
 });
 
-/// Signature of predicate that can `ThrioRouter.notify` or not.
-typedef NotifyPredicate = Future<bool> Function(
+/// Signature of predicate that can `ThrioRouter.push`.
+typedef PushPredicate = Future<bool> Function(
   String url, {
   int index,
+  bool animated,
   Map<String, dynamic> params,
 });
 
@@ -42,17 +43,25 @@ class RouterPredicate {
         _canPopTo = onPopTo,
         _canNotify = onNotify;
 
-  /// Will be executed before the `push` is performed.
+  final PushPredicate _canPush;
+
+  final PopPredicate _canPop;
+
+  final PopToPredicate _canPopTo;
+
+  final NotifyPredicate _canNotify;
+
+  /// Will be executed before the `notify` is performed.
   ///
-  /// If you want to stop the `push`, return false.
+  /// If you want to stop the `notify`, return false.
   ///
-  Future<bool> canPush(
+  Future<bool> canNotify(
     String url, {
-    bool animated = true,
+    int index = 0,
     Map<String, dynamic> params = const {},
   }) {
-    if (_canPush != null) {
-      return _canPush(url, animated: animated, params: params);
+    if (_canNotify != null) {
+      return _canNotify(url, index: index, params: params);
     }
     return Future<bool>.value(true);
   }
@@ -87,23 +96,18 @@ class RouterPredicate {
     return Future<bool>.value(true);
   }
 
-  /// Will be executed before the `notify` is performed.
+  /// Will be executed before the `push` is performed.
   ///
-  /// If you want to stop the `notify`, return false.
+  /// If you want to stop the `push`, return false.
   ///
-  Future<bool> canNotify(
+  Future<bool> canPush(
     String url, {
-    int index = 0,
+    bool animated = true,
     Map<String, dynamic> params = const {},
   }) {
-    if (_canNotify != null) {
-      return _canNotify(url, index: index, params: params);
+    if (_canPush != null) {
+      return _canPush(url, animated: animated, params: params);
     }
     return Future<bool>.value(true);
   }
-
-  final PushPredicate _canPush;
-  final PopPredicate _canPop;
-  final PopToPredicate _canPopTo;
-  final NotifyPredicate _canNotify;
 }

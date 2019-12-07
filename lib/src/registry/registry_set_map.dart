@@ -37,9 +37,7 @@ class RegistrySetMap<K, V> {
     };
   }
 
-  void unregistryAll() {
-    _maps.clear();
-  }
+  void clear() => _maps.clear();
 
   Set<V> operator [](K key) => _maps[key];
 }

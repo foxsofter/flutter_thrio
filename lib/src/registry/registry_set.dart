@@ -26,9 +26,7 @@ class RegistrySet<T> with IterableMixin<T> {
     };
   }
 
-  void unregistryAll() {
-    _sets.clear();
-  }
+  void clear() => _sets.clear();
 
   @override
   Iterator<T> get iterator => _sets.iterator;

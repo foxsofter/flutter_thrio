@@ -6,7 +6,9 @@ import 'package:flutter/services.dart';
 
 import 'registry/registry_set_map.dart';
 
-typedef MethodHandler = Future<dynamic> Function(Map arguments);
+typedef MethodHandler = Future Function([
+  Map<String, dynamic> arguments,
+]);
 
 class RouterChannel {
   factory RouterChannel({String channel}) {
@@ -21,8 +23,9 @@ class RouterChannel {
       : _channel = MethodChannel(channel) {
     _channel.setMethodCallHandler((call) {
       final handlers = _methodHandlers[call.method];
-      final arguments = call.arguments;
-      if (arguments is Map && (handlers?.isNotEmpty ?? false)) {
+      final args = call.arguments;
+      if (args is Map && (handlers?.isNotEmpty ?? false)) {
+        final arguments = args.cast<String, dynamic>();
         for (final it in handlers) {
           it(arguments);
         }
@@ -31,8 +34,13 @@ class RouterChannel {
     });
   }
 
-  Future<T> invokeMethod<T>(String method, [Map arguments]) =>
-      _channel.invokeMethod(method, arguments);
+  static final _defaultInstance = RouterChannel._();
+
+  static final _instanceCaches = <String, RouterChannel>{};
+
+  final _methodHandlers = RegistrySetMap<String, MethodHandler>();
+
+  final MethodChannel _channel;
 
   Future<List<T>> invokeListMethod<T>(String method, [Map arguments]) =>
       _channel.invokeListMethod(method, arguments);
@@ -40,14 +48,9 @@ class RouterChannel {
   Future<Map<K, V>> invokeMapMethod<K, V>(String method, [Map arguments]) =>
       _channel.invokeMapMethod(method, arguments);
 
+  Future<T> invokeMethod<T>(String method, [Map arguments]) =>
+      _channel.invokeMethod(method, arguments);
+
   VoidCallback registryMethodHandler(String method, MethodHandler handler) =>
       _methodHandlers.registry(method, handler);
-
-  final _methodHandlers = RegistrySetMap<String, MethodHandler>();
-
-  final MethodChannel _channel;
-
-  static final _defaultInstance = RouterChannel._();
-
-  static final _instanceCaches = <String, RouterChannel>{};
 }

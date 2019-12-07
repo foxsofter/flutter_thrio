@@ -15,16 +15,15 @@ class ThrioRouter {
   // extended directly.
   factory ThrioRouter._() => null;
 
-  /// Push a page with `url` onto the topmost native navigator.
-  ///
-  static Future<bool> push(
+  /// Notify a page with `url` and `index`.
+  static Future<bool> notify(
     String url, {
-    bool animated = true,
+    int index = 0,
     Map<String, dynamic> params = const {},
   }) =>
-      Router().push(
+      Router().notify(
         url,
-        animated: animated,
+        index: index,
         params: params,
       );
 
@@ -52,22 +51,23 @@ class ThrioRouter {
         animated: animated,
       );
 
-  /// Notify a page with `url` and `index`.
-  static Future<bool> notify(
+  /// Push a page with `url` onto the topmost native navigator.
+  ///
+  static Future<bool> push(
     String url, {
-    int index = 0,
+    bool animated = true,
     Map<String, dynamic> params = const {},
   }) =>
-      Router().notify(
+      Router().push(
         url,
-        index: index,
+        animated: animated,
         params: params,
       );
 
   /// Register an interceptor for the router.
   ///
-  /// Unregister by calling the return value `VoidCallback`.
+  /// Unregistry by calling the return value `VoidCallback`.
   ///
-  static VoidCallback registerPredicate(RouterPredicate predicate) =>
-      Router().registerPredicate(predicate);
+  static VoidCallback registryPredicate(RouterPredicate predicate) =>
+      Router().registryPredicate(predicate);
 }
