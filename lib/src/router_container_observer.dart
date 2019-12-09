@@ -1,6 +1,8 @@
 // Copyright (c) 2019/12/05, 13:40:58 PM The Hellobike. All rights reserved.
 // Created by WeiZhongdan, weizhongdan06291@hellobike.com.
 
+import 'dart:io';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
@@ -9,7 +11,7 @@ import 'registry/registry_set_map.dart';
 import 'router.dart';
 import 'router_channel.dart';
 import 'router_container.dart';
-import 'router_navigator.dart';
+import 'router_logger.dart';
 import 'router_route_settings.dart';
 
 typedef RouterContainerLifeCycleHandler = void Function(
@@ -24,8 +26,9 @@ typedef RouterContainerNavigationHandler = void Function(
 
 enum RouterContainerLifeCycle {
   inited,
+  willAppear,
   appeared,
-  willDisappeared,
+  willDisappear,
   disappeared,
   destroyed,
   background,
@@ -41,8 +44,9 @@ extension RouterContainerLifeCycleX on RouterContainerLifeCycle {
     }
     const lifeCycles = <String, RouterContainerLifeCycle>{
       'inited': RouterContainerLifeCycle.inited,
+      'willAppear': RouterContainerLifeCycle.willAppear,
       'appeared': RouterContainerLifeCycle.appeared,
-      'willDisappeared': RouterContainerLifeCycle.willDisappeared,
+      'willDisappear': RouterContainerLifeCycle.willDisappear,
       'disappeared': RouterContainerLifeCycle.disappeared,
       'destroyed': RouterContainerLifeCycle.destroyed,
       'background': RouterContainerLifeCycle.background,
@@ -96,10 +100,10 @@ class RouterContainerObserver {
     if (Router().current.routeSettings == routeSettings) {
       switch (lifeCycle) {
         case RouterContainerLifeCycle.foreground:
-          Router().navigator.tryStateOf<RouterNavigatorState>()?.bringToFront();
+          Router().navigatorState?.bringToFront();
           break;
         case RouterContainerLifeCycle.background:
-          Router().navigator.tryStateOf<RouterNavigatorState>()?.sendToBack();
+          Router().navigatorState?.sendToBack();
           break;
         default:
       }
@@ -142,6 +146,22 @@ class RouterContainerObserver {
         lifeCycleValue is String ? lifeCycleValue : null);
 
     final routeSettings = Router().argumentsToRouteSettings(arguments);
+
+    if (lifeCycle == RouterContainerLifeCycle.appeared && Platform.isAndroid) {
+      try {
+        final owner = WidgetsBinding.instance.pipelineOwner?.semanticsOwner;
+        final root = owner?.rootSemanticsNode;
+        root?.detach();
+        root?.attach(owner);
+      }
+      // ignore: avoid_catches_without_on_clauses
+      catch (e) {
+        RouterLogger.e(e.toString());
+      }
+    }
+    if (lifeCycle == RouterContainerLifeCycle.willAppear) {
+      Router().navigatorState?.push(routeSettings);
+    }
 
     onLifeCycleChanged(routeSettings, lifeCycle);
   }

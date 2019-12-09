@@ -42,11 +42,10 @@ class Router {
 
   final _channel = RouterChannel();
 
-  final _routerNavigatorKey = GlobalKey<RouterNavigatorState>();
-
   /// Assigned when the `builder` method is called.
   ///
-  RouterNavigator get navigator => _navigator;
+  RouterNavigatorState get navigatorState =>
+      _navigator.tryStateOf<RouterNavigatorState>();
 
   /// Get current container.
   ///
@@ -71,7 +70,6 @@ class Router {
       assert(child is Navigator, 'child must be a Navigator.');
 
       _navigator = RouterNavigator(
-          key: _routerNavigatorKey,
           navigator: child is Navigator ? child : null,
           onWillPushRoute: willPush,
           onDidPushRoute: didPush);

@@ -62,9 +62,13 @@ class RouterNavigatorState extends State<RouterNavigator> {
 
   bool _foreground = true;
 
+  RouterContainer get current => _current;
+
   bool get foreground => _foreground;
 
-  RouterContainer get current => _current;
+  RouterRouteFactory get onDidPushRoute => widget.onDidPushRoute;
+
+  RouterRouteFactory get onWillPushRoute => widget.onWillPushRoute;
 
   void activate(RouterRouteSettings routeSettings) {
     if (routeSettings == _current.routeSettings) {
@@ -237,7 +241,7 @@ class RouterNavigatorState extends State<RouterNavigator> {
 class _RouterContainerOverlayEntry extends OverlayEntry {
   _RouterContainerOverlayEntry(RouterContainer container)
       : super(
-          builder: (ctx) => container,
+          builder: (_) => container,
           opaque: true,
           maintainState: true,
         );
