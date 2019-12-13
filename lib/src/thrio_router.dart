@@ -17,11 +17,13 @@ class ThrioRouter {
 
   /// Notify a page with `url` and `index`.
   static Future<bool> notify(
+    String name,
     String url, {
     int index = 0,
     Map<String, dynamic> params = const {},
   }) =>
       Router().notify(
+        name,
         url,
         index: index,
         params: params,

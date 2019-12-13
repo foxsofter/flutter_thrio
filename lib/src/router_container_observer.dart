@@ -6,6 +6,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
+import 'extension/router_container_lifecycle.dart';
 import 'extension/stateful_widget.dart';
 import 'registry/registry_set_map.dart';
 import 'router.dart';
@@ -13,69 +14,21 @@ import 'router_channel.dart';
 import 'router_container.dart';
 import 'router_logger.dart';
 import 'router_route_settings.dart';
-
-typedef RouterContainerLifeCycleHandler = void Function(
-  RouterRouteSettings routeSettings,
-  RouterContainerLifeCycle lifeCycle,
-);
-
-typedef RouterContainerNavigationHandler = void Function(
-  RouterRouteSettings routeSettings,
-  RouterContainerNavigation navigationState,
-);
-
-enum RouterContainerLifeCycle {
-  inited,
-  willAppear,
-  appeared,
-  willDisappear,
-  disappeared,
-  destroyed,
-  background,
-  foreground,
-}
-
-extension RouterContainerLifeCycleX on RouterContainerLifeCycle {
-  String castToString() => toString().split('.').last;
-
-  static RouterContainerLifeCycle castFromString(String value) {
-    if (value?.isEmpty ?? true) {
-      return null;
-    }
-    const lifeCycles = <String, RouterContainerLifeCycle>{
-      'inited': RouterContainerLifeCycle.inited,
-      'willAppear': RouterContainerLifeCycle.willAppear,
-      'appeared': RouterContainerLifeCycle.appeared,
-      'willDisappear': RouterContainerLifeCycle.willDisappear,
-      'disappeared': RouterContainerLifeCycle.disappeared,
-      'destroyed': RouterContainerLifeCycle.destroyed,
-      'background': RouterContainerLifeCycle.background,
-      'foreground': RouterContainerLifeCycle.foreground,
-    };
-    return lifeCycles[value];
-  }
-}
-
-enum RouterContainerNavigation {
-  push,
-  activate,
-  pop,
-  remove,
-}
+import 'thrio_types.dart';
 
 class RouterContainerObserver {
   factory RouterContainerObserver() => _default;
 
   RouterContainerObserver._() {
-    RouterChannel().registryMethodHandler(
+    RouterChannel().onMethodCall(
       'backPressed',
       _onBackPressed,
     );
-    RouterChannel().registryMethodHandler(
-      'lifeCycle',
-      _onLifeCycleChanged,
+    RouterChannel().onMethodCall(
+      'lifecycle',
+      _onLifecycleChanged,
     );
-    RouterChannel().registryMethodHandler(
+    RouterChannel().onMethodCall(
       'scheduleFrame',
       _onScheduleFrame,
     );
@@ -83,26 +36,26 @@ class RouterContainerObserver {
 
   static final _default = RouterContainerObserver._();
 
-  final _lifeCycleHandlers =
-      RegistrySetMap<RouterRouteSettings, RouterContainerLifeCycleHandler>();
+  final _lifecycleHandlers =
+      RegistrySetMap<RouterRouteSettings, RouterContainerLifecycleHandler>();
 
   final _navigationHandlers =
       RegistrySetMap<RouterRouteSettings, RouterContainerNavigationHandler>();
 
-  void onLifeCycleChanged(
+  void onLifecycleChanged(
     RouterRouteSettings routeSettings,
-    RouterContainerLifeCycle lifeCycle,
+    RouterContainerLifecycle lifecycle,
   ) {
-    final handlers = _lifeCycleHandlers[routeSettings];
+    final handlers = _lifecycleHandlers[routeSettings];
     for (final it in handlers) {
-      it(routeSettings, lifeCycle);
+      it(routeSettings, lifecycle);
     }
     if (Router().current.routeSettings == routeSettings) {
-      switch (lifeCycle) {
-        case RouterContainerLifeCycle.foreground:
+      switch (lifecycle) {
+        case RouterContainerLifecycle.foreground:
           Router().navigatorState?.bringToFront();
           break;
-        case RouterContainerLifeCycle.background:
+        case RouterContainerLifecycle.background:
           Router().navigatorState?.sendToBack();
           break;
         default:
@@ -120,11 +73,11 @@ class RouterContainerObserver {
     }
   }
 
-  VoidCallback registryLifeCycleHandler(
+  VoidCallback registryLifecycleHandler(
     RouterRouteSettings routeSettings,
-    RouterContainerLifeCycleHandler handler,
+    RouterContainerLifecycleHandler handler,
   ) =>
-      _lifeCycleHandlers.registry(routeSettings, handler);
+      _lifecycleHandlers.registry(routeSettings, handler);
 
   VoidCallback registryNavigationHandler(
     RouterRouteSettings routeSettings,
@@ -140,14 +93,14 @@ class RouterContainerObserver {
     return false;
   }
 
-  Future _onLifeCycleChanged([Map<String, dynamic> arguments]) async {
-    final lifeCycleValue = arguments['lifeCycle'];
-    final lifeCycle = RouterContainerLifeCycleX.castFromString(
-        lifeCycleValue is String ? lifeCycleValue : null);
+  Future _onLifecycleChanged([Map<String, dynamic> arguments]) async {
+    final lifecycleValue = arguments['lifecycle'];
+    final lifecycle = RouterContainerLifecycleX.castFromString(
+        lifecycleValue is String ? lifecycleValue : null);
 
     final routeSettings = Router().argumentsToRouteSettings(arguments);
 
-    if (lifeCycle == RouterContainerLifeCycle.appeared && Platform.isAndroid) {
+    if (lifecycle == RouterContainerLifecycle.appeared && Platform.isAndroid) {
       try {
         final owner = WidgetsBinding.instance.pipelineOwner?.semanticsOwner;
         final root = owner?.rootSemanticsNode;
@@ -159,11 +112,11 @@ class RouterContainerObserver {
         RouterLogger.e(e.toString());
       }
     }
-    if (lifeCycle == RouterContainerLifeCycle.willAppear) {
+    if (lifecycle == RouterContainerLifecycle.willAppear) {
       Router().navigatorState?.push(routeSettings);
     }
 
-    onLifeCycleChanged(routeSettings, lifeCycle);
+    onLifecycleChanged(routeSettings, lifecycle);
   }
 
   Future _onScheduleFrame([_]) {

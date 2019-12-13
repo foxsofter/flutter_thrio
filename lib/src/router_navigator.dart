@@ -15,6 +15,7 @@ import 'router_logger.dart';
 import 'router_navigator_observer.dart';
 import 'router_route.dart';
 import 'router_route_settings.dart';
+import 'thrio_types.dart';
 
 /// Callback signature of the router route that will be pushed.
 ///

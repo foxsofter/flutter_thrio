@@ -1,32 +1,11 @@
 // Copyright (c) 2019/11/28, 11:28:58 PM The Hellobike. All rights reserved.
 // Created by WeiZhongdan, weizhongdan06291@hellobike.com.
 
-/// Signature of predicate that can `ThrioRouter.notify` or not.
-typedef NotifyPredicate = Future<bool> Function(
+/// Signature of predicate that can navigation or not.
+///
+typedef NavigationPredicate = Future<bool> Function(
   String url, {
   int index,
-  Map<String, dynamic> params,
-});
-
-/// Signature of predicate that can `ThrioRouter.pop` or not.
-typedef PopPredicate = Future<bool> Function(
-  String url, {
-  int index,
-  bool animated,
-});
-
-/// Signature of predicate that can `ThrioRouter.popTo` or not.
-typedef PopToPredicate = Future<bool> Function(
-  String url, {
-  int index,
-  bool animated,
-});
-
-/// Signature of predicate that can `ThrioRouter.push`.
-typedef PushPredicate = Future<bool> Function(
-  String url, {
-  int index,
-  bool animated,
   Map<String, dynamic> params,
 });
 
@@ -34,22 +13,22 @@ typedef PushPredicate = Future<bool> Function(
 ///
 class RouterPredicate {
   RouterPredicate({
-    PushPredicate onPush,
-    PopPredicate onPop,
-    PopToPredicate onPopTo,
-    NotifyPredicate onNotify,
+    NavigationPredicate onPush,
+    NavigationPredicate onPop,
+    NavigationPredicate onPopTo,
+    NavigationPredicate onNotify,
   })  : _canPush = onPush,
         _canPop = onPop,
         _canPopTo = onPopTo,
         _canNotify = onNotify;
 
-  final PushPredicate _canPush;
+  final NavigationPredicate _canPush;
 
-  final PopPredicate _canPop;
+  final NavigationPredicate _canPop;
 
-  final PopToPredicate _canPopTo;
+  final NavigationPredicate _canPopTo;
 
-  final NotifyPredicate _canNotify;
+  final NavigationPredicate _canNotify;
 
   /// Will be executed before the `notify` is performed.
   ///
@@ -73,10 +52,9 @@ class RouterPredicate {
   Future<bool> canPop(
     String url, {
     int index = 0,
-    bool animated = true,
   }) {
     if (_canPop != null) {
-      return _canPop(url, index: index, animated: animated);
+      return _canPop(url, index: index);
     }
     return Future<bool>.value(true);
   }
@@ -88,10 +66,9 @@ class RouterPredicate {
   Future<bool> canPopTo(
     String url, {
     int index = 0,
-    bool animated = true,
   }) {
     if (_canPopTo != null) {
-      return _canPopTo(url, index: index, animated: animated);
+      return _canPopTo(url, index: index);
     }
     return Future<bool>.value(true);
   }
@@ -102,11 +79,10 @@ class RouterPredicate {
   ///
   Future<bool> canPush(
     String url, {
-    bool animated = true,
     Map<String, dynamic> params = const {},
   }) {
     if (_canPush != null) {
-      return _canPush(url, animated: animated, params: params);
+      return _canPush(url, params: params);
     }
     return Future<bool>.value(true);
   }

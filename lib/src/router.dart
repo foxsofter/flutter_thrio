@@ -14,14 +14,7 @@ import 'router_container.dart';
 import 'router_navigator.dart';
 import 'router_predicate.dart';
 import 'router_route_settings.dart';
-
-/// Signature for a function that creates a page widget.
-///
-typedef PageBuilder = Widget Function(
-  String url,
-  int index,
-  Map<String, dynamic> params,
-);
+import 'thrio_types.dart';
 
 /// A class that provides push, pop, popTo and notify page functions.
 ///
@@ -85,6 +78,7 @@ class Router {
   /// Notify a page with `url` and `index`.
   ///
   Future<bool> notify(
+    String name,
     String url, {
     int index = 0,
     Map<String, dynamic> params = const {},
@@ -98,6 +92,7 @@ class Router {
     }
 
     final arguments = <String, dynamic>{
+      'name': name,
       'url': url,
       'index': index,
       'params': params,
@@ -244,7 +239,6 @@ class Router {
       final result = await it.canPop(
         url,
         index: index,
-        animated: animated,
       );
       if (canPop) {
         canPop = result;
@@ -263,7 +257,6 @@ class Router {
       final result = await it.canPopTo(
         url,
         index: index,
-        animated: animated,
       );
       if (canPopTo) {
         canPopTo = result;
@@ -281,7 +274,6 @@ class Router {
     for (final it in _predicates) {
       final result = await it.canPush(
         url,
-        animated: animated,
         params: params,
       );
       if (canPush) {

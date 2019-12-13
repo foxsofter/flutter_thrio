@@ -143,7 +143,7 @@ class RouterContainerState extends NavigatorState {
     if (Router().navigatorState?.onWillPushRoute != null) {
       newRoute = Router()
           .navigatorState
-          .onWillPushRoute(containerWidget.routeSettings);
+          .onWillPushRoute<T>(containerWidget.routeSettings);
     }
 
     final future = super.push(newRoute ?? route);
