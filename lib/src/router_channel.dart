@@ -34,7 +34,7 @@ class RouterChannel {
         .receiveBroadcastStream()
         .map<Map<String, dynamic>>(
             (data) => data is Map ? data.cast<String, dynamic>() : null)
-        .where((data) => data.containsKey(_kEventNameKey))
+        .where((data) => data?.containsKey(_kEventNameKey) ?? false)
         .listen((data) {
       final eventName = data.remove(_kEventNameKey);
       final controllers = _eventControllers[eventName];
@@ -63,18 +63,25 @@ class RouterChannel {
   Future<T> invokeMethod<T>(String method, [Map arguments]) =>
       _methodChannel.invokeMethod(method, arguments);
 
-  VoidCallback onMethodCall(String method, MethodHandler handler) =>
+  VoidCallback registryMethodCall(String method, MethodHandler handler) =>
       _methodHandlers.registry(method, handler);
 
-  Stream onEventHanddling(String event) {
-    final controller = StreamController();
+  void sendEvent(String name, [Map arguments]) {
+    final controllers = _eventControllers[name];
+    for (final controller in controllers) {
+      controller.add({...arguments, _kEventNameKey: name});
+    }
+  }
+
+  Stream<Map<String, dynamic>> onEventStream(String name) {
+    final controller = StreamController<Map<String, dynamic>>();
     controller
       ..onListen = () {
-        _eventControllers[event] ??= <StreamController>{};
-        _eventControllers[event].add(controller);
+        _eventControllers[name] ??= <StreamController>{};
+        _eventControllers[name].add(controller);
       }
       ..onCancel = () {
-        _eventControllers[event].remove(controller);
+        _eventControllers[name].remove(controller);
       };
     return controller.stream;
   }

@@ -16,10 +16,10 @@ linter:
     - always_put_control_body_on_new_line # 结构体总在新行
     - always_put_required_named_parameters_first # 必要参数总在最前
     - always_require_non_null_named_parameters # 总是验证必要参数非null
-    # - always_specify_types
+    # - always_specify_types 建议注释掉，因为可能会跟 -avoid_annotating_with_dynamic 冲突
     - annotate_overrides # 强制 override 注解
     - avoid_annotating_with_dynamic
-    - avoid_as # 避免使用 as
+    - avoid_as # 避免使用，更好的方式是通过is判断
     - avoid_bool_literals_in_conditional_expressions # 避免在表达式使用 bool
     - avoid_catches_without_on_clauses # 禁止无约束捕获异常
     - avoid_catching_errors # 禁止捕获Error

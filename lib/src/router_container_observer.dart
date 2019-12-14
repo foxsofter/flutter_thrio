@@ -20,18 +20,23 @@ class RouterContainerObserver {
   factory RouterContainerObserver() => _default;
 
   RouterContainerObserver._() {
-    RouterChannel().onMethodCall(
-      'backPressed',
-      _onBackPressed,
-    );
-    RouterChannel().onMethodCall(
-      'lifecycle',
-      _onLifecycleChanged,
-    );
-    RouterChannel().onMethodCall(
+    RouterChannel().registryMethodCall(
       'scheduleFrame',
       _onScheduleFrame,
     );
+    RouterChannel().registryMethodCall(
+      'backPressed',
+      _onBackPressed,
+    );
+
+    _onInited();
+    _onWillAppear();
+    _onAppeared();
+    _onWillDisappear();
+    _onDisappeared();
+    _onDestroyed();
+    _onBackground();
+    _onForeground();
   }
 
   static final _default = RouterContainerObserver._();
@@ -49,17 +54,6 @@ class RouterContainerObserver {
     final handlers = _lifecycleHandlers[routeSettings];
     for (final it in handlers) {
       it(routeSettings, lifecycle);
-    }
-    if (Router().current.routeSettings == routeSettings) {
-      switch (lifecycle) {
-        case RouterContainerLifecycle.foreground:
-          Router().navigatorState?.bringToFront();
-          break;
-        case RouterContainerLifecycle.background:
-          Router().navigatorState?.sendToBack();
-          break;
-        default:
-      }
     }
   }
 
@@ -85,6 +79,45 @@ class RouterContainerObserver {
   ) =>
       _navigationHandlers.registry(routeSettings, handler);
 
+  void _onAppeared() {
+    RouterChannel()
+        .onEventStream(RouterContainerLifecycle.appeared.castToString())
+        .listen((arguments) {
+      if (Platform.isAndroid) {
+        try {
+          final owner = WidgetsBinding.instance.pipelineOwner?.semanticsOwner;
+          final root = owner?.rootSemanticsNode;
+          root?.detach();
+          root?.attach(owner);
+        }
+        // ignore: avoid_catches_without_on_clauses
+        catch (e) {
+          RouterLogger.e(e.toString());
+        }
+      }
+      final routeSettings = Router().argumentsToRouteSettings(arguments);
+      onLifecycleChanged(
+        routeSettings,
+        RouterContainerLifecycle.appeared,
+      );
+    });
+  }
+
+  void _onBackground() {
+    RouterChannel()
+        .onEventStream(RouterContainerLifecycle.background.castToString())
+        .listen((arguments) {
+      final routeSettings = Router().argumentsToRouteSettings(arguments);
+      if (Router().current.routeSettings == routeSettings) {
+        Router().navigatorState?.sendToBack();
+      }
+      onLifecycleChanged(
+        routeSettings,
+        RouterContainerLifecycle.background,
+      );
+    });
+  }
+
   Future _onBackPressed([_]) async {
     final state = Router().current?.tryStateOf<RouterContainerState>();
     if (state != null) {
@@ -93,37 +126,89 @@ class RouterContainerObserver {
     return false;
   }
 
-  Future _onLifecycleChanged([Map<String, dynamic> arguments]) async {
-    final lifecycleValue = arguments['lifecycle'];
-    final lifecycle = RouterContainerLifecycleX.castFromString(
-        lifecycleValue is String ? lifecycleValue : null);
+  void _onDestroyed() {
+    RouterChannel()
+        .onEventStream(RouterContainerLifecycle.destroyed.castToString())
+        .listen((arguments) {
+      final routeSettings = Router().argumentsToRouteSettings(arguments);
+      onLifecycleChanged(
+        routeSettings,
+        RouterContainerLifecycle.destroyed,
+      );
+    });
+  }
 
-    final routeSettings = Router().argumentsToRouteSettings(arguments);
+  void _onDisappeared() {
+    RouterChannel()
+        .onEventStream(RouterContainerLifecycle.disappeared.castToString())
+        .listen((arguments) {
+      final routeSettings = Router().argumentsToRouteSettings(arguments);
+      onLifecycleChanged(
+        routeSettings,
+        RouterContainerLifecycle.disappeared,
+      );
+    });
+  }
 
-    if (lifecycle == RouterContainerLifecycle.appeared && Platform.isAndroid) {
-      try {
-        final owner = WidgetsBinding.instance.pipelineOwner?.semanticsOwner;
-        final root = owner?.rootSemanticsNode;
-        root?.detach();
-        root?.attach(owner);
+  void _onForeground() {
+    RouterChannel()
+        .onEventStream(RouterContainerLifecycle.foreground.castToString())
+        .listen((arguments) {
+      final routeSettings = Router().argumentsToRouteSettings(arguments);
+      if (Router().current.routeSettings == routeSettings) {
+        Router().navigatorState?.bringToFront();
       }
-      // ignore: avoid_catches_without_on_clauses
-      catch (e) {
-        RouterLogger.e(e.toString());
-      }
-    }
-    if (lifecycle == RouterContainerLifecycle.willAppear) {
-      Router().navigatorState?.push(routeSettings);
-    }
+      onLifecycleChanged(
+        routeSettings,
+        RouterContainerLifecycle.foreground,
+      );
+    });
+  }
 
-    onLifecycleChanged(routeSettings, lifecycle);
+  void _onInited() {
+    RouterChannel()
+        .onEventStream(RouterContainerLifecycle.inited.castToString())
+        .listen((arguments) {
+      final routeSettings = Router().argumentsToRouteSettings(arguments);
+      onLifecycleChanged(
+        routeSettings,
+        RouterContainerLifecycle.inited,
+      );
+    });
   }
 
   Future _onScheduleFrame([_]) {
     WidgetsBinding.instance.scheduleForcedFrame();
     return Future.delayed(
-      Duration(milliseconds: 250),
+      const Duration(milliseconds: 250),
       WidgetsBinding.instance.scheduleForcedFrame,
     );
+  }
+
+  void _onWillAppear() {
+    RouterChannel()
+        .onEventStream(RouterContainerLifecycle.willAppear.castToString())
+        .listen((arguments) {
+      final routeSettings = Router().argumentsToRouteSettings(arguments);
+
+      Router().navigatorState?.push(routeSettings);
+
+      onLifecycleChanged(
+        routeSettings,
+        RouterContainerLifecycle.willAppear,
+      );
+    });
+  }
+
+  void _onWillDisappear() {
+    RouterChannel()
+        .onEventStream(RouterContainerLifecycle.willDisappear.castToString())
+        .listen((arguments) {
+      final routeSettings = Router().argumentsToRouteSettings(arguments);
+      onLifecycleChanged(
+        routeSettings,
+        RouterContainerLifecycle.willDisappear,
+      );
+    });
   }
 }

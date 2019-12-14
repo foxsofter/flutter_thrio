@@ -5,11 +5,11 @@ import 'package:flutter/widgets.dart';
 
 extension BuildContextX on BuildContext {
   /// Get widget state by ancestorStateOfType method.
-  /// 
+  ///
   /// Throw `Exception` if the `state.runtimeType` is not a T.
-  /// 
+  ///
   T stateOf<T extends State<StatefulWidget>>() {
-    final state = ancestorStateOfType(TypeMatcher<T>());
+    final state = findAncestorStateOfType<T>();
     if (state != null && state is T) {
       return state;
     }
@@ -17,14 +17,12 @@ extension BuildContextX on BuildContext {
   }
 
   /// Get widget state by ancestorStateOfType method.
-  /// 
+  ///
   T tryStateOf<T extends State<StatefulWidget>>() {
-    final state = ancestorStateOfType(TypeMatcher<T>());
+    final state = findAncestorStateOfType<T>();
     if (state != null && state is T) {
       return state;
     }
     return null;
   }
-
-
 }

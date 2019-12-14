@@ -16,6 +16,10 @@
 //
 typedef id (^ThrioMethodHandler)(NSDictionary *arguments);
 
+// Signature for a block that handlers channel event handling.
+//
+typedef id (^ThrioEventHandler)(NSDictionary *arguments);
+
 // Signature for a block that whose return type and parameter type
 // is void.
 //
