@@ -2,7 +2,7 @@
 //  ThrioRegistryMap.h
 //  thrio_router
 //
-//  Created by Wei ZhongDan on 2019/12/10.
+//  Created by foxsofter on 2019/12/10.
 //
 
 #import <Foundation/Foundation.h>

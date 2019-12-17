@@ -2,16 +2,21 @@
 //  ThrioRouterChannel.m
 //  Pods-Runner
 //
-//  Created by Wei ZhongDan on 2019/12/9.
+//  Created by foxsofter on 2019/12/9.
 //
 
 #import <Flutter/Flutter.h>
 
 #import "ThrioRouterChannel.h"
-#import "registry/ThrioRegistryMap.h"
-#import "registry/ThrioRegistrySetMap.h"
+#import "Registry/ThrioRegistryMap.h"
+#import "Registry/ThrioRegistrySetMap.h"
+#import "ThrioRouter.h"
 
 @interface ThrioRouterChannel ()
+
+@property (nonatomic, copy) NSString *channelName;
+
+@property (nonatomic, strong) NSObject<FlutterBinaryMessenger> *messenger;
 
 @property (nonatomic, strong) FlutterMethodChannel *methodChannel;
 
@@ -31,15 +36,18 @@ static NSString *const kEventNameKey = @"__event_name__";
 
 @implementation ThrioRouterChannel
 
-+ (instancetype)channelWithName:(NSString *)channelName
-                binaryMessenger:(NSObject<FlutterBinaryMessenger> *)messenger {
-  if (!channelName) {
++ (instancetype)channelWithName {
+  return [self channelWithName:@""];
+}
+
++ (instancetype)channelWithName:(NSString *)channelName {
+  if (!channelName || channelName.length < 1) {
     channelName = kDefaultChannelName;
   }
   id instance = [[self instanceCaches] valueForKey:channelName];
   if (!instance) {
     instance = [[ThrioRouterChannel alloc] initWithName:channelName
-                                        binaryMessenger:messenger];
+                                        binaryMessenger:[ThrioRouter.router registarar].messenger];
     [[self instanceCaches] setValue:instance forKey:channelName];
   }
   return instance;
@@ -49,14 +57,17 @@ static NSString *const kEventNameKey = @"__event_name__";
              binaryMessenger:(NSObject<FlutterBinaryMessenger> *)messenger {
   self = [super init];
   if (self) {
-    [self setupMethodChannel:channelName messenger:messenger];
-    [self setupEventChannel:channelName messenger:messenger];
+    _channelName = channelName;
+    _messenger = messenger;
   }
   return self;
 }
 
+#pragma mark - method channel methods
+
 - (void)invokeMethod:(NSString*)method
            arguments:(id _Nullable)arguments {
+  [self setupMethodChannelIfNeeded];
   return [_methodChannel invokeMethod:method
                             arguments:arguments];
 }
@@ -64,6 +75,7 @@ static NSString *const kEventNameKey = @"__event_name__";
 - (void)invokeMethod:(NSString*)method
            arguments:(id _Nullable)arguments
               result:(FlutterResult _Nullable)callback {
+  [self setupMethodChannelIfNeeded];
   return [_methodChannel invokeMethod:method
                             arguments:arguments
                                result:callback];
@@ -71,10 +83,14 @@ static NSString *const kEventNameKey = @"__event_name__";
 
 - (ThrioVoidCallback)registryMethodCall:(NSString *)method
                                 handler:(ThrioMethodHandler)handler {
+  [self setupMethodChannelIfNeeded];
   return [_methodHandlers registry:method value:handler];
 }
 
+#pragma mark - event channel methods
+
 - (void)sendEvent:(NSString *)name arguments:(id _Nullable)arguments {
+  [self setupEventChannelIfNeeded];
   if (self.eventSink) {
     id args = [NSMutableDictionary dictionaryWithDictionary:arguments];
     [args setValue:name forKey:kEventNameKey];
@@ -84,8 +100,11 @@ static NSString *const kEventNameKey = @"__event_name__";
 
 - (ThrioVoidCallback)registryEventHandling:(NSString *)name
                                    handler:(ThrioEventHandler)handler {
+  [self setupEventChannelIfNeeded];
   return [_eventHandlers registry:name value:handler];
 }
+
+#pragma mark - FlutterStreamHandler methods
 
 - (FlutterError * _Nullable)onListenWithArguments:(id _Nullable)arguments
                                         eventSink:(nonnull FlutterEventSink)events {
@@ -97,23 +116,26 @@ static NSString *const kEventNameKey = @"__event_name__";
   return nil;
 }
 
+#pragma mark - helper methods
 
 + (NSMutableDictionary *)instanceCaches {
-  static NSMutableDictionary *_instanceCaches;
+  static NSMutableDictionary *instanceCaches_;
   static dispatch_once_t onceToken;
   dispatch_once(&onceToken, ^{
-    _instanceCaches = [NSMutableDictionary new];
+    instanceCaches_ = [NSMutableDictionary new];
   });
-  return _instanceCaches;
+  return instanceCaches_;
 };
 
-- (void)setupMethodChannel:(NSString *)channelName
-                 messenger:(NSObject<FlutterBinaryMessenger> *)messenger {
+- (void)setupMethodChannelIfNeeded {
+  if (_methodChannel) {
+    return;
+  }
   _methodHandlers = [ThrioRegistryMap map];
   
-  NSString *methodChannelName = [NSString stringWithFormat:@"_method_%@", channelName];
+  NSString *methodChannelName = [NSString stringWithFormat:@"_method_%@", _channelName];
   _methodChannel = [FlutterMethodChannel methodChannelWithName:methodChannelName
-                                               binaryMessenger:messenger];
+                                               binaryMessenger:_messenger];
   __weak typeof(self) weakself = self;
   [_methodChannel setMethodCallHandler:^(FlutterMethodCall * _Nonnull call,
                                          FlutterResult  _Nonnull result) {
@@ -126,13 +148,15 @@ static NSString *const kEventNameKey = @"__event_name__";
   }];
 }
 
-- (void)setupEventChannel:(NSString *)channelName
-                messenger:(NSObject<FlutterBinaryMessenger> *)messenger {
+- (void)setupEventChannelIfNeeded {
+  if (_eventChannel) {
+    return;
+  }
   _eventHandlers = [ThrioRegistrySetMap map];
   
-  NSString *eventChannelName = [NSString stringWithFormat:@"_event_%@", channelName];
+  NSString *eventChannelName = [NSString stringWithFormat:@"_event_%@", _channelName];
   _eventChannel = [FlutterEventChannel eventChannelWithName:eventChannelName
-                                            binaryMessenger:messenger];
+                                            binaryMessenger:_messenger];
   [_eventChannel setStreamHandler:self];
 }
 

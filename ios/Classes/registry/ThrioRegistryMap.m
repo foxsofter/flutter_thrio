@@ -2,7 +2,7 @@
 //  ThrioRegistryMap.m
 //  thrio_router
 //
-//  Created by Wei ZhongDan on 2019/12/10.
+//  Created by foxsofter on 2019/12/10.
 //
 
 #import "ThrioRegistryMap.h"
@@ -28,8 +28,8 @@
 }
 
 - (ThrioVoidCallback)registry:(NSString *)key value:(id)value {
-  assert(key || key.length < 1);
-  assert(value);
+  NSAssert(key || key.length < 1, @"key must not be null or empty.");
+  NSAssert(value, @"value must not be null.");
   
   [_maps setValue:value forKey:key];
 
@@ -42,7 +42,7 @@
 }
 
 - (ThrioVoidCallback)registryAll:(NSDictionary *)values {
-  assert(values || values.count < 1);
+  NSAssert(values || values.count < 1, @"values must not be null or empty");
   NSArray *keys = values.allKeys;
   for (id key in keys) {
     [_maps setValue:[values valueForKey:key] forKey:key];

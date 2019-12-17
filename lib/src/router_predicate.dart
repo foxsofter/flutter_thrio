@@ -13,22 +13,22 @@ typedef NavigationPredicate = Future<bool> Function(
 ///
 class RouterPredicate {
   RouterPredicate({
-    NavigationPredicate onPush,
-    NavigationPredicate onPop,
-    NavigationPredicate onPopTo,
-    NavigationPredicate onNotify,
-  })  : _canPush = onPush,
-        _canPop = onPop,
-        _canPopTo = onPopTo,
-        _canNotify = onNotify;
+    NavigationPredicate canPush,
+    NavigationPredicate canPop,
+    NavigationPredicate canPopTo,
+    NavigationPredicate canNotify,
+  })  : _canPush = canPush,
+        _canPop = canPop,
+        _canPopTo = canPopTo,
+        _canNotify = canNotify;
 
-  final NavigationPredicate _canPush;
+  final NavigationPredicate _canNotify;
 
   final NavigationPredicate _canPop;
 
   final NavigationPredicate _canPopTo;
 
-  final NavigationPredicate _canNotify;
+  final NavigationPredicate _canPush;
 
   /// Will be executed before the `notify` is performed.
   ///

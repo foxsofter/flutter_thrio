@@ -2,7 +2,7 @@
 //  ThrioRouterPredicate.h
 //  thrio_router
 //
-//  Created by Wei ZhongDan on 2019/12/11.
+//  Created by foxsofter on 2019/12/11.
 //
 
 #import <Foundation/Foundation.h>
@@ -11,37 +11,55 @@ NS_ASSUME_NONNULL_BEGIN
 
 // Signature of predicate that can notify or not.
 //
-typedef bool (^ThrioNotifyPredicate)
+typedef BOOL (^ThrioNotifyPredicate)
              (NSString *url,
-              NSNumber *index,
-              NSDictionary *params);
+              NSNumber * _Nullable index,
+              NSDictionary * _Nullable params);
 
 // Signature of predicate that can pop or not.
 //
-typedef bool (^ThrioPopPredicate)
+typedef BOOL (^ThrioPopPredicate)
              (NSString *url,
-              NSNumber *index,
-              NSDictionary *params);
+              NSNumber * _Nullable index);
 
 // Signature of predicate that can popTo or not.
 //
-typedef bool (^ThrioPopToPredicate)
+typedef BOOL (^ThrioPopToPredicate)
              (NSString *url,
-              NSNumber *index,
-              NSDictionary *params);
+              NSNumber * _Nullable index);
 
 // Signature of predicate that can push or not.
 //
-typedef bool (^ThrioPushPredicate)
+typedef BOOL (^ThrioPushPredicate)
              (NSString *url,
-              NSNumber *index,
-              NSDictionary *params);
+              NSDictionary * _Nullable params);
 
 // A class represents a predicate that can route or not.
 //
 @interface ThrioRouterPredicate : NSObject
 
-+ (ThrioRouterPredicate *)predicate:(
++ (instancetype)predicate;
+
+- (instancetype)setCanNotify:(ThrioNotifyPredicate)canNotify;
+
+- (instancetype)setCanPop:(ThrioPopPredicate)canPop;
+
+- (instancetype)setCanPopTo:(ThrioPopToPredicate)canPopTo;
+
+- (instancetype)setCanPush:(ThrioPushPredicate)canPush;
+
+- (BOOL)canNotify:(NSString *)url
+            index:(nullable NSNumber *)index
+           params:(nullable NSDictionary *)params;
+
+- (BOOL)canPop:(NSString *)url
+         index:(nullable NSNumber *)index;
+
+- (BOOL)canPopTo:(NSString *)url
+           index:(nullable NSNumber *)index;
+
+- (BOOL)canPush:(NSString *)url
+         params:(nullable NSDictionary *)params;
 
 @end
 

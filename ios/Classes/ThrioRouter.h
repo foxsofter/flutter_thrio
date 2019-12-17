@@ -2,10 +2,14 @@
 //  ThrioRouter.h
 //  thrio_router
 //
-//  Created by Wei ZhongDan on 2019/12/11.
+//  Created by foxsofter on 2019/12/11.
 //
 
 #import <Foundation/Foundation.h>
+#import <Flutter/Flutter.h>
+
+#import "ThrioRouterTypes.h"
+#import "ThrioRouterPredicate.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -13,66 +17,155 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (instancetype)router;
 
-#pragma - notify methods
++ (instancetype)router:(NSObject<FlutterPluginRegistrar> *)registrar;
 
-- (BOOL)notify:(NSString *)name
+- (instancetype)init NS_UNAVAILABLE;
+
+#pragma mark - public properties
+
+@property (nonatomic, strong, readonly) NSObject<FlutterPluginRegistrar> *registarar;
+
+// Always return to the topmost UINavigationController.
+//
+@property (nonatomic, strong, readonly) UINavigationController *navigationController;
+
+#pragma mark - notify methods
+
+- (void)notify:(NSString *)name
            url:(NSString *)url;
 
-- (BOOL)notify:(NSString *)name
+- (void)notify:(NSString *)name
+           url:(NSString *)url
+        result:(ThrioBoolCallback)result;
+
+- (void)notify:(NSString *)name
            url:(NSString *)url
          index:(NSNumber *)index;
 
-- (BOOL)notify:(NSString *)name
+- (void)notify:(NSString *)name
+           url:(NSString *)url
+         index:(NSNumber *)index
+        result:(ThrioBoolCallback)result;
+
+- (void)notify:(NSString *)name
            url:(NSString *)url
         params:(NSDictionary *)params;
 
-- (BOOL)notify:(NSString *)name
+- (void)notify:(NSString *)name
+           url:(NSString *)url
+        params:(NSDictionary *)params
+        result:(ThrioBoolCallback)result;
+
+- (void)notify:(NSString *)name
            url:(NSString *)url
          index:(NSNumber *)index
         params:(NSDictionary *)params;
 
-#pragma - push methods
+- (void)notify:(NSString *)name
+           url:(NSString *)url
+         index:(NSNumber *)index
+        params:(NSDictionary *)params
+        result:(ThrioBoolCallback)result;
 
-- (BOOL)push:(NSString *)url;
+#pragma mark - push methods
 
-- (BOOL)push:(NSString *)url
+- (void)push:(NSString *)url;
+
+- (void)push:(NSString *)url
+      result:(ThrioBoolCallback)result;
+
+- (void)push:(NSString *)url
     animated:(BOOL)animated;
 
-- (BOOL)push:(NSString *)url
+- (void)push:(NSString *)url
+    animated:(BOOL)animated
+      result:(ThrioBoolCallback)result;
+
+- (void)push:(NSString *)url
       params:(NSDictionary *)params;
 
-- (BOOL)push:(NSString *)url
+- (void)push:(NSString *)url
+      params:(NSDictionary *)params
+      result:(ThrioBoolCallback)result;
+
+- (void)push:(NSString *)url
       params:(NSDictionary *)params
     animated:(BOOL)animated;
 
-#pragma - pop methods
+- (void)push:(NSString *)url
+      params:(NSDictionary *)params
+    animated:(BOOL)animated
+      result:(ThrioBoolCallback)result;
+
+#pragma mark - pop methods
 
 - (void)pop:(NSString *)url;
+
+- (void)pop:(NSString *)url
+     result:(ThrioBoolCallback)result;
 
 - (void)pop:(NSString *)url
       index:(NSNumber *)index;
 
 - (void)pop:(NSString *)url
+      index:(NSNumber *)index
+     result:(ThrioBoolCallback)result;
+
+- (void)pop:(NSString *)url
    animated:(BOOL)animated;
+
+- (void)pop:(NSString *)url
+   animated:(BOOL)animated
+     result:(ThrioBoolCallback)result;
 
 - (void)pop:(NSString *)url
       index:(NSNumber *)index
    animated:(BOOL)animated;
 
-#pragma - popTo methods
+- (void)pop:(NSString *)url
+      index:(NSNumber *)index
+   animated:(BOOL)animated
+     result:(ThrioBoolCallback)result;
+
+#pragma mark - popTo methods
 
 - (void)popTo:(NSString *)url;
+
+- (void)popTo:(NSString *)url
+       result:(ThrioBoolCallback)result;
 
 - (void)popTo:(NSString *)url
         index:(NSNumber *)index;
 
 - (void)popTo:(NSString *)url
+        index:(NSNumber *)index
+       result:(ThrioBoolCallback)result;
+
+- (void)popTo:(NSString *)url
      animated:(BOOL)animated;
+
+- (void)popTo:(NSString *)url
+     animated:(BOOL)animated
+       result:(ThrioBoolCallback)result;
 
 - (void)popTo:(NSString *)url
         index:(NSNumber *)index
      animated:(BOOL)animated;
 
+- (void)popTo:(NSString *)url
+   index:(NSNumber *)index
+     animated:(BOOL)animated
+       result:(ThrioBoolCallback)result;
+
+#pragma mark - registry methods
+
+- (ThrioVoidCallback)registryPage:(NSString *)url
+                       forBuilder:(ThrioPageBuilder)builder;
+
+
+- (ThrioVoidCallback)registryPredicate:(ThrioRouterPredicate *)predicate;
+
 @end
+
 
 NS_ASSUME_NONNULL_END

@@ -97,7 +97,7 @@ class Router {
       'index': index,
       'params': params,
     };
-    return _channel.invokeMethod('notify', arguments);
+    return _channel.invokeMethod<bool>('notify', arguments);
   }
 
   /// Pop a page with `url` and `index` from native navigator.
@@ -116,7 +116,7 @@ class Router {
       'index': index,
       'animated': animated,
     };
-    return _channel.invokeMethod('pop', arguments);
+    return _channel.invokeMethod<bool>('pop', arguments);
   }
 
   /// Pop to a page with `url` and `index`.
@@ -135,7 +135,7 @@ class Router {
       'index': index,
       'animated': animated,
     };
-    return _channel.invokeMethod('popTo', arguments);
+    return _channel.invokeMethod<bool>('popTo', arguments);
   }
 
   /// Push a page with `url` onto native navigator.
@@ -154,7 +154,7 @@ class Router {
       'animated': animated,
       'params': params,
     };
-    return _channel.invokeMethod('push', arguments);
+    return _channel.invokeMethod<bool>('push', arguments);
   }
 
   /// Register default page builder for the router.

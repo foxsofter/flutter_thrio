@@ -2,7 +2,7 @@
 //  ThrioRegistrySet.m
 //  thrio_router
 //
-//  Created by Wei ZhongDan on 2019/12/10.
+//  Created by foxsofter on 2019/12/10.
 //
 
 #import "ThrioRegistrySet.h"
@@ -29,7 +29,7 @@
 
 
 - (ThrioVoidCallback)registry:(id)value {
-  assert(value);
+  NSAssert(value, @"value must not be null.");
   
   [_sets addObject:value];
 
@@ -42,7 +42,7 @@
 }
 
 - (ThrioVoidCallback)registryAll:(NSSet *)values {
-  assert(values || values.count < 1);
+  NSAssert(values || values.count < 1, @"values must not be null or empty.");
 
   [_sets unionSet:values];
   

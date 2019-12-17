@@ -2,7 +2,7 @@
 //  ThrioRouterChannel.h
 //  Pods-Runner
 //
-//  Created by Wei ZhongDan on 2019/12/9.
+//  Created by foxsofter on 2019/12/9.
 //
 
 #import <Foundation/Foundation.h>
@@ -15,8 +15,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface ThrioRouterChannel : NSObject<FlutterStreamHandler>
 
-+ (instancetype)channelWithName:(NSString *)channelName
-                binaryMessenger:(NSObject<FlutterBinaryMessenger> *)messenger;
++ (instancetype)channelWithName;
+
++ (instancetype)channelWithName:(NSString *)channelName;
 
 + (instancetype)new NS_UNAVAILABLE;
 - (instancetype)init NS_UNAVAILABLE;

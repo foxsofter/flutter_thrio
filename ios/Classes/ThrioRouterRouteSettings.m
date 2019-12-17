@@ -2,7 +2,7 @@
 //  ThrioRouterRouteSettings.m
 //  thrio_router
 //
-//  Created by Wei ZhongDan on 2019/12/11.
+//  Created by foxsofter on 2019/12/11.
 //
 
 #import "ThrioRouterRouteSettings.h"

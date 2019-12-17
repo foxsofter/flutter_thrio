@@ -2,7 +2,7 @@
 //  ThrioRouterTypes.h
 //  thrio_router
 //
-//  Created by Wei ZhongDan on 2019/12/9.
+//  Created by foxsofter on 2019/12/9.
 //
 
 #import <Foundation/Foundation.h>
@@ -12,6 +12,7 @@
 #ifndef ThrioRouterTypes_h
 #define ThrioRouterTypes_h
 
+
 // Signature for a block that handlers channel method invocation.
 //
 typedef id (^ThrioMethodHandler)(NSDictionary *arguments);
@@ -20,17 +21,18 @@ typedef id (^ThrioMethodHandler)(NSDictionary *arguments);
 //
 typedef id (^ThrioEventHandler)(NSDictionary *arguments);
 
-// Signature for a block that whose return type and parameter type
-// is void.
+// Signature of callbacks that have no arguments.
 //
 typedef void (^ThrioVoidCallback)(void);
 
+// Signature of callbacks with boolean parameters.
+//
+typedef void (^ThrioBoolCallback)(BOOL);
+
+
 // Signature for a block that creates a UIViewController.
 //
-typedef UIViewController* (^ThrioViewBuilder)
-                          (NSString* url,
-                           int index,
-                           NSDictionary<NSString *, id>* params);
+typedef UIViewController* (^ThrioPageBuilder)(NSDictionary<NSString *, id>* params);
 
 // States that a router container can be in.
 //
