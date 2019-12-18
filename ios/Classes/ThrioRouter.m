@@ -7,7 +7,7 @@
 
 #import "ThrioRouter.h"
 #import "ThrioRouterChannel.h"
-#import "Category/UIApplication+ThrioTopmost.h"
+#import "Category/UIApplication+ThrioRouter.h"
 #import "Category/UINavigationController+ThrioRouter.h"
 #import "Category/UIViewController+ThrioRouter.h"
 #import "Registry/ThrioRegistryMap.h"
@@ -23,7 +23,9 @@
 
 @end
 
-@implementation ThrioRouter
+@implementation ThrioRouter {
+  __weak UINavigationController *_navigationController;
+}
 
 static ThrioRouter *instance;
 
@@ -45,7 +47,12 @@ static ThrioRouter *instance;
 #pragma mark - public properties
 
 - (UINavigationController *)navigationController {
-  return [[UIApplication sharedApplication] topmostNavigationController];
+  UINavigationController *nvc = [[UIApplication sharedApplication] topmostNavigationController];
+  if (_navigationController != nvc) {
+    _navigationController = nvc;
+    _navigationController.delegate = nvc;
+  }
+  return _navigationController;
 }
 
 #pragma mark - notify methods
@@ -99,20 +106,15 @@ static ThrioRouter *instance;
          index:(NSNumber *)index
         params:(NSDictionary *)params
         result:(ThrioBoolCallback)result {
-  if (![self canNotify:url index:index params:params]) {
-    result(NO);
-  } else {
-    [ThrioRouterChannel.channelWithName invokeMethod:@"notify"
-                                        arguments:@{
-                                          @"name": name,
-                                          @"url": url,
-                                          @"index": index,
-                                          @"params": params
-                                        } result:^(id  _Nullable value) {
-      if (value) {
-        result([value boolValue]);
-      }
-    }];
+  BOOL canNotify = [self canNotify:url index:index params:params];
+  if (canNotify) {
+    canNotify = [self.navigationController thrio_notifyPageWithName:name
+                                                                url:url
+                                                              index:index
+                                                             params:params];
+  }
+  if (result) {
+    result(canNotify);
   }
 }
 
@@ -159,19 +161,24 @@ static ThrioRouter *instance;
       params:(NSDictionary *)params
     animated:(BOOL)animated
       result:(ThrioBoolCallback)result {
-  if (![self canPush:url params:params]) {
-    result(NO);
-    return;
+  BOOL canPush = [self canPush:url params:params];
+  if (canPush) {
+    ThrioPageBuilder builder = _pageBuilders[url];
+    if (builder) {
+      UIViewController *vc = builder(params);
+      if (vc) {
+        [vc thrio_setUrl:url params:params];
+        [self.navigationController pushViewController:vc animated:animated];
+        canPush = YES;
+      } else {
+        canPush = NO;
+      }
+    } else {
+      
+    }
   }
-  
-  ThrioPageBuilder builder = _pageBuilders[url];
-  if (builder) {
-    UIViewController *vc = builder(params);
-    [vc thrio_setUrl:url params:params];
-    [self.navigationController pushViewController:vc animated:animated];
-    result(YES);
-  } else {
-    
+  if (result) {
+    result(canPush);
   }
 }
 
@@ -218,18 +225,14 @@ static ThrioRouter *instance;
       index:(NSNumber *)index
    animated:(BOOL)animated
      result:(ThrioBoolCallback)result {
-  if (![self canPop:url index:index]) {
-    result(NO);
-  } else {
-    ThrioPageBuilder builder = _pageBuilders[url];
-    if (builder) {
-      BOOL canPop = [self.navigationController thrio_popPageWithUrl:url
-                                                         index:index
-                                                      animated:animated];
-      if (result) {
-        result(canPop);
-      }
-    }
+  BOOL canPop = [self canPop:url index:index];
+  if (canPop) {
+    canPop = [self.navigationController thrio_popPageWithUrl:url
+                                                       index:index
+                                                    animated:animated];
+  }
+  if (result) {
+    result(canPop);
   }
 }
 
@@ -276,18 +279,14 @@ static ThrioRouter *instance;
         index:(NSNumber *)index
      animated:(BOOL)animated
        result:(ThrioBoolCallback)result {
-  if (![self canPop:url index:index]) {
-    result(NO);
-    return;
+  BOOL canPopTo = [self canPop:url index:index];
+  if (canPopTo) {
+    canPopTo = [self.navigationController thrio_popToPageWithUrl:url
+                                                           index:index
+                                                        animated:animated];
   }
-  ThrioPageBuilder builder = _pageBuilders[url];
-  if (builder) {
-    BOOL canPopTo = [self.navigationController thrio_popToPageWithUrl:url
-                                                                index:index
-                                                             animated:animated];
-    if (result) {
-      result(canPopTo);
-    }
+  if (result) {
+    result(canPopTo);
   }
 }
 

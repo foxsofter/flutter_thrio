@@ -11,6 +11,8 @@
 #import "../ThrioRouter.h"
 #import "../ThrioRouterLogger.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 @implementation UIViewController (ThrioRouter)
 
 #pragma mark - ThrioRouterContainerProtocol methods
@@ -41,30 +43,32 @@
   return objc_getAssociatedObject(self, @selector(setThrio_params:));
 }
 
-- (void)setThrio_params:(NSDictionary *)params {
+- (void)setThrio_params:(nullable NSDictionary *)params {
     objc_setAssociatedObject(self,
                              @selector(setThrio_params:),
                              params,
                              OBJC_ASSOCIATION_COPY_NONATOMIC);
 }
 
-- (void)thrio_setUrl:(nonnull NSString *)url {
-  [self setThrio_url:url];
+- (NSDictionary *)thrio_notifications {
+  return objc_getAssociatedObject(self, @selector(setThrio_notifications:));
 }
 
-- (void)thrio_setUrl:(nonnull NSString *)url params:(NSDictionary *)params {
+- (void)setThrio_notifications:(NSDictionary *)notifications {
+    objc_setAssociatedObject(self,
+                             @selector(setThrio_notifications:),
+                             notifications,
+                             OBJC_ASSOCIATION_COPY_NONATOMIC);
+}
+
+- (void)thrio_setUrl:(NSString *)url
+              params:(nullable NSDictionary *)params {
   NSAssert(url && url.length > 0, @"url must not be null or empty.");
   if ([self thrio_url]) {
     ThrioLogV(@"url is already set.");
     return;
   }
-  [self thrio_setIndex:params url:url];
-}
-
-#pragma mark - helper methods
-
-
-- (void)thrio_setIndex:(NSDictionary * _Nonnull)params url:(NSString * _Nonnull)url {
+  
   [self setThrio_url:url];
   [self setThrio_params:params];
   NSNumber *index = @1;
@@ -76,3 +80,5 @@
 }
 
 @end
+
+NS_ASSUME_NONNULL_END

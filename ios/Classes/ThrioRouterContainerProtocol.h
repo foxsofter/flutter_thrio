@@ -17,9 +17,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, copy, readonly) NSDictionary *thrio_params;
 
-- (void)thrio_setUrl:(NSString *)url;
+@property (nonatomic, strong) NSMutableDictionary *thrio_notifications;
 
-- (void)thrio_setUrl:(NSString *)url params:(NSDictionary *)params;
+- (void)thrio_setUrl:(NSString *)url
+              params:(nullable NSDictionary *)params;
 
 @end
 

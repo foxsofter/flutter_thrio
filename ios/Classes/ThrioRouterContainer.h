@@ -7,12 +7,9 @@
 
 #import <Flutter/Flutter.h>
 
-#import "ThrioRouterContainerProtocol.h"
-#import "Category/UIViewController+ThrioRouter.h"
-
 NS_ASSUME_NONNULL_BEGIN
 
-@interface ThrioRouterContainer : FlutterViewController<ThrioRouterContainerProtocol>
+@interface ThrioRouterContainer : FlutterViewController
 
 - (instancetype)init NS_DESIGNATED_INITIALIZER;
 

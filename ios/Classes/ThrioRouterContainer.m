@@ -6,6 +6,7 @@
 //
 
 #import "ThrioRouterContainer.h"
+#import "Category/UIViewController+ThrioRouter.h"
 
 @interface ThrioRouterContainer ()
 
@@ -22,7 +23,7 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view.
+
 }
 
 @end

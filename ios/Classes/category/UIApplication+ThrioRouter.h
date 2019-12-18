@@ -1,5 +1,5 @@
 //
-//  UIApplication+ThrioTopmost.h
+//  UIApplication+ThrioRouter.h
 //  thrio_router
 //
 //  Created by Wei ZhongDan on 2019/12/17.
@@ -9,7 +9,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface UIApplication (ThrioTopmost)
+@interface UIApplication (ThrioRouter)
 
 - (UIViewController *)topmostViewController;
 
