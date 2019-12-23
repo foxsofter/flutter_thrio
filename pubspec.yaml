@@ -1,5 +1,5 @@
-name: thrio_router
-description: A flutter plugin which enables hybrid integration of flutter for existing native apps.
+name: thrio
+description: A flutter plugin which enables hybrid integration of flutter for existing ios or android apps.
 version: 0.0.1
 author:
 homepage:
@@ -27,8 +27,8 @@ flutter:
   # be modified. They are used by the tooling to maintain consistency when
   # adding or updating assets for this project.
   plugin:
-    androidPackage: com.hellobike.thrio_router
-    pluginClass: ThrioRouterPlugin
+    androidPackage: com.hellobike.thrio
+    pluginClass: ThrioPlugin
   # To add assets to your plugin package, add an assets section, like this:
   # assets:
   #  - images/a_dot_burr.jpeg

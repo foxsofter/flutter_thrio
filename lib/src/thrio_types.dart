@@ -3,19 +3,19 @@
 
 import 'package:flutter/widgets.dart';
 
-import 'router_route_settings.dart';
+import 'router/thrio_route_settings.dart';
 
 /// Signature for a function that creates a page widget.
 ///
 typedef PageBuilder = Widget Function(
-  String url,
+  String url, {
   int index,
   Map<String, dynamic> params,
-);
+});
 
-/// States that a router container can be in.
+/// States that a thrio page can be in.
 ///
-enum RouterContainerLifecycle {
+enum PageLifecycle {
   inited,
   willAppear,
   appeared,
@@ -26,25 +26,25 @@ enum RouterContainerLifecycle {
   foreground,
 }
 
-/// Signature for a function that handlers a router container lifecycle event.
+/// Signature for a function that handlers a thrio page lifecycle.
 ///
-typedef RouterContainerLifecycleHandler = void Function(
-  RouterRouteSettings routeSettings,
-  RouterContainerLifecycle lifecycle,
+typedef PageLifecycleHandler = void Function(
+  ThrioRouteSettings routeSettings,
+  PageLifecycle lifecycle,
 );
 
-/// A router container available navigation actions.
+/// A thrio router available navigation event.
 ///
-enum RouterContainerNavigation {
+enum NavigationEvent {
   push,
   activate,
   pop,
   remove,
 }
 
-/// Signature for a function that handlers a router container navigation action.
+/// Signature for a function that handlers a navigation event.
 ///
-typedef RouterContainerNavigationHandler = void Function(
-  RouterRouteSettings routeSettings,
-  RouterContainerNavigation navigation,
+typedef NavigationEventHandler = void Function(
+  ThrioRouteSettings routeSettings,
+  NavigationEvent navigation,
 );

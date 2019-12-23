@@ -1,6 +1,6 @@
-# thrio_router
+# thrio
 
-A flutter plugin which enables hybrid integration of flutter for existing native apps.
+A flutter plugin which enables hybrid integration of flutter for existing ios or android apps.
 
 ## Getting Started
 

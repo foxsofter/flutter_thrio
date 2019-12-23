@@ -1,13 +1,13 @@
 //
 //  ThrioRegistryMap.h
-//  thrio_router
+//  thrio
 //
 //  Created by foxsofter on 2019/12/10.
 //
 
 #import <Foundation/Foundation.h>
 
-#import "../ThrioRouterTypes.h"
+#import "../ThrioTypes.h"
 
 NS_ASSUME_NONNULL_BEGIN
 

@@ -1,22 +1,22 @@
 PODS:
   - Flutter (1.0.0)
-  - thrio_router (0.0.1):
+  - thrio (0.0.1):
     - Flutter
 
 DEPENDENCIES:
-  - Flutter (from `.symlinks/flutter/ios`)
-  - thrio_router (from `.symlinks/plugins/thrio_router/ios`)
+  - Flutter (from `Flutter`)
+  - thrio (from `.symlinks/plugins/thrio/ios`)
 
 EXTERNAL SOURCES:
   Flutter:
-    :path: ".symlinks/flutter/ios"
-  thrio_router:
-    :path: ".symlinks/plugins/thrio_router/ios"
+    :path: Flutter
+  thrio:
+    :path: ".symlinks/plugins/thrio/ios"
 
 SPEC CHECKSUMS:
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
-  thrio_router: 76bc4be2b26f4a1d5a9f63e548748378fb776eca
+  thrio: ba1d0931c25f04e518cff594ce5c19726fe760a6
 
-PODFILE CHECKSUM: 7fb83752f59ead6285236625b82473f90b1cb932
+PODFILE CHECKSUM: 3dbe063e9c90a5d7c9e4e76e70a821b9e2c1d271
 
 COCOAPODS: 1.8.3

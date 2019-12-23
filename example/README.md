@@ -1,6 +1,6 @@
-# thrio_router_example
+# thrio_example
 
-Demonstrates how to use the thrio_router plugin.
+Demonstrates how to use the thrio plugin.
 
 ## Getting Started
 

@@ -1,6 +1,6 @@
 //
 //  ThrioRegistryMap.m
-//  thrio_router
+//  thrio
 //
 //  Created by foxsofter on 2019/12/10.
 //
