@@ -51,31 +51,6 @@ typedef NS_ENUM(NSUInteger, ThrioPageLifecycle) {
   ThrioPageLifecycleForeground,
 };
 
-// Convert ThrioPageLifecycle to the corresponding dart enumeration string.
-//
-NSString * pageLifecycleToString(ThrioPageLifecycle lifecycle) {
-  switch (lifecycle) {
-    case ThrioPageLifecycleInited:
-      return @"PageLifecycle.inited";
-    case ThrioPageLifecycleWillAppear:
-      return @"PageLifecycle.willAppear";
-    case ThrioPageLifecycleAppeared:
-      return @"PageLifecycle.appeared";
-    case ThrioPageLifecycleWillDisappeared:
-      return @"PageLifecycle.willDisappear";
-    case ThrioPageLifecycleDisappeared:
-      return @"PageLifecycle.disappeared";
-    case ThrioPageLifecycleDestroyed:
-      return @"PageLifecycle.destroyed";
-    case ThrioPageLifecycleBackground:
-      return @"PageLifecycle.background";
-    case ThrioPageLifecycleForeground:
-      return @"PageLifecycle.foreground";
-    default:
-      return nil;
-  }
-}
-
 // Signature for a function that handlers a router page lifecycle.
 //
 //typedef void (^ThrioPageLifecycleHandler)

@@ -7,7 +7,7 @@
 
 #import <Flutter/Flutter.h>
 #import "ThrioFlutterApp.h"
-#import "../Router/ThrioFlutterPage.h"
+#import "ThrioFlutterPage.h"
 
 @interface ThrioFlutterApp ()
 

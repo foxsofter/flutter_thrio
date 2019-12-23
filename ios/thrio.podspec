@@ -9,12 +9,12 @@ Pod::Spec.new do |s|
   s.description      = <<-DESC
 A flutter plugin which enables hybrid integration of flutter for existing ios or android apps.
                        DESC
-  s.homepage         = 'http://example.com'
+  s.homepage         = 'http://hellobike.com'
   s.license          = { :file => '../LICENSE' }
   s.author           = { 'hellobike' => 'weizhongdan06291@hellobike.com' }
   s.source           = { :path => '.' }
   s.source_files = 'Classes/**/*'
-  s.public_header_files = 'Classes/**/*.h'
+  s.public_header_files = 'Classes/**/*.h,'
   s.dependency 'Flutter'
   s.platform = :ios, '8.0'
 

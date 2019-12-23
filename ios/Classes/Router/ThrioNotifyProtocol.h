@@ -15,6 +15,7 @@ NS_ASSUME_NONNULL_BEGIN
 //
 @protocol ThrioNotifyProtocol <NSObject>
 
+@required
 // Called when the page has been fully transitioned onto the screen.
 //
 - (void)onNotifyWithName:(NSString *)name

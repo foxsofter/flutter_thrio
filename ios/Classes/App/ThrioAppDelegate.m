@@ -7,7 +7,7 @@
 
 #import "ThrioAppDelegate.h"
 #import "ThrioFlutterApp.h"
-#import "../Module/ThrioModule.h"
+#import "ThrioModule.h"
 
 @implementation ThrioAppDelegate
 

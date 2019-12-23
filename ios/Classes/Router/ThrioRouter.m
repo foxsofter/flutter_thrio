@@ -8,9 +8,9 @@
 #import "ThrioRouter.h"
 #import "UINavigationController+ThrioRouter.h"
 #import "UIViewController+ThrioPage.h"
-#import "../Channel/ThrioChannel.h"
-#import "../Category/UIApplication+Thrio.h"
-#import "../Registry/ThrioRegistrySet.h"
+#import "ThrioChannel.h"
+#import "UIApplication+Thrio.h"
+#import "ThrioRegistrySet.h"
 
 @implementation ThrioRouter {
   __weak UINavigationController *_navigationController;

@@ -10,7 +10,7 @@
 #import "UINavigationController+ThrioRouter.h"
 #import "UIViewController+ThrioPage.h"
 #import "ThrioRouter.h"
-#import "../Logger/ThrioLogger.h"
+#import "ThrioLogger.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -52,6 +52,13 @@ NS_ASSUME_NONNULL_BEGIN
                            @selector(setPageIndex:),
                            index,
                            OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+  if ([self isKindOfClass:NSClassFromString(@"ThrioFlutterPage")]) {
+    #pragma clang diagnostic push
+    #pragma clang diagnostic ignored "-Wundeclared-selector"
+    [self performSelector:@selector(sendPageLifecycleEvent:)
+               withObject:@(ThrioPageLifecycleInited)];
+    #pragma pop
+  }
 }
 
 - (NSDictionary *)pageParams {

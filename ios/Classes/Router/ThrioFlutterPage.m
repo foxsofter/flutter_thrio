@@ -8,13 +8,12 @@
 #import "ThrioFlutterPage.h"
 #import "UIViewController+ThrioPage.h"
 #import "ThrioFlutterApp.h"
-#import "../Channel/ThrioChannel.h"
+#import "ThrioChannel.h"
 
-@interface ThrioFlutterPage ()
+NS_ASSUME_NONNULL_BEGIN
 
-
-@end
-
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wincomplete-implementation"
 @implementation ThrioFlutterPage
 
 - (instancetype)init {
@@ -29,7 +28,7 @@
   self.view.backgroundColor = UIColor.whiteColor;
 }
 
-- (void)onNotifyWithName:(nonnull NSString *)name
+- (void)onNotifyWithName:(NSString *)name
                   params:(nullable NSDictionary *)params {
   NSDictionary *arguments = @{
     @"url": self.pageUrl,
@@ -45,7 +44,6 @@
   
   [ThrioFlutterApp.shared resume];
 }
-
 
 - (void)viewWillAppear:(BOOL)animated {
     
@@ -72,6 +70,10 @@
   [super viewWillDisappear:animated];
 }
 
+- (void)dealloc {
+  [self sendPageLifecycleEvent:ThrioPageLifecycleDestroyed];
+}
+
 // override
 - (void)installSplashScreenViewIfNecessary {
   //Do nothing.
@@ -90,10 +92,37 @@
     @"index": self.pageIndex,
     @"params": self.pageParams
   };
-  NSString *eventName = pageLifecycleToString(lifecycle);
+  NSString *eventName = [self pageLifecycleToString:lifecycle];
   [[ThrioChannel channelWithName] sendEvent:eventName arguments:arguments];
 }
 
+
+// Convert ThrioPageLifecycle to the corresponding dart enumeration string.
+//
+- (NSString *)pageLifecycleToString:(ThrioPageLifecycle)lifecycle {
+  switch (lifecycle) {
+    case ThrioPageLifecycleInited:
+      return @"PageLifecycle.inited";
+    case ThrioPageLifecycleWillAppear:
+      return @"PageLifecycle.willAppear";
+    case ThrioPageLifecycleAppeared:
+      return @"PageLifecycle.appeared";
+    case ThrioPageLifecycleWillDisappeared:
+      return @"PageLifecycle.willDisappear";
+    case ThrioPageLifecycleDisappeared:
+      return @"PageLifecycle.disappeared";
+    case ThrioPageLifecycleDestroyed:
+      return @"PageLifecycle.destroyed";
+    case ThrioPageLifecycleBackground:
+      return @"PageLifecycle.background";
+    case ThrioPageLifecycleForeground:
+      return @"PageLifecycle.foreground";
+    default:
+      return nil;
+  }
+}
+
 @end
+#pragma clang diagnostic pop
 
-
+NS_ASSUME_NONNULL_END

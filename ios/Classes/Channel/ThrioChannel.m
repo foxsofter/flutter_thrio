@@ -8,9 +8,9 @@
 #import <Flutter/Flutter.h>
 
 #import "ThrioChannel.h"
-#import "../Registry/ThrioRegistryMap.h"
-#import "../Registry/ThrioRegistrySetMap.h"
-#import "../ThrioPlugin.h"
+#import "ThrioRegistryMap.h"
+#import "ThrioRegistrySetMap.h"
+#import "ThrioPlugin.h"
 
 @interface ThrioChannel ()
 

@@ -7,8 +7,9 @@
 
 #import <Foundation/Foundation.h>
 #import <Flutter/Flutter.h>
-#import "../Module/ThrioModule.h"
-#import "../Router/ThrioFlutterPage.h"
+
+#import "ThrioModule.h"
+#import "ThrioFlutterPage.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -19,7 +20,6 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong, readonly) FlutterEngine *engine;
 
 @property (nonatomic, strong, readonly) ThrioFlutterPage *page;
-
 
 // Sets the `FlutterViewController` for flutter engine.
 //

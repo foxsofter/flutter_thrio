@@ -9,7 +9,7 @@
 #import "UINavigationController+ThrioRouter.h"
 #import "UIViewController+ThrioPage.h"
 #import "ThrioNotifyProtocol.h"
-#import "../Registry/ThrioRegistryMap.h"
+#import "ThrioRegistryMap.h"
 
 NS_ASSUME_NONNULL_BEGIN
 

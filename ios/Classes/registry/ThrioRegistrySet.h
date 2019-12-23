@@ -7,7 +7,7 @@
 
 #import <Foundation/Foundation.h>
 
-#import "../ThrioTypes.h"
+#import "ThrioTypes.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
