@@ -7,6 +7,7 @@
 
 #import <Flutter/Flutter.h>
 #import "ThrioNotifyProtocol.h"
+#import "ThrioTypes.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -25,6 +26,8 @@ NS_ASSUME_NONNULL_BEGIN
                          bundle:(nullable NSBundle*)nibBundle NS_UNAVAILABLE;
 
 - (void)surfaceUpdated:(BOOL)appeared;
+
+- (void)sendPageLifecycleEvent:(ThrioPageLifecycle)lifecycle;
 
 @end
 

@@ -30,6 +30,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)onNotifyWithName:(NSString *)name
                   params:(nullable NSDictionary *)params {
+  if (self.pageUrl.length < 1) {
+    return;
+  }
+
   NSDictionary *arguments = @{
     @"url": self.pageUrl,
     @"index": self.pageIndex,
@@ -41,8 +45,6 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)viewDidLayoutSubviews {
   
   [super viewDidLayoutSubviews];
-  
-  [ThrioFlutterApp.shared resume];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
@@ -54,7 +56,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)viewDidAppear:(BOOL)animated {
   
-  [ThrioFlutterApp.shared attach:self];
+  [ThrioFlutterApp.shared attachPage:self];
   
   [self sendPageLifecycleEvent:ThrioPageLifecycleAppeared];
 
@@ -84,18 +86,20 @@ NS_ASSUME_NONNULL_BEGIN
   return NO;
 }
 
-#pragma mark - private methods
-
 - (void)sendPageLifecycleEvent:(ThrioPageLifecycle)lifecycle {
+  if (self.pageUrl.length < 1) {
+    return;
+  }
   NSDictionary *arguments = @{
     @"url": self.pageUrl,
     @"index": self.pageIndex,
-    @"params": self.pageParams
+    @"params": self.pageParams ?: @{}
   };
   NSString *eventName = [self pageLifecycleToString:lifecycle];
   [[ThrioChannel channelWithName] sendEvent:eventName arguments:arguments];
 }
 
+#pragma mark - private methods
 
 // Convert ThrioPageLifecycle to the corresponding dart enumeration string.
 //

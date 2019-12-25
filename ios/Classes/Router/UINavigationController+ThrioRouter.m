@@ -10,10 +10,11 @@
 #import "UIViewController+ThrioPage.h"
 #import "ThrioNotifyProtocol.h"
 #import "ThrioRegistryMap.h"
+#import "ThrioFlutterPage.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@implementation UINavigationController (Thrio)
+@implementation UINavigationController (ThrioRouter)
 
 #pragma mark - ThrioNavigationProtocol methods
 
@@ -25,10 +26,10 @@ NS_ASSUME_NONNULL_BEGIN
   if (builder) {
     page = builder(params);
   } else {
-    
+    page = [[ThrioFlutterPage alloc] init];
   }
-  page.pageUrl = url;
   page.pageParams = page.pageParams ?: params ;
+  page.pageUrl = url;
   [self.navigationController pushViewController:page animated:animated];
   return YES;
 }
@@ -125,7 +126,7 @@ NS_ASSUME_NONNULL_BEGIN
   }
 }
 
-#pragma mark - helper methods
+#pragma mark - private methods
 
 - (UIViewController *)getPageWithUrl:(NSString *)url
                                index:(NSNumber *)index {

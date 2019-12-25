@@ -23,21 +23,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 // Sets the `FlutterViewController` for flutter engine.
 //
-- (void)attach:(ThrioFlutterPage *)page;
+- (void)attachPage:(ThrioFlutterPage *)page;
 
-- (void)detach;
-
-// Set flutter app to `AppLifecycleState.inactive`
-//
-- (void)inactive;
-
-// Set flutter app to `AppLifecycleState.paused`
-//
-- (void)pause;
-
-// Set flutter app to `AppLifecycleState.resumed`
-//
-- (void)resume;
+- (void)detachPage;
 
 @end
 

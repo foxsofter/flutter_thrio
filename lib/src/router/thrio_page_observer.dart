@@ -158,7 +158,7 @@ class ThrioPageObserver {
         PageLifecycle.foreground,
       );
     });
-  }
+  }AppLifecycleState s;
 
   void _onInited() {
     ThrioChannel()
