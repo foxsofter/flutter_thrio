@@ -9,7 +9,7 @@
 #define Thrio_h
 
 #import "ThrioAppDelegate.h"
-#import "ThrioFlutterApp.h"
+#import "ThrioApp.h"
 #import "UIApplication+Thrio.h"
 #import "ThrioChannel.h"
 #import "ThrioException.h"
@@ -22,7 +22,7 @@
 #import "ThrioFlutterPage.h"
 #import "ThrioNavigationProtocol.h"
 #import "ThrioNotifyProtocol.h"
-#import "ThrioPageObserver.h"
+#import "ThrioFlutterPageObserver.h"
 #import "ThrioPageProtocol.h"
 #import "ThrioRouter.h"
 #import "UINavigationController+ThrioRouter.h"

@@ -11,6 +11,8 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+// A container class for Flutter pages.
+//
 @interface ThrioFlutterPage : FlutterViewController<ThrioNotifyProtocol>
 
 - (instancetype)init NS_DESIGNATED_INITIALIZER;

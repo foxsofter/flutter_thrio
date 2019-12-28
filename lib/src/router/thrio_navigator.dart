@@ -7,13 +7,10 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter/widgets.dart';
 
-import '../channel/thrio_channel.dart';
 import '../extension/stateful_widget.dart';
 import '../logger/thrio_logger.dart';
-import '../thrio_types.dart';
 import 'thrio_navigator_observer.dart';
 import 'thrio_page.dart';
-import 'thrio_page_observer.dart';
 import 'thrio_route.dart';
 import 'thrio_route_settings.dart';
 
@@ -83,11 +80,6 @@ class ThrioNavigatorState extends State<ThrioNavigator> {
       _current = _history.removeAt(index);
 
       setState(() {});
-
-      ThrioPageObserver().onNavigatorEventChanged(
-        _current.routeSettings,
-        NavigationEvent.activate,
-      );
     } else {
       push(routeSettings);
     }
@@ -118,31 +110,20 @@ class ThrioNavigatorState extends State<ThrioNavigator> {
     if (_history.isEmpty) {
       return;
     }
-    final container = _current;
     _current = _history.removeLast();
 
     setState(() {});
-
-    ThrioPageObserver().onNavigatorEventChanged(
-      container.routeSettings,
-      NavigationEvent.pop,
-    );
   }
 
   void push(ThrioRouteSettings routeSettings) {
-    assert(_history.every((it) => it.routeSettings == routeSettings));
     _history.add(_current);
     _current = ThrioPage(
         navigator: widget._navigator,
         routeSettings: routeSettings,
-        observers: [widget.navigatorObserver]);
+        observers:
+            widget.navigatorObserver != null ? [widget.navigatorObserver] : []);
 
     setState(() {});
-
-    ThrioPageObserver().onNavigatorEventChanged(
-      routeSettings,
-      NavigationEvent.push,
-    );
   }
 
   void remove(ThrioRouteSettings routeSettings) {
@@ -155,10 +136,6 @@ class ThrioNavigatorState extends State<ThrioNavigator> {
     if (container != null) {
       _history.remove(container);
       setState(() {});
-      ThrioPageObserver().onNavigatorEventChanged(
-        container.routeSettings,
-        NavigationEvent.remove,
-      );
     }
   }
 
@@ -190,11 +167,11 @@ class ThrioNavigatorState extends State<ThrioNavigator> {
     final arguments = <String, dynamic>{
       'newUrl': currentSettings.url,
       'newIndex': currentSettings.index,
-      'oldUrl': oldSettings.url,
-      'oldIndex': oldSettings.index,
+      'oldUrl': oldSettings?.url ?? '',
+      'oldIndex': oldSettings?.index ?? 0,
     };
 
-    ThrioChannel().invokeMethod('onActivate', arguments);
+    // ThrioChannel().invokeMethod('onActivate', arguments);
   }
 
   void _refreshOverlayEntries() {

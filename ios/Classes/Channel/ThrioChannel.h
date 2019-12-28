@@ -15,7 +15,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface ThrioChannel : NSObject<FlutterStreamHandler>
 
-+ (instancetype)channelWithName;
++ (instancetype)channel;
 
 + (instancetype)channelWithName:(NSString *)channelName;
 
@@ -31,10 +31,14 @@ NS_ASSUME_NONNULL_BEGIN
 - (ThrioVoidCallback)registryMethodCall:(NSString *)method
                                 handler:(ThrioMethodHandler)handler;
 
+- (void)setupMethodChannel:(NSObject<FlutterBinaryMessenger> *)messenger;
+
 - (void)sendEvent:(NSString *)name arguments:(id _Nullable)arguments;
 
 - (ThrioVoidCallback)registryEventHandling:(NSString *)name
                                    handler:(ThrioEventHandler)handler;
+
+- (void)setupEventChannel:(NSObject<FlutterBinaryMessenger> *)messenger;
 
 @end
 

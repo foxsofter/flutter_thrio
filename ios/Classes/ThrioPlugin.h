@@ -9,6 +9,4 @@
 
 @interface ThrioPlugin : NSObject<FlutterPlugin>
 
-+ (NSObject<FlutterPluginRegistrar>*)registrar;
-
 @end

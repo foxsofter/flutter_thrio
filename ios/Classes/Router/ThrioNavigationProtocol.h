@@ -38,8 +38,10 @@ NS_ASSUME_NONNULL_BEGIN
 - (BOOL)containsPageWithUrl:(NSString *)url
                       index:(NSNumber *)index;
 
-- (ThrioVoidCallback)registryPageBuilder:(ThrioPageBuilder)builder
-                                  forUrl:(NSString *)url;
+- (ThrioVoidCallback)registerNativePageBuilder:(ThrioNativePageBuilder)builder
+                                        forUrl:(NSString *)url;
+
+- (void)setFlutterPageBuilder:(ThrioFlutterPageBuilder)builder;
 
 @end
 

@@ -41,10 +41,3 @@ enum NavigationEvent {
   pop,
   remove,
 }
-
-/// Signature for a function that handlers a navigation event.
-///
-typedef NavigationEventHandler = void Function(
-  ThrioRouteSettings routeSettings,
-  NavigationEvent navigation,
-);

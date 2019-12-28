@@ -9,8 +9,6 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-// Inherited from FlutterAppDelegate for further extensions.
-//
 @interface ThrioAppDelegate : FlutterAppDelegate
 
 @end

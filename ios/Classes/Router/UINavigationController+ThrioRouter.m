@@ -22,15 +22,17 @@ NS_ASSUME_NONNULL_BEGIN
                  params:(NSDictionary *)params
                animated:(BOOL)animated {
   UIViewController *page;
-  ThrioPageBuilder builder = [[self pageBuilders] valueForKey:url];
+  ThrioNativePageBuilder builder = [[self nativePageBuilders] valueForKey:url];
   if (builder) {
     page = builder(params);
+  } else if ([self flutterPageBuilder]) {
+    page = [self flutterPageBuilder]();
   } else {
     page = [[ThrioFlutterPage alloc] init];
   }
   page.pageParams = page.pageParams ?: params ;
   page.pageUrl = url;
-  [self.navigationController pushViewController:page animated:animated];
+  [self pushViewController:page animated:animated];
   return YES;
 }
 
@@ -101,14 +103,25 @@ NS_ASSUME_NONNULL_BEGIN
   return [self getPageWithUrl:url index:index] != nil;
 }
 
-- (ThrioVoidCallback)registryPageBuilder:(ThrioPageBuilder)builder
-                                  forUrl:(NSString *)url {
-  ThrioRegistryMap *pageBuilders = [self pageBuilders];
+- (ThrioVoidCallback)registerNativePageBuilder:(ThrioNativePageBuilder)builder
+                                        forUrl:(NSString *)url {
+  ThrioRegistryMap *pageBuilders = [self nativePageBuilders];
   if (!pageBuilders) {
     pageBuilders = [[ThrioRegistryMap alloc] init];
-    [self setPageBuilders:pageBuilders];
+    [self setNativePageBuilders:pageBuilders];
   }
   return [pageBuilders registry:url value:builder];
+}
+
+- (ThrioFlutterPageBuilder _Nullable)flutterPageBuilder {
+  return objc_getAssociatedObject(self, @selector(setFlutterPageBuilder:));
+}
+
+- (void)setFlutterPageBuilder:(ThrioFlutterPageBuilder)builder {
+  objc_setAssociatedObject(self,
+                           @selector(setFlutterPageBuilder:),
+                           builder,
+                           OBJC_ASSOCIATION_COPY_NONATOMIC);
 }
 
 #pragma mark - UINavigationControllerDelegate methods
@@ -118,10 +131,10 @@ NS_ASSUME_NONNULL_BEGIN
                     animated:(BOOL)animated {
   if ([viewController conformsToProtocol:@protocol(ThrioNotifyProtocol)] &&
       [viewController.pageNotifications count] > 0) {
-    NSDictionary *notifications = [viewController.pageNotifications copy];
-    for (id name in notifications.allKeys) {
+    NSArray *keys = [viewController.pageNotifications.allKeys copy];
+    for (id name in keys) {
       [(id)viewController onNotifyWithName:name
-                                    params:notifications[name]];
+                                    params:viewController.pageNotifications[name]];
     }
   }
 }
@@ -148,13 +161,13 @@ NS_ASSUME_NONNULL_BEGIN
   return nil;
 }
 
-- (ThrioRegistryMap *)pageBuilders {
-  return objc_getAssociatedObject(self, @selector(setPageBuilders:));
+- (ThrioRegistryMap *)nativePageBuilders {
+  return objc_getAssociatedObject(self, @selector(setNativePageBuilders:));
 }
 
-- (void)setPageBuilders:(ThrioRegistryMap *)builders {
+- (void)setNativePageBuilders:(ThrioRegistryMap *)builders {
     objc_setAssociatedObject(self,
-                             @selector(setPageBuilders:),
+                             @selector(setNativePageBuilders:),
                              builders,
                              OBJC_ASSOCIATION_COPY_NONATOMIC);
 }

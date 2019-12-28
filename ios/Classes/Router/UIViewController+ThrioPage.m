@@ -9,8 +9,9 @@
 #import <objc/runtime.h>
 #import "UINavigationController+ThrioRouter.h"
 #import "UIViewController+ThrioPage.h"
-#import "ThrioRouter.h"
+#import "ThrioApp.h"
 #import "ThrioLogger.h"
+#import "ThrioFlutterPage.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -36,7 +37,7 @@ NS_ASSUME_NONNULL_BEGIN
                            OBJC_ASSOCIATION_COPY_NONATOMIC);
   
   NSNumber *index = @1;
-  NSNumber *currentIndex = [[ThrioRouter.shared navigationController] latestPageIndexOfUrl:url];
+  NSNumber *currentIndex = [[ThrioApp.shared topmostPage] pageIndex];
   if (currentIndex) {
     index = @(currentIndex.integerValue + 1);
   }
@@ -52,12 +53,8 @@ NS_ASSUME_NONNULL_BEGIN
                            @selector(setPageIndex:),
                            index,
                            OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-  if ([self isKindOfClass:NSClassFromString(@"ThrioFlutterPage")]) {
-    #pragma clang diagnostic push
-    #pragma clang diagnostic ignored "-Wundeclared-selector"
-    [self performSelector:@selector(sendPageLifecycleEvent:)
-               withObject:@(ThrioPageLifecycleInited)];
-    #pragma pop
+  if ([self isKindOfClass:ThrioFlutterPage.class]) {
+    [(ThrioFlutterPage *)self sendPageLifecycleEvent:ThrioPageLifecycleInited];
   }
 }
 

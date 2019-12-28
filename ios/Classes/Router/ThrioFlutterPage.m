@@ -7,7 +7,7 @@
 
 #import "ThrioFlutterPage.h"
 #import "UIViewController+ThrioPage.h"
-#import "ThrioFlutterApp.h"
+#import "ThrioApp.h"
 #import "ThrioChannel.h"
 
 NS_ASSUME_NONNULL_BEGIN
@@ -17,7 +17,7 @@ NS_ASSUME_NONNULL_BEGIN
 @implementation ThrioFlutterPage
 
 - (instancetype)init {
-  self = [super initWithEngine:ThrioFlutterApp.shared.engine nibName:nil bundle:nil];
+  self = [super initWithEngine:[ThrioApp.shared engine] nibName:nil bundle:nil];
   if (self) {
   }
   return self;
@@ -39,7 +39,7 @@ NS_ASSUME_NONNULL_BEGIN
     @"index": self.pageIndex,
     @"params": params ?: @{}
   };
-  [[ThrioChannel channelWithName] sendEvent:name arguments:arguments];
+  [[ThrioChannel channel] sendEvent:name arguments:arguments];
 }
 
 - (void)viewDidLayoutSubviews {
@@ -56,7 +56,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)viewDidAppear:(BOOL)animated {
   
-  [ThrioFlutterApp.shared attachPage:self];
+  [ThrioApp.shared attachFlutterPage:self];
   
   [self sendPageLifecycleEvent:ThrioPageLifecycleAppeared];
 
@@ -95,15 +95,15 @@ NS_ASSUME_NONNULL_BEGIN
     @"index": self.pageIndex,
     @"params": self.pageParams ?: @{}
   };
-  NSString *eventName = [self pageLifecycleToString:lifecycle];
-  [[ThrioChannel channelWithName] sendEvent:eventName arguments:arguments];
+  NSString *eventName = [self _pageLifecycleToString:lifecycle];
+  [[ThrioChannel channel] sendEvent:eventName arguments:arguments];
 }
 
 #pragma mark - private methods
 
 // Convert ThrioPageLifecycle to the corresponding dart enumeration string.
 //
-- (NSString *)pageLifecycleToString:(ThrioPageLifecycle)lifecycle {
+- (NSString *)_pageLifecycleToString:(ThrioPageLifecycle)lifecycle {
   switch (lifecycle) {
     case ThrioPageLifecycleInited:
       return @"PageLifecycle.inited";

@@ -14,14 +14,20 @@ static NSMutableDictionary *modules;
 + (void)init {
   NSArray *values = modules.allValues;
   for (ThrioModule *module in values) {
-    [module onPageRegister];
+    if ([module respondsToSelector:@selector(onPageRegister)]) {
+      [module onPageRegister];
+    }
   }
   for (ThrioModule *module in values) {
-    [module onSyncInit];
+    if ([module respondsToSelector:@selector(onSyncInit)]) {
+      [module onSyncInit];
+    }
   }
   dispatch_async(dispatch_get_main_queue(), ^{
     for (ThrioModule *module in values) {
-      [module onAsyncInit];
+      if ([module respondsToSelector:@selector(onAsyncInit)]) {
+        [module onAsyncInit];
+      }
     }
   });
 }
@@ -36,5 +42,7 @@ static NSMutableDictionary *modules;
     [module onModuleRegister];
   }
 }
+
+- (void)onModuleRegister { }
 
 @end

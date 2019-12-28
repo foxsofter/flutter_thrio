@@ -7,20 +7,16 @@
 
 #import <Foundation/Foundation.h>
 #import <Flutter/Flutter.h>
-
+#import "ThrioRouteProtocol.h"
 #import "ThrioTypes.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface ThrioRouter : NSObject
+@interface ThrioRouter : NSObject<ThrioRouteProtocol>
 
 + (instancetype)shared;
 
 - (instancetype)init NS_UNAVAILABLE;
-
-// Always return to the topmost UINavigationController.
-//
-@property (nonatomic, strong, readonly) UINavigationController *navigationController;
 
 #pragma mark - notify methods
 
@@ -54,12 +50,6 @@ NS_ASSUME_NONNULL_BEGIN
          index:(NSNumber *)index
         params:(NSDictionary *)params;
 
-- (void)notify:(NSString *)name
-           url:(NSString *)url
-         index:(NSNumber *)index
-        params:(NSDictionary *)params
-        result:(ThrioBoolCallback)result;
-
 #pragma mark - push methods
 
 - (void)push:(NSString *)url;
@@ -84,11 +74,6 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)push:(NSString *)url
       params:(NSDictionary *)params
     animated:(BOOL)animated;
-
-- (void)push:(NSString *)url
-      params:(NSDictionary *)params
-    animated:(BOOL)animated
-      result:(ThrioBoolCallback)result;
 
 #pragma mark - pop methods
 
@@ -115,11 +100,6 @@ NS_ASSUME_NONNULL_BEGIN
       index:(NSNumber *)index
    animated:(BOOL)animated;
 
-- (void)pop:(NSString *)url
-      index:(NSNumber *)index
-   animated:(BOOL)animated
-     result:(ThrioBoolCallback)result;
-
 #pragma mark - popTo methods
 
 - (void)popTo:(NSString *)url;
@@ -145,18 +125,6 @@ NS_ASSUME_NONNULL_BEGIN
         index:(NSNumber *)index
      animated:(BOOL)animated;
 
-- (void)popTo:(NSString *)url
-        index:(NSNumber *)index
-     animated:(BOOL)animated
-       result:(ThrioBoolCallback)result;
-
-#pragma mark - registry methods
-
-- (ThrioVoidCallback)registryPage:(NSString *)url
-                       forBuilder:(ThrioPageBuilder)builder;
-
-
 @end
-
 
 NS_ASSUME_NONNULL_END

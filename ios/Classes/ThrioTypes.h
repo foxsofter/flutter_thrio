@@ -28,15 +28,14 @@ typedef void (^ThrioVoidCallback)(void);
 //
 typedef void (^ThrioBoolCallback)(BOOL);
 
-// Signature of predicate that can pop or not.
+// Signature of a block that creates a ThrioFlutterPage.
 //
-typedef BOOL (^ThrioPopPredicate)
-             (NSString *url,
-              NSNumber * _Nullable index);
+@class ThrioFlutterPage;
+typedef ThrioFlutterPage* _Nullable (^ThrioFlutterPageBuilder)(void);
 
-// Signature for a block that creates a UIViewController.
+// Signature for a block that creates a native UIViewController.
 //
-typedef  UIViewController* _Nullable  (^ThrioPageBuilder)(NSDictionary<NSString *, id>* params);
+typedef UIViewController* _Nullable (^ThrioNativePageBuilder)(NSDictionary<NSString *, id>* params);
 
 // States that a router page can be in.
 //
@@ -49,21 +48,6 @@ typedef NS_ENUM(NSUInteger, ThrioPageLifecycle) {
   ThrioPageLifecycleDestroyed,
   ThrioPageLifecycleBackground,
   ThrioPageLifecycleForeground,
-};
-
-// Signature for a function that handlers a router page lifecycle.
-//
-//typedef void (^ThrioPageLifecycleHandler)
-//             (ThrioRouteSettings *routeSettings,
-//              ThrioPageLifecycle lifecycle);
-
-// A router available navigation event.
-//
-typedef NS_ENUM(NSUInteger, ThrioNavigationEvent) {
-  ThrioNavigationEventPush,
-  ThrioNavigationEventActivate,
-  ThrioNavigationEventPop,
-  ThrioNavigationEventRemove,
 };
 
 NS_ASSUME_NONNULL_END

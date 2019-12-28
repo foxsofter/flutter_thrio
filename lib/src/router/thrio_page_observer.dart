@@ -39,26 +39,15 @@ class ThrioPageObserver {
   final _lifecycleHandlers =
       RegistrySetMap<ThrioRouteSettings, PageLifecycleHandler>();
 
-  final _navigationHandlers =
-      RegistrySetMap<ThrioRouteSettings, NavigationEventHandler>();
-
   void _onLifecycleChanged(
     ThrioRouteSettings routeSettings,
     PageLifecycle lifecycle,
   ) {
     final handlers = _lifecycleHandlers[routeSettings];
-    for (final it in handlers) {
-      it(routeSettings, lifecycle);
-    }
-  }
-
-  void onNavigatorEventChanged(
-    ThrioRouteSettings routeSettings,
-    NavigationEvent navigation,
-  ) {
-    final handlers = _navigationHandlers[routeSettings];
-    for (final it in handlers) {
-      it(routeSettings, navigation);
+    if (handlers?.isNotEmpty ?? false) {
+      for (final it in handlers) {
+        it(routeSettings, lifecycle);
+      }
     }
   }
 
@@ -67,12 +56,6 @@ class ThrioPageObserver {
     PageLifecycleHandler handler,
   ) =>
       _lifecycleHandlers.registry(routeSettings, handler);
-
-  VoidCallback registryNavigationHandler(
-    ThrioRouteSettings routeSettings,
-    NavigationEventHandler handler,
-  ) =>
-      _navigationHandlers.registry(routeSettings, handler);
 
   void _onAppeared() {
     ThrioChannel()
@@ -158,7 +141,7 @@ class ThrioPageObserver {
         PageLifecycle.foreground,
       );
     });
-  }AppLifecycleState s;
+  }
 
   void _onInited() {
     ThrioChannel()

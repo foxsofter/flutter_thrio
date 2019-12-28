@@ -12,6 +12,7 @@ import '../registry/registry_map.dart';
 import '../thrio_types.dart';
 import 'thrio_navigator.dart';
 import 'thrio_page.dart';
+import 'thrio_page_observer.dart';
 import 'thrio_route_settings.dart';
 
 /// A class that provides push, pop, popTo and notify page functions.
@@ -30,6 +31,8 @@ class ThrioRouter {
   final _defaultUrl = '/';
 
   final _channel = ThrioChannel();
+
+  final _pageObserver = ThrioPageObserver();
 
   /// Assigned when the `builder` method is called.
   ///
@@ -59,6 +62,7 @@ class ThrioRouter {
       assert(child is Navigator, 'child must be a Navigator.');
 
       _navigator = ThrioNavigator(
+          key: GlobalKey<ThrioNavigatorState>(),
           navigator: child is Navigator ? child : null,
           onWillPushRoute: willPush,
           onDidPushRoute: didPush);
