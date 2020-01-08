@@ -11,17 +11,32 @@
 
 @interface ThrioViewController ()
 
+@property (weak, nonatomic) IBOutlet UILabel *label;
+
 @end
 
 @implementation ThrioViewController
 
 - (IBAction)pushFlutterPage:(id)sender {
-  [ThrioRouter.shared push:@"page1"];
+  [ThrioRouter.shared push:@"flutter1"];
+}
+- (IBAction)popFlutter1:(id)sender {
+  [ThrioRouter.shared pop:@"flutter1"];
+}
+- (IBAction)pushNativePage:(id)sender {
+  [ThrioRouter.shared push:@"native1"];
+}
+- (IBAction)popNative1:(id)sender {
+  [ThrioRouter.shared pop:@"native1"];
 }
 
 - (void)viewDidLoad {
-    [super viewDidLoad];
+  [super viewDidLoad];
     // Do any additional setup after loading the view.
+  if (self.pageUrl) {
+    NSString *txt = [NSString stringWithFormat:@"native page: %@ \n index: %@", self.pageUrl, self.pageIndex];
+    [self.label setText:txt];
+  }
 }
 
 /*

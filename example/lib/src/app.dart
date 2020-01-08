@@ -29,8 +29,7 @@ class _MainAppState extends State<MainApp> with ThrioModule {
 
   @override
   void onPageRegister() {
-    ThrioRouter()
-        .registryDefaultPageBuilder((_, {index, params}) => DeaultPage());
+    ThrioApp().registryDefaultPageBuilder((_, {index, params}) => DeaultPage());
   }
 
   @override
@@ -41,7 +40,7 @@ class _MainAppState extends State<MainApp> with ThrioModule {
       excluding: true,
       child: MaterialApp(
           home: Container(),
-          builder: ThrioRouter().builder(
+          builder: ThrioApp().builder(
               builder: (context, child) => Builder(
                   builder: (context) => MediaQuery(
                         data: MediaQuery.of(context).copyWith(

@@ -29,9 +29,9 @@ NS_ASSUME_NONNULL_BEGIN
                    index:(NSNumber *)index
                 animated:(BOOL)animated;
 
-- (NSNumber *)latestPageIndexOfUrl:(NSString *)url;
+- (NSNumber *)topmostPageIndexWithUrl:(NSString *)url;
 
-- (NSArray *)allPageIndexOfUrl:(NSString *)url;
+- (NSArray *)allPageIndexWithUrl:(NSString *)url;
 
 - (BOOL)containsPageWithUrl:(NSString *)url;
 

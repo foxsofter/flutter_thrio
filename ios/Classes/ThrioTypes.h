@@ -12,14 +12,6 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-// Signature for a block that handlers channel method invocation.
-//
-typedef id _Nullable (^ThrioMethodHandler)(NSDictionary<NSString *, id> *arguments);
-
-// Signature for a block that handlers channel event handling.
-//
-typedef id _Nullable (^ThrioEventHandler)(NSDictionary<NSString *, id> *arguments);
-
 // Signature of callbacks that have no arguments.
 //
 typedef void (^ThrioVoidCallback)(void);
@@ -27,6 +19,14 @@ typedef void (^ThrioVoidCallback)(void);
 // Signature of callbacks with boolean parameters.
 //
 typedef void (^ThrioBoolCallback)(BOOL);
+
+// Signature for a block that handlers channel method invocation.
+//
+typedef void (^ThrioMethodHandler)(NSDictionary<NSString *, id> *arguments, ThrioBoolCallback _Nullable result);
+
+// Signature for a block that handlers channel event handling.
+//
+typedef void (^ThrioEventHandler)(NSDictionary<NSString *, id> *arguments, ThrioBoolCallback _Nullable result);
 
 // Signature of a block that creates a ThrioFlutterPage.
 //

@@ -69,21 +69,21 @@ class ThrioNavigatorState extends State<ThrioNavigator> {
 
   ThrioRouteFactory get onWillPushRoute => widget.onWillPushRoute;
 
-  void activate(ThrioRouteSettings routeSettings) {
-    if (routeSettings == _current.routeSettings) {
-      return _onActivate(null, routeSettings);
-    }
-    final index =
-        _history.indexWhere((it) => it.routeSettings == routeSettings);
-    if (index > -1) {
-      _history.add(_current);
-      _current = _history.removeAt(index);
+  // void activate(ThrioRouteSettings routeSettings) {
+  //   if (routeSettings == _current.routeSettings) {
+  //     return _onActivate(null, routeSettings);
+  //   }
+  //   final index =
+  //       _history.indexWhere((it) => it.routeSettings == routeSettings);
+  //   if (index > -1) {
+  //     _history.add(_current);
+  //     _current = _history.removeAt(index);
 
-      setState(() {});
-    } else {
-      push(routeSettings);
-    }
-  }
+  //     setState(() {});
+  //   } else {
+  //     push(routeSettings);
+  //   }
+  // }
 
   void bringToFront() {
     _foreground = true;
@@ -106,15 +106,6 @@ class ThrioNavigatorState extends State<ThrioNavigator> {
     });
   }
 
-  void pop() {
-    if (_history.isEmpty) {
-      return;
-    }
-    _current = _history.removeLast();
-
-    setState(() {});
-  }
-
   void push(ThrioRouteSettings routeSettings) {
     _history.add(_current);
     _current = ThrioPage(
@@ -126,9 +117,14 @@ class ThrioNavigatorState extends State<ThrioNavigator> {
     setState(() {});
   }
 
-  void remove(ThrioRouteSettings routeSettings) {
+  bool pop(ThrioRouteSettings routeSettings) {
+    if (_history.isEmpty) {
+      return false;
+    }
     if (_current.routeSettings == routeSettings) {
-      return pop();
+      _current = _history.removeLast();
+      setState(() {});
+      return true;
     }
     final container = _history.lastWhere(
         (it) => it.routeSettings == routeSettings,
@@ -136,7 +132,24 @@ class ThrioNavigatorState extends State<ThrioNavigator> {
     if (container != null) {
       _history.remove(container);
       setState(() {});
+      return true;
     }
+    return false;
+  }
+
+  bool popTo(ThrioRouteSettings routeSettings) {
+    if (_history.isEmpty || _current.routeSettings == routeSettings) {
+      return false;
+    }
+    final container = _history.lastWhere(
+        (it) => it.routeSettings == routeSettings,
+        orElse: () => null);
+    if (container != null) {
+      _history.removeRange(_history.lastIndexOf(container), _history.length);
+      setState(() {});
+      return true;
+    }
+    return false;
   }
 
   void sendToBack() {
@@ -157,22 +170,22 @@ class ThrioNavigatorState extends State<ThrioNavigator> {
     fn();
   }
 
-  void _onActivate(
-    ThrioRouteSettings oldSettings,
-    ThrioRouteSettings currentSettings,
-  ) {
-    ThrioLogger().v('onActivate oldSettings:$oldSettings');
-    ThrioLogger().v('onActivate currentSettings:$currentSettings');
+  // void _onActivate(
+  //   ThrioRouteSettings oldSettings,
+  //   ThrioRouteSettings currentSettings,
+  // ) {
+  //   ThrioLogger().v('onActivate oldSettings:$oldSettings');
+  //   ThrioLogger().v('onActivate currentSettings:$currentSettings');
 
-    final arguments = <String, dynamic>{
-      'newUrl': currentSettings.url,
-      'newIndex': currentSettings.index,
-      'oldUrl': oldSettings?.url ?? '',
-      'oldIndex': oldSettings?.index ?? 0,
-    };
+  // final arguments = <String, dynamic>{
+  //   'newUrl': currentSettings.url,
+  //   'newIndex': currentSettings.index,
+  //   'oldUrl': oldSettings?.url ?? '',
+  //   'oldIndex': oldSettings?.index ?? 0,
+  // };
 
-    // ThrioChannel().invokeMethod('onActivate', arguments);
-  }
+  // ThrioChannel().invokeMethod('onActivate', arguments);
+  // }
 
   void _refreshOverlayEntries() {
     final overlayState = _overlayKey.currentState;
@@ -199,12 +212,15 @@ class ThrioNavigatorState extends State<ThrioNavigator> {
     overlayState.insertAll(_historyEntries);
 
     SchedulerBinding.instance.addPostFrameCallback((duration) {
-      final currentSettings = _current.routeSettings;
-      if (_currentSettings != currentSettings) {
-        final old = _currentSettings;
-        _currentSettings = currentSettings;
-        _onActivate(old, _currentSettings);
-      }
+      // final currentSettings = _current.routeSettings;
+      // if (currentSettings == null) {
+      //   return;
+      // }
+      // if (_currentSettings != currentSettings) {
+      //   final old = _currentSettings;
+      //   _currentSettings = currentSettings;
+      //   _onActivate(old, _currentSettings);
+      // }
       _updateFocuse();
     });
   }

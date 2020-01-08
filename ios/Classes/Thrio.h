@@ -8,7 +8,6 @@
 #ifndef Thrio_h
 #define Thrio_h
 
-#import "ThrioAppDelegate.h"
 #import "ThrioApp.h"
 #import "UIApplication+Thrio.h"
 #import "ThrioChannel.h"

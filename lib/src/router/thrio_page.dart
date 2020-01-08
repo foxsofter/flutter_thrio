@@ -4,8 +4,9 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
+import '../app/thrio_app.dart';
 import 'thrio_navigator_observer.dart';
-import 'thrio_route.dart' as router;
+import 'thrio_route.dart';
 import 'thrio_route_settings.dart';
 import 'thrio_router.dart';
 
@@ -21,7 +22,7 @@ class ThrioPage extends Navigator {
         initialRoute: navigator.initialRoute,
         onGenerateRoute: (settings) {
           if (settings.name == '/') {
-            return router.ThrioRoute(
+            return ThrioRoute(
               settings: settings,
               routeSettings: routeSettings,
             );
@@ -69,7 +70,7 @@ class ThrioPage extends Navigator {
 
   @override
   String toString({DiagnosticLevel minLevel = DiagnosticLevel.debug}) =>
-      'Container:${routeSettings.url},${routeSettings.index}';
+      'page:${routeSettings.url},index:${routeSettings.index}';
 }
 
 class ContainerElement extends StatefulElement {
@@ -83,8 +84,6 @@ class ThrioPageState extends NavigatorState {
     final widget = super.widget;
     return widget is ThrioPage ? widget : null;
   }
-
-  Future<bool> backPressed() => maybePop();
 
   @override
   void didUpdateWidget(Navigator oldWidget) {
@@ -129,7 +128,7 @@ class ThrioPageState extends NavigatorState {
       return super.pop(result);
     }
     ThrioRouter().pop(
-      pageWidget.routeSettings.url,
+      url: pageWidget.routeSettings.url,
       index: pageWidget.routeSettings.index,
     );
 
@@ -140,8 +139,8 @@ class ThrioPageState extends NavigatorState {
   Future<T> push<T extends Object>(Route<T> route) {
     Route<T> newRoute;
 
-    if (ThrioRouter().navigatorState?.onWillPushRoute != null) {
-      newRoute = ThrioRouter()
+    if (ThrioApp().navigatorState?.onWillPushRoute != null) {
+      newRoute = ThrioApp()
           .navigatorState
           .onWillPushRoute<T>(pageWidget.routeSettings);
     }
@@ -150,8 +149,8 @@ class ThrioPageState extends NavigatorState {
 
     _routeHistory.add(route);
 
-    if (ThrioRouter().navigatorState?.onDidPushRoute != null) {
-      ThrioRouter().navigatorState.onDidPushRoute(pageWidget.routeSettings);
+    if (ThrioApp().navigatorState?.onDidPushRoute != null) {
+      ThrioApp().navigatorState.onDidPushRoute(pageWidget.routeSettings);
     }
 
     return future;

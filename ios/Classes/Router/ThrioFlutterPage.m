@@ -35,11 +35,12 @@ NS_ASSUME_NONNULL_BEGIN
   }
 
   NSDictionary *arguments = @{
+    @"name": name,
     @"url": self.pageUrl,
     @"index": self.pageIndex,
     @"params": params ?: @{}
   };
-  [[ThrioChannel channel] sendEvent:name arguments:arguments];
+  [[ThrioApp.shared channel] sendEvent:@"__onNotify__" arguments:arguments];
 }
 
 - (void)viewDidLayoutSubviews {
@@ -93,10 +94,9 @@ NS_ASSUME_NONNULL_BEGIN
   NSDictionary *arguments = @{
     @"url": self.pageUrl,
     @"index": self.pageIndex,
-    @"params": self.pageParams ?: @{}
   };
-  NSString *eventName = [self _pageLifecycleToString:lifecycle];
-  [[ThrioChannel channel] sendEvent:eventName arguments:arguments];
+  NSString *name = [self _pageLifecycleToString:lifecycle];
+  [[ThrioApp.shared channel] sendEvent:name arguments:arguments];
 }
 
 #pragma mark - private methods

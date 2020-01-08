@@ -3,6 +3,7 @@
 
 library thrio;
 
+export 'src/app/thrio_app.dart';
 export 'src/channel/thrio_channel.dart';
 export 'src/extension/build_context.dart';
 export 'src/extension/stateful_widget.dart';

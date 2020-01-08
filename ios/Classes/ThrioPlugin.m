@@ -6,13 +6,13 @@
 //
 
 #import "ThrioPlugin.h"
-#import "ThrioChannel.h"
+#import "ThrioApp.h"
 
 @implementation ThrioPlugin
 
 + (void)registerWithRegistrar:(NSObject<FlutterPluginRegistrar>*)registrar {
-  [ThrioChannel.channel setupMethodChannel:registrar.messenger];
-  [ThrioChannel.channel setupEventChannel:registrar.messenger];
+  [[ThrioApp.shared channel] setupEventChannel:registrar.messenger];
+  [[ThrioApp.shared channel] setupMethodChannel:registrar.messenger];
 }
 
 @end

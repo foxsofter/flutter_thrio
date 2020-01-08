@@ -1,13 +1,11 @@
 #import "AppDelegate.h"
-#import <thrio/thrio.h>
+@import thrio;
 
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application
     didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
 
-  
-  [ThrioModule register:ThrioApp.shared];
   [ThrioModule init];
   
   // Override point for customization after application launch.

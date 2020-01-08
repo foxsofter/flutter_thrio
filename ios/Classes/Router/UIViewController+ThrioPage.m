@@ -12,10 +12,19 @@
 #import "ThrioApp.h"
 #import "ThrioLogger.h"
 #import "ThrioFlutterPage.h"
+#import "NSObject+ThrioSwizzling.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 @implementation UIViewController (ThrioPage)
+
+- (NSDictionary *)pageArguments {
+  return @{
+    @"url": self.pageUrl,
+    @"index": self.pageIndex,
+    @"params": self.pageParams,
+  };
+}
 
 #pragma mark - ThrioPageProtocol methods
 
@@ -37,7 +46,7 @@ NS_ASSUME_NONNULL_BEGIN
                            OBJC_ASSOCIATION_COPY_NONATOMIC);
   
   NSNumber *index = @1;
-  NSNumber *currentIndex = [[ThrioApp.shared topmostPage] pageIndex];
+  NSNumber *currentIndex = [ThrioApp.shared topmostPageIndexWithUrl:url];
   if (currentIndex) {
     index = @(currentIndex.integerValue + 1);
   }
@@ -58,15 +67,26 @@ NS_ASSUME_NONNULL_BEGIN
   }
 }
 
+- (BOOL)hidesNavigationBarWhenPushed {
+  return [(NSNumber *)objc_getAssociatedObject(self, @selector(setHidesNavigationBarWhenPushed:)) boolValue];
+}
+
+- (void)setHidesNavigationBarWhenPushed:(BOOL)hidesNavigationBarWhenPushed {
+  objc_setAssociatedObject(self,
+                           @selector(setHidesNavigationBarWhenPushed:),
+                           @(hidesNavigationBarWhenPushed),
+                           OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
 - (NSDictionary *)pageParams {
   return objc_getAssociatedObject(self, @selector(setPageParams:));
 }
 
 - (void)setPageParams:(NSDictionary *)params {
-    objc_setAssociatedObject(self,
-                             @selector(setPageParams:),
-                             params,
-                             OBJC_ASSOCIATION_COPY_NONATOMIC);
+  objc_setAssociatedObject(self,
+                           @selector(setPageParams:),
+                           params,
+                           OBJC_ASSOCIATION_COPY_NONATOMIC);
 }
 
 - (NSDictionary *)pageNotifications {
@@ -74,10 +94,39 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 - (void)setPageNotifications:(NSDictionary *)notifications {
-    objc_setAssociatedObject(self,
-                             @selector(setPageNotifications:),
-                             notifications,
-                             OBJC_ASSOCIATION_COPY_NONATOMIC);
+  objc_setAssociatedObject(self,
+                           @selector(setPageNotifications:),
+                           notifications,
+                           OBJC_ASSOCIATION_COPY_NONATOMIC);
+}
+
+#pragma mark - method swizzling
+
++ (void)load {
+  static dispatch_once_t onceToken;
+  dispatch_once(&onceToken, ^{
+    [self instanceSwizzle:@selector(viewDidAppear:)
+              newSelector:@selector(thrio_viewDidAppear:)];
+  });
+}
+
+- (void)thrio_viewDidAppear:(BOOL)animated {
+  [self thrio_viewDidAppear:animated];
+  
+  // 原生页面，当页面出现后，记录navigationBarHidden的值
+  if (![self isKindOfClass:ThrioFlutterPage.class]) {
+    self.hidesNavigationBarWhenPushed = self.navigationController.navigationBarHidden;
+  }
+
+  // 当页面出现后，给页面发送通知
+  if ([self conformsToProtocol:@protocol(ThrioNotifyProtocol)] &&
+      [self.pageNotifications count] > 0) {
+    NSArray *keys = [self.pageNotifications.allKeys copy];
+    for (id name in keys) {
+      [(id<ThrioNotifyProtocol>)self onNotifyWithName:name
+                                               params:self.pageNotifications[name]];
+    }
+  }
 }
 
 @end

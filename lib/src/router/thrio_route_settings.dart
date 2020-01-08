@@ -3,6 +3,8 @@
 
 import 'package:flutter/material.dart';
 
+import '../app/thrio_app.dart';
+
 /// Data that might be useful in constructing a RouterRoute.
 ///
 @immutable
@@ -15,6 +17,36 @@ class ThrioRouteSettings {
     this.params,
     this.builder,
   });
+
+  /// Converting arguments to route settings.
+  ///
+  factory ThrioRouteSettings.fromArguments(Map<String, dynamic> arguments) {
+    if ((arguments?.isNotEmpty ?? false) &&
+        arguments.containsKey('url') &&
+        arguments.containsKey('index')) {
+      final urlValue = arguments['url'];
+      final url = urlValue is String ? urlValue : null;
+      final indexValue = arguments['index'];
+      final index = indexValue is int ? indexValue : null;
+      final paramsValue = arguments['params'];
+      final params = paramsValue is Map
+          ? paramsValue.cast<String, dynamic>()
+          : <String, dynamic>{};
+      final builder = ThrioApp().pageBuilder(url) ??
+          ThrioApp().pageBuilder(ThrioApp().defaultUrl);
+      return ThrioRouteSettings(
+        url: url,
+        index: index,
+        params: params,
+        builder: (context) => builder(
+          url,
+          index: index,
+          params: params,
+        ),
+      );
+    }
+    return null;
+  }
 
   /// Creates a copy of this route settings object with the given fields
   /// replaced with the new values.

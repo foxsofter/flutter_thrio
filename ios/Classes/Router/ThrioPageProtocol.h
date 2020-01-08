@@ -15,6 +15,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, strong, readonly) NSNumber *pageIndex;
 
+@property (nonatomic, assign) BOOL hidesNavigationBarWhenPushed;
+
 @property (nonatomic, copy) NSDictionary *pageParams;
 
 @property (nonatomic, strong) NSDictionary *pageNotifications;

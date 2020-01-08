@@ -10,10 +10,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface UINavigationController (ThrioRouter)<
-  ThrioNavigationProtocol,
-  UINavigationControllerDelegate
->
+@interface UINavigationController (ThrioRouter)<ThrioNavigationProtocol>
 
 @end
 

@@ -8,15 +8,18 @@
 #import <Foundation/Foundation.h>
 #import <Flutter/Flutter.h>
 
-#import "ThrioModule.h"
 #import "ThrioFlutterPage.h"
 #import "ThrioRouteProtocol.h"
+#import "ThrioChannel.h"
+#import "ThrioModule.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 @interface ThrioApp : ThrioModule<ThrioRouteProtocol>
 
 + (instancetype)shared;
+
+@property (nonatomic, strong, readonly) ThrioChannel *channel;
 
 // Gets the flutter engin.
 //
@@ -45,9 +48,14 @@ NS_ASSUME_NONNULL_BEGIN
 
 // Sets the `ThrioFlutterPage` builder.
 //
-// Need to be set when extending the `ThrioFlutterPage` class.
+// Need to be register when extending the `ThrioFlutterPage` class.
 //
-- (void)setFlutterPageBuilder:(ThrioFlutterPageBuilder)builder;
+- (void)registerFlutterPageBuilder:(ThrioFlutterPageBuilder)builder;
+
+// Get the topmost page index with `url`.
+//
+- (NSNumber *)topmostPageIndexWithUrl:(NSString *)url;
+
 
 @end
 

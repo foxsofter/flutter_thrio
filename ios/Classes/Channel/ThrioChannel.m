@@ -95,10 +95,9 @@ static NSString *const kEventNameKey = @"__event_name__";
                                          FlutterResult  _Nonnull result) {
     __strong typeof(self) strongSelf = weakself;
     ThrioMethodHandler handler = strongSelf.methodHandlers[call.method];
-    id resultData = handler(call.arguments);
-    if (resultData) {
-      result(resultData);
-    }
+    handler(call.arguments, ^(BOOL r){
+      result(@(r));
+    });
   }];
 }
 
