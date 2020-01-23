@@ -29,23 +29,17 @@ class _MainAppState extends State<MainApp> with ThrioModule {
 
   @override
   void onPageRegister() {
-    ThrioApp().registryDefaultPageBuilder((_, {index, params}) => DeaultPage());
+    ThrioApp()
+        .registryDefaultThrioPageBuilder((_, {index, params}) => DeaultPage());
   }
 
   @override
   void onSyncInit() {}
 
   @override
-  Widget build(BuildContext context) => ExcludeSemantics(
-      excluding: true,
-      child: MaterialApp(
-          home: Container(),
-          builder: ThrioApp().builder(
-              builder: (context, child) => Builder(
-                  builder: (context) => MediaQuery(
-                        data: MediaQuery.of(context).copyWith(
-                          textScaleFactor: 1,
-                        ),
-                        child: child,
-                      )))));
+  Widget build(BuildContext context) => MaterialApp(
+        navigatorKey: GlobalKey<NavigatorState>(),
+        builder: ThrioApp().build(),
+        home: Container(),
+      );
 }

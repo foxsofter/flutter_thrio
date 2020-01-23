@@ -30,12 +30,12 @@ typedef void (^ThrioEventHandler)(NSDictionary<NSString *, id> *arguments, Thrio
 
 // Signature of a block that creates a ThrioFlutterPage.
 //
-@class ThrioFlutterPage;
-typedef ThrioFlutterPage* _Nullable (^ThrioFlutterPageBuilder)(void);
+@class ThrioFlutterViewController;
+typedef ThrioFlutterViewController* _Nullable (^ThrioFlutterViewControllerBuilder)(void);
 
 // Signature for a block that creates a native UIViewController.
 //
-typedef UIViewController* _Nullable (^ThrioNativePageBuilder)(NSDictionary<NSString *, id>* params);
+typedef UIViewController* _Nullable (^ThrioNativeViewControllerBuilder)(NSDictionary<NSString *, id>* params);
 
 // States that a router page can be in.
 //

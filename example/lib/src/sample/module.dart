@@ -6,17 +6,17 @@ import 'page3.dart';
 class Module with ThrioModule {
   @override
   void onPageRegister() {
-    ThrioApp().registryPageBuilder(
+    ThrioApp().registryThrioPageBuilder(
       'flutter1',
-      (url, {index, params}) => Page1(index: index, params: params),
+      (settings) => Page1(index: settings.index, params: settings.params),
     );
-    ThrioApp().registryPageBuilder(
+    ThrioApp().registryThrioPageBuilder(
       'flutter2',
-      (url, {index, params}) => Page2(index: index, params: params),
+      (settings) => Page2(index: settings.index, params: settings.params),
     );
-    ThrioApp().registryPageBuilder(
+    ThrioApp().registryThrioPageBuilder(
       'flutter3',
-      (url, {index, params}) => Page3(index: index, params: params),
+      (settings) => Page3(index: settings.index, params: settings.params),
     );
     ThrioApp()
         .onPageLifecycleStream(PageLifecycle.appeared, 'flutter1')

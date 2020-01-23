@@ -18,8 +18,7 @@ NS_ASSUME_NONNULL_BEGIN
 @required
 // Called when the page has been fully transitioned onto the screen.
 //
-- (void)onNotifyWithName:(NSString *)name
-                  params:(nullable NSDictionary *)params;
+- (void)onNotify:(NSString *)name params:(NSDictionary * _Nullable)params;
 
 @end
 

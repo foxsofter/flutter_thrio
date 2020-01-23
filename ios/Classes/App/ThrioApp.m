@@ -6,12 +6,12 @@
 //
 
 #import "ThrioApp.h"
-#import "ThrioFlutterPage.h"
+#import "ThrioFlutterViewController.h"
 #import "ThrioException.h"
 #import "ThrioChannel.h"
 #import "ThrioPlugin.h"
 #import "UIApplication+Thrio.h"
-#import "UINavigationController+ThrioRouter.h"
+#import "UINavigationController+ThrioNavigator.h"
 #import "ThrioLogger.h"
 
 NS_ASSUME_NONNULL_BEGIN
@@ -22,14 +22,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, strong, readwrite) FlutterEngine *engine;
 
-@property (nonatomic, strong) ThrioFlutterPage *emptyPage;
+@property (nonatomic, strong) ThrioFlutterViewController *emptyViewController;
 
 @end
 
-@implementation ThrioApp {
-  __weak UINavigationController *_navigationController;
-  ThrioFlutterPageBuilder _flutterPageBuilder;
-}
+@implementation ThrioApp
 
 + (instancetype)shared {
   static ThrioApp *instance;
@@ -61,31 +58,27 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark - public properties
 
 - (UINavigationController * _Nullable)navigationController {
-  UINavigationController *nvc = [[UIApplication sharedApplication] topmostNavigationController];
-  if (_navigationController != nvc) {
-    _navigationController = nvc;
-  }
-  return _navigationController;
+  return [[UIApplication sharedApplication] topmostNavigationController];
 }
 
-- (ThrioFlutterPage *)flutterPage {
-  if (_engine.viewController != _emptyPage) {
-    return (ThrioFlutterPage*)_engine.viewController;
+- (ThrioFlutterViewController *)flutterViewController {
+  if (_engine.viewController != _emptyViewController) {
+    return (ThrioFlutterViewController*)_engine.viewController;
   }
   return nil;
 }
 
-- (void)attachFlutterPage:(ThrioFlutterPage *)page {
-  if (_engine.viewController != page) {
-    [(ThrioFlutterPage*)_engine.viewController surfaceUpdated:NO];
-    _engine.viewController = page;
+- (void)attachFlutterViewController:(ThrioFlutterViewController *)viewController {
+  if (_engine.viewController != viewController) {
+    [(ThrioFlutterViewController*)_engine.viewController surfaceUpdated:NO];
+    _engine.viewController = viewController;
     [self _shouldPauseOrResume];
   }
 }
 
-- (void)detachFlutterPage {
-  if (_engine.viewController != _emptyPage) {
-    _engine.viewController = _emptyPage;
+- (void)detachFlutterViewController {
+  if (_engine.viewController != _emptyViewController) {
+    _engine.viewController = _emptyViewController;
     [self _shouldPauseOrResume];
   }
 }
@@ -104,35 +97,14 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 - (void)onAsyncInit {
-  _emptyPage = [[ThrioFlutterPage alloc] init];
+  _emptyViewController = [[ThrioFlutterViewController alloc] init];
   [self _onNotify];
   [self _onPush];
   [self _onPop];
   [self _onPopTo];
 }
 
-#pragma mark - ThrioRouteProtocol methods
-
-- (void)notify:(NSString *)name
-           url:(NSString *)url
-         index:(NSNumber *)index
-        params:(NSDictionary *)params
-        result:(ThrioBoolCallback)result {
-  BOOL canNotify = [self canNotify:url index:index];
-  if (canNotify) {
-    canNotify = [self.navigationController notifyPageWithName:name
-                                                          url:url
-                                                        index:index
-                                                       params:params];
-  }
-  if (result) {
-    result(canNotify);
-  }
-}
-
-- (BOOL)canNotify:(NSString *)url index:(nullable NSNumber *)index {
-  return [self.navigationController containsPageWithUrl:url index:index];
-}
+#pragma mark - ThrioNavigatorProtocol methods
 
 - (void)push:(NSString *)url
       params:(NSDictionary *)params
@@ -142,17 +114,38 @@ NS_ASSUME_NONNULL_BEGIN
 
   BOOL canPush = [self canPush:url params:params];
   if (canPush) {
-    canPush = [self.navigationController pushPageWithUrl:url
-                                                  params:params
-                                                animated:animated];
+    canPush = [self.navigationController thrio_pushUrl:url
+                                                params:params
+                                              animated:animated];
   }
   if (result) {
     result(canPush);
   }
 }
 
-- (BOOL)canPush:(NSString *)url params:(nullable NSDictionary *)params {
+- (BOOL)canPush:(NSString *)url params:(NSDictionary * _Nullable)params {
   return self.navigationController != nil;
+}
+
+- (void)notify:(NSString *)name
+           url:(NSString *)url
+         index:(NSNumber *)index
+        params:(NSDictionary *)params
+        result:(ThrioBoolCallback)result {
+  BOOL canNotify = [self canNotify:url index:index];
+  if (canNotify) {
+    canNotify = [self.navigationController thrio_notifyUrl:url
+                                                     index:index
+                                                      name:name
+                                                    params:params];
+  }
+  if (result) {
+    result(canNotify);
+  }
+}
+
+- (BOOL)canNotify:(NSString *)url index:(NSNumber * _Nullable)index {
+  return [self.navigationController thrio_ContainsUrl:url index:index];
 }
 
 - (void)pop:(NSString *)url
@@ -161,17 +154,17 @@ NS_ASSUME_NONNULL_BEGIN
      result:(ThrioBoolCallback)result {
   BOOL canPop = [self canPop:url index:index];
   if (canPop) {
-    canPop = [self.navigationController popPageWithUrl:url
-                                                 index:index
-                                              animated:animated];
+    canPop = [self.navigationController thrio_popUrl:url
+                                               index:index
+                                            animated:animated];
   }
   if (result) {
     result(canPop);
   }
 }
 
-- (BOOL)canPop:(NSString *)url index:(nullable NSNumber *)index {
-  return url.length < 1 || [self.navigationController containsPageWithUrl:url index:index];
+- (BOOL)canPop:(NSString *)url index:(NSNumber * _Nullable)index {
+  return url.length < 1 || [self.navigationController thrio_ContainsUrl:url index:index];
 }
 
 - (void)popTo:(NSString *)url
@@ -180,51 +173,45 @@ NS_ASSUME_NONNULL_BEGIN
        result:(ThrioBoolCallback)result {
   BOOL canPopTo = [self canPop:url index:index];
   if (canPopTo) {
-    canPopTo = [self.navigationController popToPageWithUrl:url
-                                                     index:index
-                                                  animated:animated];
+    canPopTo = [self.navigationController thrio_popToUrl:url
+                                                   index:index
+                                                animated:animated];
   }
   if (result) {
     result(canPopTo);
   }
 }
 
-- (BOOL)canPopTo:(NSString *)url index:(nullable NSNumber *)index {
-  return [self.navigationController containsPageWithUrl:url index:index];
+- (BOOL)canPopTo:(NSString *)url index:(NSNumber * _Nullable)index {
+  return [self.navigationController thrio_ContainsUrl:url index:index];
 }
 
 #pragma mark - registry methods
 
-- (ThrioVoidCallback)registerNativePageBuilder:(ThrioNativePageBuilder)builder
+- (ThrioVoidCallback)registerNativeViewControllerBuilder:(ThrioNativeViewControllerBuilder)builder
                                         forUrl:(NSString *)url {
-  return [self.navigationController registerNativePageBuilder:builder forUrl:url];
+  return [self.navigationController thrio_registerNativeViewControllerBuilder:builder forUrl:url];
 }
 
-- (void)registerFlutterPageBuilder:(ThrioFlutterPageBuilder)builder {
-  [self.navigationController setFlutterPageBuilder:builder];
-}
-
-#pragma mark -
-
-- (NSNumber *)topmostPageIndexWithUrl:(NSString *)url {
-  return [self.navigationController topmostPageIndexWithUrl:url];
+- (ThrioVoidCallback)registerFlutterViewControllerBuilder:(ThrioFlutterViewControllerBuilder)builder {
+  return [self.navigationController thrio_registerFlutterViewControllerBuilder:builder];
 }
 
 #pragma mark - private methods
 
 - (void)_appWillEnterForeground {
-  [self.flutterPage sendPageLifecycleEvent:ThrioPageLifecycleForeground];
+  [self.flutterViewController sendPageLifecycleEvent:ThrioPageLifecycleForeground];
 }
 
 - (void)_appDidEnterBackground {
-  [_emptyPage sendPageLifecycleEvent:ThrioPageLifecycleBackground];
+  [_emptyViewController sendPageLifecycleEvent:ThrioPageLifecycleBackground];
 }
 
 - (void)_shouldPauseOrResume {
   NSInteger flutterPageCount = 0;
   NSArray *vcs = [_engine.viewController.navigationController.viewControllers copy];
   for (id vc in vcs) {
-    if ([vc isKindOfClass:ThrioFlutterPage.class]) {
+    if ([vc isKindOfClass:ThrioFlutterViewController.class]) {
       flutterPageCount++;
     }
   }

@@ -16,7 +16,7 @@
 }
 
 - (void)onPageRegister {
-  [ThrioApp.shared registerNativePageBuilder:^UIViewController * _Nullable(NSDictionary<NSString *,id> * _Nonnull params) {
+  [ThrioApp.shared registerNativeViewControllerBuilder:^UIViewController * _Nullable(NSDictionary<NSString *,id> * _Nonnull params) {
     UIStoryboard *sb = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     return [sb instantiateViewControllerWithIdentifier:@"ThrioViewController"];
   } forUrl:@"native1"];

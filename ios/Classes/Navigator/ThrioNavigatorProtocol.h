@@ -1,5 +1,5 @@
 //
-//  ThrioRouteProtocol.h
+//  ThrioNavigatorProtocol.h
 //  Pods-Runner
 //
 //  Created by Wei ZhongDan on 2019/12/27.
@@ -10,7 +10,15 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@protocol ThrioRouteProtocol <NSObject>
+@protocol ThrioNavigatorProtocol <NSObject>
+
+- (void)push:(NSString *)url
+      params:(NSDictionary *)params
+    animated:(BOOL)animated
+      result:(ThrioBoolCallback)result;
+
+- (BOOL)canPush:(NSString *)url
+         params:(NSDictionary * _Nullable)params;
 
 - (void)notify:(NSString *)name
            url:(NSString *)url
@@ -19,15 +27,7 @@ NS_ASSUME_NONNULL_BEGIN
         result:(ThrioBoolCallback)result;
 
 - (BOOL)canNotify:(NSString *)url
-            index:(nullable NSNumber *)index;
-
-- (void)push:(NSString *)url
-      params:(NSDictionary *)params
-    animated:(BOOL)animated
-      result:(ThrioBoolCallback)result;
-
-- (BOOL)canPush:(NSString *)url
-         params:(nullable NSDictionary *)params;
+            index:(NSNumber * _Nullable)index;
 
 - (void)popTo:(NSString *)url
         index:(NSNumber *)index
@@ -35,7 +35,7 @@ NS_ASSUME_NONNULL_BEGIN
        result:(ThrioBoolCallback)result;
 
 - (BOOL)canPop:(NSString *)url
-         index:(nullable NSNumber *)index;
+         index:(NSNumber * _Nullable)index;
 
 - (void)pop:(NSString *)url
       index:(NSNumber *)index
@@ -43,7 +43,7 @@ NS_ASSUME_NONNULL_BEGIN
      result:(ThrioBoolCallback)result;
 
 - (BOOL)canPopTo:(NSString *)url
-           index:(nullable NSNumber *)index;
+           index:(NSNumber * _Nullable)index;
 
 @end
 

@@ -1,18 +1,18 @@
 //
-//  ThrioRouter.h
-//  ThrioRouter
+//  ThrioNavigator.h
+//  ThrioNavigator
 //
 //  Created by foxsofter on 2019/12/11.
 //
 
 #import <Foundation/Foundation.h>
 #import <Flutter/Flutter.h>
-#import "ThrioRouteProtocol.h"
+#import "ThrioNavigatorProtocol.h"
 #import "ThrioTypes.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface ThrioRouter : NSObject<ThrioRouteProtocol>
+@interface ThrioNavigator : NSObject<ThrioNavigatorProtocol>
 
 + (instancetype)shared;
 

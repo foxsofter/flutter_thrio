@@ -18,8 +18,6 @@ class ThrioPageObserver {
     _onPop();
     _onPopTo();
     _onAppeared();
-    _onBackground();
-    _onForeground();
   }
 
   final ThrioChannel _channel;
@@ -69,21 +67,18 @@ class ThrioPageObserver {
       });
 
   void _onPush() {
-    _channel.registryMethodCall('__onPush__', ([arguments]) async {
+    _channel.registryMethodCall('__onPush__', ([arguments]) {
       final routeSettings = ThrioRouteSettings.fromArguments(arguments);
-      ThrioApp().navigatorState?.push(routeSettings);
-      return true;
+      return ThrioApp().navigatorState?.push(routeSettings);
     });
   }
 
-  void _onPop() =>
-      _channel.registryMethodCall('__onPop__', ([arguments]) async {
+  void _onPop() => _channel.registryMethodCall('__onPop__', ([arguments]) {
         final routeSettings = ThrioRouteSettings.fromArguments(arguments);
         return ThrioApp().navigatorState?.pop(routeSettings);
       });
 
-  void _onPopTo() =>
-      _channel.registryMethodCall('__onPopTo__', ([arguments]) async {
+  void _onPopTo() => _channel.registryMethodCall('__onPopTo__', ([arguments]) {
         final routeSettings = ThrioRouteSettings.fromArguments(arguments);
         return ThrioApp().navigatorState?.popTo(routeSettings);
       });
@@ -102,24 +97,6 @@ class ThrioPageObserver {
           catch (e) {
             ThrioLogger().e(e.toString());
           }
-        }
-      });
-
-  void _onBackground() => _channel
-          .onEventStream(PageLifecycle.background.toString())
-          .listen((arguments) {
-        final routeSettings = ThrioRouteSettings.fromArguments(arguments);
-        if (ThrioApp().current.routeSettings == routeSettings) {
-          ThrioApp().navigatorState?.sendToBack();
-        }
-      });
-
-  void _onForeground() => _channel
-          .onEventStream(PageLifecycle.foreground.toString())
-          .listen((arguments) {
-        final routeSettings = ThrioRouteSettings.fromArguments(arguments);
-        if (ThrioApp().current.routeSettings == routeSettings) {
-          ThrioApp().navigatorState?.bringToFront();
         }
       });
 }

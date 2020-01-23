@@ -1,26 +1,26 @@
 //
-//  ThrioRouter.m
-//  ThrioRouter
+//  ThrioNavigator.m
+//  ThrioNavigator
 //
 //  Created by foxsofter on 2019/12/11.
 //
 
-#import "ThrioRouter.h"
-#import "UIViewController+ThrioPage.h"
+#import "ThrioNavigator.h"
+#import "UIViewController+ThrioPageRoute.h"
 #import "ThrioChannel.h"
 #import "ThrioRegistrySet.h"
 #import "ThrioApp.h"
-#import "UINavigationController+ThrioRouter.h"
+#import "UINavigationController+ThrioNavigator.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@implementation ThrioRouter
+@implementation ThrioNavigator
 
 + (instancetype)shared {
-  static ThrioRouter *instance;
+  static ThrioNavigator *instance;
   static dispatch_once_t onceToken;
   dispatch_once(&onceToken, ^{
-    instance = [ThrioRouter new];
+    instance = [ThrioNavigator new];
   });
   return instance;
 }
@@ -219,19 +219,19 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark - predicate methods
 
-- (BOOL)canNotify:(NSString *)url index:(nullable NSNumber *)index {
+- (BOOL)canNotify:(NSString *)url index:(NSNumber * _Nullable)index {
   return [ThrioApp.shared canNotify:url index:index];
 }
 
-- (BOOL)canPop:(NSString *)url index:(nullable NSNumber *)index {
+- (BOOL)canPop:(NSString *)url index:(NSNumber * _Nullable)index {
   return [ThrioApp.shared canPop:url index:index];
 }
 
-- (BOOL)canPopTo:(NSString *)url index:(nullable NSNumber *)index {
+- (BOOL)canPopTo:(NSString *)url index:(NSNumber * _Nullable)index {
   return [ThrioApp.shared canPopTo:url index:index];
 }
 
-- (BOOL)canPush:(NSString *)url params:(nullable NSDictionary *)params {
+- (BOOL)canPush:(NSString *)url params:(NSDictionary * _Nullable)params {
   return [ThrioApp.shared canPush:url params:params];
 }
 

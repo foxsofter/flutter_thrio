@@ -8,14 +8,14 @@
 #import <Foundation/Foundation.h>
 #import <Flutter/Flutter.h>
 
-#import "ThrioFlutterPage.h"
-#import "ThrioRouteProtocol.h"
+#import "ThrioFlutterViewController.h"
+#import "ThrioNavigatorProtocol.h"
 #import "ThrioChannel.h"
 #import "ThrioModule.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface ThrioApp : ThrioModule<ThrioRouteProtocol>
+@interface ThrioApp : ThrioModule<ThrioNavigatorProtocol>
 
 + (instancetype)shared;
 
@@ -27,35 +27,30 @@ NS_ASSUME_NONNULL_BEGIN
 
 // Always return to the topmost UIViewController of UINavigationController.
 //
-@property (nonatomic, strong, readonly) UIViewController *topmostPage;
+@property (nonatomic, strong, readonly) UIViewController *topmostViewController;
 
 // Gets the `FlutterViewController` for flutter engine.
 //
-@property (nonatomic, strong, readonly) ThrioFlutterPage *flutterPage;
+@property (nonatomic, strong, readonly) ThrioFlutterViewController *flutterViewController;
 
 // Sets the `FlutterViewController` for flutter engine.
 //
-- (void)attachFlutterPage:(ThrioFlutterPage *)page;
+- (void)attachFlutterViewController:(ThrioFlutterViewController *)page;
 
-// Sets the `FlutterViewController` of flutter engine to a empty page.
+// Sets the `FlutterViewController` of flutter engine to a empty view controller.
 //
-- (void)detachFlutterPage;
+- (void)detachFlutterViewController;
 
-// Register native page builder for url.
+// Register native view controller builder for url.
 //
-- (ThrioVoidCallback)registerNativePageBuilder:(ThrioNativePageBuilder)builder
-                                        forUrl:(NSString *)url;
+- (ThrioVoidCallback)registerNativeViewControllerBuilder:(ThrioNativeViewControllerBuilder)builder
+                                                  forUrl:(NSString *)url;
 
-// Sets the `ThrioFlutterPage` builder.
+// Sets the `ThrioFlutterViewController` builder.
 //
 // Need to be register when extending the `ThrioFlutterPage` class.
 //
-- (void)registerFlutterPageBuilder:(ThrioFlutterPageBuilder)builder;
-
-// Get the topmost page index with `url`.
-//
-- (NSNumber *)topmostPageIndexWithUrl:(NSString *)url;
-
+- (ThrioVoidCallback)registerFlutterViewControllerBuilder:(ThrioFlutterViewControllerBuilder)builder;
 
 @end
 

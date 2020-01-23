@@ -6,18 +6,17 @@ import 'package:flutter/widgets.dart';
 
 import '../channel/thrio_channel.dart';
 import '../extension/stateful_widget.dart';
+import '../navigator/thrio_navigator.dart';
+import '../navigator/thrio_page_observer.dart';
+import '../navigator/thrio_page_route.dart';
 import '../registry/registry_map.dart';
-import '../router/thrio_navigator.dart';
-import '../router/thrio_page.dart';
-import '../router/thrio_page_observer.dart';
-import '../router/thrio_router.dart';
 import '../thrio_types.dart';
 
-class ThrioApp implements ThrioRouter {
+class ThrioApp {
   factory ThrioApp() => _default;
 
   ThrioApp._()
-      : _pageBuilders = RegistryMap<String, PageBuilder>(),
+      : _pageBuilders = RegistryMap<String, ThrioPageBuilder>(),
         _channel = ThrioChannel(channel: '__thrio_app__') {
     _pageObserver = ThrioPageObserver(_channel);
   }
@@ -28,7 +27,7 @@ class ThrioApp implements ThrioRouter {
 
   final ThrioChannel _channel;
 
-  final RegistryMap<String, PageBuilder> _pageBuilders;
+  final RegistryMap<String, ThrioPageBuilder> _pageBuilders;
 
   ThrioPageObserver _pageObserver;
 
@@ -41,54 +40,39 @@ class ThrioApp implements ThrioRouter {
 
   /// Get current container.
   ///
-  ThrioPage get current =>
+  ThrioPageRoute get current =>
       _navigator.tryStateOf<ThrioNavigatorState>()?.current;
 
-  TransitionBuilder builder({
-    TransitionBuilder builder,
-    ThrioRouteFactory willPush,
-    ThrioRouteFactory didPush,
-  }) =>
-      (context, child) {
-        assert(child is Navigator, 'child must be a Navigator.');
-
-        _navigator = ThrioNavigator(
-            key: GlobalKey<ThrioNavigatorState>(),
-            navigator: child is Navigator ? child : null,
-            onWillPushRoute: willPush,
-            onDidPushRoute: didPush);
-
-        if (builder != null) {
-          return builder(context, _navigator);
-        } else {
-          return _navigator;
-        }
-      };
+  TransitionBuilder build() => (context, child) => _navigator = ThrioNavigator(
+        key: GlobalKey<ThrioNavigatorState>(),
+        child: child is Navigator ? child : null,
+      );
 
   /// Register default page builder for the router.
   ///
   /// Unregistry by calling the return value `VoidCallback`.
   ///
-  VoidCallback registryDefaultPageBuilder(PageBuilder builder) =>
+  VoidCallback registryDefaultThrioPageBuilder(ThrioPageBuilder builder) =>
       _pageBuilders.registry(defaultUrl, builder);
 
   /// Register an page builder for the router.
   ///
   /// Unregistry by calling the return value `VoidCallback`.
   ///
-  VoidCallback registryPageBuilder(String url, PageBuilder builder) =>
+  VoidCallback registryThrioPageBuilder(String url, ThrioPageBuilder builder) =>
       _pageBuilders.registry(url, builder);
 
   /// Register page builders for the router.
   ///
   /// Unregistry by calling the return value `VoidCallback`.
   ///
-  VoidCallback registryPageBuilders(Map<String, PageBuilder> builders) =>
+  VoidCallback registryThrioPageBuilders(
+          Map<String, ThrioPageBuilder> builders) =>
       _pageBuilders.registryAll(builders);
 
   // Get page builder for url.
   //
-  PageBuilder pageBuilder(String url) => _pageBuilders[url];
+  ThrioPageBuilder pageBuilder(String url) => _pageBuilders[url];
 
   /// Sets up a broadcast stream for receiving page lifecycle events.
   ///
@@ -120,9 +104,8 @@ class ThrioApp implements ThrioRouter {
         index: index,
       );
 
-  @override
-  Future<bool> push(
-    String url, {
+  Future<bool> push({
+    @required String url,
     bool animated = true,
     Map<String, dynamic> params = const {},
   }) {
@@ -134,10 +117,9 @@ class ThrioApp implements ThrioRouter {
     return _channel.invokeMethod<bool>('push', arguments);
   }
 
-  @override
-  Future<bool> notify(
-    String name,
-    String url, {
+  Future<bool> notify({
+    @required String name,
+    @required String url,
     int index = 0,
     Map<String, dynamic> params = const {},
   }) {
@@ -150,7 +132,6 @@ class ThrioApp implements ThrioRouter {
     return _channel.invokeMethod<bool>('notify', arguments);
   }
 
-  @override
   Future<bool> pop({
     String url = '',
     int index = 0,
@@ -164,9 +145,8 @@ class ThrioApp implements ThrioRouter {
     return _channel.invokeMethod<bool>('pop', arguments);
   }
 
-  @override
-  Future<bool> popTo(
-    String url, {
+  Future<bool> popTo({
+    @required String url,
     int index = 0,
     bool animated = true,
   }) {

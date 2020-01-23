@@ -28,7 +28,7 @@ class _Page3State extends State<Page3> {
           color: Colors.black,
           tooltip: 'back',
           icon: const Icon(Icons.arrow_back_ios),
-          onPressed: () => ThrioRouter().pop(),
+          onPressed: ThrioNavigator.pop,
         ),
       ),
       body: SingleChildScrollView(
@@ -46,8 +46,8 @@ class _Page3State extends State<Page3> {
                   ),
                 ),
                 InkWell(
-                  onTap: () => ThrioRouter().push(
-                    'flutter1',
+                  onTap: () => ThrioNavigator.push(
+                    url: 'flutter1',
                     params: {
                       '1': {'2': '3'}
                     },
@@ -62,7 +62,7 @@ class _Page3State extends State<Page3> {
                       )),
                 ),
                 InkWell(
-                  onTap: () => ThrioRouter().pop(url: 'flutter2'),
+                  onTap: () => ThrioNavigator.pop(url: 'flutter2'),
                   child: Container(
                       padding: const EdgeInsets.all(8),
                       margin: const EdgeInsets.all(8),
@@ -73,7 +73,7 @@ class _Page3State extends State<Page3> {
                       )),
                 ),
                 InkWell(
-                  onTap: () => ThrioRouter().pop(),
+                  onTap: ThrioNavigator.pop,
                   child: Container(
                       padding: const EdgeInsets.all(8),
                       margin: const EdgeInsets.all(8),
@@ -84,7 +84,7 @@ class _Page3State extends State<Page3> {
                       )),
                 ),
                 InkWell(
-                  onTap: () => ThrioRouter().popTo('flutter1'),
+                  onTap: () => ThrioNavigator.popTo(url: 'flutter1'),
                   child: Container(
                       padding: const EdgeInsets.all(8),
                       margin: const EdgeInsets.all(8),
@@ -95,8 +95,8 @@ class _Page3State extends State<Page3> {
                       )),
                 ),
                 InkWell(
-                  onTap: () => ThrioRouter().push(
-                    'native1',
+                  onTap: () => ThrioNavigator.push(
+                    url: 'native1',
                     params: {
                       '1': {'2': '3'}
                     },
@@ -111,7 +111,7 @@ class _Page3State extends State<Page3> {
                       )),
                 ),
                 InkWell(
-                  onTap: () => ThrioRouter().pop(url: 'native1'),
+                  onTap: () => ThrioNavigator.pop(url: 'native1'),
                   child: Container(
                       padding: const EdgeInsets.all(8),
                       margin: const EdgeInsets.all(8),

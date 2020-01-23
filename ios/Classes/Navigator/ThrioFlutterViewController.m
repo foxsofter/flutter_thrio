@@ -1,12 +1,12 @@
 //
-//  ThrioFlutterPage.m
+//  ThrioFlutterViewController.m
 //  thrio
 //
 //  Created by foxsofter on 2019/12/11.
 //
 
-#import "ThrioFlutterPage.h"
-#import "UIViewController+ThrioPage.h"
+#import "ThrioFlutterViewController.h"
+#import "UIViewController+ThrioPageRoute.h"
 #import "ThrioApp.h"
 #import "ThrioChannel.h"
 
@@ -14,7 +14,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wincomplete-implementation"
-@implementation ThrioFlutterPage
+@implementation ThrioFlutterViewController
 
 - (instancetype)init {
   self = [super initWithEngine:[ThrioApp.shared engine] nibName:nil bundle:nil];
@@ -28,36 +28,22 @@ NS_ASSUME_NONNULL_BEGIN
   self.view.backgroundColor = UIColor.whiteColor;
 }
 
-- (void)onNotifyWithName:(NSString *)name
-                  params:(nullable NSDictionary *)params {
-  if (self.pageUrl.length < 1) {
-    return;
-  }
-
-  NSDictionary *arguments = @{
-    @"name": name,
-    @"url": self.pageUrl,
-    @"index": self.pageIndex,
-    @"params": params ?: @{}
-  };
-  [[ThrioApp.shared channel] sendEvent:@"__onNotify__" arguments:arguments];
-}
-
 - (void)viewDidLayoutSubviews {
   
   [super viewDidLayoutSubviews];
 }
 
 - (void)viewWillAppear:(BOOL)animated {
-    
+
   [self sendPageLifecycleEvent:ThrioPageLifecycleWillAppear];
 
   [super viewWillAppear:animated];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
-  
-  [ThrioApp.shared attachFlutterPage:self];
+  if (self.firstRoute == self.lastRoute) {
+    [ThrioApp.shared attachFlutterViewController:self];
+  }
   
   [self sendPageLifecycleEvent:ThrioPageLifecycleAppeared];
 
@@ -88,12 +74,12 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 - (void)sendPageLifecycleEvent:(ThrioPageLifecycle)lifecycle {
-  if (self.pageUrl.length < 1) {
+  if (self.lastRoute.settings.url.length < 1) {
     return;
   }
   NSDictionary *arguments = @{
-    @"url": self.pageUrl,
-    @"index": self.pageIndex,
+    @"url": self.lastRoute.settings.url,
+    @"index": self.lastRoute.settings.index,
   };
   NSString *name = [self _pageLifecycleToString:lifecycle];
   [[ThrioApp.shared channel] sendEvent:name arguments:arguments];
@@ -117,10 +103,6 @@ NS_ASSUME_NONNULL_BEGIN
       return @"PageLifecycle.disappeared";
     case ThrioPageLifecycleDestroyed:
       return @"PageLifecycle.destroyed";
-    case ThrioPageLifecycleBackground:
-      return @"PageLifecycle.background";
-    case ThrioPageLifecycleForeground:
-      return @"PageLifecycle.foreground";
     default:
       return nil;
   }

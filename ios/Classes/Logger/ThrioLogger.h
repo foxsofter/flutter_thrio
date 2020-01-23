@@ -13,23 +13,23 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (void)v:(id)message;
 
-+ (void)v:(id)message error:(nullable NSError *)error;
++ (void)v:(id)message error:(NSError * _Nullable)error;
 
 + (void)d:(id)message;
 
-+ (void)d:(id)message error:(nullable NSError *)error;
++ (void)d:(id)message error:(NSError * _Nullable)error;
 
 + (void)i:(id)message;
 
-+ (void)i:(id)message error:(nullable NSError *)error;
++ (void)i:(id)message error:(NSError * _Nullable)error;
 
 + (void)w:(id)message;
 
-+ (void)w:(id)message error:(nullable NSError *)error;
++ (void)w:(id)message error:(NSError * _Nullable)error;
 
 + (void)e:(id)message;
 
-+ (void)e:(id)message error:(nullable NSError *)error;
++ (void)e:(id)message error:(NSError * _Nullable)error;
 
 @end
 
