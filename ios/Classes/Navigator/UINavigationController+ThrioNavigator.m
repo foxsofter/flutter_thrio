@@ -223,14 +223,13 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (UIViewController * _Nullable)thrio_popViewControllerAnimated:(BOOL)animated {
   UIViewController *willShowVC = self.viewControllers[self.viewControllers.count - 2];
-  UIViewController *willPopVC = [self thrio_popViewControllerAnimated:animated];
-  if (self.navigationBarHidden != willShowVC.hidesNavigationBarWhenPushed) {
-    [self setNavigationBarHidden:willShowVC.hidesNavigationBarWhenPushed];
-  }
   if ([willShowVC isKindOfClass:ThrioFlutterViewController.class]) {
     [ThrioApp.shared attachFlutterViewController:(ThrioFlutterViewController*)willShowVC];
   }
-  return willPopVC;
+  if (self.navigationBarHidden != willShowVC.hidesNavigationBarWhenPushed) {
+    [self setNavigationBarHidden:willShowVC.hidesNavigationBarWhenPushed];
+  }
+  return [self thrio_popViewControllerAnimated:animated];
 }
 
 - (NSArray<__kindof UIViewController *> * _Nullable)thrio_popToViewController:(UIViewController *)viewController animated:(BOOL)animated {
