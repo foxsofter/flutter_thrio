@@ -226,6 +226,18 @@ NS_ASSUME_NONNULL_BEGIN
   if ([willShowVC isKindOfClass:ThrioFlutterViewController.class]) {
     [ThrioApp.shared attachFlutterViewController:(ThrioFlutterViewController*)willShowVC];
   }
+  if ([self.topViewController isKindOfClass:ThrioFlutterViewController.class]) {
+    BOOL containsFlutterViewController = NO;
+    for (UIViewController *vc in self.viewControllers.reverseObjectEnumerator) {
+      if ([vc isKindOfClass:ThrioFlutterViewController.class]) {
+        containsFlutterViewController = YES;
+        break;
+      }
+    }
+    if (!containsFlutterViewController) {
+      [ThrioApp.shared detachFlutterViewController];
+    }
+  }
   if (self.navigationBarHidden != willShowVC.hidesNavigationBarWhenPushed) {
     [self setNavigationBarHidden:willShowVC.hidesNavigationBarWhenPushed];
   }
