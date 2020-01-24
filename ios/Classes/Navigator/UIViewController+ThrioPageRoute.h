@@ -15,9 +15,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, assign) BOOL hidesNavigationBarWhenPushed;
 
-@property (nonatomic, strong, readonly) ThrioPageRoute *firstRoute;
+@property (nonatomic, strong, readonly, nullable) ThrioPageRoute *firstRoute;
 
-@property (nonatomic, strong, readonly) ThrioPageRoute *lastRoute;
+@property (nonatomic, strong, readonly, nullable) ThrioPageRoute *lastRoute;
 
 - (void)thrio_pushUrl:(NSString *)url
                params:(NSDictionary *)params;
@@ -27,9 +27,11 @@ NS_ASSUME_NONNULL_BEGIN
                    name:(NSString *)name
                  params:(NSDictionary *)params;
 
-- (BOOL)thrio_popUrl:(NSString *)url index:(NSNumber *)index;
+- (BOOL)thrio_pop;
 
 - (BOOL)thrio_popToUrl:(NSString *)url index:(NSNumber *)index;
+
+- (BOOL)thrio_removeUrl:(NSString *)url index:(NSNumber *)index;
 
 - (ThrioPageRoute * _Nullable)thrio_getRouteByUrl:(NSString *)url index:(NSNumber *)index;
 

@@ -18,23 +18,17 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface UIViewController ()
 
-@property (nonatomic, strong, readwrite) ThrioPageRoute *firstRoute;
+@property (nonatomic, strong, readwrite, nullable) ThrioPageRoute *firstRoute;
 
 @end
 
 @implementation UIViewController (ThrioPageRoute)
 
-- (ThrioPageRoute *)firstRoute {
+- (ThrioPageRoute * _Nullable)firstRoute {
   return objc_getAssociatedObject(self, @selector(setFirstRoute:));
 }
 
-- (void)setFirstRoute:(ThrioPageRoute *)route {
-  if ([self firstRoute]) {
-    ThrioLogV(@"route is already set.");
-    return;
-  }
-
-  ThrioLogV(@"route setting: %@", route.settings);
+- (void)setFirstRoute:(ThrioPageRoute * _Nullable)route {
   objc_setAssociatedObject(self,
                            @selector(setFirstRoute:),
                            route,
@@ -48,11 +42,11 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)setHidesNavigationBarWhenPushed:(BOOL)hidesNavigationBarWhenPushed {
   objc_setAssociatedObject(self,
                            @selector(setHidesNavigationBarWhenPushed:),
-                           @(hidesNavigationBarWhenPushed),
+                           [NSNumber numberWithBool:hidesNavigationBarWhenPushed],
                            OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
-- (ThrioPageRoute *)lastRoute {
+- (ThrioPageRoute * _Nullable)lastRoute {
   ThrioPageRoute *next = self.firstRoute;
   while (next.next) {
     next = next.next;
@@ -93,25 +87,17 @@ NS_ASSUME_NONNULL_BEGIN
   return NO;
 }
 
-
-- (BOOL)thrio_popUrl:(NSString *)url index:(NSNumber *)index {
-  ThrioPageRoute *route = [self thrio_getRouteByUrl:url index:index];
-  if (!route) {
-    return NO;
-  }
+- (BOOL)thrio_pop {
+  ThrioPageRoute *route = self.lastRoute;
   if ([self isKindOfClass:ThrioFlutterViewController.class]) {
     NSDictionary *arguments = [route.settings toArgumentsWithoutParams];
     [[ThrioApp.shared channel] invokeMethod:@"__onPop__" arguments:arguments];
   }
-  if (route == self.firstRoute) {
-    self.firstRoute = route.next;
-    self.firstRoute.prev = nil;
-  } else if (route == self.lastRoute) {
+  if (route != self.firstRoute) {
     route.prev.next = nil;
     [self thrio_onNotify];
   } else {
-    route.prev.next = route.next;
-    route.next.prev = route.prev;
+    self.firstRoute = nil;
   }
   return YES;
 }
@@ -127,6 +113,28 @@ NS_ASSUME_NONNULL_BEGIN
   }
   route.next = nil;
   [self thrio_onNotify];
+  return YES;
+}
+
+- (BOOL)thrio_removeUrl:(NSString *)url index:(NSNumber *)index {
+  ThrioPageRoute *route = [self thrio_getRouteByUrl:url index:index];
+  if (!route) {
+    return NO;
+  }
+  if ([self isKindOfClass:ThrioFlutterViewController.class]) {
+    NSDictionary *arguments = [route.settings toArgumentsWithoutParams];
+    [[ThrioApp.shared channel] invokeMethod:@"__onRemove__" arguments:arguments];
+  }
+  if (route == self.firstRoute) {
+    self.firstRoute = route.next;
+    self.firstRoute.prev = nil;
+  } else if (route == self.lastRoute) {
+    route.prev.next = nil;
+    [self thrio_onNotify];
+  } else {
+    route.prev.next = route.next;
+    route.next.prev = route.prev;
+  }
   return YES;
 }
 
@@ -170,6 +178,15 @@ NS_ASSUME_NONNULL_BEGIN
   });
 }
 
+- (void)thrio_viewDidAppear:(BOOL)animated {
+  [self thrio_viewDidAppear:animated];
+  
+  if (![self isKindOfClass:ThrioFlutterViewController.class]) {
+    // 当页面出现后，给页面发送通知
+    [self thrio_onNotify];
+  }
+}
+
 - (void)thrio_onNotify {
   BOOL isFlutterViewController = [self isKindOfClass:ThrioFlutterViewController.class];
   NSArray *keys = [self.lastRoute.notifications.allKeys copy];
@@ -188,17 +205,6 @@ NS_ASSUME_NONNULL_BEGIN
         [(id<ThrioNotifyProtocol>)self onNotify:name params:params];
       }
     }
-  }
-}
-
-- (void)thrio_viewDidAppear:(BOOL)animated {
-  [self thrio_viewDidAppear:animated];
-  
-  // 原生页面，当页面出现后，记录navigationBarHidden的值
-  if (![self isKindOfClass:ThrioFlutterViewController.class]) {
-    self.hidesNavigationBarWhenPushed = self.navigationController.navigationBarHidden;
-    // 当页面出现后，给页面发送通知
-    [self thrio_onNotify];
   }
 }
 

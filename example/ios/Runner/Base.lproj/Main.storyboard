@@ -36,7 +36,7 @@
                                 <color key="backgroundColor" systemColor="opaqueSeparatorColor" red="0.77647058820000003" green="0.77647058820000003" blue="0.7843137255" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="18"/>
                                 <inset key="contentEdgeInsets" minX="10" minY="0.0" maxX="10" maxY="0.0"/>
-                                <state key="normal" title="pop native1"/>
+                                <state key="normal" title="remove native1"/>
                                 <connections>
                                     <action selector="popNative1:" destination="BYZ-38-t0r" eventType="touchUpInside" id="eyg-pK-9xq"/>
                                 </connections>
@@ -47,7 +47,7 @@
                                 <color key="backgroundColor" systemColor="systemYellowColor" red="1" green="0.80000000000000004" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="18"/>
                                 <inset key="contentEdgeInsets" minX="10" minY="0.0" maxX="10" maxY="0.0"/>
-                                <state key="normal" title="pop flutter1"/>
+                                <state key="normal" title="remove flutter1"/>
                                 <connections>
                                     <action selector="popFlutter1:" destination="BYZ-38-t0r" eventType="touchUpInside" id="TKL-43-biN"/>
                                 </connections>

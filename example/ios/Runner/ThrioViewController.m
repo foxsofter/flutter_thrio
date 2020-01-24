@@ -18,19 +18,19 @@
 @implementation ThrioViewController
 
 - (IBAction)pushFlutterPage:(id)sender {
-  [ThrioNavigator.shared push:@"flutter1"];
+  [ThrioNavigator.shared pushUrl:@"flutter1"];
 }
 - (IBAction)popFlutter1:(id)sender {
-  [ThrioNavigator.shared pop:@"flutter1"];
+  [ThrioNavigator.shared removeUrl:@"flutter1"];
 }
 - (IBAction)pushNativePage:(id)sender {
-  [ThrioNavigator.shared push:@"native1"];
+  [ThrioNavigator.shared pushUrl:@"native1"];
 }
 - (IBAction)popNative1:(id)sender {
-  [ThrioNavigator.shared pop:@"native1"];
+  [ThrioNavigator.shared removeUrl:@"native1"];
 }
 - (IBAction)pop:(id)sender {
-  [ThrioNavigator.shared pop:@""];
+  [ThrioNavigator.shared pop];
 }
 
 - (void)viewDidLoad {

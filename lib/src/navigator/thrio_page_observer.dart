@@ -17,6 +17,7 @@ class ThrioPageObserver {
     _onPush();
     _onPop();
     _onPopTo();
+    _onRemove();
     _onAppeared();
   }
 
@@ -66,22 +67,34 @@ class ThrioPageObserver {
         return params is Map<String, dynamic> ? params : null;
       });
 
-  void _onPush() {
-    _channel.registryMethodCall('__onPush__', ([arguments]) {
-      final routeSettings = ThrioRouteSettings.fromArguments(arguments);
-      return ThrioApp().navigatorState?.push(routeSettings);
-    });
-  }
+  void _onPush() => _channel.registryMethodCall(
+        '__onPush__',
+        ([arguments]) {
+          final routeSettings = ThrioRouteSettings.fromArguments(arguments);
+          return ThrioApp().navigatorState?.push(routeSettings);
+        },
+      );
 
-  void _onPop() => _channel.registryMethodCall('__onPop__', ([arguments]) {
-        final routeSettings = ThrioRouteSettings.fromArguments(arguments);
-        return ThrioApp().navigatorState?.pop(routeSettings);
-      });
+  void _onPop() => _channel.registryMethodCall(
+        '__onPop__',
+        ([arguments]) => ThrioApp().navigatorState?.pop(),
+      );
 
-  void _onPopTo() => _channel.registryMethodCall('__onPopTo__', ([arguments]) {
-        final routeSettings = ThrioRouteSettings.fromArguments(arguments);
-        return ThrioApp().navigatorState?.popTo(routeSettings);
-      });
+  void _onPopTo() => _channel.registryMethodCall(
+        '__onPopTo__',
+        ([arguments]) {
+          final routeSettings = ThrioRouteSettings.fromArguments(arguments);
+          return ThrioApp().navigatorState?.popTo(routeSettings);
+        },
+      );
+
+  void _onRemove() => _channel.registryMethodCall(
+        '__onRemove__',
+        ([arguments]) {
+          final routeSettings = ThrioRouteSettings.fromArguments(arguments);
+          return ThrioApp().navigatorState?.remove(routeSettings);
+        },
+      );
 
   void _onAppeared() => _channel
           .onEventStream(PageLifecycle.appeared.toString())

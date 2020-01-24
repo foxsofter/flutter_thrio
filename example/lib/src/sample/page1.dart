@@ -62,13 +62,13 @@ class _Page1State extends State<Page1> {
                       )),
                 ),
                 InkWell(
-                  onTap: () => ThrioNavigator.pop(url: 'flutter1'),
+                  onTap: () => ThrioNavigator.remove(url: 'flutter1'),
                   child: Container(
                       padding: const EdgeInsets.all(8),
                       margin: const EdgeInsets.all(8),
                       color: Colors.yellow,
                       child: Text(
-                        'pop flutter1',
+                        'remove flutter1',
                         style: TextStyle(fontSize: 22, color: Colors.black),
                       )),
                 ),
@@ -100,13 +100,13 @@ class _Page1State extends State<Page1> {
                       )),
                 ),
                 InkWell(
-                  onTap: () => ThrioNavigator.pop(url: 'native1'),
+                  onTap: () => ThrioNavigator.remove(url: 'native1'),
                   child: Container(
                       padding: const EdgeInsets.all(8),
                       margin: const EdgeInsets.all(8),
                       color: Colors.grey,
                       child: Text(
-                        'pop native1',
+                        'remove native1',
                         style: TextStyle(fontSize: 22, color: Colors.black),
                       )),
                 ),

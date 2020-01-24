@@ -72,7 +72,7 @@ class ThrioApp {
 
   // Get page builder for url.
   //
-  ThrioPageBuilder pageBuilder(String url) => _pageBuilders[url];
+  ThrioPageBuilder getPageBuilder(String url) => _pageBuilders[url];
 
   /// Sets up a broadcast stream for receiving page lifecycle events.
   ///
@@ -132,14 +132,8 @@ class ThrioApp {
     return _channel.invokeMethod<bool>('notify', arguments);
   }
 
-  Future<bool> pop({
-    String url = '',
-    int index = 0,
-    bool animated = true,
-  }) {
+  Future<bool> pop({bool animated = true}) {
     final arguments = <String, dynamic>{
-      'url': url,
-      'index': index,
       'animated': animated,
     };
     return _channel.invokeMethod<bool>('pop', arguments);
@@ -156,5 +150,18 @@ class ThrioApp {
       'animated': animated,
     };
     return _channel.invokeMethod<bool>('popTo', arguments);
+  }
+
+  Future<bool> remove({
+    String url = '',
+    int index = 0,
+    bool animated = true,
+  }) {
+    final arguments = <String, dynamic>{
+      'url': url,
+      'index': index,
+      'animated': animated,
+    };
+    return _channel.invokeMethod<bool>('remove', arguments);
   }
 }

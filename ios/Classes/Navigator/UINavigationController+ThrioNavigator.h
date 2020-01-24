@@ -21,13 +21,15 @@ NS_ASSUME_NONNULL_BEGIN
                    name:(NSString *)name
                  params:(NSDictionary *)params;
 
-- (BOOL)thrio_popUrl:(NSString *)url
-               index:(NSNumber *)index
-            animated:(BOOL)animated;
+- (BOOL)thrio_popAnimated:(BOOL)animated;
 
 - (BOOL)thrio_popToUrl:(NSString *)url
                  index:(NSNumber *)index
               animated:(BOOL)animated;
+
+- (BOOL)thrio_removeUrl:(NSString *)url
+                  index:(NSNumber *)index
+               animated:(BOOL)animated;
 
 - (NSNumber *)thrio_lastIndex;
 

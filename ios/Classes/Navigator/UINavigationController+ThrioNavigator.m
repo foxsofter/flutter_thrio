@@ -27,6 +27,14 @@ NS_ASSUME_NONNULL_BEGIN
     ThrioNativeViewControllerBuilder builder = [self nativeViewControllerBuilders][url];
     if (builder) {
       viewController = builder(params);
+      if (!viewController.hidesNavigationBarWhenPushed) {
+        for (UIViewController *vc in self.viewControllers.reverseObjectEnumerator) {
+          if (![vc isKindOfClass:ThrioFlutterViewController.class]) {
+            viewController.hidesNavigationBarWhenPushed = vc.hidesNavigationBarWhenPushed;
+            break;
+          }
+        }
+      }
     } else {
       if ([self.topViewController isKindOfClass:ThrioFlutterViewController.class]) {
         [self.topViewController thrio_pushUrl:url params:params];
@@ -44,6 +52,9 @@ NS_ASSUME_NONNULL_BEGIN
     if (viewController) {
       [viewController thrio_pushUrl:url params:params];
       [self pushViewController:viewController animated:animated];
+      if ([viewController isKindOfClass:ThrioFlutterViewController.class]) {
+        [ThrioApp.shared attachFlutterViewController:(ThrioFlutterViewController*)viewController];
+      }
       return YES;
     }
     
@@ -62,9 +73,35 @@ NS_ASSUME_NONNULL_BEGIN
   return NO;
 }
 
-- (BOOL)thrio_popUrl:(NSString *)url
-               index:(NSNumber *)index
-            animated:(BOOL)animated {
+- (BOOL)thrio_popAnimated:(BOOL)animated {
+  UIViewController *vc = self.topViewController;
+  if (!vc) {
+    return NO;
+  }
+  if (vc.firstRoute == vc.lastRoute) {
+    [self popViewControllerAnimated:animated];
+  }
+  [vc thrio_pop];
+  return YES;
+}
+
+- (BOOL)thrio_popToUrl:(NSString *)url
+                 index:(NSNumber *)index
+              animated:(BOOL)animated {
+  UIViewController *vc = [self getViewControllerByUrl:url index:index];
+  if (!vc) {
+    return NO;
+  }
+  [vc thrio_popToUrl:url index:index];
+  if (vc != self.topViewController) {
+    [self popToViewController:vc animated:animated];
+  }
+  return YES;
+}
+
+- (BOOL)thrio_removeUrl:(NSString *)url
+                  index:(NSNumber *)index
+               animated:(BOOL)animated {
   UIViewController *vc = [self getViewControllerByUrl:url index:index];
   if (!vc) {
     return NO;
@@ -78,20 +115,7 @@ NS_ASSUME_NONNULL_BEGIN
       [self setViewControllers:vcs animated:animated];
     }
   }
-  [vc thrio_popUrl:url index:index];
-  return YES;
-}
-
-- (BOOL)thrio_popToUrl:(NSString *)url
-                 index:(NSNumber *)index
-              animated:(BOOL)animated {
-  UIViewController *vc = [self getViewControllerByUrl:url index:index];
-  if (!vc) {
-    return NO;
-  }
-  if ([vc thrio_popToUrl:url index:index] && vc != self.topViewController) {
-    [self popToViewController:vc animated:animated];
-  }
+  [vc thrio_removeUrl:url index:index];
   return YES;
 }
 
@@ -153,9 +177,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (UIViewController * _Nullable)getViewControllerByUrl:(NSString *)url
                                                  index:(NSNumber *)index {
-  if (url.length < 1) {
-    return self.topViewController;
-  }
   NSEnumerator *vcs = [self.viewControllers reverseObjectEnumerator];
   for (UIViewController *vc in vcs) {
     if ([vc thrio_getRouteByUrl:url index:index]) {
@@ -201,15 +222,15 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 - (UIViewController * _Nullable)thrio_popViewControllerAnimated:(BOOL)animated {
-  UIViewController *willPopVC = self.topViewController;
   UIViewController *willShowVC = self.viewControllers[self.viewControllers.count - 2];
-  if (willPopVC.hidesNavigationBarWhenPushed != willShowVC.hidesNavigationBarWhenPushed) {
+  UIViewController *willPopVC = [self thrio_popViewControllerAnimated:animated];
+  if (self.navigationBarHidden != willShowVC.hidesNavigationBarWhenPushed) {
     [self setNavigationBarHidden:willShowVC.hidesNavigationBarWhenPushed];
   }
-  
-  NSLog(@"on pop url: %@", willPopVC.firstRoute.settings.url);
-    
-  return [self thrio_popViewControllerAnimated:animated];
+  if ([willShowVC isKindOfClass:ThrioFlutterViewController.class]) {
+    [ThrioApp.shared attachFlutterViewController:(ThrioFlutterViewController*)willShowVC];
+  }
+  return willPopVC;
 }
 
 - (NSArray<__kindof UIViewController *> * _Nullable)thrio_popToViewController:(UIViewController *)viewController animated:(BOOL)animated {

@@ -18,112 +18,118 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (instancetype)init NS_UNAVAILABLE;
 
-#pragma mark - notify methods
-
-- (void)notify:(NSString *)name
-           url:(NSString *)url;
-
-- (void)notify:(NSString *)name
-           url:(NSString *)url
-        result:(ThrioBoolCallback)result;
-
-- (void)notify:(NSString *)name
-           url:(NSString *)url
-         index:(NSNumber *)index;
-
-- (void)notify:(NSString *)name
-           url:(NSString *)url
-         index:(NSNumber *)index
-        result:(ThrioBoolCallback)result;
-
-- (void)notify:(NSString *)name
-           url:(NSString *)url
-        params:(NSDictionary *)params;
-
-- (void)notify:(NSString *)name
-           url:(NSString *)url
-        params:(NSDictionary *)params
-        result:(ThrioBoolCallback)result;
-
-- (void)notify:(NSString *)name
-           url:(NSString *)url
-         index:(NSNumber *)index
-        params:(NSDictionary *)params;
-
 #pragma mark - push methods
 
-- (void)push:(NSString *)url;
+- (void)pushUrl:(NSString *)url;
 
-- (void)push:(NSString *)url
-      result:(ThrioBoolCallback)result;
+- (void)pushUrl:(NSString *)url
+         result:(ThrioBoolCallback)result;
 
-- (void)push:(NSString *)url
-    animated:(BOOL)animated;
+- (void)pushUrl:(NSString *)url
+       animated:(BOOL)animated;
 
-- (void)push:(NSString *)url
-    animated:(BOOL)animated
-      result:(ThrioBoolCallback)result;
+- (void)pushUrl:(NSString *)url
+       animated:(BOOL)animated
+         result:(ThrioBoolCallback)result;
 
-- (void)push:(NSString *)url
-      params:(NSDictionary *)params;
+- (void)pushUrl:(NSString *)url
+         params:(NSDictionary *)params;
 
-- (void)push:(NSString *)url
-      params:(NSDictionary *)params
-      result:(ThrioBoolCallback)result;
+- (void)pushUrl:(NSString *)url
+         params:(NSDictionary *)params
+         result:(ThrioBoolCallback)result;
 
-- (void)push:(NSString *)url
-      params:(NSDictionary *)params
-    animated:(BOOL)animated;
+- (void)pushUrl:(NSString *)url
+         params:(NSDictionary *)params
+       animated:(BOOL)animated;
+
+#pragma mark - notify methods
+
+- (void)notifyUrl:(NSString *)url
+             name:(NSString *)name;
+
+- (void)notifyUrl:(NSString *)url
+             name:(NSString *)name
+           result:(ThrioBoolCallback)result;
+
+- (void)notifyUrl:(NSString *)url
+            index:(NSNumber *)index
+             name:(NSString *)name;
+
+- (void)notifyUrl:(NSString *)url
+            index:(NSNumber *)index
+             name:(NSString *)name
+           result:(ThrioBoolCallback)result;
+
+- (void)notifyUrl:(NSString *)url
+             name:(NSString *)name
+           params:(NSDictionary *)params;
+
+- (void)notifyUrl:(NSString *)url
+             name:(NSString *)name
+           params:(NSDictionary *)params
+           result:(ThrioBoolCallback)result;
+
+- (void)notifyUrl:(NSString *)url
+            index:(NSNumber *)index
+             name:(NSString *)name
+           params:(NSDictionary *)params;
 
 #pragma mark - pop methods
 
-- (void)pop:(NSString *)url;
+- (void)pop;
 
-- (void)pop:(NSString *)url
-     result:(ThrioBoolCallback)result;
-
-- (void)pop:(NSString *)url
-      index:(NSNumber *)index;
-
-- (void)pop:(NSString *)url
-      index:(NSNumber *)index
-     result:(ThrioBoolCallback)result;
-
-- (void)pop:(NSString *)url
-   animated:(BOOL)animated;
-
-- (void)pop:(NSString *)url
-   animated:(BOOL)animated
-     result:(ThrioBoolCallback)result;
-
-- (void)pop:(NSString *)url
-      index:(NSNumber *)index
-   animated:(BOOL)animated;
+- (void)popAnimated:(BOOL)animated;
 
 #pragma mark - popTo methods
 
-- (void)popTo:(NSString *)url;
+- (void)popToUrl:(NSString *)url;
 
-- (void)popTo:(NSString *)url
-       result:(ThrioBoolCallback)result;
+- (void)popToUrl:(NSString *)url
+          result:(ThrioBoolCallback)result;
 
-- (void)popTo:(NSString *)url
-        index:(NSNumber *)index;
+- (void)popToUrl:(NSString *)url
+           index:(NSNumber *)index;
 
-- (void)popTo:(NSString *)url
-        index:(NSNumber *)index
-       result:(ThrioBoolCallback)result;
+- (void)popToUrl:(NSString *)url
+           index:(NSNumber *)index
+          result:(ThrioBoolCallback)result;
 
-- (void)popTo:(NSString *)url
-     animated:(BOOL)animated;
+- (void)popToUrl:(NSString *)url
+        animated:(BOOL)animated;
 
-- (void)popTo:(NSString *)url
-     animated:(BOOL)animated
-       result:(ThrioBoolCallback)result;
+- (void)popToUrl:(NSString *)url
+        animated:(BOOL)animated
+          result:(ThrioBoolCallback)result;
 
-- (void)popTo:(NSString *)url
-        index:(NSNumber *)index
-     animated:(BOOL)animated;
+- (void)popToUrl:(NSString *)url
+           index:(NSNumber *)index
+        animated:(BOOL)animated;
+
+#pragma mark - remove methods
+
+- (void)removeUrl:(NSString *)url;
+
+- (void)removeUrl:(NSString *)url
+           result:(ThrioBoolCallback)result;
+
+- (void)removeUrl:(NSString *)url
+            index:(NSNumber *)index;
+
+- (void)removeUrl:(NSString *)url
+            index:(NSNumber *)index
+           result:(ThrioBoolCallback)result;
+
+- (void)removeUrl:(NSString *)url
+         animated:(BOOL)animated;
+
+- (void)removeUrl:(NSString *)url
+         animated:(BOOL)animated
+           result:(ThrioBoolCallback)result;
+
+- (void)removeUrl:(NSString *)url
+            index:(NSNumber *)index
+         animated:(BOOL)animated;
 
 @end
 

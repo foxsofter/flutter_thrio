@@ -62,7 +62,7 @@ class _Page3State extends State<Page3> {
                       )),
                 ),
                 InkWell(
-                  onTap: () => ThrioNavigator.pop(url: 'flutter2'),
+                  onTap: () => ThrioNavigator.remove(url: 'flutter2'),
                   child: Container(
                       padding: const EdgeInsets.all(8),
                       margin: const EdgeInsets.all(8),
@@ -111,7 +111,7 @@ class _Page3State extends State<Page3> {
                       )),
                 ),
                 InkWell(
-                  onTap: () => ThrioNavigator.pop(url: 'native1'),
+                  onTap: () => ThrioNavigator.remove(url: 'native1'),
                   child: Container(
                       padding: const EdgeInsets.all(8),
                       margin: const EdgeInsets.all(8),

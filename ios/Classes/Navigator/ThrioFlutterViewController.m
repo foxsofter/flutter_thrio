@@ -28,11 +28,6 @@ NS_ASSUME_NONNULL_BEGIN
   self.view.backgroundColor = UIColor.whiteColor;
 }
 
-- (void)viewDidLayoutSubviews {
-  
-  [super viewDidLayoutSubviews];
-}
-
 - (void)viewWillAppear:(BOOL)animated {
 
   [self sendPageLifecycleEvent:ThrioPageLifecycleWillAppear];
@@ -41,12 +36,9 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 - (void)viewDidAppear:(BOOL)animated {
-  if (self.firstRoute == self.lastRoute) {
-    [ThrioApp.shared attachFlutterViewController:self];
-  }
   
   [self sendPageLifecycleEvent:ThrioPageLifecycleAppeared];
-
+  
   [super viewDidAppear:animated];
 }
 
@@ -60,6 +52,8 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 - (void)dealloc {
+  [ThrioApp.shared detachFlutterViewController];
+
   [self sendPageLifecycleEvent:ThrioPageLifecycleDestroyed];
 }
 
