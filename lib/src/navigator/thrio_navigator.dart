@@ -8,6 +8,7 @@ import 'package:flutter/widgets.dart';
 import '../app/thrio_app.dart';
 import '../extension/stateful_widget.dart';
 import '../logger/thrio_logger.dart';
+import '../registry/registry_map.dart';
 import 'thrio_page_route.dart';
 import 'thrio_route_settings.dart';
 
@@ -80,13 +81,43 @@ class ThrioNavigator extends StatefulWidget {
         animated: animated,
       );
 
+  /// Get the index of the last page.
+  ///
+  static Future<int> lastIndex({String url}) => ThrioApp().lastIndex(url: url);
+
+  /// Get the index of all pages whose url is `url`.
+  ///
+  static Future<List<int>> allIndex(String index) => ThrioApp().allIndex(index);
+
   @override
   State<StatefulWidget> createState() => ThrioNavigatorState();
 }
 
 class ThrioNavigatorState extends State<ThrioNavigator> {
   final _pageRoutes = <ThrioPageRoute>[];
+  final _pageBuilders = RegistryMap<String, ThrioPageBuilder>();
+
   ThrioPageRoute get current => _pageRoutes.last;
+
+  /// Register default page builder for the router.
+  ///
+  /// Unregistry by calling the return value `VoidCallback`.
+  ///
+  VoidCallback registryDefaultPageBuilder(
+    ThrioPageBuilder builder,
+  ) =>
+      _pageBuilders.registry(Navigator.defaultRouteName, builder);
+
+  VoidCallback registerPageBuilder(
+    String url,
+    ThrioPageBuilder builder,
+  ) =>
+      _pageBuilders.registry(url, builder);
+
+  VoidCallback registerPageBuilders(
+    Map<String, ThrioPageBuilder> builders,
+  ) =>
+      _pageBuilders.registryAll(builders);
 
   /// 还无法实现animated=false
   Future<bool> push(RouteSettings settings, {bool animated = true}) {
@@ -94,7 +125,7 @@ class ThrioNavigatorState extends State<ThrioNavigator> {
     if (navigatorState == null) {
       return Future.value(false);
     }
-    final pageBuilder = ThrioApp().getPageBuilder(settings.url);
+    final pageBuilder = _pageBuilders[settings.url];
     final route = ThrioPageRoute(builder: pageBuilder, settings: settings);
     navigatorState.push(route);
     _pageRoutes.add(route);

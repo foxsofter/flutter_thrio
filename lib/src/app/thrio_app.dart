@@ -15,19 +15,13 @@ import '../thrio_types.dart';
 class ThrioApp {
   factory ThrioApp() => _default;
 
-  ThrioApp._()
-      : _pageBuilders = RegistryMap<String, ThrioPageBuilder>(),
-        _channel = ThrioChannel(channel: '__thrio_app__') {
+  ThrioApp._() : _channel = ThrioChannel(channel: '__thrio_app__') {
     _pageObserver = ThrioPageObserver(_channel);
   }
 
   static final _default = ThrioApp._();
 
-  final defaultUrl = '/';
-
   final ThrioChannel _channel;
-
-  final RegistryMap<String, ThrioPageBuilder> _pageBuilders;
 
   ThrioPageObserver _pageObserver;
 
@@ -52,27 +46,29 @@ class ThrioApp {
   ///
   /// Unregistry by calling the return value `VoidCallback`.
   ///
-  VoidCallback registryDefaultThrioPageBuilder(ThrioPageBuilder builder) =>
-      _pageBuilders.registry(defaultUrl, builder);
+  VoidCallback registryDefaultPageBuilder(
+    ThrioPageBuilder builder,
+  ) =>
+      navigatorState?.registryDefaultPageBuilder(builder);
 
   /// Register an page builder for the router.
   ///
   /// Unregistry by calling the return value `VoidCallback`.
   ///
-  VoidCallback registryThrioPageBuilder(String url, ThrioPageBuilder builder) =>
-      _pageBuilders.registry(url, builder);
+  VoidCallback registerPageBuilder(
+    String url,
+    ThrioPageBuilder builder,
+  ) =>
+      navigatorState?.registerPageBuilder(url, builder);
 
   /// Register page builders for the router.
   ///
   /// Unregistry by calling the return value `VoidCallback`.
   ///
-  VoidCallback registryThrioPageBuilders(
-          Map<String, ThrioPageBuilder> builders) =>
-      _pageBuilders.registryAll(builders);
-
-  // Get page builder for url.
-  //
-  ThrioPageBuilder getPageBuilder(String url) => _pageBuilders[url];
+  VoidCallback registerPageBuilders(
+    Map<String, ThrioPageBuilder> builders,
+  ) =>
+      navigatorState?.registerPageBuilders(builders);
 
   /// Sets up a broadcast stream for receiving page lifecycle events.
   ///
@@ -164,4 +160,14 @@ class ThrioApp {
     };
     return _channel.invokeMethod<bool>('remove', arguments);
   }
+
+  Future<int> lastIndex({String url}) {
+    final arguments = (url?.isEmpty ?? true)
+        ? <String, dynamic>{}
+        : <String, dynamic>{'url': url};
+    return _channel.invokeMethod<int>('lastIndex', arguments);
+  }
+
+  Future<List<int>> allIndex(String url) =>
+      _channel.invokeListMethod<int>('allIndex', {'url': url});
 }

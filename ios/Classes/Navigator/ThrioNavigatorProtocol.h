@@ -50,6 +50,12 @@ NS_ASSUME_NONNULL_BEGIN
 - (BOOL)canRemoveUrl:(NSString *)url
                index:(NSNumber * _Nullable)index;
 
+- (NSNumber *)lastIndex;
+
+- (NSNumber *)getLastIndexByUrl:(NSString *)url;
+
+- (NSArray *)getAllIndexByUrl:(NSString *)url;
+
 @end
 
 NS_ASSUME_NONNULL_END

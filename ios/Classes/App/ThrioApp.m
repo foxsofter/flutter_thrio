@@ -42,16 +42,6 @@ NS_ASSUME_NONNULL_BEGIN
   self = [super init];
   if (self) {
     _channel = [ThrioChannel channelWithName:@"__thrio_app__"];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(_appWillEnterForeground)
-                                                 name:UIApplicationWillEnterForegroundNotification
-                                               object:nil];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self
-                                             selector:@selector(_appDidEnterBackground)
-                                                 name:UIApplicationDidEnterBackgroundNotification
-                                               object:nil];
   }
   return self;
 }
@@ -84,26 +74,19 @@ NS_ASSUME_NONNULL_BEGIN
   }
 }
 
-- (void)dealloc {
-  [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                  name:UIApplicationWillEnterForegroundNotification
-                                                object:nil];
-  [[NSNotificationCenter defaultCenter] removeObserver:self
-                                                  name:UIApplicationDidEnterBackgroundNotification
-                                                object:nil];
-}
-
 - (void)onSyncInit {
   [self _startupOnce];
 }
 
 - (void)onAsyncInit {
   _emptyViewController = [[ThrioFlutterViewController alloc] init];
-  [self _onNotify];
   [self _onPush];
+  [self _onNotify];
   [self _onPop];
   [self _onPopTo];
   [self _onRemove];
+  [self _onLastIndex];
+  [self _onGetAllIndex];
 }
 
 #pragma mark - ThrioNavigatorProtocol methods
@@ -204,6 +187,18 @@ NS_ASSUME_NONNULL_BEGIN
   return [self.navigationController thrio_ContainsUrl:url index:index];
 }
 
+- (NSNumber *)lastIndex {
+  return [self.navigationController thrio_lastIndex];
+}
+
+- (NSNumber *)getLastIndexByUrl:(NSString *)url {
+  return [self.navigationController thrio_getLastIndexByUrl:url];
+}
+
+- (NSArray *)getAllIndexByUrl:(NSString *)url {
+  return [self.navigationController thrio_getAllIndexByUrl:url];
+}
+
 #pragma mark - registry methods
 
 - (ThrioVoidCallback)registerNativeViewControllerBuilder:(ThrioNativeViewControllerBuilder)builder
@@ -216,14 +211,6 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 #pragma mark - private methods
-
-- (void)_appWillEnterForeground {
-  [self.flutterViewController sendPageLifecycleEvent:ThrioPageLifecycleForeground];
-}
-
-- (void)_appDidEnterBackground {
-  [_emptyViewController sendPageLifecycleEvent:ThrioPageLifecycleBackground];
-}
 
 - (void)_shouldPauseOrResume {
   NSInteger flutterPageCount = 0;
@@ -339,6 +326,33 @@ NS_ASSUME_NONNULL_BEGIN
         result(r);
       }
     }];
+  }];
+}
+
+- (void)_onLastIndex {
+   [_channel registryMethodCall:@"lastIndex"
+                        handler:^void(NSDictionary<NSString *,id> * arguments,
+                                      ThrioBoolCallback _Nullable result) {
+    NSString *url = arguments[@"url"];
+    if (result) {
+      NSNumber *index = @0;
+      if (url.length < 1) {
+        result([self lastIndex]);
+      } else {
+        result([self getLastIndexByUrl:url]);
+      }
+    }
+  }];
+}
+
+- (void)_onGetAllIndex {
+   [_channel registryMethodCall:@"allIndex"
+                        handler:^void(NSDictionary<NSString *,id> * arguments,
+                                      ThrioBoolCallback _Nullable result) {
+     NSString *url = arguments[@"url"];
+     if (result) {
+       result([self getAllIndexByUrl:url]);
+     }
   }];
 }
 

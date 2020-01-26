@@ -55,7 +55,8 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 - (void)thrio_pushUrl:(NSString *)url
-               params:(NSDictionary *)params {
+               params:(NSDictionary *)params
+             animated:(BOOL)animated {
   NSNumber *index = @([self thrio_getLastIndexByUrl:url].integerValue + 1);
   ThrioRouteSettings *settings = [ThrioRouteSettings settingsWithUrl:url
                                                                index:index
@@ -70,8 +71,10 @@ NS_ASSUME_NONNULL_BEGIN
     self.firstRoute = newRoute;
   }
   if ([self isKindOfClass:ThrioFlutterViewController.class]) {
+    NSMutableDictionary *arguments = [NSMutableDictionary dictionaryWithDictionary:[settings toArguments]];
+    [arguments setObject:[NSNumber numberWithBool:animated] forKey:@"animated"];
     [[ThrioApp.shared channel] invokeMethod:@"__onPush__"
-                                  arguments:[settings toArguments]];
+                                  arguments:arguments];
   }
 }
 
@@ -87,10 +90,12 @@ NS_ASSUME_NONNULL_BEGIN
   return NO;
 }
 
-- (BOOL)thrio_pop {
+- (BOOL)thrio_popAnimated:(BOOL)animated {
   ThrioPageRoute *route = self.lastRoute;
   if ([self isKindOfClass:ThrioFlutterViewController.class]) {
-    NSDictionary *arguments = [route.settings toArgumentsWithoutParams];
+    NSMutableDictionary *arguments =
+      [NSMutableDictionary dictionaryWithDictionary:[route.settings toArgumentsWithoutParams]];
+    [arguments setObject:[NSNumber numberWithBool:animated] forKey:@"animated"];
     [[ThrioApp.shared channel] invokeMethod:@"__onPop__" arguments:arguments];
   }
   if (route != self.firstRoute) {
@@ -102,13 +107,15 @@ NS_ASSUME_NONNULL_BEGIN
   return YES;
 }
 
-- (BOOL)thrio_popToUrl:(NSString *)url index:(NSNumber *)index {
+- (BOOL)thrio_popToUrl:(NSString *)url index:(NSNumber *)index animated:(BOOL)animated {
   ThrioPageRoute *route = [self thrio_getRouteByUrl:url index:index];
   if (!route) {
     return NO;
   }
   if ([self isKindOfClass:ThrioFlutterViewController.class]) {
-    NSDictionary *arguments = [route.settings toArgumentsWithoutParams];
+    NSMutableDictionary *arguments =
+      [NSMutableDictionary dictionaryWithDictionary:[route.settings toArgumentsWithoutParams]];
+    [arguments setObject:[NSNumber numberWithBool:animated] forKey:@"animated"];
     [[ThrioApp.shared channel] invokeMethod:@"__onPopTo__" arguments:arguments];
   }
   route.next = nil;
@@ -116,13 +123,15 @@ NS_ASSUME_NONNULL_BEGIN
   return YES;
 }
 
-- (BOOL)thrio_removeUrl:(NSString *)url index:(NSNumber *)index {
+- (BOOL)thrio_removeUrl:(NSString *)url index:(NSNumber *)index animated:(BOOL)animated {
   ThrioPageRoute *route = [self thrio_getRouteByUrl:url index:index];
   if (!route) {
     return NO;
   }
   if ([self isKindOfClass:ThrioFlutterViewController.class]) {
-    NSDictionary *arguments = [route.settings toArgumentsWithoutParams];
+    NSMutableDictionary *arguments =
+      [NSMutableDictionary dictionaryWithDictionary:[route.settings toArgumentsWithoutParams]];
+    [arguments setObject:[NSNumber numberWithBool:animated] forKey:@"animated"];
     [[ThrioApp.shared channel] invokeMethod:@"__onRemove__" arguments:arguments];
   }
   if (route == self.firstRoute) {

@@ -68,7 +68,7 @@ class _Page2State extends State<Page2> {
                       margin: const EdgeInsets.all(8),
                       color: Colors.yellow,
                       child: Text(
-                        'pop flutter2',
+                        'remove flutter2',
                         style: TextStyle(fontSize: 22, color: Colors.black),
                       )),
                 ),

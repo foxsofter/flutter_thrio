@@ -29,11 +29,11 @@ class ThrioPageRoute extends MaterialPageRoute<bool> {
     Widget child,
   ) =>
       settings.isNested
-          ? child
-          : super.buildTransitions(
+          ? super.buildTransitions(
               context,
               animation,
               secondaryAnimation,
               child,
-            );
+            )
+          : child;
 }

@@ -37,7 +37,7 @@ NS_ASSUME_NONNULL_BEGIN
       }
     } else {
       if ([self.topViewController isKindOfClass:ThrioFlutterViewController.class]) {
-        [self.topViewController thrio_pushUrl:url params:params];
+        [self.topViewController thrio_pushUrl:url params:params animated:animated];
         return YES;
       } else {
         ThrioFlutterViewControllerBuilder flutterBuilder = [self flutterViewControllerBuilder];
@@ -50,7 +50,7 @@ NS_ASSUME_NONNULL_BEGIN
       }
     }
     if (viewController) {
-      [viewController thrio_pushUrl:url params:params];
+      [viewController thrio_pushUrl:url params:params animated:animated];
       [self pushViewController:viewController animated:animated];
       if ([viewController isKindOfClass:ThrioFlutterViewController.class]) {
         [ThrioApp.shared attachFlutterViewController:(ThrioFlutterViewController*)viewController];
@@ -81,7 +81,7 @@ NS_ASSUME_NONNULL_BEGIN
   if (vc.firstRoute == vc.lastRoute) {
     [self popViewControllerAnimated:animated];
   }
-  [vc thrio_pop];
+  [vc thrio_popAnimated:animated];
   return YES;
 }
 
@@ -92,7 +92,7 @@ NS_ASSUME_NONNULL_BEGIN
   if (!vc) {
     return NO;
   }
-  [vc thrio_popToUrl:url index:index];
+  [vc thrio_popToUrl:url index:index animated:animated];
   if (vc != self.topViewController) {
     [self popToViewController:vc animated:animated];
   }
@@ -115,7 +115,7 @@ NS_ASSUME_NONNULL_BEGIN
       [self setViewControllers:vcs animated:animated];
     }
   }
-  [vc thrio_removeUrl:url index:index];
+  [vc thrio_removeUrl:url index:index animated:animated];
   return YES;
 }
 

@@ -30,7 +30,7 @@ class _MainAppState extends State<MainApp> with ThrioModule {
   @override
   void onPageRegister() {
     ThrioApp()
-        .registryDefaultThrioPageBuilder((_, {index, params}) => DeaultPage());
+        .registryDefaultPageBuilder((_, {index, params}) => DeaultPage());
   }
 
   @override
@@ -40,6 +40,6 @@ class _MainAppState extends State<MainApp> with ThrioModule {
   Widget build(BuildContext context) => MaterialApp(
         navigatorKey: GlobalKey<NavigatorState>(),
         builder: ThrioApp().build(),
-        home: Container(),
+        home: const SizedBox.shrink(),
       );
 }
