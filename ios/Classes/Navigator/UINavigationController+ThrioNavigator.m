@@ -19,9 +19,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark - navigation methods
 
-- (BOOL)thrio_pushUrl:(NSString *)url
+- (void)thrio_pushUrl:(NSString *)url
                params:(NSDictionary *)params
-             animated:(BOOL)animated {
+             animated:(BOOL)animated
+               result:(ThrioBoolCallback)result{
   @synchronized (self) {
     UIViewController *viewController;
     ThrioNativeViewControllerBuilder builder = [self nativeViewControllerBuilders][url];
@@ -37,8 +38,7 @@ NS_ASSUME_NONNULL_BEGIN
       }
     } else {
       if ([self.topViewController isKindOfClass:ThrioFlutterViewController.class]) {
-        [self.topViewController thrio_pushUrl:url params:params animated:animated];
-        return YES;
+        [self.topViewController thrio_pushUrl:url params:params animated:animated result:result];
       } else {
         ThrioFlutterViewControllerBuilder flutterBuilder = [self flutterViewControllerBuilder];
         if (flutterBuilder) {
@@ -50,15 +50,18 @@ NS_ASSUME_NONNULL_BEGIN
       }
     }
     if (viewController) {
-      [viewController thrio_pushUrl:url params:params animated:animated];
-      [self pushViewController:viewController animated:animated];
-      if ([viewController isKindOfClass:ThrioFlutterViewController.class]) {
-        [ThrioApp.shared attachFlutterViewController:(ThrioFlutterViewController*)viewController];
-      }
-      return YES;
+      __weak typeof(self) weakself = self;
+      [viewController thrio_pushUrl:url params:params animated:animated result:^(BOOL r) {
+        if (r) {
+          __strong typeof(self) strongSelf = weakself;
+          [strongSelf pushViewController:viewController animated:animated];
+          if ([viewController isKindOfClass:ThrioFlutterViewController.class]) {
+            [ThrioApp.shared attachFlutterViewController:(ThrioFlutterViewController*)viewController];
+          }
+        }
+        result(r);
+      }];
     }
-    
-    return NO;
   }
 }
 
@@ -73,50 +76,64 @@ NS_ASSUME_NONNULL_BEGIN
   return NO;
 }
 
-- (BOOL)thrio_popAnimated:(BOOL)animated {
+- (void)thrio_popAnimated:(BOOL)animated result:(ThrioBoolCallback)result {
   UIViewController *vc = self.topViewController;
   if (!vc) {
-    return NO;
+    result(NO);
+    return;
   }
-  if (vc.firstRoute == vc.lastRoute) {
-    [self popViewControllerAnimated:animated];
-  }
-  [vc thrio_popAnimated:animated];
-  return YES;
-}
-
-- (BOOL)thrio_popToUrl:(NSString *)url
-                 index:(NSNumber *)index
-              animated:(BOOL)animated {
-  UIViewController *vc = [self getViewControllerByUrl:url index:index];
-  if (!vc) {
-    return NO;
-  }
-  [vc thrio_popToUrl:url index:index animated:animated];
-  if (vc != self.topViewController) {
-    [self popToViewController:vc animated:animated];
-  }
-  return YES;
-}
-
-- (BOOL)thrio_removeUrl:(NSString *)url
-                  index:(NSNumber *)index
-               animated:(BOOL)animated {
-  UIViewController *vc = [self getViewControllerByUrl:url index:index];
-  if (!vc) {
-    return NO;
-  }
-  if (vc.firstRoute == vc.lastRoute) {
-    if (vc == self.topViewController) {
-      [self popViewControllerAnimated:animated];
-    } else {
-      NSMutableArray *vcs = [self.viewControllers mutableCopy];
-      [vcs removeObject:vc];
-      [self setViewControllers:vcs animated:animated];
+  __weak typeof(self) weakself = self;
+  [vc thrio_popAnimated:animated result:^(BOOL r) {
+    if (r && !vc.firstRoute) {
+      __strong typeof(self) strongSelf = weakself;
+      [strongSelf popViewControllerAnimated:animated];
     }
+    result(r);
+  }];
+}
+
+- (void)thrio_popToUrl:(NSString *)url
+                 index:(NSNumber *)index
+              animated:(BOOL)animated
+                result:(ThrioBoolCallback)result {
+  UIViewController *vc = [self getViewControllerByUrl:url index:index];
+  if (!vc) {
+    result(NO);
+    return;
   }
-  [vc thrio_removeUrl:url index:index animated:animated];
-  return YES;
+  __weak typeof(self) weakself = self;
+  [vc thrio_popToUrl:url index:index animated:animated result:^(BOOL r) {
+    if (r && vc != self.topViewController) {
+      __strong typeof(self) strongSelf = weakself;
+      [strongSelf popToViewController:vc animated:animated];
+    }
+    result(r);
+  }];
+}
+
+- (void)thrio_removeUrl:(NSString *)url
+                  index:(NSNumber *)index
+               animated:(BOOL)animated
+                 result:(ThrioBoolCallback)result {
+  UIViewController *vc = [self getViewControllerByUrl:url index:index];
+  if (!vc) {
+    result(NO);
+    return;
+  }
+  __weak typeof(self) weakself = self;
+  [vc thrio_removeUrl:url index:index animated:animated result:^(BOOL r) {
+    if (r && !vc.firstRoute) {
+      __strong typeof(self) strongSelf = weakself;
+      if (vc == strongSelf.topViewController) {
+        [strongSelf popViewControllerAnimated:animated];
+      } else {
+        NSMutableArray *vcs = [strongSelf.viewControllers mutableCopy];
+        [vcs removeObject:vc];
+        [strongSelf setViewControllers:vcs animated:animated];
+      }
+    }
+    result(r);
+  }];
 }
 
 - (NSNumber *)thrio_lastIndex {
@@ -135,6 +152,10 @@ NS_ASSUME_NONNULL_BEGIN
     [indexs addObjectsFromArray:[vc thrio_getAllIndexByUrl:url]];
   }
   return indexs;
+}
+
+- (void)thrio_addWillPopCallback:(ThrioWillPopCallback)callback {
+  self.topViewController.willPopCallback = callback;
 }
 
 - (BOOL)thrio_ContainsUrl:(NSString *)url {
@@ -197,6 +218,34 @@ NS_ASSUME_NONNULL_BEGIN
                            OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
+- (void)_popViewControllerAnimated:(BOOL)animated {
+  __weak typeof(self) weakself = self;
+  [self.topViewController thrio_popAnimated:animated result:^(BOOL r) {
+    if (r) {
+      __strong typeof(self) strongSelf = weakself;
+      UIViewController *willShowVC = strongSelf.viewControllers[strongSelf.viewControllers.count - 2];
+      if ([willShowVC isKindOfClass:ThrioFlutterViewController.class]) {
+        [ThrioApp.shared attachFlutterViewController:(ThrioFlutterViewController*)willShowVC];
+      }
+      if ([strongSelf.topViewController isKindOfClass:ThrioFlutterViewController.class]) {
+        BOOL containsFlutterViewController = NO;
+        for (UIViewController *vc in strongSelf.viewControllers.reverseObjectEnumerator) {
+          if ([vc isKindOfClass:ThrioFlutterViewController.class]) {
+            containsFlutterViewController = YES;
+            break;
+          }
+        }
+        if (!containsFlutterViewController) {
+          [ThrioApp.shared detachFlutterViewController];
+        }
+      }
+      if (strongSelf.navigationBarHidden != willShowVC.hidesNavigationBarWhenPushed) {
+        [strongSelf setNavigationBarHidden:willShowVC.hidesNavigationBarWhenPushed];
+      }
+    }
+  }];
+}
+
 #pragma mark - method swizzling
 
 + (void)load {
@@ -222,25 +271,18 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 - (UIViewController * _Nullable)thrio_popViewControllerAnimated:(BOOL)animated {
-  UIViewController *willShowVC = self.viewControllers[self.viewControllers.count - 2];
-  if ([willShowVC isKindOfClass:ThrioFlutterViewController.class]) {
-    [ThrioApp.shared attachFlutterViewController:(ThrioFlutterViewController*)willShowVC];
-  }
-  if ([self.topViewController isKindOfClass:ThrioFlutterViewController.class]) {
-    BOOL containsFlutterViewController = NO;
-    for (UIViewController *vc in self.viewControllers.reverseObjectEnumerator) {
-      if ([vc isKindOfClass:ThrioFlutterViewController.class]) {
-        containsFlutterViewController = YES;
-        break;
+  if (self.topViewController.willPopCallback) {
+    __weak typeof(self) weakself = self;
+    self.topViewController.willPopCallback(^(BOOL canPop) {
+      if (canPop) {
+        __strong typeof(self) strongSelf = weakself;
+        [strongSelf _popViewControllerAnimated:animated];
       }
-    }
-    if (!containsFlutterViewController) {
-      [ThrioApp.shared detachFlutterViewController];
-    }
+    });
+    return nil;
   }
-  if (self.navigationBarHidden != willShowVC.hidesNavigationBarWhenPushed) {
-    [self setNavigationBarHidden:willShowVC.hidesNavigationBarWhenPushed];
-  }
+  [self _popViewControllerAnimated:animated];
+
   return [self thrio_popViewControllerAnimated:animated];
 }
 

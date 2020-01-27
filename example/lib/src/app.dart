@@ -29,8 +29,7 @@ class _MainAppState extends State<MainApp> with ThrioModule {
 
   @override
   void onPageRegister() {
-    ThrioApp()
-        .registryDefaultPageBuilder((_, {index, params}) => DeaultPage());
+    ThrioApp().registerDefaultPageBuilder((_, {index, params}) => DeaultPage());
   }
 
   @override

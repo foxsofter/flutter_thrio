@@ -12,30 +12,36 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface UINavigationController (ThrioNavigator)
 
-- (BOOL)thrio_pushUrl:(NSString *)url
+- (void)thrio_pushUrl:(NSString *)url
                params:(NSDictionary *)params
-             animated:(BOOL)animated;
+             animated:(BOOL)animated
+               result:(ThrioBoolCallback)result;
 
 - (BOOL)thrio_notifyUrl:(NSString *)url
                   index:(NSNumber *)index
                    name:(NSString *)name
                  params:(NSDictionary *)params;
 
-- (BOOL)thrio_popAnimated:(BOOL)animated;
+- (void)thrio_popAnimated:(BOOL)animated
+                   result:(ThrioBoolCallback)result;
 
-- (BOOL)thrio_popToUrl:(NSString *)url
+- (void)thrio_popToUrl:(NSString *)url
                  index:(NSNumber *)index
-              animated:(BOOL)animated;
+              animated:(BOOL)animated
+                result:(ThrioBoolCallback)result;
 
-- (BOOL)thrio_removeUrl:(NSString *)url
+- (void)thrio_removeUrl:(NSString *)url
                   index:(NSNumber *)index
-               animated:(BOOL)animated;
+               animated:(BOOL)animated
+                 result:(ThrioBoolCallback)result;
 
 - (NSNumber *)thrio_lastIndex;
 
 - (NSNumber *)thrio_getLastIndexByUrl:(NSString *)url;
 
 - (NSArray *)thrio_getAllIndexByUrl:(NSString *)url;
+
+- (void)thrio_addWillPopCallback:(ThrioWillPopCallback)callback;
 
 - (BOOL)thrio_ContainsUrl:(NSString *)url;
 

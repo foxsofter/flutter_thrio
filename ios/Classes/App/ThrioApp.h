@@ -48,7 +48,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 // Sets the `ThrioFlutterViewController` builder.
 //
-// Need to be register when extending the `ThrioFlutterPage` class.
+// Need to be register when extending the `ThrioFlutterViewController` class.
 //
 - (ThrioVoidCallback)registerFlutterViewControllerBuilder:(ThrioFlutterViewControllerBuilder)builder;
 

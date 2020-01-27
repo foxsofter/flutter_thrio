@@ -22,6 +22,8 @@ class ThrioNavigator extends StatefulWidget {
 
   final Navigator child;
 
+  static final _pageBuilders = RegistryMap<String, ThrioPageBuilder>();
+
   /// Push a page with `url` onto `ThrioNavigator`.
   ///
   static Future<bool> push({
@@ -89,35 +91,30 @@ class ThrioNavigator extends StatefulWidget {
   ///
   static Future<List<int>> allIndex(String index) => ThrioApp().allIndex(index);
 
+  static VoidCallback registerDefaultPageBuilder(
+    ThrioPageBuilder builder,
+  ) =>
+      _pageBuilders.registry(Navigator.defaultRouteName, builder);
+
+  static VoidCallback registerPageBuilder(
+    String url,
+    ThrioPageBuilder builder,
+  ) =>
+      _pageBuilders.registry(url, builder);
+
+  static VoidCallback registerPageBuilders(
+    Map<String, ThrioPageBuilder> builders,
+  ) =>
+      _pageBuilders.registryAll(builders);
+
   @override
   State<StatefulWidget> createState() => ThrioNavigatorState();
 }
 
 class ThrioNavigatorState extends State<ThrioNavigator> {
   final _pageRoutes = <ThrioPageRoute>[];
-  final _pageBuilders = RegistryMap<String, ThrioPageBuilder>();
 
   ThrioPageRoute get current => _pageRoutes.last;
-
-  /// Register default page builder for the router.
-  ///
-  /// Unregistry by calling the return value `VoidCallback`.
-  ///
-  VoidCallback registryDefaultPageBuilder(
-    ThrioPageBuilder builder,
-  ) =>
-      _pageBuilders.registry(Navigator.defaultRouteName, builder);
-
-  VoidCallback registerPageBuilder(
-    String url,
-    ThrioPageBuilder builder,
-  ) =>
-      _pageBuilders.registry(url, builder);
-
-  VoidCallback registerPageBuilders(
-    Map<String, ThrioPageBuilder> builders,
-  ) =>
-      _pageBuilders.registryAll(builders);
 
   /// 还无法实现animated=false
   Future<bool> push(RouteSettings settings, {bool animated = true}) {
@@ -125,7 +122,7 @@ class ThrioNavigatorState extends State<ThrioNavigator> {
     if (navigatorState == null) {
       return Future.value(false);
     }
-    final pageBuilder = _pageBuilders[settings.url];
+    final pageBuilder = ThrioNavigator._pageBuilders[settings.url];
     final route = ThrioPageRoute(builder: pageBuilder, settings: settings);
     navigatorState.push(route);
     _pageRoutes.add(route);
@@ -138,16 +135,22 @@ class ThrioNavigatorState extends State<ThrioNavigator> {
     if (navigatorState == null) {
       return false;
     }
-    if (_pageRoutes.last == null) {
+    if (_pageRoutes.isEmpty) {
       return false;
     }
-    ThrioLogger().v('pop: ${_pageRoutes.last.settings}');
     if (animated) {
-      navigatorState.pop();
+      if (await _pageRoutes.last.willPop() == RoutePopDisposition.pop) {
+        navigatorState.pop();
+        _pageRoutes.removeLast();
+        ThrioLogger().v('pop: ${_pageRoutes.last.settings}');
+      } else {
+        return false;
+      }
     } else {
       navigatorState.removeRoute(_pageRoutes.last);
+      _pageRoutes.removeLast();
+      ThrioLogger().v('pop: ${_pageRoutes.last.settings}');
     }
-    _pageRoutes.removeLast();
     return true;
   }
 
@@ -195,7 +198,7 @@ class ThrioNavigatorState extends State<ThrioNavigator> {
     if (route == null) {
       return Future.value(false);
     }
-    ThrioLogger().v('pop: ${route.settings}');
+    ThrioLogger().v('remove: ${route.settings}');
     if (settings.name == current.settings.name) {
       return pop(animated: animated);
     }

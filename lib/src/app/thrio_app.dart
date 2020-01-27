@@ -9,8 +9,6 @@ import '../extension/stateful_widget.dart';
 import '../navigator/thrio_navigator.dart';
 import '../navigator/thrio_page_observer.dart';
 import '../navigator/thrio_page_route.dart';
-import '../registry/registry_map.dart';
-import '../thrio_types.dart';
 
 class ThrioApp {
   factory ThrioApp() => _default;
@@ -46,10 +44,10 @@ class ThrioApp {
   ///
   /// Unregistry by calling the return value `VoidCallback`.
   ///
-  VoidCallback registryDefaultPageBuilder(
+  VoidCallback registerDefaultPageBuilder(
     ThrioPageBuilder builder,
   ) =>
-      navigatorState?.registryDefaultPageBuilder(builder);
+      ThrioNavigator.registerDefaultPageBuilder(builder);
 
   /// Register an page builder for the router.
   ///
@@ -59,7 +57,7 @@ class ThrioApp {
     String url,
     ThrioPageBuilder builder,
   ) =>
-      navigatorState?.registerPageBuilder(url, builder);
+      ThrioNavigator.registerPageBuilder(url, builder);
 
   /// Register page builders for the router.
   ///
@@ -68,22 +66,7 @@ class ThrioApp {
   VoidCallback registerPageBuilders(
     Map<String, ThrioPageBuilder> builders,
   ) =>
-      navigatorState?.registerPageBuilders(builders);
-
-  /// Sets up a broadcast stream for receiving page lifecycle events.
-  ///
-  /// return value is `index`.
-  ///
-  Stream<int> onPageLifecycleStream(
-    PageLifecycle lifecycle,
-    String url, {
-    int index,
-  }) =>
-      _pageObserver.onPageLifecycleStream(
-        lifecycle,
-        url,
-        index: index,
-      );
+      ThrioNavigator.registerPageBuilders(builders);
 
   /// Sets up a broadcast stream for receiving page notify events.
   ///

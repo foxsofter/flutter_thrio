@@ -1,14 +1,10 @@
 // Copyright (c) 2019/12/05, 13:40:58 PM The Hellobike. All rights reserved.
 // Created by WeiZhongdan, weizhongdan06291@hellobike.com.
 
-import 'dart:io';
-
 import 'package:flutter/widgets.dart';
 
 import '../app/thrio_app.dart';
 import '../channel/thrio_channel.dart';
-import '../logger/thrio_logger.dart';
-import '../thrio_types.dart';
 import 'thrio_route_settings.dart';
 
 class ThrioPageObserver {
@@ -18,7 +14,6 @@ class ThrioPageObserver {
     _onPop();
     _onPopTo();
     _onRemove();
-    _onAppeared();
   }
 
   final ThrioChannel _channel;
@@ -35,21 +30,6 @@ class ThrioPageObserver {
       },
     );
   }
-
-  Stream<int> onPageLifecycleStream(
-    PageLifecycle lifecycle,
-    String url, {
-    int index,
-  }) =>
-      _channel
-          .onEventStream(lifecycle.toString())
-          .where((arguments) =>
-              arguments.containsValue(url) &&
-              (index == null || arguments.containsValue(index)))
-          .map<int>((arguments) {
-        final index = arguments['index'];
-        return index is int ? index : null;
-      });
 
   Stream<Map<String, dynamic>> onPageNotifyStream(
     String name,
@@ -106,22 +86,5 @@ class ThrioPageObserver {
               routeSettings,
               animated: animated,
             );
-      });
-
-  void _onAppeared() => _channel
-          .onEventStream(PageLifecycle.appeared.toString())
-          .listen((arguments) {
-        if (Platform.isAndroid) {
-          try {
-            final owner = WidgetsBinding.instance.pipelineOwner?.semanticsOwner;
-            final root = owner?.rootSemanticsNode;
-            root?.detach();
-            root?.attach(owner);
-          }
-          // ignore: avoid_catches_without_on_clauses
-          catch (e) {
-            ThrioLogger().e(e.toString());
-          }
-        }
       });
 }

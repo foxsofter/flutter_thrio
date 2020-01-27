@@ -18,11 +18,5 @@ class Module with ThrioModule {
       'flutter3',
       (settings) => Page3(index: settings.index, params: settings.params),
     );
-    ThrioApp()
-        .onPageLifecycleStream(PageLifecycle.appeared, 'flutter1')
-        .listen((index) {
-      ThrioLogger().v(index);
-      return;
-    });
   }
 }

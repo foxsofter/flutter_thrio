@@ -20,6 +20,10 @@ typedef void (^ThrioVoidCallback)(void);
 //
 typedef void (^ThrioBoolCallback)(BOOL);
 
+// Signature for a callback that verifies that it's OK to call `pop`.
+//
+typedef void (^ThrioWillPopCallback)(ThrioBoolCallback result);
+
 // Signature for a block that handlers channel method invocation.
 //
 typedef void (^ThrioMethodHandler)(NSDictionary<NSString *, id> *arguments, ThrioBoolCallback _Nullable result);
@@ -28,7 +32,7 @@ typedef void (^ThrioMethodHandler)(NSDictionary<NSString *, id> *arguments, Thri
 //
 typedef void (^ThrioEventHandler)(NSDictionary<NSString *, id> *arguments, ThrioBoolCallback _Nullable result);
 
-// Signature of a block that creates a ThrioFlutterPage.
+// Signature of a block that creates a ThrioFlutterViewController.
 //
 @class ThrioFlutterViewController;
 typedef ThrioFlutterViewController* _Nullable (^ThrioFlutterViewControllerBuilder)(void);
@@ -37,18 +41,6 @@ typedef ThrioFlutterViewController* _Nullable (^ThrioFlutterViewControllerBuilde
 //
 typedef UIViewController* _Nullable (^ThrioNativeViewControllerBuilder)(NSDictionary<NSString *, id>* params);
 
-// States that a router page can be in.
-//
-typedef NS_ENUM(NSUInteger, ThrioPageLifecycle) {
-  ThrioPageLifecycleInited,
-  ThrioPageLifecycleWillAppear,
-  ThrioPageLifecycleAppeared,
-  ThrioPageLifecycleWillDisappeared,
-  ThrioPageLifecycleDisappeared,
-  ThrioPageLifecycleDestroyed,
-  ThrioPageLifecycleBackground,
-  ThrioPageLifecycleForeground,
-};
 
 NS_ASSUME_NONNULL_END
 
