@@ -35,14 +35,14 @@ NS_ASSUME_NONNULL_BEGIN
                            OBJC_ASSOCIATION_COPY_NONATOMIC);
 }
 
-- (BOOL)hidesNavigationBarWhenPushed {
-  return [(NSNumber *)objc_getAssociatedObject(self, @selector(setHidesNavigationBarWhenPushed:)) boolValue];
+- (NSNumber * _Nullable)hidesNavigationBarWhenPushed {
+  return objc_getAssociatedObject(self, @selector(setHidesNavigationBarWhenPushed:));
 }
 
-- (void)setHidesNavigationBarWhenPushed:(BOOL)hidesNavigationBarWhenPushed {
+- (void)setHidesNavigationBarWhenPushed:(NSNumber * _Nullable)hidesNavigationBarWhenPushed {
   objc_setAssociatedObject(self,
                            @selector(setHidesNavigationBarWhenPushed:),
-                           [NSNumber numberWithBool:hidesNavigationBarWhenPushed],
+                           hidesNavigationBarWhenPushed,
                            OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
@@ -90,6 +90,8 @@ NS_ASSUME_NONNULL_BEGIN
                                      result:^(id _Nullable r) {
       result(r && [r boolValue]);
     }];
+  } else {
+    result(YES);
   }
 }
 
@@ -261,6 +263,13 @@ NS_ASSUME_NONNULL_BEGIN
   if (![self isKindOfClass:ThrioFlutterViewController.class]) {
     // 当页面出现后，给页面发送通知
     [self thrio_onNotify];
+    
+    if (self.hidesNavigationBarWhenPushed == nil) {
+      self.hidesNavigationBarWhenPushed = @(self.navigationController.navigationBarHidden);
+    }
+  }
+  if (self.hidesNavigationBarWhenPushed.boolValue != self.navigationController.navigationBarHidden) {
+    self.navigationController.navigationBarHidden = self.hidesNavigationBarWhenPushed.boolValue;
   }
 }
 

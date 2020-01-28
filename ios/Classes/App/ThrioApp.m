@@ -268,9 +268,7 @@ NS_ASSUME_NONNULL_BEGIN
     BOOL animated = [arguments[@"animated"] boolValue];
     NSDictionary *params = arguments[@"params"];
     [self pushUrl:url params:params animated:animated result:^(BOOL r) {
-      if (result) {
-        result(r);
-      }
+      result(r);
     }];
   }];
 }

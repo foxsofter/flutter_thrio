@@ -141,15 +141,15 @@ class ThrioNavigatorState extends State<ThrioNavigator> {
     if (animated) {
       if (await _pageRoutes.last.willPop() == RoutePopDisposition.pop) {
         navigatorState.pop();
-        _pageRoutes.removeLast();
         ThrioLogger().v('pop: ${_pageRoutes.last.settings}');
+        _pageRoutes.removeLast();
       } else {
         return false;
       }
     } else {
       navigatorState.removeRoute(_pageRoutes.last);
-      _pageRoutes.removeLast();
       ThrioLogger().v('pop: ${_pageRoutes.last.settings}');
+      _pageRoutes.removeLast();
     }
     return true;
   }

@@ -28,7 +28,7 @@ NS_ASSUME_NONNULL_BEGIN
     ThrioNativeViewControllerBuilder builder = [self nativeViewControllerBuilders][url];
     if (builder) {
       viewController = builder(params);
-      if (!viewController.hidesNavigationBarWhenPushed) {
+      if (viewController.hidesNavigationBarWhenPushed == nil) {
         for (UIViewController *vc in self.viewControllers.reverseObjectEnumerator) {
           if (![vc isKindOfClass:ThrioFlutterViewController.class]) {
             viewController.hidesNavigationBarWhenPushed = vc.hidesNavigationBarWhenPushed;
@@ -46,7 +46,7 @@ NS_ASSUME_NONNULL_BEGIN
         } else {
          viewController = [[ThrioFlutterViewController alloc] init];
         }
-        viewController.hidesNavigationBarWhenPushed = YES;
+        viewController.hidesNavigationBarWhenPushed = @YES;
       }
     }
     if (viewController) {
@@ -239,8 +239,8 @@ NS_ASSUME_NONNULL_BEGIN
           [ThrioApp.shared detachFlutterViewController];
         }
       }
-      if (strongSelf.navigationBarHidden != willShowVC.hidesNavigationBarWhenPushed) {
-        [strongSelf setNavigationBarHidden:willShowVC.hidesNavigationBarWhenPushed];
+      if (strongSelf.navigationBarHidden != willShowVC.hidesNavigationBarWhenPushed.boolValue) {
+        [strongSelf setNavigationBarHidden:willShowVC.hidesNavigationBarWhenPushed.boolValue];
       }
     }
   }];
@@ -263,8 +263,8 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 - (void)thrio_pushViewController:(UIViewController *)viewController animated:(BOOL)animated {
-  if (viewController.hidesNavigationBarWhenPushed != self.topViewController.hidesNavigationBarWhenPushed) {
-    [self setNavigationBarHidden:viewController.hidesNavigationBarWhenPushed];
+  if (![viewController.hidesNavigationBarWhenPushed isEqualToNumber:self.topViewController.hidesNavigationBarWhenPushed]) {
+    [self setNavigationBarHidden:viewController.hidesNavigationBarWhenPushed.boolValue];
   }
 
   [self thrio_pushViewController:viewController animated:animated];
@@ -287,8 +287,8 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 - (NSArray<__kindof UIViewController *> * _Nullable)thrio_popToViewController:(UIViewController *)viewController animated:(BOOL)animated {
-  if (viewController.hidesNavigationBarWhenPushed != self.topViewController.hidesNavigationBarWhenPushed) {
-    [self setNavigationBarHidden:viewController.hidesNavigationBarWhenPushed];
+  if (![viewController.hidesNavigationBarWhenPushed isEqualToNumber:self.topViewController.hidesNavigationBarWhenPushed]) {
+    [self setNavigationBarHidden:viewController.hidesNavigationBarWhenPushed.boolValue];
   }
   
   return [self thrio_popToViewController:viewController animated:animated];
@@ -297,8 +297,8 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)thrio_setViewControllers:(NSArray<UIViewController *> *)viewControllers {
   UIViewController *willPopVC = self.topViewController;
   UIViewController *willShowVC = viewControllers.lastObject;
-  if (willPopVC.hidesNavigationBarWhenPushed != willShowVC.hidesNavigationBarWhenPushed) {
-    [self setNavigationBarHidden:willShowVC.hidesNavigationBarWhenPushed];
+  if (![willPopVC.hidesNavigationBarWhenPushed isEqualToNumber:willShowVC.hidesNavigationBarWhenPushed]) {
+    [self setNavigationBarHidden:willShowVC.hidesNavigationBarWhenPushed.boolValue];
   }
   
   [self thrio_setViewControllers:viewControllers];

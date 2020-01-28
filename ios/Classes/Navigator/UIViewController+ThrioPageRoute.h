@@ -14,7 +14,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface UIViewController (ThrioPageRoute)
 
-@property (nonatomic, assign) BOOL hidesNavigationBarWhenPushed;
+@property (nonatomic, strong, nullable) NSNumber *hidesNavigationBarWhenPushed;
 
 @property (nonatomic, copy, nullable) ThrioWillPopCallback willPopCallback;
 
