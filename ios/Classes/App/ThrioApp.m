@@ -143,7 +143,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (BOOL)canPop {
   UINavigationController *nvc = self.navigationController;
   return nvc.viewControllers.count > 1 ||
-         nvc.topViewController.firstRoute != nvc.topViewController.lastRoute;
+         nvc.topViewController.thrio_firstRoute != nvc.topViewController.thrio_lastRoute;
 }
 
 - (void)popToUrl:(NSString *)url
@@ -326,9 +326,8 @@ NS_ASSUME_NONNULL_BEGIN
    [_channel registryMethodCall:@"lastIndex"
                         handler:^void(NSDictionary<NSString *,id> * arguments,
                                       ThrioBoolCallback _Nullable result) {
-    NSString *url = arguments[@"url"];
     if (result) {
-      NSNumber *index = @0;
+      NSString *url = arguments[@"url"];
       if (url.length < 1) {
         result([self lastIndex]);
       } else {

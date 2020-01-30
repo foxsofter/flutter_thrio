@@ -135,7 +135,7 @@ class ThrioNavigatorState extends State<ThrioNavigator> {
     if (navigatorState == null) {
       return false;
     }
-    if (_pageRoutes.isEmpty) {
+    if (_pageRoutes.length <= 1) {
       return false;
     }
     if (animated) {

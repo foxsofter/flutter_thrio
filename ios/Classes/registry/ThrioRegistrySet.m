@@ -7,6 +7,8 @@
 
 #import "ThrioRegistrySet.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface ThrioRegistrySet ()
 
 @property (nonatomic, strong) NSMutableSet *sets;
@@ -26,7 +28,6 @@
   }
   return self;
 }
-
 
 - (ThrioVoidCallback)registry:(id)value {
   NSAssert(value, @"value must not be null.");
@@ -57,9 +58,14 @@
   [_sets removeAllObjects];
 }
 
-- (NSSet *)values {
-  return [_sets copy];
+- (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)enumerationState
+                                  objects:(id __unsafe_unretained _Nullable [])buffer
+                                    count:(NSUInteger) len {
+    return [_sets countByEnumeratingWithState:enumerationState
+                                      objects:buffer
+                                        count:len];
 }
 
-
 @end
+
+NS_ASSUME_NONNULL_END

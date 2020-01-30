@@ -18,52 +18,54 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface UIViewController ()
 
-@property (nonatomic, strong, readwrite, nullable) ThrioPageRoute *firstRoute;
+@property (nonatomic, strong, readwrite, nullable) ThrioPageRoute *thrio_firstRoute;
 
 @end
 
 @implementation UIViewController (ThrioPageRoute)
 
-- (ThrioWillPopCallback _Nullable)willPopCallback {
-  return objc_getAssociatedObject(self, @selector(setWillPopCallback:));
+- (BOOL)thrio_popDisabled {
+  return [objc_getAssociatedObject(self, _cmd) boolValue];
 }
 
-- (void)setWillPopCallback:(ThrioWillPopCallback _Nullable)callback {
+- (void)setThrio_popDisabled:(BOOL)disabled {
   objc_setAssociatedObject(self,
-                           @selector(setWillPopCallback:),
-                           callback,
-                           OBJC_ASSOCIATION_COPY_NONATOMIC);
+                           @selector(thrio_popDisabled),
+                           @(disabled),
+                           OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
-- (NSNumber * _Nullable)hidesNavigationBarWhenPushed {
-  return objc_getAssociatedObject(self, @selector(setHidesNavigationBarWhenPushed:));
+- (NSNumber * _Nullable)thrio_hidesNavigationBar {
+  return objc_getAssociatedObject(self, @selector(setThrio_hidesNavigationBar:));
 }
 
-- (void)setHidesNavigationBarWhenPushed:(NSNumber * _Nullable)hidesNavigationBarWhenPushed {
+- (void)setThrio_hidesNavigationBar:(NSNumber * _Nullable)hidesNavigationBarWhenPushed {
   objc_setAssociatedObject(self,
-                           @selector(setHidesNavigationBarWhenPushed:),
+                           @selector(setThrio_hidesNavigationBar:),
                            hidesNavigationBarWhenPushed,
                            OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
-- (ThrioPageRoute * _Nullable)firstRoute {
-  return objc_getAssociatedObject(self, @selector(setFirstRoute:));
+- (ThrioPageRoute * _Nullable)thrio_firstRoute {
+  return objc_getAssociatedObject(self, @selector(setThrio_firstRoute:));
 }
 
-- (void)setFirstRoute:(ThrioPageRoute * _Nullable)route {
+- (void)setThrio_firstRoute:(ThrioPageRoute * _Nullable)route {
   objc_setAssociatedObject(self,
-                           @selector(setFirstRoute:),
+                           @selector(setThrio_firstRoute:),
                            route,
                            OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
-- (ThrioPageRoute * _Nullable)lastRoute {
-  ThrioPageRoute *next = self.firstRoute;
+- (ThrioPageRoute * _Nullable)thrio_lastRoute {
+  ThrioPageRoute *next = self.thrio_firstRoute;
   while (next.next) {
     next = next.next;
   }
   return next;
 }
+
+#pragma mark - Navigation methods
 
 - (void)thrio_pushUrl:(NSString *)url
                params:(NSDictionary *)params
@@ -72,15 +74,15 @@ NS_ASSUME_NONNULL_BEGIN
   NSNumber *index = @([self thrio_getLastIndexByUrl:url].integerValue + 1);
   ThrioRouteSettings *settings = [ThrioRouteSettings settingsWithUrl:url
                                                                index:index
-                                                              nested:self.firstRoute != nil
+                                                              nested:self.thrio_firstRoute != nil
                                                               params:params];
   ThrioPageRoute *newRoute = [ThrioPageRoute routeWithSettings:settings];
-  if (self.firstRoute) {
-    ThrioPageRoute *lastRoute = self.lastRoute;
+  if (self.thrio_firstRoute) {
+    ThrioPageRoute *lastRoute = self.thrio_lastRoute;
     lastRoute.next = newRoute;
     newRoute.prev = lastRoute;
   } else {
-    self.firstRoute = newRoute;
+    self.thrio_firstRoute = newRoute;
   }
   if ([self isKindOfClass:ThrioFlutterViewController.class]) {
     NSMutableDictionary *arguments = [NSMutableDictionary dictionaryWithDictionary:[settings toArguments]];
@@ -108,7 +110,7 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 - (void)thrio_popAnimated:(BOOL)animated result:(ThrioBoolCallback)result {
-  ThrioPageRoute *route = self.lastRoute;
+  ThrioPageRoute *route = self.thrio_lastRoute;
   if ([self isKindOfClass:ThrioFlutterViewController.class]) {
     NSMutableDictionary *arguments =
       [NSMutableDictionary dictionaryWithDictionary:[route.settings toArgumentsWithoutParams]];
@@ -119,21 +121,21 @@ NS_ASSUME_NONNULL_BEGIN
                                      result:^(id _Nullable r) {
       __strong typeof(self) strongSelf = weakself;
       if ([r boolValue]) {
-        if (route != strongSelf.firstRoute) {
+        if (route != strongSelf.thrio_firstRoute) {
           route.prev.next = nil;
           [strongSelf thrio_onNotify];
         } else {
-          strongSelf.firstRoute = nil;
+          strongSelf.thrio_firstRoute = nil;
         }
       }
       result([r boolValue]);
     }];
   } else {
-    if (route != self.firstRoute) {
+    if (route != self.thrio_firstRoute) {
       route.prev.next = nil;
       [self thrio_onNotify];
     } else {
-      self.firstRoute = nil;
+      self.thrio_firstRoute = nil;
     }
     result(YES);
   }
@@ -189,10 +191,10 @@ NS_ASSUME_NONNULL_BEGIN
                                      result:^(id  _Nullable r) {
       __strong typeof(self) strongSelf = weakself;
       if ([r boolValue]) {
-        if (route == strongSelf.firstRoute) {
-          strongSelf.firstRoute = route.next;
-          strongSelf.firstRoute.prev = nil;
-        } else if (route == self.lastRoute) {
+        if (route == strongSelf.thrio_firstRoute) {
+          strongSelf.thrio_firstRoute = route.next;
+          strongSelf.thrio_firstRoute.prev = nil;
+        } else if (route == self.thrio_lastRoute) {
           route.prev.next = nil;
           [strongSelf thrio_onNotify];
         } else {
@@ -203,10 +205,10 @@ NS_ASSUME_NONNULL_BEGIN
       result(r && [r boolValue]);
     }];
   } else {
-    if (route == self.firstRoute) {
-      self.firstRoute = route.next;
-      self.firstRoute.prev = nil;
-    } else if (route == self.lastRoute) {
+    if (route == self.thrio_firstRoute) {
+      self.thrio_firstRoute = route.next;
+      self.thrio_firstRoute.prev = nil;
+    } else if (route == self.thrio_lastRoute) {
       route.prev.next = nil;
       [self thrio_onNotify];
     } else {
@@ -218,7 +220,7 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 - (ThrioPageRoute * _Nullable)thrio_getRouteByUrl:(NSString *)url index:(NSNumber *)index {
-  ThrioPageRoute *last = self.lastRoute;
+  ThrioPageRoute *last = self.thrio_lastRoute;
   if (url.length < 1) {
     return last;
   }
@@ -238,7 +240,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (NSArray *)thrio_getAllIndexByUrl:(NSString *)url {
   NSMutableArray *indexs = [NSMutableArray array];
-  ThrioPageRoute *first = self.firstRoute;
+  ThrioPageRoute *first = self.thrio_firstRoute;
   do {
     if ([first.settings.url isEqualToString:url]) {
       [indexs addObject:first.settings.index];
@@ -264,24 +266,24 @@ NS_ASSUME_NONNULL_BEGIN
     // 当页面出现后，给页面发送通知
     [self thrio_onNotify];
     
-    if (self.hidesNavigationBarWhenPushed == nil) {
-      self.hidesNavigationBarWhenPushed = @(self.navigationController.navigationBarHidden);
+    if (self.thrio_hidesNavigationBar == nil) {
+      self.thrio_hidesNavigationBar = @(self.navigationController.navigationBarHidden);
     }
   }
-  if (self.hidesNavigationBarWhenPushed.boolValue != self.navigationController.navigationBarHidden) {
-    self.navigationController.navigationBarHidden = self.hidesNavigationBarWhenPushed.boolValue;
+  if (self.thrio_hidesNavigationBar.boolValue != self.navigationController.navigationBarHidden) {
+    self.navigationController.navigationBarHidden = self.thrio_hidesNavigationBar.boolValue;
   }
 }
 
 - (void)thrio_onNotify {
   BOOL isFlutterViewController = [self isKindOfClass:ThrioFlutterViewController.class];
-  NSArray *keys = [self.lastRoute.notifications.allKeys copy];
+  NSArray *keys = [self.thrio_lastRoute.notifications.allKeys copy];
   for (NSString *name in keys) {
-    NSDictionary * params = [self.lastRoute removeNotify:name];
+    NSDictionary * params = [self.thrio_lastRoute removeNotify:name];
     if (isFlutterViewController) {
       NSDictionary *arguments = @{
-        @"url": self.lastRoute.settings.url,
-        @"index": self.lastRoute.settings.index,
+        @"url": self.thrio_lastRoute.settings.url,
+        @"index": self.thrio_lastRoute.settings.index,
         @"name": name,
         @"params": params,
       };

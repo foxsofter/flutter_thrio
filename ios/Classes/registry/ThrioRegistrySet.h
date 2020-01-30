@@ -11,17 +11,15 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface ThrioRegistrySet : NSObject
+@interface ThrioRegistrySet<__covariant ObjectType> : NSObject<NSFastEnumeration>
 
 + (instancetype)set;
 
-- (ThrioVoidCallback)registry:(id)value;
+- (ThrioVoidCallback)registry:(ObjectType)value;
 
-- (ThrioVoidCallback)registryAll:(NSSet *)values;
+- (ThrioVoidCallback)registryAll:(NSSet<ObjectType> *)values;
 
 - (void)clear;
-
-- (NSSet *)values;
 
 @end
 

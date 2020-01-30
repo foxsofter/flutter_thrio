@@ -1,11 +1,17 @@
 PODS:
+  - FDFullscreenPopGesture (1.1)
   - Flutter (1.0.0)
   - thrio (0.0.1):
+    - FDFullscreenPopGesture
     - Flutter
 
 DEPENDENCIES:
   - Flutter (from `Flutter`)
   - thrio (from `.symlinks/plugins/thrio/ios`)
+
+SPEC REPOS:
+  trunk:
+    - FDFullscreenPopGesture
 
 EXTERNAL SOURCES:
   Flutter:
@@ -14,8 +20,9 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/thrio/ios"
 
 SPEC CHECKSUMS:
+  FDFullscreenPopGesture: a8a620179e3d9c40e8e00256dcee1c1a27c6d0f0
   Flutter: 0e3d915762c693b495b44d77113d4970485de6ec
-  thrio: d743798337f2fde47e583222f1c09c4ba63948c6
+  thrio: 00dd199d588fb4efd9825bff88aaedd2345bf1b6
 
 PODFILE CHECKSUM: 5ea6228c14b99faa4cb4120b1058e9a45d87b4c1
 

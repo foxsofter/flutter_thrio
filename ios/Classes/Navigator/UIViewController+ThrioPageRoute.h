@@ -14,13 +14,13 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface UIViewController (ThrioPageRoute)
 
-@property (nonatomic, strong, nullable) NSNumber *hidesNavigationBarWhenPushed;
+@property (nonatomic, assign) BOOL thrio_popDisabled;
 
-@property (nonatomic, copy, nullable) ThrioWillPopCallback willPopCallback;
+@property (nonatomic, strong, nullable) NSNumber *thrio_hidesNavigationBar;
 
-@property (nonatomic, strong, readonly, nullable) ThrioPageRoute *firstRoute;
+@property (nonatomic, strong, readonly, nullable) ThrioPageRoute *thrio_firstRoute;
 
-@property (nonatomic, strong, readonly, nullable) ThrioPageRoute *lastRoute;
+@property (nonatomic, strong, readonly, nullable) ThrioPageRoute *thrio_lastRoute;
 
 - (void)thrio_pushUrl:(NSString *)url
                params:(NSDictionary *)params

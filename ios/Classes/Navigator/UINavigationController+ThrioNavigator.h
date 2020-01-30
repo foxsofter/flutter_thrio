@@ -7,10 +7,15 @@
 
 #import <UIKit/UIKit.h>
 #import "ThrioTypes.h"
+#import "ThrioPopGestureRecognizerDelegate.h"
+#import "ThrioNavigationControllerDelegate.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 @interface UINavigationController (ThrioNavigator)
+
+@property (nonatomic, strong, readonly) UIPanGestureRecognizer *thrio_popGestureRecognizer;
+@property (nonatomic, strong, readonly) ThrioPopGestureRecognizerDelegate *thrio_popGestureRecognizerDelegate;
 
 - (void)thrio_pushUrl:(NSString *)url
                params:(NSDictionary *)params
@@ -40,8 +45,6 @@ NS_ASSUME_NONNULL_BEGIN
 - (NSNumber *)thrio_getLastIndexByUrl:(NSString *)url;
 
 - (NSArray *)thrio_getAllIndexByUrl:(NSString *)url;
-
-- (void)thrio_addWillPopCallback:(ThrioWillPopCallback)callback;
 
 - (BOOL)thrio_ContainsUrl:(NSString *)url;
 
