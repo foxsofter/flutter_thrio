@@ -45,6 +45,14 @@ NS_ASSUME_NONNULL_BEGIN
                animated:(BOOL)animated
                  result:(ThrioBoolCallback)result;
 
+- (void)thrio_didPushUrl:(NSString *)url index:(NSNumber *)index;
+
+- (void)thrio_didPopUrl:(NSString *)url index:(NSNumber *)index;
+
+- (void)thrio_didPopToUrl:(NSString *)url index:(NSNumber *)index;
+
+- (void)thrio_didRemoveUrl:(NSString *)url index:(NSNumber *)index;
+
 - (ThrioPageRoute * _Nullable)thrio_getRouteByUrl:(NSString *)url index:(NSNumber *)index;
 
 - (NSNumber *)thrio_getLastIndexByUrl:(NSString *)url;

@@ -25,6 +25,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, strong) ThrioFlutterViewController *emptyViewController;
 
+@property (nonatomic, weak, readonly) UINavigationController *navigationController;
+
 @end
 
 @implementation ThrioApp
@@ -85,6 +87,10 @@ NS_ASSUME_NONNULL_BEGIN
   [self _onPop];
   [self _onPopTo];
   [self _onRemove];
+  [self _onDidPush];
+  [self _onDidPop];
+  [self _onDidPopTo];
+  [self _onDidRemove];
   [self _onLastIndex];
   [self _onGetAllIndex];
 }
@@ -226,6 +232,39 @@ NS_ASSUME_NONNULL_BEGIN
   }
 }
 
+- (void)_startupOnce {
+  static dispatch_once_t onceToken;
+  dispatch_once(&onceToken, ^{
+    [self _startupFlutter];
+    [self _registerPlugin];
+  });
+}
+
+- (void)_startupFlutter {
+  _engine = [[FlutterEngine alloc] initWithName:@"io.flutter" project:nil];
+  BOOL result = [_engine run];
+  if (!result) {
+    @throw [ThrioException exceptionWithName:@"FlutterFailedException"
+                                      reason:@"run flutter engine failed!"
+                                    userInfo:nil];
+  }
+}
+
+- (void)_registerPlugin {
+  Class clazz = NSClassFromString(@"GeneratedPluginRegistrant");
+  if (clazz) {
+    if ([clazz respondsToSelector:NSSelectorFromString(@"registerWithRegistry:")]) {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Warc-performSelector-leaks"
+      [clazz performSelector:NSSelectorFromString(@"registerWithRegistry:")
+                  withObject:_engine];
+#pragma clang diagnostic pop
+    }
+  }
+}
+
+#pragma mark - on channel methods
+
 - (void)_onNotify {
   [_channel registryMethodCall:@"notify"
                        handler:^void(NSDictionary<NSString *,id> * arguments,
@@ -348,36 +387,46 @@ NS_ASSUME_NONNULL_BEGIN
   }];
 }
 
-- (void)_startupOnce {
-  static dispatch_once_t onceToken;
-  dispatch_once(&onceToken, ^{
-    [self _startupFlutter];
-    [self _registerPlugin];
-  });
+- (void)_onDidPush {
+   [_channel registryMethodCall:@"didPush"
+                        handler:^void(NSDictionary<NSString *,id> * arguments,
+                                      ThrioBoolCallback _Nullable result) {
+    NSString *url = arguments[@"url"];
+    NSNumber *index = arguments[@"index"];
+    [self.navigationController thrio_didPushUrl:url index:index];
+  }];
 }
 
-- (void)_startupFlutter {
-  _engine = [[FlutterEngine alloc] initWithName:@"io.flutter" project:nil];
-  BOOL result = [_engine run];
-  if (!result) {
-    @throw [ThrioException exceptionWithName:@"FlutterFailedException"
-                                      reason:@"run flutter engine failed!"
-                                    userInfo:nil];
-  }
+- (void)_onDidPop {
+   [_channel registryMethodCall:@"didPop"
+                        handler:^void(NSDictionary<NSString *,id> * arguments,
+                                      ThrioBoolCallback _Nullable result) {
+    NSString *url = arguments[@"url"];
+    NSNumber *index = arguments[@"index"];
+    [self.navigationController thrio_didPopUrl:url index:index];
+  }];
 }
 
-- (void)_registerPlugin {
-  Class clazz = NSClassFromString(@"GeneratedPluginRegistrant");
-  if (clazz) {
-    if ([clazz respondsToSelector:NSSelectorFromString(@"registerWithRegistry:")]) {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Warc-performSelector-leaks"
-      [clazz performSelector:NSSelectorFromString(@"registerWithRegistry:")
-                  withObject:_engine];
-#pragma clang diagnostic pop
-    }
-  }
+- (void)_onDidPopTo {
+   [_channel registryMethodCall:@"didPopTo"
+                        handler:^void(NSDictionary<NSString *,id> * arguments,
+                                      ThrioBoolCallback _Nullable result) {
+    NSString *url = arguments[@"url"];
+    NSNumber *index = arguments[@"index"];
+    [self.navigationController thrio_didPopToUrl:url index:index];
+  }];
 }
+
+- (void)_onDidRemove {
+   [_channel registryMethodCall:@"didRemove"
+                        handler:^void(NSDictionary<NSString *,id> * arguments,
+                                      ThrioBoolCallback _Nullable result) {
+    NSString *url = arguments[@"url"];
+    NSNumber *index = arguments[@"index"];
+    [self.navigationController thrio_didRemoveUrl:url index:index];
+  }];
+}
+
 
 @end
 

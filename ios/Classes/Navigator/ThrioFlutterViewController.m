@@ -7,6 +7,7 @@
 
 #import "ThrioFlutterViewController.h"
 #import "UIViewController+ThrioPageRoute.h"
+#import "UINavigationController+ThrioNavigator.h"
 #import "ThrioApp.h"
 #import "ThrioChannel.h"
 
@@ -29,10 +30,9 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
-  
-  [[UIApplication sharedApplication].delegate.window endEditing:YES];
-
   [super viewWillDisappear:animated];
+
+  [[UIApplication sharedApplication].delegate.window endEditing:YES];
 }
 
 - (void)dealloc {

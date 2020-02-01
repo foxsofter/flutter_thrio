@@ -219,6 +219,46 @@ NS_ASSUME_NONNULL_BEGIN
   }
 }
 
+- (void)thrio_didPushUrl:(NSString *)url index:(NSNumber *)index {
+  ThrioPageRoute *route = [self thrio_getRouteByUrl:url index:index];
+  if (!route) {
+    self.thrio_lastRoute.next = route;
+    route.prev = self.thrio_lastRoute;
+  }
+}
+
+- (void)thrio_didPopUrl:(NSString *)url index:(NSNumber *)index {
+  ThrioPageRoute *route = [self thrio_getRouteByUrl:url index:index];
+  if (route) {
+    route.prev.next = nil;
+    [self thrio_onNotify];
+  }
+}
+
+- (void)thrio_didPopToUrl:(NSString *)url index:(NSNumber *)index {
+  ThrioPageRoute *route = [self thrio_getRouteByUrl:url index:index];
+  if (route) {
+    route.next = nil;
+    [self thrio_onNotify];
+  }
+}
+
+- (void)thrio_didRemoveUrl:(NSString *)url index:(NSNumber *)index {
+  ThrioPageRoute *route = [self thrio_getRouteByUrl:url index:index];
+  if (route) {
+    if (route == self.thrio_firstRoute) {
+      self.thrio_firstRoute = route.next;
+      self.thrio_firstRoute.prev = nil;
+    } else if (route == self.thrio_lastRoute) {
+      route.prev.next = nil;
+      [self thrio_onNotify];
+    } else {
+      route.prev.next = route.next;
+      route.next.prev = route.prev;
+    }
+  }
+}
+
 - (ThrioPageRoute * _Nullable)thrio_getRouteByUrl:(NSString *)url index:(NSNumber *)index {
   ThrioPageRoute *last = self.thrio_lastRoute;
   if (url.length < 1) {
@@ -268,6 +308,13 @@ NS_ASSUME_NONNULL_BEGIN
     
     if (self.thrio_hidesNavigationBar == nil) {
       self.thrio_hidesNavigationBar = @(self.navigationController.navigationBarHidden);
+    }
+    [self.navigationController thrio_addPopGesture];
+  } else {
+    if (self.thrio_firstRoute == self.thrio_lastRoute) {
+      [self.navigationController thrio_addPopGesture];
+    } else {
+      [self.navigationController thrio_removePopGesture];
     }
   }
   if (self.thrio_hidesNavigationBar.boolValue != self.navigationController.navigationBarHidden) {

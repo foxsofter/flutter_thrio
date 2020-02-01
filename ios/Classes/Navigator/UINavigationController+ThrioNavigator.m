@@ -15,26 +15,34 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+@interface ThrioNavigationControllerDelegate : NSObject<UINavigationControllerDelegate>
+
+@property (nonatomic, weak) UINavigationController *navigationController;
+
+@property (nonatomic, weak) id<UINavigationControllerDelegate> originDelegate;
+
+@end
+
+@interface ThrioPopGestureRecognizerDelegate : NSObject<UIGestureRecognizerDelegate>
+
+@property (nonatomic, weak) UINavigationController *navigationController;
+
+@end
+
+
 @interface UINavigationController ()
+
+@property (nonatomic, strong, readonly) UIScreenEdgePanGestureRecognizer *thrio_popGestureRecognizer;
+
+@property (nonatomic, strong, readonly) ThrioPopGestureRecognizerDelegate *thrio_popGestureRecognizerDelegate;
+
+@property (nonatomic, strong, nullable) UIViewController *thrio_popingViewController;
 
 @property (nonatomic, strong, readonly) ThrioNavigationControllerDelegate *thrio_navigationControllerDelegate;
 
 @end
 
 @implementation UINavigationController (ThrioNavigator)
-
-- (ThrioNavigationControllerDelegate *)thrio_navigationControllerDelegate {
-  ThrioNavigationControllerDelegate *delegate = objc_getAssociatedObject(self, _cmd);
-  if (!delegate) {
-    delegate = [[ThrioNavigationControllerDelegate alloc] init];
-    delegate.navigationController = self;
-    objc_setAssociatedObject(self,
-                             _cmd,
-                             delegate,
-                             OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-  }
-  return delegate;
-}
 
 - (ThrioPopGestureRecognizerDelegate *)thrio_popGestureRecognizerDelegate {
   ThrioPopGestureRecognizerDelegate *delegate = objc_getAssociatedObject(self, _cmd);
@@ -49,18 +57,17 @@ NS_ASSUME_NONNULL_BEGIN
   return delegate;
 }
 
-- (UIPanGestureRecognizer *)thrio_popGestureRecognizer {
-  UIPanGestureRecognizer *panGestureRecognizer = objc_getAssociatedObject(self, _cmd);
+- (UIScreenEdgePanGestureRecognizer *)thrio_popGestureRecognizer {
+  UIScreenEdgePanGestureRecognizer *panGestureRecognizer = objc_getAssociatedObject(self, _cmd);
   if (!panGestureRecognizer) {
-    panGestureRecognizer = [[UIPanGestureRecognizer alloc] init];
+    panGestureRecognizer = [[UIScreenEdgePanGestureRecognizer alloc] init];
     panGestureRecognizer.maximumNumberOfTouches = 1;
-
-    NSArray *internalTargets = [self.interactivePopGestureRecognizer valueForKey:@"targets"];
-    id internalTarget = [internalTargets.firstObject valueForKey:@"target"];
-    SEL internalAction = NSSelectorFromString(@"handleNavigationTransition:");
     panGestureRecognizer.delegate = self.thrio_popGestureRecognizerDelegate;
-    [panGestureRecognizer addTarget:internalTarget action:internalAction];
-    self.interactivePopGestureRecognizer.enabled = NO;
+    panGestureRecognizer.delaysTouchesBegan = YES;
+    panGestureRecognizer.edges = UIRectEdgeLeft;
+    id target = self.interactivePopGestureRecognizer.delegate;
+    SEL action = NSSelectorFromString(@"handleNavigationTransition:");
+    [panGestureRecognizer addTarget:target action:action];
 
     objc_setAssociatedObject(self,
                              _cmd,
@@ -68,6 +75,30 @@ NS_ASSUME_NONNULL_BEGIN
                              OBJC_ASSOCIATION_RETAIN_NONATOMIC);
   }
   return panGestureRecognizer;
+}
+
+- (UIViewController * _Nullable)thrio_popingViewController {
+  return objc_getAssociatedObject(self, _cmd);
+}
+
+- (void)setThrio_popingViewController:(UIViewController * _Nullable)viewController {
+  objc_setAssociatedObject(self,
+                           @selector(thrio_popingViewController),
+                           viewController,
+                           OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
+- (ThrioNavigationControllerDelegate *)thrio_navigationControllerDelegate {
+  ThrioNavigationControllerDelegate *delegate = objc_getAssociatedObject(self, _cmd);
+  if (!delegate) {
+    delegate = [[ThrioNavigationControllerDelegate alloc] init];
+    delegate.navigationController = self;
+    objc_setAssociatedObject(self,
+                             _cmd,
+                             delegate,
+                             OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+  }
+  return delegate;
 }
 
 #pragma mark - navigation methods
@@ -92,22 +123,25 @@ NS_ASSUME_NONNULL_BEGIN
       }
     } else {
       if ([self.topViewController isKindOfClass:ThrioFlutterViewController.class]) {
-        [self.topViewController thrio_pushUrl:url params:params animated:animated result:^(BOOL r) {
+        [self.topViewController thrio_pushUrl:url
+                                       params:params
+                                     animated:animated
+                                       result:^(BOOL r) {
           if (r) {
             [self thrio_removePopGesture];
           }
           result(r);
         }];
         return;
-      } else {
-        ThrioFlutterViewControllerBuilder flutterBuilder = [self flutterViewControllerBuilder];
-        if (flutterBuilder) {
-         viewController = flutterBuilder();
-        } else {
-         viewController = [[ThrioFlutterViewController alloc] init];
-        }
-        viewController.thrio_hidesNavigationBar = @YES;
       }
+      
+      ThrioFlutterViewControllerBuilder flutterBuilder = [self flutterViewControllerBuilder];
+      if (flutterBuilder) {
+       viewController = flutterBuilder();
+      } else {
+       viewController = [[ThrioFlutterViewController alloc] init];
+      }
+      viewController.thrio_hidesNavigationBar = @YES;
     }
     if (viewController) {
       __weak typeof(self) weakself = self;
@@ -203,6 +237,54 @@ NS_ASSUME_NONNULL_BEGIN
     }
     result(r);
   }];
+}
+
+- (void)thrio_didPushUrl:(NSString *)url index:(NSNumber *)index {
+  UIViewController *vc = [self getViewControllerByUrl:url index:index];
+  if (!vc) {
+    return;
+  }
+  
+  [vc thrio_didPushUrl:url index:index];
+  if (vc.thrio_firstRoute != vc.thrio_lastRoute) {
+    [self thrio_removePopGesture];
+  }
+}
+
+- (void)thrio_didPopUrl:(NSString *)url index:(NSNumber *)index {
+  UIViewController *vc = [self getViewControllerByUrl:url index:index];
+  if (!vc) {
+    return;
+  }
+  
+  [vc thrio_didPopUrl:url index:index];
+  if (vc.thrio_firstRoute == vc.thrio_lastRoute) {
+    [self thrio_addPopGesture];
+  }
+}
+
+- (void)thrio_didPopToUrl:(NSString *)url index:(NSNumber *)index {
+  UIViewController *vc = [self getViewControllerByUrl:url index:index];
+  if (!vc) {
+    return;
+  }
+  
+  [vc thrio_didPopToUrl:url index:index];
+  if (vc.thrio_firstRoute == vc.thrio_lastRoute) {
+    [self thrio_addPopGesture];
+  }
+}
+
+- (void)thrio_didRemoveUrl:(NSString *)url index:(NSNumber *)index {
+  UIViewController *vc = [self getViewControllerByUrl:url index:index];
+  if (!vc) {
+    return;
+  }
+  
+  [vc thrio_didRemoveUrl:url index:index];
+  if (vc.thrio_firstRoute == vc.thrio_lastRoute) {
+    [self thrio_addPopGesture];
+  }
 }
 
 - (NSNumber *)thrio_lastIndex {
@@ -308,33 +390,8 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 - (UIViewController * _Nullable)thrio_popViewControllerAnimated:(BOOL)animated {
-  __weak typeof(self) weakself = self;
-  [self.topViewController thrio_popAnimated:animated result:^(BOOL r) {
-    if (r) {
-      __strong typeof(self) strongSelf = weakself;
-      UIViewController *willShowVC = strongSelf.viewControllers[strongSelf.viewControllers.count - 2];
-      if ([willShowVC isKindOfClass:ThrioFlutterViewController.class]) {
-        [ThrioApp.shared attachFlutterViewController:(ThrioFlutterViewController*)willShowVC];
-      }
-      if ([strongSelf.topViewController isKindOfClass:ThrioFlutterViewController.class]) {
-        BOOL containsFlutterViewController = NO;
-        for (UIViewController *vc in strongSelf.viewControllers.reverseObjectEnumerator) {
-          if ([vc isKindOfClass:ThrioFlutterViewController.class]) {
-            containsFlutterViewController = YES;
-            break;
-          }
-        }
-        if (!containsFlutterViewController) {
-          [ThrioApp.shared detachFlutterViewController];
-        }
-        [self thrio_removePopGesture];
-      }
-      if (strongSelf.navigationBarHidden != willShowVC.thrio_hidesNavigationBar.boolValue) {
-        [strongSelf setNavigationBarHidden:willShowVC.thrio_hidesNavigationBar.boolValue];
-      }
-    }
-  }];
-
+  self.thrio_popingViewController = self.topViewController;
+  
   return [self thrio_popViewControllerAnimated:animated];
 }
 
@@ -356,21 +413,169 @@ NS_ASSUME_NONNULL_BEGIN
   [self thrio_setViewControllers:viewControllers];
 }
 
-#pragma mark - private methods
-
 - (void)thrio_addPopGesture {
   if (![self.interactivePopGestureRecognizer.view.gestureRecognizers containsObject:self.thrio_popGestureRecognizer]) {
     [self.interactivePopGestureRecognizer.view addGestureRecognizer:self.thrio_popGestureRecognizer];
+    self.delegate = self.thrio_navigationControllerDelegate;
+    self.interactivePopGestureRecognizer.enabled = NO;
+    self.interactivePopGestureRecognizer.delegate = nil;
   }
-  
-  self.delegate = self.thrio_navigationControllerDelegate;
 }
 
 - (void)thrio_removePopGesture {
   if ([self.interactivePopGestureRecognizer.view.gestureRecognizers containsObject:self.thrio_popGestureRecognizer]) {
     [self.interactivePopGestureRecognizer.view removeGestureRecognizer:self.thrio_popGestureRecognizer];
   }
-  self.delegate = self.thrio_navigationControllerDelegate.originDelegate;
+}
+
+#pragma mark - private methods
+
+- (void)thrio_didShowViewController:(UIViewController *)viewController animated:(BOOL)animated {
+  if (![self.thrio_popingViewController isKindOfClass:ThrioFlutterViewController.class]) {
+    return;
+  }
+  __weak typeof(self) weakself = self;
+  [self.thrio_popingViewController thrio_popAnimated:animated result:^(BOOL r) {
+    if (r) {
+      __strong typeof(self) strongSelf = weakself;
+      if ([viewController isKindOfClass:ThrioFlutterViewController.class]) {
+        [ThrioApp.shared attachFlutterViewController:(ThrioFlutterViewController*)viewController];
+      }
+      if ([self.thrio_popingViewController isKindOfClass:ThrioFlutterViewController.class]) {
+        BOOL containsFlutterViewController = NO;
+        for (UIViewController *vc in strongSelf.viewControllers.reverseObjectEnumerator) {
+          if ([vc isKindOfClass:ThrioFlutterViewController.class]) {
+            containsFlutterViewController = YES;
+            break;
+          }
+        }
+        if (!containsFlutterViewController) {
+          [ThrioApp.shared detachFlutterViewController];
+        }
+      }
+      if (strongSelf.navigationBarHidden != viewController.thrio_hidesNavigationBar.boolValue) {
+        [strongSelf setNavigationBarHidden:viewController.thrio_hidesNavigationBar.boolValue];
+      }
+    }
+    self.thrio_popingViewController = nil;
+  }];
+}
+
+@end
+
+@implementation ThrioNavigationControllerDelegate
+
+- (void)setNavigationController:(UINavigationController * _Nullable)navigationController {
+  _originDelegate = navigationController.delegate;
+  _navigationController = navigationController;
+}
+
+- (void)navigationController:(UINavigationController *)navigationController
+      willShowViewController:(UIViewController *)viewController
+                    animated:(BOOL)animated {
+  if (self.originDelegate && ![self.originDelegate isEqual:self]) {
+    if ([self.originDelegate respondsToSelector:@selector(navigationController:willShowViewController:animated:)]) {
+      [self.originDelegate navigationController:navigationController
+                         willShowViewController:viewController
+                                       animated:animated];
+    }
+  }
+}
+
+- (void)navigationController:(UINavigationController *)navigationController
+       didShowViewController:(UIViewController *)viewController
+                    animated:(BOOL)animated {
+  if (self.originDelegate && ![self.originDelegate isEqual:self]) {
+    if ([self.originDelegate respondsToSelector:@selector(navigationController:didShowViewController:animated:)]) {
+      [self.originDelegate navigationController:navigationController
+                          didShowViewController:viewController
+                                       animated:animated];
+    }
+  }
+  [self.navigationController thrio_didShowViewController:viewController animated:animated];
+}
+
+- (UIInterfaceOrientationMask)navigationControllerSupportedInterfaceOrientations:(UINavigationController *)navigationController {
+  if (self.originDelegate && ![self.originDelegate isEqual:self]) {
+    if ([self.originDelegate respondsToSelector:@selector(navigationControllerSupportedInterfaceOrientations:)]) {
+      return [self.originDelegate navigationControllerSupportedInterfaceOrientations:navigationController];
+    }
+  }
+  return UIInterfaceOrientationMaskPortrait;
+}
+- (UIInterfaceOrientation)navigationControllerPreferredInterfaceOrientationForPresentation:(UINavigationController *)navigationController {
+  if (self.originDelegate && ![self.originDelegate isEqual:self]) {
+    if ([self.originDelegate respondsToSelector:@selector(navigationControllerPreferredInterfaceOrientationForPresentation:)]) {
+      return [self.originDelegate navigationControllerSupportedInterfaceOrientations:navigationController];
+    }
+  }
+  return UIInterfaceOrientationUnknown;
+}
+
+- (nullable id <UIViewControllerInteractiveTransitioning>)navigationController:(UINavigationController *)navigationController
+                                   interactionControllerForAnimationController:(id <UIViewControllerAnimatedTransitioning>) animationController {
+
+  if (self.originDelegate && ![self.originDelegate isEqual:self]) {
+    if ([self.originDelegate respondsToSelector:@selector(navigationController:interactionControllerForAnimationController:)]) {
+      return [self.originDelegate navigationController:navigationController interactionControllerForAnimationController:animationController];
+    }
+  }
+  return nil;
+}
+
+- (nullable id <UIViewControllerAnimatedTransitioning>)navigationController:(UINavigationController *)navigationController
+                                            animationControllerForOperation:(UINavigationControllerOperation)operation
+                                                         fromViewController:(UIViewController *)fromVC
+                                                           toViewController:(UIViewController *)toVC {
+  if (self.originDelegate && ![self.originDelegate isEqual:self]) {
+    if ([self.originDelegate respondsToSelector:@selector(navigationController:animationControllerForOperation:fromViewController:toViewController:)]) {
+      [self.originDelegate navigationController:navigationController
+                animationControllerForOperation:operation
+                             fromViewController:fromVC
+                               toViewController:toVC];
+    }
+  }
+  return nil;
+}
+
+@end
+
+@implementation ThrioPopGestureRecognizerDelegate
+
+- (BOOL)gestureRecognizerShouldBegin:(UIPanGestureRecognizer *)gestureRecognizer {
+  UIViewController *topViewController = self.navigationController.topViewController;
+  
+  if (topViewController.thrio_popDisabled) {
+    return NO;
+  }
+    
+  // Ignore when no view controller is pushed into the navigation stack.
+  if (self.navigationController.viewControllers.count <= 1) {
+    return NO;
+  }
+
+  // Ignore pan gesture when the navigation controller is currently in transition.
+  if ([[self.navigationController valueForKey:@"_isTransitioning"] boolValue]) {
+    return NO;
+  }
+
+  // Ignore when the beginning location is beyond max allowed initial distance to left edge.
+//  CGPoint beginningLocation = [gestureRecognizer locationInView:gestureRecognizer.view];
+//  if (beginningLocation.x > 0) {
+//    return NO;
+//  }
+
+  // Prevent calling the handler when the gesture begins in an opposite direction.
+//  CGPoint translation = [gestureRecognizer translationInView:gestureRecognizer.view];
+//  BOOL isLeftToRight = [UIApplication sharedApplication]
+//    .userInterfaceLayoutDirection == UIUserInterfaceLayoutDirectionLeftToRight;
+//  CGFloat multiplier = isLeftToRight ? 1 : - 1;
+//  if ((translation.x * multiplier) <= 0) {
+//    return NO;
+//  }
+  self.navigationController.thrio_popingViewController = topViewController;
+  
+  return YES;
 }
 
 @end

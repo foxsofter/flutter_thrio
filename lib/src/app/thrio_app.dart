@@ -96,6 +96,17 @@ class ThrioApp {
     return _channel.invokeMethod<bool>('push', arguments);
   }
 
+  Future<bool> didPush({
+    @required String url,
+    @required int index,
+  }) {
+    final arguments = <String, dynamic>{
+      'url': url,
+      'index': index,
+    };
+    return _channel.invokeMethod<bool>('didPush', arguments);
+  }
+
   Future<bool> notify({
     @required String name,
     @required String url,
@@ -118,6 +129,17 @@ class ThrioApp {
     return _channel.invokeMethod<bool>('pop', arguments);
   }
 
+  Future<bool> didPop({
+    @required String url,
+    @required int index,
+  }) {
+    final arguments = <String, dynamic>{
+      'url': url,
+      'index': index,
+    };
+    return _channel.invokeMethod<bool>('didPop', arguments);
+  }
+
   Future<bool> popTo({
     @required String url,
     int index = 0,
@@ -131,6 +153,17 @@ class ThrioApp {
     return _channel.invokeMethod<bool>('popTo', arguments);
   }
 
+  Future<bool> didPopTo({
+    @required String url,
+    @required int index,
+  }) {
+    final arguments = <String, dynamic>{
+      'url': url,
+      'index': index,
+    };
+    return _channel.invokeMethod<bool>('didPopTo', arguments);
+  }
+
   Future<bool> remove({
     String url = '',
     int index = 0,
@@ -142,6 +175,17 @@ class ThrioApp {
       'animated': animated,
     };
     return _channel.invokeMethod<bool>('remove', arguments);
+  }
+
+  Future<bool> didRemove({
+    @required String url,
+    @required int index,
+  }) {
+    final arguments = <String, dynamic>{
+      'url': url,
+      'index': index,
+    };
+    return _channel.invokeMethod<bool>('didRemove', arguments);
   }
 
   Future<int> lastIndex({String url}) {

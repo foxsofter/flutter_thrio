@@ -12,6 +12,8 @@
 #import "ThrioRegistrySetMap.h"
 #import "ThrioPlugin.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface ThrioChannel ()
 
 @property (nonatomic, copy) NSString *channelName;
@@ -153,3 +155,5 @@ static NSString *const kEventNameKey = @"__event_name__";
 
 
 @end
+
+NS_ASSUME_NONNULL_END
