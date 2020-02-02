@@ -1,12 +1,12 @@
 // Copyright (c) 2019/12/02, 11:28:58 PM The Hellobike. All rights reserved.
-// Created by WeiZhongdan, weizhongdan06291@hellobike.com.
+// Created by foxsofter, foxsofter@gmail.com.
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 import '../app/thrio_app.dart';
-import '../extension/stateful_widget.dart';
+import '../extension/thrio_stateful_widget.dart';
 import '../logger/thrio_logger.dart';
 import '../registry/registry_map.dart';
 import 'thrio_page_route.dart';

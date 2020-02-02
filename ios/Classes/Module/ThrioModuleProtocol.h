@@ -2,7 +2,7 @@
 //  ThrioModuleProtocol.h
 //  thrio
 //
-//  Created by Wei ZhongDan on 2019/12/20.
+//  Created by foxsofter on 2019/12/20.
 //
 
 #import <Foundation/Foundation.h>

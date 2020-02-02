@@ -2,7 +2,7 @@
 //  NSObject+ThrioSwizzling.m
 //  thrio
 //
-//  Created by Wei ZhongDan on 2020/1/6.
+//  Created by foxsofter on 2020/1/6.
 //
 
 #import <objc/runtime.h>

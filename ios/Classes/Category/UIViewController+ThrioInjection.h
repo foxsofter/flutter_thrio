@@ -2,7 +2,7 @@
 //  UIViewController+ThrioInjection.h
 //  thrio
 //
-//  Created by Wei ZhongDan on 2020/1/29.
+//  Created by foxsofter on 2020/1/29.
 //
 
 #import <UIKit/UIKit.h>

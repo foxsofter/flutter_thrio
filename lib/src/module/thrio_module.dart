@@ -1,9 +1,8 @@
 // Copyright (c) 2019/12/20, 10:54:31 PM The Hellobike. All rights reserved.
-// Created by weizhongdan, weizhongdan06291@hellobike.com.
+// Created by foxsofter, foxsofter@gmail.com.
 
 import 'dart:async';
 
-// ignore: prefer_mixin
 mixin ThrioModule {
   static final _modules = <Type, ThrioModule>{};
 

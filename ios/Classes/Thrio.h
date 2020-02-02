@@ -2,7 +2,7 @@
 //  Thrio.h
 //  thrio
 //
-//  Created by Wei ZhongDan on 2019/12/25.
+//  Created by foxsofter on 2019/12/25.
 //
 
 #ifndef Thrio_h

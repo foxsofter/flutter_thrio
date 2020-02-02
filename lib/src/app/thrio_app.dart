@@ -1,11 +1,11 @@
 // Copyright (c) 2019/1/6, 21:48:58 PM The Hellobike. All rights reserved.
-// Created by WeiZhongdan, weizhongdan06291@hellobike.com.
+// Created by foxsofter, foxsofter@gmail.com.
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import '../channel/thrio_channel.dart';
-import '../extension/stateful_widget.dart';
+import '../extension/thrio_stateful_widget.dart';
 import '../navigator/thrio_navigator.dart';
 import '../navigator/thrio_page_observer.dart';
 import '../navigator/thrio_page_route.dart';
@@ -30,7 +30,7 @@ class ThrioApp {
   ThrioNavigatorState get navigatorState =>
       _navigator.tryStateOf<ThrioNavigatorState>();
 
-  /// Get current container.
+  /// Get current page route.
   ///
   ThrioPageRoute get current =>
       _navigator.tryStateOf<ThrioNavigatorState>()?.current;

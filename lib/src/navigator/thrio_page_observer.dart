@@ -1,5 +1,5 @@
 // Copyright (c) 2019/12/05, 13:40:58 PM The Hellobike. All rights reserved.
-// Created by WeiZhongdan, weizhongdan06291@hellobike.com.
+// Created by foxsofter, foxsofter@gmail.com.
 
 import 'package:flutter/widgets.dart';
 

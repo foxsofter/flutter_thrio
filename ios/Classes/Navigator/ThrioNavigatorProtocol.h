@@ -2,7 +2,7 @@
 //  ThrioNavigatorProtocol.h
 //  Pods-Runner
 //
-//  Created by Wei ZhongDan on 2019/12/27.
+//  Created by foxsofter on 2019/12/27.
 //
 
 #import <Foundation/Foundation.h>
