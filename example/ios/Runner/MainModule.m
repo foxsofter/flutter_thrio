@@ -2,7 +2,7 @@
 //  MainModule.m
 //  Runner
 //
-//  Created by Wei ZhongDan on 2019/12/28.
+//  Created by foxsofter on 2019/12/28.
 //  Copyright © 2019 The Chromium Authors. All rights reserved.
 //
 

@@ -7,6 +7,8 @@
 
 #import "ThrioRegistryMap.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface ThrioRegistryMap ()
 
 @property (nonatomic, strong) NSMutableDictionary *maps;
@@ -27,11 +29,11 @@
   return self;
 }
 
-- (ThrioVoidCallback)registry:(NSString *)key value:(id)value {
-  NSAssert(key || key.length < 1, @"key must not be null or empty.");
+- (ThrioVoidCallback)registry:(id<NSCopying>)key value:(id)value {
+  NSAssert(key, @"key must not be null.");
   NSAssert(value, @"value must not be null.");
   
-  [_maps setValue:value forKey:key];
+  [_maps setObject:value forKey:key];
 
   __weak typeof(self) weakself = self;
   return ^{
@@ -43,17 +45,15 @@
 
 - (ThrioVoidCallback)registryAll:(NSDictionary *)values {
   NSAssert(values || values.count < 1, @"values must not be null or empty");
-  NSArray *keys = values.allKeys;
-  for (id key in keys) {
-    [_maps setValue:[values valueForKey:key] forKey:key];
+  for (id key in values) {
+    [_maps setObject:[values objectForKey:key] forKey:key];
   }
   
   __weak typeof(self) weakself = self;
   return ^{
     __strong typeof(self) strongSelf = weakself;
 
-    NSArray *keys = values.allKeys;
-    for (id key in keys) {
+    for (id key in values) {
       [strongSelf.maps removeObjectForKey:key];
     }
   };
@@ -63,8 +63,18 @@
   [_maps removeAllObjects];
 }
 
-- (id)objectForKeyedSubscript:(NSString *)key {
-  return [_maps valueForKey:key];
+- (NSSet * _Nullable)objectForKeyedSubscript:(id)key {
+  return [_maps objectForKey:key];
+}
+
+- (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)enumerationState
+                                  objects:(id __unsafe_unretained _Nullable [])buffer
+                                    count:(NSUInteger) len {
+    return [_maps.allKeys countByEnumeratingWithState:enumerationState
+                                              objects:buffer
+                                                count:len];
 }
 
 @end
+
+NS_ASSUME_NONNULL_END

@@ -1,5 +1,5 @@
 //
-//  ThrioFlutterPage.h
+//  ThrioFlutterViewController.h
 //  thrio
 //
 //  Created by foxsofter on 2019/12/11.
@@ -11,9 +11,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-// A container class for Flutter pages.
-//
-@interface ThrioFlutterViewController : FlutterViewController
+@interface ThrioFlutterViewController : FlutterViewController<UINavigationControllerDelegate>
 
 - (instancetype)init NS_DESIGNATED_INITIALIZER;
 
@@ -28,8 +26,6 @@ NS_ASSUME_NONNULL_BEGIN
                          bundle:(NSBundle* _Nullable)nibBundle NS_UNAVAILABLE;
 
 - (void)surfaceUpdated:(BOOL)appeared;
-
-- (void)sendPageLifecycleEvent:(ThrioPageLifecycle)lifecycle;
 
 @end
 

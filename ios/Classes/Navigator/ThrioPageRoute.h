@@ -2,7 +2,7 @@
 //  ThrioPageRoute.h
 //  thrio
 //
-//  Created by Wei ZhongDan on 2020/1/19.
+//  Created by foxsofter on 2020/1/19.
 //
 
 #import <Foundation/Foundation.h>
@@ -28,6 +28,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong, readonly) ThrioRouteSettings *settings;
 
 @property (nonatomic, copy, readonly) NSDictionary *notifications;
+
+@property (nonatomic, assign) BOOL popDisabled;
 
 @end
 

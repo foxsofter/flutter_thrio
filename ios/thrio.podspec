@@ -11,7 +11,7 @@ A flutter plugin which enables hybrid integration of flutter for existing ios or
                        DESC
   s.homepage         = 'http://hellobike.com'
   s.license          = { :file => '../LICENSE' }
-  s.author           = { 'hellobike' => 'weizhongdan06291@hellobike.com' }
+  s.author           = { 'hellobike' => 'foxsofter@gmail.com' }
   s.source           = { :path => '.' }
   s.source_files = 'Classes/**/*'
   s.public_header_files = 'Classes/**/*.h,'

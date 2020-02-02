@@ -1,44 +1,36 @@
 // Copyright (c) 2019/1/6, 21:48:58 PM The Hellobike. All rights reserved.
-// Created by WeiZhongdan, weizhongdan06291@hellobike.com.
+// Created by foxsofter, foxsofter@gmail.com.
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import '../channel/thrio_channel.dart';
-import '../extension/stateful_widget.dart';
+import '../extension/thrio_stateful_widget.dart';
 import '../navigator/thrio_navigator.dart';
 import '../navigator/thrio_page_observer.dart';
 import '../navigator/thrio_page_route.dart';
-import '../registry/registry_map.dart';
-import '../thrio_types.dart';
 
 class ThrioApp {
   factory ThrioApp() => _default;
 
-  ThrioApp._()
-      : _pageBuilders = RegistryMap<String, ThrioPageBuilder>(),
-        _channel = ThrioChannel(channel: '__thrio_app__') {
+  ThrioApp._() : _channel = ThrioChannel(channel: '__thrio_app__') {
     _pageObserver = ThrioPageObserver(_channel);
   }
 
   static final _default = ThrioApp._();
 
-  final defaultUrl = '/';
-
   final ThrioChannel _channel;
-
-  final RegistryMap<String, ThrioPageBuilder> _pageBuilders;
 
   ThrioPageObserver _pageObserver;
 
   ThrioNavigator _navigator;
 
-  /// Assigned when the `builder` method is called.
+  /// Assigned when the `build` method is called.
   ///
   ThrioNavigatorState get navigatorState =>
       _navigator.tryStateOf<ThrioNavigatorState>();
 
-  /// Get current container.
+  /// Get current page route.
   ///
   ThrioPageRoute get current =>
       _navigator.tryStateOf<ThrioNavigatorState>()?.current;
@@ -52,42 +44,29 @@ class ThrioApp {
   ///
   /// Unregistry by calling the return value `VoidCallback`.
   ///
-  VoidCallback registryDefaultThrioPageBuilder(ThrioPageBuilder builder) =>
-      _pageBuilders.registry(defaultUrl, builder);
+  VoidCallback registerDefaultPageBuilder(
+    ThrioPageBuilder builder,
+  ) =>
+      ThrioNavigator.registerDefaultPageBuilder(builder);
 
   /// Register an page builder for the router.
   ///
   /// Unregistry by calling the return value `VoidCallback`.
   ///
-  VoidCallback registryThrioPageBuilder(String url, ThrioPageBuilder builder) =>
-      _pageBuilders.registry(url, builder);
+  VoidCallback registerPageBuilder(
+    String url,
+    ThrioPageBuilder builder,
+  ) =>
+      ThrioNavigator.registerPageBuilder(url, builder);
 
   /// Register page builders for the router.
   ///
   /// Unregistry by calling the return value `VoidCallback`.
   ///
-  VoidCallback registryThrioPageBuilders(
-          Map<String, ThrioPageBuilder> builders) =>
-      _pageBuilders.registryAll(builders);
-
-  // Get page builder for url.
-  //
-  ThrioPageBuilder getPageBuilder(String url) => _pageBuilders[url];
-
-  /// Sets up a broadcast stream for receiving page lifecycle events.
-  ///
-  /// return value is `index`.
-  ///
-  Stream<int> onPageLifecycleStream(
-    PageLifecycle lifecycle,
-    String url, {
-    int index,
-  }) =>
-      _pageObserver.onPageLifecycleStream(
-        lifecycle,
-        url,
-        index: index,
-      );
+  VoidCallback registerPageBuilders(
+    Map<String, ThrioPageBuilder> builders,
+  ) =>
+      ThrioNavigator.registerPageBuilders(builders);
 
   /// Sets up a broadcast stream for receiving page notify events.
   ///
@@ -117,6 +96,17 @@ class ThrioApp {
     return _channel.invokeMethod<bool>('push', arguments);
   }
 
+  Future<bool> didPush({
+    @required String url,
+    @required int index,
+  }) {
+    final arguments = <String, dynamic>{
+      'url': url,
+      'index': index,
+    };
+    return _channel.invokeMethod<bool>('didPush', arguments);
+  }
+
   Future<bool> notify({
     @required String name,
     @required String url,
@@ -139,6 +129,17 @@ class ThrioApp {
     return _channel.invokeMethod<bool>('pop', arguments);
   }
 
+  Future<bool> didPop({
+    @required String url,
+    @required int index,
+  }) {
+    final arguments = <String, dynamic>{
+      'url': url,
+      'index': index,
+    };
+    return _channel.invokeMethod<bool>('didPop', arguments);
+  }
+
   Future<bool> popTo({
     @required String url,
     int index = 0,
@@ -152,6 +153,17 @@ class ThrioApp {
     return _channel.invokeMethod<bool>('popTo', arguments);
   }
 
+  Future<bool> didPopTo({
+    @required String url,
+    @required int index,
+  }) {
+    final arguments = <String, dynamic>{
+      'url': url,
+      'index': index,
+    };
+    return _channel.invokeMethod<bool>('didPopTo', arguments);
+  }
+
   Future<bool> remove({
     String url = '',
     int index = 0,
@@ -163,5 +175,39 @@ class ThrioApp {
       'animated': animated,
     };
     return _channel.invokeMethod<bool>('remove', arguments);
+  }
+
+  Future<bool> didRemove({
+    @required String url,
+    @required int index,
+  }) {
+    final arguments = <String, dynamic>{
+      'url': url,
+      'index': index,
+    };
+    return _channel.invokeMethod<bool>('didRemove', arguments);
+  }
+
+  Future<int> lastIndex({String url}) {
+    final arguments = (url?.isEmpty ?? true)
+        ? <String, dynamic>{}
+        : <String, dynamic>{'url': url};
+    return _channel.invokeMethod<int>('lastIndex', arguments);
+  }
+
+  Future<List<int>> allIndex(String url) =>
+      _channel.invokeListMethod<int>('allIndex', {'url': url});
+
+  Future<bool> setPopDisabled({
+    @required String url,
+    int index,
+    bool disabled = true,
+  }) {
+    final arguments = <String, dynamic>{
+      'url': url,
+      'index': index,
+      'disabled': disabled,
+    };
+    return _channel.invokeMethod<bool>('setPopDisabled', arguments);
   }
 }

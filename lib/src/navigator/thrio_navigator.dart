@@ -1,13 +1,14 @@
 // Copyright (c) 2019/12/02, 11:28:58 PM The Hellobike. All rights reserved.
-// Created by WeiZhongdan, weizhongdan06291@hellobike.com.
+// Created by foxsofter, foxsofter@gmail.com.
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 import '../app/thrio_app.dart';
-import '../extension/stateful_widget.dart';
+import '../extension/thrio_stateful_widget.dart';
 import '../logger/thrio_logger.dart';
+import '../registry/registry_map.dart';
 import 'thrio_page_route.dart';
 import 'thrio_route_settings.dart';
 
@@ -20,6 +21,8 @@ class ThrioNavigator extends StatefulWidget {
   }) : super(key: key);
 
   final Navigator child;
+
+  static final _pageBuilders = RegistryMap<String, ThrioPageBuilder>();
 
   /// Push a page with `url` onto `ThrioNavigator`.
   ///
@@ -80,13 +83,51 @@ class ThrioNavigator extends StatefulWidget {
         animated: animated,
       );
 
+  /// Get the index of the last page.
+  ///
+  static Future<int> lastIndex({String url}) => ThrioApp().lastIndex(url: url);
+
+  /// Get the index of all pages whose url is `url`.
+  ///
+  static Future<List<int>> allIndex(String index) => ThrioApp().allIndex(index);
+
+  /// Set pop disabled with `url` and `index`.
+  ///
+  static Future<bool> setPopDisabled({
+    @required String url,
+    int index = 0,
+    bool disabled = true,
+  }) =>
+      ThrioApp().setPopDisabled(
+        url: url,
+        index: index,
+        disabled: disabled,
+      );
+
+  static VoidCallback registerDefaultPageBuilder(
+    ThrioPageBuilder builder,
+  ) =>
+      _pageBuilders.registry(Navigator.defaultRouteName, builder);
+
+  static VoidCallback registerPageBuilder(
+    String url,
+    ThrioPageBuilder builder,
+  ) =>
+      _pageBuilders.registry(url, builder);
+
+  static VoidCallback registerPageBuilders(
+    Map<String, ThrioPageBuilder> builders,
+  ) =>
+      _pageBuilders.registryAll(builders);
+
   @override
   State<StatefulWidget> createState() => ThrioNavigatorState();
 }
 
 class ThrioNavigatorState extends State<ThrioNavigator> {
-  final _pageRoutes = <ThrioPageRoute>[];
-  ThrioPageRoute get current => _pageRoutes.last;
+  final _observer = ThrioNavigatorObserver();
+
+  ThrioPageRoute get current => _observer._pageRoutes.last;
 
   /// 还无法实现animated=false
   Future<bool> push(RouteSettings settings, {bool animated = true}) {
@@ -94,10 +135,9 @@ class ThrioNavigatorState extends State<ThrioNavigator> {
     if (navigatorState == null) {
       return Future.value(false);
     }
-    final pageBuilder = ThrioApp().getPageBuilder(settings.url);
+    final pageBuilder = ThrioNavigator._pageBuilders[settings.url];
     final route = ThrioPageRoute(builder: pageBuilder, settings: settings);
     navigatorState.push(route);
-    _pageRoutes.add(route);
     ThrioLogger().v('push: ${route.settings}');
     return Future.value(true);
   }
@@ -107,16 +147,21 @@ class ThrioNavigatorState extends State<ThrioNavigator> {
     if (navigatorState == null) {
       return false;
     }
-    if (_pageRoutes.last == null) {
+    if (_observer._pageRoutes.isEmpty) {
       return false;
     }
-    ThrioLogger().v('pop: ${_pageRoutes.last.settings}');
     if (animated) {
-      navigatorState.pop();
+      if (await _observer._pageRoutes.last.willPop() ==
+          RoutePopDisposition.pop) {
+        ThrioLogger().v('pop: ${_observer._pageRoutes.last.settings}');
+        navigatorState.pop();
+      } else {
+        return false;
+      }
     } else {
-      navigatorState.removeRoute(_pageRoutes.last);
+      ThrioLogger().v('pop: ${_observer._pageRoutes.last.settings}');
+      navigatorState.removeRoute(_observer._pageRoutes.last);
     }
-    _pageRoutes.removeLast();
     return true;
   }
 
@@ -125,7 +170,7 @@ class ThrioNavigatorState extends State<ThrioNavigator> {
     if (navigatorState == null) {
       return Future.value(false);
     }
-    final route = _pageRoutes.lastWhere(
+    final route = _observer._pageRoutes.lastWhere(
         (it) => it.settings.name == settings.name,
         orElse: () => null);
     if (route == null || settings.name == current.settings.name) {
@@ -134,21 +179,14 @@ class ThrioNavigatorState extends State<ThrioNavigator> {
     ThrioLogger().v('popTo: ${route.settings}');
     if (animated) {
       navigatorState.popUntil((it) => it.settings.name == settings.name);
-      _pageRoutes.removeRange(
-        _pageRoutes.lastIndexOf(route) + 1,
-        _pageRoutes.length,
-      );
     } else {
-      for (var i = _pageRoutes.length - 2; i >= 0; i--) {
-        if (_pageRoutes[i].settings.name == settings.name) {
+      for (var i = _observer._pageRoutes.length - 2; i >= 0; i--) {
+        if (_observer._pageRoutes[i].settings.name == settings.name) {
           break;
-        } else {
-          navigatorState.removeRoute(_pageRoutes[i]);
-          _pageRoutes.removeAt(i);
         }
+        navigatorState.removeRoute(_observer._pageRoutes[i]);
       }
-      navigatorState.removeRoute(_pageRoutes.last);
-      _pageRoutes.removeLast();
+      navigatorState.removeRoute(_observer._pageRoutes.last);
     }
     return Future.value(true);
   }
@@ -158,21 +196,132 @@ class ThrioNavigatorState extends State<ThrioNavigator> {
     if (navigatorState == null) {
       return Future.value(false);
     }
-    final route = _pageRoutes.lastWhere(
+    final route = _observer._pageRoutes.lastWhere(
         (it) => it.settings.name == settings.name,
         orElse: () => null);
     if (route == null) {
       return Future.value(false);
     }
-    ThrioLogger().v('pop: ${route.settings}');
+    ThrioLogger().v('remove: ${route.settings}');
     if (settings.name == current.settings.name) {
       return pop(animated: animated);
     }
     navigatorState.removeRoute(route);
-    _pageRoutes.remove(route);
     return Future.value(true);
+  }
+
+  Future<bool> setPopDisabled(RouteSettings settings, {bool disabled = true}) {
+    final route = _observer._pageRoutes.lastWhere(
+        (it) => it.settings.name == settings.name,
+        orElse: () => null);
+    if (route != null) {
+      route.willPopCallback = () async => !disabled;
+      return Future.value(true);
+    }
+    return Future.value(false);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    if (mounted) {
+      widget.child.observers.add(_observer);
+    }
   }
 
   @override
   Widget build(BuildContext context) => widget.child;
+}
+
+class ThrioNavigatorObserver extends NavigatorObserver {
+  ThrioNavigatorObserver();
+
+  final _currentPopRoutes = <ThrioPageRoute>[];
+
+  final _currentRemoveRoutes = <ThrioPageRoute>[];
+
+  final _pageRoutes = <ThrioPageRoute>[];
+
+  @override
+  void didPush(Route<dynamic> route, Route<dynamic> previousRoute) {
+    if (previousRoute is ThrioPageRoute &&
+        previousRoute.willPopCallback != null) {
+      ThrioApp()
+          .current
+          .removeScopedWillPopCallback(previousRoute.willPopCallback);
+    }
+    if (route is ThrioPageRoute) {
+      ThrioLogger().v('didPush: ${route.settings}');
+      if (route.willPopCallback != null) {
+        ThrioApp().current.addScopedWillPopCallback(route.willPopCallback);
+      }
+      _pageRoutes.add(route);
+      ThrioApp().didPush(
+        url: route.settings.url,
+        index: route.settings.index,
+      );
+    }
+  }
+
+  @override
+  void didPop(Route<dynamic> route, Route<dynamic> previousRoute) {
+    if (previousRoute is ThrioPageRoute &&
+        previousRoute.willPopCallback != null) {
+      ThrioApp()
+          .current
+          .addScopedWillPopCallback(previousRoute.willPopCallback);
+    }
+    if (route is ThrioPageRoute) {
+      if (route.willPopCallback != null) {
+        ThrioApp().current.removeScopedWillPopCallback(route.willPopCallback);
+      }
+      _pageRoutes.remove(route);
+      _currentPopRoutes.add(route);
+      if (_currentPopRoutes.length == 1) {
+        Future.delayed(const Duration(milliseconds: 500), () {
+          if (_currentPopRoutes.length == 1) {
+            ThrioLogger().v('didPop: ${route.settings}');
+            ThrioApp().didPop(
+              url: route.settings.url,
+              index: route.settings.index,
+            );
+          } else if (_currentPopRoutes.length > 1) {
+            ThrioLogger().v('didPopTo: ${_currentPopRoutes.last.settings}');
+            ThrioApp().didPopTo(
+                url: _currentPopRoutes.last.settings.url,
+                index: _currentPopRoutes.last.settings.index);
+          }
+          _currentPopRoutes.clear();
+        });
+      }
+    }
+  }
+
+  @override
+  void didRemove(Route<dynamic> route, Route<dynamic> previousRoute) {
+    if (route is ThrioPageRoute) {
+      _pageRoutes.remove(route);
+      _currentRemoveRoutes.add(route);
+      if (_currentRemoveRoutes.length == 1) {
+        Future.delayed(const Duration(milliseconds: 500), () {
+          if (_currentRemoveRoutes.length == 1) {
+            ThrioLogger().v('didRemove: ${route.settings}');
+            ThrioApp().didRemove(
+              url: route.settings.url,
+              index: route.settings.index,
+            );
+          } else if (_currentRemoveRoutes.length > 1) {
+            ThrioLogger().v('didPopTo: ${_currentRemoveRoutes.last.settings}');
+            ThrioApp().didPopTo(
+                url: _currentRemoveRoutes.last.settings.url,
+                index: _currentRemoveRoutes.last.settings.index);
+          }
+          _currentRemoveRoutes.clear();
+        });
+      }
+      if (route.willPopCallback != null) {
+        ThrioApp().current.removeScopedWillPopCallback(route.willPopCallback);
+      }
+    }
+  }
 }

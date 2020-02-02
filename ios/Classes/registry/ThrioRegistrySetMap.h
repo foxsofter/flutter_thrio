@@ -11,17 +11,17 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface ThrioRegistrySetMap : NSObject
+@interface ThrioRegistrySetMap<__covariant KeyType, __covariant ObjectType> : NSObject<NSFastEnumeration>
 
 + (instancetype)map;
 
-- (ThrioVoidCallback)registry:(NSString *)key value:(id)value;
+- (ThrioVoidCallback)registry:(KeyType<NSCopying>)key value:(ObjectType)value;
 
-- (ThrioVoidCallback)registryAll:(NSDictionary *)values;
+- (ThrioVoidCallback)registryAll:(NSDictionary<KeyType, ObjectType> *)values;
 
 - (void)clear;
 
-- (NSSet *)objectForKeyedSubscript:(NSString *)key;
+- (NSSet *)objectForKeyedSubscript:(KeyType)key;
 
 @end
 

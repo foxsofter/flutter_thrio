@@ -252,6 +252,24 @@ NS_ASSUME_NONNULL_BEGIN
   return [ThrioApp.shared canPushUrl:url params:params];
 }
 
+#pragma mark - get index methods
+
+- (NSNumber *)lastIndex {
+  return [ThrioApp.shared lastIndex];
+}
+
+- (NSNumber *)getLastIndexByUrl:(NSString *)url {
+  return [ThrioApp.shared getLastIndexByUrl:url];
+}
+
+- (NSArray *)getAllIndexByUrl:(NSString *)url {
+  return [ThrioApp.shared getAllIndexByUrl:url];
+}
+
+- (void)setPopDisabledUrl:(NSString *)url index:(NSNumber *)index disabled:(BOOL)disabled {
+  return [ThrioApp.shared setPopDisabledUrl:url index:index disabled:disabled];
+}
+
 @end
 
 NS_ASSUME_NONNULL_END

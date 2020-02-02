@@ -2,7 +2,7 @@
 //  ThrioRouteSettings.h
 //  Pods-Runner
 //
-//  Created by Wei ZhongDan on 2020/1/19.
+//  Created by foxsofter on 2020/1/19.
 //
 
 #import <Foundation/Foundation.h>

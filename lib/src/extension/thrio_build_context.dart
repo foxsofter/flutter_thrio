@@ -1,9 +1,9 @@
 // Copyright (c) 2019/12/04, 17:36:58 PM The Hellobike. All rights reserved.
-// Created by WeiZhongdan, weizhongdan06291@hellobike.com.
+// Created by foxsofter, foxsofter@gmail.com.
 
 import 'package:flutter/widgets.dart';
 
-extension BuildContextX on BuildContext {
+extension ThrioBuildContext on BuildContext {
   /// Get widget state by ancestorStateOfType method.
   ///
   /// Throw `Exception` if the `state.runtimeType` is not a T.

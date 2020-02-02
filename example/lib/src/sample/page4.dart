@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:thrio/thrio.dart';
 
-class Page2 extends StatefulWidget {
-  const Page2({
+class Page4 extends StatefulWidget {
+  const Page4({
     Key key,
     this.index,
     this.params,
@@ -13,10 +13,18 @@ class Page2 extends StatefulWidget {
   final Map<String, dynamic> params;
 
   @override
-  _Page2State createState() => _Page2State();
+  _Page4State createState() => _Page4State();
 }
 
-class _Page2State extends State<Page2> {
+class _Page4State extends State<Page4> {
+  @override
+  void initState() {
+    super.initState();
+    if (mounted) {
+      ThrioNavigator.setPopDisabled(url: 'flutter4');
+    }
+  }
+
   @override
   Widget build(BuildContext context) => Scaffold(
       appBar: AppBar(
@@ -41,13 +49,13 @@ class _Page2State extends State<Page2> {
                   margin: const EdgeInsets.only(top: 10, bottom: 20),
                   alignment: AlignmentDirectional.center,
                   child: Text(
-                    'flutter2: index is ${widget.index}',
+                    'flutter4: index is ${widget.index}',
                     style: TextStyle(fontSize: 28, color: Colors.blue),
                   ),
                 ),
                 InkWell(
                   onTap: () => ThrioNavigator.push(
-                    url: 'flutter3',
+                    url: 'flutter1',
                     params: {
                       '1': {'2': '3'}
                     },
@@ -57,18 +65,18 @@ class _Page2State extends State<Page2> {
                       margin: const EdgeInsets.all(8),
                       color: Colors.yellow,
                       child: Text(
-                        'push flutter3',
+                        'push flutter1',
                         style: TextStyle(fontSize: 22, color: Colors.black),
                       )),
                 ),
                 InkWell(
-                  onTap: () => ThrioNavigator.remove(url: 'flutter2'),
+                  onTap: () => ThrioNavigator.remove(url: 'flutter3'),
                   child: Container(
                       padding: const EdgeInsets.all(8),
                       margin: const EdgeInsets.all(8),
                       color: Colors.yellow,
                       child: Text(
-                        'remove flutter2',
+                        'remove flutter3',
                         style: TextStyle(fontSize: 22, color: Colors.black),
                       )),
                 ),
@@ -80,6 +88,17 @@ class _Page2State extends State<Page2> {
                       color: Colors.yellow,
                       child: Text(
                         'pop',
+                        style: TextStyle(fontSize: 22, color: Colors.black),
+                      )),
+                ),
+                InkWell(
+                  onTap: () => ThrioNavigator.popTo(url: 'flutter2'),
+                  child: Container(
+                      padding: const EdgeInsets.all(8),
+                      margin: const EdgeInsets.all(8),
+                      color: Colors.yellow,
+                      child: Text(
+                        'popTo flutter2',
                         style: TextStyle(fontSize: 22, color: Colors.black),
                       )),
                 ),

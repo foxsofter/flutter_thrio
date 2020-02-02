@@ -1,8 +1,9 @@
 // Copyright (c) 2019/12/03, 10:28:58 PM The Hellobike. All rights reserved.
-// Created by WeiZhongdan, weizhongdan06291@hellobike.com.
+// Created by foxsofter, foxsofter@gmail.com.
 
 import 'package:flutter/material.dart';
 
+import '../app/thrio_app.dart';
 import 'thrio_route_settings.dart';
 
 typedef ThrioPageBuilder = Widget Function(RouteSettings settings);
@@ -21,6 +22,18 @@ class ThrioPageRoute extends MaterialPageRoute<bool> {
             maintainState: maintainState,
             fullscreenDialog: fullscreenDialog);
 
+  WillPopCallback _willPopCallback;
+  WillPopCallback get willPopCallback => _willPopCallback;
+  set willPopCallback(WillPopCallback callback) {
+    if (_willPopCallback != callback) {
+      ThrioApp().current.removeScopedWillPopCallback(_willPopCallback);
+      _willPopCallback = callback;
+      if (isCurrent) {
+        addScopedWillPopCallback(callback);
+      }
+    }
+  }
+
   @override
   Widget buildTransitions(
     BuildContext context,
@@ -29,11 +42,11 @@ class ThrioPageRoute extends MaterialPageRoute<bool> {
     Widget child,
   ) =>
       settings.isNested
-          ? child
-          : super.buildTransitions(
+          ? super.buildTransitions(
               context,
               animation,
               secondaryAnimation,
               child,
-            );
+            )
+          : child;
 }

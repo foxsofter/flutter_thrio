@@ -25,13 +25,17 @@ NS_ASSUME_NONNULL_BEGIN
 //
 @property (nonatomic, strong, readonly) FlutterEngine *engine;
 
-// Always return to the topmost UIViewController of UINavigationController.
+// Always return the topmost UIViewController of UINavigationController.
 //
 @property (nonatomic, strong, readonly) UIViewController *topmostViewController;
 
 // Gets the `FlutterViewController` for flutter engine.
 //
 @property (nonatomic, strong, readonly) ThrioFlutterViewController *flutterViewController;
+
+// Always return the topmost UINavigationController.
+//
+@property (nonatomic, weak, readonly) UINavigationController *navigationController;
 
 // Sets the `FlutterViewController` for flutter engine.
 //
@@ -48,7 +52,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 // Sets the `ThrioFlutterViewController` builder.
 //
-// Need to be register when extending the `ThrioFlutterPage` class.
+// Need to be register when extending the `ThrioFlutterViewController` class.
 //
 - (ThrioVoidCallback)registerFlutterViewControllerBuilder:(ThrioFlutterViewControllerBuilder)builder;
 

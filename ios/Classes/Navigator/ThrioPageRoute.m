@@ -2,7 +2,7 @@
 //  ThrioPageRoute.m
 //  thrio
 //
-//  Created by Wei ZhongDan on 2020/1/19.
+//  Created by foxsofter on 2020/1/19.
 //
 
 #import "ThrioPageRoute.h"

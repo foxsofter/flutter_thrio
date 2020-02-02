@@ -2,7 +2,7 @@
 //  ThrioRegistryMapTests.m
 //  thrio_exampleTests
 //
-//  Created by Wei ZhongDan on 2019/12/25.
+//  Created by foxsofter on 2019/12/25.
 //  Copyright © 2019 The Chromium Authors. All rights reserved.
 //
 

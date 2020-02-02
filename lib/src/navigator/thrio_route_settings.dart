@@ -1,5 +1,5 @@
 // Copyright (c) 2019/1/8, 18:38:58 PM The Hellobike. All rights reserved.
-// Created by WeiZhongdan, weizhongdan06291@hellobike.com.
+// Created by foxsofter, foxsofter@gmail.com.
 
 import 'package:flutter/widgets.dart';
 
@@ -15,7 +15,8 @@ extension ThrioRouteSettings on RouteSettings {
       final indexValue = arguments['index'];
       final index = indexValue is int ? indexValue : null;
       final isNestedValue = arguments['isNested'];
-      final isInitialRoute = isNestedValue is! bool;
+      final isInitialRoute =
+          (isNestedValue != null && isNestedValue is bool) && !isNestedValue;
       final paramsValue = arguments['params'];
       final params = paramsValue is Map
           ? paramsValue.cast<String, dynamic>()
@@ -40,7 +41,7 @@ extension ThrioRouteSettings on RouteSettings {
   }) =>
       RouteSettings(
         name: '$url.$index',
-        isInitialRoute: isNested,
+        isInitialRoute: !isNested,
         arguments: params,
       );
 
@@ -50,7 +51,7 @@ extension ThrioRouteSettings on RouteSettings {
 
   int get index => int.tryParse(name?.split('.')?.last) ?? 0;
 
-  bool get isNested => isInitialRoute;
+  bool get isNested => !isInitialRoute;
 
   Map<String, dynamic> get params =>
       (arguments != null && arguments is Map<String, dynamic>)

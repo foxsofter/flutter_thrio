@@ -2,7 +2,7 @@
 //  ThrioNavigatorProtocol.h
 //  Pods-Runner
 //
-//  Created by Wei ZhongDan on 2019/12/27.
+//  Created by foxsofter on 2019/12/27.
 //
 
 #import <Foundation/Foundation.h>
@@ -49,6 +49,16 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (BOOL)canRemoveUrl:(NSString *)url
                index:(NSNumber * _Nullable)index;
+
+- (NSNumber *)lastIndex;
+
+- (NSNumber *)getLastIndexByUrl:(NSString *)url;
+
+- (NSArray *)getAllIndexByUrl:(NSString *)url;
+
+- (void)setPopDisabledUrl:(NSString *)url
+                    index:(NSNumber *)index
+                 disabled:(BOOL)disabled;
 
 @end
 

@@ -1,5 +1,5 @@
 // Copyright (c) 2019/12/04, 11:38:58 PM The Hellobike. All rights reserved.
-// Created by WeiZhongdan, weizhongdan06291@hellobike.com.
+// Created by foxsofter, foxsofter@gmail.com.
 
 import 'package:logger/logger.dart';
 

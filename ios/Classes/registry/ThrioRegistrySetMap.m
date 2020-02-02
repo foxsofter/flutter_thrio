@@ -7,7 +7,9 @@
 
 #import "ThrioRegistrySetMap.h"
 
-@interface ThrioRegistrySetMap ()
+NS_ASSUME_NONNULL_BEGIN
+
+@interface ThrioRegistrySetMap()
 
 @property (nonatomic, strong) NSMutableDictionary *maps;
 
@@ -27,14 +29,14 @@
   return self;
 }
 
-- (ThrioVoidCallback)registry:(NSString *)key value:(id)value {
-  NSAssert(key || key.length < 1, @"key must not be null or empty.");
+- (ThrioVoidCallback)registry:(id<NSCopying>)key value:(id)value {
+  NSAssert(key, @"key must not be null.");
   NSAssert(value, @"value must not be null.");
   
-  NSMutableSet *v = [_maps valueForKey:key];
+  NSMutableSet *v = [_maps objectForKey:key];
   if (!v) {
     v = [NSMutableSet set];
-    [_maps setValue:v forKey:key];
+    [_maps setObject:v forKey:key];
   }
   
   [v addObject:value];
@@ -43,7 +45,7 @@
   return ^{
     __strong typeof(self) strongSelf = weakself;
 
-    NSMutableSet *v = [strongSelf.maps valueForKey:key];
+    NSMutableSet *v = [strongSelf.maps objectForKey:key];
     [v removeObject:value];
     if (v.count < 1) {
       [strongSelf.maps removeObjectForKey:key];
@@ -55,12 +57,12 @@
   NSAssert(values || values.count < 1, @"values must not be null or empty.");
   NSArray *keys = values.allKeys;
   for (id key in keys) {
-    NSMutableSet *value = [_maps valueForKey:key];
+    NSMutableSet *value = [_maps objectForKey:key];
     if (!value) {
       value = [NSMutableSet set];
-      [_maps setValue:value forKey:key];
+      [_maps setObject:value forKey:key];
     }
-    [value addObject:[values valueForKey:key]];
+    [value addObject:[values objectForKey:key]];
   }
   
   __weak typeof(self) weakself = self;
@@ -69,8 +71,8 @@
 
     NSArray *keys = values.allKeys;
     for (id key in keys) {
-      NSMutableSet *value = [strongSelf.maps valueForKey:key];
-      [value removeObject:[values valueForKey:key]];
+      NSMutableSet *value = [strongSelf.maps objectForKey:key];
+      [value removeObject:[values objectForKey:key]];
       if (value.count < 1) {
         [strongSelf.maps removeObjectForKey:key];
       }
@@ -82,8 +84,18 @@
   [_maps removeAllObjects];
 }
 
-- (NSSet *)objectForKeyedSubscript:(NSString *)key {
-  return [_maps valueForKey:key];
+- (NSSet *)objectForKeyedSubscript:(id<NSCopying>)key {
+  return [_maps objectForKey:key];
+}
+
+- (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)enumerationState
+                                  objects:(id __unsafe_unretained _Nullable [])buffer
+                                    count:(NSUInteger) len {
+    return [_maps.allKeys countByEnumeratingWithState:enumerationState
+                                              objects:buffer
+                                                count:len];
 }
 
 @end
+
+NS_ASSUME_NONNULL_END

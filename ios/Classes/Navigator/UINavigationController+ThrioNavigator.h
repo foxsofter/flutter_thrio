@@ -12,24 +12,36 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface UINavigationController (ThrioNavigator)
 
-- (BOOL)thrio_pushUrl:(NSString *)url
+- (void)thrio_pushUrl:(NSString *)url
                params:(NSDictionary *)params
-             animated:(BOOL)animated;
+             animated:(BOOL)animated
+               result:(ThrioBoolCallback)result;
 
 - (BOOL)thrio_notifyUrl:(NSString *)url
                   index:(NSNumber *)index
                    name:(NSString *)name
                  params:(NSDictionary *)params;
 
-- (BOOL)thrio_popAnimated:(BOOL)animated;
+- (void)thrio_popAnimated:(BOOL)animated
+                   result:(ThrioBoolCallback)result;
 
-- (BOOL)thrio_popToUrl:(NSString *)url
+- (void)thrio_popToUrl:(NSString *)url
                  index:(NSNumber *)index
-              animated:(BOOL)animated;
+              animated:(BOOL)animated
+                result:(ThrioBoolCallback)result;
 
-- (BOOL)thrio_removeUrl:(NSString *)url
+- (void)thrio_removeUrl:(NSString *)url
                   index:(NSNumber *)index
-               animated:(BOOL)animated;
+               animated:(BOOL)animated
+                 result:(ThrioBoolCallback)result;
+
+- (void)thrio_didPushUrl:(NSString *)url index:(NSNumber *)index;
+
+- (void)thrio_didPopUrl:(NSString *)url index:(NSNumber *)index;
+
+- (void)thrio_didPopToUrl:(NSString *)url index:(NSNumber *)index;
+
+- (void)thrio_didRemoveUrl:(NSString *)url index:(NSNumber *)index;
 
 - (NSNumber *)thrio_lastIndex;
 
@@ -41,10 +53,18 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (BOOL)thrio_ContainsUrl:(NSString *)url index:(NSNumber *)index;
 
+- (void)thrio_setPopDisabledUrl:(NSString *)url
+                          index:(NSNumber *)index
+                       disabled:(BOOL)disabled;
+
 - (ThrioVoidCallback)thrio_registerNativeViewControllerBuilder:(ThrioNativeViewControllerBuilder)builder
                                                         forUrl:(NSString *)url;
 
 - (ThrioVoidCallback)thrio_registerFlutterViewControllerBuilder:(ThrioFlutterViewControllerBuilder)builder;
+
+- (void)thrio_addPopGesture;
+
+- (void)thrio_removePopGesture;
 
 @end
 
