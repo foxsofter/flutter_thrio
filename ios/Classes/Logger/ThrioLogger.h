@@ -34,7 +34,7 @@ NS_ASSUME_NONNULL_BEGIN
 @end
 
 #ifndef ThrioLogV
-#if DEBUG
+#ifdef DEBUG
 #define ThrioLogV(fmt, ...) [ThrioLogger v:[NSString stringWithFormat:fmt, ##__VA_ARGS__]]
 #else
 #define ThrioLogV(msg)
@@ -42,7 +42,7 @@ NS_ASSUME_NONNULL_BEGIN
 #endif
 
 #ifndef ThrioLogD
-#if DEBUG
+#ifdef DEBUG
 #define ThrioLogD(fmt, ...) [ThrioLogger d:[NSString stringWithFormat:fmt, ##__VA_ARGS__]]
 #else
 #define ThrioLogD(msg)
@@ -50,7 +50,7 @@ NS_ASSUME_NONNULL_BEGIN
 #endif
 
 #ifndef ThrioLogI
-#if DEBUG
+#ifdef DEBUG
 #define ThrioLogI(fmt, ...) [ThrioLogger i:[NSString stringWithFormat:fmt, ##__VA_ARGS__]]
 #else
 #define ThrioLogI(msg)
@@ -58,7 +58,7 @@ NS_ASSUME_NONNULL_BEGIN
 #endif
 
 #ifndef ThrioLogW
-#if DEBUG
+#ifdef DEBUG
 #define ThrioLogW(fmt, ...) [ThrioLogger w:[NSString stringWithFormat:fmt, ##__VA_ARGS__]]
 #else
 #define ThrioLogW(msg)
@@ -66,7 +66,7 @@ NS_ASSUME_NONNULL_BEGIN
 #endif
 
 #ifndef ThrioLogE
-#if DEBUG
+#ifdef DEBUG
 #define ThrioLogE(fmt, ...) [ThrioLogger e:[NSString stringWithFormat:fmt, ##__VA_ARGS__]]
 #else
 #define ThrioLogE(msg)

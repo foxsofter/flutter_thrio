@@ -20,6 +20,10 @@
     UIStoryboard *sb = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     return [sb instantiateViewControllerWithIdentifier:@"ThrioViewController"];
   } forUrl:@"native1"];
+  [ThrioApp.shared registerNativeViewControllerBuilder:^UIViewController * _Nullable(NSDictionary<NSString *,id> * _Nonnull params) {
+    UIStoryboard *sb = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+    return [sb instantiateViewControllerWithIdentifier:@"ThrioViewController2"];
+  } forUrl:@"native2"];
 }
 
 @end

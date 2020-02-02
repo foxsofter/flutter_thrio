@@ -13,31 +13,31 @@ class ThrioLogger {
       ..registryMethodCall('v', ([arguments]) async {
         final message = arguments['message'];
         final error = arguments['error'];
-        v(message, error);
+        v('native:$message', error);
       })
       ..registryMethodCall('d', ([arguments]) async {
         final message = arguments['message'];
         final error = arguments['error'];
-        d(message, error);
+        d('native:$message', error);
       })
       ..registryMethodCall('i', ([arguments]) async {
         final message = arguments['message'];
         final error = arguments['error'];
-        d(message, error);
+        d('native:$message', error);
       })
       ..registryMethodCall('w', ([arguments]) async {
         final message = arguments['message'];
         final error = arguments['error'];
-        d(message, error);
+        d('native:$message', error);
       })
       ..registryMethodCall('e', ([arguments]) async {
         final message = arguments['message'];
         final error = arguments['error'];
         final stackTrace = arguments['stackTrace'];
         if (stackTrace is String) {
-          d(message, error, StackTrace.fromString(stackTrace));
+          d('native:$message', error, StackTrace.fromString(stackTrace));
         } else {
-          d(message, error);
+          d('native:$message', error);
         }
       });
   }

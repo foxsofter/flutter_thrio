@@ -289,6 +289,10 @@ NS_ASSUME_NONNULL_BEGIN
   return [indexs copy];
 }
 
+- (void)thrio_setPopDisabled:(BOOL)disabled {
+  [self thrio_setPopDisabledUrl:@"" index:@0 disabled:disabled];
+}
+
 - (void)thrio_setPopDisabledUrl:(NSString *)url
                           index:(NSNumber *)index
                        disabled:(BOOL)disabled {
@@ -326,6 +330,9 @@ NS_ASSUME_NONNULL_BEGIN
       self.thrio_hidesNavigationBar = @(self.navigationController.navigationBarHidden);
     }
     [self.navigationController thrio_removePopGesture];
+    if (self.thrio_lastRoute.popDisabled) {
+      self.navigationController.interactivePopGestureRecognizer.enabled = NO;
+    }
   } else {
     if (self.thrio_firstRoute == self.thrio_lastRoute) {
       [self.navigationController thrio_addPopGesture];

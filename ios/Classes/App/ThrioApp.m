@@ -63,7 +63,9 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 - (void)attachFlutterViewController:(ThrioFlutterViewController *)viewController {
+  ThrioLogV(@"enter attach flutter view controller");
   if (_engine.viewController != viewController) {
+    ThrioLogV(@"attach new flutter view controller");
     [(ThrioFlutterViewController*)_engine.viewController surfaceUpdated:NO];
     _engine.viewController = viewController;
     [self _shouldPauseOrResume];
@@ -71,7 +73,9 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 - (void)detachFlutterViewController {
+  ThrioLogV(@"enter detach flutter view controller");
   if (_engine.viewController != _emptyViewController) {
+    ThrioLogV(@"detach flutter view controller");
     _engine.viewController = _emptyViewController;
     [self _shouldPauseOrResume];
   }
@@ -139,8 +143,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (BOOL)canPop {
   UINavigationController *nvc = self.navigationController;
-  return nvc.viewControllers.count > 1 ||
-         nvc.topViewController.thrio_firstRoute != nvc.topViewController.thrio_lastRoute;
+  return (nvc.viewControllers.count > 1 ||
+          nvc.topViewController.thrio_firstRoute != nvc.topViewController.thrio_lastRoute) &&
+         !nvc.topViewController.thrio_lastRoute.popDisabled;
 }
 
 - (void)popToUrl:(NSString *)url
