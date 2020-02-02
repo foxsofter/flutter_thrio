@@ -1,21 +1,21 @@
 //
-//  ThrioViewController.m
+//  ThrioViewController2.m
 //  Runner
 //
 //  Created by foxsofter on 2019/12/25.
 //  Copyright © 2019 The Chromium Authors. All rights reserved.
 //
 
-#import "ThrioViewController.h"
+#import "ThrioViewController2.h"
 #import <thrio/Thrio.h>
 
-@interface ThrioViewController ()
+@interface ThrioViewController2 ()
 
 @property (weak, nonatomic) IBOutlet UILabel *label;
 
 @end
 
-@implementation ThrioViewController
+@implementation ThrioViewController2
 
 - (IBAction)pushFlutterPage:(id)sender {
   [ThrioNavigator.shared pushUrl:@"flutter1"];
@@ -29,14 +29,17 @@
 - (IBAction)popNative1:(id)sender {
   [ThrioNavigator.shared removeUrl:@"native1"];
 }
-- (IBAction)pushNative2:(id)sender {
-  [ThrioNavigator.shared pushUrl:@"native2"];
-}
-- (IBAction)popNative2:(id)sender {
-  [ThrioNavigator.shared removeUrl:@"native2"];
+- (IBAction)popToNative1:(id)sender {
+  [ThrioNavigator.shared popToUrl:@"native1"];
 }
 - (IBAction)pop:(id)sender {
   [ThrioNavigator.shared pop];
+}
+- (IBAction)enableFlutter1Eabled:(id)sender {
+  [ThrioNavigator.shared setPopDisabledUrl:@"flutter1" disabled:NO];
+}
+- (IBAction)disabledFlutter1Eabled:(id)sender {
+  [ThrioNavigator.shared setPopDisabledUrl:@"flutter1" disabled:YES];
 }
 
 - (void)viewDidLoad {
@@ -46,6 +49,8 @@
     NSString *txt = [NSString stringWithFormat:@"native page: %@ \n index: %@", self.thrio_firstRoute.settings.url, self.thrio_firstRoute.settings.index];
     [self.label setText:txt];
   }
+  
+  [ThrioNavigator.shared setPopDisabled:YES];
 }
 
 @end

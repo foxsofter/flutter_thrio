@@ -131,6 +131,32 @@ NS_ASSUME_NONNULL_BEGIN
             index:(NSNumber *)index
          animated:(BOOL)animated;
 
+#pragma mark - predicate methods
+
+- (BOOL)canPushUrl:(NSString *)url params:(NSDictionary * _Nullable)params;
+
+- (BOOL)canNotifyUrl:(NSString *)url index:(NSNumber * _Nullable)index;
+
+- (BOOL)canPop;
+
+- (BOOL)canPopToUrl:(NSString *)url index:(NSNumber * _Nullable)index;
+
+- (BOOL)canRemoveUrl:(NSString *)url index:(NSNumber * _Nullable)index;
+
+#pragma mark - get index methods
+
+- (NSNumber *)lastIndex;
+
+- (NSNumber *)getLastIndexByUrl:(NSString *)url;
+
+- (NSArray *)getAllIndexByUrl:(NSString *)url;
+
+#pragma mark - set pop disabled methods
+
+- (void)setPopDisabled:(BOOL)disabled;
+
+- (void)setPopDisabledUrl:(NSString *)url disabled:(BOOL)disabled;
+
 @end
 
 NS_ASSUME_NONNULL_END

@@ -57,6 +57,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (NSArray *)thrio_getAllIndexByUrl:(NSString *)url;
 
+- (void)thrio_setPopDisabled:(BOOL)disabled;
+
 - (void)thrio_setPopDisabledUrl:(NSString *)url
                           index:(NSNumber *)index
                        disabled:(BOOL)disabled;

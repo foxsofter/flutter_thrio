@@ -232,6 +232,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark - predicate methods
 
+- (BOOL)canPushUrl:(NSString *)url params:(NSDictionary * _Nullable)params {
+  return [ThrioApp.shared canPushUrl:url params:params];
+}
+
 - (BOOL)canNotifyUrl:(NSString *)url index:(NSNumber * _Nullable)index {
   return [ThrioApp.shared canNotifyUrl:url index:index];
 }
@@ -240,16 +244,12 @@ NS_ASSUME_NONNULL_BEGIN
   return [ThrioApp.shared canPop];
 }
 
-- (BOOL)canRemoveUrl:(NSString *)url index:(NSNumber * _Nullable)index {
-  return [ThrioApp.shared canRemoveUrl:url index:index];
-}
-
 - (BOOL)canPopToUrl:(NSString *)url index:(NSNumber * _Nullable)index {
   return [ThrioApp.shared canPopToUrl:url index:index];
 }
 
-- (BOOL)canPushUrl:(NSString *)url params:(NSDictionary * _Nullable)params {
-  return [ThrioApp.shared canPushUrl:url params:params];
+- (BOOL)canRemoveUrl:(NSString *)url index:(NSNumber * _Nullable)index {
+  return [ThrioApp.shared canRemoveUrl:url index:index];
 }
 
 #pragma mark - get index methods
@@ -264,6 +264,16 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (NSArray *)getAllIndexByUrl:(NSString *)url {
   return [ThrioApp.shared getAllIndexByUrl:url];
+}
+
+#pragma mark - set pop disabled methods
+
+- (void)setPopDisabled:(BOOL)disabled {
+  return [ThrioApp.shared setPopDisabledUrl:@"" index:@0 disabled:disabled];
+}
+
+- (void)setPopDisabledUrl:(NSString *)url disabled:(BOOL)disabled {
+  return [ThrioApp.shared setPopDisabledUrl:url index:@0 disabled:disabled];
 }
 
 - (void)setPopDisabledUrl:(NSString *)url index:(NSNumber *)index disabled:(BOOL)disabled {

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		12A48B9723E6D58E002B699E /* ThrioViewController2.m in Sources */ = {isa = PBXBuildFile; fileRef = 12A48B9623E6D58E002B699E /* ThrioViewController2.m */; };
 		12AA0BE523B38470007F1FE8 /* thrio_exampleTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 12AA0BE423B38470007F1FE8 /* thrio_exampleTests.m */; };
 		12AA0BF223B38500007F1FE8 /* ThrioRegistryMapTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 12AA0BF123B38500007F1FE8 /* ThrioRegistryMapTests.m */; };
 		12AA0BF623B39045007F1FE8 /* ThrioRegistrySetTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 12AA0BF523B39045007F1FE8 /* ThrioRegistrySetTests.m */; };
@@ -52,6 +53,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		12A48B9523E6D58E002B699E /* ThrioViewController2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThrioViewController2.h; sourceTree = "<group>"; };
+		12A48B9623E6D58E002B699E /* ThrioViewController2.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ThrioViewController2.m; sourceTree = "<group>"; };
 		12AA0BE223B38470007F1FE8 /* thrio_exampleTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = thrio_exampleTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		12AA0BE423B38470007F1FE8 /* thrio_exampleTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = thrio_exampleTests.m; sourceTree = "<group>"; };
 		12AA0BE623B38470007F1FE8 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -200,11 +203,13 @@
 				97C147021CF9000F007C117D /* Info.plist */,
 				97C146FF1CF9000F007C117D /* LaunchScreen.storyboard */,
 				97C146FA1CF9000F007C117D /* Main.storyboard */,
+				12AA0BFC23B7339D007F1FE8 /* MainModule.h */,
+				12AA0BFD23B7339D007F1FE8 /* MainModule.m */,
 				97C146F11CF9000F007C117D /* Supporting Files */,
 				12AA0BF723B397D2007F1FE8 /* ThrioViewController.h */,
 				12AA0BF823B397D2007F1FE8 /* ThrioViewController.m */,
-				12AA0BFC23B7339D007F1FE8 /* MainModule.h */,
-				12AA0BFD23B7339D007F1FE8 /* MainModule.m */,
+				12A48B9523E6D58E002B699E /* ThrioViewController2.h */,
+				12A48B9623E6D58E002B699E /* ThrioViewController2.m */,
 			);
 			path = Runner;
 			sourceTree = "<group>";
@@ -415,6 +420,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				12A48B9723E6D58E002B699E /* ThrioViewController2.m in Sources */,
 				978B8F6F1D3862AE00F588F7 /* AppDelegate.m in Sources */,
 				12AA0BF923B397D2007F1FE8 /* ThrioViewController.m in Sources */,
 				12AA0BFE23B7339D007F1FE8 /* MainModule.m in Sources */,

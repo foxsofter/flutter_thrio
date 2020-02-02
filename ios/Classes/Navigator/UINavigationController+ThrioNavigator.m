@@ -404,6 +404,10 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 - (UIViewController * _Nullable)thrio_popViewControllerAnimated:(BOOL)animated {
+  if (self.topViewController.thrio_lastRoute.popDisabled) {
+    return nil;
+  }
+  
   self.thrio_popingViewController = self.topViewController;
   
   return [self thrio_popViewControllerAnimated:animated];
@@ -430,17 +434,16 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)thrio_addPopGesture {
   if (![self.interactivePopGestureRecognizer.view.gestureRecognizers containsObject:self.thrio_popGestureRecognizer]) {
     [self.interactivePopGestureRecognizer.view addGestureRecognizer:self.thrio_popGestureRecognizer];
-    self.delegate = self.thrio_navigationControllerDelegate;
-    self.interactivePopGestureRecognizer.enabled = NO;
   }
+  self.delegate = self.thrio_navigationControllerDelegate;
+  self.interactivePopGestureRecognizer.enabled = NO;
 }
 
 - (void)thrio_removePopGesture {
   if ([self.interactivePopGestureRecognizer.view.gestureRecognizers containsObject:self.thrio_popGestureRecognizer]) {
     [self.interactivePopGestureRecognizer.view removeGestureRecognizer:self.thrio_popGestureRecognizer];
-    self.delegate = self.thrio_navigationControllerDelegate.originDelegate;
-    self.interactivePopGestureRecognizer.enabled = YES;
   }
+  self.interactivePopGestureRecognizer.enabled = YES;
 }
 
 #pragma mark - private methods
