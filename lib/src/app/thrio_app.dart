@@ -25,7 +25,7 @@ class ThrioApp {
 
   ThrioNavigator _navigator;
 
-  /// Assigned when the `builder` method is called.
+  /// Assigned when the `build` method is called.
   ///
   ThrioNavigatorState get navigatorState =>
       _navigator.tryStateOf<ThrioNavigatorState>();
@@ -197,4 +197,17 @@ class ThrioApp {
 
   Future<List<int>> allIndex(String url) =>
       _channel.invokeListMethod<int>('allIndex', {'url': url});
+
+  Future<bool> setPopDisabled({
+    @required String url,
+    int index,
+    bool disabled = true,
+  }) {
+    final arguments = <String, dynamic>{
+      'url': url,
+      'index': index,
+      'disabled': disabled,
+    };
+    return _channel.invokeMethod<bool>('setPopDisabled', arguments);
+  }
 }

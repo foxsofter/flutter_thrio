@@ -11,8 +11,6 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-// A container class for Flutter pages.
-//
 @interface ThrioFlutterViewController : FlutterViewController<UINavigationControllerDelegate>
 
 - (instancetype)init NS_DESIGNATED_INITIALIZER;

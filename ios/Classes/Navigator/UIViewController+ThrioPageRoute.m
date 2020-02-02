@@ -289,6 +289,22 @@ NS_ASSUME_NONNULL_BEGIN
   return [indexs copy];
 }
 
+- (void)thrio_setPopDisabledUrl:(NSString *)url
+                          index:(NSNumber *)index
+                       disabled:(BOOL)disabled {
+  ThrioPageRoute *route = [self thrio_getRouteByUrl:url index:index];
+  route.popDisabled = disabled;
+  
+  NSMutableDictionary *arguments =
+    [NSMutableDictionary dictionaryWithDictionary:[route.settings toArgumentsWithoutParams]];
+  [arguments setObject:[NSNumber numberWithBool:disabled] forKey:@"disabled"];
+
+  if (route != self.thrio_firstRoute && [self isKindOfClass:ThrioFlutterViewController.class]) {
+    [[ThrioApp.shared channel] invokeMethod:@"__onSetPopDisabled__"
+                                  arguments:arguments];
+  }
+}
+
 #pragma mark - method swizzling
 
 + (void)load {
@@ -309,7 +325,7 @@ NS_ASSUME_NONNULL_BEGIN
     if (self.thrio_hidesNavigationBar == nil) {
       self.thrio_hidesNavigationBar = @(self.navigationController.navigationBarHidden);
     }
-    [self.navigationController thrio_addPopGesture];
+    [self.navigationController thrio_removePopGesture];
   } else {
     if (self.thrio_firstRoute == self.thrio_lastRoute) {
       [self.navigationController thrio_addPopGesture];

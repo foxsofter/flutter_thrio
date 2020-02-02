@@ -19,6 +19,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, weak) UINavigationController *navigationController;
 
+/// 原来的UINavigationControllerDelegate
+///
 @property (nonatomic, weak) id<UINavigationControllerDelegate> originDelegate;
 
 @end
@@ -32,11 +34,13 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface UINavigationController ()
 
+/// 记下当前正要被pop的`UIViewController`
+///
+@property (nonatomic, strong, nullable) UIViewController *thrio_popingViewController;
+
 @property (nonatomic, strong, readonly) UIScreenEdgePanGestureRecognizer *thrio_popGestureRecognizer;
 
 @property (nonatomic, strong, readonly) ThrioPopGestureRecognizerDelegate *thrio_popGestureRecognizerDelegate;
-
-@property (nonatomic, strong, nullable) UIViewController *thrio_popingViewController;
 
 @property (nonatomic, strong, readonly) ThrioNavigationControllerDelegate *thrio_navigationControllerDelegate;
 
@@ -44,17 +48,15 @@ NS_ASSUME_NONNULL_BEGIN
 
 @implementation UINavigationController (ThrioNavigator)
 
-- (ThrioPopGestureRecognizerDelegate *)thrio_popGestureRecognizerDelegate {
-  ThrioPopGestureRecognizerDelegate *delegate = objc_getAssociatedObject(self, _cmd);
-  if (!delegate) {
-    delegate = [[ThrioPopGestureRecognizerDelegate alloc] init];
-    delegate.navigationController = self;
-    objc_setAssociatedObject(self,
-                             _cmd,
-                             delegate,
-                             OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-  }
-  return delegate;
+- (UIViewController * _Nullable)thrio_popingViewController {
+  return objc_getAssociatedObject(self, _cmd);
+}
+
+- (void)setThrio_popingViewController:(UIViewController * _Nullable)viewController {
+  objc_setAssociatedObject(self,
+                           @selector(thrio_popingViewController),
+                           viewController,
+                           OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
 - (UIScreenEdgePanGestureRecognizer *)thrio_popGestureRecognizer {
@@ -77,15 +79,17 @@ NS_ASSUME_NONNULL_BEGIN
   return panGestureRecognizer;
 }
 
-- (UIViewController * _Nullable)thrio_popingViewController {
-  return objc_getAssociatedObject(self, _cmd);
-}
-
-- (void)setThrio_popingViewController:(UIViewController * _Nullable)viewController {
-  objc_setAssociatedObject(self,
-                           @selector(thrio_popingViewController),
-                           viewController,
-                           OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+- (ThrioPopGestureRecognizerDelegate *)thrio_popGestureRecognizerDelegate {
+  ThrioPopGestureRecognizerDelegate *delegate = objc_getAssociatedObject(self, _cmd);
+  if (!delegate) {
+    delegate = [[ThrioPopGestureRecognizerDelegate alloc] init];
+    delegate.navigationController = self;
+    objc_setAssociatedObject(self,
+                             _cmd,
+                             delegate,
+                             OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+  }
+  return delegate;
 }
 
 - (ThrioNavigationControllerDelegate *)thrio_navigationControllerDelegate {
@@ -313,6 +317,13 @@ NS_ASSUME_NONNULL_BEGIN
   return [self getViewControllerByUrl:url index:index] != nil;
 }
 
+- (void)thrio_setPopDisabledUrl:(NSString *)url
+                          index:(NSNumber *)index
+                       disabled:(BOOL)disabled {
+  UIViewController *vc = [self getViewControllerByUrl:url index:index];
+  [vc thrio_setPopDisabledUrl:url index:index disabled:disabled];
+}
+
 - (ThrioVoidCallback)thrio_registerNativeViewControllerBuilder:(ThrioNativeViewControllerBuilder)builder
                                                         forUrl:(NSString *)url {
   ThrioRegistryMap *builders = [self nativeViewControllerBuilders];
@@ -345,6 +356,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (UIViewController * _Nullable)getViewControllerByUrl:(NSString *)url
                                                  index:(NSNumber *)index {
+  if (url.length < 1) {
+    return self.topViewController;
+  }
   NSEnumerator *vcs = [self.viewControllers reverseObjectEnumerator];
   for (UIViewController *vc in vcs) {
     if ([vc thrio_getRouteByUrl:url index:index]) {
@@ -418,13 +432,14 @@ NS_ASSUME_NONNULL_BEGIN
     [self.interactivePopGestureRecognizer.view addGestureRecognizer:self.thrio_popGestureRecognizer];
     self.delegate = self.thrio_navigationControllerDelegate;
     self.interactivePopGestureRecognizer.enabled = NO;
-    self.interactivePopGestureRecognizer.delegate = nil;
   }
 }
 
 - (void)thrio_removePopGesture {
   if ([self.interactivePopGestureRecognizer.view.gestureRecognizers containsObject:self.thrio_popGestureRecognizer]) {
     [self.interactivePopGestureRecognizer.view removeGestureRecognizer:self.thrio_popGestureRecognizer];
+    self.delegate = self.thrio_navigationControllerDelegate.originDelegate;
+    self.interactivePopGestureRecognizer.enabled = YES;
   }
 }
 
@@ -544,36 +559,17 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (BOOL)gestureRecognizerShouldBegin:(UIPanGestureRecognizer *)gestureRecognizer {
   UIViewController *topViewController = self.navigationController.topViewController;
-  
-  if (topViewController.thrio_popDisabled) {
+  if (topViewController.thrio_lastRoute.popDisabled) {
     return NO;
   }
     
-  // Ignore when no view controller is pushed into the navigation stack.
   if (self.navigationController.viewControllers.count <= 1) {
     return NO;
   }
 
-  // Ignore pan gesture when the navigation controller is currently in transition.
   if ([[self.navigationController valueForKey:@"_isTransitioning"] boolValue]) {
     return NO;
   }
-
-  // Ignore when the beginning location is beyond max allowed initial distance to left edge.
-//  CGPoint beginningLocation = [gestureRecognizer locationInView:gestureRecognizer.view];
-//  if (beginningLocation.x > 0) {
-//    return NO;
-//  }
-
-  // Prevent calling the handler when the gesture begins in an opposite direction.
-//  CGPoint translation = [gestureRecognizer translationInView:gestureRecognizer.view];
-//  BOOL isLeftToRight = [UIApplication sharedApplication]
-//    .userInterfaceLayoutDirection == UIUserInterfaceLayoutDirectionLeftToRight;
-//  CGFloat multiplier = isLeftToRight ? 1 : - 1;
-//  if ((translation.x * multiplier) <= 0) {
-//    return NO;
-//  }
-  self.navigationController.thrio_popingViewController = topViewController;
   
   return YES;
 }

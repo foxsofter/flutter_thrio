@@ -266,6 +266,10 @@ NS_ASSUME_NONNULL_BEGIN
   return [ThrioApp.shared getAllIndexByUrl:url];
 }
 
+- (void)setPopDisabledUrl:(NSString *)url index:(NSNumber *)index disabled:(BOOL)disabled {
+  return [ThrioApp.shared setPopDisabledUrl:url index:index disabled:disabled];
+}
+
 @end
 
 NS_ASSUME_NONNULL_END

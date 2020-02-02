@@ -49,7 +49,7 @@ class _Page3State extends State<Page3> {
                     ),
                     InkWell(
                       onTap: () => ThrioNavigator.push(
-                        url: 'flutter1',
+                        url: 'flutter4',
                         params: {
                           '1': {'2': '3'}
                         },
@@ -59,7 +59,7 @@ class _Page3State extends State<Page3> {
                           margin: const EdgeInsets.all(8),
                           color: Colors.yellow,
                           child: Text(
-                            'push flutter1',
+                            'push flutter4',
                             style: TextStyle(fontSize: 22, color: Colors.black),
                           )),
                     ),

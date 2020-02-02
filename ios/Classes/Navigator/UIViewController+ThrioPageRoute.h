@@ -14,8 +14,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface UIViewController (ThrioPageRoute)
 
-@property (nonatomic, assign) BOOL thrio_popDisabled;
-
 @property (nonatomic, strong, nullable) NSNumber *thrio_hidesNavigationBar;
 
 @property (nonatomic, strong, readonly, nullable) ThrioPageRoute *thrio_firstRoute;
@@ -58,6 +56,10 @@ NS_ASSUME_NONNULL_BEGIN
 - (NSNumber *)thrio_getLastIndexByUrl:(NSString *)url;
 
 - (NSArray *)thrio_getAllIndexByUrl:(NSString *)url;
+
+- (void)thrio_setPopDisabledUrl:(NSString *)url
+                          index:(NSNumber *)index
+                       disabled:(BOOL)disabled;
 
 @end
 

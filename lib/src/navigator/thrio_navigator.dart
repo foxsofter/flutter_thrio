@@ -91,6 +91,19 @@ class ThrioNavigator extends StatefulWidget {
   ///
   static Future<List<int>> allIndex(String index) => ThrioApp().allIndex(index);
 
+  /// Set pop disabled with `url` and `index`.
+  ///
+  static Future<bool> setPopDisabled({
+    @required String url,
+    int index = 0,
+    bool disabled = true,
+  }) =>
+      ThrioApp().setPopDisabled(
+        url: url,
+        index: index,
+        disabled: disabled,
+      );
+
   static VoidCallback registerDefaultPageBuilder(
     ThrioPageBuilder builder,
   ) =>
@@ -197,6 +210,17 @@ class ThrioNavigatorState extends State<ThrioNavigator> {
     return Future.value(true);
   }
 
+  Future<bool> setPopDisabled(RouteSettings settings, {bool disabled = true}) {
+    final route = _observer._pageRoutes.lastWhere(
+        (it) => it.settings.name == settings.name,
+        orElse: () => null);
+    if (route != null) {
+      route.willPopCallback = () async => !disabled;
+      return Future.value(true);
+    }
+    return Future.value(false);
+  }
+
   @override
   void initState() {
     super.initState();
@@ -220,8 +244,17 @@ class ThrioNavigatorObserver extends NavigatorObserver {
 
   @override
   void didPush(Route<dynamic> route, Route<dynamic> previousRoute) {
+    if (previousRoute is ThrioPageRoute &&
+        previousRoute.willPopCallback != null) {
+      ThrioApp()
+          .current
+          .removeScopedWillPopCallback(previousRoute.willPopCallback);
+    }
     if (route is ThrioPageRoute) {
       ThrioLogger().v('didPush: ${route.settings}');
+      if (route.willPopCallback != null) {
+        ThrioApp().current.addScopedWillPopCallback(route.willPopCallback);
+      }
       _pageRoutes.add(route);
       ThrioApp().didPush(
         url: route.settings.url,
@@ -232,7 +265,16 @@ class ThrioNavigatorObserver extends NavigatorObserver {
 
   @override
   void didPop(Route<dynamic> route, Route<dynamic> previousRoute) {
+    if (previousRoute is ThrioPageRoute &&
+        previousRoute.willPopCallback != null) {
+      ThrioApp()
+          .current
+          .addScopedWillPopCallback(previousRoute.willPopCallback);
+    }
     if (route is ThrioPageRoute) {
+      if (route.willPopCallback != null) {
+        ThrioApp().current.removeScopedWillPopCallback(route.willPopCallback);
+      }
       _pageRoutes.remove(route);
       _currentPopRoutes.add(route);
       if (_currentPopRoutes.length == 1) {
@@ -276,6 +318,9 @@ class ThrioNavigatorObserver extends NavigatorObserver {
           }
           _currentRemoveRoutes.clear();
         });
+      }
+      if (route.willPopCallback != null) {
+        ThrioApp().current.removeScopedWillPopCallback(route.willPopCallback);
       }
     }
   }

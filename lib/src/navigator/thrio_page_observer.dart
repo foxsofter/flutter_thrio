@@ -14,6 +14,7 @@ class ThrioPageObserver {
     _onPop();
     _onPopTo();
     _onRemove();
+    _onSetPopDisabled();
   }
 
   final ThrioChannel _channel;
@@ -85,6 +86,18 @@ class ThrioPageObserver {
         return ThrioApp().navigatorState?.remove(
               routeSettings,
               animated: animated,
+            );
+      });
+
+  void _onSetPopDisabled() =>
+      _channel.registryMethodCall('__onSetPopDisabled__', ([arguments]) {
+        final routeSettings = ThrioRouteSettings.fromArguments(arguments);
+        final disabledValue = arguments['disabled'];
+        final disabled =
+            (disabledValue != null && disabledValue is bool) && disabledValue;
+        return ThrioApp().navigatorState?.setPopDisabled(
+              routeSettings,
+              disabled: disabled,
             );
       });
 }
