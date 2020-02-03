@@ -9,7 +9,10 @@ class Module with ThrioModule {
   void onPageRegister() {
     ThrioApp().registerPageBuilder(
       'flutter1',
-      (settings) => Page1(index: settings.index, params: settings.params),
+      (settings) => Page1(
+        index: settings.index,
+        params: settings.params,
+      ),
     );
     ThrioApp().registerPageBuilder(
       'flutter2',
