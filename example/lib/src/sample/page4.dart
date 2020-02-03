@@ -92,7 +92,8 @@ class _Page4State extends State<Page4> {
                       )),
                 ),
                 InkWell(
-                  onTap: () => ThrioNavigator.popTo(url: 'flutter2'),
+                  onTap: () =>
+                      ThrioNavigator.popTo(url: 'flutter2', animated: false),
                   child: Container(
                       padding: const EdgeInsets.all(8),
                       margin: const EdgeInsets.all(8),
