@@ -38,7 +38,7 @@ ThrioApp().registerPageBuilder(
 
 2. iOS 中注册页面路由
 
-```Objc
+```objc
   [ThrioApp.shared registerNativeViewControllerBuilder:^UIViewController * _Nullable(NSDictionary<NSString *,id> * _Nonnull params) {
     return UIViewController...
   } forUrl:@"native1"];
@@ -59,7 +59,7 @@ ThrioNavigator.push(url: 'native1', animated:true);
 
 2. iOS 端打开页面
 
-```Objc
+```objc
 [ThrioNavigator.shared pushUrl:@"flutter1"];
 ```
 
@@ -141,7 +141,7 @@ ThrioNavigator.notify(url: 'flutter1', name: 'reload');
 
 实际上实现了 UIViewController 的分类扩展，FlutterViewController 强制设为 YES，原生页面设置导航栏隐藏，也很简单
 
-```Objc
+```objc
 viewController.thrio_hidesNavigationBar = NO;
 ```
 
