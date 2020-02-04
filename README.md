@@ -1,10 +1,11 @@
 # flutter 路由库 thrio 指南
 
-thrio 是一个支持 flutter 嵌入原生应用的路由库，目前只要 iOS 版本可看，Android 版本在开发中。
+thrio 是一个支持 flutter 嵌入原生应用的路由库，目前只有 iOS 版本可看，Android 版本在开发中。
 
 ## 为什么写 thrio
 
 thrio 的诞生主要是为了解决我们自身的业务问题。
+
 我们目前积累了将近 10 万行 Dart 业务代码，早期的时候采用 flutter_boost 提供的解决方案来实现将 Flutter 嵌入原生应用，使用过程中也积累了很多对 flutter_boost 改造的需求，但因为 flutter_boost 的路线图短期或者长期都看不到能满足我们这些需求的可能，所以我们只好自己造了一个轮子。
 
 ## 需求是什么
@@ -37,7 +38,7 @@ ThrioApp().registerPageBuilder(
 
 2. iOS 中注册页面路由
 
-```Objc
+```objc
   [ThrioApp.shared registerNativeViewControllerBuilder:^UIViewController * _Nullable(NSDictionary<NSString *,id> * _Nonnull params) {
     return UIViewController...
   } forUrl:@"native1"];
@@ -50,13 +51,15 @@ ThrioApp().registerPageBuilder(
 
 ```dart
 ThrioNavigator.push(url: 'flutter1');
-ThrioNavigator.push(url: 'native1', params: { '1': {'2': '3'}}); // 传入参数
-ThrioNavigator.push(url: 'native1', animated:true); // 是否动画，目前在内嵌的dart页面中动画无法取消，原生iOS页面有效果
+// 传入参数
+ThrioNavigator.push(url: 'native1', params: { '1': {'2': '3'}});
+// 是否动画，目前在内嵌的dart页面中动画无法取消，原生iOS页面有效果
+ThrioNavigator.push(url: 'native1', animated:true);
 ```
 
 2. iOS 端打开页面
 
-```Objc
+```objc
 [ThrioNavigator.shared pushUrl:@"flutter1"];
 ```
 
@@ -138,7 +141,7 @@ ThrioNavigator.notify(url: 'flutter1', name: 'reload');
 
 实际上实现了 UIViewController 的分类扩展，FlutterViewController 强制设为 YES，原生页面设置导航栏隐藏，也很简单
 
-```Objc
+```objc
 viewController.thrio_hidesNavigationBar = NO;
 ```
 
