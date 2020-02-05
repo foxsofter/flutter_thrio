@@ -10,6 +10,7 @@
 #import "UINavigationController+ThrioNavigator.h"
 #import "ThrioApp.h"
 #import "ThrioChannel.h"
+#import "ThrioLogger.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -27,6 +28,13 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)viewDidLoad {
   [super viewDidLoad];
   self.view.backgroundColor = UIColor.whiteColor;
+}
+
+- (void)viewDidAppear:(BOOL)animated {
+  [super viewDidAppear:animated];
+  ThrioLogV(@"flutter page did appear: url=%@,index=%@",
+            self.thrio_lastRoute.settings.url,
+            self.thrio_lastRoute.settings.index);
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
