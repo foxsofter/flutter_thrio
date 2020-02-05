@@ -9,6 +9,8 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+extern NSString *const kLoggerChannelName;
+
 @interface ThrioLogger : NSObject
 
 + (void)v:(id)message;

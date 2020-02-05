@@ -10,14 +10,13 @@
 
 @implementation ThrioLogger
 
-static NSString *const kLoggerChannelName = @"__thrio_logger__";
+NSString *const kLoggerChannelName = @"__thrio_logger__";
 
 + (void)v:(id)message {
   [self v:message error:nil];
 }
 
 + (void)v:(id)message error:(NSError *)error {
-  NSLog(@"%@,%@", message, error ? error.localizedDescription : @"");
   [[ThrioChannel channelWithName:kLoggerChannelName]
    invokeMethod:@"v"
    arguments:@{
@@ -31,7 +30,6 @@ static NSString *const kLoggerChannelName = @"__thrio_logger__";
 }
 
 + (void)d:(id)message error:(NSError *)error {
-  NSLog(@"%@,%@", message, error ? error.localizedDescription : @"");
   [[ThrioChannel channelWithName:kLoggerChannelName]
    invokeMethod:@"d"
    arguments:@{
@@ -45,7 +43,6 @@ static NSString *const kLoggerChannelName = @"__thrio_logger__";
 }
 
 + (void)i:(id)message error:(NSError *)error {
-  NSLog(@"%@,%@", message, error ? error.localizedDescription : @"");
   [[ThrioChannel channelWithName:kLoggerChannelName]
    invokeMethod:@"i"
    arguments:@{
@@ -59,7 +56,6 @@ static NSString *const kLoggerChannelName = @"__thrio_logger__";
 }
 
 + (void)w:(id)message error:(NSError *)error {
-  NSLog(@"%@,%@", message, error ? error.localizedDescription : @"");
   [[ThrioChannel channelWithName:kLoggerChannelName]
    invokeMethod:@"w"
    arguments:@{
@@ -73,13 +69,11 @@ static NSString *const kLoggerChannelName = @"__thrio_logger__";
 }
 
 + (void)e:(id)message error:(NSError *)error {
-  NSLog(@"%@,%@,%@", message, error ? error.localizedDescription : @"", [NSThread callStackSymbols]);
   [[ThrioChannel channelWithName:kLoggerChannelName]
    invokeMethod:@"e"
    arguments:@{
      @"message": message,
      @"error": error ? error.localizedDescription : @"",
-     @"stackTrace": [NSThread callStackSymbols]
    }];
 }
 
