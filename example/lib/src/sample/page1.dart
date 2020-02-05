@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:thrio/thrio.dart';
 
@@ -21,7 +22,7 @@ class _Page1State extends State<Page1> {
   Widget build(BuildContext context) => Scaffold(
       appBar: AppBar(
         brightness: Brightness.light,
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.blue,
         textTheme: TextTheme(title: TextStyle(color: Colors.black)),
         title: const Text('thrio_example'),
         leading: IconButton(
