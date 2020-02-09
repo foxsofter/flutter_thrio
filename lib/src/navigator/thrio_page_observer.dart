@@ -3,13 +3,13 @@
 
 import 'package:flutter/widgets.dart';
 
-import '../app/thrio_app.dart';
 import '../channel/thrio_channel.dart';
+import 'thrio_app.dart';
 import 'thrio_route_settings.dart';
 
 class ThrioPageObserver {
   ThrioPageObserver(ThrioChannel channel) : _channel = channel {
-    _onScheduleFrame();
+    // _onScheduleFrame();
     _onPush();
     _onPop();
     _onPopTo();
@@ -19,18 +19,18 @@ class ThrioPageObserver {
 
   final ThrioChannel _channel;
 
-  void _onScheduleFrame() {
-    _channel.registryMethodCall(
-      'scheduleFrame',
-      ([_]) {
-        WidgetsBinding.instance.scheduleForcedFrame();
-        return Future.delayed(
-          const Duration(milliseconds: 250),
-          WidgetsBinding.instance.scheduleForcedFrame,
-        );
-      },
-    );
-  }
+  // void _onScheduleFrame() {
+  //   _channel.registryMethodCall(
+  //     'scheduleFrame',
+  //     ([_]) {
+  //       WidgetsBinding.instance.scheduleForcedFrame();
+  //       return Future.delayed(
+  //         const Duration(milliseconds: 250),
+  //         WidgetsBinding.instance.scheduleForcedFrame,
+  //       );
+  //     },
+  //   );
+  // }
 
   Stream<Map<String, dynamic>> onPageNotifyStream(
     String name,

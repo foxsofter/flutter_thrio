@@ -30,6 +30,12 @@ extension ThrioRouteSettings on RouteSettings {
     return null;
   }
 
+  Map<String, dynamic> toArguments() => <String, dynamic>{
+        'url': url,
+        'index': index,
+        'params': params,
+      };
+
   /// Creates a copy of this route settings object with the given fields
   /// replaced with the new values.
   ///

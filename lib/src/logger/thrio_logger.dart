@@ -13,42 +13,42 @@ class ThrioLogger {
       ..registryMethodCall('v', ([arguments]) async {
         final message = arguments['message'];
         var error = arguments['error'];
-        if (error == null || (error is String && error.isEmpty)) {
+        if (error != null && error is String && error.isEmpty) {
           error = null;
         }
-        d('$message', error);
+        v('[N] $message', error);
       })
       ..registryMethodCall('d', ([arguments]) async {
         final message = arguments['message'];
         var error = arguments['error'];
-        if (error == null || (error is String && error.isEmpty)) {
+        if (error != null && error is String && error.isEmpty) {
           error = null;
         }
-        d('$message', error);
+        d('[N] $message', error);
       })
       ..registryMethodCall('i', ([arguments]) async {
         final message = arguments['message'];
         var error = arguments['error'];
-        if (error == null || (error is String && error.isEmpty)) {
+        if (error != null && error is String && error.isEmpty) {
           error = null;
         }
-        d('$message', error);
+        d('[N] $message', error);
       })
       ..registryMethodCall('w', ([arguments]) async {
         final message = arguments['message'];
         var error = arguments['error'];
-        if (error == null || (error is String && error.isEmpty)) {
+        if (error != null && error is String && error.isEmpty) {
           error = null;
         }
-        d('$message', error);
+        d('[N] $message', error);
       })
       ..registryMethodCall('e', ([arguments]) async {
         final message = arguments['message'];
         var error = arguments['error'];
-        if (error == null || (error is String && error.isEmpty)) {
+        if (error != null && error is String && error.isEmpty) {
           error = null;
         }
-        d('$message', error);
+        d('[N] $message', error);
       });
   }
 

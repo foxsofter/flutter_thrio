@@ -5,10 +5,11 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
-import '../app/thrio_app.dart';
+import '../channel/thrio_channel.dart';
 import '../extension/thrio_stateful_widget.dart';
 import '../logger/thrio_logger.dart';
 import '../registry/registry_map.dart';
+import 'thrio_app.dart';
 import 'thrio_page_route.dart';
 import 'thrio_route_settings.dart';
 
@@ -17,10 +18,14 @@ import 'thrio_route_settings.dart';
 class ThrioNavigator extends StatefulWidget {
   const ThrioNavigator({
     Key key,
+    ThrioNavigatorObserver observer,
     this.child,
-  }) : super(key: key);
+  })  : _observer = observer,
+        super(key: key);
 
   final Navigator child;
+
+  final ThrioNavigatorObserver _observer;
 
   static final _pageBuilders = RegistryMap<String, ThrioPageBuilder>();
 
@@ -125,9 +130,7 @@ class ThrioNavigator extends StatefulWidget {
 }
 
 class ThrioNavigatorState extends State<ThrioNavigator> {
-  final _observer = ThrioNavigatorObserver();
-
-  ThrioPageRoute get current => _observer._pageRoutes.last;
+  List<ThrioPageRoute> get history => widget._observer._pageRoutes;
 
   /// 还无法实现animated=false
   Future<bool> push(RouteSettings settings, {bool animated = true}) {
@@ -137,8 +140,8 @@ class ThrioNavigatorState extends State<ThrioNavigator> {
     }
     final pageBuilder = ThrioNavigator._pageBuilders[settings.url];
     final route = ThrioPageRoute(builder: pageBuilder, settings: settings);
-    navigatorState.push(route);
     ThrioLogger().v('push: ${route.settings}');
+    navigatorState.push(route);
     return Future.value(true);
   }
 
@@ -147,20 +150,19 @@ class ThrioNavigatorState extends State<ThrioNavigator> {
     if (navigatorState == null) {
       return false;
     }
-    if (_observer._pageRoutes.isEmpty) {
+    if (history.isEmpty) {
       return false;
     }
     if (animated) {
-      if (await _observer._pageRoutes.last.willPop() ==
-          RoutePopDisposition.pop) {
-        ThrioLogger().v('pop: ${_observer._pageRoutes.last.settings}');
+      if (await history.last.willPop() == RoutePopDisposition.pop) {
+        ThrioLogger().v('pop: ${history.last.settings}');
         navigatorState.pop();
       } else {
         return false;
       }
     } else {
-      ThrioLogger().v('pop: ${_observer._pageRoutes.last.settings}');
-      navigatorState.removeRoute(_observer._pageRoutes.last);
+      ThrioLogger().v('pop: ${history.last.settings}');
+      navigatorState.removeRoute(history.last);
     }
     return true;
   }
@@ -170,23 +172,22 @@ class ThrioNavigatorState extends State<ThrioNavigator> {
     if (navigatorState == null) {
       return Future.value(false);
     }
-    final route = _observer._pageRoutes.lastWhere(
-        (it) => it.settings.name == settings.name,
+    final route = history.lastWhere((it) => it.settings.name == settings.name,
         orElse: () => null);
-    if (route == null || settings.name == current.settings.name) {
+    if (route == null || settings.name == history.last.settings.name) {
       return Future.value(false);
     }
     ThrioLogger().v('popTo: ${route.settings}');
     if (animated) {
       navigatorState.popUntil((it) => it.settings.name == settings.name);
     } else {
-      for (var i = _observer._pageRoutes.length - 2; i >= 0; i--) {
-        if (_observer._pageRoutes[i].settings.name == settings.name) {
+      for (var i = history.length - 2; i >= 0; i--) {
+        if (history[i].settings.name == settings.name) {
           break;
         }
-        navigatorState.removeRoute(_observer._pageRoutes[i]);
+        navigatorState.removeRoute(history[i]);
       }
-      navigatorState.removeRoute(_observer._pageRoutes.last);
+      navigatorState.removeRoute(history.last);
     }
     return Future.value(true);
   }
@@ -196,14 +197,13 @@ class ThrioNavigatorState extends State<ThrioNavigator> {
     if (navigatorState == null) {
       return Future.value(false);
     }
-    final route = _observer._pageRoutes.lastWhere(
-        (it) => it.settings.name == settings.name,
+    final route = history.lastWhere((it) => it.settings.name == settings.name,
         orElse: () => null);
     if (route == null) {
       return Future.value(false);
     }
     ThrioLogger().v('remove: ${route.settings}');
-    if (settings.name == current.settings.name) {
+    if (settings.name == history.last.settings.name) {
       return pop(animated: animated);
     }
     navigatorState.removeRoute(route);
@@ -211,8 +211,7 @@ class ThrioNavigatorState extends State<ThrioNavigator> {
   }
 
   Future<bool> setPopDisabled(RouteSettings settings, {bool disabled = true}) {
-    final route = _observer._pageRoutes.lastWhere(
-        (it) => it.settings.name == settings.name,
+    final route = history.lastWhere((it) => it.settings.name == settings.name,
         orElse: () => null);
     if (route != null) {
       route.willPopCallback = () async => !disabled;
@@ -225,7 +224,15 @@ class ThrioNavigatorState extends State<ThrioNavigator> {
   void initState() {
     super.initState();
     if (mounted) {
-      widget.child.observers.add(_observer);
+      widget.child.observers.add(widget._observer);
+    }
+  }
+
+  @override
+  void reassemble() {
+    super.reassemble();
+    if (history.isEmpty) {
+      widget._observer._channel.invokeMethod<bool>('hotRestart');
     }
   }
 
@@ -234,7 +241,9 @@ class ThrioNavigatorState extends State<ThrioNavigator> {
 }
 
 class ThrioNavigatorObserver extends NavigatorObserver {
-  ThrioNavigatorObserver();
+  ThrioNavigatorObserver(ThrioChannel channel) : _channel = channel;
+
+  final ThrioChannel _channel;
 
   final _currentPopRoutes = <ThrioPageRoute>[];
 
@@ -246,20 +255,20 @@ class ThrioNavigatorObserver extends NavigatorObserver {
   void didPush(Route<dynamic> route, Route<dynamic> previousRoute) {
     if (previousRoute is ThrioPageRoute &&
         previousRoute.willPopCallback != null) {
-      ThrioApp()
-          .current
+      _pageRoutes.last
           .removeScopedWillPopCallback(previousRoute.willPopCallback);
     }
     if (route is ThrioPageRoute) {
       ThrioLogger().v('didPush: ${route.settings}');
       if (route.willPopCallback != null) {
-        ThrioApp().current.addScopedWillPopCallback(route.willPopCallback);
+        _pageRoutes.last.addScopedWillPopCallback(route.willPopCallback);
       }
       _pageRoutes.add(route);
-      ThrioApp().didPush(
-        url: route.settings.url,
-        index: route.settings.index,
-      );
+      final arguments = <String, dynamic>{
+        'url': route.settings.url,
+        'index': route.settings.index,
+      };
+      _channel.invokeMethod<bool>('didPush', arguments);
     }
   }
 
@@ -267,13 +276,11 @@ class ThrioNavigatorObserver extends NavigatorObserver {
   void didPop(Route<dynamic> route, Route<dynamic> previousRoute) {
     if (previousRoute is ThrioPageRoute &&
         previousRoute.willPopCallback != null) {
-      ThrioApp()
-          .current
-          .addScopedWillPopCallback(previousRoute.willPopCallback);
+      _pageRoutes.last.addScopedWillPopCallback(previousRoute.willPopCallback);
     }
     if (route is ThrioPageRoute) {
       if (route.willPopCallback != null) {
-        ThrioApp().current.removeScopedWillPopCallback(route.willPopCallback);
+        _pageRoutes.last.removeScopedWillPopCallback(route.willPopCallback);
       }
       _pageRoutes.remove(route);
       _currentPopRoutes.add(route);
@@ -281,15 +288,18 @@ class ThrioNavigatorObserver extends NavigatorObserver {
         Future.delayed(const Duration(milliseconds: 500), () {
           if (_currentPopRoutes.length == 1) {
             ThrioLogger().v('didPop: ${route.settings}');
-            ThrioApp().didPop(
-              url: route.settings.url,
-              index: route.settings.index,
-            );
+            final arguments = <String, dynamic>{
+              'url': route.settings.url,
+              'index': route.settings.index,
+            };
+            _channel.invokeMethod<bool>('didPop', arguments);
           } else if (_currentPopRoutes.length > 1) {
-            ThrioLogger().v('didPopTo: ${_currentPopRoutes.last.settings}');
-            ThrioApp().didPopTo(
-                url: _currentPopRoutes.last.settings.url,
-                index: _currentPopRoutes.last.settings.index);
+            ThrioLogger().v('didPopTo: ${_currentPopRoutes.first.settings}');
+            final arguments = <String, dynamic>{
+              'url': _currentPopRoutes.last.settings.url,
+              'index': _currentPopRoutes.last.settings.index,
+            };
+            _channel.invokeMethod<bool>('didPopTo', arguments);
           }
           _currentPopRoutes.clear();
         });
@@ -306,21 +316,24 @@ class ThrioNavigatorObserver extends NavigatorObserver {
         Future.delayed(const Duration(milliseconds: 500), () {
           if (_currentRemoveRoutes.length == 1) {
             ThrioLogger().v('didRemove: ${route.settings}');
-            ThrioApp().didRemove(
-              url: route.settings.url,
-              index: route.settings.index,
-            );
+            final arguments = <String, dynamic>{
+              'url': route.settings.url,
+              'index': route.settings.index,
+            };
+            _channel.invokeMethod<bool>('didRemove', arguments);
           } else if (_currentRemoveRoutes.length > 1) {
             ThrioLogger().v('didPopTo: ${_currentRemoveRoutes.last.settings}');
-            ThrioApp().didPopTo(
-                url: _currentRemoveRoutes.last.settings.url,
-                index: _currentRemoveRoutes.last.settings.index);
+            final arguments = <String, dynamic>{
+              'url': _currentRemoveRoutes.last.settings.url,
+              'index': _currentRemoveRoutes.last.settings.index,
+            };
+            _channel.invokeMethod<bool>('didPopTo', arguments);
           }
           _currentRemoveRoutes.clear();
         });
       }
       if (route.willPopCallback != null) {
-        ThrioApp().current.removeScopedWillPopCallback(route.willPopCallback);
+        _pageRoutes.last.removeScopedWillPopCallback(route.willPopCallback);
       }
     }
   }

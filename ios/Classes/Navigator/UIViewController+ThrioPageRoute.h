@@ -21,6 +21,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, strong, readonly, nullable) ThrioPageRoute *thrio_lastRoute;
 
 - (void)thrio_pushUrl:(NSString *)url
+                index:(NSNumber *)index
                params:(NSDictionary *)params
              animated:(BOOL)animated
                result:(ThrioBoolCallback)result;

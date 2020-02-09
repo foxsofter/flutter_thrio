@@ -68,16 +68,16 @@ NS_ASSUME_NONNULL_BEGIN
     ThrioLogV(@"attach new flutter view controller");
     [(ThrioFlutterViewController*)_engine.viewController surfaceUpdated:NO];
     _engine.viewController = viewController;
-    [self _shouldPauseOrResume];
+//    [self _shouldPauseOrResume];
   }
 }
 
-- (void)detachFlutterViewController {
+- (void)detachFlutterViewController:(ThrioFlutterViewController *)viewController {
   ThrioLogV(@"enter detach flutter view controller");
-  if (_engine.viewController != _emptyViewController) {
+  if (_engine.viewController == viewController) {
     ThrioLogV(@"detach flutter view controller");
     _engine.viewController = _emptyViewController;
-    [self _shouldPauseOrResume];
+//    [self _shouldPauseOrResume];
   }
 }
 
@@ -152,7 +152,7 @@ NS_ASSUME_NONNULL_BEGIN
            index:(NSNumber *)index
         animated:(BOOL)animated
           result:(ThrioBoolCallback)result {
-  if ([self canRemoveUrl:url index:index]) {
+  if ([self canPopToUrl:url index:index]) {
     [self.navigationController thrio_popToUrl:url
                                         index:index
                                      animated:animated
@@ -214,21 +214,21 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark - private methods
 
 - (void)_shouldPauseOrResume {
-  NSInteger flutterPageCount = 0;
-  NSArray *vcs = [_engine.viewController.navigationController.viewControllers copy];
+  NSInteger count = 0;
+  NSArray *vcs = [self.navigationController.viewControllers copy];
   for (id vc in vcs) {
     if ([vc isKindOfClass:ThrioFlutterViewController.class]) {
-      flutterPageCount++;
+      count++;
     }
   }
-  if (flutterPageCount == 0) {
+  if (count == 0) {
     // Set flutter app to `AppLifecycleState.paused`
     [ThrioLogger v:@"AppLifecycleState.paused"];
-    [_engine.lifecycleChannel sendMessage:@"AppLifecycleState.paused"];
+    [self.engine.lifecycleChannel sendMessage:@"AppLifecycleState.paused"];
   } else {
     // Set flutter app to `AppLifecycleState.resumed`
     [ThrioLogger v:@"AppLifecycleState.resumed"];
-    [_engine.lifecycleChannel sendMessage:@"AppLifecycleState.resumed"];
+//      [self.engine.lifecycleChannel sendMessage:@"AppLifecycleState.resumed"];
   }
 }
 

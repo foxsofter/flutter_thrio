@@ -12,6 +12,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface UINavigationController (ThrioNavigator)
 
+- (void)thrio_hotRestart:(ThrioBoolCallback)result;
+
 - (void)thrio_pushUrl:(NSString *)url
                params:(NSDictionary *)params
              animated:(BOOL)animated
