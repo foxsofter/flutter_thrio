@@ -3,12 +3,12 @@
 
 library thrio;
 
-export 'src/app/thrio_app.dart';
 export 'src/channel/thrio_channel.dart';
 export 'src/extension/thrio_build_context.dart';
 export 'src/extension/thrio_stateful_widget.dart';
 export 'src/logger/thrio_logger.dart';
 export 'src/module/thrio_module.dart';
+export 'src/navigator/thrio_app.dart';
 export 'src/navigator/thrio_navigator.dart';
 export 'src/navigator/thrio_page_route.dart';
 export 'src/navigator/thrio_route_settings.dart';

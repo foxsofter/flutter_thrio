@@ -12,6 +12,7 @@
 #import "ThrioRegistryMap.h"
 #import "NSObject+ThrioSwizzling.h"
 #import "ThrioApp.h"
+#import "ThrioLogger.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -34,9 +35,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface UINavigationController ()
 
-/// 记下当前正要被pop的`UIViewController`
-///
+// 记下当前正要被pop的`UIViewController`
 @property (nonatomic, strong, nullable) UIViewController *thrio_popingViewController;
+
+// 记下第一个ThrioFlutterViewController
+@property (nonatomic, strong, nullable) UIViewController *thrio_firstFlutterViewController;
 
 @property (nonatomic, strong, readonly) UIScreenEdgePanGestureRecognizer *thrio_popGestureRecognizer;
 
@@ -55,6 +58,17 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)setThrio_popingViewController:(UIViewController * _Nullable)viewController {
   objc_setAssociatedObject(self,
                            @selector(thrio_popingViewController),
+                           viewController,
+                           OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
+- (ThrioFlutterViewController * _Nullable)thrio_firstFlutterViewController {
+  return objc_getAssociatedObject(self, _cmd);
+}
+
+- (void)setThrio_firstFlutterViewController:(ThrioFlutterViewController * _Nullable)viewController {
+  objc_setAssociatedObject(self,
+                           @selector(thrio_firstFlutterViewController),
                            viewController,
                            OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
@@ -107,6 +121,30 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark - navigation methods
 
+- (void)thrio_hotRestart:(ThrioBoolCallback)result {
+  ThrioLogV(@"enter on hot restart");
+  UIViewController *viewController;
+  for (UIViewController *vc in self.viewControllers) {
+    if ([vc isKindOfClass:ThrioFlutterViewController.class]) {
+      viewController = vc;
+      break;
+    }
+  }
+  if (!viewController) {
+    return;
+  }
+  if (viewController != self.topViewController) {
+    [self popToViewController:viewController animated:YES];
+  }
+  
+  viewController.thrio_firstRoute.next = nil;
+  dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.6 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+    ThrioLogV(@"hot restart push");
+    ThrioRouteSettings *settings = viewController.thrio_firstRoute.settings;
+    [[ThrioApp.shared channel] invokeMethod:@"__onPush__" arguments:[settings toArguments]];
+  });
+}
+
 - (void)thrio_pushUrl:(NSString *)url
                params:(NSDictionary *)params
              animated:(BOOL)animated
@@ -127,7 +165,9 @@ NS_ASSUME_NONNULL_BEGIN
       }
     } else {
       if ([self.topViewController isKindOfClass:ThrioFlutterViewController.class]) {
+        NSNumber *index = @([self thrio_getLastIndexByUrl:url].integerValue + 1);
         [self.topViewController thrio_pushUrl:url
+                                        index:index
                                        params:params
                                      animated:animated
                                        result:^(BOOL r) {
@@ -148,8 +188,9 @@ NS_ASSUME_NONNULL_BEGIN
       viewController.thrio_hidesNavigationBar = @YES;
     }
     if (viewController) {
+      NSNumber *index = @([self thrio_getLastIndexByUrl:url].integerValue + 1);
       __weak typeof(self) weakself = self;
-      [viewController thrio_pushUrl:url params:params animated:animated result:^(BOOL r) {
+      [viewController thrio_pushUrl:url index:index params:params animated:animated result:^(BOOL r) {
         if (r) {
           __strong typeof(self) strongSelf = weakself;
           [strongSelf pushViewController:viewController animated:animated];
@@ -250,20 +291,20 @@ NS_ASSUME_NONNULL_BEGIN
   }
   
   [vc thrio_didPushUrl:url index:index];
-  if (vc.thrio_firstRoute != vc.thrio_lastRoute) {
+  if (vc.thrio_firstRoute == vc.thrio_lastRoute) {
+    [self thrio_addPopGesture];
+  } else {
     [self thrio_removePopGesture];
   }
 }
 
 - (void)thrio_didPopUrl:(NSString *)url index:(NSNumber *)index {
   UIViewController *vc = [self getViewControllerByUrl:url index:index];
-  if (!vc) {
-    return;
-  }
-  
-  [vc thrio_didPopUrl:url index:index];
-  if (vc.thrio_firstRoute == vc.thrio_lastRoute) {
-    [self thrio_addPopGesture];
+  if (vc) {
+    [vc thrio_didPopUrl:url index:index];
+    if (vc.thrio_firstRoute == vc.thrio_lastRoute) {
+      [self thrio_addPopGesture];
+    }
   }
 }
 
@@ -417,7 +458,7 @@ NS_ASSUME_NONNULL_BEGIN
   if (![viewController.thrio_hidesNavigationBar isEqualToNumber:self.topViewController.thrio_hidesNavigationBar]) {
     [self setNavigationBarHidden:viewController.thrio_hidesNavigationBar.boolValue];
   }
-  
+    
   return [self thrio_popToViewController:viewController animated:animated];
 }
 
@@ -452,24 +493,14 @@ NS_ASSUME_NONNULL_BEGIN
   if (![self.thrio_popingViewController isKindOfClass:ThrioFlutterViewController.class]) {
     return;
   }
+  
+  // 处理didPop的情况
   __weak typeof(self) weakself = self;
   [self.thrio_popingViewController thrio_popAnimated:animated result:^(BOOL r) {
     if (r) {
       __strong typeof(self) strongSelf = weakself;
       if ([viewController isKindOfClass:ThrioFlutterViewController.class]) {
         [ThrioApp.shared attachFlutterViewController:(ThrioFlutterViewController*)viewController];
-      }
-      if ([self.thrio_popingViewController isKindOfClass:ThrioFlutterViewController.class]) {
-        BOOL containsFlutterViewController = NO;
-        for (UIViewController *vc in strongSelf.viewControllers.reverseObjectEnumerator) {
-          if ([vc isKindOfClass:ThrioFlutterViewController.class]) {
-            containsFlutterViewController = YES;
-            break;
-          }
-        }
-        if (!containsFlutterViewController) {
-          [ThrioApp.shared detachFlutterViewController];
-        }
       }
       if (strongSelf.navigationBarHidden != viewController.thrio_hidesNavigationBar.boolValue) {
         [strongSelf setNavigationBarHidden:viewController.thrio_hidesNavigationBar.boolValue];

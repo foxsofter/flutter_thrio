@@ -68,10 +68,10 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark - Navigation methods
 
 - (void)thrio_pushUrl:(NSString *)url
+                index:(NSNumber *)index
                params:(NSDictionary *)params
              animated:(BOOL)animated
                result:(ThrioBoolCallback)result{
-  NSNumber *index = @([self thrio_getLastIndexByUrl:url].integerValue + 1);
   ThrioRouteSettings *settings = [ThrioRouteSettings settingsWithUrl:url
                                                                index:index
                                                               nested:self.thrio_firstRoute != nil
@@ -316,6 +316,8 @@ NS_ASSUME_NONNULL_BEGIN
   dispatch_once(&onceToken, ^{
     [self instanceSwizzle:@selector(viewDidAppear:)
               newSelector:@selector(thrio_viewDidAppear:)];
+    [self instanceSwizzle:@selector(viewDidDisappear:)
+              newSelector:@selector(thrio_viewDidDisappear:)];
   });
 }
 
@@ -329,7 +331,6 @@ NS_ASSUME_NONNULL_BEGIN
     if (self.thrio_hidesNavigationBar == nil) {
       self.thrio_hidesNavigationBar = @(self.navigationController.navigationBarHidden);
     }
-    [self.navigationController thrio_removePopGesture];
     if (self.thrio_lastRoute.popDisabled) {
       self.navigationController.interactivePopGestureRecognizer.enabled = NO;
     }
@@ -343,6 +344,11 @@ NS_ASSUME_NONNULL_BEGIN
   if (self.thrio_hidesNavigationBar.boolValue != self.navigationController.navigationBarHidden) {
     self.navigationController.navigationBarHidden = self.thrio_hidesNavigationBar.boolValue;
   }
+}
+
+- (void)thrio_viewDidDisappear:(BOOL)animated {
+  [self thrio_viewDidDisappear:animated];
+  [self.navigationController thrio_removePopGesture];
 }
 
 - (void)thrio_onNotify {

@@ -3,7 +3,7 @@
 
 import 'package:flutter/material.dart';
 
-import '../app/thrio_app.dart';
+import 'thrio_app.dart';
 import 'thrio_route_settings.dart';
 
 typedef ThrioPageBuilder = Widget Function(RouteSettings settings);
@@ -26,7 +26,11 @@ class ThrioPageRoute extends MaterialPageRoute<bool> {
   WillPopCallback get willPopCallback => _willPopCallback;
   set willPopCallback(WillPopCallback callback) {
     if (_willPopCallback != callback) {
-      ThrioApp().current.removeScopedWillPopCallback(_willPopCallback);
+      ThrioApp()
+          .navigatorState
+          .history
+          .last
+          .removeScopedWillPopCallback(_willPopCallback);
       _willPopCallback = callback;
       if (isCurrent) {
         addScopedWillPopCallback(callback);

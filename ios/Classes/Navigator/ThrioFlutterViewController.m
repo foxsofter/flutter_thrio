@@ -32,7 +32,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)viewDidAppear:(BOOL)animated {
   [super viewDidAppear:animated];
-  ThrioLogV(@"flutter page did appear: url=%@,index=%@",
+
+  ThrioLogV(@"flutter page did appear: %@.%@",
             self.thrio_lastRoute.settings.url,
             self.thrio_lastRoute.settings.index);
 }
@@ -40,11 +41,23 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)viewWillDisappear:(BOOL)animated {
   [super viewWillDisappear:animated];
 
+  ThrioLogV(@"flutter page will disappear: %@.%@",
+            self.thrio_lastRoute.settings.url,
+            self.thrio_lastRoute.settings.index);
+
   [[UIApplication sharedApplication].delegate.window endEditing:YES];
 }
 
+- (void)viewDidDisappear:(BOOL)animated {
+  [super viewDidDisappear:animated];
+
+  ThrioLogV(@"flutter page did disappear: %@.%@",
+            self.thrio_lastRoute.settings.url,
+            self.thrio_lastRoute.settings.index);
+}
+
 - (void)dealloc {
-  [ThrioApp.shared detachFlutterViewController];
+  [ThrioApp.shared detachFlutterViewController:self];
 }
 
 // override

@@ -12,60 +12,72 @@ class ThrioLogger {
     ThrioChannel(channel: '__thrio_logger__')
       ..registryMethodCall('v', ([arguments]) async {
         final message = arguments['message'];
-        final error = arguments['error'];
-        v('native:$message', error);
+        var error = arguments['error'];
+        if (error != null && error is String && error.isEmpty) {
+          error = null;
+        }
+        v('[N] $message', error);
       })
       ..registryMethodCall('d', ([arguments]) async {
         final message = arguments['message'];
-        final error = arguments['error'];
-        d('native:$message', error);
+        var error = arguments['error'];
+        if (error != null && error is String && error.isEmpty) {
+          error = null;
+        }
+        d('[N] $message', error);
       })
       ..registryMethodCall('i', ([arguments]) async {
         final message = arguments['message'];
-        final error = arguments['error'];
-        d('native:$message', error);
+        var error = arguments['error'];
+        if (error != null && error is String && error.isEmpty) {
+          error = null;
+        }
+        d('[N] $message', error);
       })
       ..registryMethodCall('w', ([arguments]) async {
         final message = arguments['message'];
-        final error = arguments['error'];
-        d('native:$message', error);
+        var error = arguments['error'];
+        if (error != null && error is String && error.isEmpty) {
+          error = null;
+        }
+        d('[N] $message', error);
       })
       ..registryMethodCall('e', ([arguments]) async {
         final message = arguments['message'];
-        final error = arguments['error'];
-        final stackTrace = arguments['stackTrace'];
-        if (stackTrace is String) {
-          d('native:$message', error, StackTrace.fromString(stackTrace));
-        } else {
-          d('native:$message', error);
+        var error = arguments['error'];
+        if (error != null && error is String && error.isEmpty) {
+          error = null;
         }
+        d('[N] $message', error);
       });
   }
 
   static ThrioLogger _default;
 
+  final _printer = SimplePrinter(printTime: true);
+
   /// Log a message at level verbose.
   ///
   void v(message, [error, StackTrace stackTrace]) =>
-      Logger().v(message, error, stackTrace);
+      Logger(printer: _printer).v(message, error, stackTrace);
 
   /// Log a message at level [Level.debug].
   ///
   void d(message, [error, StackTrace stackTrace]) =>
-      Logger().d(message, error, stackTrace);
+      Logger(printer: _printer).d(message, error, stackTrace);
 
   /// Log a message at level [Level.info].
   ///
   void i(message, [error, StackTrace stackTrace]) =>
-      Logger().i(message, error, stackTrace);
+      Logger(printer: _printer).i(message, error, stackTrace);
 
   /// Log a message at level [Level.warning].
   ///
   void w(message, [error, StackTrace stackTrace]) =>
-      Logger().w(message, error, stackTrace);
+      Logger(printer: _printer).w(message, error, stackTrace);
 
   /// Log a message at level [Level.error].
   ///
   void e(message, [error, StackTrace stackTrace]) =>
-      Logger().e(message, error, stackTrace);
+      Logger(printer: _printer).e(message, error, stackTrace);
 }

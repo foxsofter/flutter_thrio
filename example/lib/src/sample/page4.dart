@@ -130,6 +130,17 @@ class _Page4State extends State<Page4> {
                         style: TextStyle(fontSize: 22, color: Colors.black),
                       )),
                 ),
+                InkWell(
+                  onTap: () => ThrioApp().cc.invokeMethod<bool>('hotRestart'),
+                  child: Container(
+                      padding: const EdgeInsets.all(8),
+                      margin: const EdgeInsets.all(8),
+                      color: Colors.grey,
+                      child: Text(
+                        'hot restart',
+                        style: TextStyle(fontSize: 22, color: Colors.black),
+                      )),
+                ),
               ]),
         ),
       ));

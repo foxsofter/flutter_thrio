@@ -6,6 +6,7 @@ import 'package:flutter/widgets.dart';
 
 import '../channel/thrio_channel.dart';
 import '../extension/thrio_stateful_widget.dart';
+import '../logger/thrio_logger.dart';
 import '../navigator/thrio_navigator.dart';
 import '../navigator/thrio_page_observer.dart';
 import '../navigator/thrio_page_route.dart';
@@ -15,13 +16,18 @@ class ThrioApp {
 
   ThrioApp._() : _channel = ThrioChannel(channel: '__thrio_app__') {
     _pageObserver = ThrioPageObserver(_channel);
+    _navigatorObserver = ThrioNavigatorObserver(_channel);
   }
 
   static final _default = ThrioApp._();
 
   final ThrioChannel _channel;
 
+  ThrioChannel get cc => _channel;
+
   ThrioPageObserver _pageObserver;
+
+  ThrioNavigatorObserver _navigatorObserver;
 
   ThrioNavigator _navigator;
 
@@ -30,13 +36,9 @@ class ThrioApp {
   ThrioNavigatorState get navigatorState =>
       _navigator.tryStateOf<ThrioNavigatorState>();
 
-  /// Get current page route.
-  ///
-  ThrioPageRoute get current =>
-      _navigator.tryStateOf<ThrioNavigatorState>()?.current;
-
   TransitionBuilder build() => (context, child) => _navigator = ThrioNavigator(
         key: GlobalKey<ThrioNavigatorState>(),
+        observer: _navigatorObserver,
         child: child is Navigator ? child : null,
       );
 
@@ -96,17 +98,6 @@ class ThrioApp {
     return _channel.invokeMethod<bool>('push', arguments);
   }
 
-  Future<bool> didPush({
-    @required String url,
-    @required int index,
-  }) {
-    final arguments = <String, dynamic>{
-      'url': url,
-      'index': index,
-    };
-    return _channel.invokeMethod<bool>('didPush', arguments);
-  }
-
   Future<bool> notify({
     @required String name,
     @required String url,
@@ -129,17 +120,6 @@ class ThrioApp {
     return _channel.invokeMethod<bool>('pop', arguments);
   }
 
-  Future<bool> didPop({
-    @required String url,
-    @required int index,
-  }) {
-    final arguments = <String, dynamic>{
-      'url': url,
-      'index': index,
-    };
-    return _channel.invokeMethod<bool>('didPop', arguments);
-  }
-
   Future<bool> popTo({
     @required String url,
     int index = 0,
@@ -153,17 +133,6 @@ class ThrioApp {
     return _channel.invokeMethod<bool>('popTo', arguments);
   }
 
-  Future<bool> didPopTo({
-    @required String url,
-    @required int index,
-  }) {
-    final arguments = <String, dynamic>{
-      'url': url,
-      'index': index,
-    };
-    return _channel.invokeMethod<bool>('didPopTo', arguments);
-  }
-
   Future<bool> remove({
     String url = '',
     int index = 0,
@@ -175,17 +144,6 @@ class ThrioApp {
       'animated': animated,
     };
     return _channel.invokeMethod<bool>('remove', arguments);
-  }
-
-  Future<bool> didRemove({
-    @required String url,
-    @required int index,
-  }) {
-    final arguments = <String, dynamic>{
-      'url': url,
-      'index': index,
-    };
-    return _channel.invokeMethod<bool>('didRemove', arguments);
   }
 
   Future<int> lastIndex({String url}) {

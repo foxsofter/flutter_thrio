@@ -39,11 +39,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 // Sets the `FlutterViewController` for flutter engine.
 //
-- (void)attachFlutterViewController:(ThrioFlutterViewController *)page;
+- (void)attachFlutterViewController:(ThrioFlutterViewController *)viewController;
 
 // Sets the `FlutterViewController` of flutter engine to a empty view controller.
 //
-- (void)detachFlutterViewController;
+- (void)detachFlutterViewController:(ThrioFlutterViewController *)viewController;
 
 // Register native view controller builder for url.
 //
