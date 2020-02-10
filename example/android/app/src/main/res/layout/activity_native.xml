@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:orientation="vertical">
+
+
+    <Button
+        android:id="@+id/btn_native_new"
+        android:layout_width="180dp"
+        android:layout_height="60dp"
+        android:text="Native New" />
+
+    <Button
+        android:id="@+id/btn_native_next"
+        android:layout_width="180dp"
+        android:layout_height="60dp"
+        android:text="Native Next" />
+
+    <Button
+        android:id="@+id/btn_native_top"
+        android:layout_width="180dp"
+        android:layout_height="60dp"
+        android:text="Native Clear Top" />
+
+    <Button
+        android:id="@+id/btn_flutter"
+        android:layout_width="180dp"
+        android:layout_height="60dp"
+        android:text="Flutter" />
+</LinearLayout>
