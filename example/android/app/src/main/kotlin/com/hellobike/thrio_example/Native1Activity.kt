@@ -5,6 +5,7 @@ import android.content.Intent.FLAG_ACTIVITY_CLEAR_TOP
 import android.content.Intent.FLAG_ACTIVITY_SINGLE_TOP
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import com.hellobike.flutter.thrio.navigator.ThrioActivity
 import kotlinx.android.synthetic.main.activity_native.*
 
 class Native1Activity : AppCompatActivity() {
@@ -33,7 +34,7 @@ class Native1Activity : AppCompatActivity() {
             })
         }
         btn_flutter.setOnClickListener {
-            startActivity(Intent(this, FlutterActivity::class.java))
+            ThrioActivity.push(this, "flutter1")
         }
     }
 }

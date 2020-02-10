@@ -32,7 +32,7 @@ class Native2Activity : AppCompatActivity() {
             })
         }
         btn_flutter.setOnClickListener {
-            startActivity(Intent(this, FlutterActivity::class.java))
+//            startActivity(Intent(this, FlutterActivity::class.java))
         }
     }
 }

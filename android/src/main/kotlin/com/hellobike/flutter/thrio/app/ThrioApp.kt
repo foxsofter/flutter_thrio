@@ -6,6 +6,7 @@ import android.content.Context
 import android.support.v4.app.ActivityCompat
 import android.util.Log
 import com.hellobike.flutter.thrio.channel.FlutterChannel
+import com.hellobike.flutter.thrio.data.Record
 import com.hellobike.flutter.thrio.navigator.ThrioActivity
 import com.hellobike.flutter.thrio.record.FlutterRecord
 import io.flutter.plugin.common.BinaryMessenger
@@ -36,36 +37,20 @@ object ThrioApp : MethodChannel.MethodCallHandler {
         }
     }
 
-    fun pushWithFlutter(url: String) {
-        val activity = activity
-        if (activity == null) {
-            Log.e("Thrio", "flutter activity null")
-            return
-        }
-        val record = FlutterRecord.pushRecord(url, activity)
-        channel.invokeMethod(
-                "__onPush__",
-                mapOf(
-                        "url" to record.url,
-                        "index" to record.index
-                )
+    fun onPush(record: Record) {
+        val data = mapOf(
+                "url" to record.url,
+                "index" to record.index
         )
+        channel.invokeMethod("__onPush__", data)
     }
 
-    fun popWithFlutter() {
-        val activity = activity
-        if (activity == null) {
-            Log.e("Thrio", "flutter activity null")
-            return
-        }
-        val record = FlutterRecord.popRecord(activity)
-        channel.invokeMethod(
-                "__onPop__",
-                mapOf(
-                        "url" to record.url,
-                        "index" to record.index
-                )
+    fun onPop(record: Record) {
+        val data = mapOf(
+                "url" to record.url,
+                "index" to record.index
         )
+        channel.invokeMethod("__onPop__", data)
     }
 
     private fun pushFromFlutter(call: MethodCall, result: MethodChannel.Result) {
@@ -78,7 +63,12 @@ object ThrioApp : MethodChannel.MethodCallHandler {
             Log.e("Thrio", "need start new Flutter page")
             return
         }
-        pushWithFlutter(url)
+        val activity = activity
+        if (activity == null) {
+            Log.e("Thrio", "flutter activity null")
+            return
+        }
+        ThrioActivity.push(activity, url)
         result.success(true)
     }
 
@@ -87,7 +77,12 @@ object ThrioApp : MethodChannel.MethodCallHandler {
             Log.e("Thrio", "need start new Flutter page")
             return
         }
-        popWithFlutter()
+        val activity = activity
+        if (activity == null) {
+            Log.e("Thrio", "flutter activity null")
+            return
+        }
+        ThrioActivity.pop(activity)
         result.success(true)
     }
 
