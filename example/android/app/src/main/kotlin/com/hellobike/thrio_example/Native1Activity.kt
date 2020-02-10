@@ -5,7 +5,8 @@ import android.content.Intent.FLAG_ACTIVITY_CLEAR_TOP
 import android.content.Intent.FLAG_ACTIVITY_SINGLE_TOP
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import com.hellobike.flutter.thrio.navigator.ThrioActivity
+import com.hellobike.flutter.thrio.PageBuilder
+import com.hellobike.flutter.thrio.ThrioNavigator
 import kotlinx.android.synthetic.main.activity_native.*
 
 class Native1Activity : AppCompatActivity() {
@@ -14,10 +15,11 @@ class Native1Activity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_native)
         initView()
-        Manager.activityManager(this)
+        initFlutter()
     }
 
     private fun initView() {
+        tv_native.text = "Native 1"
         btn_native_new.setOnClickListener {
             startActivity(Intent(this, Native1Activity::class.java))
         }
@@ -34,7 +36,16 @@ class Native1Activity : AppCompatActivity() {
             })
         }
         btn_flutter.setOnClickListener {
-            ThrioActivity.push(this, "flutter1")
+            ThrioNavigator.push(this, "flutter1")
         }
     }
+
+    private fun initFlutter() {
+        ThrioNavigator.registerPageBuilder("native1", object : PageBuilder {
+            override fun openPage() {
+                btn_native_new.performClick()
+            }
+        })
+    }
 }
+

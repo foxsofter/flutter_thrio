@@ -12,10 +12,10 @@ class Native3Activity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_native)
         initView()
-        Manager.activityManager(this)
     }
 
     private fun initView() {
+        tv_native.text = "Native 3"
         btn_native_new.setOnClickListener {
             startActivity(Intent(this, Native3Activity::class.java))
         }
@@ -32,7 +32,7 @@ class Native3Activity : AppCompatActivity() {
             })
         }
         btn_flutter.setOnClickListener {
-//            startActivity(Intent(this, FlutterActivity::class.java))
+            //            startActivity(Intent(this, FlutterActivity::class.java))
         }
     }
 }

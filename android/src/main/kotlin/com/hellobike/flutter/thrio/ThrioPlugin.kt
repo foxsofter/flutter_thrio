@@ -2,7 +2,7 @@ package com.hellobike.flutter.thrio
 
 import android.support.annotation.NonNull
 import android.util.Log
-import com.hellobike.flutter.thrio.app.ThrioApp
+import com.hellobike.flutter.thrio.channel.ThrioApp
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding

@@ -3,7 +3,7 @@ package com.hellobike.flutter.thrio.navigator
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import com.hellobike.flutter.thrio.app.ThrioApp
+import com.hellobike.flutter.thrio.channel.ThrioApp
 import com.hellobike.flutter.thrio.data.Record
 import com.hellobike.flutter.thrio.record.FlutterRecord
 import io.flutter.embedding.android.FlutterActivity
@@ -19,7 +19,7 @@ open class ThrioActivity : FlutterActivity() {
         private val KEY_THRIO_ACTION_PUSH = "push"
         private val KEY_THRIO_ACTION_POP = "pop"
 
-        fun push(context: Context, url: String) {
+        internal fun push(context: Context, url: String) {
             val intent = build(context).apply {
                 putExtra(KEY_THRIO_ACTION, KEY_THRIO_ACTION_PUSH)
                 putExtra(KEY_THRIO_URL, url)
@@ -27,7 +27,7 @@ open class ThrioActivity : FlutterActivity() {
             context.startActivity(intent)
         }
 
-        fun pop(context: Context) {
+        internal fun pop(context: Context) {
             val intent = build(context).apply {
                 putExtra(KEY_THRIO_ACTION, KEY_THRIO_ACTION_POP)
             }

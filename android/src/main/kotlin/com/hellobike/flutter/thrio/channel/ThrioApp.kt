@@ -1,4 +1,4 @@
-package com.hellobike.flutter.thrio.app
+package com.hellobike.flutter.thrio.channel
 
 import android.app.Activity
 import android.app.ActivityManager
@@ -7,13 +7,14 @@ import android.support.v4.app.ActivityCompat
 import android.util.Log
 import com.hellobike.flutter.thrio.channel.FlutterChannel
 import com.hellobike.flutter.thrio.data.Record
+import com.hellobike.flutter.thrio.manager.NavigatorManager
 import com.hellobike.flutter.thrio.navigator.ThrioActivity
 import com.hellobike.flutter.thrio.record.FlutterRecord
 import io.flutter.plugin.common.BinaryMessenger
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 
-object ThrioApp : MethodChannel.MethodCallHandler {
+internal object ThrioApp : MethodChannel.MethodCallHandler {
 
     var activity: Activity? = null
     val topActivityClz: Class<*>?
@@ -68,6 +69,11 @@ object ThrioApp : MethodChannel.MethodCallHandler {
             Log.e("Thrio", "flutter activity null")
             return
         }
+        if (NavigatorManager.hasPageBuilder(url)) {
+            NavigatorManager.runPageBuilder(url)
+            result.success(true)
+            return
+        }
         ThrioActivity.push(activity, url)
         result.success(true)
     }
@@ -85,15 +91,6 @@ object ThrioApp : MethodChannel.MethodCallHandler {
         ThrioActivity.pop(activity)
         result.success(true)
     }
-
-//    private fun didPopFromFlutter(call: MethodCall, result: MethodChannel.Result) {
-//        val url = call.argument<String>("url")
-//        if (url.isNullOrBlank()) {
-//            result.error("ERROR 1", "ArgumentError url not found", "Please check argument Key or Type.")
-//            return
-//        }
-//
-//    }
 
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         Log.e("Thrio", "flutter call method ${call.method}")
