@@ -3,14 +3,12 @@ package com.hellobike.flutter.thrio.navigator
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.os.PersistableBundle
+import android.util.Log
 import com.hellobike.flutter.thrio.channel.ChannelManager
-import com.hellobike.flutter.thrio.channel.ThrioChannel
 import com.hellobike.flutter.thrio.data.Record
 import com.hellobike.flutter.thrio.record.FlutterRecord
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.plugin.common.BinaryMessenger
-import java.util.*
 
 open class ThrioActivity : FlutterActivity() {
     companion object {
@@ -41,6 +39,7 @@ open class ThrioActivity : FlutterActivity() {
 
         internal fun popTo(context: Context, url: String, index: Int) {
             val intent = build(context).apply {
+                addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
                 putExtra(KEY_THRIO_ACTION, KEY_THRIO_ACTION_POP_TO)
                 putExtra(KEY_THRIO_URL, url)
                 putExtra(KEY_THRIO_INDEX, index)
@@ -57,7 +56,7 @@ open class ThrioActivity : FlutterActivity() {
 
     }
 
-    private lateinit var flutterStack: Stack<Record>
+    private val flutterStack by lazy { ArrayList<Record>() }
 
     private val channel by lazy {
         val messenger: BinaryMessenger = flutterEngine?.dartExecutor
@@ -67,73 +66,98 @@ open class ThrioActivity : FlutterActivity() {
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        val saveStack = savedInstanceState?.getSerializable(KEY_THRIO_STACK)
-        flutterStack = if (saveStack != null && saveStack is Stack<*>) {
-            saveStack as Stack<Record>
-        } else {
-            Stack()
-        }
+        Log.e("Thrio", "new page")
         super.onCreate(savedInstanceState)
+        val saveStack = savedInstanceState?.getParcelableArrayList<Record>(KEY_THRIO_STACK)
+        if (saveStack == null) {
+            initPushAction(intent)
+        } else {
+            flutterStack.addAll(saveStack)
+        }
+
         window.decorView.postDelayed({
-            onIntent(intent)
+            showTopRecord()
         }, 1000)
     }
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
-        onIntent(intent)
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putSerializable(KEY_THRIO_STACK, flutterStack)
-    }
-
-    private fun onIntent(intent: Intent) {
-        val action = intent.getStringExtra(KEY_THRIO_ACTION) ?: return
-        when (action) {
-            KEY_THRIO_ACTION_PUSH -> {
-                val url = intent.getStringExtra(KEY_THRIO_URL) ?: return
-                push(url)
-            }
-            KEY_THRIO_ACTION_POP -> pop()
-            KEY_THRIO_ACTION_POP_TO -> {
-                val url = intent.getStringExtra(KEY_THRIO_URL) ?: return
-                val index = intent.getIntExtra(KEY_THRIO_INDEX, -1)
-                if (index == -1) {
-                    return
-                }
-                popTo(url, index)
-            }
+        when (intent.getStringExtra(KEY_THRIO_ACTION) ?: return) {
+            KEY_THRIO_ACTION_PUSH -> onPushAction(intent)
+            KEY_THRIO_ACTION_POP -> onPopAction(intent)
+            KEY_THRIO_ACTION_POP_TO -> onPopToAction(intent)
             else -> return
         }
     }
 
-    private fun push(url: String) {
+    override fun onBackPressed() {
+        if (flutterStack.isNotEmpty()) {
+            pop()
+            return
+        }
+        super.onBackPressed()
+    }
+
+    private fun initPushAction(intent: Intent) {
+        val url = intent.getStringExtra(KEY_THRIO_URL)
+                ?: throw IllegalArgumentException("url not found in intent")
         val record = FlutterRecord.build(url)
-        flutterStack.push(record)
-        channel.onPush(record)
+        flutterStack.add(record)
+        Log.e("Thrio", "push url ${record.url} index ${record.index}")
+    }
+
+    private fun onPushAction(intent: Intent) {
+        initPushAction(intent)
+        showTopRecord()
+    }
+
+    private fun onPopAction(intent: Intent) {
+        pop()
+    }
+
+    private fun onPopToAction(intent: Intent) {
+        val url = intent.getStringExtra(KEY_THRIO_URL) ?: return
+        val index = intent.getIntExtra(KEY_THRIO_INDEX, -1)
+        if (index == -1) {
+            return
+        }
+        popTo(url, index)
     }
 
     private fun pop() {
-        val record = flutterStack.pop()
+        val record = flutterStack.removeAt(flutterStack.lastIndex)
         FlutterRecord.pop(record.url)
         channel.onPop(record)
         if (flutterStack.isEmpty()) {
             finish()
         }
+        Log.e("Thrio", "pop url ${record.url} index ${record.index}")
     }
 
     private fun popTo(url: String, index: Int) {
         while (true) {
             if (flutterStack.isEmpty()) {
+                Log.e("Thrio", "page url $url index $index not found")
+                popTo(context, url, index)
                 break
             }
-            val record = flutterStack.peek()
+            val record = flutterStack.last()
             if (record.url == url && record.index == index) {
                 break
             }
             pop()
         }
+    }
+
+    private fun showTopRecord() {
+        val record = flutterStack.last()
+        channel.onPush(record)
+        Log.e("Thrio", "show url ${record.url} index ${record.index}")
+    }
+
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putParcelableArrayList(KEY_THRIO_STACK, flutterStack)
     }
 }

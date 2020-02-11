@@ -67,12 +67,13 @@ internal class ThrioChannel constructor(
             result.error("ERROR 1", "ArgumentError url not found", "Please check argument Key or Type.")
             return
         }
+//        context.lif
         ThrioActivity.popTo(context, url, index)
         result.success(true)
     }
 
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
-        Log.e("Thrio", "flutter call method ${call.method}")
+//        Log.e("Thrio", "flutter call method ${call.method}")
         when (call.method) {
             /** push **/
             "push" -> pushFromFlutter(call, result)

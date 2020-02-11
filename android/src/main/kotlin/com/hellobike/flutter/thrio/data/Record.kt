@@ -1,5 +1,7 @@
 package com.hellobike.flutter.thrio.data
 
-import java.io.Serializable
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
 
-data class Record(val url: String, val index: Int) : Serializable
+@Parcelize
+data class Record(val url: String, val index: Int) : Parcelable
