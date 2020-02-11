@@ -1,7 +1,7 @@
 package com.hellobike.flutter.thrio
 
 import android.content.Context
-import com.hellobike.flutter.thrio.manager.NavigatorManager
+import com.hellobike.flutter.thrio.navigator.NavigatorManager
 import com.hellobike.flutter.thrio.navigator.ThrioActivity
 
 object ThrioNavigator {

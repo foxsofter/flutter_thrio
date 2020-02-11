@@ -1,4 +1,4 @@
-package com.hellobike.flutter.thrio.manager
+package com.hellobike.flutter.thrio.navigator
 
 import android.util.ArrayMap
 import com.hellobike.flutter.thrio.PageBuilder

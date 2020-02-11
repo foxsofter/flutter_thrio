@@ -33,7 +33,7 @@ class Native2Activity : AppCompatActivity() {
             })
         }
         btn_flutter.setOnClickListener {
-            ThrioNavigator.push(this, "flutter1")
+            ThrioNavigator.push(this, "flutter2")
             //            startActivity(Intent(this, FlutterActivity::class.java))
         }
     }
