@@ -1,12 +1,17 @@
 package com.hellobike.flutter.thrio
 
+import android.app.Activity
+import android.app.Application
+import android.content.Context
 import android.support.annotation.NonNull
 import android.util.Log
 import com.hellobike.flutter.thrio.channel.ChannelManager
 import com.hellobike.flutter.thrio.channel.ThrioChannel
+import com.hellobike.flutter.thrio.navigator.ActivityManager
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.embedding.engine.plugins.activity.ActivityAware
 import io.flutter.embedding.engine.plugins.activity.ActivityPluginBinding
+import io.flutter.plugin.common.BinaryMessenger
 import io.flutter.plugin.common.PluginRegistry.Registrar
 
 /** ThrioPlugin */
@@ -25,42 +30,41 @@ class ThrioPlugin : FlutterPlugin, ActivityAware {
         // in the same class.
         @JvmStatic
         fun registerWith(registrar: Registrar) {
-            val channel = ThrioChannel(registrar.context(), registrar.messenger())
-            ChannelManager.cache(registrar.messenger().hashCode(), channel)
+            init(registrar.context(), registrar.messenger()) { registrar.activity() }
+        }
+
+        private fun init(application: Context, binaryMessenger: BinaryMessenger, activity: () -> Activity?) {
+            if (application is Application) {
+                application.unregisterActivityLifecycleCallbacks(ActivityManager)
+                application.registerActivityLifecycleCallbacks(ActivityManager)
+            }
+            val channel = ThrioChannel(binaryMessenger, activity)
+            ChannelManager.cache(binaryMessenger.hashCode(), channel)
         }
     }
 
-    private var channel: ThrioChannel? = null
+    private var activity: Activity? = null
 
     override fun onAttachedToEngine(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {
-        Log.e("Thrio", "onAttachedToEngine $binding")
-        val channel = ThrioChannel(binding.applicationContext, binding.binaryMessenger)
-        ChannelManager.cache(binding.binaryMessenger.hashCode(), channel)
-        this.channel = channel
+        init(binding.applicationContext, binding.binaryMessenger) { activity }
     }
 
     override fun onDetachedFromEngine(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {
-        Log.e("Thrio", "onDetachedFromEngine $binding")
         ChannelManager.remove(binding.binaryMessenger.hashCode())
     }
 
     override fun onAttachedToActivity(binding: ActivityPluginBinding) {
-        Log.e("Thrio", "onAttachedToActivity ${binding.activity}")
-//        channel?.activity = binding.activity
+        activity = binding.activity
     }
 
     override fun onReattachedToActivityForConfigChanges(binding: ActivityPluginBinding) {
-        Log.e("Thrio", "onReattachedToActivityForConfigChanges ${binding.activity}")
-//        channel?.activity = binding.activity
     }
 
     override fun onDetachedFromActivity() {
-        Log.e("Thrio", "onDetachedFromActivity")
+        activity = null
     }
 
     override fun onDetachedFromActivityForConfigChanges() {
-        Log.e("Thrio", "onDetachedFromActivityForConfigChanges")
     }
-
 
 }

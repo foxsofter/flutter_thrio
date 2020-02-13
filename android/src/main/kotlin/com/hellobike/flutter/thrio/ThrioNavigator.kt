@@ -1,7 +1,7 @@
 package com.hellobike.flutter.thrio
 
 import android.content.Context
-import com.hellobike.flutter.thrio.navigator.NavigatorManager
+import com.hellobike.flutter.thrio.navigator.NavigationController
 import com.hellobike.flutter.thrio.navigator.ThrioActivity
 
 object ThrioNavigator {
@@ -10,7 +10,7 @@ object ThrioNavigator {
         ThrioActivity.push(Context, url)
     }
 
-    fun registerPageBuilder(url: String, builder: PageBuilder) {
-        NavigatorManager.addPageBuilder(url, builder)
+    fun registerNavigationBuilder(url: String, builder: NavigationBuilder) {
+        NavigationController.registerNavigationBuilder(url, builder)
     }
 }

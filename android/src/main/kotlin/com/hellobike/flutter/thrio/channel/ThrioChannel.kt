@@ -1,17 +1,19 @@
 package com.hellobike.flutter.thrio.channel
 
+
+import android.app.Activity
 import android.content.Context
-import android.util.Log
 import com.hellobike.flutter.thrio.data.Record
-import com.hellobike.flutter.thrio.navigator.NavigatorManager
+import com.hellobike.flutter.thrio.navigator.ActivityManager
+import com.hellobike.flutter.thrio.navigator.NavigationController
 import com.hellobike.flutter.thrio.navigator.ThrioActivity
 import io.flutter.plugin.common.BinaryMessenger
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 
 internal class ThrioChannel constructor(
-        private val context: Context,
-        private val messenger: BinaryMessenger
+        private val messenger: BinaryMessenger,
+        private val activity: () -> Activity?
 ) : MethodChannel.MethodCallHandler {
 
     private val channel: FlutterChannel by lazy {
@@ -36,14 +38,27 @@ internal class ThrioChannel constructor(
         channel.invokeMethod("__onPop__", data)
     }
 
+    fun onPopTo(record: Record) {
+        val data = mapOf(
+                "url" to record.url,
+                "index" to record.index
+        )
+        channel.invokeMethod("__onPopTo__", data)
+    }
+
     private fun pushFromFlutter(call: MethodCall, result: MethodChannel.Result) {
-        val url = call.argument<String>("url")
-        if (url.isNullOrBlank()) {
-            result.error("ERROR 1", "ArgumentError url not found", "Please check argument Key or Type.")
+        val context = activity()
+        if (context == null) {
+            result.error("ERROR 2", "IllegalStateError topActivity not found", null)
             return
         }
-        if (NavigatorManager.hasPageBuilder(url)) {
-            NavigatorManager.runPageBuilder(url)
+        val url = call.argument<String>("url")
+        if (url.isNullOrBlank()) {
+            result.error("ERROR 1", "ArgumentError url not found", null)
+            return
+        }
+        if (NavigationController.hasNavigationBuilder(url)) {
+            NavigationController.navigation(context, url)
             result.success(true)
             return
         }
@@ -52,22 +67,36 @@ internal class ThrioChannel constructor(
     }
 
     private fun popFromFlutter(call: MethodCall, result: MethodChannel.Result) {
+        val context = activity()
+        if (context == null) {
+            result.error("ERROR 2", "IllegalStateError topActivity not found", null)
+            return
+        }
         ThrioActivity.pop(context)
         result.success(true)
     }
 
     private fun popToFromFlutter(call: MethodCall, result: MethodChannel.Result) {
+        val context = activity()
+        if (context == null) {
+            result.error("ERROR 2", "IllegalStateError topActivity not found", null)
+            return
+        }
         val url = call.argument<String>("url")
         if (url.isNullOrBlank()) {
-            result.error("ERROR 1", "ArgumentError url not found", "Please check argument Key or Type.")
+            result.error("ERROR 1", "ArgumentError url not found", null)
             return
         }
         val index: Int? = call.argument<Int>("index")
         if (index == null) {
-            result.error("ERROR 1", "ArgumentError url not found", "Please check argument Key or Type.")
+            result.error("ERROR 1", "ArgumentError index not found", null)
             return
         }
-//        context.lif
+        if (NavigationController.hasNavigationBuilder(url)) {
+            NavigationController.popTo(context, url, index)
+            result.success(true)
+            return
+        }
         ThrioActivity.popTo(context, url, index)
         result.success(true)
     }

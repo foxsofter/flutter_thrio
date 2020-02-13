@@ -13,14 +13,14 @@ import io.flutter.plugin.common.BinaryMessenger
 open class ThrioActivity : FlutterActivity() {
     companion object {
 
-        private val KEY_THRIO_ACTION = "KEY_THRIO_ACTION"
-        private val KEY_THRIO_STACK = "KEY_THRIO_STACK"
-        private val KEY_THRIO_URL = "KEY_THRIO_URL"
-        private val KEY_THRIO_INDEX = "KEY_THRIO_INDEX"
+        private const val KEY_THRIO_ACTION = "KEY_THRIO_ACTION"
+        private const val KEY_THRIO_STACK = "KEY_THRIO_STACK"
+        private const val KEY_THRIO_URL = "KEY_THRIO_URL"
+        private const val KEY_THRIO_INDEX = "KEY_THRIO_INDEX"
 
-        private val KEY_THRIO_ACTION_PUSH = "push"
-        private val KEY_THRIO_ACTION_POP = "pop"
-        private val KEY_THRIO_ACTION_POP_TO = "popTo"
+        private const val KEY_THRIO_ACTION_PUSH = "push"
+        private const val KEY_THRIO_ACTION_POP = "pop"
+        private const val KEY_THRIO_ACTION_POP_TO = "popTo"
 
         internal fun push(context: Context, url: String) {
             val intent = build(context).apply {
@@ -50,7 +50,9 @@ open class ThrioActivity : FlutterActivity() {
         private fun build(context: Context): Intent {
             return Intent(context, ThrioActivity::class.java).apply {
                 addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
-                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+//                addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                // 取消动画
+//                addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
             }
         }
 
@@ -66,17 +68,16 @@ open class ThrioActivity : FlutterActivity() {
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        Log.e("Thrio", "new page")
         super.onCreate(savedInstanceState)
         val saveStack = savedInstanceState?.getParcelableArrayList<Record>(KEY_THRIO_STACK)
         if (saveStack == null) {
-            initPushAction(intent)
+            firstPushAction(intent)
         } else {
             flutterStack.addAll(saveStack)
         }
 
         window.decorView.postDelayed({
-            showTopRecord()
+            showLastRecord()
         }, 1000)
     }
 
@@ -92,27 +93,27 @@ open class ThrioActivity : FlutterActivity() {
 
     override fun onBackPressed() {
         if (flutterStack.isNotEmpty()) {
-            pop()
+            didPop()
             return
         }
         super.onBackPressed()
     }
 
-    private fun initPushAction(intent: Intent) {
+    private fun firstPushAction(intent: Intent) {
         val url = intent.getStringExtra(KEY_THRIO_URL)
                 ?: throw IllegalArgumentException("url not found in intent")
-        val record = FlutterRecord.build(url)
-        flutterStack.add(record)
-        Log.e("Thrio", "push url ${record.url} index ${record.index}")
+        didPush(url)
     }
 
     private fun onPushAction(intent: Intent) {
-        initPushAction(intent)
-        showTopRecord()
+        val url = intent.getStringExtra(KEY_THRIO_URL)
+                ?: throw IllegalArgumentException("url not found in intent")
+        didPush(url)
+        showLastRecord()
     }
 
     private fun onPopAction(intent: Intent) {
-        pop()
+        didPop()
     }
 
     private fun onPopToAction(intent: Intent) {
@@ -121,43 +122,69 @@ open class ThrioActivity : FlutterActivity() {
         if (index == -1) {
             return
         }
-        popTo(url, index)
+        didPopTo(url, index)
     }
 
-    private fun pop() {
-        val record = flutterStack.removeAt(flutterStack.lastIndex)
-        FlutterRecord.pop(record.url)
+    private fun showLastRecord() {
+        val record = flutterStack.last()
+        channel.onPush(record)
+    }
+
+    private fun didPush(url: String) {
+        val record = FlutterRecord.push(url)
+        flutterStack.add(record)
+    }
+
+
+    private fun didPop() {
+        val stack = flutterStack
+        val record = stack.last()
+        stack.remove(record)
+        FlutterRecord.pop()
         channel.onPop(record)
-        if (flutterStack.isEmpty()) {
+        if (stack.isEmpty()) {
             finish()
         }
-        Log.e("Thrio", "pop url ${record.url} index ${record.index}")
     }
 
-    private fun popTo(url: String, index: Int) {
+    private fun didPopTo(url: String, index: Int) {
+        val stack = flutterStack
         while (true) {
-            if (flutterStack.isEmpty()) {
-                Log.e("Thrio", "page url $url index $index not found")
+            val record = stack.last()
+            if (record.url == url && record.index <= index) {
+                FlutterRecord.popTo(record.url, record.index)
+                Log.e("Thrio", "channel popTo url ${record.url} index ${record.index}")
+                channel.onPopTo(record)
+                break
+            }
+            stack.remove(record)
+            /*
+               当前Activity无对应页面，pop到上个FlutterActivity
+               使用 FLAG_ACTIVITY_CLEAR_TOP
+             */
+            if (stack.isEmpty()) {
+                channel.onPopTo(record)
+                finish()
                 popTo(context, url, index)
                 break
             }
-            val record = flutterStack.last()
-            if (record.url == url && record.index == index) {
-                break
-            }
-            pop()
         }
+
+
     }
 
-    private fun showTopRecord() {
-        val record = flutterStack.last()
-        channel.onPush(record)
-        Log.e("Thrio", "show url ${record.url} index ${record.index}")
+    internal fun popAll() {
+        val stack = flutterStack
+        if (stack.isEmpty()) {
+            return
+        }
+        val first = stack.first()
+        didPopTo(first.url, first.index)
     }
-
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putParcelableArrayList(KEY_THRIO_STACK, flutterStack)
     }
+
 }
