@@ -7,8 +7,8 @@ import '../channel/thrio_channel.dart';
 import 'thrio_app.dart';
 import 'thrio_route_settings.dart';
 
-class ThrioPageObserver {
-  ThrioPageObserver(ThrioChannel channel) : _channel = channel {
+class ThrioNavigatorReceiver {
+  ThrioNavigatorReceiver(ThrioChannel channel) : _channel = channel {
     // _onScheduleFrame();
     _onPush();
     _onPop();
