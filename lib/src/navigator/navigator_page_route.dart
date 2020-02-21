@@ -3,16 +3,16 @@
 
 import 'package:flutter/material.dart';
 
-import 'thrio_app.dart';
-import 'thrio_route_settings.dart';
+import 'navigator_route_settings.dart';
+import 'thrio_navigator.dart';
 
-typedef ThrioPageBuilder = Widget Function(RouteSettings settings);
+typedef NavigatorPageBuilder = Widget Function(RouteSettings settings);
 
 /// An route managed by a ThrioNavigator.
 ///
-class ThrioPageRoute extends MaterialPageRoute<bool> {
-  ThrioPageRoute({
-    @required ThrioPageBuilder builder,
+class NavigatorPageRoute extends MaterialPageRoute<bool> {
+  NavigatorPageRoute({
+    @required NavigatorPageBuilder builder,
     RouteSettings settings,
     bool maintainState = true,
     bool fullscreenDialog = false,
@@ -26,10 +26,7 @@ class ThrioPageRoute extends MaterialPageRoute<bool> {
   WillPopCallback get willPopCallback => _willPopCallback;
   set willPopCallback(WillPopCallback callback) {
     if (_willPopCallback != callback) {
-      ThrioApp()
-          .navigatorState
-          .history
-          .last
+      ThrioNavigator.navigatorState.history.last
           .removeScopedWillPopCallback(_willPopCallback);
       _willPopCallback = callback;
       if (isCurrent) {

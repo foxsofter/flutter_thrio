@@ -7,22 +7,22 @@ import 'page4.dart';
 class Module with ThrioModule {
   @override
   void onPageRegister() {
-    ThrioApp().registerPageBuilder(
+    registerPageBuilder(
       'flutter1',
       (settings) => Page1(
         index: settings.index,
         params: settings.params,
       ),
     );
-    ThrioApp().registerPageBuilder(
+    registerPageBuilder(
       'flutter2',
       (settings) => Page2(index: settings.index, params: settings.params),
     );
-    ThrioApp().registerPageBuilder(
+    registerPageBuilder(
       'flutter3',
       (settings) => Page3(index: settings.index, params: settings.params),
     );
-    ThrioApp().registerPageBuilder(
+    registerPageBuilder(
       'flutter4',
       (settings) => Page4(index: settings.index, params: settings.params),
     );
