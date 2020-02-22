@@ -19,7 +19,7 @@ mixin ThrioModule {
   void register(ThrioModule module) {
     if (!_modules.containsKey(module.runtimeType)) {
       _modules[module.runtimeType] = module;
-      onModuleRegister(module);
+      module.onModuleRegister();
     }
   }
 
@@ -44,7 +44,7 @@ mixin ThrioModule {
 
   /// A function for registering submodules.
   ///
-  void onModuleRegister(ThrioModule module) {}
+  void onModuleRegister() {}
 
   /// A function for registering a page builder.
   ///
