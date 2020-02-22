@@ -16,7 +16,7 @@ mixin ThrioModule {
   /// A function for registering a module, which will call
   /// the `onModuleRegister` function of the `module`.
   ///
-  void register(ThrioModule module) {
+  void registerModule(ThrioModule module) {
     if (!_modules.containsKey(module.runtimeType)) {
       _modules[module.runtimeType] = module;
       module.onModuleRegister();
@@ -24,20 +24,20 @@ mixin ThrioModule {
   }
 
   /// A function for module initialization that will call
-  /// the `onPageRegister`, `onInit` and `onAsyncInit`
+  /// the `onPageRegister`, `onModuleInit` and `onModuleAsyncInit`
   /// methods of all modules.
   ///
-  void init() {
+  void initModule() {
     final values = _modules.values;
     for (final module in values) {
       module.onPageRegister();
     }
     for (final module in values) {
-      module.onInit();
+      module.onModuleInit();
     }
     Future.microtask(() {
       for (final module in values) {
-        module.onAsyncInit();
+        module.onModuleAsyncInit();
       }
     });
   }
@@ -52,11 +52,11 @@ mixin ThrioModule {
 
   /// A function for module initialization.
   ///
-  void onInit() {}
+  void onModuleInit() {}
 
   /// A function for module asynchronous initialization.
   ///
-  void onAsyncInit() {}
+  void onModuleAsyncInit() {}
 
   /// Sets up a broadcast stream for receiving page notify events.
   ///

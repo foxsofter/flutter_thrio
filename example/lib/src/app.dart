@@ -18,15 +18,15 @@ class _MainAppState extends State<MainApp> with ThrioModule {
   void initState() {
     super.initState();
 
-    register(this);
-    init();
+    registerModule(this);
+    initModule();
   }
 
   // GlobalKey<NavigatorState> navigatorKey;
 
   @override
   void onModuleRegister() {
-    register(sample.Module());
+    registerModule(sample.Module());
   }
 
   @override
@@ -35,7 +35,7 @@ class _MainAppState extends State<MainApp> with ThrioModule {
   }
 
   @override
-  void onInit() {}
+  void onModuleInit() {}
 
   @override
   Widget build(BuildContext context) => MaterialApp(
