@@ -6,14 +6,16 @@
 //
 
 #import "ThrioPlugin.h"
-#import "ThrioApp.h"
+#import "ThrioNavigator+Internal.h"
+#import "UINavigationController+FlutterEngine.h"
 #import "ThrioLogger.h"
 
 @implementation ThrioPlugin
 
 + (void)registerWithRegistrar:(NSObject<FlutterPluginRegistrar>*)registrar {
-  [[ThrioApp.shared channel] setupEventChannel:registrar.messenger];
-  [[ThrioApp.shared channel] setupMethodChannel:registrar.messenger];
+  [ThrioNavigator.navigationController.thrio_channel setupEventChannel:registrar.messenger];
+  [ThrioNavigator.navigationController.thrio_channel setupMethodChannel:registrar.messenger];
+  
   [[ThrioChannel channelWithName:kLoggerChannelName] setupMethodChannel:registrar.messenger];
 }
 

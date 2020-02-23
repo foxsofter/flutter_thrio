@@ -8,17 +8,17 @@
 #import <UIKit/UIKit.h>
 
 #import "ThrioTypes.h"
-#import "ThrioPageRoute.h"
+#import "NavigatorPageRoute.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface UIViewController (ThrioPageRoute)
+@interface UIViewController (Navigator)
 
 @property (nonatomic, strong, nullable) NSNumber *thrio_hidesNavigationBar;
 
-@property (nonatomic, strong, readonly, nullable) ThrioPageRoute *thrio_firstRoute;
+@property (nonatomic, strong, readonly, nullable) NavigatorPageRoute *thrio_firstRoute;
 
-@property (nonatomic, strong, readonly, nullable) ThrioPageRoute *thrio_lastRoute;
+@property (nonatomic, strong, readonly, nullable) NavigatorPageRoute *thrio_lastRoute;
 
 - (void)thrio_pushUrl:(NSString *)url
                 index:(NSNumber *)index
@@ -52,17 +52,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)thrio_didRemoveUrl:(NSString *)url index:(NSNumber *)index;
 
-- (ThrioPageRoute * _Nullable)thrio_getRouteByUrl:(NSString *)url index:(NSNumber *)index;
+- (NavigatorPageRoute * _Nullable)thrio_getRouteByUrl:(NSString *)url index:(NSNumber *)index;
 
 - (NSNumber *)thrio_getLastIndexByUrl:(NSString *)url;
 
 - (NSArray *)thrio_getAllIndexByUrl:(NSString *)url;
-
-- (void)thrio_setPopDisabled:(BOOL)disabled;
-
-- (void)thrio_setPopDisabledUrl:(NSString *)url
-                          index:(NSNumber *)index
-                       disabled:(BOOL)disabled;
 
 @end
 

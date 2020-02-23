@@ -17,6 +17,9 @@
 		3B3967161E833CAA004F5970 /* AppFrameworkInfo.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */; };
 		3B80C3941E831B6300D905FE /* App.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3B80C3931E831B6300D905FE /* App.framework */; };
 		3B80C3951E831B6300D905FE /* App.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 3B80C3931E831B6300D905FE /* App.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		8E4A6A8A240227C9009DCF21 /* SampleModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 8E4A6A89240227C9009DCF21 /* SampleModule.m */; };
+		8E4A6A8D2402289B009DCF21 /* Module2.m in Sources */ = {isa = PBXBuildFile; fileRef = 8E4A6A8C2402289B009DCF21 /* Module2.m */; };
+		8E4A6A90240228D6009DCF21 /* Module1.m in Sources */ = {isa = PBXBuildFile; fileRef = 8E4A6A8F240228D6009DCF21 /* Module1.m */; };
 		9705A1C61CF904A100538489 /* Flutter.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 9740EEBA1CF902C7004384FC /* Flutter.framework */; };
 		9705A1C71CF904A300538489 /* Flutter.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 9740EEBA1CF902C7004384FC /* Flutter.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		978B8F6F1D3862AE00F588F7 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 7AFFD8EE1D35381100E5BB4D /* AppDelegate.m */; };
@@ -75,6 +78,12 @@
 		7AFFD8EE1D35381100E5BB4D /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		80FC86B336259FEEC5E93BBC /* libPods-Runner.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Runner.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		8D49DE9E464F20424892AFCB /* Pods-Runner.profile.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.profile.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.profile.xcconfig"; sourceTree = "<group>"; };
+		8E4A6A88240227C9009DCF21 /* SampleModule.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SampleModule.h; sourceTree = "<group>"; };
+		8E4A6A89240227C9009DCF21 /* SampleModule.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SampleModule.m; sourceTree = "<group>"; };
+		8E4A6A8B2402289B009DCF21 /* Module2.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Module2.h; sourceTree = "<group>"; };
+		8E4A6A8C2402289B009DCF21 /* Module2.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Module2.m; sourceTree = "<group>"; };
+		8E4A6A8E240228D6009DCF21 /* Module1.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Module1.h; sourceTree = "<group>"; };
+		8E4A6A8F240228D6009DCF21 /* Module1.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Module1.m; sourceTree = "<group>"; };
 		9740EEB21CF90195004384FC /* Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = Debug.xcconfig; path = Flutter/Debug.xcconfig; sourceTree = "<group>"; };
 		9740EEB31CF90195004384FC /* Generated.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = Generated.xcconfig; path = Flutter/Generated.xcconfig; sourceTree = "<group>"; };
 		9740EEBA1CF902C7004384FC /* Flutter.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Flutter.framework; path = Flutter/Flutter.framework; sourceTree = "<group>"; };
@@ -158,6 +167,39 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		8E4A6A85240225A9009DCF21 /* Sample */ = {
+			isa = PBXGroup;
+			children = (
+				8E4A6A87240225C3009DCF21 /* Module2 */,
+				8E4A6A86240225B9009DCF21 /* Module1 */,
+				8E4A6A88240227C9009DCF21 /* SampleModule.h */,
+				8E4A6A89240227C9009DCF21 /* SampleModule.m */,
+			);
+			name = Sample;
+			sourceTree = "<group>";
+		};
+		8E4A6A86240225B9009DCF21 /* Module1 */ = {
+			isa = PBXGroup;
+			children = (
+				12AA0BF723B397D2007F1FE8 /* ThrioViewController.h */,
+				12AA0BF823B397D2007F1FE8 /* ThrioViewController.m */,
+				8E4A6A8E240228D6009DCF21 /* Module1.h */,
+				8E4A6A8F240228D6009DCF21 /* Module1.m */,
+			);
+			name = Module1;
+			sourceTree = "<group>";
+		};
+		8E4A6A87240225C3009DCF21 /* Module2 */ = {
+			isa = PBXGroup;
+			children = (
+				12A48B9523E6D58E002B699E /* ThrioViewController2.h */,
+				12A48B9623E6D58E002B699E /* ThrioViewController2.m */,
+				8E4A6A8B2402289B009DCF21 /* Module2.h */,
+				8E4A6A8C2402289B009DCF21 /* Module2.m */,
+			);
+			name = Module2;
+			sourceTree = "<group>";
+		};
 		9740EEB11CF90186004384FC /* Flutter */ = {
 			isa = PBXGroup;
 			children = (
@@ -205,11 +247,8 @@
 				97C146FA1CF9000F007C117D /* Main.storyboard */,
 				12AA0BFC23B7339D007F1FE8 /* MainModule.h */,
 				12AA0BFD23B7339D007F1FE8 /* MainModule.m */,
+				8E4A6A85240225A9009DCF21 /* Sample */,
 				97C146F11CF9000F007C117D /* Supporting Files */,
-				12AA0BF723B397D2007F1FE8 /* ThrioViewController.h */,
-				12AA0BF823B397D2007F1FE8 /* ThrioViewController.m */,
-				12A48B9523E6D58E002B699E /* ThrioViewController2.h */,
-				12A48B9623E6D58E002B699E /* ThrioViewController2.m */,
 			);
 			path = Runner;
 			sourceTree = "<group>";
@@ -419,9 +458,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8E4A6A90240228D6009DCF21 /* Module1.m in Sources */,
 				12A48B9723E6D58E002B699E /* ThrioViewController2.m in Sources */,
+				8E4A6A8A240227C9009DCF21 /* SampleModule.m in Sources */,
 				978B8F6F1D3862AE00F588F7 /* AppDelegate.m in Sources */,
 				12AA0BF923B397D2007F1FE8 /* ThrioViewController.m in Sources */,
+				8E4A6A8D2402289B009DCF21 /* Module2.m in Sources */,
 				12AA0BFE23B7339D007F1FE8 /* MainModule.m in Sources */,
 				97C146F31CF9000F007C117D /* main.m in Sources */,
 				1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */,

@@ -8,22 +8,16 @@
 
 @import thrio;
 #import "MainModule.h"
+#import "SampleModule.h"
 
 @implementation MainModule
 
-- (void)onModuleRegister {
-  [ThrioModule register:ThrioApp.shared];
+- (void)onModuleInit {
+
 }
 
-- (void)onPageRegister {
-  [ThrioApp.shared registerNativeViewControllerBuilder:^UIViewController * _Nullable(NSDictionary<NSString *,id> * _Nonnull params) {
-    UIStoryboard *sb = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
-    return [sb instantiateViewControllerWithIdentifier:@"ThrioViewController"];
-  } forUrl:@"native1"];
-  [ThrioApp.shared registerNativeViewControllerBuilder:^UIViewController * _Nullable(NSDictionary<NSString *,id> * _Nonnull params) {
-    UIStoryboard *sb = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
-    return [sb instantiateViewControllerWithIdentifier:@"ThrioViewController2"];
-  } forUrl:@"native2"];
+- (void)onModuleRegister {
+  [self registerModule:[SampleModule new]];
 }
 
 @end

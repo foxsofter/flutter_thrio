@@ -18,28 +18,28 @@
 @implementation ThrioViewController2
 
 - (IBAction)pushFlutterPage:(id)sender {
-  [ThrioNavigator.shared pushUrl:@"flutter1"];
+  [ThrioNavigator pushUrl:@"flutter1"];
 }
 - (IBAction)popFlutter1:(id)sender {
-  [ThrioNavigator.shared removeUrl:@"flutter1"];
+  [ThrioNavigator removeUrl:@"flutter1"];
 }
 - (IBAction)pushNativePage:(id)sender {
-  [ThrioNavigator.shared pushUrl:@"native1"];
+  [ThrioNavigator pushUrl:@"native1"];
 }
 - (IBAction)popNative1:(id)sender {
-  [ThrioNavigator.shared removeUrl:@"native1"];
+  [ThrioNavigator removeUrl:@"native1"];
 }
 - (IBAction)popToNative1:(id)sender {
-  [ThrioNavigator.shared popToUrl:@"native1"];
+  [ThrioNavigator popToUrl:@"native1"];
 }
 - (IBAction)pop:(id)sender {
-  [ThrioNavigator.shared pop];
+  [ThrioNavigator pop];
 }
 - (IBAction)enableFlutter1Eabled:(id)sender {
-  [ThrioNavigator.shared setPopDisabledUrl:@"flutter1" disabled:NO];
+  [ThrioNavigator setPopDisabledUrl:@"native2" disabled:NO];
 }
 - (IBAction)disabledFlutter1Eabled:(id)sender {
-  [ThrioNavigator.shared setPopDisabledUrl:@"flutter1" disabled:YES];
+  [ThrioNavigator setPopDisabledUrl:@"native2" disabled:YES];
 }
 
 - (void)viewDidLoad {
@@ -50,7 +50,7 @@
     [self.label setText:txt];
   }
   
-  [ThrioNavigator.shared setPopDisabled:YES];
+  [ThrioNavigator setPopDisabled:YES];
 }
 
 @end

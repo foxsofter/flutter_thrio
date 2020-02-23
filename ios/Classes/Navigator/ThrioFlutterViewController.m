@@ -6,9 +6,11 @@
 //
 
 #import "ThrioFlutterViewController.h"
-#import "UIViewController+ThrioPageRoute.h"
-#import "UINavigationController+ThrioNavigator.h"
-#import "ThrioApp.h"
+#import "UIViewController+Navigator.h"
+#import "UINavigationController+Navigator.h"
+#import "UINavigationController+FlutterEngine.h"
+#import "ThrioNavigator.h"
+#import "ThrioNavigator+Internal.h"
 #import "ThrioChannel.h"
 #import "ThrioLogger.h"
 
@@ -19,9 +21,7 @@ NS_ASSUME_NONNULL_BEGIN
 @implementation ThrioFlutterViewController
 
 - (instancetype)init {
-  self = [super initWithEngine:[ThrioApp.shared engine] nibName:nil bundle:nil];
-  if (self) {
-  }
+  self = [super initWithEngine:[ThrioNavigator.navigationController thrio_engine] nibName:nil bundle:nil];
   return self;
 }
 
@@ -57,12 +57,12 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 - (void)dealloc {
-  [ThrioApp.shared detachFlutterViewController:self];
+  [self.navigationController thrio_detachFlutterViewController:self];
 }
 
 // override
 - (void)installSplashScreenViewIfNecessary {
-  //Do nothing.
+  // Do nothing.
 }
 
 // override

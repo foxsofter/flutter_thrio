@@ -18,28 +18,26 @@ class _MainAppState extends State<MainApp> with ThrioModule {
   void initState() {
     super.initState();
 
-    ThrioModule.register(this);
-    ThrioModule.init();
+    registerModule(this);
+    initModule();
   }
-
-  // GlobalKey<NavigatorState> navigatorKey;
 
   @override
   void onModuleRegister() {
-    ThrioModule.register(sample.Module());
+    registerModule(sample.Module());
   }
 
   @override
   void onPageRegister() {
-    ThrioApp().registerDefaultPageBuilder((_, {index, params}) => DeaultPage());
+    registerDefaultPageBuilder((_, {index, params}) => DeaultPage());
   }
 
   @override
-  void onSyncInit() {}
+  void onModuleInit() {}
 
   @override
   Widget build(BuildContext context) => MaterialApp(
-        builder: ThrioApp().build(),
+        builder: ThrioNavigator.builder(),
         home: const SizedBox.shrink(),
       );
 }

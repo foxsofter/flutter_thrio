@@ -1,30 +1,32 @@
 //
-//  ThrioPageObserver.m
+//  NavigatorReceiveChannel.m
 //  thrio
 //
 //  Created by Wei ZhongDan on 2020/2/2.
 //
 
-#import "ThrioPageObserver.h"
-#import "ThrioApp.h"
-#import "UINavigationController+ThrioNavigator.h"
+#import "NavigatorReceiveChannel.h"
+#import "ThrioNavigator.h"
+#import "ThrioNavigator+Internal.h"
+#import "UINavigationController+Navigator.h"
+#import "UINavigationController+PopDisabled.h"
+#import "UINavigationController+HotRestart.h"
 #import "ThrioLogger.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface ThrioPageObserver ()
+@interface NavigatorReceiveChannel ()
 
 @property (nonatomic, strong) ThrioChannel *channel;
 
 @end
 
-@implementation ThrioPageObserver
+@implementation NavigatorReceiveChannel
 
 - (instancetype)initWithChannel:(ThrioChannel *)channel {
   self = [super init];
   if (self) {
     _channel = channel;
-    [self _onHotRestart];
     [self _onPush];
     [self _onNotify];
     [self _onPop];
@@ -37,11 +39,34 @@ NS_ASSUME_NONNULL_BEGIN
     [self _onLastIndex];
     [self _onGetAllIndex];
     [self _onSetPopDisabled];
+    [self _onHotRestart];
   }
   return self;
 }
 
 #pragma mark - on channel methods
+
+- (void)_onPush {
+  [_channel registryMethodCall:@"push"
+                        handler:^void(NSDictionary<NSString *,id> * arguments,
+                                      ThrioBoolCallback _Nullable result) {
+    NSString *url = arguments[@"url"];
+    if (url.length < 1) {
+      if (result) {
+        result(NO);
+      }
+      return;
+    }
+    BOOL animated = [arguments[@"animated"] boolValue];
+    NSDictionary *params = arguments[@"params"];
+
+    ThrioLogV(@"on push: %@", url);
+
+    [ThrioNavigator pushUrl:url params:params animated:animated result:^(BOOL r) {
+      result(r);
+    }];
+  }];
+}
 
 - (void)_onNotify {
   [_channel registryMethodCall:@"notify"
@@ -63,42 +88,10 @@ NS_ASSUME_NONNULL_BEGIN
     }
     NSNumber *index = arguments[@"index"];
     NSDictionary *params = arguments[@"params"];
-    [ThrioApp.shared notifyUrl:url index:index name:name params:params result:^(BOOL r) {
+    [ThrioNavigator notifyUrl:url index:index name:name params:params result:^(BOOL r) {
       if (result) {
         result(r);
       }
-    }];
-  }];
-}
-
-- (void)_onHotRestart {
-  [_channel registryMethodCall:@"hotRestart"
-                        handler:^void(NSDictionary<NSString *,id> * arguments,
-                                      ThrioBoolCallback _Nullable result) {
-    [ThrioApp.shared.navigationController thrio_hotRestart:^(BOOL r) {
-      result(r);
-    }];
-  }];
-}
-
-- (void)_onPush {
-  [_channel registryMethodCall:@"push"
-                        handler:^void(NSDictionary<NSString *,id> * arguments,
-                                      ThrioBoolCallback _Nullable result) {
-    NSString *url = arguments[@"url"];
-    if (url.length < 1) {
-      if (result) {
-        result(NO);
-      }
-      return;
-    }
-    BOOL animated = [arguments[@"animated"] boolValue];
-    NSDictionary *params = arguments[@"params"];
-
-    ThrioLogV(@"on push: %@", url);
-
-    [ThrioApp.shared pushUrl:url params:params animated:animated result:^(BOOL r) {
-      result(r);
     }];
   }];
 }
@@ -111,7 +104,7 @@ NS_ASSUME_NONNULL_BEGIN
 
      ThrioLogV(@"on pop");
 
-     [ThrioApp.shared popAnimated:animated result:^(BOOL r) {
+     [ThrioNavigator popAnimated:animated result:^(BOOL r) {
       if (result) {
         result(r);
       }
@@ -135,7 +128,7 @@ NS_ASSUME_NONNULL_BEGIN
     
     ThrioLogV(@"on popTo: %@.%@", url, index);
 
-    [ThrioApp.shared popToUrl:url index:index animated:animated result:^(BOOL r) {
+    [ThrioNavigator popToUrl:url index:index animated:animated result:^(BOOL r) {
       if (result) {
         result(r);
       }
@@ -153,7 +146,7 @@ NS_ASSUME_NONNULL_BEGIN
 
     ThrioLogV(@"on remove: %@.%@", url, index);
 
-    [ThrioApp.shared removeUrl:url index:index animated:animated result:^(BOOL r) {
+    [ThrioNavigator removeUrl:url index:index animated:animated result:^(BOOL r) {
       if (result) {
         result(r);
       }
@@ -168,9 +161,9 @@ NS_ASSUME_NONNULL_BEGIN
     if (result) {
       NSString *url = arguments[@"url"];
       if (url.length < 1) {
-        result([ThrioApp.shared lastIndex]);
+        result([ThrioNavigator lastIndex]);
       } else {
-        result([ThrioApp.shared getLastIndexByUrl:url]);
+        result([ThrioNavigator getLastIndexByUrl:url]);
       }
     }
   }];
@@ -182,7 +175,7 @@ NS_ASSUME_NONNULL_BEGIN
                                       ThrioBoolCallback _Nullable result) {
      NSString *url = arguments[@"url"];
      if (result) {
-       result([ThrioApp.shared getAllIndexByUrl:url]);
+       result([ThrioNavigator getAllIndexByUrl:url]);
      }
   }];
 }
@@ -196,7 +189,7 @@ NS_ASSUME_NONNULL_BEGIN
 
     ThrioLogV(@"on didPush: %@.%@", url, index);
 
-    [ThrioApp.shared.navigationController thrio_didPushUrl:url index:index];
+    [ThrioNavigator.navigationController thrio_didPushUrl:url index:index];
   }];
 }
 
@@ -209,7 +202,7 @@ NS_ASSUME_NONNULL_BEGIN
 
     ThrioLogV(@"on didPop: %@.%@", url, index);
 
-    [ThrioApp.shared.navigationController thrio_didPopUrl:url index:index];
+    [ThrioNavigator.navigationController thrio_didPopUrl:url index:index];
   }];
 }
 
@@ -222,7 +215,7 @@ NS_ASSUME_NONNULL_BEGIN
 
     ThrioLogV(@"on didPopTo: %@.%@", url, index);
 
-    [ThrioApp.shared.navigationController thrio_didPopToUrl:url index:index];
+    [ThrioNavigator.navigationController thrio_didPopToUrl:url index:index];
   }];
 }
 
@@ -235,7 +228,7 @@ NS_ASSUME_NONNULL_BEGIN
 
     ThrioLogV(@"on didRemove: %@.%@", url, index);
 
-    [ThrioApp.shared.navigationController thrio_didRemoveUrl:url index:index];
+    [ThrioNavigator.navigationController thrio_didRemoveUrl:url index:index];
   }];
 }
 
@@ -247,9 +240,19 @@ NS_ASSUME_NONNULL_BEGIN
     NSNumber *index = arguments[@"index"];
     BOOL disabled = [arguments[@"disabled"] boolValue];
 
-    [ThrioApp.shared.navigationController thrio_setPopDisabledUrl:url
-                                                            index:index
-                                                         disabled:disabled];
+    [ThrioNavigator.navigationController thrio_setPopDisabledUrl:url
+                                                           index:index
+                                                        disabled:disabled];
+  }];
+}
+
+- (void)_onHotRestart {
+  [_channel registryMethodCall:@"hotRestart"
+                        handler:^void(NSDictionary<NSString *,id> * arguments,
+                                      ThrioBoolCallback _Nullable result) {
+    [ThrioNavigator.navigationController thrio_hotRestart:^(BOOL r) {
+      result(r);
+    }];
   }];
 }
 
