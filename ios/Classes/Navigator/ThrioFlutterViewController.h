@@ -6,7 +6,7 @@
 //
 
 #import <Flutter/Flutter.h>
-#import "ThrioNotifyProtocol.h"
+#import "NavigatorNotifyProtocol.h"
 #import "ThrioTypes.h"
 
 NS_ASSUME_NONNULL_BEGIN

@@ -18,21 +18,27 @@ class ThrioNavigator {
 
   static final _default = ThrioNavigator._();
 
-  static TransitionBuilder builder() => (context, child) => NavigatorWidget(
-        key: _stateKey,
-        observer: NavigatorRouteObserver(_channel),
-        child: child is Navigator ? child : null,
-      );
+  static TransitionBuilder builder() {
+    _default._channel = ThrioChannel(channel: '__thrio_app__');
+    _default._sendChannel = NavigatorSendChannel(_default._channel);
+    _default._receiveChannel = NavigatorReceiveChannel(_default._channel);
+    return (context, child) => NavigatorWidget(
+          key: _default._stateKey = GlobalKey<NavigatorWidgetState>(),
+          observer: NavigatorRouteObserver(_default._channel),
+          child: child is Navigator ? child : null,
+        );
+  }
 
-  static final _stateKey = GlobalKey<NavigatorWidgetState>();
+  GlobalKey<NavigatorWidgetState> _stateKey;
 
-  static NavigatorWidgetState get navigatorState => _stateKey.currentState;
+  static NavigatorWidgetState get navigatorState =>
+      _default._stateKey?.currentState;
 
-  static final _channel = ThrioChannel(channel: '__thrio_app__');
+  ThrioChannel _channel;
 
-  final _sendChannel = NavigatorSendChannel(_channel);
+  NavigatorSendChannel _sendChannel;
 
-  final _receiveChannel = NavigatorReceiveChannel(_channel);
+  NavigatorReceiveChannel _receiveChannel;
 
   final _pageBuilders = RegistryMap<String, NavigatorPageBuilder>();
 
@@ -164,5 +170,6 @@ class ThrioNavigator {
   static NavigatorPageBuilder getPageBuilder(String url) =>
       _default._pageBuilders[url];
 
-  static void hotRestart() => _channel.invokeMethod<bool>('hotRestart');
+  static void hotRestart() =>
+      _default._channel.invokeMethod<bool>('hotRestart');
 }

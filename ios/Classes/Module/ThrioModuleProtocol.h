@@ -6,6 +6,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "ThrioTypes.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -13,16 +14,27 @@ NS_ASSUME_NONNULL_BEGIN
 
 @required
 
-// A function for module initialization that will call
-// the `onPageRegister`, `onSyncInit` and `onAsyncInit`
-// methods of all modules.
-//
-+ (void)init;
-
 // A function for registering a module, which will call
 // the `onModuleRegister` function of the `module`.
 //
-+ (void)register:(id<ThrioModuleProtocol>)module;
+- (void)registerModule:(id<ThrioModuleProtocol>)module;
+
+// A function for module initialization that will call
+// the `onPageRegister`, `onModuleInit` and `onModuleAsyncInit`
+// methods of all modules.
+//
+- (void)initModule;
+
+// Register native view controller builder for url.
+//
+- (ThrioVoidCallback)registerNativeViewControllerBuilder:(ThrioNativeViewControllerBuilder)builder
+                                                  forUrl:(NSString *)url;
+
+// Sets the `ThrioFlutterViewController` builder.
+//
+// Need to be register when extending the `ThrioFlutterViewController` class.
+//
+- (ThrioVoidCallback)registerFlutterViewControllerBuilder:(ThrioFlutterViewControllerBuilder)builder;
 
 @optional
 
@@ -36,11 +48,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 // A function for module initialization.
 //
-- (void)onSyncInit;
+- (void)onModuleInit;
 
 // A function for module asynchronous initialization.
 //
-- (void)onAsyncInit;
+- (void)onModuleAsyncInit;
 
 @end
 

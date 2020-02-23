@@ -1,5 +1,5 @@
 //
-//  ThrioPageObserver.h
+//  NavigatorReceiveChannel.h
 //  thrio
 //
 //  Created by Wei ZhongDan on 2020/2/2.
@@ -11,7 +11,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface ThrioPageObserver : NSObject
+@interface NavigatorReceiveChannel : NSObject
 
 - (instancetype)initWithChannel:(ThrioChannel *)channel;
 

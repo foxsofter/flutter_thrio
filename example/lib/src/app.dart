@@ -22,8 +22,6 @@ class _MainAppState extends State<MainApp> with ThrioModule {
     initModule();
   }
 
-  // GlobalKey<NavigatorState> navigatorKey;
-
   @override
   void onModuleRegister() {
     registerModule(sample.Module());

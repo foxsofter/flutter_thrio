@@ -10,9 +10,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface UINavigationController (ThrioNavigator)
-
-- (void)thrio_hotRestart:(ThrioBoolCallback)result;
+@interface UINavigationController (Navigator)
 
 - (void)thrio_pushUrl:(NSString *)url
                params:(NSDictionary *)params
@@ -55,18 +53,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (BOOL)thrio_ContainsUrl:(NSString *)url index:(NSNumber *)index;
 
-- (void)thrio_setPopDisabledUrl:(NSString *)url
-                          index:(NSNumber *)index
-                       disabled:(BOOL)disabled;
+- (void)thrio_didShowViewController:(UIViewController *)viewController animated:(BOOL)animated;
 
-- (ThrioVoidCallback)thrio_registerNativeViewControllerBuilder:(ThrioNativeViewControllerBuilder)builder
-                                                        forUrl:(NSString *)url;
-
-- (ThrioVoidCallback)thrio_registerFlutterViewControllerBuilder:(ThrioFlutterViewControllerBuilder)builder;
-
-- (void)thrio_addPopGesture;
-
-- (void)thrio_removePopGesture;
+- (UIViewController * _Nullable)getViewControllerByUrl:(NSString *)url
+                                                 index:(NSNumber *)index;
 
 @end
 

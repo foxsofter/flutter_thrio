@@ -1,5 +1,5 @@
 //
-//  ThrioNotifyProtocol.h
+//  NavigatorNotifyProtocol.h
 //  thrio
 //
 //  Created by foxsofter on 2019/12/18.
@@ -13,7 +13,7 @@ NS_ASSUME_NONNULL_BEGIN
 //
 // The protocol must be implemented by a UIViewController.
 //
-@protocol ThrioNotifyProtocol <NSObject>
+@protocol NavigatorNotifyProtocol <NSObject>
 
 @required
 // Called when the page has been fully transitioned onto the screen.

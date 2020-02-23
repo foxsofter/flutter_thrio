@@ -1,5 +1,5 @@
 //
-//  ThrioRouteSettings.h
+//  NavigatorRouteSettings.h
 //  Pods-Runner
 //
 //  Created by foxsofter on 2020/1/19.
@@ -9,12 +9,12 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface ThrioRouteSettings : NSObject
+@interface NavigatorRouteSettings : NSObject
 
 + (instancetype)settingsWithUrl:(NSString *)url
-                               index:(NSNumber *)index
-                              nested:(BOOL)nested
-                              params:(NSDictionary *)params;
+                          index:(NSNumber *)index
+                         nested:(BOOL)nested
+                         params:(NSDictionary *)params;
 
 - (instancetype)initWithUrl:(NSString *)url
                       index:(NSNumber *)index

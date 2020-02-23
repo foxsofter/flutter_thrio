@@ -1,5 +1,5 @@
 //
-//  UIViewController+ThrioPageRoute.m
+//  UIViewController+NavigatorPageRoute.m
 //  thrio
 //
 //  Created by foxsofter on 2019/12/16.
@@ -7,9 +7,12 @@
 
 #import <Foundation/Foundation.h>
 #import <objc/runtime.h>
-#import "UINavigationController+ThrioNavigator.h"
-#import "UIViewController+ThrioPageRoute.h"
-#import "ThrioApp.h"
+#import "UINavigationController+Navigator.h"
+#import "UINavigationController+PopGesture.h"
+#import "UINavigationController+FlutterEngine.h"
+#import "UIViewController+Navigator.h"
+#import "ThrioNavigator.h"
+#import "ThrioNavigator+Internal.h"
 #import "ThrioLogger.h"
 #import "ThrioFlutterViewController.h"
 #import "NSObject+ThrioSwizzling.h"
@@ -18,22 +21,12 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface UIViewController ()
 
-@property (nonatomic, strong, readwrite, nullable) ThrioPageRoute *thrio_firstRoute;
+@property (nonatomic, strong, readwrite, nullable) NavigatorPageRoute *thrio_firstRoute;
 
 @end
 
-@implementation UIViewController (ThrioPageRoute)
+@implementation UIViewController (Navigator)
 
-- (BOOL)thrio_popDisabled {
-  return [objc_getAssociatedObject(self, _cmd) boolValue];
-}
-
-- (void)setThrio_popDisabled:(BOOL)disabled {
-  objc_setAssociatedObject(self,
-                           @selector(thrio_popDisabled),
-                           @(disabled),
-                           OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-}
 
 - (NSNumber * _Nullable)thrio_hidesNavigationBar {
   return objc_getAssociatedObject(self, @selector(setThrio_hidesNavigationBar:));
@@ -46,19 +39,19 @@ NS_ASSUME_NONNULL_BEGIN
                            OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
-- (ThrioPageRoute * _Nullable)thrio_firstRoute {
+- (NavigatorPageRoute * _Nullable)thrio_firstRoute {
   return objc_getAssociatedObject(self, @selector(setThrio_firstRoute:));
 }
 
-- (void)setThrio_firstRoute:(ThrioPageRoute * _Nullable)route {
+- (void)setThrio_firstRoute:(NavigatorPageRoute * _Nullable)route {
   objc_setAssociatedObject(self,
                            @selector(setThrio_firstRoute:),
                            route,
                            OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
-- (ThrioPageRoute * _Nullable)thrio_lastRoute {
-  ThrioPageRoute *next = self.thrio_firstRoute;
+- (NavigatorPageRoute * _Nullable)thrio_lastRoute {
+  NavigatorPageRoute *next = self.thrio_firstRoute;
   while (next.next) {
     next = next.next;
   }
@@ -72,13 +65,13 @@ NS_ASSUME_NONNULL_BEGIN
                params:(NSDictionary *)params
              animated:(BOOL)animated
                result:(ThrioBoolCallback)result{
-  ThrioRouteSettings *settings = [ThrioRouteSettings settingsWithUrl:url
+  NavigatorRouteSettings *settings = [NavigatorRouteSettings settingsWithUrl:url
                                                                index:index
                                                               nested:self.thrio_firstRoute != nil
                                                               params:params];
-  ThrioPageRoute *newRoute = [ThrioPageRoute routeWithSettings:settings];
+  NavigatorPageRoute *newRoute = [NavigatorPageRoute routeWithSettings:settings];
   if (self.thrio_firstRoute) {
-    ThrioPageRoute *lastRoute = self.thrio_lastRoute;
+    NavigatorPageRoute *lastRoute = self.thrio_lastRoute;
     lastRoute.next = newRoute;
     newRoute.prev = lastRoute;
   } else {
@@ -87,9 +80,9 @@ NS_ASSUME_NONNULL_BEGIN
   if ([self isKindOfClass:ThrioFlutterViewController.class]) {
     NSMutableDictionary *arguments = [NSMutableDictionary dictionaryWithDictionary:[settings toArguments]];
     [arguments setObject:[NSNumber numberWithBool:animated] forKey:@"animated"];
-    [[ThrioApp.shared channel] invokeMethod:@"__onPush__"
-                                  arguments:arguments
-                                     result:^(id _Nullable r) {
+    [self.navigationController.thrio_channel invokeMethod:@"__onPush__"
+                                                arguments:arguments
+                                                   result:^(id _Nullable r) {
       result(r && [r boolValue]);
     }];
   } else {
@@ -101,7 +94,7 @@ NS_ASSUME_NONNULL_BEGIN
                   index:(NSNumber *)index
                    name:(NSString *)name
                  params:(NSDictionary *)params {
-  ThrioPageRoute *route = [self thrio_getRouteByUrl:url index:index];
+  NavigatorPageRoute *route = [self thrio_getRouteByUrl:url index:index];
   if (route) {
     [route addNotify:name params:params];
     return YES;
@@ -110,15 +103,15 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 - (void)thrio_popAnimated:(BOOL)animated result:(ThrioBoolCallback)result {
-  ThrioPageRoute *route = self.thrio_lastRoute;
+  NavigatorPageRoute *route = self.thrio_lastRoute;
   if ([self isKindOfClass:ThrioFlutterViewController.class]) {
     NSMutableDictionary *arguments =
       [NSMutableDictionary dictionaryWithDictionary:[route.settings toArgumentsWithoutParams]];
     [arguments setObject:[NSNumber numberWithBool:animated] forKey:@"animated"];
     __weak typeof(self) weakself = self;
-    [[ThrioApp.shared channel] invokeMethod:@"__onPop__"
-                                  arguments:arguments
-                                     result:^(id _Nullable r) {
+    [self.navigationController.thrio_channel invokeMethod:@"__onPop__"
+                                                arguments:arguments
+                                                   result:^(id _Nullable r) {
       __strong typeof(self) strongSelf = weakself;
       if ([r boolValue]) {
         if (route != strongSelf.thrio_firstRoute) {
@@ -145,7 +138,7 @@ NS_ASSUME_NONNULL_BEGIN
                  index:(NSNumber *)index
               animated:(BOOL)animated
                 result:(ThrioBoolCallback)result {
-  ThrioPageRoute *route = [self thrio_getRouteByUrl:url index:index];
+  NavigatorPageRoute *route = [self thrio_getRouteByUrl:url index:index];
   if (!route) {
     result(NO);
     return;
@@ -155,9 +148,9 @@ NS_ASSUME_NONNULL_BEGIN
       [NSMutableDictionary dictionaryWithDictionary:[route.settings toArgumentsWithoutParams]];
     [arguments setObject:[NSNumber numberWithBool:animated] forKey:@"animated"];
     __weak typeof(self) weakself = self;
-    [[ThrioApp.shared channel] invokeMethod:@"__onPopTo__"
-                                  arguments:arguments
-                                     result:^(id  _Nullable r) {
+    [self.navigationController.thrio_channel invokeMethod:@"__onPopTo__"
+                                                arguments:arguments
+                                                   result:^(id  _Nullable r) {
       __strong typeof(self) strongSelf = weakself;
       if ([r boolValue]) {
         route.next = nil;
@@ -176,7 +169,7 @@ NS_ASSUME_NONNULL_BEGIN
                   index:(NSNumber *)index
                animated:(BOOL)animated
                  result:(ThrioBoolCallback)result {
-  ThrioPageRoute *route = [self thrio_getRouteByUrl:url index:index];
+  NavigatorPageRoute *route = [self thrio_getRouteByUrl:url index:index];
   if (!route) {
     result(NO);
     return;
@@ -186,9 +179,9 @@ NS_ASSUME_NONNULL_BEGIN
       [NSMutableDictionary dictionaryWithDictionary:[route.settings toArgumentsWithoutParams]];
     [arguments setObject:[NSNumber numberWithBool:animated] forKey:@"animated"];
     __weak typeof(self) weakself = self;
-    [[ThrioApp.shared channel] invokeMethod:@"__onRemove__"
-                                  arguments:arguments
-                                     result:^(id  _Nullable r) {
+    [self.navigationController.thrio_channel invokeMethod:@"__onRemove__"
+                                                arguments:arguments
+                                                   result:^(id  _Nullable r) {
       __strong typeof(self) strongSelf = weakself;
       if ([r boolValue]) {
         if (route == strongSelf.thrio_firstRoute) {
@@ -220,7 +213,7 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 - (void)thrio_didPushUrl:(NSString *)url index:(NSNumber *)index {
-  ThrioPageRoute *route = [self thrio_getRouteByUrl:url index:index];
+  NavigatorPageRoute *route = [self thrio_getRouteByUrl:url index:index];
   if (!route) {
     self.thrio_lastRoute.next = route;
     route.prev = self.thrio_lastRoute;
@@ -228,7 +221,7 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 - (void)thrio_didPopUrl:(NSString *)url index:(NSNumber *)index {
-  ThrioPageRoute *route = [self thrio_getRouteByUrl:url index:index];
+  NavigatorPageRoute *route = [self thrio_getRouteByUrl:url index:index];
   if (route) {
     route.prev.next = nil;
     [self thrio_onNotify];
@@ -236,7 +229,7 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 - (void)thrio_didPopToUrl:(NSString *)url index:(NSNumber *)index {
-  ThrioPageRoute *route = [self thrio_getRouteByUrl:url index:index];
+  NavigatorPageRoute *route = [self thrio_getRouteByUrl:url index:index];
   if (route) {
     route.next = nil;
     [self thrio_onNotify];
@@ -244,7 +237,7 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 - (void)thrio_didRemoveUrl:(NSString *)url index:(NSNumber *)index {
-  ThrioPageRoute *route = [self thrio_getRouteByUrl:url index:index];
+  NavigatorPageRoute *route = [self thrio_getRouteByUrl:url index:index];
   if (route) {
     if (route == self.thrio_firstRoute) {
       self.thrio_firstRoute = route.next;
@@ -259,8 +252,8 @@ NS_ASSUME_NONNULL_BEGIN
   }
 }
 
-- (ThrioPageRoute * _Nullable)thrio_getRouteByUrl:(NSString *)url index:(NSNumber *)index {
-  ThrioPageRoute *last = self.thrio_lastRoute;
+- (NavigatorPageRoute * _Nullable)thrio_getRouteByUrl:(NSString *)url index:(NSNumber *)index {
+  NavigatorPageRoute *last = self.thrio_lastRoute;
   if (url.length < 1) {
     return last;
   }
@@ -274,13 +267,13 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 - (NSNumber *)thrio_getLastIndexByUrl:(NSString *)url {
-  ThrioPageRoute *route = [self thrio_getRouteByUrl:url index:@0];
+  NavigatorPageRoute *route = [self thrio_getRouteByUrl:url index:@0];
   return route ? route.settings.index : @0;
 }
 
 - (NSArray *)thrio_getAllIndexByUrl:(NSString *)url {
   NSMutableArray *indexs = [NSMutableArray array];
-  ThrioPageRoute *first = self.thrio_firstRoute;
+  NavigatorPageRoute *first = self.thrio_firstRoute;
   do {
     if ([first.settings.url isEqualToString:url]) {
       [indexs addObject:first.settings.index];
@@ -289,25 +282,6 @@ NS_ASSUME_NONNULL_BEGIN
   return [indexs copy];
 }
 
-- (void)thrio_setPopDisabled:(BOOL)disabled {
-  [self thrio_setPopDisabledUrl:@"" index:@0 disabled:disabled];
-}
-
-- (void)thrio_setPopDisabledUrl:(NSString *)url
-                          index:(NSNumber *)index
-                       disabled:(BOOL)disabled {
-  ThrioPageRoute *route = [self thrio_getRouteByUrl:url index:index];
-  route.popDisabled = disabled;
-  
-  NSMutableDictionary *arguments =
-    [NSMutableDictionary dictionaryWithDictionary:[route.settings toArgumentsWithoutParams]];
-  [arguments setObject:[NSNumber numberWithBool:disabled] forKey:@"disabled"];
-
-  if (route != self.thrio_firstRoute && [self isKindOfClass:ThrioFlutterViewController.class]) {
-    [[ThrioApp.shared channel] invokeMethod:@"__onSetPopDisabled__"
-                                  arguments:arguments];
-  }
-}
 
 #pragma mark - method swizzling
 
@@ -363,10 +337,10 @@ NS_ASSUME_NONNULL_BEGIN
         @"name": name,
         @"params": params,
       };
-      [[ThrioApp.shared channel] sendEvent:@"__onNotify__" arguments:arguments];
+      [self.navigationController.thrio_channel sendEvent:@"__onNotify__" arguments:arguments];
     } else {
-      if ([self conformsToProtocol:@protocol(ThrioNotifyProtocol)]) {
-        [(id<ThrioNotifyProtocol>)self onNotify:name params:params];
+      if ([self conformsToProtocol:@protocol(NavigatorNotifyProtocol)]) {
+        [(id<NavigatorNotifyProtocol>)self onNotify:name params:params];
       }
     }
   }

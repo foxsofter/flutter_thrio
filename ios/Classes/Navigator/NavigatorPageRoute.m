@@ -1,29 +1,29 @@
 //
-//  ThrioPageRoute.m
+//  NavigatorPageRoute.m
 //  thrio
 //
 //  Created by foxsofter on 2020/1/19.
 //
 
-#import "ThrioPageRoute.h"
+#import "NavigatorPageRoute.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface ThrioPageRoute ()
+@interface NavigatorPageRoute ()
 
-@property (nonatomic, strong, readwrite) ThrioRouteSettings *settings;
+@property (nonatomic, strong, readwrite) NavigatorRouteSettings *settings;
 
 @end
 
-@implementation ThrioPageRoute {
+@implementation NavigatorPageRoute {
   NSMutableDictionary *_notifications;
 }
 
-+ (instancetype)routeWithSettings:(ThrioRouteSettings *)settings {
++ (instancetype)routeWithSettings:(NavigatorRouteSettings *)settings {
   return [[self alloc] initWithSettings:settings];
 }
 
-- (instancetype)initWithSettings:(ThrioRouteSettings *)settings {
+- (instancetype)initWithSettings:(NavigatorRouteSettings *)settings {
   self = [super init];
   if (self) {
     _popDisabled = NO;
