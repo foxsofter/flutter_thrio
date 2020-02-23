@@ -81,10 +81,10 @@
 
 - (void)thrio_startup {
   if (!self.thrio_engine) {
-    self.thrio_channel = [ThrioChannel channelWithName:@"__thrio_app__"];
-    self.thrio_receiveChannel = [[NavigatorReceiveChannel alloc] initWithChannel:self.thrio_channel];
     [self thrio_startupFlutter];
+    self.thrio_channel = [ThrioChannel channelWithName:@"__thrio_app__"];
     [self thrio_registerPlugin];
+    self.thrio_receiveChannel = [[NavigatorReceiveChannel alloc] initWithChannel:self.thrio_channel];
   }
 }
 

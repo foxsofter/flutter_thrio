@@ -80,7 +80,7 @@ NS_ASSUME_NONNULL_BEGIN
   if ([self isKindOfClass:ThrioFlutterViewController.class]) {
     NSMutableDictionary *arguments = [NSMutableDictionary dictionaryWithDictionary:[settings toArguments]];
     [arguments setObject:[NSNumber numberWithBool:animated] forKey:@"animated"];
-    [self.navigationController.thrio_channel invokeMethod:@"__onPush__"
+    [ThrioNavigator.navigationController.thrio_channel invokeMethod:@"__onPush__"
                                                 arguments:arguments
                                                    result:^(id _Nullable r) {
       result(r && [r boolValue]);

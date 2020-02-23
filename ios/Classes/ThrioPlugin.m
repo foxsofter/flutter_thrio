@@ -15,6 +15,7 @@
 + (void)registerWithRegistrar:(NSObject<FlutterPluginRegistrar>*)registrar {
   [ThrioNavigator.navigationController.thrio_channel setupEventChannel:registrar.messenger];
   [ThrioNavigator.navigationController.thrio_channel setupMethodChannel:registrar.messenger];
+  
   [[ThrioChannel channelWithName:kLoggerChannelName] setupMethodChannel:registrar.messenger];
 }
 

@@ -36,10 +36,10 @@
   [ThrioNavigator pop];
 }
 - (IBAction)enableFlutter1Eabled:(id)sender {
-  [ThrioNavigator setPopDisabledUrl:@"flutter1" disabled:NO];
+  [ThrioNavigator setPopDisabledUrl:@"native2" disabled:NO];
 }
 - (IBAction)disabledFlutter1Eabled:(id)sender {
-  [ThrioNavigator setPopDisabledUrl:@"flutter1" disabled:YES];
+  [ThrioNavigator setPopDisabledUrl:@"native2" disabled:YES];
 }
 
 - (void)viewDidLoad {

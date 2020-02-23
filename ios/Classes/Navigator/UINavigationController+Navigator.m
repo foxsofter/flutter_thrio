@@ -74,8 +74,6 @@ NS_ASSUME_NONNULL_BEGIN
         }
       }
     } else {
-      [self thrio_startup];
-
       if ([self.topViewController isKindOfClass:ThrioFlutterViewController.class]) {
         NSNumber *index = @([self thrio_getLastIndexByUrl:url].integerValue + 1);
         [self.topViewController thrio_pushUrl:url
