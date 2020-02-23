@@ -1,4 +1,4 @@
-# flutter 路由库 thrio 指南
+# thrio
 
 thrio 是一个支持 flutter 嵌入原生应用的路由库，目前只有 iOS 版本可看，Android 版本在开发中。
 
@@ -27,22 +27,30 @@ thrio 的诞生主要是为了解决我们自身的业务问题。
 1. dart 中注册页面路由
 
 ```dart
-ThrioApp().registerPageBuilder(
-  'flutter1',
-  (settings) => Page1(
-    index: settings.index,
-    params: settings.params,
-  ),
-);
+class Module with ThrioModule {
+  @override
+  void onPageRegister() {
+    registerPageBuilder(
+      'flutter3',
+      (settings) => Page3(index: settings.index, params: settings.params),
+    );
+    registerPageBuilder(
+      'flutter4',
+      (settings) => Page4(index: settings.index, params: settings.params),
+    );
+  }
+}
 ```
 
 2. iOS 中注册页面路由
 
 ```objc
-  [ThrioApp.shared registerNativeViewControllerBuilder:^UIViewController * _Nullable(NSDictionary<NSString *,id> * _Nonnull params) {
-    return UIViewController...
+- (void)onPageRegister {
+  [self registerNativeViewControllerBuilder:^UIViewController * _Nullable(NSDictionary<NSString *,id> * _Nonnull params) {
+    UIStoryboard *sb = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+    return [sb instantiateViewControllerWithIdentifier:@"ThrioViewController"];
   } forUrl:@"native1"];
-
+}
 ```
 
 ### 打开页面
@@ -60,7 +68,7 @@ ThrioNavigator.push(url: 'native1', animated:true);
 2. iOS 端打开页面
 
 ```objc
-[ThrioNavigator.shared pushUrl:@"flutter1"];
+[ThrioNavigator pushUrl:@"flutter1"];
 ```
 
 ### 关闭顶层页面
@@ -78,9 +86,9 @@ ThrioNavigator.pop(animated: false);
 
 ```objc
 // 默认动画开启
-[ThrioNavigator.shared pop];
+[ThrioNavigator pop];
 // 关闭动画
-[ThrioNavigator.shared popAnimated:NO];
+[ThrioNavigator popAnimated:NO];
 ```
 
 ### 关闭到页面
@@ -98,9 +106,9 @@ ThrioNavigator.popTo(url: 'flutter1', animated: false);
 
 ```objc
 // 默认动画开启
-[ThrioNavigator.shared popToUrl:@"flutter1"];
+[ThrioNavigator popToUrl:@"flutter1"];
 // 关闭动画
-[ThrioNavigator.shared popToUrl:@"flutter1" animated:NO];
+[ThrioNavigator popToUrl:@"flutter1" animated:NO];
 ```
 
 ### 关闭特定页面
@@ -116,9 +124,9 @@ ThrioNavigator.remove(url: 'flutter1', animated: true);
 2. iOS 端关闭特定页面
 
 ```objc
-[ThrioNavigator.shared removeUrl:@"flutter1"];
+[ThrioNavigator removeUrl:@"flutter1"];
 // 只有当页面是顶层页面时，animated参数才会生效
-[ThrioNavigator.shared removeUrl:@"flutter1" animated:NO];
+[ThrioNavigator removeUrl:@"flutter1" animated:NO];
 ```
 
 ### 给特定页面发通知
@@ -134,7 +142,7 @@ ThrioNavigator.notify(url: 'flutter1', name: 'reload');
 2. iOS 端给特定页面发通知
 
 ```objc
-[ThrioNavigator.shared notifyUrl:@"flutter1" name:@"reload"];
+[ThrioNavigator notifyUrl:@"flutter1" name:@"reload"];
 ```
 
 ### Flutter 页面导航栏自动隐藏
@@ -160,7 +168,7 @@ ThrioNavigator.setPopDisabled(url: 'flutter1');
 2. iOS 端禁止特定页面关闭
 
 ```objc
-[ThrioNavigator.shared setPopDisabledUrl:@"flutter1" disabled:NO];
+[ThrioNavigator setPopDisabledUrl:@"flutter1" disabled:NO];
 ```
 
 在 dart 端依然支持通过 WillPopScope 来设置禁止页面返回。
