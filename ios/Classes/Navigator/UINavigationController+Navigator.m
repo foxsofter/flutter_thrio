@@ -21,10 +21,12 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface UINavigationController ()
 
-// 记下当前正要被pop的`UIViewController`
+/// 记下当前正要被pop的`UIViewController`
+///
 @property (nonatomic, strong, nullable) UIViewController *thrio_popingViewController;
 
-// 记下第一个ThrioFlutterViewController
+/// 记下第一个ThrioFlutterViewController
+///
 @property (nonatomic, strong, nullable) UIViewController *thrio_firstFlutterViewController;
 
 @end

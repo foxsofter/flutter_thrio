@@ -7,7 +7,6 @@ import 'thrio_navigator.dart';
 
 class NavigatorReceiveChannel {
   NavigatorReceiveChannel(ThrioChannel channel) : _channel = channel {
-    // _onScheduleFrame();
     _onPush();
     _onPop();
     _onPopTo();
@@ -16,19 +15,6 @@ class NavigatorReceiveChannel {
   }
 
   final ThrioChannel _channel;
-
-  // void _onScheduleFrame() {
-  //   _channel.registryMethodCall(
-  //     'scheduleFrame',
-  //     ([_]) {
-  //       WidgetsBinding.instance.scheduleForcedFrame();
-  //       return Future.delayed(
-  //         const Duration(milliseconds: 250),
-  //         WidgetsBinding.instance.scheduleForcedFrame,
-  //       );
-  //     },
-  //   );
-  // }
 
   Stream<Map<String, dynamic>> onPageNotifyStream(
     String name,

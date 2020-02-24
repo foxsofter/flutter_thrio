@@ -2,7 +2,7 @@
 //  ThrioNavigator+Internal.h
 //  thrio
 //
-//  Created by fox softer on 2020/2/23.
+//  Created by foxsofter on 2020/2/23.
 //
 
 #import "ThrioNavigator.h"

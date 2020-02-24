@@ -2,7 +2,7 @@
 //  UINavigationController+HotRestart.m
 //  thrio
 //
-//  Created by fox softer on 2020/2/22.
+//  Created by foxsofter on 2020/2/22.
 //
 
 #import "UINavigationController+HotRestart.h"

@@ -12,33 +12,33 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-// Signature of callbacks that have no arguments.
-//
+/// Signature of callbacks that have no arguments.
+///
 typedef void (^ThrioVoidCallback)(void);
 
-// Signature of callbacks with boolean parameters.
-//
+/// Signature of callbacks with boolean parameters.
+///
 typedef void (^ThrioBoolCallback)(BOOL);
 
-// Signature for a callback that verifies that it's OK to call `pop`.
-//
+/// Signature for a callback that verifies that it's OK to call `pop`.
+///
 typedef void (^ThrioWillPopCallback)(ThrioBoolCallback result);
 
-// Signature for a block that handlers channel method invocation.
-//
+/// Signature for a block that handlers channel method invocation.
+///
 typedef void (^ThrioMethodHandler)(NSDictionary<NSString *, id> *arguments, ThrioBoolCallback _Nullable result);
 
-// Signature for a block that handlers channel event handling.
-//
+/// Signature for a block that handlers channel event handling.
+///
 typedef void (^ThrioEventHandler)(NSDictionary<NSString *, id> *arguments, ThrioBoolCallback _Nullable result);
 
-// Signature of a block that creates a ThrioFlutterViewController.
-//
+/// Signature of a block that creates a ThrioFlutterViewController.
+///
 @class ThrioFlutterViewController;
 typedef ThrioFlutterViewController* _Nullable (^ThrioFlutterViewControllerBuilder)(void);
 
-// Signature for a block that creates a native UIViewController.
-//
+/// Signature for a block that creates a native UIViewController.
+///
 typedef UIViewController* _Nullable (^ThrioNativeViewControllerBuilder)(NSDictionary<NSString *, id>* params);
 
 

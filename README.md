@@ -175,4 +175,4 @@ ThrioNavigator.setPopDisabled(url: 'flutter1');
 
 ### 支持 FlutterViewController 内嵌套 Dart 页面
 
-这个点非常重要，在 iOS 中如果每打开一个 dart 页面都切换一个新的 FlutterViewController，每个页面多消耗 12M+以上的内存，内存消耗是非常恐怖的，这是目前 flutter_boost 的实现方式。
+* 在 iOS 中如果每打开一个 dart 页面都切换一个新的 FlutterViewController，每个页面多消耗 12M+以上的内存，内存消耗是非常恐怖的，这是目前 flutter_boost 下的实现方式。
