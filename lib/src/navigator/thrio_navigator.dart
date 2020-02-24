@@ -42,7 +42,10 @@ class ThrioNavigator {
 
   final _pageBuilders = RegistryMap<String, NavigatorPageBuilder>();
 
-  /// Push a page with `url` onto `ThrioNavigator`.
+  /// Push the page onto the navigation stack.
+  ///
+  /// If a native page builder exists for the `url`, open the native page,
+  /// otherwise open the flutter page.
   ///
   static Future<bool> push({
     @required String url,
@@ -55,7 +58,10 @@ class ThrioNavigator {
         params: params,
       );
 
-  /// Notify a page with `url` and `index`.
+  /// Send a notification to the page.
+  ///
+  /// Notifications will be triggered when the page enters the foreground.
+  /// Notifications with the same `name` will be overwritten.
   ///
   static Future<bool> notify({
     @required String name,
@@ -70,12 +76,12 @@ class ThrioNavigator {
         params: params,
       );
 
-  /// Pop a page from `ThrioNavigator`.
+  /// Pop a page from the navigation stack.
   ///
   static Future<bool> pop({bool animated = true}) =>
       _default._sendChannel.pop(animated: animated);
 
-  /// Pop to a page with `url` and `index`.
+  /// Pop the page in the navigation stack until the page with `url`.
   ///
   static Future<bool> popTo({
     @required String url,
@@ -88,7 +94,7 @@ class ThrioNavigator {
         animated: animated,
       );
 
-  /// Remove a page with `url` and `index` from `ThrioNavigator`.
+  /// Remove the page with `url` in the navigation stack.
   ///
   static Future<bool> remove({
     String url = '',
@@ -101,17 +107,18 @@ class ThrioNavigator {
         animated: animated,
       );
 
-  /// Get the index of the last page.
+  /// Returns the index of the page that was last pushed to the navigation
+  /// stack.
   ///
   static Future<int> lastIndex({String url}) =>
       _default._sendChannel.lastIndex(url: url);
 
-  /// Get the index of all pages whose url is `url`.
+  /// Returns all index of the page with `url` in the navigation stack.
   ///
   static Future<List<int>> allIndex(String index) =>
       _default._sendChannel.allIndex(index);
 
-  /// Set pop disabled with `url` and `index`.
+  /// Setting the page with `url` and `index` cannot be poped..
   ///
   static Future<bool> setPopDisabled({
     @required String url,

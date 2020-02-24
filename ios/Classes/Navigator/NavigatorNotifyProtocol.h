@@ -9,15 +9,15 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-// A protocol for implementing page notifications.
-//
-// The protocol must be implemented by a UIViewController.
-//
+/// A protocol for implementing page notifications.
+///
+/// The protocol must be implemented by a UIViewController.
+///
 @protocol NavigatorNotifyProtocol <NSObject>
 
 @required
-// Called when the page has been fully transitioned onto the screen.
-//
+/// Called when the page has been fully transitioned onto the screen.
+///
 - (void)onNotify:(NSString *)name params:(NSDictionary * _Nullable)params;
 
 @end

@@ -8,7 +8,7 @@ import 'thrio_navigator.dart';
 
 typedef NavigatorPageBuilder = Widget Function(RouteSettings settings);
 
-/// An route managed by a ThrioNavigator.
+/// A route managed by the `ThrioNavigator`.
 ///
 class NavigatorPageRoute extends MaterialPageRoute<bool> {
   NavigatorPageRoute({
