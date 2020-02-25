@@ -4,11 +4,11 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:thrio/src/navigator/navigator_route_observer.dart';
 
 import '../extension/thrio_stateful_widget.dart';
 import '../logger/thrio_logger.dart';
 import 'navigator_page_route.dart';
+import 'navigator_route_observer.dart';
 import 'navigator_route_settings.dart';
 import 'thrio_navigator.dart';
 
@@ -123,6 +123,7 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
     super.initState();
     if (mounted) {
       widget.child.observers.add(widget._observer);
+      ThrioNavigator.ready();
     }
   }
 
