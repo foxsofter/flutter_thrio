@@ -127,13 +127,5 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
   }
 
   @override
-  void reassemble() {
-    super.reassemble();
-    if (history.isEmpty) {
-      ThrioNavigator.hotRestart();
-    }
-  }
-
-  @override
   Widget build(BuildContext context) => widget.child;
 }

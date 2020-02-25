@@ -38,6 +38,6 @@ class _MainAppState extends State<MainApp> with ThrioModule {
   @override
   Widget build(BuildContext context) => MaterialApp(
         builder: ThrioNavigator.builder(),
-        home: const SizedBox.shrink(),
+        home: NavigatorHome(),
       );
 }
