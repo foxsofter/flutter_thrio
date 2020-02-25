@@ -62,56 +62,31 @@ NS_ASSUME_NONNULL_BEGIN
              animated:(BOOL)animated
                result:(ThrioBoolCallback)result{
   @synchronized (self) {
-    UIViewController *viewController;
-    ThrioNativeViewControllerBuilder builder = [ThrioNavigator nativeViewControllerBuilders][url];
-    if (builder) {
-      viewController = builder(params);
-      if (viewController.thrio_hidesNavigationBar == nil) {
-        // 寻找不是FlutterViewController的UIViewController，获取其thrio_hidesNavigationBar
-        for (UIViewController *vc in self.viewControllers.reverseObjectEnumerator) {
-          if (![vc isKindOfClass:ThrioFlutterViewController.class]) {
-            viewController.thrio_hidesNavigationBar = vc.thrio_hidesNavigationBar;
-            break;
-          }
-        }
-      }
+    UIViewController *viewController = [self thrio_createNativeViewControllerWithUrl:url params:params];
+    if (viewController) { // push flutter page
+      [self thrio_pushViewController:viewController url:url params:params animated:animated result:result ];
     } else {
-      if ([self.topViewController isKindOfClass:ThrioFlutterViewController.class]) {
-        NSNumber *index = @([self thrio_getLastIndexByUrl:url].integerValue + 1);
-        [self.topViewController thrio_pushUrl:url
-                                        index:index
-                                       params:params
-                                     animated:animated
-                                       result:^(BOOL r) {
-          if (r) {
-            [self thrio_removePopGesture];
-          }
-          result(r);
-        }];
-        return;
-      }
-      
-      ThrioFlutterViewControllerBuilder flutterBuilder = [ThrioNavigator flutterViewControllerBuilder];
-      if (flutterBuilder) {
-       viewController = flutterBuilder();
-      } else {
-       viewController = [[ThrioFlutterViewController alloc] init];
-      }
-      viewController.thrio_hidesNavigationBar = @YES;
-    }
-    if (viewController) {
-      NSNumber *index = @([self thrio_getLastIndexByUrl:url].integerValue + 1);
       __weak typeof(self) weakself = self;
-      [viewController thrio_pushUrl:url index:index params:params animated:animated result:^(BOOL r) {
-        if (r) {
-          __strong typeof(self) strongSelf = weakself;
-          [strongSelf pushViewController:viewController animated:animated];
-          if ([viewController isKindOfClass:ThrioFlutterViewController.class]) {
-            [self thrio_attachFlutterViewController:(ThrioFlutterViewController*)viewController];
-          }
+      ThrioVoidCallback readyBlock = ^{
+        __strong typeof(self) strongSelf = weakself;
+        if ([strongSelf.topViewController isKindOfClass:ThrioFlutterViewController.class]) {
+          NSNumber *index = @([strongSelf thrio_getLastIndexByUrl:url].integerValue + 1);
+          [strongSelf.topViewController thrio_pushUrl:url
+                                          index:index
+                                         params:params
+                                       animated:animated
+                                         result:^(BOOL r) {
+            if (r) {
+              [strongSelf thrio_removePopGesture];
+            }
+            result(r);
+          }];
+        } else {
+          UIViewController *viewController = [strongSelf thrio_createFlutterViewController];
+          [strongSelf thrio_pushViewController:viewController url:url params:params animated:animated result:result ];
         }
-        result(r);
-      }];
+      };
+      [self thrio_startup:readyBlock];
     }
   }
 }
@@ -355,6 +330,59 @@ NS_ASSUME_NONNULL_BEGIN
     }
     self.thrio_popingViewController = nil;
   }];
+}
+
+#pragma mark - private methods
+
+- (UIViewController *)thrio_createFlutterViewController {
+  UIViewController *viewController;
+  ThrioFlutterViewControllerBuilder flutterBuilder = [ThrioNavigator flutterViewControllerBuilder];
+  if (flutterBuilder) {
+    viewController = flutterBuilder();
+  } else {
+    viewController = [[ThrioFlutterViewController alloc] init];
+  }
+  viewController.thrio_hidesNavigationBar = @YES;
+  return viewController;
+}
+
+- (UIViewController *)thrio_createNativeViewControllerWithUrl:(NSString *)url params:(NSDictionary *)params {
+  UIViewController *viewController;
+  ThrioNativeViewControllerBuilder builder = [ThrioNavigator nativeViewControllerBuilders][url];
+  if (builder) {
+    viewController = builder(params);
+    if (viewController.thrio_hidesNavigationBar == nil) {
+        // 寻找不是FlutterViewController的UIViewController，获取其thrio_hidesNavigationBar
+      for (UIViewController *vc in self.viewControllers.reverseObjectEnumerator) {
+        if (![vc isKindOfClass:ThrioFlutterViewController.class]) {
+          viewController.thrio_hidesNavigationBar = vc.thrio_hidesNavigationBar;
+          break;
+        }
+      }
+    }
+  }
+  return viewController;
+}
+
+- (void)thrio_pushViewController:(UIViewController *)viewController
+                             url:(NSString * _Nonnull)url
+                          params:(NSDictionary * _Nonnull)params
+                        animated:(BOOL)animated
+                          result:(ThrioBoolCallback _Nonnull)result  {
+  if (viewController) {
+    NSNumber *index = @([self thrio_getLastIndexByUrl:url].integerValue + 1);
+    __weak typeof(self) weakself = self;
+    [viewController thrio_pushUrl:url index:index params:params animated:animated result:^(BOOL r) {
+      if (r) {
+        __strong typeof(self) strongSelf = weakself;
+        [strongSelf pushViewController:viewController animated:animated];
+        if ([viewController isKindOfClass:ThrioFlutterViewController.class]) {
+          [self thrio_attachFlutterViewController:(ThrioFlutterViewController*)viewController];
+        }
+      }
+      result(r);
+    }];
+  }
 }
 
 @end

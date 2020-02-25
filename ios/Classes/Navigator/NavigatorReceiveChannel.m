@@ -19,6 +19,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, strong) ThrioChannel *channel;
 
+@property (nonatomic, copy) ThrioVoidCallback readyBlock;
+
 @end
 
 @implementation NavigatorReceiveChannel
@@ -27,6 +29,7 @@ NS_ASSUME_NONNULL_BEGIN
   self = [super init];
   if (self) {
     _channel = channel;
+    [self _onReady];
     [self _onPush];
     [self _onNotify];
     [self _onPop];
@@ -44,7 +47,23 @@ NS_ASSUME_NONNULL_BEGIN
   return self;
 }
 
+- (void)setReadyBlock:(ThrioVoidCallback)block {
+  _readyBlock = block;
+}
+
 #pragma mark - on channel methods
+
+- (void)_onReady {
+  __weak typeof(self) weakself = self;
+  [_channel registryMethodCall:@"ready"
+                        handler:^void(NSDictionary<NSString *,id> * arguments,
+                                      ThrioBoolCallback _Nullable result) {
+    __strong typeof(self) strongSelf = weakself;
+    if (strongSelf.readyBlock) {
+      strongSelf.readyBlock();
+    }
+  }];
+}
 
 - (void)_onPush {
   [_channel registryMethodCall:@"push"

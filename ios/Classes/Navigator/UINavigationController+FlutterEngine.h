@@ -14,7 +14,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface UINavigationController (FlutterEngine)
 
-- (void)thrio_startup;
+- (void)thrio_startup:(ThrioVoidCallback)result;
 
 @property (nonatomic, strong, readonly, nullable) FlutterEngine *thrio_engine;
 
