@@ -177,6 +177,12 @@ class ThrioNavigator {
   static NavigatorPageBuilder getPageBuilder(String url) =>
       _default._pageBuilders[url];
 
+  /// Sent when the navigation stack can be pushed.
+  ///
+  static void ready() => _default._channel.invokeMethod<bool>('ready');
+
+  /// Send on hot restart.
+  ///
   static void hotRestart() =>
       _default._channel.invokeMethod<bool>('hotRestart');
 }
