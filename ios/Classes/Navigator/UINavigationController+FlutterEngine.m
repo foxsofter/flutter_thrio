@@ -46,16 +46,17 @@
 }
 
 - (void)thrio_shutdown {
-  NSDictionary *flutterEngines = self.thrio_flutterEngines;
-  for (NSString *key in flutterEngines) {
-    ThrioFlutterEngine *flutterEngine = [flutterEngines objectForKey:key];
-    [flutterEngine shutdown];
-  }
+  [self.thrio_flutterEngines removeAllObjects];
 }
 
 - (FlutterEngine *)thrio_getEngineForEntrypoint:(NSString *)entrypoint {
   ThrioFlutterEngine *flutterEngine = self.thrio_flutterEngines[entrypoint];
   return flutterEngine.engine;
+}
+
+- (ThrioChannel *)thrio_getLogChannelForEntrypoint:(NSString *)entrypoint {
+  ThrioFlutterEngine *flutterEngine = self.thrio_flutterEngines[entrypoint];
+  return flutterEngine.channel;
 }
 
 - (ThrioChannel *)thrio_getChannelForEntrypoint:(NSString *)entrypoint {
@@ -68,24 +69,30 @@
   [flutterEngine attachFlutterViewController:viewController];
 }
 
+- (void)thrio_removeIfNeeded {
+  NSArray *entrypoints = self.thrio_flutterEngines.allKeys;
+  
+  NSArray *vcs = [self.viewControllers copy];
+  for (NSString *entrypoint in entrypoints) {
+    BOOL contains = NO;
+    for (UIViewController *vc in vcs) {
+      if ([vc isKindOfClass:ThrioFlutterViewController.class] &&
+          [[(ThrioFlutterViewController*)vc entrypoint] isEqualToString:entrypoint]) {
+        contains = YES;
+        break;
+      }
+    }
+    if (!contains) {
+      ThrioFlutterEngine *flutterEngine = self.thrio_flutterEngines[entrypoint];
+      [flutterEngine shutdown];
+      [self.thrio_flutterEngines removeObjectForKey:entrypoint];
+    }
+  }
+}
+
 - (void)thrio_detachFlutterViewController:(ThrioFlutterViewController *)viewController {
   ThrioFlutterEngine *flutterEngine = self.thrio_flutterEngines[viewController.entrypoint];
   [flutterEngine detachFlutterViewController:viewController];
-  NSArray *vcs = [self.viewControllers copy];
-  BOOL hasSaveEntrypointVC = NO;
-  for (UIViewController *vc in vcs) {
-    if (vc != viewController &&
-        [vc isKindOfClass:ThrioFlutterViewController.class] &&
-        [[(ThrioFlutterViewController*)vc entrypoint] isEqualToString:viewController.entrypoint]) {
-      hasSaveEntrypointVC = YES;
-      break;
-    }
-  }
-  if (!hasSaveEntrypointVC) {
-    ThrioFlutterEngine *flutterEngine = self.thrio_flutterEngines[viewController.entrypoint];
-    [flutterEngine shutdown];
-    [self.thrio_flutterEngines removeObjectForKey:viewController.entrypoint];
-  }
 }
 
 #pragma mark - method swizzling

@@ -3,55 +3,10 @@
 
 import 'package:logger/logger.dart';
 
-import '../channel/thrio_channel.dart';
-import '../navigator/thrio_navigator.dart';
-
 class ThrioLogger {
   factory ThrioLogger() => _default ??= ThrioLogger._();
 
-  ThrioLogger._() {
-    ThrioChannel(channel: '__thrio_logger__${ThrioNavigator.entrypoint}')
-      ..registryMethodCall('v', ([arguments]) async {
-        final message = arguments['message'];
-        var error = arguments['error'];
-        if (error != null && error is String && error.isEmpty) {
-          error = null;
-        }
-        v('[N] $message', error);
-      })
-      ..registryMethodCall('d', ([arguments]) async {
-        final message = arguments['message'];
-        var error = arguments['error'];
-        if (error != null && error is String && error.isEmpty) {
-          error = null;
-        }
-        d('[N] $message', error);
-      })
-      ..registryMethodCall('i', ([arguments]) async {
-        final message = arguments['message'];
-        var error = arguments['error'];
-        if (error != null && error is String && error.isEmpty) {
-          error = null;
-        }
-        d('[N] $message', error);
-      })
-      ..registryMethodCall('w', ([arguments]) async {
-        final message = arguments['message'];
-        var error = arguments['error'];
-        if (error != null && error is String && error.isEmpty) {
-          error = null;
-        }
-        d('[N] $message', error);
-      })
-      ..registryMethodCall('e', ([arguments]) async {
-        final message = arguments['message'];
-        var error = arguments['error'];
-        if (error != null && error is String && error.isEmpty) {
-          error = null;
-        }
-        d('[N] $message', error);
-      });
-  }
+  ThrioLogger._();
 
   static ThrioLogger _default;
 

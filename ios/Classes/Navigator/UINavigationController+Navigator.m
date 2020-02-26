@@ -33,11 +33,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 @implementation UINavigationController (Navigator)
 
-- (UIViewController * _Nullable)thrio_popingViewController {
+- (ThrioFlutterViewController * _Nullable)thrio_popingViewController {
   return objc_getAssociatedObject(self, _cmd);
 }
 
-- (void)setThrio_popingViewController:(UIViewController * _Nullable)viewController {
+- (void)setThrio_popingViewController:(ThrioFlutterViewController * _Nullable)viewController {
   objc_setAssociatedObject(self,
                            @selector(thrio_popingViewController),
                            viewController,
@@ -293,7 +293,6 @@ NS_ASSUME_NONNULL_BEGIN
   if (self.topViewController.thrio_lastRoute.popDisabled) {
     return nil;
   }
-  
   self.thrio_popingViewController = self.topViewController;
   
   return [self thrio_popViewControllerAnimated:animated];
@@ -303,7 +302,7 @@ NS_ASSUME_NONNULL_BEGIN
   if (![viewController.thrio_hidesNavigationBar isEqualToNumber:self.topViewController.thrio_hidesNavigationBar]) {
     [self setNavigationBarHidden:viewController.thrio_hidesNavigationBar.boolValue];
   }
-    
+
   return [self thrio_popToViewController:viewController animated:animated];
 }
 
@@ -318,23 +317,27 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 - (void)thrio_didShowViewController:(UIViewController *)viewController animated:(BOOL)animated {
-  if (![self.thrio_popingViewController isKindOfClass:ThrioFlutterViewController.class]) {
-    return;
-  }
-  
   // 处理didPop的情况
   __weak typeof(self) weakself = self;
   [self.thrio_popingViewController thrio_popAnimated:animated result:^(BOOL r) {
-    if (r) {
-      __strong typeof(self) strongSelf = weakself;
-      if ([viewController isKindOfClass:ThrioFlutterViewController.class]) {
-        [strongSelf thrio_attachFlutterViewController:(ThrioFlutterViewController*)viewController];
+    __strong typeof(self) strongSelf = weakself;
+    
+    if ([strongSelf.thrio_popingViewController isKindOfClass:ThrioFlutterViewController.class]) {
+      [strongSelf thrio_removeIfNeeded];
+      
+      if (![viewController isKindOfClass:ThrioFlutterViewController.class]) {
+        [strongSelf thrio_detachFlutterViewController:(ThrioFlutterViewController*)strongSelf.thrio_popingViewController];
       }
+
       if (strongSelf.navigationBarHidden != viewController.thrio_hidesNavigationBar.boolValue) {
         [strongSelf setNavigationBarHidden:viewController.thrio_hidesNavigationBar.boolValue];
       }
     }
-    self.thrio_popingViewController = nil;
+    if ([viewController isKindOfClass:ThrioFlutterViewController.class]) {
+      [strongSelf thrio_attachFlutterViewController:(ThrioFlutterViewController*)viewController];
+    }
+
+    strongSelf.thrio_popingViewController = nil;
   }];
 }
 
@@ -348,7 +351,6 @@ NS_ASSUME_NONNULL_BEGIN
   } else {
     viewController = [[ThrioFlutterViewController alloc] initWithEntrypoint:entrypoint];
   }
-  viewController.thrio_hidesNavigationBar = @YES;
   return viewController;
 }
 

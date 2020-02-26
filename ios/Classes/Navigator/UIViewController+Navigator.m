@@ -105,6 +105,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)thrio_popAnimated:(BOOL)animated result:(ThrioBoolCallback)result {
   NavigatorPageRoute *route = self.thrio_lastRoute;
+  if (!route) {
+    result(NO);
+    return;
+  }
   if ([self isKindOfClass:ThrioFlutterViewController.class]) {
     NSMutableDictionary *arguments =
       [NSMutableDictionary dictionaryWithDictionary:[route.settings toArgumentsWithoutParams]];

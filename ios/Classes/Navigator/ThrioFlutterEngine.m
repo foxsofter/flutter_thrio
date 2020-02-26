@@ -36,12 +36,10 @@
 }
 
 - (void)shutdown {
+  ThrioLogV(@"ThrioFlutterEngine shutdown: %@", _emptyViewController.entrypoint);
   if (_engine) {
-    _channel = nil;
-    _receiveChannel = nil;
+    _engine.viewController = nil;
     [_engine destroyContext];
-    _engine = nil;
-    _emptyViewController = nil;
   }
 }
 
@@ -49,16 +47,18 @@
   ThrioLogV(@"enter attach flutter view controller");
   if (_engine.viewController != viewController) {
     ThrioLogV(@"attach new flutter view controller");
-    [(ThrioFlutterViewController*)_engine.viewController surfaceUpdated:NO];
     _engine.viewController = viewController;
+    [(ThrioFlutterViewController*)_engine.viewController surfaceUpdated:YES];
   }
 }
 
 - (void)detachFlutterViewController:(ThrioFlutterViewController *)viewController {
   ThrioLogV(@"enter detach flutter view controller");
-  if (_engine.viewController == viewController) {
+  if (_engine.viewController == viewController &&
+      _engine.viewController != _emptyViewController) {
     ThrioLogV(@"detach flutter view controller");
     _engine.viewController = _emptyViewController;
+    [(ThrioFlutterViewController*)_engine.viewController surfaceUpdated:NO];
   }
 }
 
@@ -68,8 +68,8 @@
   BOOL result = [_engine runWithEntrypoint:entrypoint];
   if (!result) {
     @throw [ThrioException exceptionWithName:@"FlutterFailedException"
-                                      reason:@"run flutter engine failed!"
-                                    userInfo:nil];
+                                                                  reason:@"run flutter engine failed!"
+                                                              userInfo:nil];
   }
 }
 
@@ -93,10 +93,7 @@
   
   [_channel setupEventChannel:_engine.binaryMessenger];
   [_channel setupMethodChannel:_engine.binaryMessenger];
-  
-  NSString *logChannelName = [NSString stringWithFormat:@"%@%@", kLoggerChannelName, entrypoint];
-  [[ThrioChannel channelWithName:logChannelName] setupMethodChannel:_engine.binaryMessenger];
-  
+    
   _receiveChannel = [[NavigatorReceiveChannel alloc] initWithChannel:_channel];
   [_receiveChannel setReadyBlock:block];
 }

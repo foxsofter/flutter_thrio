@@ -11,6 +11,7 @@
 #import "UINavigationController+FlutterEngine.h"
 #import "ThrioNavigator.h"
 #import "ThrioNavigator+Internal.h"
+#import "ThrioFlutterEngine.h"
 #import "ThrioChannel.h"
 #import "ThrioLogger.h"
 
@@ -27,8 +28,10 @@ NS_ASSUME_NONNULL_BEGIN
 @implementation ThrioFlutterViewController
 
 - (instancetype)initWithEntrypoint:(NSString *)entrypoint {
-  self = [super initWithEngine:[ThrioNavigator.navigationController thrio_getEngineForEntrypoint:entrypoint] nibName:nil bundle:nil];
+  ThrioFlutterEngine *flutterEngine = [ThrioNavigator.navigationController thrio_getEngineForEntrypoint:entrypoint];
+  self = [super initWithEngine:flutterEngine nibName:nil bundle:nil];
   if (self) {
+    self.thrio_hidesNavigationBar = @YES;
     _entrypoint = entrypoint;
   }
   return self;
@@ -53,22 +56,16 @@ NS_ASSUME_NONNULL_BEGIN
   ThrioLogV(@"flutter page will disappear: %@.%@",
             self.thrio_lastRoute.settings.url,
             self.thrio_lastRoute.settings.index);
-
+  
   [[UIApplication sharedApplication].delegate.window endEditing:YES];
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
   [super viewDidDisappear:animated];
-
-  ThrioLogV(@"flutter page did disappear: %@.%@",
-            self.thrio_lastRoute.settings.url,
-            self.thrio_lastRoute.settings.index);
 }
 
 - (void)dealloc {
-  if (self.entrypoint) {
-    [ThrioNavigator.navigationController thrio_detachFlutterViewController:self];
-  }
+  ThrioLogV(@"ThrioFlutterViewController dealloc");
 }
 
 // override
