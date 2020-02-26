@@ -80,9 +80,10 @@ NS_ASSUME_NONNULL_BEGIN
   if ([self isKindOfClass:ThrioFlutterViewController.class]) {
     NSMutableDictionary *arguments = [NSMutableDictionary dictionaryWithDictionary:[settings toArguments]];
     [arguments setObject:[NSNumber numberWithBool:animated] forKey:@"animated"];
-    [ThrioNavigator.navigationController.thrio_channel invokeMethod:@"__onPush__"
-                                                arguments:arguments
-                                                   result:^(id _Nullable r) {
+    ThrioChannel *channel = [ThrioNavigator.navigationController thrio_getChannelForEntrypoint:[(ThrioFlutterViewController*)self entrypoint]];
+    [channel invokeMethod:@"__onPush__"
+                arguments:arguments
+                   result:^(id _Nullable r) {
       result(r && [r boolValue]);
     }];
   } else {
@@ -109,9 +110,10 @@ NS_ASSUME_NONNULL_BEGIN
       [NSMutableDictionary dictionaryWithDictionary:[route.settings toArgumentsWithoutParams]];
     [arguments setObject:[NSNumber numberWithBool:animated] forKey:@"animated"];
     __weak typeof(self) weakself = self;
-    [self.navigationController.thrio_channel invokeMethod:@"__onPop__"
-                                                arguments:arguments
-                                                   result:^(id _Nullable r) {
+    ThrioChannel *channel = [self.navigationController thrio_getChannelForEntrypoint:[(ThrioFlutterViewController*)self entrypoint]];
+    [channel invokeMethod:@"__onPop__"
+                arguments:arguments
+                   result:^(id _Nullable r) {
       __strong typeof(self) strongSelf = weakself;
       if ([r boolValue]) {
         if (route != strongSelf.thrio_firstRoute) {
@@ -148,9 +150,10 @@ NS_ASSUME_NONNULL_BEGIN
       [NSMutableDictionary dictionaryWithDictionary:[route.settings toArgumentsWithoutParams]];
     [arguments setObject:[NSNumber numberWithBool:animated] forKey:@"animated"];
     __weak typeof(self) weakself = self;
-    [self.navigationController.thrio_channel invokeMethod:@"__onPopTo__"
-                                                arguments:arguments
-                                                   result:^(id  _Nullable r) {
+    ThrioChannel *channel = [self.navigationController thrio_getChannelForEntrypoint:[(ThrioFlutterViewController*)self entrypoint]];
+    [channel invokeMethod:@"__onPopTo__"
+                arguments:arguments
+                   result:^(id  _Nullable r) {
       __strong typeof(self) strongSelf = weakself;
       if ([r boolValue]) {
         route.next = nil;
@@ -179,15 +182,16 @@ NS_ASSUME_NONNULL_BEGIN
       [NSMutableDictionary dictionaryWithDictionary:[route.settings toArgumentsWithoutParams]];
     [arguments setObject:[NSNumber numberWithBool:animated] forKey:@"animated"];
     __weak typeof(self) weakself = self;
-    [self.navigationController.thrio_channel invokeMethod:@"__onRemove__"
-                                                arguments:arguments
-                                                   result:^(id  _Nullable r) {
+    ThrioChannel *channel = [self.navigationController thrio_getChannelForEntrypoint:[(ThrioFlutterViewController*)self entrypoint]];
+    [channel invokeMethod:@"__onRemove__"
+                arguments:arguments
+                   result:^(id  _Nullable r) {
       __strong typeof(self) strongSelf = weakself;
       if ([r boolValue]) {
         if (route == strongSelf.thrio_firstRoute) {
           strongSelf.thrio_firstRoute = route.next;
           strongSelf.thrio_firstRoute.prev = nil;
-        } else if (route == self.thrio_lastRoute) {
+        } else if (route == strongSelf.thrio_lastRoute) {
           route.prev.next = nil;
           [strongSelf thrio_onNotify];
         } else {
@@ -327,17 +331,19 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)thrio_onNotify {
   BOOL isFlutterViewController = [self isKindOfClass:ThrioFlutterViewController.class];
-  NSArray *keys = [self.thrio_lastRoute.notifications.allKeys copy];
+  NavigatorPageRoute *route = self.thrio_lastRoute;
+  NSArray *keys = [route.notifications.allKeys copy];
   for (NSString *name in keys) {
-    NSDictionary * params = [self.thrio_lastRoute removeNotify:name];
+    NSDictionary * params = [route removeNotify:name];
     if (isFlutterViewController) {
       NSDictionary *arguments = @{
-        @"url": self.thrio_lastRoute.settings.url,
-        @"index": self.thrio_lastRoute.settings.index,
+        @"url": route.settings.url,
+        @"index": route.settings.index,
         @"name": name,
         @"params": params,
       };
-      [self.navigationController.thrio_channel sendEvent:@"__onNotify__" arguments:arguments];
+      ThrioChannel *channel = [self.navigationController thrio_getChannelForEntrypoint:[(ThrioFlutterViewController*)self entrypoint]];
+      [channel sendEvent:@"__onNotify__" arguments:arguments];
     } else {
       if ([self conformsToProtocol:@protocol(NavigatorNotifyProtocol)]) {
         [(id<NavigatorNotifyProtocol>)self onNotify:name params:params];

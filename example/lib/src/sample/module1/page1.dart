@@ -48,7 +48,34 @@ class _Page1State extends State<Page1> {
                 ),
                 InkWell(
                   onTap: () => ThrioNavigator.push(
-                    url: 'flutter2',
+                    url: 'biz1/flutter1',
+                    params: {
+                      '1': {'2': '3'}
+                    },
+                  ),
+                  child: Container(
+                      padding: const EdgeInsets.all(8),
+                      margin: const EdgeInsets.all(8),
+                      color: Colors.yellow,
+                      child: Text(
+                        'push flutter1',
+                        style: TextStyle(fontSize: 22, color: Colors.black),
+                      )),
+                ),
+                InkWell(
+                  onTap: () => ThrioNavigator.remove(url: 'biz1/flutter1'),
+                  child: Container(
+                      padding: const EdgeInsets.all(8),
+                      margin: const EdgeInsets.all(8),
+                      color: Colors.yellow,
+                      child: Text(
+                        'remove flutter1',
+                        style: TextStyle(fontSize: 22, color: Colors.black),
+                      )),
+                ),
+                InkWell(
+                  onTap: () => ThrioNavigator.push(
+                    url: 'biz2/flutter2',
                     params: {
                       '1': {'2': '3'}
                     },
@@ -59,17 +86,6 @@ class _Page1State extends State<Page1> {
                       color: Colors.yellow,
                       child: Text(
                         'push flutter2',
-                        style: TextStyle(fontSize: 22, color: Colors.black),
-                      )),
-                ),
-                InkWell(
-                  onTap: () => ThrioNavigator.remove(url: 'flutter1'),
-                  child: Container(
-                      padding: const EdgeInsets.all(8),
-                      margin: const EdgeInsets.all(8),
-                      color: Colors.yellow,
-                      child: Text(
-                        'remove flutter1',
                         style: TextStyle(fontSize: 22, color: Colors.black),
                       )),
                 ),

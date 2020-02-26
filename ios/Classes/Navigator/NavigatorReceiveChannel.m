@@ -269,9 +269,11 @@ NS_ASSUME_NONNULL_BEGIN
   [_channel registryMethodCall:@"hotRestart"
                         handler:^void(NSDictionary<NSString *,id> * arguments,
                                       ThrioBoolCallback _Nullable result) {
-    [ThrioNavigator.navigationController thrio_hotRestart:^(BOOL r) {
-      result(r);
-    }];
+    if (!ThrioNavigator.isMultiEngineEnabled) {
+      [ThrioNavigator.navigationController thrio_hotRestart:^(BOOL r) {
+        result(r);
+      }];
+    }
   }];
 }
 

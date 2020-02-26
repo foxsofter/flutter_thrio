@@ -16,12 +16,21 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+@interface ThrioFlutterViewController ()
+
+@property (nonatomic, copy, readwrite) NSString *entrypoint;
+
+@end
+
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wincomplete-implementation"
 @implementation ThrioFlutterViewController
 
-- (instancetype)init {
-  self = [super initWithEngine:[ThrioNavigator.navigationController thrio_engine] nibName:nil bundle:nil];
+- (instancetype)initWithEntrypoint:(NSString *)entrypoint {
+  self = [super initWithEngine:[ThrioNavigator.navigationController thrio_getEngineForEntrypoint:entrypoint] nibName:nil bundle:nil];
+  if (self) {
+    _entrypoint = entrypoint;
+  }
   return self;
 }
 
@@ -57,7 +66,9 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 - (void)dealloc {
-  [self.navigationController thrio_detachFlutterViewController:self];
+  if (self.entrypoint) {
+    [ThrioNavigator.navigationController thrio_detachFlutterViewController:self];
+  }
 }
 
 // override

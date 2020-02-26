@@ -18,8 +18,9 @@ class ThrioNavigator {
 
   static final _default = ThrioNavigator._();
 
-  static TransitionBuilder builder() {
-    _default._channel = ThrioChannel(channel: '__thrio_app__');
+  static TransitionBuilder builder({String entrypoint = ''}) {
+    _entrypoint = entrypoint;
+    _default._channel = ThrioChannel(channel: '__thrio_app__$entrypoint');
     _default._sendChannel = NavigatorSendChannel(_default._channel);
     _default._receiveChannel = NavigatorReceiveChannel(_default._channel);
     return (context, child) => NavigatorWidget(
@@ -28,6 +29,10 @@ class ThrioNavigator {
           child: child is Navigator ? child : null,
         );
   }
+
+  static String _entrypoint;
+
+  static String get entrypoint => _entrypoint;
 
   GlobalKey<NavigatorWidgetState> _stateKey;
 

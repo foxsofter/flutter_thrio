@@ -311,6 +311,18 @@ NS_ASSUME_NONNULL_BEGIN
   return [self.navigationController thrio_setPopDisabledUrl:url index:index disabled:disabled];
 }
 
+#pragma mark - multi-engine methods
+
+static BOOL multiEngineEnabled = NO;
+
++ (void)setMultiEngineEnabled:(BOOL)enabled {
+  multiEngineEnabled = enabled;
+}
+
++ (BOOL)isMultiEngineEnabled {
+  return multiEngineEnabled;
+}
+
 @end
 
 NS_ASSUME_NONNULL_END

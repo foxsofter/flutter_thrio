@@ -4,12 +4,13 @@
 import 'package:logger/logger.dart';
 
 import '../channel/thrio_channel.dart';
+import '../navigator/thrio_navigator.dart';
 
 class ThrioLogger {
   factory ThrioLogger() => _default ??= ThrioLogger._();
 
   ThrioLogger._() {
-    ThrioChannel(channel: '__thrio_logger__')
+    ThrioChannel(channel: '__thrio_logger__${ThrioNavigator.entrypoint}')
       ..registryMethodCall('v', ([arguments]) async {
         final message = arguments['message'];
         var error = arguments['error'];

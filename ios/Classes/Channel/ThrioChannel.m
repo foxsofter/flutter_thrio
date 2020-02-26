@@ -84,9 +84,6 @@ static NSString *const kEventNameKey = @"__event_name__";
 }
 
 - (void)setupMethodChannel:(NSObject<FlutterBinaryMessenger> *)messenger {
-  if (_methodChannel) {
-    return;
-  }
   _methodHandlers = [ThrioRegistryMap map];
   
   NSString *methodChannelName = [NSString stringWithFormat:@"_method_%@", _channelName];
@@ -121,9 +118,6 @@ static NSString *const kEventNameKey = @"__event_name__";
 }
 
 - (void)setupEventChannel:(NSObject<FlutterBinaryMessenger> *)messenger {
-  if (_eventChannel) {
-    return;
-  }
   _eventHandlers = [ThrioRegistrySetMap map];
   
   NSString *eventChannelName = [NSString stringWithFormat:@"_event_%@", _channelName];

@@ -18,10 +18,10 @@
 
 - (void)thrio_hotRestart:(ThrioBoolCallback)result {
   ThrioLogV(@"enter on hot restart");
-  UIViewController *viewController;
+  ThrioFlutterViewController *viewController;
   for (UIViewController *vc in self.viewControllers) {
     if ([vc isKindOfClass:ThrioFlutterViewController.class]) {
-      viewController = vc;
+      viewController = (ThrioFlutterViewController*)vc;
       break;
     }
   }
@@ -36,7 +36,8 @@
   dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.6 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
     ThrioLogV(@"hot restart push");
     NavigatorRouteSettings *settings = viewController.thrio_firstRoute.settings;
-    [self.thrio_channel invokeMethod:@"__onPush__" arguments:[settings toArguments]];
+    ThrioChannel *channel = [self thrio_getChannelForEntrypoint:viewController.entrypoint];
+    [channel invokeMethod:@"__onPush__" arguments:[settings toArguments]];
   });
 }
 
