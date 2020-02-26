@@ -322,6 +322,16 @@ NS_ASSUME_NONNULL_BEGIN
 ///
 + (void)setPopDisabledUrl:(NSString *)url index:(NSNumber *)index disabled:(BOOL)disabled;
 
+#pragma mark - multi-engine methods
+
+/// Set multi-engine mode to `enabled`, default is false.
+///
++ (void)setMultiEngineEnabled:(BOOL)enabled;
+
+/// Get multi-engine enabled or not.
+///
++ (BOOL)isMultiEngineEnabled;
+
 @end
 
 NS_ASSUME_NONNULL_END

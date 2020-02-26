@@ -47,7 +47,7 @@ class _Page2State extends State<Page2> {
                 ),
                 InkWell(
                   onTap: () => ThrioNavigator.push(
-                    url: 'flutter3',
+                    url: 'biz1/flutter3',
                     params: {
                       '1': {'2': '3'}
                     },
@@ -62,7 +62,7 @@ class _Page2State extends State<Page2> {
                       )),
                 ),
                 InkWell(
-                  onTap: () => ThrioNavigator.remove(url: 'flutter2'),
+                  onTap: () => ThrioNavigator.remove(url: 'biz2/flutter2'),
                   child: Container(
                       padding: const EdgeInsets.all(8),
                       margin: const EdgeInsets.all(8),

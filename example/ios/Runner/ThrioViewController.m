@@ -18,10 +18,10 @@
 @implementation ThrioViewController
 
 - (IBAction)pushFlutterPage:(id)sender {
-  [ThrioNavigator pushUrl:@"flutter1"];
+  [ThrioNavigator pushUrl:@"biz1/flutter1"];
 }
 - (IBAction)popFlutter1:(id)sender {
-  [ThrioNavigator removeUrl:@"flutter1"];
+  [ThrioNavigator removeUrl:@"biz1/flutter1"];
 }
 - (IBAction)pushNativePage:(id)sender {
   [ThrioNavigator pushUrl:@"native1"];

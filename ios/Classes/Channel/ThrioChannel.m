@@ -46,12 +46,7 @@ static NSString *const kEventNameKey = @"__event_name__";
   if (!channelName || channelName.length < 1) {
     channelName = kDefaultChannelName;
   }
-  id instance = [[self instanceCaches] valueForKey:channelName];
-  if (!instance) {
-    instance = [[ThrioChannel alloc] initWithName:channelName];
-    [[self instanceCaches] setValue:instance forKey:channelName];
-  }
-  return instance;
+  return [[ThrioChannel alloc] initWithName:channelName];
 }
 
 - (instancetype)initWithName:(NSString *)channelName {
@@ -84,9 +79,6 @@ static NSString *const kEventNameKey = @"__event_name__";
 }
 
 - (void)setupMethodChannel:(NSObject<FlutterBinaryMessenger> *)messenger {
-  if (_methodChannel) {
-    return;
-  }
   _methodHandlers = [ThrioRegistryMap map];
   
   NSString *methodChannelName = [NSString stringWithFormat:@"_method_%@", _channelName];
@@ -121,9 +113,6 @@ static NSString *const kEventNameKey = @"__event_name__";
 }
 
 - (void)setupEventChannel:(NSObject<FlutterBinaryMessenger> *)messenger {
-  if (_eventChannel) {
-    return;
-  }
   _eventHandlers = [ThrioRegistrySetMap map];
   
   NSString *eventChannelName = [NSString stringWithFormat:@"_event_%@", _channelName];
@@ -143,18 +132,6 @@ static NSString *const kEventNameKey = @"__event_name__";
 - (FlutterError * _Nullable)onCancelWithArguments:(id _Nullable)arguments {
   return nil;
 }
-
-#pragma mark - private methods
-
-+ (NSMutableDictionary *)instanceCaches {
-  static NSMutableDictionary *instanceCaches_;
-  static dispatch_once_t onceToken;
-  dispatch_once(&onceToken, ^{
-    instanceCaches_ = [NSMutableDictionary new];
-  });
-  return instanceCaches_;
-};
-
 
 @end
 

@@ -41,8 +41,8 @@
   [arguments setObject:[NSNumber numberWithBool:disabled] forKey:@"disabled"];
 
   if (route != self.thrio_firstRoute && [self isKindOfClass:ThrioFlutterViewController.class]) {
-    [self.navigationController.thrio_channel invokeMethod:@"__onSetPopDisabled__"
-                                                arguments:arguments];
+    ThrioChannel *channel = [self.navigationController thrio_getChannelForEntrypoint:[(ThrioFlutterViewController*)self entrypoint]];
+    [channel invokeMethod:@"__onSetPopDisabled__" arguments:arguments];
   }
 }
 

@@ -14,17 +14,17 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface UINavigationController (FlutterEngine)
 
-- (void)thrio_startup:(ThrioVoidCallback)result;
+- (void)thrio_startupWithEntrypoint:(NSString *)entrypoint readyBlock:(ThrioVoidCallback)block;
 
-@property (nonatomic, strong, readonly, nullable) FlutterEngine *thrio_engine;
+- (FlutterEngine *)thrio_getEngineForEntrypoint:(NSString *)entrypoint;
 
-@property (nonatomic, strong, readonly, nullable) ThrioChannel *thrio_channel;
-
-@property (nonatomic, strong, readonly, nullable) ThrioFlutterViewController *thrio_flutterViewController;
+- (ThrioChannel *)thrio_getChannelForEntrypoint:(NSString *)entrypoint;
 
 - (void)thrio_attachFlutterViewController:(ThrioFlutterViewController *)viewController;
 
 - (void)thrio_detachFlutterViewController:(ThrioFlutterViewController *)viewController;
+
+- (void)thrio_removeIfNeeded;
 
 @end
 

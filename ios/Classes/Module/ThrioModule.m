@@ -44,7 +44,6 @@ static NSMutableDictionary *modules;
       }
     }
   });
-//  [ThrioNavigator.navigationController thrio_startup];
 }
 
 - (ThrioVoidCallback)registerNativeViewControllerBuilder:(ThrioNativeViewControllerBuilder)builder

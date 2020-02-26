@@ -9,3 +9,19 @@ Future<void> main() async {
   };
   runZoned<void>(app.main);
 }
+
+@pragma('vm:entry-point')
+Future<void> biz1() async {
+  FlutterError.onError = (details) async {
+    Zone.current.handleUncaughtError(details.exception, details.stack);
+  };
+  runZoned<void>(app.biz1);
+}
+
+@pragma('vm:entry-point')
+Future<void> biz2() async {
+  FlutterError.onError = (details) async {
+    Zone.current.handleUncaughtError(details.exception, details.stack);
+  };
+  runZoned<void>(app.biz2);
+}

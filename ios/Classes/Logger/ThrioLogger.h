@@ -9,35 +9,9 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-extern NSString *const kLoggerChannelName;
-
-@interface ThrioLogger : NSObject
-
-+ (void)v:(id)message;
-
-+ (void)v:(id)message error:(NSError * _Nullable)error;
-
-+ (void)d:(id)message;
-
-+ (void)d:(id)message error:(NSError * _Nullable)error;
-
-+ (void)i:(id)message;
-
-+ (void)i:(id)message error:(NSError * _Nullable)error;
-
-+ (void)w:(id)message;
-
-+ (void)w:(id)message error:(NSError * _Nullable)error;
-
-+ (void)e:(id)message;
-
-+ (void)e:(id)message error:(NSError * _Nullable)error;
-
-@end
-
 #ifndef ThrioLogV
 #ifdef DEBUG
-#define ThrioLogV(fmt, ...) [ThrioLogger v:[NSString stringWithFormat:fmt, ##__VA_ARGS__]]
+#define ThrioLogV(fmt, ...) NSLog(@"native: [V] %@", [NSString stringWithFormat:fmt, ##__VA_ARGS__])
 #else
 #define ThrioLogV(msg)
 #endif
@@ -45,7 +19,7 @@ extern NSString *const kLoggerChannelName;
 
 #ifndef ThrioLogD
 #ifdef DEBUG
-#define ThrioLogD(fmt, ...) [ThrioLogger d:[NSString stringWithFormat:fmt, ##__VA_ARGS__]]
+#define ThrioLogD(fmt, ...) NSLog(@"native: [D] %@", [NSString stringWithFormat:fmt, ##__VA_ARGS__])
 #else
 #define ThrioLogD(msg)
 #endif
@@ -53,7 +27,7 @@ extern NSString *const kLoggerChannelName;
 
 #ifndef ThrioLogI
 #ifdef DEBUG
-#define ThrioLogI(fmt, ...) [ThrioLogger i:[NSString stringWithFormat:fmt, ##__VA_ARGS__]]
+#define ThrioLogI(fmt, ...) NSLog(@"native: [I] %@", [NSString stringWithFormat:fmt, ##__VA_ARGS__])
 #else
 #define ThrioLogI(msg)
 #endif
@@ -61,7 +35,7 @@ extern NSString *const kLoggerChannelName;
 
 #ifndef ThrioLogW
 #ifdef DEBUG
-#define ThrioLogW(fmt, ...) [ThrioLogger w:[NSString stringWithFormat:fmt, ##__VA_ARGS__]]
+#define ThrioLogW(fmt, ...) NSLog(@"native: [W] %@", [NSString stringWithFormat:fmt, ##__VA_ARGS__])
 #else
 #define ThrioLogW(msg)
 #endif
@@ -69,7 +43,7 @@ extern NSString *const kLoggerChannelName;
 
 #ifndef ThrioLogE
 #ifdef DEBUG
-#define ThrioLogE(fmt, ...) [ThrioLogger e:[NSString stringWithFormat:fmt, ##__VA_ARGS__]]
+#define ThrioLogE(fmt, ...) NSLog(@"native: [E] %@", [NSString stringWithFormat:fmt, ##__VA_ARGS__])
 #else
 #define ThrioLogE(msg)
 #endif

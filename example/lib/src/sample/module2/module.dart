@@ -6,11 +6,11 @@ class Module with ThrioModule {
   @override
   void onPageRegister() {
     registerPageBuilder(
-      'flutter3',
+      'biz1/flutter3',
       (settings) => Page3(index: settings.index, params: settings.params),
     );
     registerPageBuilder(
-      'flutter4',
+      'biz2/flutter4',
       (settings) => Page4(index: settings.index, params: settings.params),
     );
   }
