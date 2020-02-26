@@ -18,8 +18,6 @@
 
 @property (nonatomic, strong, readwrite, nullable) NavigatorReceiveChannel *receiveChannel;
 
-@property (nonatomic, strong) ThrioFlutterViewController *emptyViewController;
-
 @end
 
 @implementation ThrioFlutterEngine
@@ -29,15 +27,13 @@
     [self startupFlutterWithEntrypoint:entrypoint];
     [self registerPlugin];
     [self setupChannelWithEntrypoint:entrypoint readyBlock:block];
-    
-    _emptyViewController = [[ThrioFlutterViewController alloc] initWithEntrypoint:entrypoint];
   } else {
     block();
   }
 }
 
 - (void)shutdown {
-  ThrioLogV(@"ThrioFlutterEngine shutdown: %@", _emptyViewController.entrypoint);
+  ThrioLogV(@"ThrioFlutterEngine shutdown: %@", self);
   if (_engine) {
     _engine.viewController = nil;
     [_engine destroyContext];
@@ -46,7 +42,7 @@
 
 - (void)attachFlutterViewController:(ThrioFlutterViewController *)viewController {
   ThrioLogV(@"enter attach flutter view controller");
-  if (_engine.viewController != viewController) {
+  if (_engine.viewController != viewController && viewController != nil) {
     ThrioLogV(@"attach new flutter view controller");
     _engine.viewController = viewController;
     [(ThrioFlutterViewController*)_engine.viewController surfaceUpdated:YES];
@@ -55,17 +51,16 @@
 
 - (void)detachFlutterViewController:(ThrioFlutterViewController *)viewController {
   ThrioLogV(@"enter detach flutter view controller");
-  if (_engine.viewController == viewController &&
-      _engine.viewController != _emptyViewController) {
-    ThrioLogV(@"detach flutter view controller");
-    _engine.viewController = _emptyViewController;
+  if (_engine.viewController == viewController && viewController != nil) {
+    ThrioLogV(@"detach flutter view controller: %@", _engine);
     [(ThrioFlutterViewController*)_engine.viewController surfaceUpdated:NO];
+    _engine.viewController = nil;
   }
 }
 
 - (void)startupFlutterWithEntrypoint:(NSString *)entrypoint {
   NSString *enginName = [NSString stringWithFormat:@"io.flutter.%lu", (unsigned long)self.hash];
-  _engine = [[FlutterEngine alloc] initWithName:enginName project:nil];
+  _engine = [[FlutterEngine alloc] initWithName:enginName project:nil allowHeadlessExecution:YES];
   BOOL result = NO;
   if (ThrioNavigator.isMultiEngineEnabled) {
     result =[_engine runWithEntrypoint:entrypoint];
@@ -102,6 +97,10 @@
     
   _receiveChannel = [[NavigatorReceiveChannel alloc] initWithChannel:_channel];
   [_receiveChannel setReadyBlock:block];
+}
+
+- (void)dealloc {
+  ThrioLogV(@"ThrioFlutterEngine dealloc: %@", self);
 }
 
 @end

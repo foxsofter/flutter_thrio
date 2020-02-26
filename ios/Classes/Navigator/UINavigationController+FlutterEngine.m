@@ -71,12 +71,23 @@
 }
 
 - (void)thrio_attachFlutterViewController:(ThrioFlutterViewController *)viewController {
+  ThrioLogV(@"thrio_attachFlutterViewController: %@, %@", viewController.entrypoint, viewController);
   ThrioFlutterEngine *flutterEngine = self.thrio_flutterEngines[viewController.entrypoint];
   [flutterEngine attachFlutterViewController:viewController];
 }
 
+- (void)thrio_detachFlutterViewController:(ThrioFlutterViewController *)viewController {
+  ThrioLogV(@"thrio_detachFlutterViewController: %@, %@", viewController.entrypoint, viewController);
+  ThrioFlutterEngine *flutterEngine = self.thrio_flutterEngines[viewController.entrypoint];
+  [flutterEngine detachFlutterViewController:viewController];
+}
+
 - (void)thrio_removeIfNeeded {
   if (!ThrioNavigator.isMultiEngineEnabled) {
+    return;
+  }
+  // 默认保留一个引擎，正常情况下会是第一个引擎
+  if (self.thrio_flutterEngines.count < 2) {
     return;
   }
   
@@ -98,11 +109,6 @@
       [self.thrio_flutterEngines removeObjectForKey:entrypoint];
     }
   }
-}
-
-- (void)thrio_detachFlutterViewController:(ThrioFlutterViewController *)viewController {
-  ThrioFlutterEngine *flutterEngine = self.thrio_flutterEngines[viewController.entrypoint];
-  [flutterEngine detachFlutterViewController:viewController];
 }
 
 #pragma mark - method swizzling

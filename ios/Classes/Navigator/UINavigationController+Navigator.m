@@ -299,6 +299,14 @@ NS_ASSUME_NONNULL_BEGIN
   }
   self.thrio_popingViewController = self.topViewController;
   
+  UIViewController *vc = [self.viewControllers objectAtIndex:self.viewControllers.count - 2];
+  if ([vc isKindOfClass:ThrioFlutterViewController.class]) {
+    [self thrio_attachFlutterViewController:(ThrioFlutterViewController*)vc];
+    if (self.navigationBarHidden != vc.thrio_hidesNavigationBar.boolValue) {
+      [self setNavigationBarHidden:vc.thrio_hidesNavigationBar.boolValue];
+    }
+  }
+  
   return [self thrio_popViewControllerAnimated:animated];
 }
 

@@ -313,7 +313,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark - multi-engine methods
 
-static BOOL multiEngineEnabled = NO;
+static BOOL multiEngineEnabled = YES;
 
 + (void)setMultiEngineEnabled:(BOOL)enabled {
   multiEngineEnabled = enabled;
