@@ -36,6 +36,10 @@
 }
 
 - (void)thrio_startupWithEntrypoint:(NSString *)entrypoint readyBlock:(ThrioVoidCallback)block {
+  if (!ThrioNavigator.isMultiEngineEnabled) {
+    entrypoint = @"";
+  }
+
   if ([self.thrio_flutterEngines.allKeys containsObject:entrypoint]) {
     block();
   } else {
@@ -50,16 +54,18 @@
 }
 
 - (FlutterEngine *)thrio_getEngineForEntrypoint:(NSString *)entrypoint {
+  if (!ThrioNavigator.isMultiEngineEnabled) {
+    entrypoint = @"";
+  }
   ThrioFlutterEngine *flutterEngine = self.thrio_flutterEngines[entrypoint];
   return flutterEngine.engine;
 }
 
-- (ThrioChannel *)thrio_getLogChannelForEntrypoint:(NSString *)entrypoint {
-  ThrioFlutterEngine *flutterEngine = self.thrio_flutterEngines[entrypoint];
-  return flutterEngine.channel;
-}
-
 - (ThrioChannel *)thrio_getChannelForEntrypoint:(NSString *)entrypoint {
+  if (!ThrioNavigator.isMultiEngineEnabled) {
+    entrypoint = @"";
+  }
+  
   ThrioFlutterEngine *flutterEngine = self.thrio_flutterEngines[entrypoint];
   return flutterEngine.channel;
 }
@@ -70,6 +76,10 @@
 }
 
 - (void)thrio_removeIfNeeded {
+  if (!ThrioNavigator.isMultiEngineEnabled) {
+    return;
+  }
+  
   NSArray *entrypoints = self.thrio_flutterEngines.allKeys;
   
   NSArray *vcs = [self.viewControllers copy];

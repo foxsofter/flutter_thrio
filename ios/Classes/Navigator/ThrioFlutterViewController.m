@@ -28,11 +28,15 @@ NS_ASSUME_NONNULL_BEGIN
 @implementation ThrioFlutterViewController
 
 - (instancetype)initWithEntrypoint:(NSString *)entrypoint {
-  ThrioFlutterEngine *flutterEngine = [ThrioNavigator.navigationController thrio_getEngineForEntrypoint:entrypoint];
-  self = [super initWithEngine:flutterEngine nibName:nil bundle:nil];
+  FlutterEngine *engine = [ThrioNavigator.navigationController thrio_getEngineForEntrypoint:entrypoint];
+  self = [super initWithEngine:engine nibName:nil bundle:nil];
   if (self) {
     self.thrio_hidesNavigationBar = @YES;
-    _entrypoint = entrypoint;
+    if (ThrioNavigator.isMultiEngineEnabled) {
+      _entrypoint = entrypoint;
+    } else {
+      _entrypoint = @"";
+    }
   }
   return self;
 }

@@ -66,7 +66,10 @@ NS_ASSUME_NONNULL_BEGIN
     if (viewController) {
       [self thrio_pushViewController:viewController url:url params:params animated:animated result:result ];
     } else {
-      NSString *entrypoint = [url componentsSeparatedByString:@"/"].firstObject;
+      NSString *entrypoint = @"";
+      if (ThrioNavigator.isMultiEngineEnabled) {
+        entrypoint = [url componentsSeparatedByString:@"/"].firstObject;
+      }
       __weak typeof(self) weakself = self;
       ThrioVoidCallback readyBlock = ^{
         __strong typeof(self) strongSelf = weakself;
@@ -92,6 +95,7 @@ NS_ASSUME_NONNULL_BEGIN
                                         result:result];
         }
       };
+      
       [self thrio_startupWithEntrypoint:entrypoint readyBlock:readyBlock];
     }
   }

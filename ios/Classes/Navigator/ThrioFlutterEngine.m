@@ -8,6 +8,7 @@
 #import "ThrioFlutterEngine.h"
 #import "ThrioLogger.h"
 #import "ThrioException.h"
+#import "ThrioNavigator.h"
 
 @interface ThrioFlutterEngine ()
 
@@ -65,11 +66,16 @@
 - (void)startupFlutterWithEntrypoint:(NSString *)entrypoint {
   NSString *enginName = [NSString stringWithFormat:@"io.flutter.%lu", (unsigned long)self.hash];
   _engine = [[FlutterEngine alloc] initWithName:enginName project:nil];
-  BOOL result = [_engine runWithEntrypoint:entrypoint];
+  BOOL result = NO;
+  if (ThrioNavigator.isMultiEngineEnabled) {
+    result =[_engine runWithEntrypoint:entrypoint];
+  } else {
+    result = [_engine run];
+  }
   if (!result) {
     @throw [ThrioException exceptionWithName:@"FlutterFailedException"
-                                                                  reason:@"run flutter engine failed!"
-                                                              userInfo:nil];
+                                      reason:@"run flutter engine failed!"
+                                    userInfo:nil];
   }
 }
 

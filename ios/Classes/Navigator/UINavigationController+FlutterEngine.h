@@ -20,8 +20,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (FlutterEngine *)thrio_getEngineForEntrypoint:(NSString *)entrypoint;
 
-- (ThrioChannel *)thrio_getLogChannelForEntrypoint:(NSString *)entrypoint;
-
 - (ThrioChannel *)thrio_getChannelForEntrypoint:(NSString *)entrypoint;
 
 - (void)thrio_attachFlutterViewController:(ThrioFlutterViewController *)viewController;

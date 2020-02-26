@@ -11,7 +11,7 @@
 
 - (BOOL)application:(UIApplication *)application
     didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-
+  [ThrioNavigator setMultiEngineEnabled:NO];
   MainModule *main = [MainModule new];
   [main registerModule:main];
   [main initModule];
