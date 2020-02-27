@@ -23,6 +23,9 @@ class ThrioNavigator {
     _default._channel = ThrioChannel(channel: '__thrio_app__$entrypoint');
     _default._sendChannel = NavigatorSendChannel(_default._channel);
     _default._receiveChannel = NavigatorReceiveChannel(_default._channel);
+
+    _default._sendChannel.registerUrls(_default._pageBuilders.keys.toList());
+
     return (context, child) => NavigatorWidget(
           key: _default._stateKey = GlobalKey<NavigatorWidgetState>(),
           observer: NavigatorRouteObserver(_default._channel),
@@ -167,8 +170,14 @@ class ThrioNavigator {
   static VoidCallback registerPageBuilder(
     String url,
     NavigatorPageBuilder builder,
-  ) =>
-      _default._pageBuilders.registry(url, builder);
+  ) {
+    _default._sendChannel?.registerUrls([url]);
+    final callback = _default._pageBuilders.registry(url, builder);
+    return () {
+      callback();
+      _default._sendChannel.unregisterUrls([url]);
+    };
+  }
 
   /// Register page builders for the router.
   ///
@@ -176,8 +185,14 @@ class ThrioNavigator {
   ///
   static VoidCallback registerPageBuilders(
     Map<String, NavigatorPageBuilder> builders,
-  ) =>
-      _default._pageBuilders.registryAll(builders);
+  ) {
+    _default._sendChannel?.registerUrls(builders.keys.toList());
+    final callback = _default._pageBuilders.registryAll(builders);
+    return () {
+      callback();
+      _default._sendChannel.unregisterUrls(builders.keys.toList());
+    };
+  }
 
   static NavigatorPageBuilder getPageBuilder(String url) =>
       _default._pageBuilders[url];

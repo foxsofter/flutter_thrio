@@ -12,12 +12,16 @@
 #import "ThrioLogger.h"
 #import "ThrioException.h"
 #import "ThrioNavigator+Internal.h"
+#import "ThrioNavigator+NavigatorBuilder.h"
 #import "NSObject+ThrioSwizzling.h"
 #import "ThrioFlutterEngine.h"
 
 @interface UINavigationController ()
 
 @property (nonatomic, strong, readonly) NSMutableDictionary *thrio_flutterEngines;
+
+@property (nonatomic, strong) NSDictionary *thrio_flutterEngineUrlCounts;
+
 
 @end
 
@@ -34,6 +38,26 @@
   }
   return flutterEngines;
 }
+
+- (NSDictionary * _Nullable)thrio_flutterEngineUrlCounts {
+  id flutterEngineUrlCounts = objc_getAssociatedObject(self, _cmd);
+  if (!flutterEngineUrlCounts) {
+    flutterEngineUrlCounts = [NSMutableDictionary dictionary];
+    objc_setAssociatedObject(self,
+                             _cmd,
+                             flutterEngineUrlCounts,
+                             OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+  }
+  return flutterEngineUrlCounts;
+}
+
+- (void)setThrio_flutterEngineUrlCounts:(NSDictionary *)flutterEngineUrlCounts {
+  objc_setAssociatedObject(self,
+                           @selector(thrio_flutterEngineUrlCounts),
+                           flutterEngineUrlCounts,
+                           OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
 
 - (void)thrio_startupWithEntrypoint:(NSString *)entrypoint readyBlock:(ThrioVoidCallback)block {
   if (!ThrioNavigator.isMultiEngineEnabled) {
@@ -82,7 +106,7 @@
   [flutterEngine detachFlutterViewController:viewController];
 }
 
-- (void)thrio_removeIfNeeded {
+- (void)thrio_removeAllEngineIfNeeded {
   if (!ThrioNavigator.isMultiEngineEnabled) {
     return;
   }
@@ -95,6 +119,10 @@
   
   NSArray *vcs = [self.viewControllers copy];
   for (NSString *entrypoint in entrypoints) {
+    NSNumber *urlCount = self.thrio_flutterEngineUrlCounts[entrypoint];
+    if (urlCount.integerValue >= ThrioNavigator.multiEngineKeepAliveUrlCount) {
+      continue;
+    }
     BOOL contains = NO;
     for (UIViewController *vc in vcs) {
       if ([vc isKindOfClass:ThrioFlutterViewController.class] &&
@@ -110,6 +138,38 @@
     }
   }
 }
+
+- (void)thrio_registerUrls:(NSArray *)urls {
+  [ThrioNavigator.flutterPageRegisteredUrls addObjectsFromArray:urls];
+  
+  self.thrio_flutterEngineUrlCounts = [self thrio_groupUrlsByEntrypoint:ThrioNavigator.flutterPageRegisteredUrls];
+}
+
+- (void)thrio_unregisterUrls:(NSArray *)urls {
+  [ThrioNavigator.flutterPageRegisteredUrls minusSet:[NSSet setWithArray:urls]];
+  
+  self.thrio_flutterEngineUrlCounts = [self thrio_groupUrlsByEntrypoint:ThrioNavigator.flutterPageRegisteredUrls];
+}
+
+#pragma mark - private methods
+
+- (NSDictionary *)thrio_groupUrlsByEntrypoint:(NSSet *)urls {
+  NSMutableDictionary *kvs = [NSMutableDictionary dictionary];
+  
+  for (NSString *url in urls) {
+    NSString *entrypoint = [url componentsSeparatedByString:@"/"].firstObject;
+    if (![kvs.allKeys containsObject:entrypoint]) {
+      kvs[entrypoint] = @1;
+    } else {
+      NSNumber *v = kvs[entrypoint];
+      kvs[entrypoint] = @(v.integerValue + 1);
+    }
+  }
+  
+  return kvs;
+}
+
+
 
 #pragma mark - method swizzling
 
