@@ -7,6 +7,7 @@
 
 #import <objc/runtime.h>
 #import "UINavigationController+PopGesture.h"
+#import "NSObject+ThrioSwizzling.h"
 
 @implementation UINavigationController (PopGesture)
 
@@ -71,5 +72,27 @@
   self.interactivePopGestureRecognizer.enabled = YES;
 }
 
+#pragma mark - method swizzling
+
++ (void)load {
+  static dispatch_once_t onceToken;
+  dispatch_once(&onceToken, ^{
+    [self instanceSwizzle:@selector(setDelegate:)
+              newSelector:@selector(thrio_setDelegate:)];
+  });
+}
+
+/// Make sure that external delegate can take effect.
+///
+- (void)thrio_setDelegate:(id<UINavigationControllerDelegate> _Nullable)delegate {
+  if (self.delegate == delegate) {
+    return;
+  }
+  if (self.delegate == self.thrio_navigationControllerDelegate) {
+    self.thrio_navigationControllerDelegate.originDelegate = delegate;
+  } else {
+    [self setValue:delegate forKey:@"_delegate"];
+  }
+}
 
 @end
