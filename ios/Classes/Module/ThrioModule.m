@@ -7,8 +7,6 @@
 
 #import "ThrioModule.h"
 #import "ThrioNavigator+NavigatorBuilder.h"
-#import "ThrioNavigator+Internal.h"
-#import "UINavigationController+FlutterEngine.h"
 
 @implementation ThrioModule
 

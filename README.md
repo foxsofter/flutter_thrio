@@ -2,6 +2,8 @@
 
 thrio 是一个支持 flutter 嵌入原生应用的路由库，目前只有 iOS 版本可看，Android 版本在开发中。
 
+[多引擎模式](./doc/MultipleEngine.md)
+
 ## 为什么写 thrio
 
 thrio 的诞生主要是为了解决我们自身的业务问题。
@@ -175,4 +177,4 @@ ThrioNavigator.setPopDisabled(url: 'flutter1');
 
 ### 支持 FlutterViewController 内嵌套 Dart 页面
 
-* 在 iOS 中如果每打开一个 dart 页面都切换一个新的 FlutterViewController，每个页面多消耗 12M+以上的内存，内存消耗是非常恐怖的，这是目前 flutter_boost 下的实现方式。
+- 在 iOS 中如果每打开一个 dart 页面都切换一个新的 FlutterViewController，每个页面多消耗 12M+以上的内存，内存消耗是非常恐怖的，这是目前 flutter_boost 下的实现方式。
