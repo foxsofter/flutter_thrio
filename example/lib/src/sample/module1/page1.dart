@@ -117,6 +117,23 @@ class _Page1State extends State<Page1> {
                       )),
                 ),
                 InkWell(
+                  onTap: () => ThrioNavigator.notify(
+                    url: 'native1',
+                    name: 'aaa',
+                    params: {
+                      '1': {'2': '3'}
+                    },
+                  ),
+                  child: Container(
+                      padding: const EdgeInsets.all(8),
+                      margin: const EdgeInsets.all(8),
+                      color: Colors.grey,
+                      child: Text(
+                        'notify native1',
+                        style: TextStyle(fontSize: 22, color: Colors.black),
+                      )),
+                ),
+                InkWell(
                   onTap: () => ThrioNavigator.remove(url: 'native1'),
                   child: Container(
                       padding: const EdgeInsets.all(8),
