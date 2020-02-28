@@ -310,15 +310,15 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark - set pop disabled methods
 
-/// Setting the last page cannot be poped..
+/// Setting the last page to disable pop.
 ///
 + (void)setPopDisabled:(BOOL)disabled;
 
-/// Setting the page with `url` cannot be poped..
+/// Setting the page with `url` to disable pop.
 ///
 + (void)setPopDisabledUrl:(NSString *)url disabled:(BOOL)disabled;
 
-/// Setting the page with `url` and `index` cannot be poped..
+/// Setting the page with `url` and `index` to disable pop.
 ///
 + (void)setPopDisabledUrl:(NSString *)url index:(NSNumber *)index disabled:(BOOL)disabled;
 
@@ -326,11 +326,25 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// Set multi-engine mode to `enabled`, default is false.
 ///
+/// Should be called before the engine is initialized.
+///
 + (void)setMultiEngineEnabled:(BOOL)enabled;
 
-/// Get multi-engine enabled or not.
+/// Get multi-engine mode enabled or not.
 ///
 + (BOOL)isMultiEngineEnabled;
+
+/// Set the number of urls that the engine keeps alive in multi-engine mode.
+///
+/// The default value of `count` is 10.
+/// If `count` set to 0, no engines are kept alive.
+/// Should be called before the engine is initialized.
+///
++ (void)setMultiEngineKeepAliveUrlCount:(NSUInteger)count;
+
+/// Get the number of urls that the engine keeps alive in multi-engine mode.
+///
++ (NSUInteger)multiEngineKeepAliveUrlCount;
 
 @end
 

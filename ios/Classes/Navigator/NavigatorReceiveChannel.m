@@ -8,9 +8,11 @@
 #import "NavigatorReceiveChannel.h"
 #import "ThrioNavigator.h"
 #import "ThrioNavigator+Internal.h"
+#import "ThrioNavigator+NavigatorBuilder.h"
 #import "UINavigationController+Navigator.h"
 #import "UINavigationController+PopDisabled.h"
 #import "UINavigationController+HotRestart.h"
+#import "UINavigationController+FlutterEngine.h"
 #import "ThrioLogger.h"
 
 NS_ASSUME_NONNULL_BEGIN
@@ -43,6 +45,8 @@ NS_ASSUME_NONNULL_BEGIN
     [self _onGetAllIndex];
     [self _onSetPopDisabled];
     [self _onHotRestart];
+    [self _onRegisterUrls];
+    [self _onUnregisterUrls];
   }
   return self;
 }
@@ -274,6 +278,24 @@ NS_ASSUME_NONNULL_BEGIN
         result(r);
       }];
     }
+  }];
+}
+
+- (void)_onRegisterUrls {
+  [_channel registryMethodCall:@"registerUrls"
+                        handler:^void(NSDictionary<NSString *,id> * arguments,
+                                      ThrioBoolCallback _Nullable result) {
+    NSArray *urls = arguments[@"urls"];
+    [ThrioNavigator.navigationController thrio_registerUrls:urls];
+  }];
+}
+
+- (void)_onUnregisterUrls {
+  [_channel registryMethodCall:@"unregisterUrls"
+                        handler:^void(NSDictionary<NSString *,id> * arguments,
+                                      ThrioBoolCallback _Nullable result) {
+    NSArray *urls = arguments[@"urls"];
+    [ThrioNavigator.navigationController thrio_unregisterUrls:urls];
   }];
 }
 

@@ -49,4 +49,16 @@
                            OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
++ (NSMutableSet *)flutterPageRegisteredUrls {
+  NSMutableSet *urls = (NSMutableSet*)objc_getAssociatedObject(self, _cmd);
+  if (!urls) {
+    urls = [NSMutableSet set];
+    objc_setAssociatedObject(self,
+                             _cmd,
+                             urls,
+                             OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+  }
+  return urls;
+}
+
 @end
