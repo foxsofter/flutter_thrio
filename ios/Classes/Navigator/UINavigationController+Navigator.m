@@ -335,7 +335,7 @@ NS_ASSUME_NONNULL_BEGIN
     __strong typeof(self) strongSelf = weakself;
     
     if ([strongSelf.thrio_popingViewController isKindOfClass:ThrioFlutterViewController.class]) {
-      [strongSelf thrio_removeIfNeeded];
+      [strongSelf thrio_removeAllEngineIfNeeded];
       
       if (![viewController isKindOfClass:ThrioFlutterViewController.class]) {
         [strongSelf thrio_detachFlutterViewController:(ThrioFlutterViewController*)strongSelf.thrio_popingViewController];

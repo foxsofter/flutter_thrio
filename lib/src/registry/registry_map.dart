@@ -25,6 +25,10 @@ class RegistryMap<K, V> {
     };
   }
 
+  Iterable<K> get keys => _maps.keys;
+
+  Iterable<V> get values => _maps.values;
+
   void clear() => _maps.clear();
 
   V operator [](K key) => _maps[key];

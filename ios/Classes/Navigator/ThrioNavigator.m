@@ -323,6 +323,16 @@ static BOOL multiEngineEnabled = YES;
   return multiEngineEnabled;
 }
 
+static NSUInteger engineKeepAliveUrlCount = 10;
+
++ (void)setMultiEngineKeepAliveUrlCount:(NSUInteger)count {
+  engineKeepAliveUrlCount = count;
+}
+
++ (NSUInteger)multiEngineKeepAliveUrlCount {
+  return engineKeepAliveUrlCount;
+}
+
 @end
 
 NS_ASSUME_NONNULL_END
