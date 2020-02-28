@@ -7,10 +7,10 @@ import 'package:flutter/widgets.dart';
 
 import '../channel/thrio_channel.dart';
 import '../registry/registry_map.dart';
-import 'navigator_page_route.dart';
 import 'navigator_receive_channel.dart';
 import 'navigator_route_observer.dart';
 import 'navigator_send_channel.dart';
+import 'navigator_types.dart';
 import 'navigator_widget.dart';
 
 class ThrioNavigator {
@@ -72,9 +72,9 @@ class ThrioNavigator {
   /// Notifications with the same `name` will be overwritten.
   ///
   static Future<bool> notify({
-    @required String name,
     @required String url,
     int index = 0,
+    @required String name,
     Map<String, dynamic> params = const {},
   }) =>
       _default._sendChannel.notify(
@@ -143,15 +143,15 @@ class ThrioNavigator {
   ///
   /// return value is `params`.
   ///
-  static Stream<Map<String, dynamic>> onPageNotifyStream(
-    String name,
-    String url, {
-    int index,
+  static Stream<Map<String, dynamic>> onPageNotify({
+    @required String url,
+    @required int index,
+    @required String name,
   }) =>
-      _default._receiveChannel.onPageNotifyStream(
-        name,
-        url,
+      _default._receiveChannel.onPageNotify(
+        url: url,
         index: index,
+        name: name,
       );
 
   /// Register default page builder for the router.
@@ -198,6 +198,8 @@ class ThrioNavigator {
       _default._pageBuilders[url];
 
   /// Sent when the navigation stack can be pushed.
+  ///
+  /// Do not call this method.
   ///
   static void ready() => _default._channel.invokeMethod<bool>('ready');
 
