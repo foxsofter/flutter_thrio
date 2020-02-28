@@ -13,6 +13,26 @@ import io.flutter.plugin.common.PluginRegistry.Registrar
 /** ThrioPlugin */
 class ThrioPlugin : FlutterPlugin {
 
+//
+//    private var activity: Activity? = null
+//    override fun onAttachedToActivity(binding: ActivityPluginBinding) {
+//        this.activity = binding.activity
+//        Log.e("Thrio", "onAttached activity $activity")
+//    }
+//
+//    override fun onDetachedFromActivity() {
+//        Log.e("Thrio", "onDetached activity $activity")
+//        this.activity = null
+//    }
+//
+//    override fun onReattachedToActivityForConfigChanges(binding: ActivityPluginBinding) {
+//
+//    }
+//
+//    override fun onDetachedFromActivityForConfigChanges() {
+//
+//    }
+
     companion object {
         // This static function is optional and equivalent to onAttachedToEngine. It supports the old
         // pre-Flutter-1.12 Android projects. You are encouraged to continue supporting

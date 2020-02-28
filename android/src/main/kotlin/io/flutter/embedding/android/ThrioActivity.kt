@@ -1,12 +1,16 @@
-package com.hellobike.flutter.thrio.activity
+package io.flutter.embedding.android
 
+import android.annotation.SuppressLint
 import android.content.Intent
+import android.os.Bundle
+import android.util.Log
 import com.hellobike.flutter.thrio.OnActionListener
 import com.hellobike.flutter.thrio.navigator.NavigatorChannelCache
 import com.hellobike.flutter.thrio.navigator.NavigatorController
-import com.hellobike.thrio.OnNotifyListener
-import com.hellobike.thrio.Result
+import com.hellobike.flutter.thrio.OnNotifyListener
+import com.hellobike.flutter.thrio.Result
 import io.flutter.embedding.android.FlutterActivity
+import io.flutter.embedding.android.FlutterView
 import io.flutter.plugin.common.BinaryMessenger
 
 open class ThrioActivity : FlutterActivity(), OnActionListener, OnNotifyListener {
@@ -22,6 +26,13 @@ open class ThrioActivity : FlutterActivity(), OnActionListener, OnNotifyListener
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         intent.extras?.let { this.intent.putExtras(it) }
+    }
+
+    @SuppressLint("VisibleForTests")
+    override fun finish() {
+        super.finish()
+        super.delegate.onStop()
+        super.delegate.onDetach()
     }
 
     override fun onBackPressed() {

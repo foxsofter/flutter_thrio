@@ -1,7 +1,5 @@
 package com.hellobike.flutter.thrio
 
-import com.hellobike.thrio.Result
-
 
 internal interface OnActionListener {
 

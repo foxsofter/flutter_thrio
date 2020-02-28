@@ -1,4 +1,4 @@
-package com.hellobike.thrio
+package com.hellobike.flutter.thrio
 
 import android.app.Activity
 import android.content.Context

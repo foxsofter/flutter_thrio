@@ -1,11 +1,11 @@
-package com.hellobike.flutter.thrio.activity
+package com.hellobike.flutter.thrio.navigator
 
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import com.hellobike.thrio.NavigationBuilder
-import com.hellobike.flutter.thrio.navigator.NavigatorController
+import com.hellobike.flutter.thrio.NavigationBuilder
 import io.flutter.embedding.android.FlutterActivity
+import io.flutter.embedding.android.ThrioActivity
 
 internal object FlutterNavigationBuilder : NavigationBuilder {
     override fun getActivityClz(url: String): Class<out Activity> =
