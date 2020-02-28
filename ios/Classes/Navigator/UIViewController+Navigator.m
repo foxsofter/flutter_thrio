@@ -98,6 +98,9 @@ NS_ASSUME_NONNULL_BEGIN
   NavigatorPageRoute *route = [self thrio_getRouteByUrl:url index:index];
   if (route) {
     [route addNotify:name params:params];
+    if (self == self.navigationController.topViewController) {
+      [self thrio_onNotify];
+    }
     return YES;
   }
   return NO;

@@ -9,7 +9,7 @@
 #import "ThrioViewController.h"
 #import <thrio/Thrio.h>
 
-@interface ThrioViewController ()
+@interface ThrioViewController ()<NavigatorNotifyProtocol>
 
 @property (weak, nonatomic) IBOutlet UILabel *label;
 
@@ -50,6 +50,10 @@
       
     }];
   }
+}
+
+- (void)onNotify:(NSString *)name params:(NSDictionary *)params {
+  ThrioLogV(@"native1 onNotify: %@, %@", name, params);
 }
 
 @end

@@ -140,6 +140,23 @@ class _Page3State extends State<Page3> {
                             style: TextStyle(fontSize: 22, color: Colors.black),
                           )),
                     ),
+                    InkWell(
+                      onTap: () {
+                        ThrioNavigator.notify(
+                          url: 'biz1/flutter1',
+                          name: 'page1Notify',
+                          params: {'ss': 11},
+                        );
+                      },
+                      child: Container(
+                          padding: const EdgeInsets.all(8),
+                          margin: const EdgeInsets.all(8),
+                          color: Colors.grey,
+                          child: Text(
+                            'notify flutter1',
+                            style: TextStyle(fontSize: 22, color: Colors.black),
+                          )),
+                    ),
                   ]),
             ),
           )));
