@@ -64,7 +64,9 @@ NS_ASSUME_NONNULL_BEGIN
                                       ThrioBoolCallback _Nullable result) {
     __strong typeof(self) strongSelf = weakself;
     if (strongSelf.readyBlock) {
+      ThrioLogV(@"on ready");
       strongSelf.readyBlock();
+      strongSelf.readyBlock = nil;
     }
   }];
 }

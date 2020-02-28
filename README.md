@@ -2,7 +2,7 @@
 
 thrio 是一个支持 flutter 嵌入原生应用的路由库，目前只有 iOS 版本可看，Android 版本在开发中。
 
-[多引擎模式](./doc/MultipleEngine.md)
+[引擎管理](./doc/FlutterEngine.md)
 
 ## 为什么写 thrio
 
