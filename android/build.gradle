@@ -1,29 +1,46 @@
-group 'com.hellobike.flutter.thrio'
-version '1.0-SNAPSHOT'
+def flutterPluginVersion = 'managed'
+group 'com.hellobike.thrio'
 
 buildscript {
     ext.kotlin_version = '1.3.50'
     repositories {
+        maven {
+            url 'http://maven.hellobike.cn/nexus/content/groups/HellobikeMobileGroup/'
+        }
         google()
         jcenter()
     }
 
+    configurations.all {
+        resolutionStrategy.cacheDynamicVersionsFor 0, 'seconds'
+        resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
+    }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.5.0'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath 'com.hellobike.plugins:fluttergradle-plugin:1.+'
     }
 }
 
 rootProject.allprojects {
     repositories {
+        maven {
+            url 'http://maven.hellobike.cn/nexus/content/groups/HellobikeMobileGroup/'
+        }
         google()
         jcenter()
+    }
+    configurations.all{
+        resolutionStrategy.cacheDynamicVersionsFor 0, 'seconds'
+        resolutionStrategy.cacheChangingModulesFor 0, 'seconds'
     }
 }
 
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+apply from: "https://gitlab.hellobike.cn/Publics/DocTorrent/raw/master/Android/%E9%80%9A%E7%94%A8%E8%84%9A%E6%9C%AC%E7%9B%AE%E5%BD%95/uploadMaven.gradle"
+apply from: "https://gitlab.hellobike.cn/Publics/DocTorrent/raw/master/Android/%E9%80%9A%E7%94%A8%E8%84%9A%E6%9C%AC%E7%9B%AE%E5%BD%95/flutterPluginLibraryWrapper.gradle"
 
 android {
     compileSdkVersion 28
@@ -37,6 +54,13 @@ android {
     }
     lintOptions {
         disable 'InvalidPackage'
+    }
+    packagingOptions {
+        // Prevent the ELF library from getting corrupted.
+        doNotStrip '*/x86_64/libapp.so'
+        doNotStrip '*/x86/libapp.so'
+        doNotStrip '*/armeabi-v7a/libapp.so'
+        doNotStrip '*/arm64-v8a/libapp.so'
     }
 }
 
