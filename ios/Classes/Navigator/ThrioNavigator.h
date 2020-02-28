@@ -310,15 +310,15 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark - set pop disabled methods
 
-/// Setting the last page cannot be poped..
+/// Setting the last page to disable pop.
 ///
 + (void)setPopDisabled:(BOOL)disabled;
 
-/// Setting the page with `url` cannot be poped..
+/// Setting the page with `url` to disable pop.
 ///
 + (void)setPopDisabledUrl:(NSString *)url disabled:(BOOL)disabled;
 
-/// Setting the page with `url` and `index` cannot be poped..
+/// Setting the page with `url` and `index` to disable pop.
 ///
 + (void)setPopDisabledUrl:(NSString *)url index:(NSNumber *)index disabled:(BOOL)disabled;
 
