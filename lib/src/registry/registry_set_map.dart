@@ -37,6 +37,10 @@ class RegistrySetMap<K, V> {
     };
   }
 
+  Iterable<K> get keys => _maps.keys;
+
+  Iterable<Set<V>> get values => _maps.values;
+
   void clear() => _maps.clear();
 
   Set<V> operator [](K key) => _maps[key];

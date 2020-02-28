@@ -93,4 +93,10 @@ class NavigatorSendChannel {
     };
     return _channel.invokeMethod<bool>('setPopDisabled', arguments);
   }
+
+  Future registerUrls(List<String> urls) =>
+      _channel.invokeMethod('registerUrls', {'urls': urls});
+
+  Future unregisterUrls(List<String> urls) =>
+      _channel.invokeMethod('unregisterUrls', {'urls': urls});
 }

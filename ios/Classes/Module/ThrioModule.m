@@ -7,6 +7,8 @@
 
 #import "ThrioModule.h"
 #import "ThrioNavigator+NavigatorBuilder.h"
+#import "ThrioNavigator+Internal.h"
+#import "UINavigationController+FlutterEngine.h"
 
 @implementation ThrioModule
 
@@ -42,6 +44,10 @@ static NSMutableDictionary *modules;
       }
     }
   });
+  // 单引擎模式下，提前启动
+  if (!ThrioNavigator.isMultiEngineEnabled) {
+    [ThrioNavigator.navigationController thrio_startupWithEntrypoint:@"" readyBlock:^{}];
+  }
 }
 
 - (ThrioVoidCallback)registerNativeViewControllerBuilder:(ThrioNativeViewControllerBuilder)builder

@@ -24,7 +24,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)thrio_detachFlutterViewController:(ThrioFlutterViewController *)viewController;
 
-- (void)thrio_removeIfNeeded;
+- (void)thrio_removeAllEngineIfNeeded;
+
+- (void)thrio_registerUrls:(NSArray *)urls;
+
+- (void)thrio_unregisterUrls:(NSArray *)urls;
 
 @end
 

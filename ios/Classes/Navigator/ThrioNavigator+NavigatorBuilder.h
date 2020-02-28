@@ -13,7 +13,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface ThrioNavigator (NavigatorBuilder)
 
-+ (ThrioRegistryMap *)nativeViewControllerBuilders;
 
 /// Register native view controller builder for url.
 ///
@@ -26,7 +25,11 @@ NS_ASSUME_NONNULL_BEGIN
 ///
 + (ThrioVoidCallback)registerFlutterViewControllerBuilder:(ThrioFlutterViewControllerBuilder)builder;
 
++ (ThrioRegistryMap *)nativeViewControllerBuilders;
+
 + (ThrioFlutterViewControllerBuilder _Nullable)flutterViewControllerBuilder;
+
++ (NSMutableSet *)flutterPageRegisteredUrls;
 
 @end
 
