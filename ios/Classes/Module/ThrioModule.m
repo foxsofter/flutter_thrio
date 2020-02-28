@@ -59,6 +59,10 @@ static NSMutableDictionary *modules;
   return [ThrioNavigator registerFlutterViewControllerBuilder:builder];
 }
 
+- (void)startupFlutterEngineWithEntrypoint:(NSString *)entrypoint {
+  [ThrioNavigator.navigationController thrio_startupWithEntrypoint:entrypoint readyBlock:^{}];
+}
+
 - (void)onModuleRegister { }
 
 @end

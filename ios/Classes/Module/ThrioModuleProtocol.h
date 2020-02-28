@@ -14,18 +14,22 @@ NS_ASSUME_NONNULL_BEGIN
 
 @required
 
-/// A function for registering a module, which will call
-/// the `onModuleRegister` function of the `module`.
+/// A function for registering a module.
+///
+/// Should be called in `onModuleRegister`.
 ///
 - (void)registerModule:(id<ThrioModuleProtocol>)module;
 
-/// A function for module initialization that will call
-/// the `onPageRegister`, `onModuleInit` and `onModuleAsyncInit`
+/// A function for module initialization that will call  the `onPageRegister`, `onModuleInit` and `onModuleAsyncInit`
 /// methods of all modules.
+///
+/// Should only be called once when the app startups.
 ///
 - (void)initModule;
 
 /// Register native view controller builder for url.
+///
+/// Do not override this method.
 ///
 - (ThrioVoidCallback)registerNativeViewControllerBuilder:(ThrioNativeViewControllerBuilder)builder
                                                   forUrl:(NSString *)url;
@@ -34,7 +38,17 @@ NS_ASSUME_NONNULL_BEGIN
 ///
 /// Need to be register when extending the `ThrioFlutterViewController` class.
 ///
+/// Do not override this method.
+///
 - (ThrioVoidCallback)registerFlutterViewControllerBuilder:(ThrioFlutterViewControllerBuilder)builder;
+
+/// Startup the flutter engine with `entrypoint`.
+///
+/// Should be called in `onModuleAsyncInit`. Subsequent calls will return immediately if the entrypoint is the same.
+///
+/// Do not override this method.
+///
+- (void)startupFlutterEngineWithEntrypoint:(NSString *)entrypoint;
 
 @optional
 
