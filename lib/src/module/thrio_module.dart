@@ -62,12 +62,16 @@ mixin ThrioModule {
   ///
   /// return value is `params`.
   ///
-  Stream<Map<String, dynamic>> onPageNotifyStream(
-    String name,
-    String url, {
-    int index,
+  Stream<Map<String, dynamic>> onPageNotify({
+    @required String name,
+    @required String url,
+    @required int index,
   }) =>
-      ThrioNavigator.onPageNotifyStream(name, url, index: index);
+      ThrioNavigator.onPageNotify(
+        url: url,
+        index: index,
+        name: name,
+      );
 
   /// Register default page builder for the router.
   ///

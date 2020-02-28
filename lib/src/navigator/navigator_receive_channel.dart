@@ -1,6 +1,8 @@
 // Copyright (c) 2019/12/05, 13:40:58 PM The Hellobike. All rights reserved.
 // Created by foxsofter, foxsofter@gmail.com.
 
+import 'package:flutter/foundation.dart';
+
 import '../channel/thrio_channel.dart';
 import 'navigator_route_settings.dart';
 import 'thrio_navigator.dart';
@@ -16,10 +18,10 @@ class NavigatorReceiveChannel {
 
   final ThrioChannel _channel;
 
-  Stream<Map<String, dynamic>> onPageNotifyStream(
-    String name,
-    String url, {
-    int index,
+  Stream<Map<String, dynamic>> onPageNotify({
+    @required String name,
+    @required String url,
+    @required int index,
   }) =>
       _channel
           .onEventStream('__onNotify__')
@@ -29,7 +31,7 @@ class NavigatorReceiveChannel {
               (index == null || arguments.containsValue(index)))
           .map((arguments) {
         final params = arguments['params'];
-        return params is Map<String, dynamic> ? params : null;
+        return params is Map<String, dynamic> ? params : {};
       });
 
   void _onPush() => _channel.registryMethodCall('__onPush__', ([arguments]) {

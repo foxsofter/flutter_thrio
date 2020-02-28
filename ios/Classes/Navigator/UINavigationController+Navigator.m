@@ -106,7 +106,8 @@ NS_ASSUME_NONNULL_BEGIN
                    name:(NSString *)name
                  params:(NSDictionary *)params {
   UIViewController *vc = [self getViewControllerByUrl:url index:index];
-  if ([vc conformsToProtocol:@protocol(NavigatorNotifyProtocol)]) {
+  if ([vc isKindOfClass:ThrioFlutterViewController.class] ||
+      [vc conformsToProtocol:@protocol(NavigatorNotifyProtocol)]) {
     return [vc thrio_notifyUrl:url index:index name:name params:params];
   }
   return NO;
