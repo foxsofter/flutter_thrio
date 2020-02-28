@@ -27,8 +27,6 @@
     [self startupFlutterWithEntrypoint:entrypoint];
     [self registerPlugin];
     [self setupChannelWithEntrypoint:entrypoint readyBlock:block];
-  } else {
-    block();
   }
 }
 

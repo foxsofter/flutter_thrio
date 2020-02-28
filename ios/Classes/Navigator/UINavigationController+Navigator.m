@@ -64,14 +64,16 @@ NS_ASSUME_NONNULL_BEGIN
   @synchronized (self) {
     UIViewController *viewController = [self thrio_createNativeViewControllerWithUrl:url params:params];
     if (viewController) {
-      [self thrio_pushViewController:viewController url:url params:params animated:animated result:result ];
+      [self thrio_pushViewController:viewController url:url params:params animated:animated result:result];
     } else {
       NSString *entrypoint = @"";
       if (ThrioNavigator.isMultiEngineEnabled) {
         entrypoint = [url componentsSeparatedByString:@"/"].firstObject;
       }
+
       __weak typeof(self) weakself = self;
       ThrioVoidCallback readyBlock = ^{
+        ThrioLogV(@"push entrypoint:%@, url:%@", entrypoint, url);
         __strong typeof(self) strongSelf = weakself;
         if ([strongSelf.topViewController isKindOfClass:ThrioFlutterViewController.class] &&
             [[(ThrioFlutterViewController*)strongSelf.topViewController entrypoint] isEqualToString:entrypoint]) {
@@ -95,7 +97,7 @@ NS_ASSUME_NONNULL_BEGIN
                                         result:result];
         }
       };
-      
+
       [self thrio_startupWithEntrypoint:entrypoint readyBlock:readyBlock];
     }
   }

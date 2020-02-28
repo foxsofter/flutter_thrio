@@ -23,7 +23,8 @@ class _Page2State extends State<Page2> {
   @override
   Widget build(BuildContext context) => NavigatorPageNotify(
       name: 'page2Notify',
-      onPageNotify: (params) => ThrioLogger().v('receive notify: $params'),
+      onPageNotify: (params) =>
+          ThrioLogger().v('flutter2 receive notify: $params'),
       child: Scaffold(
           appBar: AppBar(
             brightness: Brightness.light,

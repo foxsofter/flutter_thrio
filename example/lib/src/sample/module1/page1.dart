@@ -30,7 +30,8 @@ class _Page1State extends State<Page1> {
   @override
   Widget build(BuildContext context) => NavigatorPageNotify(
       name: 'page1Notify',
-      onPageNotify: (params) => ThrioLogger().v('receive notify: $params'),
+      onPageNotify: (params) =>
+          ThrioLogger().v('flutter1 receive notify: $params'),
       child: Scaffold(
           appBar: AppBar(
             brightness: Brightness.light,

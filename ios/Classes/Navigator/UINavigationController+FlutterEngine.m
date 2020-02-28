@@ -67,6 +67,7 @@
   if ([self.thrio_flutterEngines.allKeys containsObject:entrypoint]) {
     block();
   } else {
+    ThrioLogV(@"push in thrio_startupWithEntrypoint:%@", entrypoint);
     ThrioFlutterEngine *flutterEngine = [[ThrioFlutterEngine alloc] init];
     [self.thrio_flutterEngines setObject:flutterEngine forKey:entrypoint];
     [flutterEngine startupWithEntrypoint:entrypoint readyBlock:block];
