@@ -369,7 +369,7 @@ NS_ASSUME_NONNULL_BEGIN
   return viewController;
 }
 
-- (UIViewController *)thrio_createNativeViewControllerWithUrl:(NSString *)url params:(NSDictionary *)params {
+- (UIViewController * _Nullable)thrio_createNativeViewControllerWithUrl:(NSString *)url params:(NSDictionary *)params {
   UIViewController *viewController;
   ThrioNativeViewControllerBuilder builder = [ThrioNavigator nativeViewControllerBuilders][url];
   if (builder) {
