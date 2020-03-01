@@ -21,7 +21,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)clear;
 
-- (NSSet *)objectForKeyedSubscript:(KeyType)key;
+- (NSSet<ObjectType> *)objectForKeyedSubscript:(KeyType)key;
 
 @end
 

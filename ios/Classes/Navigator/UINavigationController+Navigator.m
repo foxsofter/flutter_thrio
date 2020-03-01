@@ -65,7 +65,7 @@ NS_ASSUME_NONNULL_BEGIN
     UIViewController *viewController = [self thrio_createNativeViewControllerWithUrl:url params:params];
     if (viewController) {
       [self thrio_pushViewController:viewController url:url params:params animated:animated result:result];
-    } else {
+    } else if ([ThrioNavigator.flutterPageRegisteredUrls containsObject:url]) {
       NSString *entrypoint = @"";
       if (ThrioNavigator.isMultiEngineEnabled) {
         entrypoint = [url componentsSeparatedByString:@"/"].firstObject;
@@ -99,6 +99,10 @@ NS_ASSUME_NONNULL_BEGIN
       };
 
       [self thrio_startupWithEntrypoint:entrypoint readyBlock:readyBlock];
+    } else {
+      @throw [NSException exceptionWithName:@"URLException"
+                                     reason:@"url is not registered!"
+                                   userInfo:nil];
     }
   }
 }
