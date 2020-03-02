@@ -2,7 +2,7 @@ package com.hellobike.flutter.thrio.navigator
 
 import android.app.Activity
 import com.hellobike.flutter.thrio.channel.ThrioChannel
-import com.hellobike.thrio.Result
+import com.hellobike.flutter.thrio.Result
 import io.flutter.plugin.common.BinaryMessenger
 import io.flutter.plugin.common.MethodChannel
 
