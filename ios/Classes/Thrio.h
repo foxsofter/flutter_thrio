@@ -11,7 +11,6 @@
 #import "ThrioTypes.h"
 #import "ThrioPlugin.h"
 #import "ThrioChannel.h"
-#import "ThrioException.h"
 #import "ThrioLogger.h"
 #import "ThrioModuleProtocol.h"
 #import "ThrioModule.h"
