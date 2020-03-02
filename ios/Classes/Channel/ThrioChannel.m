@@ -90,9 +90,9 @@ static NSString *const kEventNameKey = @"__event_name__";
     __strong typeof(self) strongSelf = weakself;
     ThrioMethodHandler handler = strongSelf.methodHandlers[call.method];
     if (handler) {
-        handler(call.arguments, ^(BOOL r){
-            result(@(r));
-        });
+      handler(call.arguments, ^(id r){
+        result(r);
+      });
     }
   }];
 }

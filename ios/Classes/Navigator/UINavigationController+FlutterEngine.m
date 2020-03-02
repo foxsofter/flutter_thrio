@@ -10,7 +10,6 @@
 #import "UINavigationController+FlutterEngine.h"
 #import "NavigatorReceiveChannel.h"
 #import "ThrioLogger.h"
-#import "ThrioException.h"
 #import "ThrioNavigator+Internal.h"
 #import "ThrioNavigator+NavigatorBuilder.h"
 #import "NSObject+ThrioSwizzling.h"

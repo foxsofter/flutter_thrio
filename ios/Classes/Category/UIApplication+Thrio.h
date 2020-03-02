@@ -17,7 +17,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// Gets the topmost UINavigationController.
 ///
-- (UINavigationController *)topmostNavigationController;
+- (UINavigationController * _Nullable)topmostNavigationController;
 
 @end
 
