@@ -16,11 +16,9 @@ const String _kEventNameKey = '__event_name__';
 
 class ThrioChannel {
   factory ThrioChannel({String channel = '__thrio_channel__'}) =>
-      _instanceCaches[channel] ??= ThrioChannel._(channel: channel);
+      ThrioChannel._(channel: channel);
 
   ThrioChannel._({String channel}) : _channel = channel;
-
-  static final _instanceCaches = <String, ThrioChannel>{};
 
   final String _channel;
 

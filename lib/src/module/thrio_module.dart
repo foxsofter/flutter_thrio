@@ -5,8 +5,8 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 
-import '../../thrio.dart';
-import '../navigator/navigator_page_route.dart';
+import '../navigator/navigator_types.dart';
+import '../navigator/thrio_navigator.dart';
 
 mixin ThrioModule {
   static final _modules = <Type, ThrioModule>{};

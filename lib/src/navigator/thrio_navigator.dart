@@ -50,6 +50,12 @@ class ThrioNavigator {
 
   final _pageBuilders = RegistryMap<String, NavigatorPageBuilder>();
 
+  /// Sent when the navigation stack can be pushed.
+  ///
+  /// Do not call this method.
+  ///
+  static void ready() => _default._channel.invokeMethod<bool>('ready');
+
   /// Push the page onto the navigation stack.
   ///
   /// If a native page builder exists for the `url`, open the native page,
@@ -196,12 +202,6 @@ class ThrioNavigator {
 
   static NavigatorPageBuilder getPageBuilder(String url) =>
       _default._pageBuilders[url];
-
-  /// Sent when the navigation stack can be pushed.
-  ///
-  /// Do not call this method.
-  ///
-  static void ready() => _default._channel.invokeMethod<bool>('ready');
 
   /// Send on hot restart.
   ///
