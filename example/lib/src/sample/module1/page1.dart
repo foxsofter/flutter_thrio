@@ -2,8 +2,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:thrio/thrio.dart';
 
-import 'page2.dart';
-
 class Page1 extends StatefulWidget {
   const Page1({
     Key key,
