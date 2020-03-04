@@ -27,7 +27,7 @@
   return topmostViewController;
 }
 
-- (UINavigationController *)topmostNavigationController {
+- (UINavigationController * _Nullable)topmostNavigationController {
   UINavigationController* topmostNavigationController = nil;
   UIViewController *topmostViewController = self.delegate.window.rootViewController;
   while (true) {

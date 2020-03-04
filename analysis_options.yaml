@@ -14,7 +14,7 @@ linter:
   rules:
     - always_declare_return_types # 声明方法总是返回类型
     - always_put_control_body_on_new_line # 结构体总在新行
-    - always_put_required_named_parameters_first # 必要参数总在最前
+    # - always_put_required_named_parameters_first # 必要参数总在最前
     - always_require_non_null_named_parameters # 总是验证必要参数非null
     # - always_specify_types 建议注释掉，因为可能会跟 -avoid_annotating_with_dynamic 冲突
     - annotate_overrides # 强制 override 注解

@@ -10,7 +10,6 @@
 #import "UINavigationController+FlutterEngine.h"
 #import "NavigatorReceiveChannel.h"
 #import "ThrioLogger.h"
-#import "ThrioException.h"
 #import "ThrioNavigator+Internal.h"
 #import "ThrioNavigator+NavigatorBuilder.h"
 #import "NSObject+ThrioSwizzling.h"
@@ -67,6 +66,7 @@
   if ([self.thrio_flutterEngines.allKeys containsObject:entrypoint]) {
     block();
   } else {
+    ThrioLogV(@"push in thrio_startupWithEntrypoint:%@", entrypoint);
     ThrioFlutterEngine *flutterEngine = [[ThrioFlutterEngine alloc] init];
     [self.thrio_flutterEngines setObject:flutterEngine forKey:entrypoint];
     [flutterEngine startupWithEntrypoint:entrypoint readyBlock:block];

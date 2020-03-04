@@ -46,7 +46,9 @@
   [super viewDidLoad];
 
   if (self.thrio_firstRoute.settings) {
-    NSString *txt = [NSString stringWithFormat:@"native page: %@ \n index: %@", self.thrio_firstRoute.settings.url, self.thrio_firstRoute.settings.index];
+    NSString *txt = [NSString stringWithFormat:@"native page: %@ \n index: %@",
+                     self.thrio_firstRoute.settings.url,
+                     self.thrio_firstRoute.settings.index];
     [self.label setText:txt];
   }
   

@@ -24,15 +24,15 @@ class NavigatorSendChannel {
   }
 
   Future<bool> notify({
-    @required String name,
     @required String url,
     int index = 0,
+    @required String name,
     Map<String, dynamic> params = const {},
   }) {
     final arguments = <String, dynamic>{
-      'name': name,
       'url': url,
       'index': index,
+      'name': name,
       'params': params,
     };
     return _channel.invokeMethod<bool>('notify', arguments);

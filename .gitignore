@@ -3,5 +3,7 @@
 .lock
 .packages
 .pub/
+.vscode/
+.idea/
 
 build/

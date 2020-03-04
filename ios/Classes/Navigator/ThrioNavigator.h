@@ -316,15 +316,18 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// Setting the page with `url` to disable pop.
 ///
-+ (void)setPopDisabledUrl:(NSString *)url disabled:(BOOL)disabled;
++ (void)setPopDisabledUrl:(NSString *)url
+                 disabled:(BOOL)disabled;
 
 /// Setting the page with `url` and `index` to disable pop.
 ///
-+ (void)setPopDisabledUrl:(NSString *)url index:(NSNumber *)index disabled:(BOOL)disabled;
++ (void)setPopDisabledUrl:(NSString *)url
+                    index:(NSNumber *)index
+                 disabled:(BOOL)disabled;
 
 #pragma mark - multi-engine methods
 
-/// Set multi-engine mode to `enabled`, default is false.
+/// Set multi-engine mode to `enabled`, default is NO.
 ///
 /// Should be called before the engine is initialized.
 ///

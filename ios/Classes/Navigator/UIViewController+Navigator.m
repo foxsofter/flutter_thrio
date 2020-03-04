@@ -98,6 +98,9 @@ NS_ASSUME_NONNULL_BEGIN
   NavigatorPageRoute *route = [self thrio_getRouteByUrl:url index:index];
   if (route) {
     [route addNotify:name params:params];
+    if (self == self.navigationController.topViewController) {
+      [self thrio_onNotify];
+    }
     return YES;
   }
   return NO;
@@ -306,10 +309,13 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)thrio_viewDidAppear:(BOOL)animated {
   [self thrio_viewDidAppear:animated];
   
-  if (![self isKindOfClass:ThrioFlutterViewController.class]) {
+  if ([self isKindOfClass:ThrioFlutterViewController.class] ||
+      [self conformsToProtocol:@protocol(NavigatorNotifyProtocol)]) {
     // 当页面出现后，给页面发送通知
     [self thrio_onNotify];
-    
+  }
+  
+  if (![self isKindOfClass:ThrioFlutterViewController.class]) {
     if (self.thrio_hidesNavigationBar == nil) {
       self.thrio_hidesNavigationBar = @(self.navigationController.navigationBarHidden);
     }
@@ -334,12 +340,11 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 - (void)thrio_onNotify {
-  BOOL isFlutterViewController = [self isKindOfClass:ThrioFlutterViewController.class];
   NavigatorPageRoute *route = self.thrio_lastRoute;
   NSArray *keys = [route.notifications.allKeys copy];
   for (NSString *name in keys) {
     NSDictionary * params = [route removeNotify:name];
-    if (isFlutterViewController) {
+    if ([self isKindOfClass:ThrioFlutterViewController.class]) {
       NSDictionary *arguments = @{
         @"url": route.settings.url,
         @"index": route.settings.index,

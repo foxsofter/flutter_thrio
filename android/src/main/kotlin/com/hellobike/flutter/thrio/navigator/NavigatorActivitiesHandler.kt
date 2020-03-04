@@ -27,7 +27,7 @@ internal object NavigatorActivitiesHandler : Application.ActivityLifecycleCallba
         clearSystemDestroyed(activity)
         this.activity = activity
         if (NavigatorController.action == Action.NONE) {
-            NavigatorController.didRemoveAndNotify(activity)
+            NavigatorController.removeOrNotify(activity)
             return
         }
         /** push 添加stack key **/
@@ -37,6 +37,10 @@ internal object NavigatorActivitiesHandler : Application.ActivityLifecycleCallba
         }
         if (NavigatorController.action == Action.POP) {
             NavigatorController.didPop(activity)
+            return
+        }
+        if (NavigatorController.action == Action.REMOVE) {
+            NavigatorController.didRemove(activity)
             return
         }
         if (NavigatorController.action == Action.POP_TO) {
@@ -63,6 +67,7 @@ internal object NavigatorActivitiesHandler : Application.ActivityLifecycleCallba
         // 清空页面记录
         if (NavigatorController.action == Action.NONE) {
             NavigatorController.clearStack(activity)
+            return
         }
     }
 

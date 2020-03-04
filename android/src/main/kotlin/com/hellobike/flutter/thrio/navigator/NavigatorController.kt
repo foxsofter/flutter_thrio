@@ -1,13 +1,14 @@
 package com.hellobike.flutter.thrio.navigator
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import com.hellobike.flutter.thrio.OnActionListener
-import com.hellobike.thrio.OnNotifyListener
-import com.hellobike.thrio.Result
+import com.hellobike.flutter.thrio.OnNotifyListener
+import com.hellobike.flutter.thrio.Result
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.embedding.engine.FlutterEngineCache
 import io.flutter.embedding.engine.dart.DartExecutor
@@ -135,7 +136,12 @@ internal object NavigatorController {
         onPop(activity, record) {
             if (it) {
                 NavigatorPageRouteStack.pop(record)
-                didRemoveAndNotify(activity)
+                val key = getKey(activity)
+                if (!NavigatorPageRouteStack.hasRecord(key)) {
+                    activity.finish()
+                } else {
+                    removeOrNotify(activity)
+                }
             }
             result(it)
         }
@@ -159,44 +165,81 @@ internal object NavigatorController {
             THRIO_STACK_INDEX_AUTO -> NavigatorPageRouteStack.lastIndex(url)
             else -> index
         }
-        val last = NavigatorPageRouteStack.last()
-        val record = NavigatorPageRouteStack.last(url, targetIndex)
-        if (last == record) {
-            Log.e("Thrio", "action remove top record url ${record.url} index ${record.index}")
-            result(true)
+        if (!NavigatorPageRouteStack.hasRecord()) {
+            result(false)
             return
         }
-        Log.e("Thrio", "action remove url ${record.url} index ${record.index}")
+        val record = NavigatorPageRouteStack.last(url, targetIndex)
+        val last = NavigatorPageRouteStack.last()
+        if (last == record) {
+            record.animated = animated
+        }
+        val intent = Intent(context, last.clazz)
+        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        context.startActivity(intent)
+        action = Action.REMOVE
+        this.record = record
+        this.result = result
+    }
+
+    fun didRemove(activity: Activity) {
+        val result = result
+        checkNotNull(result) { "result must not be null" }
+        val record = record
+        checkNotNull(record) { "remove record not found" }
+        check(NavigatorPageRouteStack.hasRecord()) { "must has record" }
+        val last = NavigatorPageRouteStack.last()
+        check(last.clazz == activity::class.java) {
+            "activity is not match record ${record.clazz}"
+        }
+        action = Action.NONE
+        this.record = null
+        this.result = null
+        if (last == record) {
+            NavigatorPageRouteStack.pop(record)
+            onRemove(activity, record, result)
+            return
+        }
         record.removed = true
+        result(true)
+        return
+    }
+
+    private fun onRemove(activity: Activity, record: NavigatorPageRoute, result: Result) {
+        if (activity is OnActionListener) {
+            activity.onRemove(record.url, record.index, record.animated, result)
+            return
+        }
         result(true)
     }
 
-    fun didRemoveAndNotify(activity: Activity) {
+    fun removeOrNotify(activity: Activity) {
         if (!hasKey(activity)) {
             return
         }
         val key = getKey(activity)
-        if (!NavigatorPageRouteStack.hasRecord(key)) {
-            Log.e("Thrio", "action didRemoveAndNotify activity $activity finish")
+        check(NavigatorPageRouteStack.hasRecord(key)) { "must has record to remove or notify" }
+        val record = NavigatorPageRouteStack.last(key)
+        if (record.removed) {
+            Log.e("Thrio", "action didRemove activity $activity")
+            NavigatorPageRouteStack.pop(record)
+            if (activity is OnActionListener) {
+                activity.onRemove(record.url, record.index, false) {}
+            }
+            if (NavigatorPageRouteStack.hasRecord(key)) {
+                removeOrNotify(activity)
+                return
+            }
             activity.finish()
             return
         }
-        val record = NavigatorPageRouteStack.last(key)
-        if (!record.removed) {
-            Log.e("Thrio", "action didRemoveAndNotify activity $activity notify last")
-            record.removeNotify().onEach {
-                if (activity is OnNotifyListener) {
-                    activity.onNotify(record.url, record.index, it.key, it.value)
-                }
+        Log.e("Thrio", "action didRemoveAndNotify activity $activity notify last")
+        record.removeNotify().onEach {
+            if (activity is OnNotifyListener) {
+                activity.onNotify(record.url, record.index, it.key, it.value)
             }
-            return
         }
-        NavigatorPageRouteStack.pop(record)
-        Log.e("Thrio", "action didRemoveAndNotify activity $activity remove pop")
-        didRemoveAndNotify(activity)
-//                if (activity is OnActionListener) {
-//                    activity.onRemove(record.url, record.index, false) {}
-//                }
     }
 
     fun popTo(context: Context, url: String, index: Int, animated: Boolean, result: Result) {
@@ -244,7 +287,7 @@ internal object NavigatorController {
         onPopTo(activity, record) {
             if (it) {
                 NavigatorPageRouteStack.popTo(record)
-                didRemoveAndNotify(activity)
+//                didRemoveAndNotify(activity)
             }
             result(it)
         }
@@ -300,6 +343,7 @@ internal object NavigatorController {
         val record = NavigatorPageRouteStack.last(url, targetIndex)
         record.popDisabled = disable
         result(true)
+        // need send to flutter
     }
 
     fun init(context: Context) {

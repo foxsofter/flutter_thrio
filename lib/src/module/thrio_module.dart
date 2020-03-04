@@ -5,8 +5,8 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 
-import '../../thrio.dart';
-import '../navigator/navigator_page_route.dart';
+import '../navigator/navigator_types.dart';
+import '../navigator/thrio_navigator.dart';
 
 mixin ThrioModule {
   static final _modules = <Type, ThrioModule>{};
@@ -62,12 +62,16 @@ mixin ThrioModule {
   ///
   /// return value is `params`.
   ///
-  Stream<Map<String, dynamic>> onPageNotifyStream(
-    String name,
-    String url, {
-    int index,
+  Stream<Map<String, dynamic>> onPageNotify({
+    @required String name,
+    @required String url,
+    @required int index,
   }) =>
-      ThrioNavigator.onPageNotifyStream(name, url, index: index);
+      ThrioNavigator.onPageNotify(
+        url: url,
+        index: index,
+        name: name,
+      );
 
   /// Register default page builder for the router.
   ///

@@ -1,4 +1,4 @@
-package com.hellobike.thrio
+package com.hellobike.flutter.thrio
 
 import android.content.Context
 import com.hellobike.flutter.thrio.navigator.NavigatorBuilder
@@ -30,6 +30,12 @@ object ThrioNavigator {
 
     @JvmStatic
     @JvmOverloads
+    fun remove(context: Context, url: String, index: Int, animated: Boolean = true, result: Result = {}) {
+        NavigatorController.remove(context, url, index, animated, result)
+    }
+
+    @JvmStatic
+    @JvmOverloads
     fun popTo(context: Context, url: String, index: Int = 0,
               animated: Boolean = true, result: Result = {}
     ) {
@@ -57,7 +63,7 @@ object ThrioNavigator {
 
     @JvmStatic
     @JvmOverloads
-    fun unRegisterNavigationBuilder(url: String) {
+    fun removeNavigationBuilder(url: String) {
         NavigatorBuilder.unRegisterNavigationBuilder(url)
     }
 }

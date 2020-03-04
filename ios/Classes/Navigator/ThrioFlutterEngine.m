@@ -7,7 +7,6 @@
 
 #import "ThrioFlutterEngine.h"
 #import "ThrioLogger.h"
-#import "ThrioException.h"
 #import "ThrioNavigator.h"
 
 @interface ThrioFlutterEngine ()
@@ -27,8 +26,6 @@
     [self startupFlutterWithEntrypoint:entrypoint];
     [self registerPlugin];
     [self setupChannelWithEntrypoint:entrypoint readyBlock:block];
-  } else {
-    block();
   }
 }
 
@@ -68,9 +65,9 @@
     result = [_engine run];
   }
   if (!result) {
-    @throw [ThrioException exceptionWithName:@"FlutterFailedException"
-                                      reason:@"run flutter engine failed!"
-                                    userInfo:nil];
+    @throw [NSException exceptionWithName:@"FlutterFailedException"
+                                   reason:@"run flutter engine failed!"
+                                 userInfo:nil];
   }
 }
 

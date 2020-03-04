@@ -64,14 +64,16 @@ NS_ASSUME_NONNULL_BEGIN
   @synchronized (self) {
     UIViewController *viewController = [self thrio_createNativeViewControllerWithUrl:url params:params];
     if (viewController) {
-      [self thrio_pushViewController:viewController url:url params:params animated:animated result:result ];
+      [self thrio_pushViewController:viewController url:url params:params animated:animated result:result];
     } else {
       NSString *entrypoint = @"";
       if (ThrioNavigator.isMultiEngineEnabled) {
         entrypoint = [url componentsSeparatedByString:@"/"].firstObject;
       }
+
       __weak typeof(self) weakself = self;
       ThrioVoidCallback readyBlock = ^{
+        ThrioLogV(@"push entrypoint:%@, url:%@", entrypoint, url);
         __strong typeof(self) strongSelf = weakself;
         if ([strongSelf.topViewController isKindOfClass:ThrioFlutterViewController.class] &&
             [[(ThrioFlutterViewController*)strongSelf.topViewController entrypoint] isEqualToString:entrypoint]) {
@@ -95,7 +97,7 @@ NS_ASSUME_NONNULL_BEGIN
                                         result:result];
         }
       };
-      
+
       [self thrio_startupWithEntrypoint:entrypoint readyBlock:readyBlock];
     }
   }
@@ -106,7 +108,8 @@ NS_ASSUME_NONNULL_BEGIN
                    name:(NSString *)name
                  params:(NSDictionary *)params {
   UIViewController *vc = [self getViewControllerByUrl:url index:index];
-  if ([vc conformsToProtocol:@protocol(NavigatorNotifyProtocol)]) {
+  if ([vc isKindOfClass:ThrioFlutterViewController.class] ||
+      [vc conformsToProtocol:@protocol(NavigatorNotifyProtocol)]) {
     return [vc thrio_notifyUrl:url index:index name:name params:params];
   }
   return NO;
@@ -366,7 +369,7 @@ NS_ASSUME_NONNULL_BEGIN
   return viewController;
 }
 
-- (UIViewController *)thrio_createNativeViewControllerWithUrl:(NSString *)url params:(NSDictionary *)params {
+- (UIViewController * _Nullable)thrio_createNativeViewControllerWithUrl:(NSString *)url params:(NSDictionary *)params {
   UIViewController *viewController;
   ThrioNativeViewControllerBuilder builder = [ThrioNavigator nativeViewControllerBuilders][url];
   if (builder) {

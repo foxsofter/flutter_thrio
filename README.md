@@ -2,7 +2,7 @@
 
 thrio 是一个支持 flutter 嵌入原生应用的路由库，目前只有 iOS 版本可看，Android 版本在开发中。
 
-[多引擎模式](./doc/MultipleEngine.md)
+[引擎管理](./doc/FlutterEngine.md)
 
 ## 为什么写 thrio
 
@@ -147,6 +147,30 @@ ThrioNavigator.notify(url: 'flutter1', name: 'reload');
 [ThrioNavigator notifyUrl:@"flutter1" name:@"reload"];
 ```
 
+### 页面接收通知
+
+1. dart 端接收页面通知
+
+使用`NavigatorPageNotify`这个Widget来实现在任何地方接收当前页面收到的通知。
+
+```dart
+NavigatorPageNotify(
+      name: 'page1Notify',
+      onPageNotify: (params) =>
+          ThrioLogger().v('flutter1 receive notify: $params'),
+      child: Xxxx());
+```
+
+2. iOS 端接收页面通知
+
+`UIViewController`实现协议`NavigatorNotifyProtocol`，通过该协议定义的方法来接收页面通知
+
+```objc
+- (void)onNotify:(NSString *)name params:(NSDictionary *)params {
+  ThrioLogV(@"native1 onNotify: %@, %@", name, params);
+}
+```
+
 ### Flutter 页面导航栏自动隐藏
 
 实际上实现了 UIViewController 的分类扩展，FlutterViewController 强制设为 YES，原生页面设置导航栏隐藏，也很简单
@@ -175,6 +199,12 @@ ThrioNavigator.setPopDisabled(url: 'flutter1');
 
 在 dart 端依然支持通过 WillPopScope 来设置禁止页面返回。
 
-### 支持 FlutterViewController 内嵌套 Dart 页面
+### 支持内嵌套 Flutter 页面
 
-- 在 iOS 中如果每打开一个 dart 页面都切换一个新的 FlutterViewController，每个页面多消耗 12M+以上的内存，内存消耗是非常恐怖的，这是目前 flutter_boost 下的实现方式。
+这是谷歌推荐的实现方式，导航栈中不被原生页面分隔的所有Flutter页面共用一个原生的容器页面，有效减少内存消耗量。
+
+1. iOS端
+
+- 在 iOS 中，打开一个新的 FlutterViewController，内存消耗大概是12M+，打开一个内嵌的Flutter页面，内存消耗不会超过2M，目前在我们的商家App上，95%的页面都不会需要从Flutter页面跳转到原生页面，整个App的内存占用将会减少很多。
+
+

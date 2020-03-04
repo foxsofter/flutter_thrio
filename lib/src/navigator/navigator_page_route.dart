@@ -4,9 +4,8 @@
 import 'package:flutter/material.dart';
 
 import 'navigator_route_settings.dart';
+import 'navigator_types.dart';
 import 'thrio_navigator.dart';
-
-typedef NavigatorPageBuilder = Widget Function(RouteSettings settings);
 
 /// A route managed by the `ThrioNavigator`.
 ///
@@ -23,7 +22,9 @@ class NavigatorPageRoute extends MaterialPageRoute<bool> {
             fullscreenDialog: fullscreenDialog);
 
   WillPopCallback _willPopCallback;
+
   WillPopCallback get willPopCallback => _willPopCallback;
+
   set willPopCallback(WillPopCallback callback) {
     if (_willPopCallback != callback) {
       ThrioNavigator.navigatorState.history.last
@@ -50,4 +51,9 @@ class NavigatorPageRoute extends MaterialPageRoute<bool> {
               child,
             )
           : child;
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
 }

@@ -9,7 +9,7 @@
 #import "ThrioViewController.h"
 #import <thrio/Thrio.h>
 
-@interface ThrioViewController ()
+@interface ThrioViewController ()<NavigatorNotifyProtocol>
 
 @property (weak, nonatomic) IBOutlet UILabel *label;
 
@@ -43,13 +43,19 @@
   [super viewDidLoad];
 
   if (self.thrio_firstRoute.settings) {
-    NSString *txt = [NSString stringWithFormat:@"native page: %@ \n index: %@", self.thrio_firstRoute.settings.url, self.thrio_firstRoute.settings.index];
+    NSString *txt = [NSString stringWithFormat:@"native page: %@ \n index: %@",
+                     self.thrio_firstRoute.settings.url,
+                     self.thrio_firstRoute.settings.index];
     [self.label setText:txt];
   } else {
     [self thrio_pushUrl:@"native1" index:@1 params:@{} animated:NO result:^(BOOL r) {
       
     }];
   }
+}
+
+- (void)onNotify:(NSString *)name params:(NSDictionary *)params {
+  ThrioLogV(@"native1 onNotify: %@, %@", name, params);
 }
 
 @end

@@ -1,8 +1,7 @@
 package com.hellobike.flutter.thrio.navigator
 
 import android.util.ArrayMap
-import com.hellobike.thrio.NavigationBuilder
-import com.hellobike.flutter.thrio.activity.FlutterNavigationBuilder
+import com.hellobike.flutter.thrio.NavigationBuilder
 
 internal object NavigatorBuilder {
     private val builders = ArrayMap<String, NavigationBuilder>()
