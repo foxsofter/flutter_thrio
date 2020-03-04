@@ -4,7 +4,7 @@
 #
 Pod::Spec.new do |s|
   s.name             = 'thrio'
-  s.version          = '0.0.1'
+  s.version          = '1.0.1'
   s.summary          = 'A flutter plugin which enables hybrid integration of flutter for existing ios or android apps.'
   s.description      = <<-DESC
 A flutter plugin which enables hybrid integration of flutter for existing ios or android apps.
