@@ -1,9 +1,23 @@
+// The MIT License (MIT)
 //
-//  ThrioChannel.h
-//  Pods-Runner
+// Copyright (c) 2019 Hellobike Group
 //
-//  Created by foxsofter on 2019/12/9.
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the "Software"),
+// to deal in the Software without restriction, including without limitation
+// the rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following conditions:
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
 //
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+// THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+// IN THE SOFTWARE.
 
 #import <Foundation/Foundation.h>
 #import <Flutter/Flutter.h>
@@ -14,7 +28,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// A wrapper class for FlutterMethodChannel and FlutterEventChannel.
 ///
-@interface ThrioChannel : NSObject<FlutterStreamHandler>
+@interface ThrioChannel : NSObject <FlutterStreamHandler>
 
 /// Construct the instance with a default channel name.
 ///
@@ -24,17 +38,17 @@ NS_ASSUME_NONNULL_BEGIN
 ///
 + (instancetype)channelWithName:(NSString *)channelName;
 
-+ (instancetype)new NS_UNAVAILABLE;
++ (instancetype) new NS_UNAVAILABLE;
 - (instancetype)init NS_UNAVAILABLE;
 
 /// Invokes the specified Flutter method with the specified arguments, expecting
 /// no results.
-- (void)invokeMethod:(NSString*)method arguments:(id _Nullable)arguments;
+- (void)invokeMethod:(NSString *)method arguments:(id _Nullable)arguments;
 
 /// Invokes the specified Flutter method with the specified arguments, expecting
 /// an asynchronous result.
 ///
-- (void)invokeMethod:(NSString*)method
+- (void)invokeMethod:(NSString *)method
            arguments:(id _Nullable)arguments
               result:(FlutterResult _Nullable)callback;
 
