@@ -126,16 +126,6 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
     return Future.value(true);
   }
 
-  Future<bool> setPopDisabled(RouteSettings settings, {bool disabled = true}) {
-    final route = history.lastWhere((it) => it.settings.name == settings.name,
-        orElse: () => null);
-    if (route != null) {
-      route.willPopCallback = () async => !disabled;
-      return Future.value(true);
-    }
-    return Future.value(false);
-  }
-
   @override
   void initState() {
     super.initState();

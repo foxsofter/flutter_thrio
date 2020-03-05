@@ -39,19 +39,43 @@ class NavigatorPageRoute extends MaterialPageRoute<bool> {
             maintainState: maintainState,
             fullscreenDialog: fullscreenDialog);
 
-  WillPopCallback _willPopCallback;
+  // WillPopCallback _willPopCallback;
 
-  WillPopCallback get willPopCallback => _willPopCallback;
+  // WillPopCallback get willPopCallback => _willPopCallback;
 
-  set willPopCallback(WillPopCallback callback) {
-    if (_willPopCallback != callback) {
-      ThrioNavigator.navigatorState.history.last
-          .removeScopedWillPopCallback(_willPopCallback);
-      _willPopCallback = callback;
-      if (isCurrent) {
-        addScopedWillPopCallback(callback);
-      }
+  // set willPopCallback(WillPopCallback callback) {
+  //   if (_willPopCallback != callback) {
+  //     ThrioNavigator.navigatorState.history.last
+  //         .removeScopedWillPopCallback(_willPopCallback);
+  //     _willPopCallback = callback;
+  //     if (isCurrent) {
+  //       addScopedWillPopCallback(callback);
+  //     }
+  //   }
+  // }
+
+  @override
+  void addScopedWillPopCallback(WillPopCallback callback) {
+    if (ThrioNavigator.navigatorState.history.length < 2) {
+      ThrioNavigator.setPopDisabled(
+        url: settings.url,
+        index: settings.index,
+        disabled: true,
+      );
     }
+    super.addScopedWillPopCallback(callback);
+  }
+
+  @override
+  void removeScopedWillPopCallback(WillPopCallback callback) {
+    if (ThrioNavigator.navigatorState.history.length < 2) {
+      ThrioNavigator.setPopDisabled(
+        url: settings.url,
+        index: settings.index,
+        disabled: false,
+      );
+    }
+    super.removeScopedWillPopCallback(callback);
   }
 
   @override

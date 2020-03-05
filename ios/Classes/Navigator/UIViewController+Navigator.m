@@ -24,6 +24,7 @@
 #import <objc/runtime.h>
 #import "UINavigationController+Navigator.h"
 #import "UINavigationController+PopGesture.h"
+#import "UIViewController+WillPopCallback.h"
 #import "UINavigationController+FlutterEngine.h"
 #import "UIViewController+Navigator.h"
 #import "ThrioNavigator.h"
@@ -132,7 +133,8 @@ NS_ASSUME_NONNULL_BEGIN
       [NSMutableDictionary dictionaryWithDictionary:[route.settings toArgumentsWithoutParams]];
     [arguments setObject:[NSNumber numberWithBool:animated] forKey:@"animated"];
     __weak typeof(self) weakself = self;
-    ThrioChannel *channel = [self.navigationController thrio_getChannelForEntrypoint:[(ThrioFlutterViewController*)self entrypoint]];
+    NSString *entrypoint = [(ThrioFlutterViewController*)self entrypoint];
+    ThrioChannel *channel = [self.navigationController thrio_getChannelForEntrypoint:entrypoint];
     [channel invokeMethod:@"__onPop__"
                 arguments:arguments
                    result:^(id _Nullable r) {
@@ -334,7 +336,7 @@ NS_ASSUME_NONNULL_BEGIN
     if (self.thrio_hidesNavigationBar == nil) {
       self.thrio_hidesNavigationBar = @(self.navigationController.navigationBarHidden);
     }
-    if (self.thrio_lastRoute.popDisabled) {
+    if (self.thrio_willPopBlock) {
       self.navigationController.interactivePopGestureRecognizer.enabled = NO;
     }
   } else {

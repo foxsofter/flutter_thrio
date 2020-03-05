@@ -20,13 +20,13 @@
 // IN THE SOFTWARE.
 
 #import "ThrioPopGestureRecognizerDelegate.h"
-#import "UIViewController+Navigator.h"
+#import "UIViewController+WillPopCallback.h"
 
 @implementation ThrioPopGestureRecognizerDelegate
 
 - (BOOL)gestureRecognizerShouldBegin:(UIPanGestureRecognizer *)gestureRecognizer {
   UIViewController *topViewController = self.navigationController.topViewController;
-  if (topViewController.thrio_lastRoute.popDisabled) {
+  if (topViewController.thrio_willPopBlock) {
     return NO;
   }
     

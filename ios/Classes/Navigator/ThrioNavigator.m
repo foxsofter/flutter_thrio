@@ -26,7 +26,6 @@
 #import "ThrioRegistrySet.h"
 #import "UINavigationController+Navigator.h"
 #import "UINavigationController+PopGesture.h"
-#import "UINavigationController+PopDisabled.h"
 #import "ThrioNavigator.h"
 #import "ThrioNavigator+NavigatorBuilder.h"
 #import "ThrioNavigator+Internal.h"
@@ -285,9 +284,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (BOOL)canPop {
   UINavigationController *nvc = self.navigationController;
-  return (nvc.viewControllers.count > 1 ||
-          nvc.topViewController.thrio_firstRoute != nvc.topViewController.thrio_lastRoute) &&
-         !nvc.topViewController.thrio_lastRoute.popDisabled;
+  return nvc.viewControllers.count > 1;
 }
 
 + (BOOL)canPopToUrl:(NSString *)url index:(NSNumber * _Nullable)index {
@@ -310,20 +307,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (NSArray *)getAllIndexByUrl:(NSString *)url {
   return [self.navigationController thrio_getAllIndexByUrl:url];
-}
-
-#pragma mark - set pop disabled methods
-
-+ (void)setPopDisabled:(BOOL)disabled {
-  return [self setPopDisabledUrl:@"" index:@0 disabled:disabled];
-}
-
-+ (void)setPopDisabledUrl:(NSString *)url disabled:(BOOL)disabled {
-  return [self setPopDisabledUrl:url index:@0 disabled:disabled];
-}
-
-+ (void)setPopDisabledUrl:(NSString *)url index:(NSNumber *)index disabled:(BOOL)disabled {
-  return [self.navigationController thrio_setPopDisabledUrl:url index:index disabled:disabled];
 }
 
 #pragma mark - multi-engine methods

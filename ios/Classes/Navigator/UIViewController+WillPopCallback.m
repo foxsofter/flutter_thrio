@@ -19,27 +19,33 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-
-#import "UINavigationController+PopDisabled.h"
-#import "UINavigationController+Navigator.h"
-#import "UINavigationController+FlutterEngine.h"
+#import <objc/runtime.h>
 #import "UIViewController+WillPopCallback.h"
-#import "ThrioFlutterViewController.h"
 
-@implementation UINavigationController (PopDisabled)
+@implementation UIViewController (WillPopCallback)
 
-- (void)thrio_setPopDisabledUrl:(NSString *)url
-                          index:(NSNumber *)index
-                       disabled:(BOOL)disabled {
-  UIViewController *viewController = [self getViewControllerByUrl:url index:index];
-  if (disabled) {
-    // 设为具体值，拦截侧滑返回，但会继续传递给dart端，在dart端触发willPop
-    viewController.thrio_willPopBlock = ^(ThrioBoolCallback _Nonnull result) {
-      result(YES);
-    };
-  } else {
-    // 设为nil，不拦截侧滑返回
-    viewController.thrio_willPopBlock = nil;
+- (BOOL)thrio_willPopCalling {
+  return [(NSNumber *)objc_getAssociatedObject(self, _cmd) boolValue];
+}
+
+- (void)setThrio_willPopCalling:(BOOL)calling {
+  objc_setAssociatedObject(self,
+                           @selector(thrio_willPopCalling),
+                           @(calling),
+                           OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
+- (ThrioWillPopCallback _Nullable)thrio_willPopBlock {
+  return objc_getAssociatedObject(self, _cmd);
+}
+
+- (void)setThrio_willPopBlock:(ThrioWillPopCallback _Nullable)block {
+  objc_setAssociatedObject(self,
+                           @selector(thrio_willPopBlock),
+                           block,
+                           OBJC_ASSOCIATION_COPY_NONATOMIC);
+  if (![self isKindOfClass:NSClassFromString(@"ThrioFlutterViewController")]) {
+    self.navigationController.interactivePopGestureRecognizer.enabled = block == nil;
   }
 }
 

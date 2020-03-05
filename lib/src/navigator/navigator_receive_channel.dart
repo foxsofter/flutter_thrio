@@ -32,7 +32,6 @@ class NavigatorReceiveChannel {
     _onPop();
     _onPopTo();
     _onRemove();
-    _onSetPopDisabled();
   }
 
   final ThrioChannel _channel;
@@ -92,18 +91,6 @@ class NavigatorReceiveChannel {
         return ThrioNavigator.navigatorState?.remove(
           routeSettings,
           animated: animated,
-        );
-      });
-
-  void _onSetPopDisabled() =>
-      _channel.registryMethodCall('__onSetPopDisabled__', ([arguments]) {
-        final routeSettings = NavigatorRouteSettings.fromArguments(arguments);
-        final disabledValue = arguments['disabled'];
-        final disabled =
-            (disabledValue != null && disabledValue is bool) && disabledValue;
-        return ThrioNavigator.navigatorState?.setPopDisabled(
-          routeSettings,
-          disabled: disabled,
         );
       });
 }

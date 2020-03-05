@@ -25,9 +25,9 @@
 #import "ThrioNavigator+Internal.h"
 #import "ThrioNavigator+NavigatorBuilder.h"
 #import "UINavigationController+Navigator.h"
-#import "UINavigationController+PopDisabled.h"
 #import "UINavigationController+HotRestart.h"
 #import "UINavigationController+FlutterEngine.h"
+#import "UINavigationController+PopDisabled.h"
 #import "ThrioLogger.h"
 
 NS_ASSUME_NONNULL_BEGIN
@@ -279,7 +279,6 @@ NS_ASSUME_NONNULL_BEGIN
     NSString *url = arguments[@"url"];
     NSNumber *index = arguments[@"index"];
     BOOL disabled = [arguments[@"disabled"] boolValue];
-
     [ThrioNavigator.navigationController thrio_setPopDisabledUrl:url
                                                            index:index
                                                         disabled:disabled];

@@ -24,6 +24,7 @@
 #import "UINavigationController+Navigator.h"
 #import "UINavigationController+FlutterEngine.h"
 #import "UINavigationController+PopGesture.h"
+#import "UIViewController+WillPopCallback.h"
 #import "UIViewController+Navigator.h"
 #import "NavigatorNotifyProtocol.h"
 #import "ThrioRegistryMap.h"
@@ -312,7 +313,16 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 - (UIViewController * _Nullable)thrio_popViewControllerAnimated:(BOOL)animated {
-  if (self.topViewController.thrio_lastRoute.popDisabled) {
+  if (self.topViewController.thrio_willPopBlock && !self.topViewController.thrio_willPopCalling) {
+    self.topViewController.thrio_willPopCalling = YES;
+    __weak typeof(self) weakself = self;
+    self.topViewController.thrio_willPopBlock(^(BOOL result) {
+      __strong typeof(self) strongSelf = weakself;
+      if (result) {
+        [strongSelf thrio_popViewControllerAnimated:animated];
+      }
+      strongSelf.topViewController.thrio_willPopCalling = NO;
+    });
     return nil;
   }
   self.thrio_popingViewController = self.topViewController;

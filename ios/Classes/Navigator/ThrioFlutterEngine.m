@@ -49,6 +49,7 @@
   if (_engine) {
     _engine.viewController = nil;
     [_engine destroyContext];
+    _engine = nil;
   }
 }
 

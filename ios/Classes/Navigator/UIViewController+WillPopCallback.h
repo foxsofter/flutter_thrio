@@ -20,16 +20,23 @@
 // IN THE SOFTWARE.
 
 #import <UIKit/UIKit.h>
+#import "ThrioTypes.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface UIViewController (PopDisabled)
+@interface UIViewController (WillPopCallback)
 
-- (void)thrio_setPopDisabled:(BOOL)disabled;
+/// `thrio_willPopBlock`是否已触发的标志位，外部不要赋值
+///
+@property (nonatomic, assign) BOOL thrio_willPopCalling;
 
-- (void)thrio_setPopDisabledUrl:(NSString *)url
-                          index:(NSNumber *)index
-                       disabled:(BOOL)disabled;
+/// 是否拦截pop操作的block
+///
+/// 默认为nil，不拦截，且侧滑返回有效
+/// 当设为具体值时，侧滑返回失效，如果调用`popViewControllerAnimated:`，根据
+/// ThrioBoolCallback回调的情况是否继续pop页面
+///
+@property (nonatomic, copy, nullable) ThrioWillPopCallback thrio_willPopBlock;
 
 @end
 
