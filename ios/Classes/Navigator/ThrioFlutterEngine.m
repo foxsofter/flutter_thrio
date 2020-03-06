@@ -32,43 +32,47 @@
 
 @property (nonatomic, strong, readwrite, nullable) NavigatorReceiveChannel *receiveChannel;
 
+@property (nonatomic, strong) NSMutableArray *flutterViewControllers;
+
 @end
 
 @implementation ThrioFlutterEngine
 
 - (void)startupWithEntrypoint:(NSString *)entrypoint readyBlock:(ThrioVoidCallback)block {
   if (!_engine) {
+    _flutterViewControllers = [NSMutableArray array];
     [self startupFlutterWithEntrypoint:entrypoint];
-    [self registerPlugin];
+    [self registerPlugins];
     [self setupChannelWithEntrypoint:entrypoint readyBlock:block];
   }
 }
 
-- (void)shutdown {
-  ThrioLogV(@"ThrioFlutterEngine shutdown: %@", self);
-  if (_engine) {
-    _engine.viewController = nil;
-    [_engine destroyContext];
+- (void)pushViewController:(ThrioFlutterViewController *)viewController {
+  if (![_flutterViewControllers containsObject:viewController]) {
+    [_flutterViewControllers addObject:viewController];
   }
-}
-
-- (void)attachFlutterViewController:(ThrioFlutterViewController *)viewController {
-  ThrioLogV(@"enter attach flutter view controller");
+  ThrioLogV(@"ThrioFlutterEngine: enter pushViewController");
   if (_engine.viewController != viewController && viewController != nil) {
-    ThrioLogV(@"attach new flutter view controller");
+    ThrioLogV(@"ThrioFlutterEngine: set new %@", viewController);
     _engine.viewController = viewController;
     [(ThrioFlutterViewController*)_engine.viewController surfaceUpdated:YES];
   }
 }
 
-- (void)detachFlutterViewController:(ThrioFlutterViewController *)viewController {
-  ThrioLogV(@"enter detach flutter view controller");
+- (NSUInteger)popViewController:(ThrioFlutterViewController *)viewController {
+  [_flutterViewControllers removeObject:viewController];
+  ThrioLogV(@"ThrioFlutterEngine: enter popViewController");
   if (_engine.viewController == viewController && viewController != nil) {
-    ThrioLogV(@"detach flutter view controller: %@", _engine);
-    [(ThrioFlutterViewController*)_engine.viewController surfaceUpdated:NO];
-    _engine.viewController = nil;
+    ThrioLogV(@"ThrioFlutterEngine: unset %@", viewController);
+    _engine.viewController = _flutterViewControllers.lastObject;
+    if (_engine.viewController) {
+      [(ThrioFlutterViewController*)_engine.viewController surfaceUpdated:YES];
+    }
   }
+  return _flutterViewControllers.count;
 }
+
+#pragma mark - private methods
 
 - (void)startupFlutterWithEntrypoint:(NSString *)entrypoint {
   NSString *enginName = [NSString stringWithFormat:@"io.flutter.%lu", (unsigned long)self.hash];
@@ -86,7 +90,7 @@
   }
 }
 
-- (void)registerPlugin {
+- (void)registerPlugins {
   Class clazz = NSClassFromString(@"GeneratedPluginRegistrant");
   if (clazz) {
     if ([clazz respondsToSelector:NSSelectorFromString(@"registerWithRegistry:")]) {
@@ -106,13 +110,18 @@
   
   [_channel setupEventChannel:_engine.binaryMessenger];
   [_channel setupMethodChannel:_engine.binaryMessenger];
-    
+
   _receiveChannel = [[NavigatorReceiveChannel alloc] initWithChannel:_channel];
   [_receiveChannel setReadyBlock:block];
 }
 
 - (void)dealloc {
-  ThrioLogV(@"ThrioFlutterEngine dealloc: %@", self);
+  ThrioLogV(@"ThrioFlutterEngine: dealloc %@", self);
+  if (_engine) {
+    _engine.viewController = nil;
+    [_engine destroyContext];
+    _engine = nil;
+  }
 }
 
 @end

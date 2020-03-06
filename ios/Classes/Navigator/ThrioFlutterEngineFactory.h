@@ -19,17 +19,31 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-#import <UIKit/UIKit.h>
+#import <Foundation/Foundation.h>
+#import <Flutter/Flutter.h>
+#import "ThrioFlutterViewController.h"
+#import "ThrioTypes.h"
+#import "ThrioChannel.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface UIViewController (PopDisabled)
+@interface ThrioFlutterEngineFactory : NSObject
 
-- (void)thrio_setPopDisabled:(BOOL)disabled;
++ (instancetype)shared;
 
-- (void)thrio_setPopDisabledUrl:(NSString *)url
-                          index:(NSNumber *)index
-                       disabled:(BOOL)disabled;
+- (void)startupWithEntrypoint:(NSString *)entrypoint readyBlock:(ThrioVoidCallback)block;
+
+- (FlutterEngine *)getEngineByEntrypoint:(NSString *)entrypoint;
+
+- (ThrioChannel *)getChannelByEntrypoint:(NSString *)entrypoint;
+
+- (void)pushViewController:(ThrioFlutterViewController *)viewController;
+
+- (void)popViewController:(ThrioFlutterViewController *)viewController;
+
+- (void)registerFlutterUrls:(NSArray *)urls;
+
+- (void)unregisterFlutterUrls:(NSArray *)urls;
 
 @end
 

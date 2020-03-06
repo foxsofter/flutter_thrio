@@ -42,8 +42,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (ThrioFlutterViewControllerBuilder _Nullable)flutterViewControllerBuilder;
 
-+ (NSMutableSet *)flutterPageRegisteredUrls;
-
 @end
 
 NS_ASSUME_NONNULL_END

@@ -20,29 +20,23 @@
 // IN THE SOFTWARE.
 
 #import <UIKit/UIKit.h>
-#import <Flutter/Flutter.h>
-#import "ThrioFlutterViewController.h"
-#import "ThrioChannel.h"
+#import "ThrioTypes.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface UINavigationController (FlutterEngine)
+@interface UIViewController (WillPopCallback)
 
-- (void)thrio_startupWithEntrypoint:(NSString *)entrypoint readyBlock:(ThrioVoidCallback)block;
+/// `thrio_willPopBlock`是否已触发的标志位，外部不要赋值
+///
+@property (nonatomic, assign) BOOL thrio_willPopCalling;
 
-- (FlutterEngine *)thrio_getEngineForEntrypoint:(NSString *)entrypoint;
-
-- (ThrioChannel *)thrio_getChannelForEntrypoint:(NSString *)entrypoint;
-
-- (void)thrio_attachFlutterViewController:(ThrioFlutterViewController *)viewController;
-
-- (void)thrio_detachFlutterViewController:(ThrioFlutterViewController *)viewController;
-
-- (void)thrio_removeAllEngineIfNeeded;
-
-- (void)thrio_registerUrls:(NSArray *)urls;
-
-- (void)thrio_unregisterUrls:(NSArray *)urls;
+/// 是否拦截pop操作的block
+///
+/// 默认为nil，不拦截，且侧滑返回有效
+/// 当设为具体值时，侧滑返回失效，如果调用`popViewControllerAnimated:`，根据
+/// ThrioBoolCallback回调的情况是否继续pop页面
+///
+@property (nonatomic, copy, nullable) ThrioWillPopCallback thrio_willPopBlock;
 
 @end
 

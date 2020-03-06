@@ -26,3 +26,7 @@ typedef NavigatorPageBuilder = Widget Function(RouteSettings settings);
 typedef NavigatorPageNotifyCallback = void Function(
   Map<String, dynamic> params,
 );
+
+typedef NavigatorPagePopCallback = void Function(
+  Map<String, dynamic> params,
+);

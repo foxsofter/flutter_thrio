@@ -24,8 +24,9 @@
 #import <objc/runtime.h>
 #import "UINavigationController+Navigator.h"
 #import "UINavigationController+PopGesture.h"
-#import "UINavigationController+FlutterEngine.h"
+#import "UIViewController+WillPopCallback.h"
 #import "UIViewController+Navigator.h"
+#import "ThrioFlutterEngineFactory.h"
 #import "ThrioNavigator.h"
 #import "ThrioNavigator+Internal.h"
 #import "ThrioLogger.h"
@@ -95,7 +96,8 @@ NS_ASSUME_NONNULL_BEGIN
   if ([self isKindOfClass:ThrioFlutterViewController.class]) {
     NSMutableDictionary *arguments = [NSMutableDictionary dictionaryWithDictionary:[settings toArguments]];
     [arguments setObject:[NSNumber numberWithBool:animated] forKey:@"animated"];
-    ThrioChannel *channel = [ThrioNavigator.navigationController thrio_getChannelForEntrypoint:[(ThrioFlutterViewController*)self entrypoint]];
+    NSString *entrypoint = [(ThrioFlutterViewController*)self entrypoint];
+    ThrioChannel *channel = [ThrioFlutterEngineFactory.shared getChannelByEntrypoint:entrypoint];
     [channel invokeMethod:@"__onPush__"
                 arguments:arguments
                    result:^(id _Nullable r) {
@@ -132,7 +134,8 @@ NS_ASSUME_NONNULL_BEGIN
       [NSMutableDictionary dictionaryWithDictionary:[route.settings toArgumentsWithoutParams]];
     [arguments setObject:[NSNumber numberWithBool:animated] forKey:@"animated"];
     __weak typeof(self) weakself = self;
-    ThrioChannel *channel = [self.navigationController thrio_getChannelForEntrypoint:[(ThrioFlutterViewController*)self entrypoint]];
+    NSString *entrypoint = [(ThrioFlutterViewController*)self entrypoint];
+    ThrioChannel *channel = [ThrioFlutterEngineFactory.shared getChannelByEntrypoint:entrypoint];
     [channel invokeMethod:@"__onPop__"
                 arguments:arguments
                    result:^(id _Nullable r) {
@@ -172,7 +175,8 @@ NS_ASSUME_NONNULL_BEGIN
       [NSMutableDictionary dictionaryWithDictionary:[route.settings toArgumentsWithoutParams]];
     [arguments setObject:[NSNumber numberWithBool:animated] forKey:@"animated"];
     __weak typeof(self) weakself = self;
-    ThrioChannel *channel = [self.navigationController thrio_getChannelForEntrypoint:[(ThrioFlutterViewController*)self entrypoint]];
+    NSString *entrypoint = [(ThrioFlutterViewController*)self entrypoint];
+    ThrioChannel *channel = [ThrioFlutterEngineFactory.shared getChannelByEntrypoint:entrypoint];
     [channel invokeMethod:@"__onPopTo__"
                 arguments:arguments
                    result:^(id  _Nullable r) {
@@ -204,7 +208,8 @@ NS_ASSUME_NONNULL_BEGIN
       [NSMutableDictionary dictionaryWithDictionary:[route.settings toArgumentsWithoutParams]];
     [arguments setObject:[NSNumber numberWithBool:animated] forKey:@"animated"];
     __weak typeof(self) weakself = self;
-    ThrioChannel *channel = [self.navigationController thrio_getChannelForEntrypoint:[(ThrioFlutterViewController*)self entrypoint]];
+    NSString *entrypoint = [(ThrioFlutterViewController*)self entrypoint];
+    ThrioChannel *channel = [ThrioFlutterEngineFactory.shared getChannelByEntrypoint:entrypoint];
     [channel invokeMethod:@"__onRemove__"
                 arguments:arguments
                    result:^(id  _Nullable r) {
@@ -334,7 +339,7 @@ NS_ASSUME_NONNULL_BEGIN
     if (self.thrio_hidesNavigationBar == nil) {
       self.thrio_hidesNavigationBar = @(self.navigationController.navigationBarHidden);
     }
-    if (self.thrio_lastRoute.popDisabled) {
+    if (self.thrio_willPopBlock) {
       self.navigationController.interactivePopGestureRecognizer.enabled = NO;
     }
   } else {
@@ -366,7 +371,8 @@ NS_ASSUME_NONNULL_BEGIN
         @"name": name,
         @"params": params,
       };
-      ThrioChannel *channel = [self.navigationController thrio_getChannelForEntrypoint:[(ThrioFlutterViewController*)self entrypoint]];
+      NSString *entrypoint = [(ThrioFlutterViewController*)self entrypoint];
+      ThrioChannel *channel = [ThrioFlutterEngineFactory.shared getChannelByEntrypoint:entrypoint];
       [channel sendEvent:@"__onNotify__" arguments:arguments];
     } else {
       if ([self conformsToProtocol:@protocol(NavigatorNotifyProtocol)]) {

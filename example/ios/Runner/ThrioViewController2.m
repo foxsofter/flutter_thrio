@@ -35,11 +35,18 @@
 - (IBAction)pop:(id)sender {
   [ThrioNavigator pop];
 }
-- (IBAction)enableFlutter1Eabled:(id)sender {
-  [ThrioNavigator setPopDisabledUrl:@"native2" disabled:NO];
+- (IBAction)willPopYESNative2:(id)sender {
+  self.thrio_willPopBlock = ^(ThrioBoolCallback _Nonnull result) {
+    result(YES);
+  };
 }
-- (IBAction)disabledFlutter1Eabled:(id)sender {
-  [ThrioNavigator setPopDisabledUrl:@"native2" disabled:YES];
+- (IBAction)willPopNONative2:(id)sender {
+  self.thrio_willPopBlock = ^(ThrioBoolCallback _Nonnull result) {
+    result(NO);
+  };
+}
+- (IBAction)willPopNilNative2:(id)sender {
+  self.thrio_willPopBlock = nil;
 }
 
 - (void)viewDidLoad {
@@ -52,7 +59,9 @@
     [self.label setText:txt];
   }
   
-  [ThrioNavigator setPopDisabled:YES];
+  self.thrio_willPopBlock = ^(ThrioBoolCallback _Nonnull result) {
+    result(NO);
+  };
 }
 
 @end

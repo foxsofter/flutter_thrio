@@ -21,9 +21,9 @@
 
 
 #import "UINavigationController+HotRestart.h"
-#import "UINavigationController+FlutterEngine.h"
 #import "UIViewController+Navigator.h"
 #import "ThrioLogger.h"
+#import "ThrioFlutterEngineFactory.h"
 #import "ThrioFlutterViewController.h"
 #import "NavigatorRouteSettings.h"
 #import "ThrioNavigator.h"
@@ -48,10 +48,12 @@
   }
   
   viewController.thrio_firstRoute.next = nil;
-  dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.6 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+  dispatch_after(dispatch_time(DISPATCH_TIME_NOW,(int64_t)(0.6 * NSEC_PER_SEC)),
+                 dispatch_get_main_queue(), ^{
     ThrioLogV(@"hot restart push");
     NavigatorRouteSettings *settings = viewController.thrio_firstRoute.settings;
-    ThrioChannel *channel = [self thrio_getChannelForEntrypoint:viewController.entrypoint];
+    ThrioChannel *channel =
+      [ThrioFlutterEngineFactory.shared getChannelByEntrypoint:viewController.entrypoint];
     [channel invokeMethod:@"__onPush__" arguments:[settings toArguments]];
   });
 }

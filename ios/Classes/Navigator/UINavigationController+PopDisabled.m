@@ -20,18 +20,32 @@
 // IN THE SOFTWARE.
 
 
-#import <objc/runtime.h>
 #import "UINavigationController+PopDisabled.h"
 #import "UINavigationController+Navigator.h"
-#import "UIViewController+PopDisabled.h"
+#import "UIViewController+WillPopCallback.h"
+#import "UIViewController+Navigator.h"
+#import "ThrioFlutterViewController.h"
+#import "ThrioFlutterEngineFactory.h"
+#import "NavigatorRouteSettings.h"
 
 @implementation UINavigationController (PopDisabled)
 
 - (void)thrio_setPopDisabledUrl:(NSString *)url
                           index:(NSNumber *)index
                        disabled:(BOOL)disabled {
-  UIViewController *vc = [self getViewControllerByUrl:url index:index];
-  [vc thrio_setPopDisabledUrl:url index:index disabled:disabled];
+  UIViewController *viewController = [self getViewControllerByUrl:url index:index];
+  NavigatorRouteSettings *settings = viewController.thrio_firstRoute.settings;
+  if ([settings.url isEqualToString:url] && [settings.index isEqualToNumber:index]) {
+    if (disabled) {
+      // 设为具体值，拦截侧滑返回，但会继续传递给dart端，在dart端触发willPop
+      viewController.thrio_willPopBlock = ^(ThrioBoolCallback _Nonnull result) {
+        result(YES);
+      };
+    } else {
+      // 设为nil，不拦截侧滑返回
+      viewController.thrio_willPopBlock = nil;
+    }
+  }
 }
 
 @end

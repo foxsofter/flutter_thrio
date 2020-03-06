@@ -39,16 +39,8 @@ class NavigatorRouteObserver extends NavigatorObserver {
 
   @override
   void didPush(Route<dynamic> route, Route<dynamic> previousRoute) {
-    if (previousRoute is NavigatorPageRoute &&
-        previousRoute.willPopCallback != null) {
-      pageRoutes.last
-          .removeScopedWillPopCallback(previousRoute.willPopCallback);
-    }
     if (route is NavigatorPageRoute) {
       ThrioLogger().v('didPush: ${route.settings}');
-      if (route.willPopCallback != null) {
-        pageRoutes.last.addScopedWillPopCallback(route.willPopCallback);
-      }
       pageRoutes.add(route);
       final arguments = <String, dynamic>{
         'url': route.settings.url,
@@ -60,14 +52,7 @@ class NavigatorRouteObserver extends NavigatorObserver {
 
   @override
   void didPop(Route<dynamic> route, Route<dynamic> previousRoute) {
-    if (previousRoute is NavigatorPageRoute &&
-        previousRoute.willPopCallback != null) {
-      pageRoutes.last.addScopedWillPopCallback(previousRoute.willPopCallback);
-    }
     if (route is NavigatorPageRoute) {
-      if (route.willPopCallback != null) {
-        pageRoutes.last.removeScopedWillPopCallback(route.willPopCallback);
-      }
       pageRoutes.remove(route);
       _currentPopRoutes.add(route);
       if (_currentPopRoutes.length == 1) {
@@ -117,9 +102,6 @@ class NavigatorRouteObserver extends NavigatorObserver {
           }
           _currentRemoveRoutes.clear();
         });
-      }
-      if (route.willPopCallback != null) {
-        pageRoutes.last.removeScopedWillPopCallback(route.willPopCallback);
       }
     }
   }

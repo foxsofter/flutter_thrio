@@ -37,5 +37,6 @@
 #import "UIApplication+Thrio.h"
 #import "UINavigationController+Navigator.h"
 #import "UIViewController+Navigator.h"
+#import "UIViewController+WillPopCallback.h"
 
 #endif /* Thrio_h */

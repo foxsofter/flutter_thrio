@@ -19,14 +19,34 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-#import "ThrioPlugin.h"
-#import "ThrioNavigator+Internal.h"
-#import "ThrioFlutterEngineFactory.h"
-#import "ThrioLogger.h"
+#import <objc/runtime.h>
+#import "UIViewController+WillPopCallback.h"
 
-@implementation ThrioPlugin
+@implementation UIViewController (WillPopCallback)
 
-+ (void)registerWithRegistrar:(NSObject<FlutterPluginRegistrar>*)registrar {
+- (BOOL)thrio_willPopCalling {
+  return [(NSNumber *)objc_getAssociatedObject(self, _cmd) boolValue];
+}
+
+- (void)setThrio_willPopCalling:(BOOL)calling {
+  objc_setAssociatedObject(self,
+                           @selector(thrio_willPopCalling),
+                           @(calling),
+                           OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
+- (ThrioWillPopCallback _Nullable)thrio_willPopBlock {
+  return objc_getAssociatedObject(self, _cmd);
+}
+
+- (void)setThrio_willPopBlock:(ThrioWillPopCallback _Nullable)block {
+  objc_setAssociatedObject(self,
+                           @selector(thrio_willPopBlock),
+                           block,
+                           OBJC_ASSOCIATION_COPY_NONATOMIC);
+  if (![self isKindOfClass:NSClassFromString(@"ThrioFlutterViewController")]) {
+    self.navigationController.interactivePopGestureRecognizer.enabled = block == nil;
+  }
 }
 
 @end

@@ -20,6 +20,7 @@
 // IN THE SOFTWARE.
 
 #import <UIKit/UIKit.h>
+#import "ThrioTypes.h"
 
 NS_ASSUME_NONNULL_BEGIN
 

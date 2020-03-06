@@ -41,7 +41,6 @@ NS_ASSUME_NONNULL_BEGIN
 - (instancetype)initWithSettings:(NavigatorRouteSettings *)settings {
   self = [super init];
   if (self) {
-    _popDisabled = NO;
     _settings = settings;
     _notifications = [NSMutableDictionary dictionary];
   }

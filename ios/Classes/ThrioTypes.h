@@ -40,7 +40,7 @@ typedef void (^ThrioIdCallback)(id);
 
 /// Signature for a callback that verifies that it's OK to call `pop`.
 ///
-typedef void (^ThrioWillPopCallback)(ThrioBoolCallback result);
+typedef void (^ThrioWillPopCallback)(ThrioBoolCallback);
 
 /// Signature for a block that handlers channel method invocation.
 ///

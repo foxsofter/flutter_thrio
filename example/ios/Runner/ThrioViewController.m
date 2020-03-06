@@ -23,6 +23,13 @@
 - (IBAction)popFlutter1:(id)sender {
   [ThrioNavigator removeUrl:@"biz1/flutter1"];
 }
+- (IBAction)pushFlutter2:(id)sender {
+  [ThrioNavigator pushUrl:@"biz2/flutter2"];
+}
+- (IBAction)popFlutter2:(id)sender {
+  [ThrioNavigator removeUrl:@"biz2/flutter2"];
+}
+
 - (IBAction)pushNativePage:(id)sender {
   [ThrioNavigator pushUrl:@"native1"];
 }

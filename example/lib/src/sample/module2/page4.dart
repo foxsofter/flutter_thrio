@@ -20,9 +20,7 @@ class _Page4State extends State<Page4> {
   @override
   void initState() {
     super.initState();
-    if (mounted) {
-      ThrioNavigator.setPopDisabled(url: 'flutter4');
-    }
+    if (mounted) {}
   }
 
   @override
