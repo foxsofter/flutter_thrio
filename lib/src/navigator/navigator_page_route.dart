@@ -56,25 +56,21 @@ class NavigatorPageRoute extends MaterialPageRoute<bool> {
 
   @override
   void addScopedWillPopCallback(WillPopCallback callback) {
-    if (ThrioNavigator.navigatorState.history.length < 2) {
-      ThrioNavigator.setPopDisabled(
-        url: settings.url,
-        index: settings.index,
-        disabled: true,
-      );
-    }
+    ThrioNavigator.setPopDisabled(
+      url: settings.url,
+      index: settings.index,
+      disabled: true,
+    );
     super.addScopedWillPopCallback(callback);
   }
 
   @override
   void removeScopedWillPopCallback(WillPopCallback callback) {
-    if (ThrioNavigator.navigatorState.history.length < 2) {
-      ThrioNavigator.setPopDisabled(
-        url: settings.url,
-        index: settings.index,
-        disabled: false,
-      );
-    }
+    ThrioNavigator.setPopDisabled(
+      url: settings.url,
+      index: settings.index,
+      disabled: false,
+    );
     super.removeScopedWillPopCallback(callback);
   }
 
