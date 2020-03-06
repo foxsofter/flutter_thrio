@@ -20,8 +20,8 @@
 // IN THE SOFTWARE.
 
 #import <UIKit/UIKit.h>
-#import "ThrioPopGestureRecognizerDelegate.h"
-#import "ThrioNavigationControllerDelegate.h"
+#import "NavigatorPopGestureRecognizerDelegate.h"
+#import "NavigatorControllerDelegate.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -29,9 +29,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property(nonatomic, strong, readonly) UIScreenEdgePanGestureRecognizer *thrio_popGestureRecognizer;
 
-@property(nonatomic, strong, readonly) ThrioPopGestureRecognizerDelegate *thrio_popGestureRecognizerDelegate;
+@property(nonatomic, strong, readonly) NavigatorPopGestureRecognizerDelegate *thrio_popGestureRecognizerDelegate;
 
-@property(nonatomic, strong, readonly) ThrioNavigationControllerDelegate *thrio_navigationControllerDelegate;
+@property(nonatomic, strong, readonly) NavigatorControllerDelegate *thrio_navigationControllerDelegate;
 
 - (void)thrio_addPopGesture;
 

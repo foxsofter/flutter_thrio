@@ -19,13 +19,13 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-#import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface ThrioPopGestureRecognizerDelegate : NSObject <UIGestureRecognizerDelegate>
+@interface UIViewController (HidesNavigationBar)
 
-@property(nonatomic, weak) UINavigationController *navigationController;
+@property(nonatomic, strong, nullable) NSNumber *thrio_hidesNavigationBar;
 
 @end
 

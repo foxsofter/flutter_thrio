@@ -26,10 +26,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface UIViewController (WillPopCallback)
 
-/// `thrio_willPopBlock`是否已触发的标志位，外部不要赋值
-///
-@property (nonatomic, assign) BOOL thrio_willPopCalling;
-
 /// 是否拦截pop操作的block
 ///
 /// 默认为nil，不拦截，且侧滑返回有效

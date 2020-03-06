@@ -20,22 +20,19 @@
 // IN THE SOFTWARE.
 
 #import <objc/runtime.h>
-#import "UIViewController+WillPopCallback.h"
+#import "UIViewController+HidesNavigationBar.h"
 
-@implementation UIViewController (WillPopCallback)
+@implementation UIViewController (HidesNavigationBar)
 
-- (ThrioWillPopCallback _Nullable)thrio_willPopBlock {
-  return objc_getAssociatedObject(self, _cmd);
+- (NSNumber * _Nullable)thrio_hidesNavigationBar {
+  return objc_getAssociatedObject(self, @selector(thrio_hidesNavigationBar));
 }
 
-- (void)setThrio_willPopBlock:(ThrioWillPopCallback _Nullable)block {
+- (void)setThrio_hidesNavigationBar:(NSNumber * _Nullable)hidesNavigationBar {
   objc_setAssociatedObject(self,
-                           @selector(thrio_willPopBlock),
-                           block,
-                           OBJC_ASSOCIATION_COPY_NONATOMIC);
-  if (![self isKindOfClass:NSClassFromString(@"ThrioFlutterViewController")]) {
-    self.navigationController.interactivePopGestureRecognizer.enabled = block == nil;
-  }
+                           @selector(thrio_hidesNavigationBar),
+                           hidesNavigationBar,
+                           OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
 @end

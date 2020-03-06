@@ -25,7 +25,7 @@
 #import "UIViewController+WillPopCallback.h"
 #import "UIViewController+Navigator.h"
 #import "ThrioFlutterViewController.h"
-#import "ThrioFlutterEngineFactory.h"
+#import "NavigatorFlutterEngineFactory.h"
 #import "NavigatorRouteSettings.h"
 
 @implementation UINavigationController (PopDisabled)

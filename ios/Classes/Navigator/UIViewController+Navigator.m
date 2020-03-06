@@ -26,7 +26,8 @@
 #import "UINavigationController+PopGesture.h"
 #import "UIViewController+WillPopCallback.h"
 #import "UIViewController+Navigator.h"
-#import "ThrioFlutterEngineFactory.h"
+#import "UIViewController+HidesNavigationBar.h"
+#import "NavigatorFlutterEngineFactory.h"
 #import "ThrioNavigator.h"
 #import "ThrioNavigator+Internal.h"
 #import "ThrioLogger.h"
@@ -43,15 +44,14 @@ NS_ASSUME_NONNULL_BEGIN
 
 @implementation UIViewController (Navigator)
 
-
-- (NSNumber * _Nullable)thrio_hidesNavigationBar {
-  return objc_getAssociatedObject(self, @selector(setThrio_hidesNavigationBar:));
+- (BOOL)thrio_willPopCalling {
+  return [(NSNumber *)objc_getAssociatedObject(self, _cmd) boolValue];
 }
 
-- (void)setThrio_hidesNavigationBar:(NSNumber * _Nullable)hidesNavigationBarWhenPushed {
+- (void)setThrio_willPopCalling:(BOOL)calling {
   objc_setAssociatedObject(self,
-                           @selector(setThrio_hidesNavigationBar:),
-                           hidesNavigationBarWhenPushed,
+                           @selector(thrio_willPopCalling),
+                           @(calling),
                            OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
@@ -97,7 +97,7 @@ NS_ASSUME_NONNULL_BEGIN
     NSMutableDictionary *arguments = [NSMutableDictionary dictionaryWithDictionary:[settings toArguments]];
     [arguments setObject:[NSNumber numberWithBool:animated] forKey:@"animated"];
     NSString *entrypoint = [(ThrioFlutterViewController*)self entrypoint];
-    ThrioChannel *channel = [ThrioFlutterEngineFactory.shared getChannelByEntrypoint:entrypoint];
+    ThrioChannel *channel = [NavigatorFlutterEngineFactory.shared getChannelByEntrypoint:entrypoint];
     [channel invokeMethod:@"__onPush__"
                 arguments:arguments
                    result:^(id _Nullable r) {
@@ -135,7 +135,7 @@ NS_ASSUME_NONNULL_BEGIN
     [arguments setObject:[NSNumber numberWithBool:animated] forKey:@"animated"];
     __weak typeof(self) weakself = self;
     NSString *entrypoint = [(ThrioFlutterViewController*)self entrypoint];
-    ThrioChannel *channel = [ThrioFlutterEngineFactory.shared getChannelByEntrypoint:entrypoint];
+    ThrioChannel *channel = [NavigatorFlutterEngineFactory.shared getChannelByEntrypoint:entrypoint];
     [channel invokeMethod:@"__onPop__"
                 arguments:arguments
                    result:^(id _Nullable r) {
@@ -176,7 +176,7 @@ NS_ASSUME_NONNULL_BEGIN
     [arguments setObject:[NSNumber numberWithBool:animated] forKey:@"animated"];
     __weak typeof(self) weakself = self;
     NSString *entrypoint = [(ThrioFlutterViewController*)self entrypoint];
-    ThrioChannel *channel = [ThrioFlutterEngineFactory.shared getChannelByEntrypoint:entrypoint];
+    ThrioChannel *channel = [NavigatorFlutterEngineFactory.shared getChannelByEntrypoint:entrypoint];
     [channel invokeMethod:@"__onPopTo__"
                 arguments:arguments
                    result:^(id  _Nullable r) {
@@ -209,7 +209,7 @@ NS_ASSUME_NONNULL_BEGIN
     [arguments setObject:[NSNumber numberWithBool:animated] forKey:@"animated"];
     __weak typeof(self) weakself = self;
     NSString *entrypoint = [(ThrioFlutterViewController*)self entrypoint];
-    ThrioChannel *channel = [ThrioFlutterEngineFactory.shared getChannelByEntrypoint:entrypoint];
+    ThrioChannel *channel = [NavigatorFlutterEngineFactory.shared getChannelByEntrypoint:entrypoint];
     [channel invokeMethod:@"__onRemove__"
                 arguments:arguments
                    result:^(id  _Nullable r) {
@@ -372,7 +372,7 @@ NS_ASSUME_NONNULL_BEGIN
         @"params": params,
       };
       NSString *entrypoint = [(ThrioFlutterViewController*)self entrypoint];
-      ThrioChannel *channel = [ThrioFlutterEngineFactory.shared getChannelByEntrypoint:entrypoint];
+      ThrioChannel *channel = [NavigatorFlutterEngineFactory.shared getChannelByEntrypoint:entrypoint];
       [channel sendEvent:@"__onNotify__" arguments:arguments];
     } else {
       if ([self conformsToProtocol:@protocol(NavigatorNotifyProtocol)]) {

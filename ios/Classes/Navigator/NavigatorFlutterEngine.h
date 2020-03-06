@@ -28,7 +28,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface ThrioFlutterEngine : NSObject
+@interface NavigatorFlutterEngine : NSObject
 
 - (void)startupWithEntrypoint:(NSString *)entrypoint readyBlock:(ThrioVoidCallback)block;
 

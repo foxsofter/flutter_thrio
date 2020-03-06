@@ -25,11 +25,12 @@
 #import "UINavigationController+PopGesture.h"
 #import "UIViewController+WillPopCallback.h"
 #import "UIViewController+Navigator.h"
+#import "UIViewController+HidesNavigationBar.h"
 #import "NavigatorNotifyProtocol.h"
 #import "ThrioRegistryMap.h"
 #import "NSObject+ThrioSwizzling.h"
 #import "ThrioLogger.h"
-#include "ThrioFlutterEngineFactory.h"
+#import "NavigatorFlutterEngineFactory.h"
 #import "ThrioNavigator.h"
 #import "ThrioNavigator+NavigatorBuilder.h"
 
@@ -114,7 +115,7 @@ NS_ASSUME_NONNULL_BEGIN
         }
       };
 
-      [ThrioFlutterEngineFactory.shared startupWithEntrypoint:entrypoint readyBlock:readyBlock];
+      [NavigatorFlutterEngineFactory.shared startupWithEntrypoint:entrypoint readyBlock:readyBlock];
     }
   }
 }
@@ -329,7 +330,7 @@ NS_ASSUME_NONNULL_BEGIN
   
   UIViewController *vc = [self.viewControllers objectAtIndex:self.viewControllers.count - 2];
   if ([vc isKindOfClass:ThrioFlutterViewController.class]) {
-    [ThrioFlutterEngineFactory.shared pushViewController:(ThrioFlutterViewController*)vc];
+    [NavigatorFlutterEngineFactory.shared pushViewController:(ThrioFlutterViewController*)vc];
     if (self.navigationBarHidden != vc.thrio_hidesNavigationBar.boolValue) {
       [self setNavigationBarHidden:vc.thrio_hidesNavigationBar.boolValue];
     }
@@ -364,7 +365,7 @@ NS_ASSUME_NONNULL_BEGIN
     
     if ([strongSelf.thrio_popingViewController isKindOfClass:ThrioFlutterViewController.class]) {
       if (![viewController isKindOfClass:ThrioFlutterViewController.class]) {
-        [ThrioFlutterEngineFactory.shared popViewController:(ThrioFlutterViewController*)strongSelf.thrio_popingViewController];
+        [NavigatorFlutterEngineFactory.shared popViewController:(ThrioFlutterViewController*)strongSelf.thrio_popingViewController];
       }
 
       if (strongSelf.navigationBarHidden != viewController.thrio_hidesNavigationBar.boolValue) {
@@ -372,7 +373,7 @@ NS_ASSUME_NONNULL_BEGIN
       }
     }
     if ([viewController isKindOfClass:ThrioFlutterViewController.class]) {
-      [ThrioFlutterEngineFactory.shared pushViewController:(ThrioFlutterViewController*)viewController];
+      [NavigatorFlutterEngineFactory.shared pushViewController:(ThrioFlutterViewController*)viewController];
     }
 
     strongSelf.thrio_popingViewController = nil;
@@ -423,7 +424,7 @@ NS_ASSUME_NONNULL_BEGIN
         __strong typeof(self) strongSelf = weakself;
         [strongSelf pushViewController:viewController animated:animated];
         if ([viewController isKindOfClass:ThrioFlutterViewController.class]) {
-          [ThrioFlutterEngineFactory.shared pushViewController:(ThrioFlutterViewController*)viewController];
+          [NavigatorFlutterEngineFactory.shared pushViewController:(ThrioFlutterViewController*)viewController];
         }
       }
       result(r);

@@ -19,12 +19,12 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-#import "ThrioFlutterEngineFactory.h"
-#import "ThrioFlutterEngine.h"
+#import "NavigatorFlutterEngineFactory.h"
+#import "NavigatorFlutterEngine.h"
 #import "ThrioNavigator.h"
 #import "ThrioLogger.h"
 
-@interface ThrioFlutterEngineFactory ()
+@interface NavigatorFlutterEngineFactory ()
 
 @property (nonatomic, strong) NSMutableDictionary *flutterEngines;
 
@@ -32,10 +32,10 @@
 
 @end
 
-@implementation ThrioFlutterEngineFactory
+@implementation NavigatorFlutterEngineFactory
 
 + (instancetype)shared {
-  static ThrioFlutterEngineFactory *_instance;
+  static NavigatorFlutterEngineFactory *_instance;
   static dispatch_once_t onceToken;
   dispatch_once(&onceToken, ^{
     _instance = [[self alloc] init];
@@ -66,7 +66,7 @@
     block();
   } else {
     ThrioLogV(@"push in startupWithEntrypoint:%@", entrypoint);
-    ThrioFlutterEngine *flutterEngine = [[ThrioFlutterEngine alloc] init];
+    NavigatorFlutterEngine *flutterEngine = [[NavigatorFlutterEngine alloc] init];
     [self.flutterEngines setObject:flutterEngine forKey:entrypoint];
     [flutterEngine startupWithEntrypoint:entrypoint readyBlock:block];
   }
@@ -76,7 +76,7 @@
   if (!ThrioNavigator.isMultiEngineEnabled) {
     entrypoint = @"";
   }
-  ThrioFlutterEngine *flutterEngine = self.flutterEngines[entrypoint];
+  NavigatorFlutterEngine *flutterEngine = self.flutterEngines[entrypoint];
   return flutterEngine.engine;
 }
 
@@ -85,17 +85,17 @@
     entrypoint = @"";
   }
   
-  ThrioFlutterEngine *flutterEngine = self.flutterEngines[entrypoint];
+  NavigatorFlutterEngine *flutterEngine = self.flutterEngines[entrypoint];
   return flutterEngine.channel;
 }
 
 - (void)pushViewController:(ThrioFlutterViewController *)viewController {
-  ThrioFlutterEngine *flutterEngine = self.flutterEngines[viewController.entrypoint];
+  NavigatorFlutterEngine *flutterEngine = self.flutterEngines[viewController.entrypoint];
   [flutterEngine pushViewController:viewController];
 }
 
 - (void)popViewController:(ThrioFlutterViewController *)viewController {
-  ThrioFlutterEngine *flutterEngine = self.flutterEngines[viewController.entrypoint];
+  NavigatorFlutterEngine *flutterEngine = self.flutterEngines[viewController.entrypoint];
   if ([flutterEngine popViewController:viewController] < 1) {
     if (ThrioNavigator.isMultiEngineEnabled &&
         _flutterEngines.count > 1 &&
@@ -131,7 +131,7 @@
   }
 
   for (NSString *entrypoint in kvs) {
-    ThrioFlutterEngine *flutterEngine = self.flutterEngines[entrypoint];
+    NavigatorFlutterEngine *flutterEngine = self.flutterEngines[entrypoint];
     flutterEngine.registerUrlCount = [kvs[entrypoint] integerValue];
   }
 }

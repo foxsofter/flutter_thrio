@@ -20,10 +20,10 @@
 // IN THE SOFTWARE.
 
 
-#import "ThrioNavigationControllerDelegate.h"
+#import "NavigatorControllerDelegate.h"
 #import "UINavigationController+Navigator.h"
 
-@implementation ThrioNavigationControllerDelegate
+@implementation NavigatorControllerDelegate
 
 - (void)setNavigationController:(UINavigationController * _Nullable)navigationController {
   _originDelegate = navigationController.delegate;

@@ -19,23 +19,26 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-#import <objc/runtime.h>
+#import "NavigatorPopGestureRecognizerDelegate.h"
 #import "UIViewController+WillPopCallback.h"
 
-@implementation UIViewController (WillPopCallback)
+@implementation NavigatorPopGestureRecognizerDelegate
 
-- (ThrioWillPopCallback _Nullable)thrio_willPopBlock {
-  return objc_getAssociatedObject(self, _cmd);
-}
-
-- (void)setThrio_willPopBlock:(ThrioWillPopCallback _Nullable)block {
-  objc_setAssociatedObject(self,
-                           @selector(thrio_willPopBlock),
-                           block,
-                           OBJC_ASSOCIATION_COPY_NONATOMIC);
-  if (![self isKindOfClass:NSClassFromString(@"ThrioFlutterViewController")]) {
-    self.navigationController.interactivePopGestureRecognizer.enabled = block == nil;
+- (BOOL)gestureRecognizerShouldBegin:(UIPanGestureRecognizer *)gestureRecognizer {
+  UIViewController *topViewController = self.navigationController.topViewController;
+  if (topViewController.thrio_willPopBlock) {
+    return NO;
   }
+    
+  if (self.navigationController.viewControllers.count <= 1) {
+    return NO;
+  }
+
+  if ([[self.navigationController valueForKey:@"_isTransitioning"] boolValue]) {
+    return NO;
+  }
+  
+  return YES;
 }
 
 @end

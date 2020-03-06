@@ -20,11 +20,11 @@
 // IN THE SOFTWARE.
 
 
-#import "ThrioFlutterEngine.h"
+#import "NavigatorFlutterEngine.h"
 #import "ThrioLogger.h"
 #import "ThrioNavigator.h"
 
-@interface ThrioFlutterEngine ()
+@interface NavigatorFlutterEngine ()
 
 @property (nonatomic, strong, readwrite, nullable) FlutterEngine *engine;
 
@@ -36,7 +36,7 @@
 
 @end
 
-@implementation ThrioFlutterEngine
+@implementation NavigatorFlutterEngine
 
 - (void)startupWithEntrypoint:(NSString *)entrypoint readyBlock:(ThrioVoidCallback)block {
   if (!_engine) {
@@ -51,9 +51,9 @@
   if (![_flutterViewControllers containsObject:viewController]) {
     [_flutterViewControllers addObject:viewController];
   }
-  ThrioLogV(@"ThrioFlutterEngine: enter pushViewController");
+  ThrioLogV(@"NavigatorFlutterEngine: enter pushViewController");
   if (_engine.viewController != viewController && viewController != nil) {
-    ThrioLogV(@"ThrioFlutterEngine: set new %@", viewController);
+    ThrioLogV(@"NavigatorFlutterEngine: set new %@", viewController);
     _engine.viewController = viewController;
     [(ThrioFlutterViewController*)_engine.viewController surfaceUpdated:YES];
   }
@@ -61,9 +61,9 @@
 
 - (NSUInteger)popViewController:(ThrioFlutterViewController *)viewController {
   [_flutterViewControllers removeObject:viewController];
-  ThrioLogV(@"ThrioFlutterEngine: enter popViewController");
+  ThrioLogV(@"NavigatorFlutterEngine: enter popViewController");
   if (_engine.viewController == viewController && viewController != nil) {
-    ThrioLogV(@"ThrioFlutterEngine: unset %@", viewController);
+    ThrioLogV(@"NavigatorFlutterEngine: unset %@", viewController);
     _engine.viewController = _flutterViewControllers.lastObject;
     if (_engine.viewController) {
       [(ThrioFlutterViewController*)_engine.viewController surfaceUpdated:YES];
@@ -116,7 +116,7 @@
 }
 
 - (void)dealloc {
-  ThrioLogV(@"ThrioFlutterEngine: dealloc %@", self);
+  ThrioLogV(@"NavigatorFlutterEngine: dealloc %@", self);
   if (_engine) {
     _engine.viewController = nil;
     [_engine destroyContext];

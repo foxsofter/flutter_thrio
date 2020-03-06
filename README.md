@@ -191,7 +191,7 @@ FlutterViewController 默认是不支持侧滑返回的，因为 thrio 支持一
 
 ```dart
 WillPopScope(
-    onWillPop: () async => true,
+    onWillPop: () async => false,
     child: Container(),
 )
 ```

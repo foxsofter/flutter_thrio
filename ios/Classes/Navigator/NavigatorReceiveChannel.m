@@ -27,7 +27,7 @@
 #import "UINavigationController+Navigator.h"
 #import "UINavigationController+HotRestart.h"
 #import "UINavigationController+PopDisabled.h"
-#import "ThrioFlutterEngineFactory.h"
+#import "NavigatorFlutterEngineFactory.h"
 #import "ThrioLogger.h"
 
 NS_ASSUME_NONNULL_BEGIN
@@ -302,7 +302,7 @@ NS_ASSUME_NONNULL_BEGIN
                         handler:^void(NSDictionary<NSString *,id> * arguments,
                                       ThrioIdCallback _Nullable result) {
     NSArray *urls = arguments[@"urls"];
-    [ThrioFlutterEngineFactory.shared registerFlutterUrls:urls];
+    [NavigatorFlutterEngineFactory.shared registerFlutterUrls:urls];
   }];
 }
 
@@ -311,7 +311,7 @@ NS_ASSUME_NONNULL_BEGIN
                         handler:^void(NSDictionary<NSString *,id> * arguments,
                                       ThrioIdCallback _Nullable result) {
     NSArray *urls = arguments[@"urls"];
-    [ThrioFlutterEngineFactory.shared unregisterFlutterUrls:urls];
+    [NavigatorFlutterEngineFactory.shared unregisterFlutterUrls:urls];
   }];
 }
 

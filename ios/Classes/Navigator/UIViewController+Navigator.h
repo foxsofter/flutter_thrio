@@ -28,7 +28,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface UIViewController (Navigator)
 
-@property(nonatomic, strong, nullable) NSNumber *thrio_hidesNavigationBar;
+/// `thrio_willPopBlock`是否已触发的标志位，外部不要赋值
+///
+@property (nonatomic, assign) BOOL thrio_willPopCalling;
 
 @property(nonatomic, strong, readonly, nullable) NavigatorPageRoute *thrio_firstRoute;
 
