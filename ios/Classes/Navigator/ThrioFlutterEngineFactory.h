@@ -19,30 +19,31 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-#import <UIKit/UIKit.h>
+#import <Foundation/Foundation.h>
 #import <Flutter/Flutter.h>
 #import "ThrioFlutterViewController.h"
+#import "ThrioTypes.h"
 #import "ThrioChannel.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface UINavigationController (FlutterEngine)
+@interface ThrioFlutterEngineFactory : NSObject
 
-- (void)thrio_startupWithEntrypoint:(NSString *)entrypoint readyBlock:(ThrioVoidCallback)block;
++ (instancetype)shared;
 
-- (FlutterEngine *)thrio_getEngineForEntrypoint:(NSString *)entrypoint;
+- (void)startupWithEntrypoint:(NSString *)entrypoint readyBlock:(ThrioVoidCallback)block;
 
-- (ThrioChannel *)thrio_getChannelForEntrypoint:(NSString *)entrypoint;
+- (FlutterEngine *)getEngineByEntrypoint:(NSString *)entrypoint;
 
-- (void)thrio_attachFlutterViewController:(ThrioFlutterViewController *)viewController;
+- (ThrioChannel *)getChannelByEntrypoint:(NSString *)entrypoint;
 
-- (void)thrio_detachFlutterViewController:(ThrioFlutterViewController *)viewController;
+- (void)pushViewController:(ThrioFlutterViewController *)viewController;
 
-- (void)thrio_removeAllEngineIfNeeded;
+- (void)popViewController:(ThrioFlutterViewController *)viewController;
 
-- (void)thrio_registerUrls:(NSArray *)urls;
+- (void)registerFlutterUrls:(NSArray *)urls;
 
-- (void)thrio_unregisterUrls:(NSArray *)urls;
+- (void)unregisterFlutterUrls:(NSArray *)urls;
 
 @end
 

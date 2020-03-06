@@ -22,7 +22,7 @@
 #import "ThrioFlutterViewController.h"
 #import "UIViewController+Navigator.h"
 #import "UINavigationController+Navigator.h"
-#import "UINavigationController+FlutterEngine.h"
+#import "ThrioFlutterEngineFactory.h"
 #import "ThrioNavigator.h"
 #import "ThrioNavigator+Internal.h"
 #import "ThrioFlutterEngine.h"
@@ -42,7 +42,7 @@ NS_ASSUME_NONNULL_BEGIN
 @implementation ThrioFlutterViewController
 
 - (instancetype)initWithEntrypoint:(NSString *)entrypoint {
-  FlutterEngine *engine = [ThrioNavigator.navigationController thrio_getEngineForEntrypoint:entrypoint];
+  FlutterEngine *engine = [ThrioFlutterEngineFactory.shared getEngineByEntrypoint:entrypoint];
   self = [super initWithEngine:engine nibName:nil bundle:nil];
   if (self) {
     self.thrio_hidesNavigationBar = @YES;

@@ -22,9 +22,9 @@
 
 #import "UINavigationController+PopDisabled.h"
 #import "UINavigationController+Navigator.h"
-#import "UINavigationController+FlutterEngine.h"
 #import "UIViewController+WillPopCallback.h"
 #import "ThrioFlutterViewController.h"
+#import "ThrioFlutterEngineFactory.h"
 
 @implementation UINavigationController (PopDisabled)
 

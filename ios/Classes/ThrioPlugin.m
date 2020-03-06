@@ -21,7 +21,7 @@
 
 #import "ThrioPlugin.h"
 #import "ThrioNavigator+Internal.h"
-#import "UINavigationController+FlutterEngine.h"
+#import "ThrioFlutterEngineFactory.h"
 #import "ThrioLogger.h"
 
 @implementation ThrioPlugin
