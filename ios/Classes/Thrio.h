@@ -22,21 +22,23 @@
 #ifndef Thrio_h
 #define Thrio_h
 
-#import "ThrioTypes.h"
+#import "Thrio.h"
 #import "ThrioPlugin.h"
+#import "ThrioTypes.h"
+#import "NSObject+ThrioSwizzling.h"
+#import "UIApplication+Thrio.h"
 #import "ThrioChannel.h"
 #import "ThrioLogger.h"
-#import "ThrioModuleProtocol.h"
 #import "ThrioModule.h"
+#import "ThrioModuleProtocol.h"
 #import "ThrioRegistryMap.h"
 #import "ThrioRegistrySet.h"
 #import "ThrioRegistrySetMap.h"
+#import "ThrioPageNotifyProtocol.h"
 #import "ThrioFlutterViewController.h"
 #import "ThrioNavigator.h"
-#import "NavigatorNotifyProtocol.h"
-#import "UIApplication+Thrio.h"
-#import "UINavigationController+Navigator.h"
-#import "UIViewController+Navigator.h"
+#import "UIViewController+HidesNavigationBar.h"
+#import "UIViewController+ThrioInjection.h"
 #import "UIViewController+WillPopCallback.h"
 
 #endif /* Thrio_h */

@@ -26,7 +26,7 @@ class _Page1State extends State<Page1> {
   }
 
   @override
-  Widget build(BuildContext context) => NavigatorPageNotify(
+  Widget build(BuildContext context) => ThrioPageNotify(
       name: 'page1Notify',
       onPageNotify: (params) =>
           ThrioLogger().v('flutter1 receive notify: $params'),

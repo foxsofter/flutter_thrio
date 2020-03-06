@@ -20,7 +20,7 @@ A flutter plugin which enables hybrid integration of flutter for existing ios or
                            'Classes/Logger/*.h',
                            'Classes/Module/*.h',
                            'Classes/Registry/*.h',
-                           'Classes/Navigator/NavigatorNotifyProtocol.h',
+                           'Classes/Navigator/ThrioPageNotifyProtocol.h',
                            'Classes/Navigator/ThrioFlutterViewController.h',
                            'Classes/Navigator/ThrioNavigator.h',
                            'Classes/Navigator/UIViewController+WillPopCallback.h',

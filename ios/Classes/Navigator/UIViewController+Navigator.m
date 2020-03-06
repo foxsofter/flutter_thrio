@@ -330,7 +330,7 @@ NS_ASSUME_NONNULL_BEGIN
   [self thrio_viewDidAppear:animated];
   
   if ([self isKindOfClass:ThrioFlutterViewController.class] ||
-      [self conformsToProtocol:@protocol(NavigatorNotifyProtocol)]) {
+      [self conformsToProtocol:@protocol(ThrioPageNotifyProtocol)]) {
     // 当页面出现后，给页面发送通知
     [self thrio_onNotify];
   }
@@ -375,8 +375,8 @@ NS_ASSUME_NONNULL_BEGIN
       ThrioChannel *channel = [NavigatorFlutterEngineFactory.shared getChannelByEntrypoint:entrypoint];
       [channel sendEvent:@"__onNotify__" arguments:arguments];
     } else {
-      if ([self conformsToProtocol:@protocol(NavigatorNotifyProtocol)]) {
-        [(id<NavigatorNotifyProtocol>)self onNotify:name params:params];
+      if ([self conformsToProtocol:@protocol(ThrioPageNotifyProtocol)]) {
+        [(id<ThrioPageNotifyProtocol>)self onNotify:name params:params];
       }
     }
   }

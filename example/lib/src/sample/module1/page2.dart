@@ -21,7 +21,7 @@ class Page2 extends StatefulWidget {
 
 class _Page2State extends State<Page2> {
   @override
-  Widget build(BuildContext context) => NavigatorPageNotify(
+  Widget build(BuildContext context) => ThrioPageNotify(
       name: 'page2Notify',
       onPageNotify: (params) =>
           ThrioLogger().v('flutter2 receive notify: $params'),

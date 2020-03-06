@@ -26,7 +26,7 @@
 #import "UIViewController+WillPopCallback.h"
 #import "UIViewController+Navigator.h"
 #import "UIViewController+HidesNavigationBar.h"
-#import "NavigatorNotifyProtocol.h"
+#import "ThrioPageNotifyProtocol.h"
 #import "ThrioRegistryMap.h"
 #import "NSObject+ThrioSwizzling.h"
 #import "ThrioLogger.h"
@@ -126,7 +126,7 @@ NS_ASSUME_NONNULL_BEGIN
                  params:(NSDictionary *)params {
   UIViewController *vc = [self getViewControllerByUrl:url index:index];
   if ([vc isKindOfClass:ThrioFlutterViewController.class] ||
-      [vc conformsToProtocol:@protocol(NavigatorNotifyProtocol)]) {
+      [vc conformsToProtocol:@protocol(ThrioPageNotifyProtocol)]) {
     return [vc thrio_notifyUrl:url index:index name:name params:params];
   }
   return NO;

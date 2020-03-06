@@ -27,7 +27,7 @@ NS_ASSUME_NONNULL_BEGIN
 ///
 /// The protocol must be implemented by a UIViewController.
 ///
-@protocol NavigatorNotifyProtocol <NSObject>
+@protocol ThrioPageNotifyProtocol <NSObject>
 
 @required
 /// Called when the page has been fully transitioned onto the screen.

@@ -9,7 +9,7 @@
 #import "ThrioViewController.h"
 #import <thrio/Thrio.h>
 
-@interface ThrioViewController ()<NavigatorNotifyProtocol>
+@interface ThrioViewController ()<ThrioPageNotifyProtocol>
 
 @property (weak, nonatomic) IBOutlet UILabel *label;
 

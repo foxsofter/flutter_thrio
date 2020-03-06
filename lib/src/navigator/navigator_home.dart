@@ -32,9 +32,9 @@ class _NavigatorHomeState extends State<NavigatorHome> {
   Widget build(BuildContext context) => Scaffold(
       appBar: AppBar(
         brightness: Brightness.light,
-        backgroundColor: Colors.blue,
+        backgroundColor: Colors.white,
         textTheme: TextTheme(title: TextStyle(color: Colors.white)),
-        title: const Text('thrio_example'),
+        title: const Text(''),
       ),
       body: SingleChildScrollView(
           child: Container(
@@ -47,7 +47,7 @@ class _NavigatorHomeState extends State<NavigatorHome> {
                       alignment: AlignmentDirectional.center,
                       child: Text(
                         '如果你看到这个页面，点击hot restart按钮',
-                        style: TextStyle(fontSize: 10, color: Colors.blue),
+                        style: TextStyle(fontSize: 12, color: Colors.blue),
                       ),
                     ),
                     InkWell(

@@ -1,6 +1,6 @@
 .DS_Store
 .dart_tool/
-.lock
+*.lock
 .packages
 .pub/
 .vscode/
