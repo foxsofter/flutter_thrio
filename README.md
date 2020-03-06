@@ -151,7 +151,7 @@ ThrioNavigator.notify(url: 'flutter1', name: 'reload');
 
 1. dart 端接收页面通知
 
-使用`NavigatorPageNotify`这个Widget来实现在任何地方接收当前页面收到的通知。
+使用`NavigatorPageNotify`这个 Widget 来实现在任何地方接收当前页面收到的通知。
 
 ```dart
 NavigatorPageNotify(
@@ -183,28 +183,37 @@ viewController.thrio_hidesNavigationBar = NO;
 
 FlutterViewController 默认是不支持侧滑返回的，因为 thrio 支持一个 FlutterViewController 可以打开任意多个 dart 页面，dart 页面本身也是要支持侧滑返回的，手势上存在一定的冲突，在这里 thrio 做了一些特殊处理，基本上支持无缝切换。有兴趣可以参看源码实现。
 
-### 原生页面和 dart 页面支持页面禁止关闭
+### 原生页面和 dart 页面支持页面关闭前调用闭包
+
+每个端各自维护自身的页面，不支持跨端传递闭包逻辑
 
 1. dart 端禁止特定页面关闭
 
 ```dart
-ThrioNavigator.setPopDisabled(url: 'flutter1');
+WillPopScope(
+    onWillPop: () async => true,
+    child: Container(),
+)
 ```
 
 2. iOS 端禁止特定页面关闭
 
 ```objc
-[ThrioNavigator setPopDisabledUrl:@"flutter1" disabled:NO];
+viewController.thrio_willPopBlock = ^(ThrioBoolCallback _Nonnull result) {
+  result(NO);
+};
 ```
 
-在 dart 端依然支持通过 WillPopScope 来设置禁止页面返回。
+一旦设置 thrio_willPopBlock，侧滑返回将失效.
 
 ### 支持内嵌套 Flutter 页面
 
-这是谷歌推荐的实现方式，导航栈中不被原生页面分隔的所有Flutter页面共用一个原生的容器页面，有效减少内存消耗量。
+这是谷歌推荐的实现方式，导航栈中不被原生页面分隔的所有 Flutter 页面共用一个原生的容器页面，有效减少内存消耗量。
 
-1. iOS端
+1. iOS 端
 
-- 在 iOS 中，打开一个新的 FlutterViewController，内存消耗大概是12M+，打开一个内嵌的Flutter页面，内存消耗不会超过2M，目前在我们的商家App上，95%的页面都不会需要从Flutter页面跳转到原生页面，整个App的内存占用将会减少很多。
-
-
+原来的方案是每打开一个 Flutter 页面会创建一个新的原生页面，比如以连续打开 5 个 Flutter 页面计算（比较接近目前我们在项目上的场景），iOS 会消耗 91.67M 内存，新方案 iOS 只消耗 42.76 内存，减少内存消耗 150%，页面打开内存消耗数据大致如下：
+| demo | 启动 | 页面 1 | 页面 2 | 页面 3 | 页面 4 | 页面 5 |
+| --- | --- | --- | --- | --- | --- | --- |
+| thrio | 8.56 | 37.42 | 38.88 | 42.52 | 42.61 | 42.76 |
+| boost | 6.81 | 36.08 | 50.96 | 66.18 | 78.86 | 91.67 |
