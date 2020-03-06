@@ -151,10 +151,10 @@ ThrioNavigator.notify(url: 'flutter1', name: 'reload');
 
 1. dart 端接收页面通知
 
-使用`NavigatorPageNotify`这个 Widget 来实现在任何地方接收当前页面收到的通知。
+使用`ThrioPageNotify`这个 Widget 来实现在任何地方接收当前页面收到的通知。
 
 ```dart
-NavigatorPageNotify(
+ThrioPageNotify(
       name: 'page1Notify',
       onPageNotify: (params) =>
           ThrioLogger().v('flutter1 receive notify: $params'),
@@ -163,7 +163,7 @@ NavigatorPageNotify(
 
 2. iOS 端接收页面通知
 
-`UIViewController`实现协议`NavigatorNotifyProtocol`，通过该协议定义的方法来接收页面通知
+`UIViewController`实现协议`ThrioPageNotifyProtocol`，通过该协议定义的方法来接收页面通知
 
 ```objc
 - (void)onNotify:(NSString *)name params:(NSDictionary *)params {
@@ -191,9 +191,9 @@ FlutterViewController 默认是不支持侧滑返回的，因为 thrio 支持一
 
 ```dart
 WillPopScope(
-    onWillPop: () async => false,
+    onWillPop: () async => true,
     child: Container(),
-)
+);
 ```
 
 2. iOS 端禁止特定页面关闭
