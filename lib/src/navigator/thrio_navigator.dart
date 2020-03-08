@@ -22,6 +22,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:thrio/src/exception/thrio_exception.dart';
+import 'package:thrio/thrio.dart';
 
 import '../channel/thrio_channel.dart';
 import '../registry/registry_map.dart';
@@ -32,63 +34,81 @@ import 'navigator_types.dart';
 import 'navigator_widget.dart';
 
 class ThrioNavigator {
-  ThrioNavigator._();
+  ThrioNavigator._({
+    ThrioChannel channel,
+    NavigatorSendChannel sendChannel,
+    NavigatorReceiveChannel receiveChannel,
+    Map<String, NavigatorParamsCallback> pagePoppedResults,
+  })  : _channel = channel,
+        _sendChannel = sendChannel,
+        _receiveChannel = receiveChannel,
+        _pagePoppedResults = pagePoppedResults;
 
-  static final _default = ThrioNavigator._();
+  static ThrioNavigator _default;
 
   static TransitionBuilder builder({String entrypoint = ''}) {
-    _entrypoint = entrypoint;
-    _default._channel = ThrioChannel(channel: '__thrio_app__$entrypoint');
-    _default._sendChannel = NavigatorSendChannel(_default._channel);
-    _default._receiveChannel = NavigatorReceiveChannel(_default._channel);
-
-    _default._sendChannel.registerUrls(_default._pageBuilders.keys.toList());
+    final channel = ThrioChannel(channel: '__thrio_app__$entrypoint');
+    final sendChannel = NavigatorSendChannel(channel);
+    final pagePoppedResults = <String, NavigatorParamsCallback>{};
+    final receiveChannel = NavigatorReceiveChannel(channel, pagePoppedResults);
+    _default = ThrioNavigator._(
+      channel: channel,
+      sendChannel: sendChannel,
+      receiveChannel: receiveChannel,
+      pagePoppedResults: pagePoppedResults,
+    );
+    sendChannel.registerUrls(_pageBuilders.keys.toList());
 
     return (context, child) => NavigatorWidget(
-          key: _default._stateKey = GlobalKey<NavigatorWidgetState>(),
-          observer: NavigatorRouteObserver(_default._channel),
+          key: _stateKey ??= GlobalKey<NavigatorWidgetState>(),
+          observer: NavigatorRouteObserver(channel),
           child: child is Navigator ? child : null,
         );
   }
 
-  static String _entrypoint;
+  static GlobalKey<NavigatorWidgetState> _stateKey;
 
-  static String get entrypoint => _entrypoint;
+  static NavigatorWidgetState get navigatorState => _stateKey?.currentState;
 
-  GlobalKey<NavigatorWidgetState> _stateKey;
+  final ThrioChannel _channel;
 
-  static NavigatorWidgetState get navigatorState =>
-      _default._stateKey?.currentState;
+  final NavigatorSendChannel _sendChannel;
 
-  ThrioChannel _channel;
+  final NavigatorReceiveChannel _receiveChannel;
 
-  NavigatorSendChannel _sendChannel;
+  final Map<String, NavigatorParamsCallback> _pagePoppedResults;
 
-  NavigatorReceiveChannel _receiveChannel;
-
-  final _pageBuilders = RegistryMap<String, NavigatorPageBuilder>();
+  static final _pageBuilders = RegistryMap<String, NavigatorPageBuilder>();
 
   /// Sent when the navigation stack can be pushed.
   ///
   /// Do not call this method.
   ///
-  static void ready() => _default._channel.invokeMethod<bool>('ready');
+  static void ready() => _default._channel?.invokeMethod<bool>('ready');
 
   /// Push the page onto the navigation stack.
   ///
   /// If a native page builder exists for the `url`, open the native page,
   /// otherwise open the flutter page.
   ///
-  static Future<bool> push({
+  static Future<int> push({
     @required String url,
+    params,
     bool animated = true,
-    Map<String, dynamic> params = const {},
-  }) =>
-      _default._sendChannel.push(
-        url: url,
-        animated: animated,
-        params: params,
-      );
+    NavigatorParamsCallback poppedResult,
+  }) {
+    if (_default == null) {
+      throw ThrioException('Must call the `builder` method first');
+    }
+    return _default._sendChannel
+        .push(url: url, params: params, animated: animated)
+        .then<int>((index) {
+      if (poppedResult != null && index != null && index > 0) {
+        _default._pagePoppedResults['$url.$index'] = poppedResult;
+      }
+      return index;
+    });
+  }
 
   /// Send a notification to the page.
   ///
@@ -97,86 +117,130 @@ class ThrioNavigator {
   ///
   static Future<bool> notify({
     @required String url,
-    int index = 0,
+    int index,
     @required String name,
-    Map<String, dynamic> params = const {},
-  }) =>
-      _default._sendChannel.notify(
-        name: name,
-        url: url,
-        index: index,
-        params: params,
-      );
+    params,
+  }) {
+    if (_default == null) {
+      throw ThrioException('Must call the `builder` method first');
+    }
+    return _default._sendChannel.notify(
+      name: name,
+      url: url,
+      index: index,
+      params: params,
+    );
+  }
 
   /// Pop a page from the navigation stack.
   ///
-  static Future<bool> pop({bool animated = true}) =>
-      _default._sendChannel.pop(animated: animated);
+  static Future<bool> pop({
+    params,
+    bool animated = true,
+  }) {
+    if (_default == null) {
+      throw ThrioException('Must call the `builder` method first');
+    }
+    return _default._sendChannel.pop(params: params, animated: animated);
+  }
 
   /// Pop the page in the navigation stack until the page with `url`.
   ///
   static Future<bool> popTo({
     @required String url,
-    int index = 0,
+    int index,
     bool animated = true,
-  }) =>
-      _default._sendChannel.popTo(
-        url: url,
-        index: index,
-        animated: animated,
-      );
+  }) {
+    if (_default == null) {
+      throw ThrioException('Must call the `builder` method first');
+    }
+    return _default._sendChannel.popTo(
+      url: url,
+      index: index,
+      animated: animated,
+    );
+  }
 
   /// Remove the page with `url` in the navigation stack.
   ///
   static Future<bool> remove({
-    String url = '',
-    int index = 0,
+    @required String url,
+    int index,
     bool animated = true,
-  }) =>
-      _default._sendChannel.remove(
-        url: url,
-        index: index,
-        animated: animated,
-      );
+  }) {
+    if (_default == null) {
+      throw ThrioException('Must call the `builder` method first');
+    }
+    return _default._sendChannel.remove(
+      url: url,
+      index: index,
+      animated: animated,
+    );
+  }
 
   /// Returns the index of the page that was last pushed to the navigation
   /// stack.
   ///
-  static Future<int> lastIndex({String url}) =>
-      _default._sendChannel.lastIndex(url: url);
+  static Future<int> lastIndex({String url}) {
+    if (_default == null) {
+      throw ThrioException('Must call the `builder` method first');
+    }
+    return _default._sendChannel.lastIndex(url: url);
+  }
 
   /// Returns all index of the page with `url` in the navigation stack.
   ///
-  static Future<List<int>> allIndex(String index) =>
-      _default._sendChannel.allIndex(index);
+  static Future<List<int>> allIndex({@required String url}) {
+    if (_default == null) {
+      throw ThrioException('Must call the `builder` method first');
+    }
+    return _default._sendChannel.allIndex(url: url);
+  }
 
   /// Setting the page with `url` and `index` cannot be poped..
   ///
   static Future<bool> setPopDisabled({
     @required String url,
-    int index = 0,
+    int index,
     bool disabled = true,
-  }) =>
-      _default._sendChannel.setPopDisabled(
-        url: url,
-        index: index,
-        disabled: disabled,
-      );
+  }) {
+    if (_default == null) {
+      throw ThrioException('Must call the `builder` method first');
+    }
+    return _default._sendChannel.setPopDisabled(
+      url: url,
+      index: index,
+      disabled: disabled,
+    );
+  }
 
   /// Sets up a broadcast stream for receiving page notify events.
   ///
   /// return value is `params`.
   ///
-  static Stream<Map<String, dynamic>> onPageNotify({
+  static Stream onPageNotify({
     @required String url,
     @required int index,
     @required String name,
-  }) =>
-      _default._receiveChannel.onPageNotify(
-        url: url,
-        index: index,
-        name: name,
-      );
+  }) {
+    if (_default == null) {
+      throw ThrioException('Must call the `builder` method first');
+    }
+    return _default._receiveChannel.onPageNotify(
+      url: url,
+      index: index,
+      name: name,
+    );
+  }
+
+  /// Send on hot restart.
+  ///
+  static void hotRestart() {
+    if (_default == null) {
+      throw ThrioException('Must call the `builder` method first');
+    }
+    _default._channel.invokeMethod<bool>('hotRestart');
+  }
 
   /// Register default page builder for the router.
   ///
@@ -185,7 +249,7 @@ class ThrioNavigator {
   static VoidCallback registerDefaultPageBuilder(
     NavigatorPageBuilder builder,
   ) =>
-      _default._pageBuilders.registry(Navigator.defaultRouteName, builder);
+      _pageBuilders.registry(Navigator.defaultRouteName, builder);
 
   /// Register an page builder for the router.
   ///
@@ -195,11 +259,11 @@ class ThrioNavigator {
     String url,
     NavigatorPageBuilder builder,
   ) {
-    _default._sendChannel?.registerUrls([url]);
-    final callback = _default._pageBuilders.registry(url, builder);
+    _default?._sendChannel?.registerUrls([url]);
+    final callback = _pageBuilders.registry(url, builder);
     return () {
       callback();
-      _default._sendChannel.unregisterUrls([url]);
+      _default?._sendChannel?.unregisterUrls([url]);
     };
   }
 
@@ -210,19 +274,13 @@ class ThrioNavigator {
   static VoidCallback registerPageBuilders(
     Map<String, NavigatorPageBuilder> builders,
   ) {
-    _default._sendChannel?.registerUrls(builders.keys.toList());
-    final callback = _default._pageBuilders.registryAll(builders);
+    _default?._sendChannel?.registerUrls(builders.keys.toList());
+    final callback = _pageBuilders.registryAll(builders);
     return () {
       callback();
-      _default._sendChannel.unregisterUrls(builders.keys.toList());
+      _default?._sendChannel?.unregisterUrls(builders.keys.toList());
     };
   }
 
-  static NavigatorPageBuilder getPageBuilder(String url) =>
-      _default._pageBuilders[url];
-
-  /// Send on hot restart.
-  ///
-  static void hotRestart() =>
-      _default._channel.invokeMethod<bool>('hotRestart');
+  static NavigatorPageBuilder getPageBuilder(String url) => _pageBuilders[url];
 }

@@ -30,15 +30,16 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface NavigatorFlutterEngine : NSObject
 
-- (void)startupWithEntrypoint:(NSString *)entrypoint readyBlock:(ThrioVoidCallback)block;
+- (void)startupWithEntrypoint:(NSString *)entrypoint
+                   readyBlock:(ThrioIdCallback _Nullable)block;
 
-@property(nonatomic, assign) NSUInteger registerUrlCount;
+@property (nonatomic, assign) NSUInteger registerUrlCount;
 
-@property(nonatomic, strong, readonly, nullable) FlutterEngine *engine;
+@property (nonatomic, strong, readonly, nullable) FlutterEngine *engine;
 
-@property(nonatomic, strong, readonly, nullable) ThrioChannel *channel;
+@property (nonatomic, strong, readonly, nullable) ThrioChannel *channel;
 
-@property(nonatomic, strong, readonly, nullable) NavigatorReceiveChannel *receiveChannel;
+@property (nonatomic, strong, readonly, nullable) NavigatorReceiveChannel *receiveChannel;
 
 - (void)pushViewController:(ThrioFlutterViewController *)viewController;
 

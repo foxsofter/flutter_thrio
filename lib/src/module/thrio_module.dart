@@ -80,7 +80,7 @@ mixin ThrioModule {
   ///
   /// return value is `params`.
   ///
-  Stream<Map<String, dynamic>> onPageNotify({
+  Stream onPageNotify({
     @required String name,
     @required String url,
     @required int index,

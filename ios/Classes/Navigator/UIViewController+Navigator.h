@@ -28,37 +28,36 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface UIViewController (Navigator)
 
-/// `thrio_willPopBlock`是否已触发的标志位，外部不要赋值
-///
-@property (nonatomic, assign) BOOL thrio_willPopCalling;
+@property (nonatomic, strong, readonly, nullable) NavigatorPageRoute *thrio_firstRoute;
 
-@property(nonatomic, strong, readonly, nullable) NavigatorPageRoute *thrio_firstRoute;
-
-@property(nonatomic, strong, readonly, nullable) NavigatorPageRoute *thrio_lastRoute;
+@property (nonatomic, strong, readonly, nullable) NavigatorPageRoute *thrio_lastRoute;
 
 - (void)thrio_pushUrl:(NSString *)url
                 index:(NSNumber *)index
-               params:(NSDictionary *)params
+               params:(id _Nullable)params
              animated:(BOOL)animated
-               result:(ThrioBoolCallback)result;
+       fromEntrypoint:(NSString * _Nullable)entrypoint
+               result:(ThrioNumberCallback _Nullable)result
+         poppedResult:(ThrioIdCallback _Nullable)poppedResult;
 
 - (BOOL)thrio_notifyUrl:(NSString *)url
-                  index:(NSNumber *)index
+                  index:(NSNumber * _Nullable)index
                    name:(NSString *)name
-                 params:(NSDictionary *)params;
+                 params:(id _Nullable)params;
 
-- (void)thrio_popAnimated:(BOOL)animated
-                   result:(ThrioBoolCallback)result;
+- (void)thrio_popParams:(id _Nullable)params
+               animated:(BOOL)animated
+                 result:(ThrioBoolCallback _Nullable)result;
 
 - (void)thrio_popToUrl:(NSString *)url
-                 index:(NSNumber *)index
+                 index:(NSNumber * _Nullable)index
               animated:(BOOL)animated
-                result:(ThrioBoolCallback)result;
+                result:(ThrioBoolCallback _Nullable)result;
 
 - (void)thrio_removeUrl:(NSString *)url
-                  index:(NSNumber *)index
+                  index:(NSNumber * _Nullable)index
                animated:(BOOL)animated
-                 result:(ThrioBoolCallback)result;
+                 result:(ThrioBoolCallback _Nullable)result;
 
 - (void)thrio_didPushUrl:(NSString *)url index:(NSNumber *)index;
 
@@ -68,9 +67,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)thrio_didRemoveUrl:(NSString *)url index:(NSNumber *)index;
 
-- (NavigatorPageRoute *_Nullable)thrio_getRouteByUrl:(NSString *)url index:(NSNumber *)index;
+- (NavigatorPageRoute *_Nullable)thrio_getRouteByUrl:(NSString *)url
+                                               index:(NSNumber * _Nullable)index;
 
-- (NSNumber *)thrio_getLastIndexByUrl:(NSString *)url;
+- (NSNumber * _Nullable)thrio_getLastIndexByUrl:(NSString *)url;
 
 - (NSArray *)thrio_getAllIndexByUrl:(NSString *)url;
 

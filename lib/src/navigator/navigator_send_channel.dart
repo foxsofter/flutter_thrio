@@ -24,28 +24,28 @@ import 'package:flutter/foundation.dart';
 import '../channel/thrio_channel.dart';
 
 class NavigatorSendChannel {
-  NavigatorSendChannel(ThrioChannel channel) : _channel = channel;
+  const NavigatorSendChannel(ThrioChannel channel) : _channel = channel;
 
   final ThrioChannel _channel;
 
-  Future<bool> push({
+  Future<int> push({
     @required String url,
+    params,
     bool animated = true,
-    Map<String, dynamic> params = const {},
   }) {
     final arguments = <String, dynamic>{
       'url': url,
       'animated': animated,
       'params': params,
     };
-    return _channel.invokeMethod<bool>('push', arguments);
+    return _channel.invokeMethod<int>('push', arguments);
   }
 
   Future<bool> notify({
     @required String url,
-    int index = 0,
+    int index,
     @required String name,
-    Map<String, dynamic> params = const {},
+    params,
   }) {
     final arguments = <String, dynamic>{
       'url': url,
@@ -56,8 +56,12 @@ class NavigatorSendChannel {
     return _channel.invokeMethod<bool>('notify', arguments);
   }
 
-  Future<bool> pop({bool animated = true}) {
+  Future<bool> pop({
+    params,
+    bool animated = true,
+  }) {
     final arguments = <String, dynamic>{
+      'params': params,
       'animated': animated,
     };
     return _channel.invokeMethod<bool>('pop', arguments);
@@ -65,7 +69,7 @@ class NavigatorSendChannel {
 
   Future<bool> popTo({
     @required String url,
-    int index = 0,
+    int index,
     bool animated = true,
   }) {
     final arguments = <String, dynamic>{
@@ -77,8 +81,8 @@ class NavigatorSendChannel {
   }
 
   Future<bool> remove({
-    String url = '',
-    int index = 0,
+    @required String url,
+    int index,
     bool animated = true,
   }) {
     final arguments = <String, dynamic>{
@@ -96,12 +100,12 @@ class NavigatorSendChannel {
     return _channel.invokeMethod<int>('lastIndex', arguments);
   }
 
-  Future<List<int>> allIndex(String url) =>
+  Future<List<int>> allIndex({@required String url}) =>
       _channel.invokeListMethod<int>('allIndex', {'url': url});
 
   Future<bool> setPopDisabled({
     @required String url,
-    int index,
+    @required int index,
     bool disabled = true,
   }) {
     final arguments = <String, dynamic>{

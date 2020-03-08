@@ -19,7 +19,6 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-
 #import <Foundation/Foundation.h>
 #import <objc/runtime.h>
 #import "UINavigationController+Navigator.h"
@@ -44,17 +43,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 @implementation UIViewController (Navigator)
 
-- (BOOL)thrio_willPopCalling {
-  return [(NSNumber *)objc_getAssociatedObject(self, _cmd) boolValue];
-}
-
-- (void)setThrio_willPopCalling:(BOOL)calling {
-  objc_setAssociatedObject(self,
-                           @selector(thrio_willPopCalling),
-                           @(calling),
-                           OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-}
-
 - (NavigatorPageRoute * _Nullable)thrio_firstRoute {
   return objc_getAssociatedObject(self, @selector(setThrio_firstRoute:));
 }
@@ -78,14 +66,18 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)thrio_pushUrl:(NSString *)url
                 index:(NSNumber *)index
-               params:(NSDictionary *)params
+               params:(id _Nullable)params
              animated:(BOOL)animated
-               result:(ThrioBoolCallback)result{
+       fromEntrypoint:(NSString * _Nullable)entrypoint
+               result:(ThrioNumberCallback _Nullable)result
+         poppedResult:(ThrioIdCallback _Nullable)poppedResult {
   NavigatorRouteSettings *settings = [NavigatorRouteSettings settingsWithUrl:url
-                                                               index:index
-                                                              nested:self.thrio_firstRoute != nil
-                                                              params:params];
+                                                                       index:index
+                                                                      nested:self.thrio_firstRoute != nil
+                                                                      params:params];
   NavigatorPageRoute *newRoute = [NavigatorPageRoute routeWithSettings:settings];
+  newRoute.fromEntrypoint = entrypoint;
+  newRoute.poppedResult = poppedResult;
   if (self.thrio_firstRoute) {
     NavigatorPageRoute *lastRoute = self.thrio_lastRoute;
     lastRoute.next = newRoute;
@@ -98,20 +90,24 @@ NS_ASSUME_NONNULL_BEGIN
     [arguments setObject:[NSNumber numberWithBool:animated] forKey:@"animated"];
     NSString *entrypoint = [(ThrioFlutterViewController*)self entrypoint];
     ThrioChannel *channel = [NavigatorFlutterEngineFactory.shared getChannelByEntrypoint:entrypoint];
-    [channel invokeMethod:@"__onPush__"
-                arguments:arguments
-                   result:^(id _Nullable r) {
-      result(r && [r boolValue]);
-    }];
-  } else {
-    result(YES);
+    if (result) {
+      [channel invokeMethod:@"__onPush__"
+                  arguments:arguments
+                     result:^(id _Nullable r) {
+        result(r && [r boolValue] ? index : nil);
+      }];
+    } else {
+      [channel invokeMethod:@"__onPush__" arguments:arguments];
+    }
+  } else if (result) {
+    result(index);
   }
 }
 
 - (BOOL)thrio_notifyUrl:(NSString *)url
-                  index:(NSNumber *)index
+                  index:(NSNumber * _Nullable)index
                    name:(NSString *)name
-                 params:(NSDictionary *)params {
+                 params:(id _Nullable)params {
   NavigatorPageRoute *route = [self thrio_getRouteByUrl:url index:index];
   if (route) {
     [route addNotify:name params:params];
@@ -123,19 +119,25 @@ NS_ASSUME_NONNULL_BEGIN
   return NO;
 }
 
-- (void)thrio_popAnimated:(BOOL)animated result:(ThrioBoolCallback)result {
+- (void)thrio_popParams:(id _Nullable)params
+               animated:(BOOL)animated
+                 result:(ThrioBoolCallback _Nullable)result {
   NavigatorPageRoute *route = self.thrio_lastRoute;
   if (!route) {
-    result(NO);
+    if (result) {
+      result(NO);
+    }
     return;
   }
+  NSMutableDictionary *arguments =
+    [NSMutableDictionary dictionaryWithDictionary:[route.settings toArgumentsWithParams:params]];
+  [arguments setObject:[NSNumber numberWithBool:animated] forKey:@"animated"];
+
   if ([self isKindOfClass:ThrioFlutterViewController.class]) {
-    NSMutableDictionary *arguments =
-      [NSMutableDictionary dictionaryWithDictionary:[route.settings toArgumentsWithoutParams]];
-    [arguments setObject:[NSNumber numberWithBool:animated] forKey:@"animated"];
-    __weak typeof(self) weakself = self;
     NSString *entrypoint = [(ThrioFlutterViewController*)self entrypoint];
     ThrioChannel *channel = [NavigatorFlutterEngineFactory.shared getChannelByEntrypoint:entrypoint];
+    __weak typeof(self) weakself = self;
+    // 发送给需要关闭页面的引擎
     [channel invokeMethod:@"__onPop__"
                 arguments:arguments
                    result:^(id _Nullable r) {
@@ -148,8 +150,18 @@ NS_ASSUME_NONNULL_BEGIN
           strongSelf.thrio_firstRoute = nil;
         }
       }
-      result([r boolValue]);
+      if (result) {
+        result([r boolValue]);
+      }
+      if (route.poppedResult) {
+        route.poppedResult(params);
+      }
     }];
+    if (route.fromEntrypoint && ![route.fromEntrypoint isEqualToString:entrypoint]) {
+      // 发送给需要接收关闭页面参数的引擎
+      channel = [NavigatorFlutterEngineFactory.shared getChannelByEntrypoint:route.fromEntrypoint];
+      [channel invokeMethod:@"__onPop__" arguments:arguments];
+    }
   } else {
     if (route != self.thrio_firstRoute) {
       route.prev.next = nil;
@@ -157,22 +169,34 @@ NS_ASSUME_NONNULL_BEGIN
     } else {
       self.thrio_firstRoute = nil;
     }
-    result(YES);
+    if (result) {
+      result(YES);
+    }
+    if (route.poppedResult) {
+      route.poppedResult(params);
+    }
+    if (route.fromEntrypoint) {
+      // 发送给需要接收关闭页面参数的引擎
+      ThrioChannel *channel = [NavigatorFlutterEngineFactory.shared getChannelByEntrypoint:route.fromEntrypoint];
+      [channel invokeMethod:@"__onPop__" arguments:arguments];
+    }
   }
 }
 
 - (void)thrio_popToUrl:(NSString *)url
-                 index:(NSNumber *)index
+                 index:(NSNumber * _Nullable)index
               animated:(BOOL)animated
-                result:(ThrioBoolCallback)result {
+                result:(ThrioBoolCallback _Nullable)result {
   NavigatorPageRoute *route = [self thrio_getRouteByUrl:url index:index];
   if (!route) {
-    result(NO);
+    if (result) {
+      result(NO);
+    }
     return;
   }
   if ([self isKindOfClass:ThrioFlutterViewController.class]) {
     NSMutableDictionary *arguments =
-      [NSMutableDictionary dictionaryWithDictionary:[route.settings toArgumentsWithoutParams]];
+    [NSMutableDictionary dictionaryWithDictionary:[route.settings toArgumentsWithParams:nil]];
     [arguments setObject:[NSNumber numberWithBool:animated] forKey:@"animated"];
     __weak typeof(self) weakself = self;
     NSString *entrypoint = [(ThrioFlutterViewController*)self entrypoint];
@@ -185,27 +209,33 @@ NS_ASSUME_NONNULL_BEGIN
         route.next = nil;
         [strongSelf thrio_onNotify];
       }
-      result(r && [r boolValue]);
+      if (result) {
+        result(r && [r boolValue]);
+      }
     }];
   } else {
     route.next = nil;
     [self thrio_onNotify];
-    result(YES);
+    if (result) {
+      result(YES);
+    }
   }
 }
 
 - (void)thrio_removeUrl:(NSString *)url
-                  index:(NSNumber *)index
+                  index:(NSNumber * _Nullable)index
                animated:(BOOL)animated
-                 result:(ThrioBoolCallback)result {
+                 result:(ThrioBoolCallback _Nullable)result {
   NavigatorPageRoute *route = [self thrio_getRouteByUrl:url index:index];
   if (!route) {
-    result(NO);
+    if (result) {
+      result(NO);
+    }
     return;
   }
   if ([self isKindOfClass:ThrioFlutterViewController.class]) {
     NSMutableDictionary *arguments =
-      [NSMutableDictionary dictionaryWithDictionary:[route.settings toArgumentsWithoutParams]];
+    [NSMutableDictionary dictionaryWithDictionary:[route.settings toArgumentsWithParams:nil]];
     [arguments setObject:[NSNumber numberWithBool:animated] forKey:@"animated"];
     __weak typeof(self) weakself = self;
     NSString *entrypoint = [(ThrioFlutterViewController*)self entrypoint];
@@ -226,7 +256,9 @@ NS_ASSUME_NONNULL_BEGIN
           route.next.prev = route.prev;
         }
       }
-      result(r && [r boolValue]);
+      if (result) {
+        result(r && [r boolValue]);
+      }
     }];
   } else {
     if (route == self.thrio_firstRoute) {
@@ -239,7 +271,9 @@ NS_ASSUME_NONNULL_BEGIN
       route.prev.next = route.next;
       route.next.prev = route.prev;
     }
-    result(YES);
+    if (result) {
+      result(YES);
+    }
   }
 }
 
@@ -283,23 +317,24 @@ NS_ASSUME_NONNULL_BEGIN
   }
 }
 
-- (NavigatorPageRoute * _Nullable)thrio_getRouteByUrl:(NSString *)url index:(NSNumber *)index {
+- (NavigatorPageRoute * _Nullable)thrio_getRouteByUrl:(NSString *)url
+                                                index:(NSNumber * _Nullable)index {
   NavigatorPageRoute *last = self.thrio_lastRoute;
   if (url.length < 1) {
     return last;
   }
   do {
     if ([last.settings.url isEqualToString:url] &&
-        ([index isEqualToNumber:@0] || [last.settings.index isEqualToNumber:index])) {
+        (!index || [last.settings.index isEqualToNumber:index])) {
       return last;
     }
   } while ((last = last.prev));
   return nil;
 }
 
-- (NSNumber *)thrio_getLastIndexByUrl:(NSString *)url {
-  NavigatorPageRoute *route = [self thrio_getRouteByUrl:url index:@0];
-  return route ? route.settings.index : @0;
+- (NSNumber * _Nullable)thrio_getLastIndexByUrl:(NSString *)url {
+  NavigatorPageRoute *route = [self thrio_getRouteByUrl:url index:nil];
+  return route.settings.index;
 }
 
 - (NSArray *)thrio_getAllIndexByUrl:(NSString *)url {
@@ -330,7 +365,7 @@ NS_ASSUME_NONNULL_BEGIN
   [self thrio_viewDidAppear:animated];
   
   if ([self isKindOfClass:ThrioFlutterViewController.class] ||
-      [self conformsToProtocol:@protocol(ThrioPageNotifyProtocol)]) {
+      [self conformsToProtocol:@protocol(NavigatorPageNotifyProtocol)]) {
     // 当页面出现后，给页面发送通知
     [self thrio_onNotify];
   }
@@ -363,20 +398,24 @@ NS_ASSUME_NONNULL_BEGIN
   NavigatorPageRoute *route = self.thrio_lastRoute;
   NSArray *keys = [route.notifications.allKeys copy];
   for (NSString *name in keys) {
-    NSDictionary * params = [route removeNotify:name];
+    id params = [route removeNotify:name];
     if ([self isKindOfClass:ThrioFlutterViewController.class]) {
-      NSDictionary *arguments = @{
+      NSDictionary *arguments = params ? @{
         @"url": route.settings.url,
         @"index": route.settings.index,
         @"name": name,
         @"params": params,
+      } : @{
+        @"url": route.settings.url,
+        @"index": route.settings.index,
+        @"name": name,
       };
       NSString *entrypoint = [(ThrioFlutterViewController*)self entrypoint];
       ThrioChannel *channel = [NavigatorFlutterEngineFactory.shared getChannelByEntrypoint:entrypoint];
       [channel sendEvent:@"__onNotify__" arguments:arguments];
     } else {
-      if ([self conformsToProtocol:@protocol(ThrioPageNotifyProtocol)]) {
-        [(id<ThrioPageNotifyProtocol>)self onNotify:name params:params];
+      if ([self conformsToProtocol:@protocol(NavigatorPageNotifyProtocol)]) {
+        [(id<NavigatorPageNotifyProtocol>)self onNotify:name params:params];
       }
     }
   }

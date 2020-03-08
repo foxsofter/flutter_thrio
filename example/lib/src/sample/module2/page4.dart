@@ -10,7 +10,7 @@ class Page4 extends StatefulWidget {
 
   final int index;
 
-  final Map<String, dynamic> params;
+  final dynamic params;
 
   @override
   _Page4State createState() => _Page4State();

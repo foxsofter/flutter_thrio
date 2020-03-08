@@ -33,26 +33,14 @@ class NavigatorPageRoute extends MaterialPageRoute<bool> {
     RouteSettings settings,
     bool maintainState = true,
     bool fullscreenDialog = false,
+    this.poppedResult,
   }) : super(
             builder: (_) => builder(settings),
             settings: settings,
             maintainState: maintainState,
             fullscreenDialog: fullscreenDialog);
 
-  // WillPopCallback _willPopCallback;
-
-  // WillPopCallback get willPopCallback => _willPopCallback;
-
-  // set willPopCallback(WillPopCallback callback) {
-  //   if (_willPopCallback != callback) {
-  //     ThrioNavigator.navigatorState.history.last
-  //         .removeScopedWillPopCallback(_willPopCallback);
-  //     _willPopCallback = callback;
-  //     if (isCurrent) {
-  //       addScopedWillPopCallback(callback);
-  //     }
-  //   }
-  // }
+  final NavigatorParamsCallback poppedResult;
 
   @override
   void addScopedWillPopCallback(WillPopCallback callback) {

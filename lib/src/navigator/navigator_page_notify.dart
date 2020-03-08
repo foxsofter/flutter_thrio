@@ -28,8 +28,8 @@ import 'navigator_page_route.dart';
 import 'navigator_route_settings.dart';
 import 'navigator_types.dart';
 
-class ThrioPageNotify extends StatefulWidget {
-  const ThrioPageNotify({
+class NavigatorPageNotify extends StatefulWidget {
+  const NavigatorPageNotify({
     Key key,
     @required this.name,
     @required this.onPageNotify,
@@ -40,22 +40,22 @@ class ThrioPageNotify extends StatefulWidget {
 
   final String name;
 
-  final ThrioPageNotifyCallback onPageNotify;
+  final NavigatorParamsCallback onPageNotify;
 
-  final Map<String, dynamic> initialParams;
+  final dynamic initialParams;
 
   final Widget child;
 
   @override
-  _ThrioPageNotifyState createState() => _ThrioPageNotifyState();
+  _NavigatorPageNotifyState createState() => _NavigatorPageNotifyState();
 }
 
-class _ThrioPageNotifyState extends State<ThrioPageNotify> {
+class _NavigatorPageNotifyState extends State<NavigatorPageNotify> {
   NavigatorPageRoute _route;
 
-  Stream<Map<String, dynamic>> _notifyStream;
+  Stream _notifyStream;
 
-  StreamSubscription<Map<String, dynamic>> _notifySubscription;
+  StreamSubscription _notifySubscription;
 
   @override
   void initState() {

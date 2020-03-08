@@ -27,11 +27,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface UINavigationController (PopGesture)
 
-@property(nonatomic, strong, readonly) UIScreenEdgePanGestureRecognizer *thrio_popGestureRecognizer;
+@property (nonatomic, strong, readonly) UIScreenEdgePanGestureRecognizer *thrio_popGestureRecognizer;
 
-@property(nonatomic, strong, readonly) NavigatorPopGestureRecognizerDelegate *thrio_popGestureRecognizerDelegate;
+@property (nonatomic, strong, readonly) NavigatorPopGestureRecognizerDelegate *thrio_popGestureRecognizerDelegate;
 
-@property(nonatomic, strong, readonly) NavigatorControllerDelegate *thrio_navigationControllerDelegate;
+@property (nonatomic, strong, readonly) NavigatorControllerDelegate *thrio_navigationControllerDelegate;
 
 - (void)thrio_addPopGesture;
 

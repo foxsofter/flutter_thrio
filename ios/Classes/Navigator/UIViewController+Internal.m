@@ -20,35 +20,20 @@
 // IN THE SOFTWARE.
 
 #import <Foundation/Foundation.h>
-#import "ThrioTypes.h"
-#import "NavigatorRouteSettings.h"
+#import <objc/runtime.h>
+#import "UIViewController+Internal.h"
 
-NS_ASSUME_NONNULL_BEGIN
+@implementation UIViewController (Internal)
 
-@interface NavigatorPageRoute : NSObject
+- (BOOL)thrio_willPopCalling {
+  return [(NSNumber *)objc_getAssociatedObject(self, _cmd) boolValue];
+}
 
-+ (instancetype)routeWithSettings:(NavigatorRouteSettings *)settings;
-
-- (instancetype)initWithSettings:(NavigatorRouteSettings *)settings;
-
-- (void)addNotify:(NSString *)name params:(id _Nullable)params;
-
-- (id _Nullable)removeNotify:(NSString *)name;
-
-@property (nonatomic, strong, nullable) NavigatorPageRoute *prev;
-
-@property (nonatomic, strong, nullable) NavigatorPageRoute *next;
-
-@property (nonatomic, strong, readonly) NavigatorRouteSettings *settings;
-
-@property (nonatomic, copy, readonly) NSDictionary *notifications;
-
-@property (nonatomic, copy, nullable) ThrioIdCallback poppedResult;
-
-/// The current route was pushed by the engine with `fromEntrypoint`.
-///
-@property (nonatomic, copy, nullable) NSString *fromEntrypoint;
+- (void)setThrio_willPopCalling:(BOOL)calling {
+  objc_setAssociatedObject(self,
+                           @selector(thrio_willPopCalling),
+                           @(calling),
+                           OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
 
 @end
-
-NS_ASSUME_NONNULL_END

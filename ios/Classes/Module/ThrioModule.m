@@ -61,7 +61,7 @@ static NSMutableDictionary *modules;
   });
   // 单引擎模式下，提前启动
   if (!ThrioNavigator.isMultiEngineEnabled) {
-    [NavigatorFlutterEngineFactory.shared startupWithEntrypoint:@"" readyBlock:^{}];
+    [NavigatorFlutterEngineFactory.shared startupWithEntrypoint:@"" readyBlock:nil];
   }
 }
 
@@ -75,7 +75,7 @@ static NSMutableDictionary *modules;
 }
 
 - (void)startupFlutterEngineWithEntrypoint:(NSString *)entrypoint {
-  [NavigatorFlutterEngineFactory.shared startupWithEntrypoint:entrypoint readyBlock:^{}];
+  [NavigatorFlutterEngineFactory.shared startupWithEntrypoint:entrypoint readyBlock:nil];
 }
 
 - (void)onModuleRegister { }

@@ -35,10 +35,7 @@ extension NavigatorRouteSettings on RouteSettings {
       final isNestedValue = arguments['isNested'];
       final isInitialRoute =
           (isNestedValue != null && isNestedValue is bool) && !isNestedValue;
-      final paramsValue = arguments['params'];
-      final params = paramsValue is Map
-          ? paramsValue.cast<String, dynamic>()
-          : <String, dynamic>{};
+      final params = arguments['params'];
       return RouteSettings(
         name: '$url.$index',
         isInitialRoute: isInitialRoute,
@@ -61,7 +58,7 @@ extension NavigatorRouteSettings on RouteSettings {
     String url,
     int index,
     bool isNested,
-    Map<String, dynamic> params,
+    params,
   }) =>
       RouteSettings(
         name: '$url.$index',
@@ -77,8 +74,5 @@ extension NavigatorRouteSettings on RouteSettings {
 
   bool get isNested => !isInitialRoute;
 
-  Map<String, dynamic> get params =>
-      (arguments != null && arguments is Map<String, dynamic>)
-          ? arguments as Map<String, dynamic> // ignore: avoid_as
-          : <String, dynamic>{};
+  dynamic get params => arguments;
 }

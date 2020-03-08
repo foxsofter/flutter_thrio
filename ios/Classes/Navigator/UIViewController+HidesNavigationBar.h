@@ -25,7 +25,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface UIViewController (HidesNavigationBar)
 
-@property(nonatomic, strong, nullable) NSNumber *thrio_hidesNavigationBar;
+@property (nonatomic, strong, nullable) NSNumber *thrio_hidesNavigationBar;
 
 @end
 

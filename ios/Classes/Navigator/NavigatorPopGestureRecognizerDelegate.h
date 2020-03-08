@@ -25,7 +25,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface NavigatorPopGestureRecognizerDelegate : NSObject <UIGestureRecognizerDelegate>
 
-@property(nonatomic, weak) UINavigationController *navigationController;
+@property (nonatomic, weak) UINavigationController *navigationController;
 
 @end
 

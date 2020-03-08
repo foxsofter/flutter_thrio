@@ -20,34 +20,19 @@
 // IN THE SOFTWARE.
 
 #import <Foundation/Foundation.h>
-#import "ThrioTypes.h"
-#import "NavigatorRouteSettings.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface NavigatorPageRoute : NSObject
-
-+ (instancetype)routeWithSettings:(NavigatorRouteSettings *)settings;
-
-- (instancetype)initWithSettings:(NavigatorRouteSettings *)settings;
-
-- (void)addNotify:(NSString *)name params:(id _Nullable)params;
-
-- (id _Nullable)removeNotify:(NSString *)name;
-
-@property (nonatomic, strong, nullable) NavigatorPageRoute *prev;
-
-@property (nonatomic, strong, nullable) NavigatorPageRoute *next;
-
-@property (nonatomic, strong, readonly) NavigatorRouteSettings *settings;
-
-@property (nonatomic, copy, readonly) NSDictionary *notifications;
-
-@property (nonatomic, copy, nullable) ThrioIdCallback poppedResult;
-
-/// The current route was pushed by the engine with `fromEntrypoint`.
+/// A protocol for implementing page notifications.
 ///
-@property (nonatomic, copy, nullable) NSString *fromEntrypoint;
+/// The protocol must be implemented by a UIViewController.
+///
+@protocol NavigatorPageNotifyProtocol <NSObject>
+
+@required
+/// Called when the page has been fully transitioned onto the screen.
+///
+- (void)onNotify:(NSString *)name params:(id _Nullable)params;
 
 @end
 

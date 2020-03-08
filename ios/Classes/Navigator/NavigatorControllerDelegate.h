@@ -25,11 +25,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface NavigatorControllerDelegate : NSObject <UINavigationControllerDelegate>
 
-@property(nonatomic, weak) UINavigationController *navigationController;
+@property (nonatomic, weak) UINavigationController *navigationController;
 
 /// 原来的UINavigationControllerDelegate
 ///
-@property(nonatomic, weak) id<UINavigationControllerDelegate> originDelegate;
+@property (nonatomic, weak) id<UINavigationControllerDelegate> originDelegate;
 
 @end
 

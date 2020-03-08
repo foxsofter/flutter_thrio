@@ -24,6 +24,8 @@
 #import "ThrioNavigator.h"
 #import "ThrioLogger.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 @interface NavigatorFlutterEngineFactory ()
 
 @property (nonatomic, strong) NSMutableDictionary *flutterEngines;
@@ -57,13 +59,13 @@
   return _flutterUrls;
 }
 
-- (void)startupWithEntrypoint:(NSString *)entrypoint readyBlock:(ThrioVoidCallback)block {
+- (void)startupWithEntrypoint:(NSString *)entrypoint readyBlock:(ThrioIdCallback _Nullable)block {
   if (!ThrioNavigator.isMultiEngineEnabled) {
     entrypoint = @"";
   }
 
   if ([self.flutterEngines.allKeys containsObject:entrypoint]) {
-    block();
+    block(entrypoint);
   } else {
     ThrioLogV(@"push in startupWithEntrypoint:%@", entrypoint);
     NavigatorFlutterEngine *flutterEngine = [[NavigatorFlutterEngine alloc] init];
@@ -137,3 +139,5 @@
 }
 
 @end
+
+NS_ASSUME_NONNULL_END

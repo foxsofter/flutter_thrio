@@ -27,27 +27,30 @@ NS_ASSUME_NONNULL_BEGIN
 @interface UINavigationController (Navigator)
 
 - (void)thrio_pushUrl:(NSString *)url
-               params:(NSDictionary *)params
+               params:(id _Nullable)params
              animated:(BOOL)animated
-               result:(ThrioBoolCallback)result;
+       fromEntrypoint:(NSString * _Nullable)entrypoint
+               result:(ThrioNumberCallback _Nullable)result
+         poppedResult:(ThrioIdCallback _Nullable)poppedResult;
 
 - (BOOL)thrio_notifyUrl:(NSString *)url
-                  index:(NSNumber *)index
+                  index:(NSNumber * _Nullable)index
                    name:(NSString *)name
-                 params:(NSDictionary *)params;
+                 params:(id _Nullable)params;
 
-- (void)thrio_popAnimated:(BOOL)animated
-                   result:(ThrioBoolCallback)result;
+- (void)thrio_popParams:(id _Nullable)params
+               animated:(BOOL)animated
+                 result:(ThrioBoolCallback _Nullable)result;
 
 - (void)thrio_popToUrl:(NSString *)url
-                 index:(NSNumber *)index
+                 index:(NSNumber * _Nullable)index
               animated:(BOOL)animated
-                result:(ThrioBoolCallback)result;
+                result:(ThrioBoolCallback _Nullable)result;
 
 - (void)thrio_removeUrl:(NSString *)url
-                  index:(NSNumber *)index
+                  index:(NSNumber * _Nullable)index
                animated:(BOOL)animated
-                 result:(ThrioBoolCallback)result;
+                 result:(ThrioBoolCallback _Nullable)result;
 
 - (void)thrio_didPushUrl:(NSString *)url index:(NSNumber *)index;
 
@@ -57,9 +60,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)thrio_didRemoveUrl:(NSString *)url index:(NSNumber *)index;
 
-- (NSNumber *)thrio_lastIndex;
+- (NSNumber * _Nullable)thrio_lastIndex;
 
-- (NSNumber *)thrio_getLastIndexByUrl:(NSString *)url;
+- (NSNumber * _Nullable)thrio_getLastIndexByUrl:(NSString *)url;
 
 - (NSArray *)thrio_getAllIndexByUrl:(NSString *)url;
 
@@ -67,10 +70,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (BOOL)thrio_ContainsUrl:(NSString *)url index:(NSNumber *)index;
 
-- (void)thrio_didShowViewController:(UIViewController *)viewController animated:(BOOL)animated;
-
 - (UIViewController *_Nullable)getViewControllerByUrl:(NSString *)url
-                                                index:(NSNumber *)index;
+                                                index:(NSNumber * _Nullable)index;
+
+- (void)thrio_didShowViewController:(UIViewController *)viewController
+                           animated:(BOOL)animated;
 
 @end
 

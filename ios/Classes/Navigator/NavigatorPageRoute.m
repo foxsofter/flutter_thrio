@@ -47,12 +47,19 @@ NS_ASSUME_NONNULL_BEGIN
   return self;
 }
 
-- (void)addNotify:(NSString *)name params:(NSDictionary *)params {
-  [_notifications setObject:params forKey:name];
+- (void)addNotify:(NSString *)name params:(id _Nullable)params {
+  if (!params) {
+    [_notifications setObject:[NSNull null] forKey:name];
+  } else {
+    [_notifications setObject:params forKey:name];
+  }
 }
 
-- (NSDictionary * _Nullable)removeNotify:(NSString *)name {
-  NSDictionary *params = _notifications[name];
+- (id _Nullable)removeNotify:(NSString *)name {
+  id params = _notifications[name];
+  if ([params isKindOfClass:NSNull.class]) {
+    params = nil;
+  }
   [_notifications removeObjectForKey:name];
   return params;
 }

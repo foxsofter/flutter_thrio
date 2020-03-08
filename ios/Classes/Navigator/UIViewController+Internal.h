@@ -19,20 +19,15 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-#import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
-/// A protocol for implementing page notifications.
-///
-/// The protocol must be implemented by a UIViewController.
-///
-@protocol ThrioPageNotifyProtocol <NSObject>
+@interface UIViewController (Internal)
 
-@required
-/// Called when the page has been fully transitioned onto the screen.
+/// `thrio_willPopBlock`是否已触发的标志位
 ///
-- (void)onNotify:(NSString *)name params:(NSDictionary *_Nullable)params;
+@property (nonatomic, assign) BOOL thrio_willPopCalling;
 
 @end
 

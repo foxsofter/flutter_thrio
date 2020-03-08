@@ -44,8 +44,21 @@ NS_ASSUME_NONNULL_BEGIN
 /// If a native page builder exists for the url, open the native page,
 /// otherwise open the flutter page.
 ///
-+ (void)pushUrl:(NSString *)url
-         result:(ThrioBoolCallback)result;
++ (void)pushUrl:(NSString *)url result:(ThrioNumberCallback)result;
+
+/// Push the page onto the navigation stack.
+///
+/// If a native page builder exists for the url, open the native page,
+/// otherwise open the flutter page.
+///
++ (void)pushUrl:(NSString *)url poppedResult:(ThrioIdCallback)poppedResult;
+
+/// Push the page onto the navigation stack.
+///
+/// If a native page builder exists for the url, open the native page,
+/// otherwise open the flutter page.
+///
++ (void)pushUrl:(NSString *)url params:(id)params;
 
 /// Push the page onto the navigation stack.
 ///
@@ -53,7 +66,34 @@ NS_ASSUME_NONNULL_BEGIN
 /// otherwise open the flutter page.
 ///
 + (void)pushUrl:(NSString *)url
-       animated:(BOOL)animated;
+         params:(id)params
+         result:(ThrioNumberCallback)result;
+
+/// Push the page onto the navigation stack.
+///
+/// If a native page builder exists for the url, open the native page,
+/// otherwise open the flutter page.
+///
++ (void)pushUrl:(NSString *)url
+         params:(id)params
+   poppedResult:(ThrioIdCallback)poppedResult;
+
+/// Push the page onto the navigation stack.
+///
+/// If a native page builder exists for the url, open the native page,
+/// otherwise open the flutter page.
+///
++ (void)pushUrl:(NSString *)url
+         params:(id)params
+         result:(ThrioNumberCallback)result
+   poppedResult:(ThrioIdCallback)poppedResult;
+
+/// Push the page onto the navigation stack.
+///
+/// If a native page builder exists for the url, open the native page,
+/// otherwise open the flutter page.
+///
++ (void)pushUrl:(NSString *)url animated:(BOOL)animated;
 
 /// Push the page onto the navigation stack.
 ///
@@ -62,7 +102,7 @@ NS_ASSUME_NONNULL_BEGIN
 ///
 + (void)pushUrl:(NSString *)url
        animated:(BOOL)animated
-         result:(ThrioBoolCallback)result;
+         result:(ThrioNumberCallback)result;
 
 /// Push the page onto the navigation stack.
 ///
@@ -70,7 +110,8 @@ NS_ASSUME_NONNULL_BEGIN
 /// otherwise open the flutter page.
 ///
 + (void)pushUrl:(NSString *)url
-         params:(NSDictionary *)params;
+       animated:(BOOL)animated
+   poppedResult:(ThrioIdCallback)poppedResult;
 
 /// Push the page onto the navigation stack.
 ///
@@ -78,8 +119,9 @@ NS_ASSUME_NONNULL_BEGIN
 /// otherwise open the flutter page.
 ///
 + (void)pushUrl:(NSString *)url
-         params:(NSDictionary *)params
-         result:(ThrioBoolCallback)result;
+       animated:(BOOL)animated
+         result:(ThrioNumberCallback)result
+   poppedResult:(ThrioIdCallback)poppedResult;
 
 /// Push the page onto the navigation stack.
 ///
@@ -87,7 +129,7 @@ NS_ASSUME_NONNULL_BEGIN
 /// otherwise open the flutter page.
 ///
 + (void)pushUrl:(NSString *)url
-         params:(NSDictionary *)params
+         params:(id)params
        animated:(BOOL)animated;
 
 /// Push the page onto the navigation stack.
@@ -96,9 +138,30 @@ NS_ASSUME_NONNULL_BEGIN
 /// otherwise open the flutter page.
 ///
 + (void)pushUrl:(NSString *)url
-         params:(NSDictionary *)params
+         params:(id)params
        animated:(BOOL)animated
-         result:(ThrioBoolCallback)result;
+         result:(ThrioNumberCallback)result;
+
+/// Push the page onto the navigation stack.
+///
+/// If a native page builder exists for the url, open the native page,
+/// otherwise open the flutter page.
+///
++ (void)pushUrl:(NSString *)url
+         params:(id)params
+       animated:(BOOL)animated
+   poppedResult:(ThrioIdCallback)poppedResult;
+
+/// Push the page onto the navigation stack.
+///
+/// If a native page builder exists for the url, open the native page,
+/// otherwise open the flutter page.
+///
++ (void)pushUrl:(NSString *)url
+         params:(id)params
+       animated:(BOOL)animated
+         result:(ThrioNumberCallback)result
+   poppedResult:(ThrioIdCallback)poppedResult;
 
 #pragma mark - notify methods
 
@@ -107,8 +170,7 @@ NS_ASSUME_NONNULL_BEGIN
 /// Notifications will be triggered when the page enters the foreground.
 /// Notifications with the same name will be overwritten.
 ///
-+ (void)notifyUrl:(NSString *)url
-             name:(NSString *)name;
++ (void)notifyUrl:(NSString *)url name:(NSString *)name;
 
 /// Send a notification to the page.
 ///
@@ -145,7 +207,7 @@ NS_ASSUME_NONNULL_BEGIN
 ///
 + (void)notifyUrl:(NSString *)url
              name:(NSString *)name
-           params:(NSDictionary *)params;
+           params:(id)params;
 
 /// Send a notification to the page.
 ///
@@ -154,7 +216,7 @@ NS_ASSUME_NONNULL_BEGIN
 ///
 + (void)notifyUrl:(NSString *)url
              name:(NSString *)name
-           params:(NSDictionary *)params
+           params:(id)params
            result:(ThrioBoolCallback)result;
 
 /// Send a notification to the page.
@@ -165,7 +227,7 @@ NS_ASSUME_NONNULL_BEGIN
 + (void)notifyUrl:(NSString *)url
             index:(NSNumber *)index
              name:(NSString *)name
-           params:(NSDictionary *)params;
+           params:(id)params;
 
 /// Send a notification to the page.
 ///
@@ -175,7 +237,7 @@ NS_ASSUME_NONNULL_BEGIN
 + (void)notifyUrl:(NSString *)url
             index:(NSNumber *)index
              name:(NSString *)name
-           params:(NSDictionary *)params
+           params:(id)params
            result:(ThrioBoolCallback)result;
 
 #pragma mark - pop methods
@@ -186,11 +248,29 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// Pop a page from the navigation stack.
 ///
++ (void)popParams:(id)params;
+
+/// Pop a page from the navigation stack.
+///
 + (void)popAnimated:(BOOL)animated;
 
 /// Pop a page from the navigation stack.
 ///
++ (void)popParams:(id)params animated:(BOOL)animated;
+
+/// Pop a page from the navigation stack.
+///
 + (void)popAnimated:(BOOL)animated result:(ThrioBoolCallback)result;
+
+/// Pop a page from the navigation stack.
+///
++ (void)popParams:(id)params result:(ThrioBoolCallback)result;
+
+/// Pop a page from the navigation stack.
+///
++ (void)popParams:(id)params
+         animated:(BOOL)animated
+           result:(ThrioBoolCallback)result;
 
 #pragma mark - popTo methods
 
@@ -311,12 +391,12 @@ NS_ASSUME_NONNULL_BEGIN
 /// Returns the index of the page that was last pushed to the navigation
 /// stack.
 ///
-+ (NSNumber *)lastIndex;
++ (NSNumber * _Nullable)lastIndex;
 
 /// Returns the index of the page that was last pushed to the navigation
 /// stack.
 ///
-+ (NSNumber *)getLastIndexByUrl:(NSString *)url;
++ (NSNumber * _Nullable)getLastIndexByUrl:(NSString *)url;
 
 /// Returns all index of the page with `url` in the navigation stack.
 ///

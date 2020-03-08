@@ -50,17 +50,17 @@ class ThrioChannel {
 
   Future<List<T>> invokeListMethod<T>(String method, [Map arguments]) {
     _setupMethodChannelIfNeeded();
-    return _methodChannel.invokeListMethod(method, arguments);
+    return _methodChannel.invokeListMethod<T>(method, arguments);
   }
 
   Future<Map<K, V>> invokeMapMethod<K, V>(String method, [Map arguments]) {
     _setupMethodChannelIfNeeded();
-    return _methodChannel.invokeMapMethod(method, arguments);
+    return _methodChannel.invokeMapMethod<K, V>(method, arguments);
   }
 
   Future<T> invokeMethod<T>(String method, [Map arguments]) {
     _setupMethodChannelIfNeeded();
-    return _methodChannel.invokeMethod(method, arguments);
+    return _methodChannel.invokeMethod<T>(method, arguments);
   }
 
   VoidCallback registryMethodCall(String method, MethodHandler handler) {

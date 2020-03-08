@@ -34,9 +34,13 @@ typedef void (^ThrioVoidCallback)(void);
 ///
 typedef void (^ThrioBoolCallback)(BOOL);
 
+/// Signature of callbacks with NSNumber parameters.
+///
+typedef void (^ThrioNumberCallback)(NSNumber * _Nullable);
+
 /// Signature of callbacks with id parameters.
 ///
-typedef void (^ThrioIdCallback)(id);
+typedef void (^ThrioIdCallback)(id _Nullable);
 
 /// Signature for a callback that verifies that it's OK to call `pop`.
 ///

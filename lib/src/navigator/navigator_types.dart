@@ -23,10 +23,5 @@ import 'package:flutter/widgets.dart';
 
 typedef NavigatorPageBuilder = Widget Function(RouteSettings settings);
 
-typedef ThrioPageNotifyCallback = void Function(
-  Map<String, dynamic> params,
-);
-
-typedef NavigatorPagePopCallback = void Function(
-  Map<String, dynamic> params,
-);
+// ignore: avoid_annotating_with_dynamic
+typedef NavigatorParamsCallback = void Function(dynamic params);

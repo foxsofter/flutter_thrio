@@ -19,10 +19,11 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-
 #import "NavigatorFlutterEngine.h"
 #import "ThrioLogger.h"
 #import "ThrioNavigator.h"
+
+NS_ASSUME_NONNULL_BEGIN
 
 @interface NavigatorFlutterEngine ()
 
@@ -38,7 +39,8 @@
 
 @implementation NavigatorFlutterEngine
 
-- (void)startupWithEntrypoint:(NSString *)entrypoint readyBlock:(ThrioVoidCallback)block {
+- (void)startupWithEntrypoint:(NSString *)entrypoint
+                   readyBlock:(ThrioIdCallback _Nullable)block {
   if (!_engine) {
     _flutterViewControllers = [NSMutableArray array];
     [self startupFlutterWithEntrypoint:entrypoint];
@@ -103,10 +105,9 @@
   }
 }
 
-- (void)setupChannelWithEntrypoint:(NSString * _Nonnull)entrypoint
-                        readyBlock:(ThrioVoidCallback _Nonnull)block {
-  NSString *channelName = [NSString stringWithFormat:@"__thrio_app__%@", entrypoint];
-  _channel = [ThrioChannel channelWithName:channelName];
+- (void)setupChannelWithEntrypoint:(NSString *)entrypoint
+                        readyBlock:(ThrioIdCallback _Nullable)block {
+  _channel = [ThrioChannel channelWithEntrypoint:entrypoint name:@"__thrio_app__"];
   
   [_channel setupEventChannel:_engine.binaryMessenger];
   [_channel setupMethodChannel:_engine.binaryMessenger];
@@ -125,3 +126,5 @@
 }
 
 @end
+
+NS_ASSUME_NONNULL_END

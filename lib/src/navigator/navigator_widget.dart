@@ -28,6 +28,7 @@ import '../logger/thrio_logger.dart';
 import 'navigator_page_route.dart';
 import 'navigator_route_observer.dart';
 import 'navigator_route_settings.dart';
+import 'navigator_types.dart';
 import 'thrio_navigator.dart';
 
 /// A widget that manages a set of child widgets with a stack discipline.
@@ -52,15 +53,25 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
   List<NavigatorPageRoute> get history => widget._observer.pageRoutes;
 
   /// 还无法实现animated=false
-  Future<bool> push(RouteSettings settings, {bool animated = true}) {
+  Future<bool> push(
+    RouteSettings settings, {
+    bool animated = true,
+    NavigatorParamsCallback poppedResult,
+  }) {
     final navigatorState = widget.child.tryStateOf<NavigatorState>();
     if (navigatorState == null) {
       return Future.value(false);
     }
+
     final pageBuilder = ThrioNavigator.getPageBuilder(settings.url);
-    final route = NavigatorPageRoute(builder: pageBuilder, settings: settings);
+    final route = NavigatorPageRoute(
+      builder: pageBuilder,
+      settings: settings,
+      poppedResult: poppedResult,
+    );
     ThrioLogger().v('push: ${route.settings}');
     navigatorState.push(route);
+
     return Future.value(true);
   }
 
@@ -74,24 +85,24 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
       return false;
     }
     ThrioLogger().v('pop: ${history.last.settings}');
-
+    var result = true;
     if (animated) {
-      navigatorState.pop();
+      result = navigatorState.pop();
     } else {
       navigatorState.removeRoute(history.last);
     }
-    return true;
+    return result;
   }
 
-  Future<bool> popTo(RouteSettings settings, {bool animated = true}) {
+  Future<bool> popTo(RouteSettings settings, {bool animated = true}) async {
     final navigatorState = widget.child.tryStateOf<NavigatorState>();
     if (navigatorState == null) {
-      return Future.value(false);
+      return false;
     }
     final route = history.lastWhere((it) => it.settings.name == settings.name,
         orElse: () => null);
     if (route == null || settings.name == history.last.settings.name) {
-      return Future.value(false);
+      return false;
     }
     ThrioLogger().v('popTo: ${route.settings}');
     if (animated) {
@@ -105,25 +116,25 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
       }
       navigatorState.removeRoute(history.last);
     }
-    return Future.value(true);
+    return true;
   }
 
-  Future<bool> remove(RouteSettings settings, {bool animated = false}) {
+  Future<bool> remove(RouteSettings settings, {bool animated = false}) async {
     final navigatorState = widget.child.tryStateOf<NavigatorState>();
     if (navigatorState == null) {
-      return Future.value(false);
+      return false;
     }
     final route = history.lastWhere((it) => it.settings.name == settings.name,
         orElse: () => null);
     if (route == null) {
-      return Future.value(false);
+      return false;
     }
     ThrioLogger().v('remove: ${route.settings}');
     if (settings.name == history.last.settings.name) {
       return pop(animated: animated);
     }
     navigatorState.removeRoute(route);
-    return Future.value(true);
+    return true;
   }
 
   @override

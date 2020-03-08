@@ -33,6 +33,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, copy) NSString *channelName;
 
+@property (nonatomic, copy, readwrite) NSString *entrypoint;
+
 @property (nonatomic, strong) NSObject<FlutterBinaryMessenger> *messenger;
 
 @property (nonatomic, strong) FlutterMethodChannel *methodChannel;
@@ -53,20 +55,21 @@ static NSString *const kEventNameKey = @"__event_name__";
 
 @implementation ThrioChannel
 
-+ (instancetype)channel {
-  return [self channelWithName:@""];
++ (instancetype)channelWithEntrypoint:(NSString *)entrypoint {
+  return [self channelWithEntrypoint:entrypoint name:kDefaultChannelName];
 }
 
-+ (instancetype)channelWithName:(NSString *)channelName {
++ (instancetype)channelWithEntrypoint:(NSString *)entrypoint name:(NSString *)channelName {
   if (!channelName || channelName.length < 1) {
     channelName = kDefaultChannelName;
   }
-  return [[ThrioChannel alloc] initWithName:channelName];
+  return [[ThrioChannel alloc] initWithEntrypoint:entrypoint name:channelName];
 }
 
-- (instancetype)initWithName:(NSString *)channelName {
+- (instancetype)initWithEntrypoint:(NSString *)entrypoint name:(NSString *)channelName {
   self = [super init];
   if (self) {
+    _entrypoint = entrypoint;
     _channelName = channelName;
   }
   return self;
@@ -96,7 +99,7 @@ static NSString *const kEventNameKey = @"__event_name__";
 - (void)setupMethodChannel:(NSObject<FlutterBinaryMessenger> *)messenger {
   _methodHandlers = [ThrioRegistryMap map];
   
-  NSString *methodChannelName = [NSString stringWithFormat:@"_method_%@", _channelName];
+  NSString *methodChannelName = [NSString stringWithFormat:@"_method_%@%@", _channelName, _entrypoint];
   _methodChannel = [FlutterMethodChannel methodChannelWithName:methodChannelName
                                                binaryMessenger:messenger];
   __weak typeof(self) weakself = self;

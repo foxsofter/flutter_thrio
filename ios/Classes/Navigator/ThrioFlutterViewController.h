@@ -20,7 +20,7 @@
 // IN THE SOFTWARE.
 
 #import <Flutter/Flutter.h>
-#import "ThrioPageNotifyProtocol.h"
+#import "NavigatorPageNotifyProtocol.h"
 #import "ThrioTypes.h"
 
 NS_ASSUME_NONNULL_BEGIN
@@ -42,7 +42,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)surfaceUpdated:(BOOL)appeared;
 
-@property(nonatomic, copy, readonly) NSString *entrypoint;
+@property (nonatomic, copy, readonly) NSString *entrypoint;
 
 @end
 

@@ -27,6 +27,7 @@
 #import "UINavigationController+Navigator.h"
 #import "UINavigationController+HotRestart.h"
 #import "UINavigationController+PopDisabled.h"
+#import "UINavigationController+Navigator.h"
 #import "NavigatorFlutterEngineFactory.h"
 #import "ThrioLogger.h"
 
@@ -36,7 +37,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, strong) ThrioChannel *channel;
 
-@property (nonatomic, copy, nullable) ThrioVoidCallback readyBlock;
+@property (nonatomic, copy, nullable) ThrioIdCallback readyBlock;
 
 @end
 
@@ -66,7 +67,7 @@ NS_ASSUME_NONNULL_BEGIN
   return self;
 }
 
-- (void)setReadyBlock:(ThrioVoidCallback _Nullable)block {
+- (void)setReadyBlock:(ThrioIdCallback _Nullable)block {
   _readyBlock = block;
 }
 
@@ -79,32 +80,35 @@ NS_ASSUME_NONNULL_BEGIN
                                       ThrioIdCallback _Nullable result) {
     __strong typeof(self) strongSelf = weakself;
     if (strongSelf.readyBlock) {
-      ThrioLogV(@"on ready");
-      strongSelf.readyBlock();
+      ThrioLogV(@"on ready: %@", strongSelf.channel.entrypoint);
+      strongSelf.readyBlock(strongSelf.channel.entrypoint);
       strongSelf.readyBlock = nil;
     }
   }];
 }
 
 - (void)_onPush {
+  __weak typeof(self) weakself = self;
   [_channel registryMethodCall:@"push"
                         handler:^void(NSDictionary<NSString *,id> * arguments,
                                       ThrioIdCallback _Nullable result) {
     NSString *url = arguments[@"url"];
     if (url.length < 1) {
       if (result) {
-        result(@NO);
+        result(nil);
       }
       return;
     }
+    id params = [arguments[@"params"] isKindOfClass:NSNull.class] ? nil : arguments[@"params"];
     BOOL animated = [arguments[@"animated"] boolValue];
-    NSDictionary *params = arguments[@"params"];
-
     ThrioLogV(@"on push: %@", url);
-
-    [ThrioNavigator pushUrl:url params:params animated:animated result:^(BOOL r) {
-      result(@(r));
-    }];
+    __strong typeof(self) strongSelf = weakself;
+    [ThrioNavigator.navigationController thrio_pushUrl:url
+                                                params:params
+                                              animated:animated
+                                        fromEntrypoint:strongSelf.channel.entrypoint
+                                                result:^(NSNumber *idx) { result(idx); }
+                                          poppedResult:nil];
   }];
 }
 
@@ -126,8 +130,8 @@ NS_ASSUME_NONNULL_BEGIN
       }
       return;
     }
-    NSNumber *index = arguments[@"index"];
-    NSDictionary *params = arguments[@"params"];
+    NSNumber *index = [arguments[@"index"] isKindOfClass:NSNull.class] ? nil : arguments[@"index"];
+    id params = [arguments[@"params"] isKindOfClass:NSNull.class] ? nil : arguments[@"params"];
     [ThrioNavigator notifyUrl:url index:index name:name params:params result:^(BOOL r) {
       if (result) {
         result(@(r));
@@ -140,11 +144,12 @@ NS_ASSUME_NONNULL_BEGIN
   [_channel registryMethodCall:@"pop"
                         handler:^void(NSDictionary<NSString *,id> * arguments,
                                       ThrioIdCallback _Nullable result) {
-     BOOL animated = [arguments[@"animated"] boolValue];
+    BOOL animated = [arguments[@"animated"] boolValue];
+    id params = [arguments[@"params"] isKindOfClass:NSNull.class] ? nil : arguments[@"params"];
+    
+    ThrioLogV(@"on pop");
 
-     ThrioLogV(@"on pop");
-
-     [ThrioNavigator popAnimated:animated result:^(BOOL r) {
+    [ThrioNavigator popParams:params animated:animated result:^(BOOL r) {
       if (result) {
         result(@(r));
       }
@@ -163,7 +168,7 @@ NS_ASSUME_NONNULL_BEGIN
       }
       return;
     }
-    NSNumber *index = arguments[@"index"];
+    NSNumber *index = [arguments[@"index"] isKindOfClass:NSNull.class] ? nil : arguments[@"index"];
     BOOL animated = [arguments[@"animated"] boolValue];
     
     ThrioLogV(@"on popTo: %@.%@", url, index);
@@ -181,7 +186,7 @@ NS_ASSUME_NONNULL_BEGIN
                         handler:^void(NSDictionary<NSString *,id> * arguments,
                                       ThrioIdCallback _Nullable result) {
     NSString *url = arguments[@"url"];
-    NSNumber *index = arguments[@"index"];
+    NSNumber *index = [arguments[@"index"] isKindOfClass:NSNull.class] ? nil : arguments[@"index"];
     BOOL animated = [arguments[@"animated"] boolValue];
 
     ThrioLogV(@"on remove: %@.%@", url, index);
