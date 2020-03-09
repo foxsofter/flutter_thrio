@@ -284,6 +284,7 @@ NS_ASSUME_NONNULL_BEGIN
     NSString *url = arguments[@"url"];
     NSNumber *index = arguments[@"index"];
     BOOL disabled = [arguments[@"disabled"] boolValue];
+    ThrioLogV(@"setPopDisabled: %@.%@ %@", url, index, @(disabled));
     [ThrioNavigator.navigationController thrio_setPopDisabledUrl:url
                                                            index:index
                                                         disabled:disabled];
