@@ -99,7 +99,7 @@ NS_ASSUME_NONNULL_BEGIN
 
       __weak typeof(self) weakself = self;
       ThrioIdCallback readyBlock = ^(id _){
-        ThrioLogV(@"push entrypoint:%@, url:%@", entrypoint, url);
+        ThrioLogV(@"push entrypoint: %@, url:%@", entrypoint, url);
         __strong typeof(self) strongSelf = weakself;
         if ([strongSelf.topViewController isKindOfClass:ThrioFlutterViewController.class] &&
             [[(ThrioFlutterViewController*)strongSelf.topViewController entrypoint] isEqualToString:entrypoint]) {

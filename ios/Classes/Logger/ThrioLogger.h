@@ -27,7 +27,7 @@ NS_ASSUME_NONNULL_BEGIN
 #ifdef DEBUG
 #define ThrioLogV(fmt, ...) NSLog(@"native: [V] %@", [NSString stringWithFormat:fmt, ##__VA_ARGS__])
 #else
-#define ThrioLogV(msg)
+#define ThrioLogV(fmt, ...)
 #endif
 #endif
 
@@ -35,7 +35,7 @@ NS_ASSUME_NONNULL_BEGIN
 #ifdef DEBUG
 #define ThrioLogD(fmt, ...) NSLog(@"native: [D] %@", [NSString stringWithFormat:fmt, ##__VA_ARGS__])
 #else
-#define ThrioLogD(msg)
+#define ThrioLogD(fmt, ...)
 #endif
 #endif
 
@@ -43,7 +43,7 @@ NS_ASSUME_NONNULL_BEGIN
 #ifdef DEBUG
 #define ThrioLogI(fmt, ...) NSLog(@"native: [I] %@", [NSString stringWithFormat:fmt, ##__VA_ARGS__])
 #else
-#define ThrioLogI(msg)
+#define ThrioLogI(fmt, ...)
 #endif
 #endif
 
@@ -51,7 +51,7 @@ NS_ASSUME_NONNULL_BEGIN
 #ifdef DEBUG
 #define ThrioLogW(fmt, ...) NSLog(@"native: [W] %@", [NSString stringWithFormat:fmt, ##__VA_ARGS__])
 #else
-#define ThrioLogW(msg)
+#define ThrioLogW(fmt, ...)
 #endif
 #endif
 
@@ -59,7 +59,7 @@ NS_ASSUME_NONNULL_BEGIN
 #ifdef DEBUG
 #define ThrioLogE(fmt, ...) NSLog(@"native: [E] %@", [NSString stringWithFormat:fmt, ##__VA_ARGS__])
 #else
-#define ThrioLogE(msg)
+#define ThrioLogE(fmt, ...)
 #endif
 #endif
 
