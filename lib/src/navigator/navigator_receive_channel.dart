@@ -76,7 +76,10 @@ class NavigatorReceiveChannel {
         if (poppedResult != null) {
           poppedResult(routeSettings.params);
         }
-        return ThrioNavigator.navigatorState?.pop(animated: animated);
+        return ThrioNavigator.navigatorState?.pop(
+          routeSettings,
+          animated: animated,
+        );
       });
 
   void _onPopTo() => _channel.registryMethodCall('__onPopTo__', ([arguments]) {

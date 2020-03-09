@@ -75,15 +75,17 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
     return Future.value(true);
   }
 
-  Future<bool> pop({bool animated = true}) async {
+  Future<bool> pop(RouteSettings settings, {bool animated = true}) async {
     final navigatorState = widget.child.tryStateOf<NavigatorState>();
     if (navigatorState == null) {
       return false;
     }
     if (history.isEmpty ||
+        settings.name != history.last.settings.name ||
         await history.last.willPop() != RoutePopDisposition.pop) {
       return false;
     }
+
     ThrioLogger().v('pop: ${history.last.settings}');
     var result = true;
     if (animated) {
@@ -131,7 +133,7 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
     }
     ThrioLogger().v('remove: ${route.settings}');
     if (settings.name == history.last.settings.name) {
-      return pop(animated: animated);
+      return pop(settings, animated: animated);
     }
     navigatorState.removeRoute(route);
     return true;
