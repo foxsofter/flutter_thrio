@@ -25,6 +25,7 @@
 #import "UINavigationController+PopGesture.h"
 #import "UIViewController+WillPopCallback.h"
 #import "UIViewController+Navigator.h"
+#import "UIViewController+Internal.h"
 #import "UIViewController+HidesNavigationBar.h"
 #import "NavigatorFlutterEngineFactory.h"
 #import "ThrioNavigator.h"
@@ -142,43 +143,32 @@ NS_ASSUME_NONNULL_BEGIN
                 arguments:arguments
                    result:^(id _Nullable r) {
       __strong typeof(self) strongSelf = weakself;
-      if ([r boolValue]) {
+      if (r && [r boolValue]) {
         if (route != strongSelf.thrio_firstRoute) {
-          route.prev.next = nil;
           [strongSelf thrio_onNotify];
-        } else {
-          strongSelf.thrio_firstRoute = nil;
         }
       }
       if (result) {
-        result([r boolValue]);
+        result(r && [r boolValue]);
       }
-      if (route.poppedResult) {
-        route.poppedResult(params);
+
+      // 关闭成功,处理页面回传参数
+      if (r && [r boolValue]) {
+        if (route.poppedResult) {
+          route.poppedResult(params);
+        }
+        // 检查打开页面的源引擎是否和关闭页面的源引擎不同，不同则继续发送onPop
+        if (route.fromEntrypoint && ![route.fromEntrypoint isEqualToString:entrypoint]) {
+          ThrioChannel *channel = [NavigatorFlutterEngineFactory.shared getChannelByEntrypoint:route.fromEntrypoint];
+          [channel invokeMethod:@"__onPop__" arguments:arguments];
+        }
       }
     }];
-    if (route.fromEntrypoint && ![route.fromEntrypoint isEqualToString:entrypoint]) {
-      // 发送给需要接收关闭页面参数的引擎
-      channel = [NavigatorFlutterEngineFactory.shared getChannelByEntrypoint:route.fromEntrypoint];
-      [channel invokeMethod:@"__onPop__" arguments:arguments];
-    }
   } else {
-    if (route != self.thrio_firstRoute) {
-      route.prev.next = nil;
-      [self thrio_onNotify];
-    } else {
-      self.thrio_firstRoute = nil;
-    }
+    route.poppedParams = params; // 缓存pop params，在didPop的时候处理
     if (result) {
-      result(YES);
-    }
-    if (route.poppedResult) {
-      route.poppedResult(params);
-    }
-    if (route.fromEntrypoint) {
-      // 发送给需要接收关闭页面参数的引擎
-      ThrioChannel *channel = [NavigatorFlutterEngineFactory.shared getChannelByEntrypoint:route.fromEntrypoint];
-      [channel invokeMethod:@"__onPop__" arguments:arguments];
+      // 原生页面一定只有一个route
+      result(route == self.thrio_firstRoute);
     }
   }
 }

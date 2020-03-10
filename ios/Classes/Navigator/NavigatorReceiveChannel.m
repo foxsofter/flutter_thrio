@@ -19,9 +19,7 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-
 #import "NavigatorReceiveChannel.h"
-#import "ThrioNavigator.h"
 #import "ThrioNavigator+Internal.h"
 #import "ThrioNavigator+NavigatorBuilder.h"
 #import "UINavigationController+Navigator.h"
@@ -132,11 +130,13 @@ NS_ASSUME_NONNULL_BEGIN
     }
     NSNumber *index = [arguments[@"index"] isKindOfClass:NSNull.class] ? nil : arguments[@"index"];
     id params = [arguments[@"params"] isKindOfClass:NSNull.class] ? nil : arguments[@"params"];
-    [ThrioNavigator notifyUrl:url index:index name:name params:params result:^(BOOL r) {
-      if (result) {
-        result(@(r));
-      }
-    }];
+    BOOL r = [ThrioNavigator.navigationController thrio_notifyUrl:url
+                                                            index:index
+                                                             name:name
+                                                           params:params];
+    if (result) {
+      result(@(r));
+    }
   }];
 }
 
@@ -144,12 +144,14 @@ NS_ASSUME_NONNULL_BEGIN
   [_channel registryMethodCall:@"pop"
                         handler:^void(NSDictionary<NSString *,id> * arguments,
                                       ThrioIdCallback _Nullable result) {
-    BOOL animated = [arguments[@"animated"] boolValue];
     id params = [arguments[@"params"] isKindOfClass:NSNull.class] ? nil : arguments[@"params"];
-    
+    BOOL animated = [arguments[@"animated"] boolValue];
+
     ThrioLogV(@"on pop");
 
-    [ThrioNavigator popParams:params animated:animated result:^(BOOL r) {
+    [ThrioNavigator.navigationController thrio_popParams:params
+                                                animated:animated
+                                                  result:^(BOOL r) {
       if (result) {
         result(@(r));
       }
@@ -173,7 +175,10 @@ NS_ASSUME_NONNULL_BEGIN
     
     ThrioLogV(@"on popTo: %@.%@", url, index);
 
-    [ThrioNavigator popToUrl:url index:index animated:animated result:^(BOOL r) {
+    [ThrioNavigator.navigationController thrio_popToUrl:url
+                                                  index:index
+                                               animated:animated
+                                                 result:^(BOOL r) {
       if (result) {
         result(@(r));
       }
@@ -191,7 +196,10 @@ NS_ASSUME_NONNULL_BEGIN
 
     ThrioLogV(@"on remove: %@.%@", url, index);
 
-    [ThrioNavigator removeUrl:url index:index animated:animated result:^(BOOL r) {
+    [ThrioNavigator.navigationController thrio_removeUrl:url
+                                                   index:index
+                                                animated:animated
+                                                  result:^(BOOL r) {
       if (result) {
         result(@(r));
       }
@@ -206,9 +214,9 @@ NS_ASSUME_NONNULL_BEGIN
     if (result) {
       NSString *url = arguments[@"url"];
       if (url.length < 1) {
-        result([ThrioNavigator lastIndex]);
+        result([ThrioNavigator.navigationController thrio_lastIndex]);
       } else {
-        result([ThrioNavigator getLastIndexByUrl:url]);
+        result([ThrioNavigator.navigationController thrio_getLastIndexByUrl:url]);
       }
     }
   }];
@@ -220,7 +228,7 @@ NS_ASSUME_NONNULL_BEGIN
                                       ThrioIdCallback _Nullable result) {
      NSString *url = arguments[@"url"];
      if (result) {
-       result([ThrioNavigator getAllIndexByUrl:url]);
+       result([ThrioNavigator.navigationController thrio_getAllIndexByUrl:url]);
      }
   }];
 }

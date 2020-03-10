@@ -23,6 +23,10 @@
 #import "NavigatorControllerDelegate.h"
 #import "UINavigationController+Navigator.h"
 
+@interface NavigatorControllerDelegate ()
+
+@end
+
 @implementation NavigatorControllerDelegate
 
 - (void)setNavigationController:(UINavigationController * _Nullable)navigationController {
@@ -72,12 +76,12 @@
   return UIInterfaceOrientationUnknown;
 }
 
-- (nullable id <UIViewControllerInteractiveTransitioning>)navigationController:(UINavigationController *)navigationController
+- (nullable id<UIViewControllerInteractiveTransitioning>)navigationController:(UINavigationController *)navigationController
                                    interactionControllerForAnimationController:(id <UIViewControllerAnimatedTransitioning>) animationController {
-
+  id<UIViewControllerInteractiveTransitioning> controller;
   if (self.originDelegate && ![self.originDelegate isEqual:self]) {
     if ([self.originDelegate respondsToSelector:@selector(navigationController:interactionControllerForAnimationController:)]) {
-      return [self.originDelegate navigationController:navigationController interactionControllerForAnimationController:animationController];
+      controller = [self.originDelegate navigationController:navigationController interactionControllerForAnimationController:animationController];
     }
   }
   return nil;
@@ -87,6 +91,11 @@
                                             animationControllerForOperation:(UINavigationControllerOperation)operation
                                                          fromViewController:(UIViewController *)fromVC
                                                            toViewController:(UIViewController *)toVC {
+  NSLog(@"fromVC: %@ toVC: %@", fromVC, toVC);
+
+  if (operation == UINavigationControllerOperationPop) {
+    
+  }
   if (self.originDelegate && ![self.originDelegate isEqual:self]) {
     if ([self.originDelegate respondsToSelector:@selector(navigationController:animationControllerForOperation:fromViewController:toViewController:)]) {
       [self.originDelegate navigationController:navigationController

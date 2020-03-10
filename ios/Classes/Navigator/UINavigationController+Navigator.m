@@ -43,32 +43,17 @@ NS_ASSUME_NONNULL_BEGIN
 ///
 @property (nonatomic, strong, nullable) UIViewController *thrio_popingViewController;
 
-/// 记下第一个ThrioFlutterViewController
-///
-@property (nonatomic, strong, nullable) UIViewController *thrio_firstFlutterViewController;
-
 @end
 
 @implementation UINavigationController (Navigator)
 
-- (ThrioFlutterViewController * _Nullable)thrio_popingViewController {
+- (UIViewController * _Nullable)thrio_popingViewController {
   return objc_getAssociatedObject(self, _cmd);
 }
 
-- (void)setThrio_popingViewController:(ThrioFlutterViewController * _Nullable)viewController {
+- (void)setThrio_popingViewController:(UIViewController * _Nullable)viewController {
   objc_setAssociatedObject(self,
                            @selector(thrio_popingViewController),
-                           viewController,
-                           OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-}
-
-- (ThrioFlutterViewController * _Nullable)thrio_firstFlutterViewController {
-  return objc_getAssociatedObject(self, _cmd);
-}
-
-- (void)setThrio_firstFlutterViewController:(ThrioFlutterViewController * _Nullable)viewController {
-  objc_setAssociatedObject(self,
-                           @selector(thrio_firstFlutterViewController),
                            viewController,
                            OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
@@ -156,15 +141,30 @@ NS_ASSUME_NONNULL_BEGIN
     }
     return;
   }
+  if (!vc.thrio_firstRoute) { // 不存在表示页面未经过thrio打开，直接关闭即可
+    id vc = [self popViewControllerAnimated:animated];
+    if (result) {
+      result(vc != nil);
+    }
+    return;
+  }
   __weak typeof(self) weakself = self;
   [vc thrio_popParams:params animated:animated result:^(BOOL r) {
     __strong typeof(self) strongSelf = weakself;
-    if (r && !vc.thrio_firstRoute) {
-      [strongSelf popViewControllerAnimated:animated];
+    if (r) {
+      // 只有FlutterViewController才能满足条件
+      if (vc.thrio_lastRoute != vc.thrio_firstRoute) {
+        vc.thrio_lastRoute.prev.next = nil;
+        // 只剩一个route的时候，需要添加侧滑返回手势
+        if (vc.thrio_firstRoute == vc.thrio_lastRoute) {
+          [strongSelf thrio_addPopGesture];
+        }
+      } else {
+        [strongSelf popViewControllerAnimated:animated];
+      }
     }
-    if (r && vc.thrio_firstRoute == vc.thrio_lastRoute) {
-      [strongSelf thrio_addPopGesture];
-    }
+    // 原生页面返回YES不代表已经pop掉页面
+    // 如果存在willPop拦截的情况的，视用户决策决定页面是否关闭
     if (result) {
       result(r);
     }
@@ -342,28 +342,42 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 - (UIViewController * _Nullable)thrio_popViewControllerAnimated:(BOOL)animated {
+  // 如果是FlutterViewController，无视thrio_willPopBlock，willPop在Dart中已经调用过
+  if ([self.topViewController isKindOfClass:ThrioFlutterViewController.class]) {
+    // 判断前一个页面如果是ThrioFlutterViewController，直接将引擎切换到该页面
+    UIViewController *vc = [self.viewControllers objectAtIndex:self.viewControllers.count - 2];
+    if ([vc isKindOfClass:ThrioFlutterViewController.class]) {
+      [NavigatorFlutterEngineFactory.shared pushViewController:(ThrioFlutterViewController*)vc];
+    }
+    // 判断前一个页面导航栏是否需要切换
+    if (self.navigationBarHidden != vc.thrio_hidesNavigationBar.boolValue) {
+      [self setNavigationBarHidden:vc.thrio_hidesNavigationBar.boolValue];
+    }
+
+    return [self thrio_popViewControllerAnimated:animated];
+  }
+  
+  // 原生页面设置了thrio_willPopBlock
   if (self.topViewController.thrio_willPopBlock && !self.topViewController.thrio_willPopCalling) {
     self.topViewController.thrio_willPopCalling = YES;
     __weak typeof(self) weakself = self;
     self.topViewController.thrio_willPopBlock(^(BOOL result) {
       __strong typeof(self) strongSelf = weakself;
       if (result) {
+        strongSelf.thrio_popingViewController = strongSelf.topViewController;
         [strongSelf thrio_popViewControllerAnimated:animated];
+        
+        // 确定要关闭页面，thrio_willPopBlock需要设为nil
+        strongSelf.topViewController.thrio_willPopBlock = nil;
       }
+      // 是否调用willPop的标记位恢复NO
       strongSelf.topViewController.thrio_willPopCalling = NO;
     });
     return nil;
   }
+  
+  // 原生页面未设置thrio_willPopBlock的路径
   self.thrio_popingViewController = self.topViewController;
-  
-  UIViewController *vc = [self.viewControllers objectAtIndex:self.viewControllers.count - 2];
-  if ([vc isKindOfClass:ThrioFlutterViewController.class]) {
-    [NavigatorFlutterEngineFactory.shared pushViewController:(ThrioFlutterViewController*)vc];
-    if (self.navigationBarHidden != vc.thrio_hidesNavigationBar.boolValue) {
-      [self setNavigationBarHidden:vc.thrio_hidesNavigationBar.boolValue];
-    }
-  }
-  
   return [self thrio_popViewControllerAnimated:animated];
 }
 
@@ -386,7 +400,16 @@ NS_ASSUME_NONNULL_BEGIN
   [self thrio_setViewControllers:viewControllers];
 }
 
+- (void)thrio_didPopFromVC:(UIViewController *)fromVC toVC:(UIViewController *)toVC {
+  
+}
+
 - (void)thrio_didShowViewController:(UIViewController *)viewController animated:(BOOL)animated {
+  // 如果即将显示的页面为ThrioFlutterViewController，需要将该页面切换到引擎上
+  if ([viewController isKindOfClass:ThrioFlutterViewController.class]) {
+    [NavigatorFlutterEngineFactory.shared pushViewController:(ThrioFlutterViewController*)viewController];
+  }
+
   // 处理didPop的情况
   __weak typeof(self) weakself = self;
   [self.thrio_popingViewController thrio_popParams:nil animated:animated result:^(BOOL r) {
@@ -400,9 +423,6 @@ NS_ASSUME_NONNULL_BEGIN
       if (strongSelf.navigationBarHidden != viewController.thrio_hidesNavigationBar.boolValue) {
         [strongSelf setNavigationBarHidden:viewController.thrio_hidesNavigationBar.boolValue];
       }
-    }
-    if ([viewController isKindOfClass:ThrioFlutterViewController.class]) {
-      [NavigatorFlutterEngineFactory.shared pushViewController:(ThrioFlutterViewController*)viewController];
     }
 
     strongSelf.thrio_popingViewController = nil;

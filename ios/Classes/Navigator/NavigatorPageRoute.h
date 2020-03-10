@@ -43,7 +43,13 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, copy, readonly) NSDictionary *notifications;
 
+/// The poppedResult passed in when the push method is called.
+///
 @property (nonatomic, copy, nullable) ThrioIdCallback poppedResult;
+
+/// The poppedParams passed in when the pop method is called.
+///
+@property (nonatomic, strong, nullable) id poppedParams;
 
 /// The current route was pushed by the engine with `fromEntrypoint`.
 ///
