@@ -37,7 +37,9 @@
   [ThrioNavigator removeUrl:@"native1"];
 }
 - (IBAction)pushNative2:(id)sender {
-  [ThrioNavigator pushUrl:@"native2"];
+  [ThrioNavigator pushUrl:@"native2" poppedResult:^(id _Nullable params) {
+    ThrioLogV(@"native2 popped: %@", params);
+  }];
 }
 - (IBAction)popNative2:(id)sender {
   [ThrioNavigator removeUrl:@"native2"];
