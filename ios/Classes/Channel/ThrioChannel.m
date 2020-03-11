@@ -105,7 +105,7 @@ static NSString *const kEventNameKey = @"__event_name__";
   __weak typeof(self) weakself = self;
   [_methodChannel setMethodCallHandler:^(FlutterMethodCall * _Nonnull call,
                                          FlutterResult  _Nonnull result) {
-    __strong typeof(self) strongSelf = weakself;
+    __strong typeof(weakself) strongSelf = weakself;
     ThrioMethodHandler handler = strongSelf.methodHandlers[call.method];
     if (handler) {
       handler(call.arguments, ^(id r){

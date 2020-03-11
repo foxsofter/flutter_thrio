@@ -58,7 +58,7 @@ NS_ASSUME_NONNULL_BEGIN
   
   __weak typeof(self) weakself = self;
   return ^{
-    __strong typeof(self) strongSelf = weakself;
+    __strong typeof(weakself) strongSelf = weakself;
 
     NSMutableSet *v = [strongSelf.maps objectForKey:key];
     [v removeObject:value];
@@ -82,7 +82,7 @@ NS_ASSUME_NONNULL_BEGIN
   
   __weak typeof(self) weakself = self;
   return ^{
-    __strong typeof(self) strongSelf = weakself;
+    __strong typeof(weakself) strongSelf = weakself;
 
     NSArray *keys = values.allKeys;
     for (id key in keys) {

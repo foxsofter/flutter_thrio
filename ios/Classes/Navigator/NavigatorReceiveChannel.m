@@ -76,7 +76,7 @@ NS_ASSUME_NONNULL_BEGIN
   [_channel registryMethodCall:@"ready"
                         handler:^void(NSDictionary<NSString *,id> * arguments,
                                       ThrioIdCallback _Nullable result) {
-    __strong typeof(self) strongSelf = weakself;
+    __strong typeof(weakself) strongSelf = weakself;
     if (strongSelf.readyBlock) {
       ThrioLogV(@"on ready: %@", strongSelf.channel.entrypoint);
       strongSelf.readyBlock(strongSelf.channel.entrypoint);
@@ -100,7 +100,7 @@ NS_ASSUME_NONNULL_BEGIN
     id params = [arguments[@"params"] isKindOfClass:NSNull.class] ? nil : arguments[@"params"];
     BOOL animated = [arguments[@"animated"] boolValue];
     ThrioLogV(@"on push: %@", url);
-    __strong typeof(self) strongSelf = weakself;
+    __strong typeof(weakself) strongSelf = weakself;
     [ThrioNavigator.navigationController thrio_pushUrl:url
                                                 params:params
                                               animated:animated

@@ -51,7 +51,7 @@ NS_ASSUME_NONNULL_BEGIN
 
   __weak typeof(self) weakself = self;
   return ^{
-    __strong typeof(self) strongSelf = weakself;
+    __strong typeof(weakself) strongSelf = weakself;
     
     [strongSelf.sets removeObject:value];
   };
@@ -64,7 +64,7 @@ NS_ASSUME_NONNULL_BEGIN
   
   __weak typeof(self) weakself = self;
   return ^{
-    __strong typeof(self) strongSelf = weakself;
+    __strong typeof(weakself) strongSelf = weakself;
     [strongSelf.sets minusSet:values];
   };
 }

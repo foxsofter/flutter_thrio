@@ -143,7 +143,7 @@ NS_ASSUME_NONNULL_BEGIN
     [channel invokeMethod:@"__onPop__"
                 arguments:arguments
                    result:^(id _Nullable r) {
-      __strong typeof(self) strongSelf = weakself;
+      __strong typeof(weakself) strongSelf = weakself;
       if (r && [r boolValue]) {
         if (route != strongSelf.thrio_firstRoute) {
           [strongSelf thrio_onNotify:route.prev];
@@ -195,7 +195,7 @@ NS_ASSUME_NONNULL_BEGIN
     [channel invokeMethod:@"__onPopTo__"
                 arguments:arguments
                    result:^(id  _Nullable r) {
-      __strong typeof(self) strongSelf = weakself;
+      __strong typeof(weakself) strongSelf = weakself;
       if ([r boolValue]) {
         route.next = nil;
         [strongSelf thrio_onNotify:route];
@@ -234,7 +234,7 @@ NS_ASSUME_NONNULL_BEGIN
     [channel invokeMethod:@"__onRemove__"
                 arguments:arguments
                    result:^(id  _Nullable r) {
-      __strong typeof(self) strongSelf = weakself;
+      __strong typeof(weakself) strongSelf = weakself;
       if ([r boolValue]) {
         if (route == strongSelf.thrio_firstRoute) {
           strongSelf.thrio_firstRoute = route.next;
