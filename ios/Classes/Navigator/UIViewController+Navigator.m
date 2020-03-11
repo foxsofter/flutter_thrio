@@ -112,8 +112,9 @@ NS_ASSUME_NONNULL_BEGIN
   NavigatorPageRoute *route = [self thrio_getRouteByUrl:url index:index];
   if (route) {
     [route addNotify:name params:params];
-    if (self == self.navigationController.topViewController) {
-      [self thrio_onNotify];
+    if (self == self.navigationController.topViewController &&
+        route == self.thrio_lastRoute) {
+      [self thrio_onNotify:route];
     }
     return YES;
   }
@@ -145,7 +146,7 @@ NS_ASSUME_NONNULL_BEGIN
       __strong typeof(self) strongSelf = weakself;
       if (r && [r boolValue]) {
         if (route != strongSelf.thrio_firstRoute) {
-          [strongSelf thrio_onNotify];
+          [strongSelf thrio_onNotify:route.prev];
         }
       }
       if (result) {
@@ -197,7 +198,7 @@ NS_ASSUME_NONNULL_BEGIN
       __strong typeof(self) strongSelf = weakself;
       if ([r boolValue]) {
         route.next = nil;
-        [strongSelf thrio_onNotify];
+        [strongSelf thrio_onNotify:route];
       }
       if (result) {
         result(r && [r boolValue]);
@@ -205,7 +206,7 @@ NS_ASSUME_NONNULL_BEGIN
     }];
   } else {
     route.next = nil;
-    [self thrio_onNotify];
+    [self thrio_onNotify:route];
     if (result) {
       result(YES);
     }
@@ -240,7 +241,7 @@ NS_ASSUME_NONNULL_BEGIN
           strongSelf.thrio_firstRoute.prev = nil;
         } else if (route == strongSelf.thrio_lastRoute) {
           route.prev.next = nil;
-          [strongSelf thrio_onNotify];
+          [strongSelf thrio_onNotify:route.prev];
         } else {
           route.prev.next = route.next;
           route.next.prev = route.prev;
@@ -256,7 +257,7 @@ NS_ASSUME_NONNULL_BEGIN
       self.thrio_firstRoute.prev = nil;
     } else if (route == self.thrio_lastRoute) {
       route.prev.next = nil;
-      [self thrio_onNotify];
+      [self thrio_onNotify:route.prev];
     } else {
       route.prev.next = route.next;
       route.next.prev = route.prev;
@@ -276,22 +277,25 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 - (void)thrio_didPopUrl:(NSString *)url index:(NSNumber *)index {
+  // didPop来自于Dart侧滑关掉的页面，只需要同步route的状态，发出页面通知即可
   NavigatorPageRoute *route = [self thrio_getRouteByUrl:url index:index];
   if (route) {
     route.prev.next = nil;
-    [self thrio_onNotify];
+    [self thrio_onNotify:route.prev];
   }
 }
 
 - (void)thrio_didPopToUrl:(NSString *)url index:(NSNumber *)index {
+  // didPopTo来自于Dart侧直接调用Navigator的行为，只需要同步route的状态，发出页面通知即可
   NavigatorPageRoute *route = [self thrio_getRouteByUrl:url index:index];
   if (route) {
     route.next = nil;
-    [self thrio_onNotify];
+    [self thrio_onNotify:route];
   }
 }
 
 - (void)thrio_didRemoveUrl:(NSString *)url index:(NSNumber *)index {
+  // didRemove来自于Dart侧直接调用Navigator的行为，只需要同步route的状态，发出页面通知即可
   NavigatorPageRoute *route = [self thrio_getRouteByUrl:url index:index];
   if (route) {
     if (route == self.thrio_firstRoute) {
@@ -299,7 +303,7 @@ NS_ASSUME_NONNULL_BEGIN
       self.thrio_firstRoute.prev = nil;
     } else if (route == self.thrio_lastRoute) {
       route.prev.next = nil;
-      [self thrio_onNotify];
+      [self thrio_onNotify:route.prev];
     } else {
       route.prev.next = route.next;
       route.next.prev = route.prev;
@@ -357,7 +361,7 @@ NS_ASSUME_NONNULL_BEGIN
   if ([self isKindOfClass:ThrioFlutterViewController.class] ||
       [self conformsToProtocol:@protocol(NavigatorPageNotifyProtocol)]) {
     // 当页面出现后，给页面发送通知
-    [self thrio_onNotify];
+    [self thrio_onNotify:self.thrio_lastRoute];
   }
   
   if (![self isKindOfClass:ThrioFlutterViewController.class]) {
@@ -384,8 +388,7 @@ NS_ASSUME_NONNULL_BEGIN
   [self.navigationController thrio_removePopGesture];
 }
 
-- (void)thrio_onNotify {
-  NavigatorPageRoute *route = self.thrio_lastRoute;
+- (void)thrio_onNotify:(NavigatorPageRoute *)route {
   NSArray *keys = [route.notifications.allKeys copy];
   for (NSString *name in keys) {
     id params = [route removeNotify:name];
