@@ -23,7 +23,7 @@
 #import "ThrioModule.h"
 #import "ThrioNavigator+NavigatorBuilder.h"
 #import "ThrioNavigator+Internal.h"
-#import "ThrioFlutterEngineFactory.h"
+#import "NavigatorFlutterEngineFactory.h"
 
 @implementation ThrioModule
 
@@ -61,7 +61,7 @@ static NSMutableDictionary *modules;
   });
   // 单引擎模式下，提前启动
   if (!ThrioNavigator.isMultiEngineEnabled) {
-    [ThrioFlutterEngineFactory.shared startupWithEntrypoint:@"" readyBlock:^{}];
+    [NavigatorFlutterEngineFactory.shared startupWithEntrypoint:@"" readyBlock:nil];
   }
 }
 
@@ -75,7 +75,7 @@ static NSMutableDictionary *modules;
 }
 
 - (void)startupFlutterEngineWithEntrypoint:(NSString *)entrypoint {
-  [ThrioFlutterEngineFactory.shared startupWithEntrypoint:entrypoint readyBlock:^{}];
+  [NavigatorFlutterEngineFactory.shared startupWithEntrypoint:entrypoint readyBlock:nil];
 }
 
 - (void)onModuleRegister { }

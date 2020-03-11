@@ -18,7 +18,9 @@
 @implementation ThrioViewController2
 
 - (IBAction)pushFlutterPage:(id)sender {
-  [ThrioNavigator pushUrl:@"biz2/flutter2"];
+  [ThrioNavigator pushUrl:@"biz2/flutter2" poppedResult:^(id _Nonnull params) {
+    ThrioLogV(@"biz2/flutter2 popped: %@", params);
+  }];
 }
 - (IBAction)popFlutter1:(id)sender {
   [ThrioNavigator removeUrl:@"biz2/flutter2"];
@@ -33,7 +35,7 @@
   [ThrioNavigator popToUrl:@"native1"];
 }
 - (IBAction)pop:(id)sender {
-  [ThrioNavigator pop];
+  [ThrioNavigator popParams:@{@"k1": @3}];
 }
 - (IBAction)willPopYESNative2:(id)sender {
   self.thrio_willPopBlock = ^(ThrioBoolCallback _Nonnull result) {

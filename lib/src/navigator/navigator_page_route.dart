@@ -21,6 +21,7 @@
 
 import 'package:flutter/material.dart';
 
+import '../logger/thrio_logger.dart';
 import 'navigator_route_settings.dart';
 import 'navigator_types.dart';
 import 'thrio_navigator.dart';
@@ -33,45 +34,45 @@ class NavigatorPageRoute extends MaterialPageRoute<bool> {
     RouteSettings settings,
     bool maintainState = true,
     bool fullscreenDialog = false,
+    this.poppedResult,
   }) : super(
             builder: (_) => builder(settings),
             settings: settings,
             maintainState: maintainState,
             fullscreenDialog: fullscreenDialog);
 
-  // WillPopCallback _willPopCallback;
+  final NavigatorParamsCallback poppedResult;
 
-  // WillPopCallback get willPopCallback => _willPopCallback;
+  final _popDisableds = <String, bool>{};
 
-  // set willPopCallback(WillPopCallback callback) {
-  //   if (_willPopCallback != callback) {
-  //     ThrioNavigator.navigatorState.history.last
-  //         .removeScopedWillPopCallback(_willPopCallback);
-  //     _willPopCallback = callback;
-  //     if (isCurrent) {
-  //       addScopedWillPopCallback(callback);
-  //     }
-  //   }
-  // }
+  final _popDisabledFutures = <String, Future>{};
 
   @override
   void addScopedWillPopCallback(WillPopCallback callback) {
-    ThrioNavigator.setPopDisabled(
-      url: settings.url,
-      index: settings.index,
-      disabled: true,
-    );
+    _setPopDisabled(true);
     super.addScopedWillPopCallback(callback);
   }
 
   @override
   void removeScopedWillPopCallback(WillPopCallback callback) {
-    ThrioNavigator.setPopDisabled(
-      url: settings.url,
-      index: settings.index,
-      disabled: false,
-    );
+    _setPopDisabled(false);
     super.removeScopedWillPopCallback(callback);
+  }
+
+  void _setPopDisabled(bool disabled) {
+    _popDisableds[settings.name] = disabled;
+
+    // 延迟300ms执行，避免因为WillPopScope依赖变更导致发送过多的Channel消息
+    _popDisabledFutures[settings.name] ??=
+        Future.delayed(const Duration(milliseconds: 300), () {
+      _popDisabledFutures.remove(settings.name); // ignore: unawaited_futures
+      final disabled = _popDisableds.remove(settings.name);
+      ThrioNavigator.setPopDisabled(
+        url: settings.url,
+        index: settings.index,
+        disabled: disabled,
+      );
+    });
   }
 
   @override

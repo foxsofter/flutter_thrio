@@ -24,17 +24,6 @@
 
 @implementation UIViewController (WillPopCallback)
 
-- (BOOL)thrio_willPopCalling {
-  return [(NSNumber *)objc_getAssociatedObject(self, _cmd) boolValue];
-}
-
-- (void)setThrio_willPopCalling:(BOOL)calling {
-  objc_setAssociatedObject(self,
-                           @selector(thrio_willPopCalling),
-                           @(calling),
-                           OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-}
-
 - (ThrioWillPopCallback _Nullable)thrio_willPopBlock {
   return objc_getAssociatedObject(self, _cmd);
 }

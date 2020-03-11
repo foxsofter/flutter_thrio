@@ -14,7 +14,21 @@ A flutter plugin which enables hybrid integration of flutter for existing ios or
   s.author           = { 'hellobike' => 'foxsofter@gmail.com' }
   s.source           = { :path => '.' }
   s.source_files = 'Classes/**/*'
-  s.public_header_files = 'Classes/**/*.h,'
+  s.public_header_files = ['Classes/*.h',
+                           'Classes/Category/*.h',
+                           'Classes/Channel/*.h',
+                           'Classes/Logger/*.h',
+                           'Classes/Module/*.h',
+                           'Classes/Registry/*.h',
+                           'Classes/Navigator/NavigatorRouteSettings.h',
+                           'Classes/Navigator/NavigatorPageRoute.h',
+                           'Classes/Navigator/NavigatorPageNotifyProtocol.h',
+                           'Classes/Navigator/ThrioFlutterViewController.h',
+                           'Classes/Navigator/ThrioNavigator.h',
+                           'Classes/Navigator/UINavigationController+Navigator.h',
+                           'Classes/Navigator/UIViewController+Navigator.h',
+                           'Classes/Navigator/UIViewController+WillPopCallback.h',
+                           'Classes/Navigator/UIViewController+HidesNavigationBar.h',]
   s.dependency 'Flutter'
   s.platform = :ios, '8.0'
 

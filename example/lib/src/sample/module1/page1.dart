@@ -11,7 +11,7 @@ class Page1 extends StatefulWidget {
 
   final int index;
 
-  final Map<String, dynamic> params;
+  final dynamic params;
 
   @override
   _Page1State createState() => _Page1State();
@@ -63,6 +63,8 @@ class _Page1State extends State<Page1> {
                         params: {
                           '1': {'2': '3'}
                         },
+                        poppedResult: (params) =>
+                            ThrioLogger().v('biz1/flutter1 popped: $params'),
                       ),
                       child: Container(
                           padding: const EdgeInsets.all(8),
@@ -90,6 +92,8 @@ class _Page1State extends State<Page1> {
                         params: {
                           '1': {'2': '3'}
                         },
+                        poppedResult: (params) =>
+                            ThrioLogger().v('biz2/flutter2 popped: $params'),
                       ),
                       child: Container(
                           padding: const EdgeInsets.all(8),
@@ -101,7 +105,8 @@ class _Page1State extends State<Page1> {
                           )),
                     ),
                     InkWell(
-                      onTap: ThrioNavigator.pop,
+                      onTap: () =>
+                          ThrioNavigator.pop(params: 'popped flutter1'),
                       child: Container(
                           padding: const EdgeInsets.all(8),
                           margin: const EdgeInsets.all(8),

@@ -30,7 +30,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (instancetype)initWithChannel:(ThrioChannel *)channel;
 
-- (void)setReadyBlock:(ThrioVoidCallback _Nullable)block;
+- (void)setReadyBlock:(ThrioIdCallback _Nullable)block;
 
 @end
 

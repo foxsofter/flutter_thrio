@@ -52,7 +52,7 @@ NS_ASSUME_NONNULL_BEGIN
 
   __weak typeof(self) weakself = self;
   return ^{
-    __strong typeof(self) strongSelf = weakself;
+    __strong typeof(weakself) strongSelf = weakself;
     
     [strongSelf.maps removeObjectForKey:key];
   };
@@ -66,7 +66,7 @@ NS_ASSUME_NONNULL_BEGIN
   
   __weak typeof(self) weakself = self;
   return ^{
-    __strong typeof(self) strongSelf = weakself;
+    __strong typeof(weakself) strongSelf = weakself;
 
     for (id key in values) {
       [strongSelf.maps removeObjectForKey:key];

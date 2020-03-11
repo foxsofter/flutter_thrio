@@ -40,9 +40,9 @@ class NavigatorPageNotify extends StatefulWidget {
 
   final String name;
 
-  final NavigatorPageNotifyCallback onPageNotify;
+  final NavigatorParamsCallback onPageNotify;
 
-  final Map<String, dynamic> initialParams;
+  final dynamic initialParams;
 
   final Widget child;
 
@@ -53,9 +53,9 @@ class NavigatorPageNotify extends StatefulWidget {
 class _NavigatorPageNotifyState extends State<NavigatorPageNotify> {
   NavigatorPageRoute _route;
 
-  Stream<Map<String, dynamic>> _notifyStream;
+  Stream _notifyStream;
 
-  StreamSubscription<Map<String, dynamic>> _notifySubscription;
+  StreamSubscription _notifySubscription;
 
   @override
   void initState() {

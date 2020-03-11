@@ -20,7 +20,7 @@
 // IN THE SOFTWARE.
 
 #import <Foundation/Foundation.h>
-
+#import "ThrioTypes.h"
 #import "NavigatorRouteSettings.h"
 
 NS_ASSUME_NONNULL_BEGIN
@@ -31,17 +31,29 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (instancetype)initWithSettings:(NavigatorRouteSettings *)settings;
 
-- (void)addNotify:(NSString *)name params:(NSDictionary *)params;
+- (void)addNotify:(NSString *)name params:(id _Nullable)params;
 
-- (NSDictionary *_Nullable)removeNotify:(NSString *)name;
+- (id _Nullable)removeNotify:(NSString *)name;
 
-@property(nonatomic, strong, nullable) NavigatorPageRoute *prev;
+@property (nonatomic, strong, nullable) NavigatorPageRoute *prev;
 
-@property(nonatomic, strong, nullable) NavigatorPageRoute *next;
+@property (nonatomic, strong, nullable) NavigatorPageRoute *next;
 
-@property(nonatomic, strong, readonly) NavigatorRouteSettings *settings;
+@property (nonatomic, strong, readonly) NavigatorRouteSettings *settings;
 
-@property(nonatomic, copy, readonly) NSDictionary *notifications;
+@property (nonatomic, copy, readonly) NSDictionary *notifications;
+
+/// The poppedResult passed in when the push method is called.
+///
+@property (nonatomic, copy, nullable) ThrioIdCallback poppedResult;
+
+/// The poppedParams passed in when the pop method is called.
+///
+@property (nonatomic, strong, nullable) id poppedParams;
+
+/// The current route was pushed by the engine with `fromEntrypoint`.
+///
+@property (nonatomic, copy, nullable) NSString *fromEntrypoint;
 
 @end
 

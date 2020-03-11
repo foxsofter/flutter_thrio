@@ -28,24 +28,24 @@ NS_ASSUME_NONNULL_BEGIN
 + (instancetype)settingsWithUrl:(NSString *)url
                           index:(NSNumber *)index
                          nested:(BOOL)nested
-                         params:(NSDictionary *)params;
+                         params:(id _Nullable)params;
 
 - (instancetype)initWithUrl:(NSString *)url
                       index:(NSNumber *)index
                      nested:(BOOL)nested
-                     params:(NSDictionary *)params;
+                     params:(id _Nullable)params;
 
 - (NSDictionary *)toArguments;
 
-- (NSDictionary *)toArgumentsWithoutParams;
+- (NSDictionary *)toArgumentsWithParams:(id _Nullable)params;
 
-@property(nonatomic, copy, readonly) NSString *url;
+@property (nonatomic, copy, readonly) NSString *url;
 
-@property(nonatomic, strong, readonly) NSNumber *index;
+@property (nonatomic, strong, readonly) NSNumber *index;
 
-@property(nonatomic, assign, readonly) BOOL nested;
+@property (nonatomic, assign, readonly) BOOL nested;
 
-@property(nonatomic, copy, readonly) NSDictionary *params;
+@property (nonatomic, copy, readonly, nullable) id params;
 
 @end
 

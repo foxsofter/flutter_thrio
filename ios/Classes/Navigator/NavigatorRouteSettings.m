@@ -32,7 +32,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, assign, readwrite) BOOL nested;
 
-@property (nonatomic, copy, readwrite) NSDictionary *params;
+@property (nonatomic, copy, readwrite, nullable) id params;
 
 @end
 
@@ -41,14 +41,14 @@ NS_ASSUME_NONNULL_BEGIN
 + (instancetype)settingsWithUrl:(NSString *)url
                           index:(NSNumber *)index
                          nested:(BOOL)nested
-                         params:(NSDictionary *)params {
+                         params:(id _Nullable)params {
   return [[self alloc] initWithUrl:url index:index nested:nested params:params];
 }
 
 - (instancetype)initWithUrl:(NSString *)url
                       index:(NSNumber *)index
                      nested:(BOOL)nested
-                     params:(NSDictionary *)params {
+                     params:(id _Nullable)params {
   NSAssert(url && url.length > 0, @"url must not be null or empty.");
 
   self = [super init];
@@ -62,16 +62,16 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 - (NSDictionary *)toArguments {
-  return @{
+  return [self toArgumentsWithParams:_params];
+}
+
+- (NSDictionary *)toArgumentsWithParams:(id _Nullable)params {
+  return params ? @{
     @"url": _url,
     @"index": _index,
     @"isNested": @(_nested),
-    @"params": _params,
-  };
-}
-
-- (NSDictionary *)toArgumentsWithoutParams {
-  return @{
+    @"params": params,
+  } : @{
     @"url": _url,
     @"index": _index,
     @"isNested": @(_nested),

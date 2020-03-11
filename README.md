@@ -65,12 +65,22 @@ ThrioNavigator.push(url: 'flutter1');
 ThrioNavigator.push(url: 'native1', params: { '1': {'2': '3'}});
 // 是否动画，目前在内嵌的dart页面中动画无法取消，原生iOS页面有效果
 ThrioNavigator.push(url: 'native1', animated:true);
+// 接收锁打开页面的关闭回调
+ThrioNavigator.push(
+    url: 'biz2/flutter2',
+    params: {'1': {'2': '3'}},
+    poppedResult: (params) => ThrioLogger().v('biz2/flutter2 popped: $params'),
+);
 ```
 
 2. iOS 端打开页面
 
 ```objc
 [ThrioNavigator pushUrl:@"flutter1"];
+// 接收所打开页面的关闭回调
+[ThrioNavigator pushUrl:@"biz2/flutter2" poppedResult:^(id _Nonnull params) {
+    ThrioLogV(@"biz2/flutter2 popped: %@", params);
+}];
 ```
 
 ### 关闭顶层页面
@@ -82,6 +92,8 @@ ThrioNavigator.push(url: 'native1', animated:true);
 ThrioNavigator.pop();
 // 不开启动画，原生和dart页面都生效
 ThrioNavigator.pop(animated: false);
+// 关闭当前页面，并传递参数给push这个页面的回调
+ThrioNavigator.pop(params: 'popped flutter1'),
 ```
 
 2. iOS 端关闭顶层页面
@@ -91,6 +103,8 @@ ThrioNavigator.pop(animated: false);
 [ThrioNavigator pop];
 // 关闭动画
 [ThrioNavigator popAnimated:NO];
+// 关闭当前页面，并传递参数给push这个页面的回调
+[ThrioNavigator popParams:@{@"k1": @3}];
 ```
 
 ### 关闭到页面
@@ -163,7 +177,7 @@ NavigatorPageNotify(
 
 2. iOS 端接收页面通知
 
-`UIViewController`实现协议`NavigatorNotifyProtocol`，通过该协议定义的方法来接收页面通知
+`UIViewController`实现协议`NavigatorPageNotifyProtocol`，通过该协议定义的方法来接收页面通知
 
 ```objc
 - (void)onNotify:(NSString *)name params:(NSDictionary *)params {
@@ -193,7 +207,7 @@ FlutterViewController 默认是不支持侧滑返回的，因为 thrio 支持一
 WillPopScope(
     onWillPop: () async => true,
     child: Container(),
-)
+);
 ```
 
 2. iOS 端禁止特定页面关闭
@@ -212,8 +226,9 @@ viewController.thrio_willPopBlock = ^(ThrioBoolCallback _Nonnull result) {
 
 1. iOS 端
 
-原来的方案是每打开一个 Flutter 页面会创建一个新的原生页面，比如以连续打开 5 个 Flutter 页面计算（比较接近目前我们在项目上的场景），iOS 会消耗 91.67M 内存，新方案 iOS 只消耗 42.76 内存，减少内存消耗 150%，页面打开内存消耗数据大致如下：
-| demo | 启动 | 页面 1 | 页面 2 | 页面 3 | 页面 4 | 页面 5 |
+原来的方案是每打开一个Flutter页面会创建一个新的原生页面，比如以连续打开5个Flutter页面计算（比较接近目前我们在项目上的场景），iOS会消耗91.67M内存，新方案iOS只消耗42.76内存，页面打开内存消耗数据大致如下：
+
+| demo | 启动 | 页面1 | 页面2 | 页面3 | 页面4 | 页面5 |
 | --- | --- | --- | --- | --- | --- | --- |
 | thrio | 8.56 | 37.42 | 38.88 | 42.52 | 42.61 | 42.76 |
 | boost | 6.81 | 36.08 | 50.96 | 66.18 | 78.86 | 91.67 |

@@ -23,11 +23,15 @@ import 'package:flutter/foundation.dart';
 
 import '../channel/thrio_channel.dart';
 import '../logger/thrio_logger.dart';
+import '../navigator/navigator_types.dart';
 import 'navigator_route_settings.dart';
 import 'thrio_navigator.dart';
 
 class NavigatorReceiveChannel {
-  NavigatorReceiveChannel(ThrioChannel channel) : _channel = channel {
+  NavigatorReceiveChannel(ThrioChannel channel,
+      Map<String, NavigatorParamsCallback> pagePoppedResults)
+      : _channel = channel,
+        _pagePoppedResults = pagePoppedResults {
     _onPush();
     _onPop();
     _onPopTo();
@@ -36,10 +40,12 @@ class NavigatorReceiveChannel {
 
   final ThrioChannel _channel;
 
-  Stream<Map<String, dynamic>> onPageNotify({
-    @required String name,
+  final Map<String, NavigatorParamsCallback> _pagePoppedResults;
+
+  Stream onPageNotify({
     @required String url,
     @required int index,
+    @required String name,
   }) =>
       _channel
           .onEventStream('__onNotify__')
@@ -47,10 +53,7 @@ class NavigatorReceiveChannel {
               arguments.containsValue(url) &&
               arguments.containsValue(name) &&
               (index == null || arguments.containsValue(index)))
-          .map((arguments) {
-        final params = arguments['params'];
-        return params is Map<String, dynamic> ? params : {};
-      });
+          .map((arguments) => arguments['params']);
 
   void _onPush() => _channel.registryMethodCall('__onPush__', ([arguments]) {
         final routeSettings = NavigatorRouteSettings.fromArguments(arguments);
@@ -65,10 +68,18 @@ class NavigatorReceiveChannel {
       });
 
   void _onPop() => _channel.registryMethodCall('__onPop__', ([arguments]) {
+        final routeSettings = NavigatorRouteSettings.fromArguments(arguments);
         final animatedValue = arguments['animated'];
         final animated =
             (animatedValue != null && animatedValue is bool) && animatedValue;
-        return ThrioNavigator.navigatorState?.pop(animated: animated);
+        final poppedResult = _pagePoppedResults.remove(routeSettings.name);
+        if (poppedResult != null) {
+          poppedResult(routeSettings.params);
+        }
+        return ThrioNavigator.navigatorState?.maybePop(
+          routeSettings,
+          animated: animated,
+        );
       });
 
   void _onPopTo() => _channel.registryMethodCall('__onPopTo__', ([arguments]) {

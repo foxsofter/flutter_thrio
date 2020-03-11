@@ -10,7 +10,7 @@ class Page3 extends StatefulWidget {
 
   final int index;
 
-  final Map<String, dynamic> params;
+  final dynamic params;
 
   @override
   _Page3State createState() => _Page3State();
@@ -87,7 +87,7 @@ class _Page3State extends State<Page3> {
                     ),
                     InkWell(
                       onTap: () => ThrioNavigator.popTo(
-                        url: 'flutter1',
+                        url: 'biz1/flutter1',
                         index: 1,
                       ),
                       child: Container(

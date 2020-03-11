@@ -19,31 +19,26 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-#import <Flutter/Flutter.h>
-#import "NavigatorPageNotifyProtocol.h"
-#import "ThrioTypes.h"
+#import "NavigatorPopGestureRecognizerDelegate.h"
+#import "UIViewController+WillPopCallback.h"
 
-NS_ASSUME_NONNULL_BEGIN
+@implementation NavigatorPopGestureRecognizerDelegate
 
-@interface ThrioFlutterViewController : FlutterViewController <UINavigationControllerDelegate>
+- (BOOL)gestureRecognizerShouldBegin:(UIPanGestureRecognizer *)gestureRecognizer {
+  UIViewController *topViewController = self.navigationController.topViewController;
+  if (topViewController.thrio_willPopBlock) {
+    return NO;
+  }
+    
+  if (self.navigationController.viewControllers.count <= 1) {
+    return NO;
+  }
 
-- (instancetype)initWithEntrypoint:(NSString *)entrypoint NS_DESIGNATED_INITIALIZER;
-
-- (instancetype)init NS_UNAVAILABLE;
-- (instancetype)initWithCoder:(NSCoder *)aDecoder NS_UNAVAILABLE;
-- (instancetype)initWithNibName:(NSString *_Nullable)nibNameOrNil
-                         bundle:(NSBundle *_Nullable)nibBundleOrNil NS_UNAVAILABLE;
-- (instancetype)initWithEngine:(FlutterEngine *)engine
-                       nibName:(NSString *_Nullable)nibName
-                        bundle:(NSBundle *_Nullable)nibBundle NS_UNAVAILABLE;
-- (instancetype)initWithProject:(FlutterDartProject *_Nullable)project
-                        nibName:(NSString *_Nullable)nibName
-                         bundle:(NSBundle *_Nullable)nibBundle NS_UNAVAILABLE;
-
-- (void)surfaceUpdated:(BOOL)appeared;
-
-@property (nonatomic, copy, readonly) NSString *entrypoint;
+  if ([[self.navigationController valueForKey:@"_isTransitioning"] boolValue]) {
+    return NO;
+  }
+  
+  return YES;
+}
 
 @end
-
-NS_ASSUME_NONNULL_END

@@ -20,31 +20,20 @@
 // IN THE SOFTWARE.
 
 #import <Foundation/Foundation.h>
-#import <Flutter/Flutter.h>
-#import "ThrioFlutterViewController.h"
-#import "ThrioTypes.h"
-#import "ThrioChannel.h"
+#import <objc/runtime.h>
+#import "UIViewController+Internal.h"
 
-NS_ASSUME_NONNULL_BEGIN
+@implementation UIViewController (Internal)
 
-@interface ThrioFlutterEngineFactory : NSObject
+- (BOOL)thrio_willPopCalling {
+  return [(NSNumber *)objc_getAssociatedObject(self, _cmd) boolValue];
+}
 
-+ (instancetype)shared;
-
-- (void)startupWithEntrypoint:(NSString *)entrypoint readyBlock:(ThrioVoidCallback)block;
-
-- (FlutterEngine *)getEngineByEntrypoint:(NSString *)entrypoint;
-
-- (ThrioChannel *)getChannelByEntrypoint:(NSString *)entrypoint;
-
-- (void)pushViewController:(ThrioFlutterViewController *)viewController;
-
-- (void)popViewController:(ThrioFlutterViewController *)viewController;
-
-- (void)registerFlutterUrls:(NSArray *)urls;
-
-- (void)unregisterFlutterUrls:(NSArray *)urls;
+- (void)setThrio_willPopCalling:(BOOL)calling {
+  objc_setAssociatedObject(self,
+                           @selector(thrio_willPopCalling),
+                           @(calling),
+                           OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
 
 @end
-
-NS_ASSUME_NONNULL_END

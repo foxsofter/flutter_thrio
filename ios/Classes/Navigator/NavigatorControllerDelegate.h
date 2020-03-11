@@ -19,30 +19,17 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-#import <Flutter/Flutter.h>
-#import "NavigatorPageNotifyProtocol.h"
-#import "ThrioTypes.h"
+#import <Foundation/Foundation.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface ThrioFlutterViewController : FlutterViewController <UINavigationControllerDelegate>
+@interface NavigatorControllerDelegate : NSObject <UINavigationControllerDelegate>
 
-- (instancetype)initWithEntrypoint:(NSString *)entrypoint NS_DESIGNATED_INITIALIZER;
+@property (nonatomic, weak) UINavigationController *navigationController;
 
-- (instancetype)init NS_UNAVAILABLE;
-- (instancetype)initWithCoder:(NSCoder *)aDecoder NS_UNAVAILABLE;
-- (instancetype)initWithNibName:(NSString *_Nullable)nibNameOrNil
-                         bundle:(NSBundle *_Nullable)nibBundleOrNil NS_UNAVAILABLE;
-- (instancetype)initWithEngine:(FlutterEngine *)engine
-                       nibName:(NSString *_Nullable)nibName
-                        bundle:(NSBundle *_Nullable)nibBundle NS_UNAVAILABLE;
-- (instancetype)initWithProject:(FlutterDartProject *_Nullable)project
-                        nibName:(NSString *_Nullable)nibName
-                         bundle:(NSBundle *_Nullable)nibBundle NS_UNAVAILABLE;
-
-- (void)surfaceUpdated:(BOOL)appeared;
-
-@property (nonatomic, copy, readonly) NSString *entrypoint;
+/// 原来的UINavigationControllerDelegate
+///
+@property (nonatomic, weak) id<UINavigationControllerDelegate> originDelegate;
 
 @end
 

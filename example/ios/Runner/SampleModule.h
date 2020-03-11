@@ -6,7 +6,7 @@
 //  Copyright © 2020 The Chromium Authors. All rights reserved.
 //
 
-#import "ThrioModule.h"
+#import <thrio/Thrio.h>
 
 NS_ASSUME_NONNULL_BEGIN
 

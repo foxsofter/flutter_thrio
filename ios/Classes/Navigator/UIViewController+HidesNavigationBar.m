@@ -19,31 +19,20 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-#import <Flutter/Flutter.h>
-#import "NavigatorPageNotifyProtocol.h"
-#import "ThrioTypes.h"
+#import <objc/runtime.h>
+#import "UIViewController+HidesNavigationBar.h"
 
-NS_ASSUME_NONNULL_BEGIN
+@implementation UIViewController (HidesNavigationBar)
 
-@interface ThrioFlutterViewController : FlutterViewController <UINavigationControllerDelegate>
+- (NSNumber * _Nullable)thrio_hidesNavigationBar {
+  return objc_getAssociatedObject(self, @selector(thrio_hidesNavigationBar));
+}
 
-- (instancetype)initWithEntrypoint:(NSString *)entrypoint NS_DESIGNATED_INITIALIZER;
-
-- (instancetype)init NS_UNAVAILABLE;
-- (instancetype)initWithCoder:(NSCoder *)aDecoder NS_UNAVAILABLE;
-- (instancetype)initWithNibName:(NSString *_Nullable)nibNameOrNil
-                         bundle:(NSBundle *_Nullable)nibBundleOrNil NS_UNAVAILABLE;
-- (instancetype)initWithEngine:(FlutterEngine *)engine
-                       nibName:(NSString *_Nullable)nibName
-                        bundle:(NSBundle *_Nullable)nibBundle NS_UNAVAILABLE;
-- (instancetype)initWithProject:(FlutterDartProject *_Nullable)project
-                        nibName:(NSString *_Nullable)nibName
-                         bundle:(NSBundle *_Nullable)nibBundle NS_UNAVAILABLE;
-
-- (void)surfaceUpdated:(BOOL)appeared;
-
-@property (nonatomic, copy, readonly) NSString *entrypoint;
+- (void)setThrio_hidesNavigationBar:(NSNumber * _Nullable)hidesNavigationBar {
+  objc_setAssociatedObject(self,
+                           @selector(thrio_hidesNavigationBar),
+                           hidesNavigationBar,
+                           OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
 
 @end
-
-NS_ASSUME_NONNULL_END

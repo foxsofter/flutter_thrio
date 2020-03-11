@@ -19,26 +19,14 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-#import "ThrioPopGestureRecognizerDelegate.h"
-#import "UIViewController+WillPopCallback.h"
+#import <UIKit/UIKit.h>
 
-@implementation ThrioPopGestureRecognizerDelegate
+NS_ASSUME_NONNULL_BEGIN
 
-- (BOOL)gestureRecognizerShouldBegin:(UIPanGestureRecognizer *)gestureRecognizer {
-  UIViewController *topViewController = self.navigationController.topViewController;
-  if (topViewController.thrio_willPopBlock) {
-    return NO;
-  }
-    
-  if (self.navigationController.viewControllers.count <= 1) {
-    return NO;
-  }
+@interface UIViewController (HidesNavigationBar)
 
-  if ([[self.navigationController valueForKey:@"_isTransitioning"] boolValue]) {
-    return NO;
-  }
-  
-  return YES;
-}
+@property (nonatomic, strong, nullable) NSNumber *thrio_hidesNavigationBar;
 
 @end
+
+NS_ASSUME_NONNULL_END

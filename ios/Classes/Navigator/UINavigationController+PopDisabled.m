@@ -25,7 +25,7 @@
 #import "UIViewController+WillPopCallback.h"
 #import "UIViewController+Navigator.h"
 #import "ThrioFlutterViewController.h"
-#import "ThrioFlutterEngineFactory.h"
+#import "NavigatorFlutterEngineFactory.h"
 #import "NavigatorRouteSettings.h"
 
 @implementation UINavigationController (PopDisabled)
@@ -39,7 +39,9 @@
     if (disabled) {
       // 设为具体值，拦截侧滑返回，但会继续传递给dart端，在dart端触发willPop
       viewController.thrio_willPopBlock = ^(ThrioBoolCallback _Nonnull result) {
-        result(YES);
+        if (result) {
+          result(YES);
+        }
       };
     } else {
       // 设为nil，不拦截侧滑返回

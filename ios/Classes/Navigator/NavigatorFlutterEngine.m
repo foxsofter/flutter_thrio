@@ -19,12 +19,13 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-
-#import "ThrioFlutterEngine.h"
+#import "NavigatorFlutterEngine.h"
 #import "ThrioLogger.h"
 #import "ThrioNavigator.h"
 
-@interface ThrioFlutterEngine ()
+NS_ASSUME_NONNULL_BEGIN
+
+@interface NavigatorFlutterEngine ()
 
 @property (nonatomic, strong, readwrite, nullable) FlutterEngine *engine;
 
@@ -36,9 +37,10 @@
 
 @end
 
-@implementation ThrioFlutterEngine
+@implementation NavigatorFlutterEngine
 
-- (void)startupWithEntrypoint:(NSString *)entrypoint readyBlock:(ThrioVoidCallback)block {
+- (void)startupWithEntrypoint:(NSString *)entrypoint
+                   readyBlock:(ThrioIdCallback _Nullable)block {
   if (!_engine) {
     _flutterViewControllers = [NSMutableArray array];
     [self startupFlutterWithEntrypoint:entrypoint];
@@ -51,9 +53,9 @@
   if (![_flutterViewControllers containsObject:viewController]) {
     [_flutterViewControllers addObject:viewController];
   }
-  ThrioLogV(@"ThrioFlutterEngine: enter pushViewController");
+  ThrioLogV(@"NavigatorFlutterEngine: enter pushViewController");
   if (_engine.viewController != viewController && viewController != nil) {
-    ThrioLogV(@"ThrioFlutterEngine: set new %@", viewController);
+    ThrioLogV(@"NavigatorFlutterEngine: set new %@", viewController);
     _engine.viewController = viewController;
     [(ThrioFlutterViewController*)_engine.viewController surfaceUpdated:YES];
   }
@@ -61,9 +63,9 @@
 
 - (NSUInteger)popViewController:(ThrioFlutterViewController *)viewController {
   [_flutterViewControllers removeObject:viewController];
-  ThrioLogV(@"ThrioFlutterEngine: enter popViewController");
+  ThrioLogV(@"NavigatorFlutterEngine: enter popViewController");
   if (_engine.viewController == viewController && viewController != nil) {
-    ThrioLogV(@"ThrioFlutterEngine: unset %@", viewController);
+    ThrioLogV(@"NavigatorFlutterEngine: unset %@", viewController);
     _engine.viewController = _flutterViewControllers.lastObject;
     if (_engine.viewController) {
       [(ThrioFlutterViewController*)_engine.viewController surfaceUpdated:YES];
@@ -103,10 +105,9 @@
   }
 }
 
-- (void)setupChannelWithEntrypoint:(NSString * _Nonnull)entrypoint
-                        readyBlock:(ThrioVoidCallback _Nonnull)block {
-  NSString *channelName = [NSString stringWithFormat:@"__thrio_app__%@", entrypoint];
-  _channel = [ThrioChannel channelWithName:channelName];
+- (void)setupChannelWithEntrypoint:(NSString *)entrypoint
+                        readyBlock:(ThrioIdCallback _Nullable)block {
+  _channel = [ThrioChannel channelWithEntrypoint:entrypoint name:@"__thrio_app__"];
   
   [_channel setupEventChannel:_engine.binaryMessenger];
   [_channel setupMethodChannel:_engine.binaryMessenger];
@@ -116,7 +117,7 @@
 }
 
 - (void)dealloc {
-  ThrioLogV(@"ThrioFlutterEngine: dealloc %@", self);
+  ThrioLogV(@"NavigatorFlutterEngine: dealloc %@", self);
   if (_engine) {
     _engine.viewController = nil;
     [_engine destroyContext];
@@ -125,3 +126,5 @@
 }
 
 @end
+
+NS_ASSUME_NONNULL_END

@@ -20,12 +20,30 @@
 // IN THE SOFTWARE.
 
 #import <Foundation/Foundation.h>
+#import <Flutter/Flutter.h>
+#import "ThrioTypes.h"
+#import "ThrioFlutterViewController.h"
+#import "ThrioChannel.h"
+#import "NavigatorReceiveChannel.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface ThrioPopGestureRecognizerDelegate : NSObject <UIGestureRecognizerDelegate>
+@interface NavigatorFlutterEngine : NSObject
 
-@property(nonatomic, weak) UINavigationController *navigationController;
+- (void)startupWithEntrypoint:(NSString *)entrypoint
+                   readyBlock:(ThrioIdCallback _Nullable)block;
+
+@property (nonatomic, assign) NSUInteger registerUrlCount;
+
+@property (nonatomic, strong, readonly, nullable) FlutterEngine *engine;
+
+@property (nonatomic, strong, readonly, nullable) ThrioChannel *channel;
+
+@property (nonatomic, strong, readonly, nullable) NavigatorReceiveChannel *receiveChannel;
+
+- (void)pushViewController:(ThrioFlutterViewController *)viewController;
+
+- (NSUInteger)popViewController:(ThrioFlutterViewController *)viewController;
 
 @end
 

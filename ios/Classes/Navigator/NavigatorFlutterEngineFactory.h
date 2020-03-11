@@ -20,16 +20,30 @@
 // IN THE SOFTWARE.
 
 #import <Foundation/Foundation.h>
+#import <Flutter/Flutter.h>
+#import "ThrioFlutterViewController.h"
+#import "ThrioTypes.h"
+#import "ThrioChannel.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface ThrioNavigationControllerDelegate : NSObject <UINavigationControllerDelegate>
+@interface NavigatorFlutterEngineFactory : NSObject
 
-@property(nonatomic, weak) UINavigationController *navigationController;
++ (instancetype)shared;
 
-/// 原来的UINavigationControllerDelegate
-///
-@property(nonatomic, weak) id<UINavigationControllerDelegate> originDelegate;
+- (void)startupWithEntrypoint:(NSString *)entrypoint readyBlock:(ThrioIdCallback _Nullable)block;
+
+- (FlutterEngine *)getEngineByEntrypoint:(NSString *)entrypoint;
+
+- (ThrioChannel *)getChannelByEntrypoint:(NSString *)entrypoint;
+
+- (void)pushViewController:(ThrioFlutterViewController *)viewController;
+
+- (void)popViewController:(ThrioFlutterViewController *)viewController;
+
+- (void)registerFlutterUrls:(NSArray *)urls;
+
+- (void)unregisterFlutterUrls:(NSArray *)urls;
 
 @end
 

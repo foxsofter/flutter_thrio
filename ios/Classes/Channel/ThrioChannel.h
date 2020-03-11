@@ -32,14 +32,16 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// Construct the instance with a default channel name.
 ///
-+ (instancetype)channel;
++ (instancetype)channelWithEntrypoint:(NSString *)entrypoint;
 
 /// Construct the instance with a `channelName`.
 ///
-+ (instancetype)channelWithName:(NSString *)channelName;
++ (instancetype)channelWithEntrypoint:(NSString *)entrypoint name:(NSString *)channelName;
 
 + (instancetype) new NS_UNAVAILABLE;
 - (instancetype)init NS_UNAVAILABLE;
+
+@property (nonatomic, copy, readonly) NSString *entrypoint;
 
 /// Invokes the specified Flutter method with the specified arguments, expecting
 /// no results.

@@ -13,7 +13,7 @@ class Page2 extends StatefulWidget {
 
   final int index;
 
-  final Map<String, dynamic> params;
+  final dynamic params;
 
   @override
   _Page2State createState() => _Page2State();
@@ -26,7 +26,7 @@ class _Page2State extends State<Page2> {
       onPageNotify: (params) =>
           ThrioLogger().v('flutter2 receive notify: $params'),
       child: WillPopScope(
-          onWillPop: () async => true,
+          onWillPop: () async => false,
           child: Scaffold(
               appBar: AppBar(
                 brightness: Brightness.light,
@@ -85,7 +85,7 @@ class _Page2State extends State<Page2> {
                               )),
                         ),
                         InkWell(
-                          onTap: ThrioNavigator.pop,
+                          onTap: () => ThrioNavigator.pop(params: 1),
                           child: Container(
                               padding: const EdgeInsets.all(8),
                               margin: const EdgeInsets.all(8),
@@ -98,17 +98,18 @@ class _Page2State extends State<Page2> {
                         ),
                         InkWell(
                           onTap: () => ThrioNavigator.push(
-                            url: 'native1',
-                            params: {
-                              '1': {'2': '3'}
-                            },
-                          ),
+                              url: 'native2',
+                              params: {
+                                '1': {'2': '3'}
+                              },
+                              poppedResult: (params) =>
+                                  ThrioLogger().v('native2 popped: $params')),
                           child: Container(
                               padding: const EdgeInsets.all(8),
                               margin: const EdgeInsets.all(8),
                               color: Colors.grey,
                               child: Text(
-                                'push native1',
+                                'push native2',
                                 style: TextStyle(
                                     fontSize: 22, color: Colors.black),
                               )),

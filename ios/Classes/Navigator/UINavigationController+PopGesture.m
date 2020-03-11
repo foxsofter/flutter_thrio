@@ -46,10 +46,10 @@
   return panGestureRecognizer;
 }
 
-- (ThrioPopGestureRecognizerDelegate *)thrio_popGestureRecognizerDelegate {
-  ThrioPopGestureRecognizerDelegate *delegate = objc_getAssociatedObject(self, _cmd);
+- (NavigatorPopGestureRecognizerDelegate *)thrio_popGestureRecognizerDelegate {
+  NavigatorPopGestureRecognizerDelegate *delegate = objc_getAssociatedObject(self, _cmd);
   if (!delegate) {
-    delegate = [[ThrioPopGestureRecognizerDelegate alloc] init];
+    delegate = [[NavigatorPopGestureRecognizerDelegate alloc] init];
     delegate.navigationController = self;
     objc_setAssociatedObject(self,
                              _cmd,
@@ -59,10 +59,10 @@
   return delegate;
 }
 
-- (ThrioNavigationControllerDelegate *)thrio_navigationControllerDelegate {
-  ThrioNavigationControllerDelegate *delegate = objc_getAssociatedObject(self, _cmd);
+- (NavigatorControllerDelegate *)thrio_navigationControllerDelegate {
+  NavigatorControllerDelegate *delegate = objc_getAssociatedObject(self, _cmd);
   if (!delegate) {
-    delegate = [[ThrioNavigationControllerDelegate alloc] init];
+    delegate = [[NavigatorControllerDelegate alloc] init];
     delegate.navigationController = self;
     objc_setAssociatedObject(self,
                              _cmd,
