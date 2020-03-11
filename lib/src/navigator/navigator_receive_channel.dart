@@ -76,7 +76,7 @@ class NavigatorReceiveChannel {
         if (poppedResult != null) {
           poppedResult(routeSettings.params);
         }
-        return ThrioNavigator.navigatorState?.pop(
+        return ThrioNavigator.navigatorState?.maybePop(
           routeSettings,
           animated: animated,
         );
