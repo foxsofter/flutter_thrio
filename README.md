@@ -55,6 +55,18 @@ class Module with ThrioModule {
 }
 ```
 
+3. Android 中注册页面路由
+
+打开操作逻辑需要实现`NavigationBuilder`接口
+
+```kotlin
+ThrioNavigator.registerNavigationBuilder("native1", object : NavigationBuilder {
+    override fun getActivityClz(url: String): Class<out Activity> {
+        return Native2Activity::class.java
+    }
+})
+```
+
 ### 打开页面
 
 1. Dart 端打开页面
@@ -83,6 +95,14 @@ ThrioNavigator.push(
 }];
 ```
 
+3. Android 端打开页面
+
+TODO: poppedResult暂未实现，回调会超出页面生命周期
+
+```kotlin
+ThrioNavigator.push(context, "flutter1", params)
+```
+
 ### 关闭顶层页面
 
 1. dart 端关闭顶层页面
@@ -107,6 +127,12 @@ ThrioNavigator.pop(params: 'popped flutter1'),
 [ThrioNavigator popParams:@{@"k1": @3}];
 ```
 
+3. Android 端关闭顶层页面
+
+```kotlin
+ThrioNavigator.pop(context, animated)
+```
+
 ### 关闭到页面
 
 1. dart 端关闭到页面
@@ -127,6 +153,14 @@ ThrioNavigator.popTo(url: 'flutter1', animated: false);
 [ThrioNavigator popToUrl:@"flutter1" animated:NO];
 ```
 
+
+3. Android 端关闭到页面
+
+```kotlin
+ThrioNavigator.popTo(context, url, index)
+```
+
+
 ### 关闭特定页面
 
 1. dart 端关闭特定页面
@@ -145,6 +179,12 @@ ThrioNavigator.remove(url: 'flutter1', animated: true);
 [ThrioNavigator removeUrl:@"flutter1" animated:NO];
 ```
 
+3. Android 端关闭特定页面
+
+```kotlin
+ThrioNavigator.remove(context, url, index)
+```
+
 ### 给特定页面发通知
 
 给一个页面发送通知，只有当页面呈现之后才会收到该通知。
@@ -159,6 +199,12 @@ ThrioNavigator.notify(url: 'flutter1', name: 'reload');
 
 ```objc
 [ThrioNavigator notifyUrl:@"flutter1" name:@"reload"];
+```
+
+3. Android 端给特定页面发通知
+
+```kotlin
+ThrioNavigator.notify(url, index, params)
 ```
 
 ### 页面接收通知
@@ -184,6 +230,19 @@ NavigatorPageNotify(
   ThrioLogV(@"native1 onNotify: %@, %@", name, params);
 }
 ```
+
+3. Android 端接收页面通知
+   
+`Activity`实现协议`OnNotifyListener`，通过onNotify回调来接收页面通知
+TODO: url, index 需要去除
+
+```kotlin
+class Activity : AppCompatActivity(), OnNotifyListener {
+    override fun onNotify(url: String, index: Int, name: String, params: Any?) {
+    }
+}
+```
+
 
 ### Flutter 页面导航栏自动隐藏
 
@@ -228,7 +287,7 @@ viewController.thrio_willPopBlock = ^(ThrioBoolCallback _Nonnull result) {
 
 原来的方案是每打开一个Flutter页面会创建一个新的原生页面，比如以连续打开5个Flutter页面计算（比较接近目前我们在项目上的场景），iOS会消耗91.67M内存，新方案iOS只消耗42.76内存，页面打开内存消耗数据大致如下：
 
-| demo | 启动 | 页面1 | 页面2 | 页面3 | 页面4 | 页面5 |
-| --- | --- | --- | --- | --- | --- | --- |
+| demo  | 启动 | 页面1 | 页面2 | 页面3 | 页面4 | 页面5 |
+| ----- | ---- | ----- | ----- | ----- | ----- | ----- |
 | thrio | 8.56 | 37.42 | 38.88 | 42.52 | 42.61 | 42.76 |
 | boost | 6.81 | 36.08 | 50.96 | 66.18 | 78.86 | 91.67 |
