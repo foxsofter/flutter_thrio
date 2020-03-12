@@ -23,15 +23,11 @@ package io.flutter.embedding.android
 
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.os.Bundle
-import android.util.Log
+import com.hellobike.flutter.thrio.BoolResult
 import com.hellobike.flutter.thrio.OnActionListener
-import com.hellobike.flutter.thrio.navigator.NavigatorChannelCache
-import com.hellobike.flutter.thrio.navigator.NavigatorController
 import com.hellobike.flutter.thrio.OnNotifyListener
-import com.hellobike.flutter.thrio.Result
-import io.flutter.embedding.android.FlutterActivity
-import io.flutter.embedding.android.FlutterView
+import com.hellobike.flutter.thrio.navigator.NavigatorController
+import com.hellobike.flutter.thrio.navigator.NavigatorFlutterEngineFactory
 import io.flutter.plugin.common.BinaryMessenger
 
 open class ThrioActivity : FlutterActivity(), OnActionListener, OnNotifyListener {
@@ -41,7 +37,9 @@ open class ThrioActivity : FlutterActivity(), OnActionListener, OnNotifyListener
             requireNotNull(this) { "flutterEngine does not exist" }
             dartExecutor
         }
-        NavigatorChannelCache.get(messenger.hashCode())
+        val id = messenger.hashCode()
+        val engine = NavigatorFlutterEngineFactory.getNavigatorFlutterEngine(id)
+        engine?.sendChannel ?: throw IllegalArgumentException("channel must not be found")
     }
 
     override fun onNewIntent(intent: Intent) {
@@ -61,23 +59,23 @@ open class ThrioActivity : FlutterActivity(), OnActionListener, OnNotifyListener
         NavigatorController.pop(context, true) {}
     }
 
-    override fun onPush(url: String, index: Int, params: Map<String, Any>, animated: Boolean, result: Result) {
+    override fun onPush(url: String, index: Int, params: Any?, animated: Boolean, result: BoolResult) {
         channel.onPush(url, index, params, animated, result)
     }
 
-    override fun onPop(url: String, index: Int, animated: Boolean, result: Result) {
+    override fun onPop(url: String, index: Int, animated: Boolean, result: BoolResult) {
         channel.onPop(url, index, animated, result)
     }
 
-    override fun onRemove(url: String, index: Int, animated: Boolean, result: Result) {
+    override fun onRemove(url: String, index: Int, animated: Boolean, result: BoolResult) {
         channel.onRemove(url, index, animated, result)
     }
 
-    override fun onPopTo(url: String, index: Int, animated: Boolean, result: Result) {
+    override fun onPopTo(url: String, index: Int, animated: Boolean, result: BoolResult) {
         channel.onPopTo(url, index, animated, result)
     }
 
-    override fun onNotify(url: String, index: Int, name: String, params: Map<String, Any>) {
+    override fun onNotify(url: String, index: Int, name: String, params: Any?) {
         channel.onNotify(url, index, name, params)
     }
 

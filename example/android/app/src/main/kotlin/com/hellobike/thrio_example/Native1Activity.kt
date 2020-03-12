@@ -11,6 +11,7 @@ import com.hellobike.flutter.thrio.NavigationBuilder
 import com.hellobike.flutter.thrio.OnNotifyListener
 import com.hellobike.flutter.thrio.ThrioNavigator
 import kotlinx.android.synthetic.main.activity_native.*
+import java.util.function.Function
 
 class Native1Activity : AppCompatActivity(), OnNotifyListener {
 
@@ -27,13 +28,18 @@ class Native1Activity : AppCompatActivity(), OnNotifyListener {
             ThrioNavigator.popTo(this, "native1")
         }
         btn_native_next.setOnClickListener {
-            startActivity(Intent(this, Native2Activity::class.java).apply {
-                addFlags(FLAG_ACTIVITY_SINGLE_TOP)
-                addFlags(FLAG_ACTIVITY_CLEAR_TOP)
-            })
+
+            ThrioNavigator.push(this, "native2",
+                    mapOf("k1" to 1),
+                    false
+            )
+//            startActivity(Intent(this, Native2Activity::class.java).apply {
+//                addFlags(FLAG_ACTIVITY_SINGLE_TOP)
+//                addFlags(FLAG_ACTIVITY_CLEAR_TOP)
+//            })
         }
         btn_flutter.setOnClickListener {
-            ThrioNavigator.push(this, "flutter1",
+            ThrioNavigator.push(this, "biz1/flutter1",
                     mapOf("k1" to 1),
                     false
             )
@@ -46,9 +52,14 @@ class Native1Activity : AppCompatActivity(), OnNotifyListener {
                 return Native1Activity::class.java
             }
         })
+        ThrioNavigator.registerNavigationBuilder("native2", object : NavigationBuilder {
+            override fun getActivityClz(url: String): Class<out Activity> {
+                return Native2Activity::class.java
+            }
+        })
     }
 
-    override fun onNotify(url: String, index: Int, name: String, params: Map<String, Any>) {
+    override fun onNotify(url: String, index: Int, name: String, params: Any?) {
         // result with url
     }
 

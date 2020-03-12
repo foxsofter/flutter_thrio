@@ -34,7 +34,7 @@ internal object FlutterNavigationBuilder : NavigationBuilder {
 
     override fun buildIntent(context: Context): Intent {
         return FlutterActivity
-                .withCachedEngine(NavigatorController.THRIO_ENGINE_ID)
+                .withCachedEngine(NavigatorFlutterEngineFactory.THRIO_ENGINE_ID)
                 .destroyEngineWithActivity(false)
                 .build(context)
     }
