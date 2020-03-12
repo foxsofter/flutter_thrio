@@ -22,7 +22,7 @@
 package com.hellobike.flutter.thrio.navigator
 
 import android.util.Log
-import com.hellobike.flutter.thrio.BoolResult
+import com.hellobike.flutter.thrio.Result
 import com.hellobike.flutter.thrio.channel.ThrioChannel
 import io.flutter.plugin.common.BinaryMessenger
 import io.flutter.plugin.common.EventChannel
@@ -37,7 +37,7 @@ internal class NavigatorSendChannel constructor(messenger: BinaryMessenger)
 
     private var sink: EventChannel.EventSink? = null
 
-    fun onPush(url: String, index: Int, params: Any?, animated: Boolean, result: BoolResult) {
+    fun onPush(url: String, index: Int, params: Any?, animated: Boolean, result: Result) {
         val data = mapOf(
                 "url" to url,
                 "index" to index,
@@ -59,7 +59,7 @@ internal class NavigatorSendChannel constructor(messenger: BinaryMessenger)
         })
     }
 
-    fun onPop(url: String, index: Int, animated: Boolean, result: BoolResult) {
+    fun onPop(url: String, index: Int, animated: Boolean, result: Result) {
         val data = mapOf(
                 "url" to url,
                 "index" to index,
@@ -80,7 +80,7 @@ internal class NavigatorSendChannel constructor(messenger: BinaryMessenger)
         })
     }
 
-    fun onRemove(url: String, index: Int, animated: Boolean, result: BoolResult) {
+    fun onRemove(url: String, index: Int, animated: Boolean, result: Result) {
         val data = mapOf(
                 "url" to url,
                 "index" to index,
@@ -101,7 +101,7 @@ internal class NavigatorSendChannel constructor(messenger: BinaryMessenger)
         })
     }
 
-    fun onPopTo(url: String, index: Int, animated: Boolean, result: BoolResult) {
+    fun onPopTo(url: String, index: Int, animated: Boolean, result: Result) {
         val data = mapOf(
                 "url" to url,
                 "index" to index,

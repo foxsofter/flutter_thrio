@@ -53,19 +53,19 @@ internal object NavigatorActivitiesHandler : Application.ActivityLifecycleCallba
         }
         /** push 添加stack key **/
         if (NavigatorController.action == Action.PUSH) {
-            NavigatorController.didPush(activity)
+            NavigatorController.Push.didPush(activity)
             return
         }
         if (NavigatorController.action == Action.POP) {
-            NavigatorController.didPop(activity)
+            NavigatorController.Pop.didPop(activity)
             return
         }
         if (NavigatorController.action == Action.REMOVE) {
-            NavigatorController.didRemove(activity)
+            NavigatorController.Remove.didRemove(activity)
             return
         }
         if (NavigatorController.action == Action.POP_TO) {
-            NavigatorController.didPopTo(activity)
+            NavigatorController.PopTo.didPopTo(activity)
             return
         }
     }

@@ -37,7 +37,7 @@ internal class NavigatorReceiveChannel : MethodChannel.MethodCallHandler {
         val params = call.argument<Map<String, Any>>("params") ?: emptyMap()
         val animated = call.argument<Boolean>("animated") ?: true
         val activity = activity ?: throw IllegalArgumentException("activity must not be null")
-        NavigatorController.push(activity, url, params, animated) {
+        NavigatorController.Push.push(activity, url, params, animated) {
             result.success(it)
         }
     }
@@ -45,7 +45,7 @@ internal class NavigatorReceiveChannel : MethodChannel.MethodCallHandler {
     private fun pop(call: MethodCall, result: MethodChannel.Result) {
         val animated = call.argument<Boolean>("animated") ?: true
         val activity = activity ?: throw IllegalArgumentException("activity must not be null")
-        NavigatorController.pop(activity, animated) {
+        NavigatorController.Pop.pop(activity, animated) {
             result.success(it)
         }
     }
@@ -64,7 +64,7 @@ internal class NavigatorReceiveChannel : MethodChannel.MethodCallHandler {
         }
         val animated = call.argument<Boolean>("animated") ?: true
         val activity = activity ?: throw IllegalArgumentException("activity must not be null")
-        NavigatorController.remove(activity, url, index, animated) {
+        NavigatorController.Remove.remove(activity, url, index, animated) {
             result.success(it)
         }
     }
@@ -83,7 +83,7 @@ internal class NavigatorReceiveChannel : MethodChannel.MethodCallHandler {
         }
         val animated = call.argument<Boolean>("animated") ?: true
         val activity = activity ?: throw IllegalArgumentException("activity must not be null")
-        NavigatorController.popTo(activity, url, index, animated) {
+        NavigatorController.PopTo.popTo(activity, url, index, animated) {
             result.success(it)
         }
     }

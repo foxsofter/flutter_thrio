@@ -39,34 +39,34 @@ object ThrioNavigator {
     fun push(
             context: Context,
             url: String, params: Any? = null,
-            animated: Boolean = true, result: IntResult = {}
+            animated: Boolean = true, result: PushResult = {}
     ) {
-        NavigatorController.push(context, url, params, animated, result)
+        NavigatorController.Push.push(context, url, params, animated, result)
     }
 
     @JvmStatic
     @JvmOverloads
-    fun pop(context: Context, animated: Boolean = true, result: BoolResult = {}) {
-        NavigatorController.pop(context, animated, result)
+    fun pop(context: Context, animated: Boolean = true, result: Result = {}) {
+        NavigatorController.Pop.pop(context, animated, result)
     }
 
     @JvmStatic
     @JvmOverloads
-    fun remove(context: Context, url: String, index: Int, animated: Boolean = true, result: BoolResult = {}) {
-        NavigatorController.remove(context, url, index, animated, result)
+    fun remove(context: Context, url: String, index: Int, animated: Boolean = true, result: Result = {}) {
+        NavigatorController.Remove.remove(context, url, index, animated, result)
     }
 
     @JvmStatic
     @JvmOverloads
     fun popTo(context: Context, url: String, index: Int = 0,
-              animated: Boolean = true, result: BoolResult = {}
+              animated: Boolean = true, result: Result = {}
     ) {
-        NavigatorController.popTo(context, url, index, animated, result)
+        NavigatorController.PopTo.popTo(context, url, index, animated, result)
     }
 
     @JvmStatic
     @JvmOverloads
-    fun notify(url: String, index: Int = 0, name: String, params: Map<String, Any>, result: BoolResult = {}) {
+    fun notify(url: String, index: Int = 0, name: String, params: Map<String, Any>, result: Result = {}) {
         NavigatorController.notify(url, index, name, params, result)
     }
 
@@ -83,6 +83,6 @@ object ThrioNavigator {
     }
 }
 
-typealias BoolResult = (Boolean) -> Unit
+typealias Result = (Boolean) -> Unit
 
-typealias IntResult = (Int?) -> Unit
+typealias PushResult = (Int?) -> Unit

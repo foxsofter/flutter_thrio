@@ -23,14 +23,13 @@ package io.flutter.embedding.android
 
 import android.annotation.SuppressLint
 import android.content.Intent
-import com.hellobike.flutter.thrio.BoolResult
 import com.hellobike.flutter.thrio.OnActionListener
-import com.hellobike.flutter.thrio.OnNotifyListener
+import com.hellobike.flutter.thrio.Result
 import com.hellobike.flutter.thrio.navigator.NavigatorController
 import com.hellobike.flutter.thrio.navigator.NavigatorFlutterEngineFactory
 import io.flutter.plugin.common.BinaryMessenger
 
-open class ThrioActivity : FlutterActivity(), OnActionListener, OnNotifyListener {
+open class ThrioActivity : FlutterActivity(), OnActionListener {
 
     private val channel by lazy {
         val messenger: BinaryMessenger = flutterEngine.run {
@@ -56,22 +55,22 @@ open class ThrioActivity : FlutterActivity(), OnActionListener, OnNotifyListener
 
     override fun onBackPressed() {
 //        super.onBackPressed()
-        NavigatorController.pop(context, true) {}
+        NavigatorController.Pop.pop(context, true) {}
     }
 
-    override fun onPush(url: String, index: Int, params: Any?, animated: Boolean, result: BoolResult) {
+    override fun onPush(url: String, index: Int, params: Any?, animated: Boolean, result: Result) {
         channel.onPush(url, index, params, animated, result)
     }
 
-    override fun onPop(url: String, index: Int, animated: Boolean, result: BoolResult) {
+    override fun onPop(url: String, index: Int, animated: Boolean, result: Result) {
         channel.onPop(url, index, animated, result)
     }
 
-    override fun onRemove(url: String, index: Int, animated: Boolean, result: BoolResult) {
+    override fun onRemove(url: String, index: Int, animated: Boolean, result: Result) {
         channel.onRemove(url, index, animated, result)
     }
 
-    override fun onPopTo(url: String, index: Int, animated: Boolean, result: BoolResult) {
+    override fun onPopTo(url: String, index: Int, animated: Boolean, result: Result) {
         channel.onPopTo(url, index, animated, result)
     }
 

@@ -59,7 +59,7 @@ class Native1Activity : AppCompatActivity(), OnNotifyListener {
         })
     }
 
-    override fun onNotify(url: String, index: Int, name: String, params: Any?) {
+    override fun onNotify(name: String, params: Any?) {
         // result with url
     }
 
