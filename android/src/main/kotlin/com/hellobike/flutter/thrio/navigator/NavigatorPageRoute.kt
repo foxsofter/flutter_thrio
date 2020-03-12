@@ -24,9 +24,8 @@ package com.hellobike.flutter.thrio.navigator
 import android.app.Activity
 
 internal data class NavigatorPageRoute(val url: String, val index: Int, val clazz: Class<out Activity>) {
-    var params: Map<String, Any> = emptyMap()
+    var params: Any? = null
     var animated: Boolean = true
-    var popDisabled: Boolean = false
     var removed: Boolean = false
 
     private val notifications: MutableMap<String, Map<String, Any>> = mutableMapOf()

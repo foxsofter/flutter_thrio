@@ -19,7 +19,10 @@ class Page3 extends StatefulWidget {
 class _Page3State extends State<Page3> {
   @override
   Widget build(BuildContext context) => WillPopScope(
-      onWillPop: () async => true,
+      onWillPop: () async {
+        print('page3 WillPopScope');
+        return false;
+      },
       child: Scaffold(
           appBar: AppBar(
             brightness: Brightness.light,

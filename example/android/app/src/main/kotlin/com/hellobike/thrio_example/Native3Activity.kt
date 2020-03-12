@@ -33,7 +33,7 @@ class Native3Activity : AppCompatActivity() {
             })
         }
         btn_flutter.setOnClickListener {
-            ThrioNavigator.push(this, "flutter2")
+//            ThrioNavigator.push(this, "biz1/flutter3")
         }
     }
 }

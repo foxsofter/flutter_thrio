@@ -26,7 +26,10 @@ class _Page2State extends State<Page2> {
       onPageNotify: (params) =>
           ThrioLogger().v('flutter2 receive notify: $params'),
       child: WillPopScope(
-          onWillPop: () async => false,
+          onWillPop: () async {
+            print('page2 WillPopScope');
+            return true;
+          },
           child: Scaffold(
               appBar: AppBar(
                 brightness: Brightness.light,

@@ -25,34 +25,13 @@ import android.app.Application
 import android.content.Context
 import android.support.annotation.NonNull
 import com.hellobike.flutter.thrio.navigator.NavigatorActivitiesHandler
-import com.hellobike.flutter.thrio.navigator.NavigatorChannelCache
-import com.hellobike.flutter.thrio.navigator.NavigatorSendChannel
+import com.hellobike.flutter.thrio.navigator.NavigatorFlutterEngineFactory
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.plugin.common.BinaryMessenger
 import io.flutter.plugin.common.PluginRegistry.Registrar
 
 /** ThrioPlugin */
 class ThrioPlugin : FlutterPlugin {
-
-//
-//    private var activity: Activity? = null
-//    override fun onAttachedToActivity(binding: ActivityPluginBinding) {
-//        this.activity = binding.activity
-//        Log.e("Thrio", "onAttached activity $activity")
-//    }
-//
-//    override fun onDetachedFromActivity() {
-//        Log.e("Thrio", "onDetached activity $activity")
-//        this.activity = null
-//    }
-//
-//    override fun onReattachedToActivityForConfigChanges(binding: ActivityPluginBinding) {
-//
-//    }
-//
-//    override fun onDetachedFromActivityForConfigChanges() {
-//
-//    }
 
     companion object {
         // This static function is optional and equivalent to onAttachedToEngine. It supports the old
@@ -66,27 +45,22 @@ class ThrioPlugin : FlutterPlugin {
         // in the same class.
         @JvmStatic
         fun registerWith(registrar: Registrar) {
-            init(registrar.context(), registrar.messenger())
+            register(registrar.context(), registrar.messenger())
         }
 
-        private fun init(application: Context, binaryMessenger: BinaryMessenger) {
-            val tag = binaryMessenger.hashCode()
+        private fun register(application: Context, binaryMessenger: BinaryMessenger) {
             check(application is Application) { "application Context" }
             application.unregisterActivityLifecycleCallbacks(NavigatorActivitiesHandler)
             application.registerActivityLifecycleCallbacks(NavigatorActivitiesHandler)
-            val channel = NavigatorSendChannel(binaryMessenger) {
-                NavigatorActivitiesHandler.activity
-                        ?: throw IllegalStateException("flutter didn't attached to activity")
-            }
-            NavigatorChannelCache.cache(tag, channel)
+//            NavigatorFlutterEngineFactory.onRegister(binaryMessenger)
         }
     }
 
     override fun onAttachedToEngine(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {
-        init(binding.applicationContext, binding.binaryMessenger)
+        register(binding.applicationContext, binding.binaryMessenger)
     }
 
     override fun onDetachedFromEngine(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {
-        NavigatorChannelCache.remove(binding.binaryMessenger.hashCode())
+//        NavigatorFlutterEngineFactory.unRegister(binding.binaryMessenger)
     }
 }
