@@ -375,9 +375,11 @@ NS_ASSUME_NONNULL_BEGIN
         // 是否调用willPop的标记位恢复NO
         strongSelf.topViewController.thrio_willPopCalling = NO;
       });
+      
       return nil;
     }
-    self.thrio_popingViewController = nil;
+    
+    self.thrio_popingViewController = nil;    
   } else {
     // 手势触发的，记录下作为标记位供`thrio_didShowViewController:animated:`判断
     self.thrio_popingViewController = self.topViewController;

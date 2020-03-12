@@ -34,6 +34,12 @@
 - (IBAction)popToNative1:(id)sender {
   [ThrioNavigator popToUrl:@"native1"];
 }
+- (IBAction)pushNative1WithoutThrio:(id)sender {
+  UIStoryboard *sb = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+  UIViewController *vc = [sb instantiateViewControllerWithIdentifier:@"ThrioViewController1"];
+
+  [self.navigationController pushViewController:vc animated:YES];
+}
 - (IBAction)pop:(id)sender {
   [ThrioNavigator popParams:@{@"k1": @3}];
 }
