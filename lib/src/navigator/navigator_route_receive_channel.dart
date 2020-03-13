@@ -27,8 +27,8 @@ import '../navigator/navigator_types.dart';
 import 'navigator_route_settings.dart';
 import 'thrio_navigator.dart';
 
-class NavigatorReceiveChannel {
-  NavigatorReceiveChannel(ThrioChannel channel,
+class NavigatorRouteReceiveChannel {
+  NavigatorRouteReceiveChannel(ThrioChannel channel,
       Map<String, NavigatorParamsCallback> pagePoppedResults)
       : _channel = channel,
         _pagePoppedResults = pagePoppedResults {

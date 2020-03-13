@@ -25,6 +25,7 @@ import 'package:flutter/widgets.dart';
 
 import '../extension/thrio_stateful_widget.dart';
 import '../logger/thrio_logger.dart';
+import 'navigator_page_observer.dart';
 import 'navigator_page_route.dart';
 import 'navigator_route_observer.dart';
 import 'navigator_route_settings.dart';
@@ -37,6 +38,7 @@ class NavigatorWidget extends StatefulWidget {
   const NavigatorWidget({
     Key key,
     NavigatorRouteObserver observer,
+    NavigatorPageObserver pageObserver,
     this.child,
   })  : _observer = observer,
         super(key: key);
@@ -67,7 +69,6 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
     final route = NavigatorPageRoute(
       builder: pageBuilder,
       settings: settings,
-      poppedResult: poppedResult,
     );
     ThrioLogger().v('push: ${route.settings}');
     navigatorState.push(route);

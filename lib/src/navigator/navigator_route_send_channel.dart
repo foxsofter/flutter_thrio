@@ -23,8 +23,8 @@ import 'package:flutter/foundation.dart';
 
 import '../channel/thrio_channel.dart';
 
-class NavigatorSendChannel {
-  const NavigatorSendChannel(ThrioChannel channel) : _channel = channel;
+class NavigatorRouteSendChannel {
+  const NavigatorRouteSendChannel(ThrioChannel channel) : _channel = channel;
 
   final ThrioChannel _channel;
 

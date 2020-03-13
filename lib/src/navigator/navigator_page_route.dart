@@ -21,7 +21,6 @@
 
 import 'package:flutter/material.dart';
 
-import '../logger/thrio_logger.dart';
 import 'navigator_route_settings.dart';
 import 'navigator_types.dart';
 import 'thrio_navigator.dart';
@@ -34,14 +33,11 @@ class NavigatorPageRoute extends MaterialPageRoute<bool> {
     RouteSettings settings,
     bool maintainState = true,
     bool fullscreenDialog = false,
-    this.poppedResult,
   }) : super(
             builder: (_) => builder(settings),
             settings: settings,
             maintainState: maintainState,
             fullscreenDialog: fullscreenDialog);
-
-  final NavigatorParamsCallback poppedResult;
 
   final _popDisableds = <String, bool>{};
 

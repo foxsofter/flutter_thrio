@@ -27,17 +27,17 @@ import 'package:thrio/thrio.dart';
 
 import '../channel/thrio_channel.dart';
 import '../registry/registry_map.dart';
-import 'navigator_receive_channel.dart';
 import 'navigator_route_observer.dart';
-import 'navigator_send_channel.dart';
+import 'navigator_route_receive_channel.dart';
+import 'navigator_route_send_channel.dart';
 import 'navigator_types.dart';
 import 'navigator_widget.dart';
 
 class ThrioNavigator {
   ThrioNavigator._({
     ThrioChannel channel,
-    NavigatorSendChannel sendChannel,
-    NavigatorReceiveChannel receiveChannel,
+    NavigatorRouteSendChannel sendChannel,
+    NavigatorRouteReceiveChannel receiveChannel,
     Map<String, NavigatorParamsCallback> pagePoppedResults,
   })  : _channel = channel,
         _sendChannel = sendChannel,
@@ -48,9 +48,10 @@ class ThrioNavigator {
 
   static TransitionBuilder builder({String entrypoint = ''}) {
     final channel = ThrioChannel(channel: '__thrio_app__$entrypoint');
-    final sendChannel = NavigatorSendChannel(channel);
+    final sendChannel = NavigatorRouteSendChannel(channel);
     final pagePoppedResults = <String, NavigatorParamsCallback>{};
-    final receiveChannel = NavigatorReceiveChannel(channel, pagePoppedResults);
+    final receiveChannel =
+        NavigatorRouteReceiveChannel(channel, pagePoppedResults);
     _default = ThrioNavigator._(
       channel: channel,
       sendChannel: sendChannel,
@@ -72,9 +73,9 @@ class ThrioNavigator {
 
   final ThrioChannel _channel;
 
-  final NavigatorSendChannel _sendChannel;
+  final NavigatorRouteSendChannel _sendChannel;
 
-  final NavigatorReceiveChannel _receiveChannel;
+  final NavigatorRouteReceiveChannel _receiveChannel;
 
   final Map<String, NavigatorParamsCallback> _pagePoppedResults;
 
