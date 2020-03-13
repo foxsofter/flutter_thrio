@@ -13,16 +13,16 @@
         tools:text="Native" />
 
     <Button
-        android:id="@+id/btn_native_new"
+        android:id="@+id/btn_1"
         android:layout_width="180dp"
         android:layout_height="60dp"
-        android:text="Native New" />
+        android:text="push Flutter 1" />
 
     <Button
-        android:id="@+id/btn_native_next"
+        android:id="@+id/btn_2"
         android:layout_width="180dp"
         android:layout_height="60dp"
-        android:text="Native Next" />
+        android:text="Pop" />
 
     <Button
         android:id="@+id/btn_native_top"

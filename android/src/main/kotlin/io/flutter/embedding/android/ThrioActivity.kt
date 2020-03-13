@@ -23,21 +23,15 @@ package io.flutter.embedding.android
 
 import android.annotation.SuppressLint
 import android.content.Intent
-import com.hellobike.flutter.thrio.BoolResult
-import com.hellobike.flutter.thrio.OnActionListener
-import com.hellobike.flutter.thrio.OnNotifyListener
+import com.hellobike.flutter.thrio.Result
 import com.hellobike.flutter.thrio.navigator.NavigatorController
 import com.hellobike.flutter.thrio.navigator.NavigatorFlutterEngineFactory
-import io.flutter.plugin.common.BinaryMessenger
+import com.hellobike.flutter.thrio.navigator.NavigatorPageRoute
 
-open class ThrioActivity : FlutterActivity(), OnActionListener, OnNotifyListener {
+open class ThrioActivity : FlutterActivity() {
 
     private val channel by lazy {
-        val messenger: BinaryMessenger = flutterEngine.run {
-            requireNotNull(this) { "flutterEngine does not exist" }
-            dartExecutor
-        }
-        val id = messenger.hashCode()
+        val id = cachedEngineId ?: throw IllegalStateException("cachedEngineId must not be null")
         val engine = NavigatorFlutterEngineFactory.getNavigatorFlutterEngine(id)
         engine?.sendChannel ?: throw IllegalArgumentException("channel must not be found")
     }
@@ -56,26 +50,27 @@ open class ThrioActivity : FlutterActivity(), OnActionListener, OnNotifyListener
 
     override fun onBackPressed() {
 //        super.onBackPressed()
-        NavigatorController.pop(context, true) {}
+        NavigatorController.Pop.pop(context, null, true) {}
     }
 
-    override fun onPush(url: String, index: Int, params: Any?, animated: Boolean, result: BoolResult) {
-        channel.onPush(url, index, params, animated, result)
+    internal fun onPush(record: NavigatorPageRoute, result: Result) {
+        record.current = channel.id
+        channel.onPush(record.url, record.index, record.params, record.animated, result)
     }
 
-    override fun onPop(url: String, index: Int, animated: Boolean, result: BoolResult) {
-        channel.onPop(url, index, animated, result)
+    internal fun onPop(record: NavigatorPageRoute, result: Result) {
+        channel.onPop(record.url, record.index, record.resultParams, record.animated, result)
     }
 
-    override fun onRemove(url: String, index: Int, animated: Boolean, result: BoolResult) {
+    internal fun onRemove(url: String, index: Int, animated: Boolean, result: Result) {
         channel.onRemove(url, index, animated, result)
     }
 
-    override fun onPopTo(url: String, index: Int, animated: Boolean, result: BoolResult) {
+    internal fun onPopTo(url: String, index: Int, animated: Boolean, result: Result) {
         channel.onPopTo(url, index, animated, result)
     }
 
-    override fun onNotify(url: String, index: Int, name: String, params: Any?) {
+    internal fun onNotify(url: String, index: Int, name: String, params: Any?) {
         channel.onNotify(url, index, name, params)
     }
 
