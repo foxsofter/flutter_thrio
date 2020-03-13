@@ -27,7 +27,8 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import com.hellobike.flutter.thrio.*
-import com.hellobike.flutter.thrio.OnActionListener
+import io.flutter.embedding.android.ThrioActivity
+import java.lang.ref.WeakReference
 
 internal object NavigatorController {
 
@@ -39,9 +40,6 @@ internal object NavigatorController {
     private const val KEY_THRIO_PUSH_DATA = "KEY_THRIO_PUSH_ANIM"
 
     var action = Action.NONE
-    private var record: NavigatorPageRoute? = null
-    private var boolResult: BoolResult? = null
-    private var intResult: IntResult? = null
 
     fun hasKey(activity: Activity): Boolean {
         val key = activity.intent.getLongExtra(KEY_THRIO_STACK_ID, THRIO_STACK_ID_NONE)
@@ -54,131 +52,294 @@ internal object NavigatorController {
         return key
     }
 
-    fun push(context: Context,
-             url: String, params: Any? = null, animated: Boolean,
-             result: IntResult) {
-        if (action != Action.NONE) {
-            result(null)
-            return
-        }
-        val builder = NavigatorBuilder.getNavigationBuilder(url)
-        val intent = builder.buildIntent(context).apply {
-            setClass(context, builder.getActivityClz(url))
-            addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
-            if (!animated) {
-                addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
+    object Push {
+
+        private var from: String? = null
+        private var result: PushResult? = null
+        private var poppedResult: PoppedResult? = null
+
+        fun push(context: Context,
+                 url: String, params: Any? = null, animated: Boolean,
+                 from: String, poppedResult: PoppedResult? = null,
+                 result: PushResult) {
+            if (action != Action.NONE) {
+                result(null)
+                return
             }
-            val data = HashMap<String, Any>()
-            data["url"] = url
-            if (params != null) {
-                data["params"] = params
-            }
-            data["animated"] = animated
-            putExtra(KEY_THRIO_PUSH_DATA, data)
-        }
-        builder.navigation(context, intent, params)
-        action = Action.PUSH
-        this.intResult = result
-    }
-
-    fun didPush(activity: Activity) {
-        val result = intResult
-        checkNotNull(result) { "result must not be null" }
-
-        val data = activity.intent.getSerializableExtra(KEY_THRIO_PUSH_DATA).let {
-            checkNotNull(it) { "push params not found" }
-            it as Map<String, Any>
-        }
-        activity.intent.removeExtra(KEY_THRIO_PUSH_DATA)
-        val url = data["url"] as String
-        val animated = data["animated"] as Boolean
-        val params = data["params"]
-
-        var key = activity.intent.getLongExtra(KEY_THRIO_STACK_ID, THRIO_STACK_ID_NONE)
-        if (key == THRIO_STACK_ID_NONE) {
-            key = NavigatorPageRouteStack.addKey()
-            activity.intent.putExtra(KEY_THRIO_STACK_ID, key)
-        }
-        val record = NavigatorPageRouteStack.push(key, url, activity::class.java)
-        record.params = params
-        record.animated = animated
-        onPush(activity, record) {
-            if (!it) {
-                NavigatorPageRouteStack.pop(record)
-                activity.finish()
-            }
-            result(record.index)
-            action = Action.NONE
-            this.intResult = null
-        }
-    }
-
-    private fun onPush(activity: Activity, record: NavigatorPageRoute, result: BoolResult) {
-        if (activity is OnActionListener) {
-            activity.onPush(record.url, record.index, record.params, record.animated, result)
-            return
-        }
-        result(true)
-    }
-
-    fun pop(context: Context, animated: Boolean, result: BoolResult) {
-        if (action != Action.NONE) {
-            result(false)
-            return
-        }
-        if (!NavigatorPageRouteStack.hasRecord()) {
-            result(false)
-            return
-        }
-        val record = NavigatorPageRouteStack.last()
-        record.animated = animated
-        val intent = Intent(context, record.clazz)
-        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-        context.startActivity(intent)
-        action = Action.POP
-        this.boolResult = result
-    }
-
-    fun didPop(activity: Activity) {
-        val result = boolResult
-        checkNotNull(result) { "result must not be null" }
-        check(NavigatorPageRouteStack.hasRecord()) { "must has record to pop" }
-        val record = NavigatorPageRouteStack.last()
-        check(record.clazz == activity::class.java) {
-            "activity is not match record ${record.clazz}"
-        }
-        onPop(activity, record) {
-            if (it) {
-                NavigatorPageRouteStack.pop(record)
-                val key = getKey(activity)
-                if (!NavigatorPageRouteStack.hasRecord(key)) {
-                    activity.finish()
-                } else {
-                    removeOrNotify(activity)
+            val builder = NavigatorBuilder.getNavigationBuilder(url)
+            val intent = builder.buildIntent(context).apply {
+                setClass(context, builder.getActivityClz(url))
+                addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+                if (!animated) {
+                    addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
                 }
+                val data = HashMap<String, Any>()
+                data["url"] = url
+                if (params != null) {
+                    data["params"] = params
+                }
+                data["animated"] = animated
+                putExtra(KEY_THRIO_PUSH_DATA, data)
             }
-            result(it)
+            builder.navigation(context, intent, params)
+            action = Action.PUSH
+            this.result = result
+            this.from = from
+            this.poppedResult = poppedResult
+        }
+
+        fun didPush(activity: Activity) {
+            val from = from
+            checkNotNull(from) { "from must not be null" }
+            val result = result
+            checkNotNull(result) { "result must not be null" }
+            val data = activity.intent.getSerializableExtra(KEY_THRIO_PUSH_DATA).let {
+                checkNotNull(it) { "push params not found" }
+                it as Map<String, Any>
+            }
+            activity.intent.removeExtra(KEY_THRIO_PUSH_DATA)
+            val url = data["url"] as String
+            val animated = data["animated"] as Boolean
+            val params = data["params"]
+
+            var key = activity.intent.getLongExtra(KEY_THRIO_STACK_ID, THRIO_STACK_ID_NONE)
+            if (key == THRIO_STACK_ID_NONE) {
+                key = NavigatorPageRouteStack.addKey()
+                activity.intent.putExtra(KEY_THRIO_STACK_ID, key)
+            }
+            val record = NavigatorPageRouteStack.push(key, url, activity::class.java)
+            record.params = params
+            record.animated = animated
+            record.from = from
+            val poppedResult = poppedResult
+            this.poppedResult = null
+            if (poppedResult != null) {
+                record.poppedResult = WeakReference(poppedResult)
+            }
+            onPush(activity, record) {
+                if (!it) {
+                    NavigatorPageRouteStack.pop(record)
+                    activity.finish()
+                }
+                result(record.index)
+                action = Action.NONE
+                this.result = null
+
+            }
+        }
+
+        private fun onPush(activity: Activity, record: NavigatorPageRoute, result: Result) {
+            if (activity is ThrioActivity) {
+                activity.onPush(record, result)
+                return
+            }
+            result(true)
+        }
+
+    }
+
+    object Pop {
+
+        private var result: Result? = null
+
+        fun pop(context: Context, params: Any? = null, animated: Boolean, result: Result) {
+            if (action != Action.NONE) {
+                result(false)
+                return
+            }
+            if (!NavigatorPageRouteStack.hasRecord()) {
+                result(false)
+                return
+            }
+            val record = NavigatorPageRouteStack.last()
+            record.resultParams = params
+            record.animated = animated
+            val intent = Intent(context, record.clazz)
+            intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            context.startActivity(intent)
+            action = Action.POP
+            this.result = result
+        }
+
+        fun didPop(activity: Activity) {
+            val result = result
+            checkNotNull(result) { "result must not be null" }
+            check(NavigatorPageRouteStack.hasRecord()) { "must has record to pop" }
+            val record = NavigatorPageRouteStack.last()
+            check(record.clazz == activity::class.java) {
+                "activity is not match record ${record.clazz}"
+            }
+            onPop(activity, record) {
+                if (it) {
+                    record.poppedResult?.get()?.let { it(record.resultParams) }
+                    NavigatorPageRouteStack.pop(record)
+                    val key = getKey(activity)
+                    if (!NavigatorPageRouteStack.hasRecord(key)) {
+                        activity.finish()
+                    } else {
+                        removeOrNotify(activity)
+                    }
+                }
+                result(it)
+                action = Action.NONE
+                this.result = null
+            }
+            val current = record.current
+            val from = record.from
+            if (current != from && from != null) {
+                val engine = NavigatorFlutterEngineFactory.getNavigatorFlutterEngine(from)
+                        ?: throw IllegalStateException("engine must not be null")
+                engine.sendChannel.onPop(record.url, record.index, record.resultParams, false) {}
+            }
+        }
+
+        private fun onPop(activity: Activity, record: NavigatorPageRoute, result: Result) {
+            if (activity is ThrioActivity) {
+                activity.onPop(record, result)
+                return
+            }
+            result(true)
+        }
+    }
+
+    object PopTo {
+
+        private var result: Result? = null
+        private var record: NavigatorPageRoute? = null
+
+        fun popTo(context: Context, url: String, index: Int, animated: Boolean, result: Result) {
+            if (index < 0 || !NavigatorPageRouteStack.hasRecord(url, index)) {
+                result(false)
+                return
+            }
+            val targetIndex = when (index) {
+                THRIO_STACK_INDEX_AUTO -> NavigatorPageRouteStack.lastIndex(url)
+                else -> index
+            }
+            val record = NavigatorPageRouteStack.last(url, targetIndex)
+            // 不能popTo 已经remove的记录
+            if (record.removed) {
+                result(false)
+                return
+            }
+            record.animated = animated
+            val intent = Intent(context, record.clazz)
+            intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            context.startActivity(intent)
+            action = Action.POP_TO
+            this.record = record
+            this.result = result
+        }
+
+        fun didPopTo(activity: Activity) {
+            val result = result
+            checkNotNull(result) { "result must not be null" }
+            val record = record
+            checkNotNull(record) { "popTo record not found" }
+            if (record.clazz != activity::class.java) {
+                return
+            }
+            val key = getKey(activity)
+            if (NavigatorPageRouteStack.getKey(record) != key) {
+                activity.finish()
+                popTo(activity, record.url, record.index, record.animated, result)
+                return
+            }
             action = Action.NONE
-            this.boolResult = null
+            this.record = null
+            this.result = null
+            onPopTo(activity, record) {
+                if (it) {
+                    NavigatorPageRouteStack.popTo(record)
+//                didRemoveAndNotify(activity)
+                }
+                result(it)
+            }
+        }
+
+        private fun onPopTo(activity: Activity, record: NavigatorPageRoute, result: Result) {
+            if (activity is ThrioActivity) {
+                activity.onPopTo(record.url, record.index, record.animated, result)
+                return
+            }
+            result(true)
+        }
+
+    }
+
+    object Remove {
+
+        private var result: Result? = null
+        private var record: NavigatorPageRoute? = null
+
+        fun remove(context: Context, url: String, index: Int, animated: Boolean, result: Result) {
+            if (action != Action.NONE) {
+                result(false)
+                return
+            }
+            if (index < 0 || !NavigatorPageRouteStack.hasRecord(url, index)) {
+                Log.e("Thrio", "action remove no record url $url index $index")
+                result(false)
+                return
+            }
+            val targetIndex = when (index) {
+                THRIO_STACK_INDEX_AUTO -> NavigatorPageRouteStack.lastIndex(url)
+                else -> index
+            }
+            if (!NavigatorPageRouteStack.hasRecord()) {
+                result(false)
+                return
+            }
+            val record = NavigatorPageRouteStack.last(url, targetIndex)
+            val last = NavigatorPageRouteStack.last()
+            if (last == record) {
+                record.animated = animated
+            }
+            val intent = Intent(context, last.clazz)
+            intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+            context.startActivity(intent)
+            action = Action.REMOVE
+            this.record = record
+            this.result = result
+        }
+
+        fun didRemove(activity: Activity) {
+            val result = result
+            checkNotNull(result) { "result must not be null" }
+            val record = record
+            checkNotNull(record) { "remove record not found" }
+            check(NavigatorPageRouteStack.hasRecord()) { "must has record" }
+            val last = NavigatorPageRouteStack.last()
+            check(last.clazz == activity::class.java) {
+                "activity is not match record ${record.clazz}"
+            }
+            action = Action.NONE
+            this.record = null
+            this.result = null
+            if (last == record) {
+                NavigatorPageRouteStack.pop(record)
+                onRemove(activity, record, result)
+                return
+            }
+            record.removed = true
+            result(true)
+            return
+        }
+
+        private fun onRemove(activity: Activity, record: NavigatorPageRoute, result: Result) {
+            if (activity is ThrioActivity) {
+                activity.onRemove(record.url, record.index, record.animated, result)
+                return
+            }
+            result(true)
         }
     }
 
-    private fun onPop(activity: Activity, record: NavigatorPageRoute, result: BoolResult) {
-        if (activity is OnActionListener) {
-            activity.onPop(record.url, record.index, record.animated, result)
-            return
-        }
-        result(true)
-    }
-
-    fun remove(context: Context, url: String, index: Int, animated: Boolean, result: BoolResult) {
-        if (action != Action.NONE) {
-            result(false)
-            return
-        }
-        if (index < 0 || !NavigatorPageRouteStack.hasRecord(url, index)) {
-            Log.e("Thrio", "action remove no record url $url index $index")
+    fun notify(url: String, index: Int, name: String, params: Map<String, Any>, result: Result) {
+        if (index < 0 || !NavigatorPageRouteStack.hasRecord(url)) {
             result(false)
             return
         }
@@ -186,52 +347,8 @@ internal object NavigatorController {
             THRIO_STACK_INDEX_AUTO -> NavigatorPageRouteStack.lastIndex(url)
             else -> index
         }
-        if (!NavigatorPageRouteStack.hasRecord()) {
-            result(false)
-            return
-        }
         val record = NavigatorPageRouteStack.last(url, targetIndex)
-        val last = NavigatorPageRouteStack.last()
-        if (last == record) {
-            record.animated = animated
-        }
-        val intent = Intent(context, last.clazz)
-        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-        context.startActivity(intent)
-        action = Action.REMOVE
-        this.record = record
-        this.boolResult = result
-    }
-
-    fun didRemove(activity: Activity) {
-        val result = boolResult
-        checkNotNull(result) { "result must not be null" }
-        val record = record
-        checkNotNull(record) { "remove record not found" }
-        check(NavigatorPageRouteStack.hasRecord()) { "must has record" }
-        val last = NavigatorPageRouteStack.last()
-        check(last.clazz == activity::class.java) {
-            "activity is not match record ${record.clazz}"
-        }
-        action = Action.NONE
-        this.record = null
-        this.boolResult = null
-        if (last == record) {
-            NavigatorPageRouteStack.pop(record)
-            onRemove(activity, record, result)
-            return
-        }
-        record.removed = true
-        result(true)
-        return
-    }
-
-    private fun onRemove(activity: Activity, record: NavigatorPageRoute, result: BoolResult) {
-        if (activity is OnActionListener) {
-            activity.onRemove(record.url, record.index, record.animated, result)
-            return
-        }
+        record.addNotify(name, params)
         result(true)
     }
 
@@ -245,7 +362,7 @@ internal object NavigatorController {
         if (record.removed) {
             Log.e("Thrio", "action didRemove activity $activity")
             NavigatorPageRouteStack.pop(record)
-            if (activity is OnActionListener) {
+            if (activity is ThrioActivity) {
                 activity.onRemove(record.url, record.index, false) {}
             }
             if (NavigatorPageRouteStack.hasRecord(key)) {
@@ -257,69 +374,14 @@ internal object NavigatorController {
         }
         Log.e("Thrio", "action didRemoveAndNotify activity $activity notify last")
         record.removeNotify().onEach {
-            if (activity is OnNotifyListener) {
+            if (activity is ThrioActivity) {
                 activity.onNotify(record.url, record.index, it.key, it.value)
+                return@onEach
+            }
+            if (activity is OnNotifyListener) {
+                activity.onNotify(it.key, it.value)
             }
         }
-    }
-
-    fun popTo(context: Context, url: String, index: Int, animated: Boolean, result: BoolResult) {
-        if (index < 0 || !NavigatorPageRouteStack.hasRecord(url, index)) {
-            result(false)
-            return
-        }
-        val targetIndex = when (index) {
-            THRIO_STACK_INDEX_AUTO -> NavigatorPageRouteStack.lastIndex(url)
-            else -> index
-        }
-        val record = NavigatorPageRouteStack.last(url, targetIndex)
-        // 不能popTo 已经remove的记录
-        if (record.removed) {
-            result(false)
-            return
-        }
-        record.animated = animated
-        val intent = Intent(context, record.clazz)
-        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-        context.startActivity(intent)
-        action = Action.POP_TO
-        this.record = record
-        this.boolResult = result
-    }
-
-    fun didPopTo(activity: Activity) {
-        val result = boolResult
-        checkNotNull(result) { "result must not be null" }
-        val record = record
-        checkNotNull(record) { "popTo record not found" }
-        if (record.clazz != activity::class.java) {
-            return
-        }
-        val key = getKey(activity)
-        if (NavigatorPageRouteStack.getKey(record) != key) {
-            activity.finish()
-            popTo(activity, record.url, record.index, record.animated, result)
-            return
-        }
-        action = Action.NONE
-        this.record = null
-        this.boolResult = null
-        onPopTo(activity, record) {
-            if (it) {
-                NavigatorPageRouteStack.popTo(record)
-//                didRemoveAndNotify(activity)
-            }
-            result(it)
-        }
-    }
-
-    private fun onPopTo(activity: Activity, record: NavigatorPageRoute, result: BoolResult) {
-        if (activity is OnActionListener) {
-            activity.onPopTo(record.url, record.index, record.animated, result)
-            return
-        }
-        result(true)
     }
 
     fun clearStack(activity: Activity) {
@@ -331,26 +393,13 @@ internal object NavigatorController {
             return
         }
         val record = NavigatorPageRouteStack.first(key)
-        if (activity is OnActionListener) {
+        if (activity is ThrioActivity) {
             activity.onPopTo(record.url, record.index, false) { }
-            activity.onPop(record.url, record.index, false) { }
+            activity.onPop(record) { }
         }
         NavigatorPageRouteStack.pop(key)
     }
 
-    fun notify(url: String, index: Int, name: String, params: Map<String, Any>, result: BoolResult) {
-        if (index < 0 || !NavigatorPageRouteStack.hasRecord(url)) {
-            result(false)
-            return
-        }
-        val targetIndex = when (index) {
-            THRIO_STACK_INDEX_AUTO -> NavigatorPageRouteStack.lastIndex(url)
-            else -> index
-        }
-        val record = NavigatorPageRouteStack.last(url, targetIndex)
-        record.addNotify(name, params)
-        result(true)
-    }
 
     fun backUpData(activity: Activity, data: Bundle?) {
         if (data == null) {
@@ -375,8 +424,6 @@ internal object NavigatorController {
 
     }
 
-
-//    object Push {
 //
 //        private val pushing = mutableMapOf<String, NavigatorPageRoute>()
 //        private val results = mutableMapOf<String, IntResult>()
