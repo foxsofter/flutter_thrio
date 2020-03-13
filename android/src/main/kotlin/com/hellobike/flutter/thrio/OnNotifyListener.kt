@@ -22,5 +22,5 @@
 package com.hellobike.flutter.thrio
 
 interface OnNotifyListener {
-    fun onNotify(url: String, index: Int, name: String, params: Any?)
+    fun onNotify(name: String, params: Any?)
 }

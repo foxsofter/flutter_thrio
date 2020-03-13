@@ -17,32 +17,20 @@ class Native1Activity : AppCompatActivity(), OnNotifyListener {
 
     private fun initView() {
         tv_native.text = "Native 1"
-        btn_native_new.setOnClickListener {
-            startActivity(Intent(this, Native1Activity::class.java))
-        }
-        btn_native_top.setOnClickListener {
-            //            startActivity(Intent(this, Native1Activity::class.java).apply {
-//                addFlags(FLAG_ACTIVITY_SINGLE_TOP)
-//                addFlags(FLAG_ACTIVITY_CLEAR_TOP)
-//            })
-            ThrioNavigator.popTo(this, "native1")
-        }
-        btn_native_next.setOnClickListener {
-
-            ThrioNavigator.push(this, "native2",
-                    mapOf("k1" to 1),
-                    false
-            )
-//            startActivity(Intent(this, Native2Activity::class.java).apply {
-//                addFlags(FLAG_ACTIVITY_SINGLE_TOP)
-//                addFlags(FLAG_ACTIVITY_CLEAR_TOP)
-//            })
-        }
-        btn_flutter.setOnClickListener {
+        btn_1.setOnClickListener {
             ThrioNavigator.push(this, "biz1/flutter1",
                     mapOf("k1" to 1),
-                    false
+                    false,
+                    poppedResult = {
+                        Log.e("Thrio", "native1 popResult call params $it")
+                    }
             )
+        }
+        btn_2.setOnClickListener {
+            ThrioNavigator.pop(this, "native 1 popResult")
+        }
+        btn_flutter.setOnClickListener {
+
         }
     }
 
@@ -59,7 +47,7 @@ class Native1Activity : AppCompatActivity(), OnNotifyListener {
         })
     }
 
-    override fun onNotify(url: String, index: Int, name: String, params: Any?) {
+    override fun onNotify(name: String, params: Any?) {
         // result with url
     }
 
@@ -69,45 +57,6 @@ class Native1Activity : AppCompatActivity(), OnNotifyListener {
         setContentView(R.layout.activity_native)
         initView()
         initFlutter()
-    }
-
-    override fun onRestart() {
-        Log.e("FlutterView", "onRestart activity $this")
-        super.onRestart()
-//        Log.e("Thrio", "activity $activity onRestart attach")
-//        flutterEngine?.apply {
-//            activityControlSurface.attachToActivity(activity, lifecycle)
-//        }
-    }
-
-    override fun onStart() {
-        Log.e("FlutterView", "onStart activity $this")
-        super.onStart()
-    }
-
-    override fun onResume() {
-        Log.e("FlutterView", "onResume activity $this")
-        super.onResume()
-    }
-
-    override fun onPause() {
-        Log.e("FlutterView", "onPause activity $this finishing $isFinishing")
-        super.onPause()
-    }
-
-    override fun onStop() {
-        Log.e("FlutterView", "onStop activity $this finishing $isFinishing")
-        super.onStop()
-    }
-
-    override fun onDestroy() {
-        Log.e("FlutterView", "onDestroy activity $this finishing $isFinishing")
-        super.onDestroy()
-    }
-
-    override fun finish() {
-        Log.e("FlutterView", "finish activity $this")
-        super.finish()
     }
 }
 

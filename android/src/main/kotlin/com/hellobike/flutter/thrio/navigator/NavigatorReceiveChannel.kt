@@ -26,7 +26,7 @@ import com.hellobike.flutter.thrio.navigator.NavigatorActivitiesHandler.activity
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 
-internal class NavigatorReceiveChannel : MethodChannel.MethodCallHandler {
+internal class NavigatorReceiveChannel(private val id: String) : MethodChannel.MethodCallHandler {
 
     private fun push(call: MethodCall, result: MethodChannel.Result) {
         val url = call.argument<String>("url")
@@ -34,18 +34,19 @@ internal class NavigatorReceiveChannel : MethodChannel.MethodCallHandler {
             result.success(false)
             return
         }
-        val params = call.argument<Map<String, Any>>("params") ?: emptyMap()
+        val params = call.argument<Any>("params")
         val animated = call.argument<Boolean>("animated") ?: true
         val activity = activity ?: throw IllegalArgumentException("activity must not be null")
-        NavigatorController.push(activity, url, params, animated) {
+        NavigatorController.Push.push(activity, url, params, animated, id) {
             result.success(it)
         }
     }
 
     private fun pop(call: MethodCall, result: MethodChannel.Result) {
+        val params = call.argument<Any>("params")
         val animated = call.argument<Boolean>("animated") ?: true
         val activity = activity ?: throw IllegalArgumentException("activity must not be null")
-        NavigatorController.pop(activity, animated) {
+        NavigatorController.Pop.pop(activity, params, animated) {
             result.success(it)
         }
     }
@@ -64,7 +65,7 @@ internal class NavigatorReceiveChannel : MethodChannel.MethodCallHandler {
         }
         val animated = call.argument<Boolean>("animated") ?: true
         val activity = activity ?: throw IllegalArgumentException("activity must not be null")
-        NavigatorController.remove(activity, url, index, animated) {
+        NavigatorController.Remove.remove(activity, url, index, animated) {
             result.success(it)
         }
     }
@@ -83,7 +84,7 @@ internal class NavigatorReceiveChannel : MethodChannel.MethodCallHandler {
         }
         val animated = call.argument<Boolean>("animated") ?: true
         val activity = activity ?: throw IllegalArgumentException("activity must not be null")
-        NavigatorController.popTo(activity, url, index, animated) {
+        NavigatorController.PopTo.popTo(activity, url, index, animated) {
             result.success(it)
         }
     }

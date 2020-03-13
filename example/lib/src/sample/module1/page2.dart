@@ -88,7 +88,8 @@ class _Page2State extends State<Page2> {
                               )),
                         ),
                         InkWell(
-                          onTap: () => ThrioNavigator.pop(params: 1),
+                          onTap: () => ThrioNavigator.pop(
+                              params: 'popResult biz2/flutter2'),
                           child: Container(
                               padding: const EdgeInsets.all(8),
                               margin: const EdgeInsets.all(8),
@@ -101,12 +102,12 @@ class _Page2State extends State<Page2> {
                         ),
                         InkWell(
                           onTap: () => ThrioNavigator.push(
-                              url: 'native2',
+                              url: 'native1',
                               params: {
                                 '1': {'2': '3'}
                               },
                               poppedResult: (params) =>
-                                  ThrioLogger().v('native2 popped: $params')),
+                                  ThrioLogger().v('native1 popped: $params')),
                           child: Container(
                               padding: const EdgeInsets.all(8),
                               margin: const EdgeInsets.all(8),
