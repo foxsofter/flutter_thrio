@@ -21,12 +21,43 @@
 
 #import <Foundation/Foundation.h>
 
-#import "NavigatorPageObserverProtocol.h"
+#import "NavigatorPageRoute.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface NavigatorPageObserver : NSObject<NavigatorPageObserverProtocol>
+/// An interface for observing the navigation behavior of a [ThrioNavigator].
+///
+@protocol NavigatorRouteObserverProtocol <NSObject>
 
+/// The [ThrioNavigator] pushed `route`.
+///
+/// The route immediately below that one, and thus the previously active
+/// route, is `previousRoute`.
+///
+- (void)didPush:(NavigatorRouteSettings *)routeSettings
+  previousRoute:(NavigatorRouteSettings * _Nullable)previousRouteSettings;
+
+/// The [ThrioNavigator] popped `route`.
+///
+/// The route immediately below that one, and thus the newly active
+/// route, is `previousRoute`.
+///
+- (void)didPop:(NavigatorRouteSettings *)routeSettings
+ previousRoute:(NavigatorRouteSettings * _Nullable)previousRouteSettings;
+
+/// The [ThrioNavigator] popped to `route`.
+///
+/// The previously active route, is `previousRoute`.
+///
+- (void)didPopTo:(NavigatorRouteSettings *)routeSettings
+   previousRoute:(NavigatorRouteSettings * _Nullable)previousRouteSettings;
+
+/// The [ThrioNavigator] removed `route`.
+///
+/// The route immediately below that one, if any, is `previousRoute`.
+///
+- (void)didRemove:(NavigatorRouteSettings *)routeSettings
+    previousRoute:(NavigatorRouteSettings * _Nullable)previousRouteSettings;
 
 @end
 

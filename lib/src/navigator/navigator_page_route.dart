@@ -23,9 +23,9 @@ import 'package:flutter/material.dart';
 
 import 'navigator_route_settings.dart';
 import 'navigator_types.dart';
-import 'thrio_navigator.dart';
+import 'thrio_navigator_implement.dart';
 
-/// A route managed by the `ThrioNavigator`.
+/// A route managed by the `ThrioNavigatorImplement`.
 ///
 class NavigatorPageRoute extends MaterialPageRoute<bool> {
   NavigatorPageRoute({
@@ -63,7 +63,7 @@ class NavigatorPageRoute extends MaterialPageRoute<bool> {
         Future.delayed(const Duration(milliseconds: 300), () {
       _popDisabledFutures.remove(settings.name); // ignore: unawaited_futures
       final disabled = _popDisableds.remove(settings.name);
-      ThrioNavigator.setPopDisabled(
+      ThrioNavigatorImplement.setPopDisabled(
         url: settings.url,
         index: settings.index,
         disabled: disabled,

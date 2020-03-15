@@ -81,6 +81,12 @@ NS_ASSUME_NONNULL_BEGIN
                                         count:len];
 }
 
+- (id)copy {
+  ThrioRegistrySet *set = [ThrioRegistrySet set];
+  set.sets = [self.sets mutableCopy];
+  return set;
+}
+
 @end
 
 NS_ASSUME_NONNULL_END

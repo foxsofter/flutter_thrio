@@ -19,45 +19,41 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-import 'package:flutter/widgets.dart';
-
 import '../channel/thrio_channel.dart';
 import 'navigator_page_observer.dart';
+import 'navigator_page_route.dart';
 import 'navigator_route_settings.dart';
 
 class NavigatorPageObserverChannel extends NavigatorPageObserver {
-  NavigatorPageObserverChannel()
-      : _channel = ThrioChannel(channel: '__thrio_page_channel__');
-
-  final ThrioChannel _channel;
+  final _channel = ThrioChannel(channel: '__thrio_page_channel__');
 
   @override
-  void onCreate(RouteSettings settings) {
-    final arguments = settings.toArguments();
-    _channel.invokeMethod('onCreate', arguments);
-  }
+  void onCreate(NavigatorPageRoute route) => _channel.invokeMethod(
+        'onCreate',
+        route.settings.toArguments(),
+      );
 
   @override
-  void willAppear(RouteSettings settings) {
-    final arguments = settings.toArguments();
-    _channel.invokeMethod('willAppear', arguments);
-  }
+  void willAppear(NavigatorPageRoute route) => _channel.invokeMethod(
+        'willAppear',
+        route.settings.toArguments(),
+      );
 
   @override
-  void didAppear(RouteSettings settings) {
-    final arguments = settings.toArguments();
-    _channel.invokeMethod('didAppear', arguments);
-  }
+  void didAppear(NavigatorPageRoute route) => _channel.invokeMethod(
+        'didAppear',
+        route.settings.toArguments(),
+      );
 
   @override
-  void didDisappear(RouteSettings settings) {
-    final arguments = settings.toArguments();
-    _channel.invokeMethod('onCreate', arguments);
-  }
+  void didDisappear(NavigatorPageRoute route) => _channel.invokeMethod(
+        'onCreate',
+        route.settings.toArguments(),
+      );
 
   @override
-  void willDisappear(RouteSettings settings) {
-    final arguments = settings.toArguments();
-    _channel.invokeMethod('willDisappear', arguments);
-  }
+  void willDisappear(NavigatorPageRoute route) => _channel.invokeMethod(
+        'willDisappear',
+        route.settings.toArguments(),
+      );
 }

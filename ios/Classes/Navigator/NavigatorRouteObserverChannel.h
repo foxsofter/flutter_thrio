@@ -19,35 +19,15 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-import 'navigator_page_route.dart';
-import 'thrio_navigator.dart';
+#import <Foundation/Foundation.h>
+#import "ThrioChannel.h"
 
-/// An interface for observing the navigation behavior of a [ThrioNavigator].
-///
-mixin NavigatorRouteObserver {
-  /// The [ThrioNavigator] pushed `route`.
-  ///
-  /// The route immediately below that one, and thus the previously active
-  /// route, is `previousRoute`.
-  ///
-  void didPush(NavigatorPageRoute route, NavigatorPageRoute previousRoute);
+NS_ASSUME_NONNULL_BEGIN
 
-  /// The [ThrioNavigator] popped `route`.
-  ///
-  /// The route immediately below that one, and thus the newly active
-  /// route, is `previousRoute`.
-  ///
-  void didPop(NavigatorPageRoute route, NavigatorPageRoute previousRoute);
+@interface NavigatorRouteObserverChannel : NSObject
 
-  /// The [ThrioNavigator] popped to `route`.
-  ///
-  /// The previously active route, is `previousRoute`.
-  ///
-  void didPopTo(NavigatorPageRoute route, NavigatorPageRoute previousRoute);
+- (instancetype)initWithChannel:(ThrioChannel *)channel;
 
-  /// The [ThrioNavigator] removed `route`.
-  ///
-  /// The route immediately below that one, if any, is `previousRoute`.
-  ///
-  void didRemove(NavigatorPageRoute route, NavigatorPageRoute previousRoute);
-}
+@end
+
+NS_ASSUME_NONNULL_END

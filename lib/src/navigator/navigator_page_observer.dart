@@ -19,16 +19,29 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-import 'package:flutter/widgets.dart';
+import 'navigator_page_route.dart';
+import 'thrio_navigator.dart';
 
+/// An interface for observing the page lifecycle of a [ThrioNavigator].
+///
 abstract class NavigatorPageObserver {
-  void onCreate(RouteSettings settings);
+  /// The [ThrioNavigator] created `route`.
+  ///
+  void onCreate(NavigatorPageRoute route);
 
-  void willAppear(RouteSettings settings);
+  /// The `route` is about to be activated.
+  ///
+  void willAppear(NavigatorPageRoute route);
 
-  void didAppear(RouteSettings settings);
+  /// The `route` has been activated.
+  ///
+  void didAppear(NavigatorPageRoute route);
 
-  void willDisappear(RouteSettings settings);
+  /// The `route` is about to disappear.
+  ///
+  void willDisappear(NavigatorPageRoute route);
 
-  void didDisappear(RouteSettings settings);
+  /// The `route` is has disappeared.
+  ///
+  void didDisappear(NavigatorPageRoute route);
 }

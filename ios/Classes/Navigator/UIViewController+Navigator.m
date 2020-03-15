@@ -28,8 +28,7 @@
 #import "UIViewController+Internal.h"
 #import "UIViewController+HidesNavigationBar.h"
 #import "NavigatorFlutterEngineFactory.h"
-#import "ThrioNavigator.h"
-#import "ThrioNavigator+Internal.h"
+#import "ThrioNavigator+PageObserver.h"
 #import "ThrioLogger.h"
 #import "ThrioFlutterViewController.h"
 #import "NSObject+ThrioSwizzling.h"
@@ -76,6 +75,11 @@ NS_ASSUME_NONNULL_BEGIN
                                                                        index:index
                                                                       nested:self.thrio_firstRoute != nil
                                                                       params:params];
+  if (![self isKindOfClass:ThrioFlutterViewController.class]) { // 当前页面为原生页面
+    dispatch_async(dispatch_get_main_queue(), ^{
+      [ThrioNavigator onCreate:settings];
+    });
+  }
   NavigatorPageRoute *newRoute = [NavigatorPageRoute routeWithSettings:settings];
   newRoute.fromEntrypoint = entrypoint;
   newRoute.poppedResult = poppedResult;
@@ -166,7 +170,6 @@ NS_ASSUME_NONNULL_BEGIN
       }
     }];
   } else {
-    route.poppedParams = params; // 缓存pop params，在didPop的时候处理
     if (result) {
       // 原生页面一定只有一个route
       result(route == self.thrio_firstRoute);
@@ -196,8 +199,7 @@ NS_ASSUME_NONNULL_BEGIN
                 arguments:arguments
                    result:^(id  _Nullable r) {
       __strong typeof(weakself) strongSelf = weakself;
-      if ([r boolValue]) {
-        route.next = nil;
+      if (r && [r boolValue]) {
         [strongSelf thrio_onNotify:route];
       }
       if (result) {
@@ -205,7 +207,6 @@ NS_ASSUME_NONNULL_BEGIN
       }
     }];
   } else {
-    route.next = nil;
     [self thrio_onNotify:route];
     if (result) {
       result(YES);
@@ -238,7 +239,7 @@ NS_ASSUME_NONNULL_BEGIN
       if ([r boolValue]) {
         if (route == strongSelf.thrio_firstRoute) {
           strongSelf.thrio_firstRoute = route.next;
-          strongSelf.thrio_firstRoute.prev = nil;
+          route.prev.next = nil;
         } else if (route == strongSelf.thrio_lastRoute) {
           route.prev.next = nil;
           [strongSelf thrio_onNotify:route.prev];
@@ -348,16 +349,36 @@ NS_ASSUME_NONNULL_BEGIN
 + (void)load {
   static dispatch_once_t onceToken;
   dispatch_once(&onceToken, ^{
+    [self instanceSwizzle:@selector(viewWillAppear:)
+              newSelector:@selector(thrio_viewWillAppear:)];
     [self instanceSwizzle:@selector(viewDidAppear:)
               newSelector:@selector(thrio_viewDidAppear:)];
+    [self instanceSwizzle:@selector(viewWillDisappear:)
+              newSelector:@selector(thrio_viewWillDisappear:)];
     [self instanceSwizzle:@selector(viewDidDisappear:)
               newSelector:@selector(thrio_viewDidDisappear:)];
   });
 }
 
+- (void)thrio_viewWillAppear:(BOOL)animated {
+  [self thrio_viewWillAppear:animated];
+  
+  if (![self isKindOfClass:ThrioFlutterViewController.class]) {
+    dispatch_async(dispatch_get_main_queue(), ^{
+      [ThrioNavigator willAppear:self.thrio_lastRoute.settings];
+    });
+  }
+}
+
 - (void)thrio_viewDidAppear:(BOOL)animated {
   [self thrio_viewDidAppear:animated];
   
+  if (![self isKindOfClass:ThrioFlutterViewController.class]) {
+    dispatch_async(dispatch_get_main_queue(), ^{
+      [ThrioNavigator didAppear:self.thrio_lastRoute.settings];
+    });
+  }
+
   if ([self isKindOfClass:ThrioFlutterViewController.class] ||
       [self conformsToProtocol:@protocol(NavigatorPageNotifyProtocol)]) {
     // 当页面出现后，给页面发送通知
@@ -383,9 +404,37 @@ NS_ASSUME_NONNULL_BEGIN
   }
 }
 
+- (void)thrio_viewWillDisappear:(BOOL)animated {
+  [self thrio_viewWillDisappear:animated];
+  
+  if (![self isKindOfClass:ThrioFlutterViewController.class]) {
+    dispatch_async(dispatch_get_main_queue(), ^{
+      [ThrioNavigator willDisappear:self.thrio_lastRoute.settings];
+    });
+  }
+}
+
 - (void)thrio_viewDidDisappear:(BOOL)animated {
   [self thrio_viewDidDisappear:animated];
   [self.navigationController thrio_removePopGesture];
+  
+  if (![self isKindOfClass:ThrioFlutterViewController.class]) {
+    dispatch_async(dispatch_get_main_queue(), ^{
+      [ThrioNavigator didDisappear:self.thrio_lastRoute.settings];
+    });
+  }
+}
+
+- (void)didMoveToParentViewController:(UIViewController * _Nullable)parent {
+  if (![self isKindOfClass:ThrioFlutterViewController.class]) {
+    dispatch_async(dispatch_get_main_queue(), ^{
+      [ThrioNavigator didDisappear:self.thrio_lastRoute.settings];
+    });
+  }
+}
+
+- (void)removeFromParentViewController {
+  
 }
 
 - (void)thrio_onNotify:(NavigatorPageRoute *)route {

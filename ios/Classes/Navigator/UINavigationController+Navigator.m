@@ -19,7 +19,7 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-
+#import <QuartzCore/QuartzCore.h>
 #import <objc/runtime.h>
 #import "UINavigationController+Navigator.h"
 #import "UINavigationController+PopGesture.h"
@@ -29,11 +29,13 @@
 #import "UIViewController+HidesNavigationBar.h"
 #import "NavigatorPageNotifyProtocol.h"
 #import "ThrioRegistryMap.h"
+#import "NavigatorRouteSettings.h"
 #import "NSObject+ThrioSwizzling.h"
 #import "ThrioLogger.h"
 #import "NavigatorFlutterEngineFactory.h"
 #import "ThrioNavigator.h"
 #import "ThrioNavigator+NavigatorBuilder.h"
+#import "ThrioNavigator+RouteObserver.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -210,20 +212,36 @@ NS_ASSUME_NONNULL_BEGIN
     }
     return;
   }
+  
+  NavigatorRouteSettings *routeSettings = [vc thrio_getRouteByUrl:url index:index].settings;
+  NSArray *vcs = self.navigationController.viewControllers;
+  NSUInteger idx = [vcs indexOfObject:vc];
+  NavigatorRouteSettings *previousRouteSettings;
+  if (idx > 1) {
+    UIViewController *previousVC = vcs[idx - 1];
+    previousRouteSettings = previousVC.thrio_lastRoute.settings;
+  }
   __weak typeof(self) weakself = self;
   [vc thrio_removeUrl:url index:index animated:animated result:^(BOOL r) {
     __strong typeof(weakself) strongSelf = weakself;
-    if (r && !vc.thrio_firstRoute) {
-      if (vc == strongSelf.topViewController) {
-        [strongSelf popViewControllerAnimated:animated];
-      } else {
-        NSMutableArray *vcs = [strongSelf.viewControllers mutableCopy];
-        [vcs removeObject:vc];
+    if (r) {
+      NSMutableArray *vcs = [strongSelf.viewControllers mutableCopy];
+      [vcs removeObject:vc];
+      if (animated && vc == vcs.lastObject) {
+        [CATransaction begin];
+        [CATransaction setCompletionBlock:^{
+          [ThrioNavigator didRemove:routeSettings previousRoute:previousRouteSettings];
+        }];
         [strongSelf setViewControllers:vcs animated:animated];
+        [CATransaction commit];
+      } else {
+        [strongSelf setViewControllers:vcs animated:animated];
+        [ThrioNavigator didRemove:routeSettings previousRoute:previousRouteSettings];
       }
-    }
-    if (r && vc.thrio_firstRoute == vc.thrio_lastRoute) {
-      [strongSelf thrio_addPopGesture];
+      
+      if (vc.thrio_firstRoute == vc.thrio_lastRoute) {
+        [strongSelf thrio_addPopGesture];
+      }
     }
     if (result) {
       result(r);
@@ -340,7 +358,20 @@ NS_ASSUME_NONNULL_BEGIN
     [self setNavigationBarHidden:viewController.thrio_hidesNavigationBar.boolValue];
   }
   
-  [self thrio_pushViewController:viewController animated:animated];
+  if (![viewController isKindOfClass:ThrioFlutterViewController.class] && viewController.thrio_firstRoute) {
+    [CATransaction begin];
+    NavigatorRouteSettings *routeSettings = viewController.thrio_lastRoute.settings;
+    NavigatorRouteSettings *previousRouteSettings = self.topViewController.thrio_lastRoute.settings;
+    [CATransaction setCompletionBlock:^{
+      dispatch_async(dispatch_get_main_queue(), ^{
+        [ThrioNavigator didPush:routeSettings previousRoute:previousRouteSettings];
+      });
+    }];
+    [self thrio_pushViewController:viewController animated:animated];
+    [CATransaction commit];
+  } else {
+    [self thrio_pushViewController:viewController animated:animated];
+  }
 }
 
 - (UIViewController * _Nullable)thrio_popViewControllerAnimated:(BOOL)animated {
@@ -367,8 +398,25 @@ NS_ASSUME_NONNULL_BEGIN
       self.topViewController.thrio_willPopBlock(^(BOOL result) {
         __strong typeof(weakself) strongSelf = weakself;
         if (result) {
-          [strongSelf thrio_popViewControllerAnimated:animated];
-          
+          if (strongSelf.topViewController.thrio_firstRoute) {
+            NavigatorRouteSettings *routeSettings = strongSelf.topViewController.thrio_lastRoute.settings;
+            NSArray *vcs = strongSelf.navigationController.viewControllers;
+            UIViewController *previousVC = vcs[vcs.count - 2];
+            NavigatorRouteSettings *previousRouteSettings = previousVC.thrio_lastRoute.settings;
+            if (animated) {
+              [CATransaction begin];
+              [CATransaction setCompletionBlock:^{
+                [ThrioNavigator didPop:routeSettings previousRoute:previousRouteSettings];
+              }];
+              [strongSelf thrio_popViewControllerAnimated:animated];
+              [CATransaction commit];
+            } else {
+              [strongSelf thrio_popViewControllerAnimated:animated];
+              [ThrioNavigator didPop:routeSettings previousRoute:previousRouteSettings];
+            }
+          } else {
+            [strongSelf thrio_popViewControllerAnimated:animated];
+          }
           // 确定要关闭页面，thrio_willPopBlock需要设为nil
           strongSelf.topViewController.thrio_willPopBlock = nil;
         }
@@ -381,10 +429,31 @@ NS_ASSUME_NONNULL_BEGIN
     
     self.thrio_popingViewController = nil;    
   } else {
-    // 手势触发的，记录下作为标记位供`thrio_didShowViewController:animated:`判断
+    // 手势触发的，记录下到`thrio_didShowViewController:animated:`中进行处理
     self.thrio_popingViewController = self.topViewController;
   }
   
+  // 处理didPop
+  if (![self.topViewController isKindOfClass:ThrioFlutterViewController.class] &&
+      self.topViewController.thrio_firstRoute) {
+    NavigatorRouteSettings *routeSettings = self.topViewController.thrio_lastRoute.settings;
+    NSArray *vcs = self.navigationController.viewControllers;
+    UIViewController *previousVC = vcs[vcs.count - 2];
+    NavigatorRouteSettings *previousRouteSettings = previousVC.thrio_lastRoute.settings;
+    if (animated) {
+      [CATransaction begin];
+      [CATransaction setCompletionBlock:^{
+        [ThrioNavigator didPop:routeSettings previousRoute:previousRouteSettings];
+      }];
+      UIViewController *vc = [self thrio_popViewControllerAnimated:animated];
+      [CATransaction commit];
+      return vc;
+    }
+    UIViewController *vc = [self thrio_popViewControllerAnimated:animated];
+    [ThrioNavigator didPop:routeSettings previousRoute:previousRouteSettings];
+    return vc;
+  }
+
   return [self thrio_popViewControllerAnimated:animated];
 }
 
@@ -394,6 +463,24 @@ NS_ASSUME_NONNULL_BEGIN
     [self setNavigationBarHidden:viewController.thrio_hidesNavigationBar.boolValue];
   }
 
+  // 处理didPopTo
+  if (viewController.thrio_firstRoute &&
+      ![viewController isKindOfClass:ThrioFlutterViewController.class]) {
+    NavigatorRouteSettings *routeSettings = viewController.thrio_lastRoute.settings;
+    NavigatorRouteSettings *previousRouteSettings = self.topViewController.thrio_lastRoute.settings;
+    if (animated) {
+      [CATransaction begin];
+      [CATransaction setCompletionBlock:^{
+        [ThrioNavigator didPopTo:routeSettings previousRoute:previousRouteSettings];
+      }];
+      NSArray *vcs = [self thrio_popToViewController:viewController animated:animated];
+      [CATransaction commit];
+      return vcs;
+    }
+    NSArray *vcs = [self thrio_popToViewController:viewController animated:animated];
+    [ThrioNavigator didPopTo:routeSettings previousRoute:previousRouteSettings];
+    return vcs;
+  }
   return [self thrio_popToViewController:viewController animated:animated];
 }
 

@@ -21,38 +21,35 @@
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 import '../extension/thrio_stateful_widget.dart';
 import '../logger/thrio_logger.dart';
-import 'navigator_page_observer.dart';
+import 'navigator_observer_manager.dart';
 import 'navigator_page_route.dart';
-import 'navigator_route_observer.dart';
 import 'navigator_route_settings.dart';
 import 'navigator_types.dart';
-import 'thrio_navigator.dart';
+import 'thrio_navigator_implement.dart';
 
 /// A widget that manages a set of child widgets with a stack discipline.
 ///
 class NavigatorWidget extends StatefulWidget {
   const NavigatorWidget({
     Key key,
-    NavigatorRouteObserver observer,
-    NavigatorPageObserver pageObserver,
+    NavigatorObserverManager observerManager,
     this.child,
-  })  : _observer = observer,
+  })  : _observerManager = observerManager,
         super(key: key);
 
   final Navigator child;
 
-  final NavigatorRouteObserver _observer;
+  final NavigatorObserverManager _observerManager;
 
   @override
   State<StatefulWidget> createState() => NavigatorWidgetState();
 }
 
 class NavigatorWidgetState extends State<NavigatorWidget> {
-  List<NavigatorPageRoute> get history => widget._observer.pageRoutes;
+  List<NavigatorPageRoute> get history => widget._observerManager.pageRoutes;
 
   /// 还无法实现animated=false
   Future<bool> push(
@@ -65,7 +62,7 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
       return Future.value(false);
     }
 
-    final pageBuilder = ThrioNavigator.getPageBuilder(settings.url);
+    final pageBuilder = ThrioNavigatorImplement.getPageBuilder(settings.url);
     final route = NavigatorPageRoute(
       builder: pageBuilder,
       settings: settings,
@@ -151,8 +148,8 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
   void initState() {
     super.initState();
     if (mounted) {
-      widget.child.observers.add(widget._observer);
-      ThrioNavigator.ready();
+      widget.child.observers.add(widget._observerManager);
+      ThrioNavigatorImplement.ready();
     }
   }
 

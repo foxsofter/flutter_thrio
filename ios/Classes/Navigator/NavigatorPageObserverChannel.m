@@ -19,8 +19,45 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-#import "NavigatorPageObserver.h"
+#import "NavigatorPageObserverChannel.h"
+#import "ThrioChannel.h"
+#import "ThrioNavigator+PageObserver.h"
 
-@implementation NavigatorPageObserver
+NS_ASSUME_NONNULL_BEGIN
+
+@interface NavigatorPageObserverChannel ()
+
+@property (nonatomic, strong) ThrioChannel *channel;
 
 @end
+
+@implementation NavigatorPageObserverChannel
+
+- (instancetype)initWithChannel:(ThrioChannel *)channel {
+  self = [super init];
+  if (self) {
+    _channel = channel;
+    [self _on:@"onCreate"];
+    [self _on:@"willAppear"];
+    [self _on:@"didAppear"];
+    [self _on:@"willDisappear"];
+    [self _on:@"didDisappear"];
+  }
+  return self;
+}
+
+- (void)_on:(NSString *)method {
+  [_channel registryMethodCall:method
+                       handler:^void(NSDictionary<NSString *,id> * arguments,
+                                     ThrioIdCallback _Nullable result) {
+    NavigatorRouteSettings *settings = [NavigatorRouteSettings settingsFromArguments:arguments];
+    #pragma clang diagnostic push
+    #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
+    [ThrioNavigator performSelector:NSSelectorFromString(method) withObject:settings];
+    #pragma clang diagnostic pop
+  }];
+}
+
+@end
+
+NS_ASSUME_NONNULL_END

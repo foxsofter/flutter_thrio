@@ -47,10 +47,6 @@ NS_ASSUME_NONNULL_BEGIN
 ///
 @property (nonatomic, copy, nullable) ThrioIdCallback poppedResult;
 
-/// The poppedParams passed in when the pop method is called.
-///
-@property (nonatomic, strong, nullable) id poppedParams;
-
 /// The current route was pushed by the engine with `fromEntrypoint`.
 ///
 @property (nonatomic, copy, nullable) NSString *fromEntrypoint;
