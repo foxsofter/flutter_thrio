@@ -64,7 +64,6 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
     }
 
     var pageBuilder = ThrioNavigator.getPageBuilder(settings.url);
-    var purposeSettings = settings;
 
     //使用缺省页面
     if (pageBuilder == null) {
@@ -72,14 +71,11 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
       if (pageBuilder == null) {
         return Future.value(false);
       }
-      var arguments = settings.toArguments();
-      arguments['url'] = Navigator.defaultRouteName;
-      purposeSettings = NavigatorRouteSettings.fromArguments(arguments);
     }
 
     final route = NavigatorPageRoute(
       builder: pageBuilder,
-      settings: purposeSettings,
+      settings: settings,
       poppedResult: poppedResult,
     );
     ThrioLogger().v('push: ${route.settings}');
