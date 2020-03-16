@@ -23,7 +23,6 @@
 #import "ThrioLogger.h"
 #import "ThrioNavigator.h"
 #import "NavigatorRouteObserverChannel.h"
-#import "NavigatorPageObserverChannel.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -31,13 +30,15 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, strong, readwrite, nullable) FlutterEngine *engine;
 
-@property (nonatomic, strong, readwrite, nullable) ThrioChannel *channel;
+@property (nonatomic, strong, nullable) ThrioChannel *channel;
 
 @property (nonatomic, strong, readwrite, nullable) NavigatorReceiveChannel *receiveChannel;
 
+@property (nonatomic, strong, readwrite, nullable) NavigatorSendChannel *sendChannel;
+
 @property (nonatomic, strong) NavigatorRouteObserverChannel *routeObserverChannel;
 
-@property (nonatomic, strong) NavigatorPageObserverChannel *pageObserverChannel;
+@property (nonatomic, strong, readwrite, nullable) NavigatorPageObserverChannel *pageObserverChannel;
 
 @property (nonatomic, strong) NSMutableArray *flutterViewControllers;
 
@@ -121,6 +122,8 @@ NS_ASSUME_NONNULL_BEGIN
   _receiveChannel = [[NavigatorReceiveChannel alloc] initWithChannel:_channel];
   [_receiveChannel setReadyBlock:block];
   
+  _sendChannel = [[NavigatorSendChannel alloc] initWithChannel:_channel];
+
   ThrioChannel *routeChannel = [ThrioChannel channelWithEntrypoint:entrypoint name:@"__thrio_route_channel__"];
   [routeChannel setupMethodChannel:_engine.binaryMessenger];
   _routeObserverChannel = [[NavigatorRouteObserverChannel alloc] initWithChannel:routeChannel];

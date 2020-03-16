@@ -21,10 +21,11 @@
 
 #import <Foundation/Foundation.h>
 #import "ThrioChannel.h"
+#import "NavigatorPageObserverProtocol.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface NavigatorPageObserverChannel : NSObject
+@interface NavigatorPageObserverChannel : NSObject<NavigatorPageObserverProtocol>
 
 - (instancetype)initWithChannel:(ThrioChannel *)channel;
 

@@ -19,7 +19,8 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-import 'navigator_page_route.dart';
+import 'package:flutter/widgets.dart';
+
 import 'thrio_navigator.dart';
 
 /// An interface for observing the navigation behavior of a [ThrioNavigator].
@@ -30,24 +31,36 @@ mixin NavigatorRouteObserver {
   /// The route immediately below that one, and thus the previously active
   /// route, is `previousRoute`.
   ///
-  void didPush(NavigatorPageRoute route, NavigatorPageRoute previousRoute);
+  void didPush(
+    RouteSettings routeSettings,
+    RouteSettings previousRouteSettings,
+  );
 
   /// The [ThrioNavigator] popped `route`.
   ///
   /// The route immediately below that one, and thus the newly active
   /// route, is `previousRoute`.
   ///
-  void didPop(NavigatorPageRoute route, NavigatorPageRoute previousRoute);
+  void didPop(
+    RouteSettings routeSettings,
+    RouteSettings previousRouteSettings,
+  );
 
   /// The [ThrioNavigator] popped to `route`.
   ///
   /// The previously active route, is `previousRoute`.
   ///
-  void didPopTo(NavigatorPageRoute route, NavigatorPageRoute previousRoute);
+  void didPopTo(
+    RouteSettings routeSettings,
+    RouteSettings previousRouteSettings,
+  );
 
   /// The [ThrioNavigator] removed `route`.
   ///
   /// The route immediately below that one, if any, is `previousRoute`.
   ///
-  void didRemove(NavigatorPageRoute route, NavigatorPageRoute previousRoute);
+  void didRemove(
+    RouteSettings routeSettings,
+    RouteSettings previousRouteSettings,
+  );
 }

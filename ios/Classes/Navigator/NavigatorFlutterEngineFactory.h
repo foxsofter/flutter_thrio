@@ -23,7 +23,8 @@
 #import <Flutter/Flutter.h>
 #import "ThrioFlutterViewController.h"
 #import "ThrioTypes.h"
-#import "ThrioChannel.h"
+#import "NavigatorSendChannel.h"
+#import "NavigatorPageObserverChannel.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -35,7 +36,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (FlutterEngine *)getEngineByEntrypoint:(NSString *)entrypoint;
 
-- (ThrioChannel *)getChannelByEntrypoint:(NSString *)entrypoint;
+- (NavigatorSendChannel *)getSendChannelByEntrypoint:(NSString *)entrypoint;
+
+- (NavigatorPageObserverChannel *)getPageObserverChannelByEntrypoint:(NSString *)entrypoint;
 
 - (void)pushViewController:(ThrioFlutterViewController *)viewController;
 

@@ -52,14 +52,14 @@ class NavigatorObserverManager extends NavigatorObserver {
       pageRoutes.add(route);
       final routeObservers = Set.from(_routeObservers);
       for (final observer in routeObservers) {
-        Future(() => observer.didPush(route, lastRoute));
+        Future(() => observer.didPush(route.settings, lastRoute?.settings));
       }
       final pageObservers = Set.from(_pageObservers);
       for (final observer in pageObservers) {
         if (lastRoute != null) {
-          Future(() => observer.didDisappear(lastRoute));
+          Future(() => observer.didDisappear(lastRoute.settings));
         }
-        Future(() => observer.didAppear(route));
+        Future(() => observer.didAppear(route.settings));
       }
     }
   }
@@ -75,26 +75,30 @@ class NavigatorObserverManager extends NavigatorObserver {
             ThrioLogger().v('didPop: ${route.settings}');
             final observers = Set.from(_routeObservers);
             for (final observer in observers) {
-              Future(() => observer.didPop(route, pageRoutes.last));
+              Future(() => observer.didPop(
+                    route.settings,
+                    pageRoutes.last.settings,
+                  ));
             }
             final pageObservers = Set.from(_pageObservers);
             for (final observer in pageObservers) {
-              Future(() => observer.didDisappear(route));
-              Future(() => observer.didAppear(pageRoutes.last));
+              Future(() => observer.didDisappear(route.settings));
+              Future(() => observer.didAppear(pageRoutes.last.settings));
             }
           } else if (_currentPopRoutes.length > 1) {
             ThrioLogger().v('didPopTo: ${pageRoutes.last.settings}');
             final routeObservers = Set.from(_routeObservers);
             for (final observer in routeObservers) {
               Future(() => observer.didPopTo(
-                    pageRoutes.last,
-                    _currentPopRoutes.first,
+                    pageRoutes.last.settings,
+                    _currentPopRoutes.first.settings,
                   ));
             }
             final pageObservers = Set.from(_pageObservers);
             for (final observer in pageObservers) {
-              Future(() => observer.didDisappear(_currentPopRoutes.first));
-              Future(() => observer.didAppear(pageRoutes.last));
+              Future(() =>
+                  observer.didDisappear(_currentPopRoutes.first.settings));
+              Future(() => observer.didAppear(pageRoutes.last.settings));
             }
           }
           _currentPopRoutes.clear();
@@ -108,7 +112,7 @@ class NavigatorObserverManager extends NavigatorObserver {
     if (route is NavigatorPageRoute) {
       final isLast = route == pageRoutes.last;
       final prevIndex = pageRoutes.indexOf(route) - 1;
-      final prevRoute = pageRoutes[prevIndex];
+      final prevRoute = prevIndex > 0 ? pageRoutes[prevIndex] : null;
       pageRoutes.remove(route);
       _currentRemoveRoutes.add(route);
       if (_currentRemoveRoutes.length == 1) {
@@ -117,13 +121,18 @@ class NavigatorObserverManager extends NavigatorObserver {
             ThrioLogger().v('didRemove: ${route.settings}');
             final routeObservers = Set.from(_routeObservers);
             for (final observer in routeObservers) {
-              Future(() => observer.didRemove(route, prevRoute));
+              Future(() => observer.didRemove(
+                    route.settings,
+                    prevRoute?.settings,
+                  ));
             }
             if (isLast) {
               final pageObservers = Set.from(_pageObservers);
               for (final observer in pageObservers) {
-                Future(() => observer.didDisappear(route));
-                Future(() => observer.didAppear(prevRoute));
+                Future(() => observer.didDisappear(route.settings));
+                if (previousRoute != null) {
+                  Future(() => observer.didAppear(prevRoute.settings));
+                }
               }
             }
           } else if (_currentRemoveRoutes.length > 1) {
@@ -132,14 +141,15 @@ class NavigatorObserverManager extends NavigatorObserver {
             // remove是最后一个route为之前的active route
             for (final observer in observers) {
               Future(() => observer.didPopTo(
-                    pageRoutes.last,
-                    _currentRemoveRoutes.last,
+                    pageRoutes.last.settings,
+                    _currentRemoveRoutes.last.settings,
                   ));
             }
             final pageObservers = Set.from(_pageObservers);
             for (final observer in pageObservers) {
-              Future(() => observer.didDisappear(_currentRemoveRoutes.last));
-              Future(() => observer.didAppear(pageRoutes.last));
+              Future(() =>
+                  observer.didDisappear(_currentRemoveRoutes.last.settings));
+              Future(() => observer.didAppear(pageRoutes.last.settings));
             }
           }
           _currentRemoveRoutes.clear();

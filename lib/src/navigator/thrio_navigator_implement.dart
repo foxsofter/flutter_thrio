@@ -261,6 +261,12 @@ class ThrioNavigatorImplement {
 
   static NavigatorPageBuilder getPageBuilder(String url) => _pageBuilders[url];
 
+  static RegistrySet<NavigatorPageObserver> get pageObservers =>
+      _default?._pageObservers;
+
+  static RegistrySet<NavigatorRouteObserver> get routeObservers =>
+      _default?._routeObservers;
+
   static VoidCallback registerPageObserver(
           NavigatorPageObserver pageObserver) =>
       _default._pageObservers.registry(pageObserver);

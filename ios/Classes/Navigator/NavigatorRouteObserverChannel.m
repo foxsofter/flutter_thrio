@@ -55,7 +55,7 @@
     
     #pragma clang diagnostic push
     #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
-    SEL navigationSelector = NSSelectorFromString([NSString stringWithFormat:@"thrio_%@Url", method]);
+    SEL navigationSelector = NSSelectorFromString([NSString stringWithFormat:@"thrio_%@Url:index:", method]);
     [ThrioNavigator.navigationController performSelector:navigationSelector
                                               withObject:routeSettings.url
                                               withObject:routeSettings.index];

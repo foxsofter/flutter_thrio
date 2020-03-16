@@ -19,8 +19,9 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
+import 'package:flutter/widgets.dart';
+
 import '../channel/thrio_channel.dart';
-import '../navigator/navigator_page_route.dart';
 import 'navigator_route_observer.dart';
 import 'navigator_route_settings.dart';
 
@@ -28,52 +29,64 @@ class NavigatorRouteObserverChannel with NavigatorRouteObserver {
   final _channel = ThrioChannel(channel: '__thrio_route_channel__');
 
   @override
-  void didPush(NavigatorPageRoute route, NavigatorPageRoute previousRoute) =>
+  void didPush(
+    RouteSettings routeSettings,
+    RouteSettings previousRouteSettings,
+  ) =>
       _channel.invokeMethod<bool>(
         'didPush',
-        _toArguments(route, previousRoute),
+        _toArguments(routeSettings, previousRouteSettings),
       );
 
   @override
-  void didPop(NavigatorPageRoute route, NavigatorPageRoute previousRoute) =>
+  void didPop(
+    RouteSettings routeSettings,
+    RouteSettings previousRouteSettings,
+  ) =>
       _channel.invokeMethod<bool>(
         'didPop',
-        _toArguments(route, previousRoute),
+        _toArguments(routeSettings, previousRouteSettings),
       );
 
   @override
-  void didPopTo(NavigatorPageRoute route, NavigatorPageRoute previousRoute) =>
+  void didPopTo(
+    RouteSettings routeSettings,
+    RouteSettings previousRouteSettings,
+  ) =>
       _channel.invokeMethod<bool>(
         'didPopTo',
-        _toArguments(route, previousRoute),
+        _toArguments(routeSettings, previousRouteSettings),
       );
 
   @override
-  void didRemove(NavigatorPageRoute route, NavigatorPageRoute previousRoute) =>
+  void didRemove(
+    RouteSettings routeSettings,
+    RouteSettings previousRouteSettings,
+  ) =>
       _channel.invokeMethod<bool>(
         'didPush',
-        _toArguments(route, previousRoute),
+        _toArguments(routeSettings, previousRouteSettings),
       );
 
   Map<String, dynamic> _toArguments(
-    NavigatorPageRoute route,
-    NavigatorPageRoute previousRoute,
+    RouteSettings routeSettings,
+    RouteSettings previousRouteSettings,
   ) =>
-      previousRoute == null
+      previousRouteSettings == null
           ? <String, dynamic>{
               'route': {
-                'url': route.settings.url,
-                'index': route.settings.index,
+                'url': routeSettings.url,
+                'index': routeSettings.index,
               },
             }
           : <String, dynamic>{
               'route': {
-                'url': route.settings.url,
-                'index': route.settings.index,
+                'url': routeSettings.url,
+                'index': routeSettings.index,
               },
               'previousRoute': {
-                'url': previousRoute.settings.url,
-                'index': previousRoute.settings.index,
+                'url': previousRouteSettings.url,
+                'index': previousRouteSettings.index,
               },
             };
 }
