@@ -22,6 +22,7 @@
 import 'package:flutter/widgets.dart';
 
 extension NavigatorRouteSettings on RouteSettings {
+
   /// Converting arguments to route settings.
   ///
   static RouteSettings fromArguments(Map<String, dynamic> arguments) {
@@ -49,6 +50,7 @@ extension NavigatorRouteSettings on RouteSettings {
         'url': url,
         'index': index,
         'params': params,
+        'isNested': !isInitialRoute,
       };
 
   /// Creates a copy of this route settings object with the given fields

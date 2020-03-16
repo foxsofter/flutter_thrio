@@ -63,16 +63,28 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
       return Future.value(false);
     }
 
-    final pageBuilder = ThrioNavigator.getPageBuilder(settings.url);
+    bool isPush = true;
+    var pageBuilder = ThrioNavigator.getPageBuilder(settings.url);
+    var purposeSettings = settings;
+
+    //使用缺省页面
+    if (pageBuilder == null) {
+      var arguments = settings.toArguments();
+      arguments['url'] = Navigator.defaultRouteName;
+      purposeSettings = NavigatorRouteSettings.fromArguments(arguments);
+      pageBuilder = ThrioNavigator.getPageBuilder(purposeSettings.url); 
+      isPush = false;
+    }
+
     final route = NavigatorPageRoute(
       builder: pageBuilder,
-      settings: settings,
+      settings: purposeSettings,
       poppedResult: poppedResult,
     );
     ThrioLogger().v('push: ${route.settings}');
     navigatorState.push(route);
 
-    return Future.value(true);
+    return Future.value(isPush);
   }
 
   Future<bool> maybePop(RouteSettings settings, {bool animated = true}) async {
