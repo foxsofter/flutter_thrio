@@ -68,6 +68,11 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
     }
 
     final pageBuilder = ThrioNavigatorImplement.pageBuilders[settings.url];
+    if (pageBuilder == null) {
+      return Future.value(false);
+    }
+
+    
     final route = NavigatorPageRoute(
       builder: pageBuilder,
       settings: settings,
