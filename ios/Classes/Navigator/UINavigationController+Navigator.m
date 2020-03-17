@@ -213,7 +213,7 @@ NS_ASSUME_NONNULL_BEGIN
   NSArray *vcs = self.navigationController.viewControllers;
   NSUInteger idx = [vcs indexOfObject:vc];
   NavigatorRouteSettings *previousRouteSettings;
-  if (idx > 1) {
+  if (idx > 0) {
     UIViewController *previousVC = vcs[idx - 1];
     previousRouteSettings = previousVC.thrio_lastRoute.settings;
   }
@@ -221,18 +221,20 @@ NS_ASSUME_NONNULL_BEGIN
   [vc thrio_removeUrl:url index:index animated:animated result:^(BOOL r) {
     __strong typeof(weakself) strongSelf = weakself;
     if (r) {
-      NSMutableArray *vcs = [strongSelf.viewControllers mutableCopy];
-      [vcs removeObject:vc];
-      if (animated && vc == vcs.lastObject) {
-        [CATransaction begin];
-        [CATransaction setCompletionBlock:^{
+      if (!vc.thrio_firstRoute) {
+        NSMutableArray *vcs = [strongSelf.viewControllers mutableCopy];
+        [vcs removeObject:vc];
+        if (animated && vc == vcs.lastObject) {
+          [CATransaction begin];
+          [CATransaction setCompletionBlock:^{
+            [ThrioNavigator didRemove:routeSettings previousRoute:previousRouteSettings];
+          }];
+          [strongSelf setViewControllers:vcs animated:animated];
+          [CATransaction commit];
+        } else {
+          [strongSelf setViewControllers:vcs animated:animated];
           [ThrioNavigator didRemove:routeSettings previousRoute:previousRouteSettings];
-        }];
-        [strongSelf setViewControllers:vcs animated:animated];
-        [CATransaction commit];
-      } else {
-        [strongSelf setViewControllers:vcs animated:animated];
-        [ThrioNavigator didRemove:routeSettings previousRoute:previousRouteSettings];
+        }
       }
       
       if (vc.thrio_firstRoute == vc.thrio_lastRoute) {
@@ -359,9 +361,7 @@ NS_ASSUME_NONNULL_BEGIN
     NavigatorRouteSettings *routeSettings = viewController.thrio_lastRoute.settings;
     NavigatorRouteSettings *previousRouteSettings = self.topViewController.thrio_lastRoute.settings;
     [CATransaction setCompletionBlock:^{
-      dispatch_async(dispatch_get_main_queue(), ^{
-        [ThrioNavigator didPush:routeSettings previousRoute:previousRouteSettings];
-      });
+      [ThrioNavigator didPush:routeSettings previousRoute:previousRouteSettings];
     }];
     [self thrio_pushViewController:viewController animated:animated];
     [CATransaction commit];

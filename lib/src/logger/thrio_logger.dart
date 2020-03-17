@@ -19,39 +19,28 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-import 'package:logger/logger.dart';
+import 'package:flutter/material.dart';
 
-class ThrioLogger {
-  factory ThrioLogger() => _default ??= ThrioLogger._();
-
-  ThrioLogger._();
-
-  static ThrioLogger _default;
-
-  final _printer = SimplePrinter(printTime: true);
-
+abstract class ThrioLogger {
   /// Log a message at level verbose.
   ///
-  void v(message, [error, StackTrace stackTrace]) =>
-      Logger(printer: _printer).v(message, error, stackTrace);
+  static void v(message) => _print('V', message);
 
-  /// Log a message at level [Level.debug].
+  /// Log a message at level debug.
   ///
-  void d(message, [error, StackTrace stackTrace]) =>
-      Logger(printer: _printer).d(message, error, stackTrace);
+  static void d(message) => _print('D', message);
 
-  /// Log a message at level [Level.info].
+  /// Log a message at level info.
   ///
-  void i(message, [error, StackTrace stackTrace]) =>
-      Logger(printer: _printer).i(message, error, stackTrace);
+  static void i(message) => _print('I', message);
 
-  /// Log a message at level [Level.warning].
+  /// Log a message at level warning.
   ///
-  void w(message, [error, StackTrace stackTrace]) =>
-      Logger(printer: _printer).w(message, error, stackTrace);
+  static void w(message) => _print('W', message);
 
-  /// Log a message at level [Level.error].
+  /// Log a message at level error.
   ///
-  void e(message, [error, StackTrace stackTrace]) =>
-      Logger(printer: _printer).e(message, error, stackTrace);
+  static void e(message) => _print('E', message);
+
+  static void _print(String level, message) => debugPrint('[$level] $message');
 }

@@ -231,47 +231,12 @@ class ThrioNavigatorImplement {
     _default._channel.invokeMethod<bool>('hotRestart');
   }
 
-  static VoidCallback registerDefaultPageBuilder(
-    NavigatorPageBuilder builder,
-  ) =>
-      _pageBuilders.registry(Navigator.defaultRouteName, builder);
-
-  static VoidCallback registerPageBuilder(
-    String url,
-    NavigatorPageBuilder builder,
-  ) {
-    _default?._sendChannel?.registerUrls([url]);
-    final callback = _pageBuilders.registry(url, builder);
-    return () {
-      callback();
-      _default?._sendChannel?.unregisterUrls([url]);
-    };
-  }
-
-  static VoidCallback registerPageBuilders(
-    Map<String, NavigatorPageBuilder> builders,
-  ) {
-    _default?._sendChannel?.registerUrls(builders.keys.toList());
-    final callback = _pageBuilders.registryAll(builders);
-    return () {
-      callback();
-      _default?._sendChannel?.unregisterUrls(builders.keys.toList());
-    };
-  }
-
-  static NavigatorPageBuilder getPageBuilder(String url) => _pageBuilders[url];
+  static RegistryMap<String, NavigatorPageBuilder> get pageBuilders =>
+      _pageBuilders;
 
   static RegistrySet<NavigatorPageObserver> get pageObservers =>
       _default?._pageObservers;
 
   static RegistrySet<NavigatorRouteObserver> get routeObservers =>
       _default?._routeObservers;
-
-  static VoidCallback registerPageObserver(
-          NavigatorPageObserver pageObserver) =>
-      _default._pageObservers.registry(pageObserver);
-
-  static VoidCallback registerRouteObserver(
-          NavigatorRouteObserver routeObserver) =>
-      _default._routeObservers.registry(routeObserver);
 }

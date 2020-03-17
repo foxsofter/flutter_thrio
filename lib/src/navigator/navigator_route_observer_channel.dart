@@ -64,7 +64,7 @@ class NavigatorRouteObserverChannel with NavigatorRouteObserver {
     RouteSettings previousRouteSettings,
   ) =>
       _channel.invokeMethod<bool>(
-        'didPush',
+        'didRemove',
         _toArguments(routeSettings, previousRouteSettings),
       );
 

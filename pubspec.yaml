@@ -5,12 +5,11 @@ author:
 homepage:
 
 environment:
-  sdk: ">=2.6.0 <3.0.0"
+  sdk: '>=2.6.0 <3.0.0'
 
 dependencies:
   flutter:
     sdk: flutter
-  logger: 0.7.0+2
 
 dev_dependencies:
   flutter_test:

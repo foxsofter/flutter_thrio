@@ -25,6 +25,13 @@ import 'navigator_route_settings.dart';
 import 'navigator_types.dart';
 import 'thrio_navigator_implement.dart';
 
+enum NavigatorRouteAction {
+  push,
+  pop,
+  popTo,
+  remove,
+}
+
 /// A route managed by the `ThrioNavigatorImplement`.
 ///
 class NavigatorPageRoute extends MaterialPageRoute<bool> {
@@ -38,6 +45,8 @@ class NavigatorPageRoute extends MaterialPageRoute<bool> {
             settings: settings,
             maintainState: maintainState,
             fullscreenDialog: fullscreenDialog);
+
+  NavigatorRouteAction routeAction;
 
   final _popDisableds = <String, bool>{};
 

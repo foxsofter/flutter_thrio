@@ -76,9 +76,7 @@ NS_ASSUME_NONNULL_BEGIN
                                                                       nested:self.thrio_firstRoute != nil
                                                                       params:params];
   if (![self isKindOfClass:ThrioFlutterViewController.class]) { // 当前页面为原生页面
-    dispatch_async(dispatch_get_main_queue(), ^{
-      [ThrioNavigator onCreate:settings];
-    });
+    [ThrioNavigator onCreate:settings];
   }
   NavigatorPageRoute *newRoute = [NavigatorPageRoute routeWithSettings:settings];
   newRoute.fromEntrypoint = entrypoint;
@@ -356,9 +354,7 @@ NS_ASSUME_NONNULL_BEGIN
   [self thrio_viewWillAppear:animated];
   
   if (self.thrio_firstRoute && ![self isKindOfClass:ThrioFlutterViewController.class]) {
-    dispatch_async(dispatch_get_main_queue(), ^{
-      [ThrioNavigator willAppear:self.thrio_lastRoute.settings];
-    });
+    [ThrioNavigator willAppear:self.thrio_lastRoute.settings];
   }
 }
 
@@ -371,9 +367,7 @@ NS_ASSUME_NONNULL_BEGIN
   }
   
   if (self.thrio_firstRoute && ![self isKindOfClass:ThrioFlutterViewController.class]) {
-    dispatch_async(dispatch_get_main_queue(), ^{
-      [ThrioNavigator didAppear:self.thrio_lastRoute.settings];
-    });
+    [ThrioNavigator didAppear:self.thrio_lastRoute.settings];
   }
 
   if (self.thrio_firstRoute &&
@@ -406,9 +400,7 @@ NS_ASSUME_NONNULL_BEGIN
   [self thrio_viewWillDisappear:animated];
   
   if (self.thrio_firstRoute && ![self isKindOfClass:ThrioFlutterViewController.class]) {
-    dispatch_async(dispatch_get_main_queue(), ^{
-      [ThrioNavigator willDisappear:self.thrio_lastRoute.settings];
-    });
+    [ThrioNavigator willDisappear:self.thrio_lastRoute.settings];
   }
 }
 
@@ -417,9 +409,7 @@ NS_ASSUME_NONNULL_BEGIN
   [self.navigationController thrio_removePopGesture];
   
   if (self.thrio_firstRoute && ![self isKindOfClass:ThrioFlutterViewController.class]) {
-    dispatch_async(dispatch_get_main_queue(), ^{
-      [ThrioNavigator didDisappear:self.thrio_lastRoute.settings];
-    });
+    [ThrioNavigator didDisappear:self.thrio_lastRoute.settings];
   }
 }
 

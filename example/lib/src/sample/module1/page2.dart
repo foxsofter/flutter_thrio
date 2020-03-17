@@ -24,7 +24,7 @@ class _Page2State extends State<Page2> {
   Widget build(BuildContext context) => NavigatorPageNotify(
       name: 'page2Notify',
       onPageNotify: (params) =>
-          ThrioLogger().v('flutter2 receive notify: $params'),
+          ThrioLogger.v('flutter2 receive notify:$params'),
       child: WillPopScope(
           onWillPop: () async {
             print('page2 WillPopScope');
@@ -107,7 +107,7 @@ class _Page2State extends State<Page2> {
                                 '1': {'2': '3'}
                               },
                               poppedResult: (params) =>
-                                  ThrioLogger().v('native1 popped: $params')),
+                                  ThrioLogger.v('native1 popped:$params')),
                           child: Container(
                               padding: const EdgeInsets.all(8),
                               margin: const EdgeInsets.all(8),

@@ -57,7 +57,7 @@ class NavigatorReceiveChannel {
 
   void _onPush() => _channel.registryMethodCall('__onPush__', ([arguments]) {
         final routeSettings = NavigatorRouteSettings.fromArguments(arguments);
-        ThrioLogger().v('onPush: ${routeSettings.name}');
+        ThrioLogger.v('onPush:${routeSettings.name}');
         final animatedValue = arguments['animated'];
         final animated =
             (animatedValue != null && animatedValue is bool) && animatedValue;

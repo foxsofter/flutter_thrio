@@ -64,23 +64,26 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
 
     final pageObservers = Set.from(ThrioNavigatorImplement.pageObservers);
     for (final observer in pageObservers) {
-      Future(() => observer.onCreate(settings));
+      observer.onCreate(settings);
     }
 
-    final pageBuilder = ThrioNavigatorImplement.getPageBuilder(settings.url);
+    final pageBuilder = ThrioNavigatorImplement.pageBuilders[settings.url];
     final route = NavigatorPageRoute(
       builder: pageBuilder,
       settings: settings,
     );
 
-    ThrioLogger().v('push: ${route.settings}');
+    ThrioLogger.v(
+      'push:${route.settings.name} '
+      'params:${route.settings.params}',
+    );
 
     final previousRoute = history.isNotEmpty ? history.last : null;
     for (final observer in pageObservers) {
       if (previousRoute != null) {
-        Future(() => observer.willDisappear(previousRoute.settings));
+        observer.willDisappear(previousRoute.settings);
       }
-      Future(() => observer.willAppear(route.settings));
+      observer.willAppear(route.settings);
     }
 
     navigatorState.push(route);
@@ -100,7 +103,6 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
       return false;
     }
 
-    ThrioLogger().v('maybePop: ${history.last.settings}');
     return pop(settings, animated: animated);
   }
 
@@ -113,7 +115,7 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
       return Future.value(false);
     }
 
-    ThrioLogger().v('pop: ${history.last.settings}');
+    ThrioLogger.v('pop:${history.last.settings.name}');
 
     final route = history.last;
     final previousRoute =
@@ -121,15 +123,15 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
     final pageObservers = Set.from(ThrioNavigatorImplement.pageObservers);
     for (final observer in pageObservers) {
       if (previousRoute != null) {
-        Future(() => observer.willAppear(previousRoute.settings));
+        observer.willAppear(previousRoute.settings);
       }
-      Future(() => observer.willDisappear(route.settings));
+      observer.willDisappear(route.settings);
     }
-
+    route.routeAction = NavigatorRouteAction.pop;
     if (animated) {
       navigatorState.pop();
     } else {
-      navigatorState.removeRoute(history.last);
+      navigatorState.removeRoute(route);
     }
     return Future.value(true);
   }
@@ -145,15 +147,15 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
       return Future.value(false);
     }
 
-    ThrioLogger().v('popTo: ${route.settings}');
+    ThrioLogger.v('popTo:${route.settings.name}');
 
     final previousRoute = history.last;
     final pageObservers = Set.from(ThrioNavigatorImplement.pageObservers);
     for (final observer in pageObservers) {
-      Future(() => observer.willAppear(previousRoute.settings));
-      Future(() => observer.willDisappear(route.settings));
+      observer.willAppear(route.settings);
+      observer.willDisappear(previousRoute.settings);
     }
-
+    route.routeAction = NavigatorRouteAction.popTo;
     if (animated) {
       navigatorState.popUntil((it) => it.settings.name == settings.name);
     } else {
@@ -179,19 +181,24 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
       return Future.value(false);
     }
 
-    ThrioLogger().v('remove: ${route.settings}');
+    ThrioLogger.v('remove:${route.settings.name}');
+
+    route.routeAction = NavigatorRouteAction.remove;
 
     if (settings.name == history.last.settings.name) {
-      final previousRoute =
-          history.length > 1 ? history[history.length - 2] : null;
-      final pageObservers = Set.from(ThrioNavigatorImplement.pageObservers);
-      for (final observer in pageObservers) {
-        if (previousRoute != null) {
-          Future(() => observer.willAppear(previousRoute.settings));
+      if (WidgetsBinding.instance.lifecycleState == AppLifecycleState.resumed) {
+        final previousRoute =
+            history.length > 1 ? history[history.length - 2] : null;
+        final pageObservers = Set.from(ThrioNavigatorImplement.pageObservers);
+        for (final observer in pageObservers) {
+          if (previousRoute != null) {
+            observer.willAppear(previousRoute.settings);
+          }
+          observer.willDisappear(route.settings);
         }
-        Future(() => observer.willDisappear(route.settings));
       }
-      return pop(settings, animated: animated);
+      navigatorState.pop();
+      return Future.value(true);
     }
 
     navigatorState.removeRoute(route);

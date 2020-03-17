@@ -67,7 +67,7 @@ NS_ASSUME_NONNULL_BEGIN
   
   if (![self isMovingToParentViewController]) {
     [ThrioNavigator willAppear:self.thrio_lastRoute.settings];
-    dispatch_async(dispatch_get_main_queue(), ^{
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
       NavigatorPageObserverChannel *channel = [NavigatorFlutterEngineFactory.shared getPageObserverChannelByEntrypoint:self.entrypoint];
       [channel willAppear:self.thrio_lastRoute.settings];
     });
@@ -79,7 +79,7 @@ NS_ASSUME_NONNULL_BEGIN
   
   if (![self isMovingToParentViewController]) {
     [ThrioNavigator didAppear:self.thrio_lastRoute.settings];
-    dispatch_async(dispatch_get_main_queue(), ^{
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
       NavigatorPageObserverChannel *channel = [NavigatorFlutterEngineFactory.shared getPageObserverChannelByEntrypoint:self.entrypoint];
       [channel didAppear:self.thrio_lastRoute.settings];
     });
@@ -89,9 +89,9 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)viewWillDisappear:(BOOL)animated {
   [super viewWillDisappear:animated];
   
-  if (![self isMovingToParentViewController]) {
+  if (![self isMovingFromParentViewController]) {
     [ThrioNavigator willDisappear:self.thrio_lastRoute.settings];
-    dispatch_async(dispatch_get_main_queue(), ^{
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
       NavigatorPageObserverChannel *channel = [NavigatorFlutterEngineFactory.shared getPageObserverChannelByEntrypoint:self.entrypoint];
       [channel willDisappear:self.thrio_lastRoute.settings];
     });
@@ -103,9 +103,9 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)viewDidDisappear:(BOOL)animated {
   [super viewDidDisappear:animated];
   
-  if (![self isMovingToParentViewController]) {
+  if (![self isMovingFromParentViewController]) {
     [ThrioNavigator didDisappear:self.thrio_lastRoute.settings];
-    dispatch_async(dispatch_get_main_queue(), ^{
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
       NavigatorPageObserverChannel *channel = [NavigatorFlutterEngineFactory.shared getPageObserverChannelByEntrypoint:self.entrypoint];
       [channel didDisappear:self.thrio_lastRoute.settings];
     });
