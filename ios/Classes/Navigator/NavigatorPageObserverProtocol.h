@@ -29,6 +29,7 @@ NS_ASSUME_NONNULL_BEGIN
 ///
 @protocol NavigatorPageObserverProtocol <NSObject>
 
+@optional
 /// The [ThrioNavigator] created `route`.
 ///
 - (void)onCreate:(NavigatorRouteSettings *)routeSettings;

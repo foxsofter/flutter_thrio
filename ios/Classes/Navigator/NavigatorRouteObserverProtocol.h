@@ -29,6 +29,7 @@ NS_ASSUME_NONNULL_BEGIN
 ///
 @protocol NavigatorRouteObserverProtocol <NSObject>
 
+@optional
 /// The [ThrioNavigator] pushed `route`.
 ///
 /// The route immediately below that one, and thus the previously active

@@ -10,7 +10,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface Module2 : ThrioModule
+@interface Module2 : ThrioModule<NavigatorRouteObserverProtocol>
 
 @end
 

@@ -31,7 +31,7 @@ typedef NavigatorPageObserverCallback = void Function(
   RouteSettings settings,
 );
 
-class NavigatorPageObserverChannel extends NavigatorPageObserver {
+class NavigatorPageObserverChannel with NavigatorPageObserver {
   NavigatorPageObserverChannel() {
     _on(
       'onCreate',
