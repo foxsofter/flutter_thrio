@@ -21,32 +21,31 @@
 
 package com.hellobike.flutter.thrio.navigator
 
-import android.app.Activity
-import com.hellobike.flutter.thrio.channel.ThrioChannel
+import android.util.Log
 import com.hellobike.flutter.thrio.Result
+import com.hellobike.flutter.thrio.channel.ThrioChannel
 import io.flutter.plugin.common.BinaryMessenger
+import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.MethodChannel
 
-internal class NavigatorSendChannel constructor(
-        private val messenger: BinaryMessenger,
-        private val activity: () -> Activity
-) {
+internal class NavigatorSendChannel constructor(messenger: BinaryMessenger, val id: String)
+    : ThrioChannel(messenger, "__thrio_app__"), EventChannel.StreamHandler {
 
-    private val channel: ThrioChannel by lazy {
-        ThrioChannel(messenger, "__thrio_app__").apply {
-            val handler = NavigatorReceiveChannel(activity)
-            setMethodCallHandler(handler)
-        }
+    init {
+        setStreamHandler(this)
     }
 
-    fun onPush(url: String, index: Int, params: Map<String, Any>, animated: Boolean, result: Result) {
+    private var sink: EventChannel.EventSink? = null
+
+    fun onPush(url: String, index: Int, params: Any?, animated: Boolean, result: Result) {
         val data = mapOf(
                 "url" to url,
                 "index" to index,
                 "params" to params,
-                "animated" to animated
+                "animated" to animated,
+                "isNested" to true
         )
-        channel.invokeMethod("__onPush__", data, object : MethodChannel.Result {
+        invokeMethod("__onPush__", data, object : MethodChannel.Result {
             override fun success(result: Any?) {
                 if (result !is Boolean) {
                     return
@@ -61,13 +60,14 @@ internal class NavigatorSendChannel constructor(
         })
     }
 
-    fun onPop(url: String, index: Int, animated: Boolean, result: Result) {
+    fun onPop(url: String, index: Int, params: Any?, animated: Boolean, result: Result) {
         val data = mapOf(
                 "url" to url,
                 "index" to index,
+                "params" to params,
                 "animated" to animated
         )
-        channel.invokeMethod("__onPop__", data, object : MethodChannel.Result {
+        invokeMethod("__onPop__", data, object : MethodChannel.Result {
             override fun success(result: Any?) {
                 if (result !is Boolean) {
                     return
@@ -88,7 +88,7 @@ internal class NavigatorSendChannel constructor(
                 "index" to index,
                 "animated" to animated
         )
-        channel.invokeMethod("__onRemove__", data, object : MethodChannel.Result {
+        invokeMethod("__onRemove__", data, object : MethodChannel.Result {
             override fun success(result: Any?) {
                 if (result !is Boolean) {
                     return
@@ -109,7 +109,7 @@ internal class NavigatorSendChannel constructor(
                 "index" to index,
                 "animated" to animated
         )
-        channel.invokeMethod("__onPopTo__", data, object : MethodChannel.Result {
+        invokeMethod("__onPopTo__", data, object : MethodChannel.Result {
             override fun success(result: Any?) {
                 if (result !is Boolean) {
                     return
@@ -124,21 +124,24 @@ internal class NavigatorSendChannel constructor(
         })
     }
 
-    fun onNotify(url: String, index: Int, name: String, params: Map<String, Any>) {
+    fun onNotify(url: String, index: Int, name: String, params: Any?) {
         val data = mapOf(
+                "__event_name__" to "__onNotify__",
                 "url" to url,
                 "index" to index,
                 "name" to name,
                 "params" to params
         )
-        channel.invokeMethod("__onNotify__", data)
+        Log.e("Thrio", "onNotify channel data $data")
+        sink?.success(data)
     }
 
-    fun setPopDisabled(url: String, disabled: Boolean) {
-        val data = mapOf(
-                "url" to url,
-                "disabled" to disabled
-        )
-        channel.invokeMethod("__onSetPopDisabled__", data)
+    override fun onListen(arguments: Any?, events: EventChannel.EventSink?) {
+        sink = events
+        Log.e("Thrio", "onListen arguments $arguments events $events")
+    }
+
+    override fun onCancel(arguments: Any?) {
+        Log.e("Thrio", "onCancel arguments $arguments")
     }
 }

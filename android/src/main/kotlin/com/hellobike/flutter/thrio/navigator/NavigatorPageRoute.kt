@@ -22,13 +22,15 @@
 package com.hellobike.flutter.thrio.navigator
 
 import android.app.Activity
+import com.hellobike.flutter.thrio.PoppedResult
+import java.lang.ref.WeakReference
 
 internal data class NavigatorPageRoute(val url: String, val index: Int, val clazz: Class<out Activity>) {
-    var params: Map<String, Any> = emptyMap()
-    var animated: Boolean = true
-    var popDisabled: Boolean = false
-    var removed: Boolean = false
 
+    var poppedResult: WeakReference<PoppedResult>? = null
+    var resultParams: Any? = null
+
+    var params: Any? = null
     private val notifications: MutableMap<String, Map<String, Any>> = mutableMapOf()
 
     fun addNotify(name: String, params: Map<String, Any>) {
@@ -40,4 +42,10 @@ internal data class NavigatorPageRoute(val url: String, val index: Int, val claz
         notifications.clear()
         return result
     }
+
+    var animated: Boolean = true
+    var removed: Boolean = false
+
+    var from: String? = null
+    var current: String? = null
 }

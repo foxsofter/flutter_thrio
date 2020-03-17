@@ -122,7 +122,6 @@ NS_ASSUME_NONNULL_BEGIN
   [self _pushUrl:url params:params animated:animated result:result poppedResult:poppedResult];
 }
 
-
 + (void)_pushUrl:(NSString *)url
          params:(id _Nullable)params
        animated:(BOOL)animated
@@ -140,7 +139,6 @@ NS_ASSUME_NONNULL_BEGIN
     } poppedResult:poppedResult];
   }
 }
-
 
 #pragma mark - notify methods
 

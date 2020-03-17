@@ -19,23 +19,26 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-package com.hellobike.flutter.thrio.navigator
+#import <Foundation/Foundation.h>
+#import <Flutter/Flutter.h>
+#import "ThrioChannel.h"
 
-import android.app.Activity
-import android.content.Context
-import android.content.Intent
-import com.hellobike.flutter.thrio.NavigationBuilder
-import io.flutter.embedding.android.FlutterActivity
-import io.flutter.embedding.android.ThrioActivity
+NS_ASSUME_NONNULL_BEGIN
 
-internal object FlutterNavigationBuilder : NavigationBuilder {
-    override fun getActivityClz(url: String): Class<out Activity> =
-            ThrioActivity::class.java
+@interface NavigatorSendChannel : NSObject
 
-    override fun buildIntent(context: Context): Intent {
-        return FlutterActivity
-                .withCachedEngine(NavigatorFlutterEngineFactory.THRIO_ENGINE_ID)
-                .destroyEngineWithActivity(false)
-                .build(context)
-    }
-}
+- (instancetype)initWithChannel:(ThrioChannel *)channel;
+
+- (void)onPush:(id _Nullable)arguments result:(FlutterResult _Nullable)callback;
+
+- (void)onNotify:(id _Nullable)arguments result:(FlutterResult _Nullable)callback;
+
+- (void)onPop:(id _Nullable)arguments result:(FlutterResult _Nullable)callback;
+
+- (void)onPopTo:(id _Nullable)arguments result:(FlutterResult _Nullable)callback;
+
+- (void)onRemove:(id _Nullable)arguments result:(FlutterResult _Nullable)callback;
+
+@end
+
+NS_ASSUME_NONNULL_END

@@ -11,32 +11,26 @@ import com.hellobike.flutter.thrio.NavigationBuilder
 import com.hellobike.flutter.thrio.OnNotifyListener
 import com.hellobike.flutter.thrio.ThrioNavigator
 import kotlinx.android.synthetic.main.activity_native.*
+import java.util.function.Function
 
 class Native1Activity : AppCompatActivity(), OnNotifyListener {
 
     private fun initView() {
         tv_native.text = "Native 1"
-        btn_native_new.setOnClickListener {
-            startActivity(Intent(this, Native1Activity::class.java))
+        btn_1.setOnClickListener {
+            ThrioNavigator.push(this, "biz1/flutter1",
+                    mapOf("k1" to 1),
+                    false,
+                    poppedResult = {
+                        Log.e("Thrio", "native1 popResult call params $it")
+                    }
+            )
         }
-        btn_native_top.setOnClickListener {
-            //            startActivity(Intent(this, Native1Activity::class.java).apply {
-//                addFlags(FLAG_ACTIVITY_SINGLE_TOP)
-//                addFlags(FLAG_ACTIVITY_CLEAR_TOP)
-//            })
-            ThrioNavigator.popTo(this, "native1")
-        }
-        btn_native_next.setOnClickListener {
-            startActivity(Intent(this, Native2Activity::class.java).apply {
-                addFlags(FLAG_ACTIVITY_SINGLE_TOP)
-                addFlags(FLAG_ACTIVITY_CLEAR_TOP)
-            })
+        btn_2.setOnClickListener {
+            ThrioNavigator.pop(this, "native 1 popResult")
         }
         btn_flutter.setOnClickListener {
-            ThrioNavigator.push(this, "flutter1",
-                    mapOf("k1" to 1),
-                    false
-            )
+
         }
     }
 
@@ -46,9 +40,14 @@ class Native1Activity : AppCompatActivity(), OnNotifyListener {
                 return Native1Activity::class.java
             }
         })
+        ThrioNavigator.registerNavigationBuilder("native2", object : NavigationBuilder {
+            override fun getActivityClz(url: String): Class<out Activity> {
+                return Native2Activity::class.java
+            }
+        })
     }
 
-    override fun onNotify(url: String, index: Int, name: String, params: Map<String, Any>) {
+    override fun onNotify(name: String, params: Any?) {
         // result with url
     }
 
@@ -58,45 +57,6 @@ class Native1Activity : AppCompatActivity(), OnNotifyListener {
         setContentView(R.layout.activity_native)
         initView()
         initFlutter()
-    }
-
-    override fun onRestart() {
-        Log.e("FlutterView", "onRestart activity $this")
-        super.onRestart()
-//        Log.e("Thrio", "activity $activity onRestart attach")
-//        flutterEngine?.apply {
-//            activityControlSurface.attachToActivity(activity, lifecycle)
-//        }
-    }
-
-    override fun onStart() {
-        Log.e("FlutterView", "onStart activity $this")
-        super.onStart()
-    }
-
-    override fun onResume() {
-        Log.e("FlutterView", "onResume activity $this")
-        super.onResume()
-    }
-
-    override fun onPause() {
-        Log.e("FlutterView", "onPause activity $this finishing $isFinishing")
-        super.onPause()
-    }
-
-    override fun onStop() {
-        Log.e("FlutterView", "onStop activity $this finishing $isFinishing")
-        super.onStop()
-    }
-
-    override fun onDestroy() {
-        Log.e("FlutterView", "onDestroy activity $this finishing $isFinishing")
-        super.onDestroy()
-    }
-
-    override fun finish() {
-        Log.e("FlutterView", "finish activity $this")
-        super.finish()
     }
 }
 

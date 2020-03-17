@@ -27,14 +27,11 @@ import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.MethodChannel
 
 
-internal class ThrioChannel constructor(messenger: BinaryMessenger, name: String) {
+internal open class ThrioChannel constructor(messenger: BinaryMessenger, name: String) {
 
-    private val methodProxy by lazy {
-        MethodChannel(messenger, "_method_$name")
-    }
-    private val eventProxy by lazy {
-        EventChannel(messenger, "_event_$name")
-    }
+    private val methodProxy = MethodChannel(messenger, "_method_$name")
+
+    private val eventProxy = EventChannel(messenger, "_event_$name")
 
     /**
      * Invokes a method on this channel, expecting no result.

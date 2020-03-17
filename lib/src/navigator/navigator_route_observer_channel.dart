@@ -21,46 +21,72 @@
 
 import 'package:flutter/widgets.dart';
 
-import 'thrio_navigator.dart';
+import '../channel/thrio_channel.dart';
+import 'navigator_route_observer.dart';
+import 'navigator_route_settings.dart';
 
-/// An interface for observing the navigation behavior of a [ThrioNavigator].
-///
-mixin NavigatorRouteObserver {
-  /// The [ThrioNavigator] pushed `route`.
-  ///
-  /// The route immediately below that one, and thus the previously active
-  /// route, is `previousRoute`.
-  ///
+class NavigatorRouteObserverChannel with NavigatorRouteObserver {
+  final _channel = ThrioChannel(channel: '__thrio_route_channel__');
+
+  @override
   void didPush(
     RouteSettings routeSettings,
     RouteSettings previousRouteSettings,
-  );
+  ) =>
+      _channel.invokeMethod<bool>(
+        'didPush',
+        _toArguments(routeSettings, previousRouteSettings),
+      );
 
-  /// The [ThrioNavigator] popped `route`.
-  ///
-  /// The route immediately below that one, and thus the newly active
-  /// route, is `previousRoute`.
-  ///
+  @override
   void didPop(
     RouteSettings routeSettings,
     RouteSettings previousRouteSettings,
-  );
+  ) =>
+      _channel.invokeMethod<bool>(
+        'didPop',
+        _toArguments(routeSettings, previousRouteSettings),
+      );
 
-  /// The [ThrioNavigator] popped to `route`.
-  ///
-  /// The previously active route, is `previousRoute`.
-  ///
+  @override
   void didPopTo(
     RouteSettings routeSettings,
     RouteSettings previousRouteSettings,
-  );
+  ) =>
+      _channel.invokeMethod<bool>(
+        'didPopTo',
+        _toArguments(routeSettings, previousRouteSettings),
+      );
 
-  /// The [ThrioNavigator] removed `route`.
-  ///
-  /// The route immediately below that one, if any, is `previousRoute`.
-  ///
+  @override
   void didRemove(
     RouteSettings routeSettings,
     RouteSettings previousRouteSettings,
-  );
+  ) =>
+      _channel.invokeMethod<bool>(
+        'didRemove',
+        _toArguments(routeSettings, previousRouteSettings),
+      );
+
+  Map<String, dynamic> _toArguments(
+    RouteSettings routeSettings,
+    RouteSettings previousRouteSettings,
+  ) =>
+      previousRouteSettings == null
+          ? <String, dynamic>{
+              'route': {
+                'url': routeSettings.url,
+                'index': routeSettings.index,
+              },
+            }
+          : <String, dynamic>{
+              'route': {
+                'url': routeSettings.url,
+                'index': routeSettings.index,
+              },
+              'previousRoute': {
+                'url': previousRouteSettings.url,
+                'index': previousRouteSettings.index,
+              },
+            };
 }

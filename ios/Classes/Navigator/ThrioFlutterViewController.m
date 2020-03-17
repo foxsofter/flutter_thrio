@@ -26,6 +26,7 @@
 #import "NavigatorFlutterEngineFactory.h"
 #import "ThrioNavigator.h"
 #import "ThrioNavigator+Internal.h"
+#import "ThrioNavigator+PageObserver.h"
 #import "NavigatorFlutterEngine.h"
 #import "ThrioChannel.h"
 #import "ThrioLogger.h"
@@ -61,18 +62,54 @@ NS_ASSUME_NONNULL_BEGIN
   self.view.backgroundColor = UIColor.whiteColor;
 }
 
+- (void)viewWillAppear:(BOOL)animated {
+  [super viewWillAppear:animated];
+  
+  if (![self isMovingToParentViewController]) {
+    [ThrioNavigator willAppear:self.thrio_lastRoute.settings];
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+      NavigatorPageObserverChannel *channel = [NavigatorFlutterEngineFactory.shared getPageObserverChannelByEntrypoint:self.entrypoint];
+      [channel willAppear:self.thrio_lastRoute.settings];
+    });
+  }
+}
+
 - (void)viewDidAppear:(BOOL)animated {
   [super viewDidAppear:animated];
+  
+  if (![self isMovingToParentViewController]) {
+    [ThrioNavigator didAppear:self.thrio_lastRoute.settings];
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+      NavigatorPageObserverChannel *channel = [NavigatorFlutterEngineFactory.shared getPageObserverChannelByEntrypoint:self.entrypoint];
+      [channel didAppear:self.thrio_lastRoute.settings];
+    });
+  }
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
   [super viewWillDisappear:animated];
+  
+  if (![self isMovingFromParentViewController]) {
+    [ThrioNavigator willDisappear:self.thrio_lastRoute.settings];
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+      NavigatorPageObserverChannel *channel = [NavigatorFlutterEngineFactory.shared getPageObserverChannelByEntrypoint:self.entrypoint];
+      [channel willDisappear:self.thrio_lastRoute.settings];
+    });
+  }
   
   [[UIApplication sharedApplication].delegate.window endEditing:YES];
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
   [super viewDidDisappear:animated];
+  
+  if (![self isMovingFromParentViewController]) {
+    [ThrioNavigator didDisappear:self.thrio_lastRoute.settings];
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+      NavigatorPageObserverChannel *channel = [NavigatorFlutterEngineFactory.shared getPageObserverChannelByEntrypoint:self.entrypoint];
+      [channel didDisappear:self.thrio_lastRoute.settings];
+    });
+  }
 }
 
 - (void)dealloc {

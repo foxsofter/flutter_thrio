@@ -34,7 +34,7 @@ interface NavigationBuilder {
         return Intent()
     }
 
-    fun navigation(context: Context, intent: Intent, params: Map<String, Any>) {
+    fun navigation(context: Context, intent: Intent, params: Any?) {
         context.startActivity(intent)
     }
 }

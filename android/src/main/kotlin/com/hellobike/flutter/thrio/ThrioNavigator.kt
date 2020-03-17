@@ -24,35 +24,37 @@ package com.hellobike.flutter.thrio
 import android.content.Context
 import com.hellobike.flutter.thrio.navigator.NavigatorBuilder
 import com.hellobike.flutter.thrio.navigator.NavigatorController
+import com.hellobike.flutter.thrio.navigator.NavigatorFlutterEngineFactory
+import com.hellobike.flutter.thrio.navigator.NavigatorFlutterEngineFactory.THRIO_ENGINE_NATIVE_ID
 
 object ThrioNavigator {
 
     @JvmStatic
     @JvmOverloads
     fun init(context: Context) {
-        NavigatorController.init(context)
+        NavigatorFlutterEngineFactory.initEngine(context)
     }
 
     @JvmStatic
     @JvmOverloads
     fun push(
             context: Context,
-            url: String, params: Map<String, Any> = emptyMap(),
-            animated: Boolean = true, result: Result = {}
+            url: String, params: Any? = null, animated: Boolean = true,
+            poppedResult: PoppedResult? = null, result: PushResult = {}
     ) {
-        NavigatorController.push(context, url, params, animated, result)
+        NavigatorController.Push.push(context, url, params, animated, THRIO_ENGINE_NATIVE_ID, poppedResult, result)
     }
 
     @JvmStatic
     @JvmOverloads
-    fun pop(context: Context, animated: Boolean = true, result: Result = {}) {
-        NavigatorController.pop(context, animated, result)
+    fun pop(context: Context, params: Any? = null, animated: Boolean = true, result: Result = {}) {
+        NavigatorController.Pop.pop(context, params, animated, result)
     }
 
     @JvmStatic
     @JvmOverloads
     fun remove(context: Context, url: String, index: Int, animated: Boolean = true, result: Result = {}) {
-        NavigatorController.remove(context, url, index, animated, result)
+        NavigatorController.Remove.remove(context, url, index, animated, result)
     }
 
     @JvmStatic
@@ -60,20 +62,13 @@ object ThrioNavigator {
     fun popTo(context: Context, url: String, index: Int = 0,
               animated: Boolean = true, result: Result = {}
     ) {
-        NavigatorController.popTo(context, url, index, animated, result)
+        NavigatorController.PopTo.popTo(context, url, index, animated, result)
     }
 
     @JvmStatic
     @JvmOverloads
-    fun notify(url: String, index: Int = 0, name: String, params: Map<String, Any>
-               , result: Result = {}) {
+    fun notify(url: String, index: Int = 0, name: String, params: Map<String, Any>, result: Result = {}) {
         NavigatorController.notify(url, index, name, params, result)
-    }
-
-    @JvmStatic
-    @JvmOverloads
-    fun setPopDisabled(url: String, index: Int = 0, disable: Boolean, result: Result = {}) {
-        NavigatorController.setPopDisabled(url, index, disable, result)
     }
 
     @JvmStatic
@@ -90,3 +85,7 @@ object ThrioNavigator {
 }
 
 typealias Result = (Boolean) -> Unit
+
+typealias PushResult = (Int?) -> Unit
+
+typealias PoppedResult = (Any?) -> Unit

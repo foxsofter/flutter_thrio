@@ -29,7 +29,7 @@ class _Page1State extends State<Page1> {
   Widget build(BuildContext context) => NavigatorPageNotify(
       name: 'page1Notify',
       onPageNotify: (params) =>
-          ThrioLogger().v('flutter1 receive notify: $params'),
+          ThrioLogger.v('flutter1 receive notify:$params'),
       child: Scaffold(
           appBar: AppBar(
             brightness: Brightness.light,
@@ -64,7 +64,7 @@ class _Page1State extends State<Page1> {
                           '1': {'2': '3'}
                         },
                         poppedResult: (params) =>
-                            ThrioLogger().v('biz1/flutter1 popped: $params'),
+                            ThrioLogger.v('biz1/flutter1 popped:$params'),
                       ),
                       child: Container(
                           padding: const EdgeInsets.all(8),
@@ -92,8 +92,8 @@ class _Page1State extends State<Page1> {
                         params: {
                           '1': {'2': '3'}
                         },
-                        poppedResult: (params) =>
-                            ThrioLogger().v('biz2/flutter2 popped: $params'),
+                        poppedResult: (params) => ThrioLogger.v(
+                            'biz1/flutter1 poppedResult call popped:$params'),
                       ),
                       child: Container(
                           padding: const EdgeInsets.all(8),
@@ -122,6 +122,8 @@ class _Page1State extends State<Page1> {
                         params: {
                           '1': {'2': '3'}
                         },
+                        poppedResult: (params) => ThrioLogger.v(
+                            'biz1/flutter1 poppedResult call params:$params'),
                       ),
                       child: Container(
                           padding: const EdgeInsets.all(8),

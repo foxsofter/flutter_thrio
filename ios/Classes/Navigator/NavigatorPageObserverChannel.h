@@ -19,16 +19,16 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-package com.hellobike.flutter.thrio
+#import <Foundation/Foundation.h>
+#import "ThrioChannel.h"
+#import "NavigatorPageObserverProtocol.h"
 
+NS_ASSUME_NONNULL_BEGIN
 
-internal interface OnActionListener {
+@interface NavigatorPageObserverChannel : NSObject<NavigatorPageObserverProtocol>
 
-    fun onPush(url: String, index: Int, params: Map<String, Any>, animated: Boolean, result: Result)
+- (instancetype)initWithChannel:(ThrioChannel *)channel;
 
-    fun onPop(url: String, index: Int, animated: Boolean, result: Result)
+@end
 
-    fun onRemove(url: String, index: Int, animated: Boolean, result: Result)
-
-    fun onPopTo(url: String, index: Int, animated: Boolean, result: Result)
-}
+NS_ASSUME_NONNULL_END

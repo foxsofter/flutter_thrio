@@ -19,23 +19,30 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-package com.hellobike.flutter.thrio.navigator
+import 'package:flutter/material.dart';
 
-import android.app.Activity
-import android.content.Context
-import android.content.Intent
-import com.hellobike.flutter.thrio.NavigationBuilder
-import io.flutter.embedding.android.FlutterActivity
-import io.flutter.embedding.android.ThrioActivity
+import 'thrio_navigator.dart';
 
-internal object FlutterNavigationBuilder : NavigationBuilder {
-    override fun getActivityClz(url: String): Class<out Activity> =
-            ThrioActivity::class.java
+/// An interface for observing the page lifecycle of a [ThrioNavigator].
+///
+abstract class NavigatorPageObserver {
+  /// The [ThrioNavigator] created `route`.
+  ///
+  void onCreate(RouteSettings routeSettings);
 
-    override fun buildIntent(context: Context): Intent {
-        return FlutterActivity
-                .withCachedEngine(NavigatorFlutterEngineFactory.THRIO_ENGINE_ID)
-                .destroyEngineWithActivity(false)
-                .build(context)
-    }
+  /// The `route` is about to be activated.
+  ///
+  void willAppear(RouteSettings routeSettings);
+
+  /// The `route` has been activated.
+  ///
+  void didAppear(RouteSettings routeSettings);
+
+  /// The `route` is about to disappear.
+  ///
+  void willDisappear(RouteSettings routeSettings);
+
+  /// The `route` is has disappeared.
+  ///
+  void didDisappear(RouteSettings routeSettings);
 }

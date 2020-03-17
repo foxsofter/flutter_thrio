@@ -19,23 +19,36 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-package com.hellobike.flutter.thrio.navigator
+#import <Foundation/Foundation.h>
 
-import android.app.Activity
-import android.content.Context
-import android.content.Intent
-import com.hellobike.flutter.thrio.NavigationBuilder
-import io.flutter.embedding.android.FlutterActivity
-import io.flutter.embedding.android.ThrioActivity
+#import "NavigatorPageRoute.h"
 
-internal object FlutterNavigationBuilder : NavigationBuilder {
-    override fun getActivityClz(url: String): Class<out Activity> =
-            ThrioActivity::class.java
+NS_ASSUME_NONNULL_BEGIN
 
-    override fun buildIntent(context: Context): Intent {
-        return FlutterActivity
-                .withCachedEngine(NavigatorFlutterEngineFactory.THRIO_ENGINE_ID)
-                .destroyEngineWithActivity(false)
-                .build(context)
-    }
-}
+/// An interface for observing the page lifecycle of a [ThrioNavigator].
+///
+@protocol NavigatorPageObserverProtocol <NSObject>
+
+/// The [ThrioNavigator] created `route`.
+///
+- (void)onCreate:(NavigatorRouteSettings *)routeSettings;
+
+/// The `route` is about to be activated.
+///
+- (void)willAppear:(NavigatorRouteSettings *)routeSettings;
+
+/// The `route` has been activated.
+///
+- (void)didAppear:(NavigatorRouteSettings *)routeSettings;
+
+/// The `route` is about to disappear.
+///
+- (void)willDisappear:(NavigatorRouteSettings *)routeSettings;
+
+/// The `route` is has disappeared.
+///
+- (void)didDisappear:(NavigatorRouteSettings *)routeSettings;
+
+@end
+
+NS_ASSUME_NONNULL_END

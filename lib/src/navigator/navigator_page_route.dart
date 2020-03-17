@@ -21,12 +21,18 @@
 
 import 'package:flutter/material.dart';
 
-import '../logger/thrio_logger.dart';
 import 'navigator_route_settings.dart';
 import 'navigator_types.dart';
-import 'thrio_navigator.dart';
+import 'thrio_navigator_implement.dart';
 
-/// A route managed by the `ThrioNavigator`.
+enum NavigatorRouteAction {
+  push,
+  pop,
+  popTo,
+  remove,
+}
+
+/// A route managed by the `ThrioNavigatorImplement`.
 ///
 class NavigatorPageRoute extends MaterialPageRoute<bool> {
   NavigatorPageRoute({
@@ -34,14 +40,13 @@ class NavigatorPageRoute extends MaterialPageRoute<bool> {
     RouteSettings settings,
     bool maintainState = true,
     bool fullscreenDialog = false,
-    this.poppedResult,
   }) : super(
             builder: (_) => builder(settings),
             settings: settings,
             maintainState: maintainState,
             fullscreenDialog: fullscreenDialog);
 
-  final NavigatorParamsCallback poppedResult;
+  NavigatorRouteAction routeAction;
 
   final _popDisableds = <String, bool>{};
 
@@ -67,7 +72,7 @@ class NavigatorPageRoute extends MaterialPageRoute<bool> {
         Future.delayed(const Duration(milliseconds: 300), () {
       _popDisabledFutures.remove(settings.name); // ignore: unawaited_futures
       final disabled = _popDisableds.remove(settings.name);
-      ThrioNavigator.setPopDisabled(
+      ThrioNavigatorImplement.setPopDisabled(
         url: settings.url,
         index: settings.index,
         disabled: disabled,

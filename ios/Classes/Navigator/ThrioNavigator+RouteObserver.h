@@ -19,24 +19,29 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-package com.hellobike.flutter.thrio.navigator
+#import "ThrioNavigator.h"
+#import "ThrioNavigator.h"
+#import "ThrioRegistrySet.h"
+#import "NavigatorRouteObserverProtocol.h"
 
-import android.util.ArrayMap
+NS_ASSUME_NONNULL_BEGIN
 
+@interface ThrioNavigator (RouteObserver)
 
-internal object NavigatorChannelCache {
++ (ThrioRegistrySet<id<NavigatorRouteObserverProtocol>> *)routeObservers;
 
-    private val channels = ArrayMap<Int, NavigatorSendChannel>()
++ (void)didPush:(NavigatorRouteSettings *)routeSettings
+  previousRoute:(NavigatorRouteSettings * _Nullable)previousRouteSettings;
 
-    fun cache(tag: Int, channel: NavigatorSendChannel) {
-        channels[tag] = channel
-    }
++ (void)didPop:(NavigatorRouteSettings *)routeSettings
+ previousRoute:(NavigatorRouteSettings * _Nullable)previousRouteSettings;
 
-    fun get(tag: Int): NavigatorSendChannel {
-        return channels[tag] ?: throw IllegalArgumentException("no channel with this tag")
-    }
++ (void)didPopTo:(NavigatorRouteSettings *)routeSettings
+   previousRoute:(NavigatorRouteSettings * _Nullable)previousRouteSettings;
 
-    fun remove(tag: Int) {
-        channels.remove(tag)
-    }
-}
++ (void)didRemove:(NavigatorRouteSettings *)routeSettings
+    previousRoute:(NavigatorRouteSettings * _Nullable)previousRouteSettings;
+
+@end
+
+NS_ASSUME_NONNULL_END

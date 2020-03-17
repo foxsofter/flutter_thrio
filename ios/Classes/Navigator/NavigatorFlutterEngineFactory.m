@@ -23,6 +23,7 @@
 #import "NavigatorFlutterEngine.h"
 #import "ThrioNavigator.h"
 #import "ThrioLogger.h"
+#import "ThrioChannel.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -82,14 +83,23 @@ NS_ASSUME_NONNULL_BEGIN
   return flutterEngine.engine;
 }
 
-- (ThrioChannel *)getChannelByEntrypoint:(NSString *)entrypoint {
+- (NavigatorSendChannel *)getSendChannelByEntrypoint:(NSString *)entrypoint {
   if (!ThrioNavigator.isMultiEngineEnabled) {
     entrypoint = @"";
   }
-  
   NavigatorFlutterEngine *flutterEngine = self.flutterEngines[entrypoint];
-  return flutterEngine.channel;
+  return flutterEngine.sendChannel;
 }
+
+
+- (NavigatorPageObserverChannel *)getPageObserverChannelByEntrypoint:(NSString *)entrypoint {
+  if (!ThrioNavigator.isMultiEngineEnabled) {
+    entrypoint = @"";
+  }
+  NavigatorFlutterEngine *flutterEngine = self.flutterEngines[entrypoint];
+  return flutterEngine.pageObserverChannel;
+}
+
 
 - (void)pushViewController:(ThrioFlutterViewController *)viewController {
   NavigatorFlutterEngine *flutterEngine = self.flutterEngines[viewController.entrypoint];

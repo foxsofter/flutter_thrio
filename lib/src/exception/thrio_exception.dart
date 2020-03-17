@@ -29,5 +29,5 @@ class _ThrioException implements ThrioException {
   final String message;
 
   @override
-  String toString() => 'ThrioException: ${message ?? ''}';
+  String toString() => 'ThrioException:${message ?? ''}';
 }

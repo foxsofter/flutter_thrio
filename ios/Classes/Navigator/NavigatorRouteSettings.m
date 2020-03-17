@@ -61,6 +61,14 @@ NS_ASSUME_NONNULL_BEGIN
   return self;
 }
 
++ (instancetype)settingsFromArguments:(NSDictionary *)arguments {
+  NSString *url = arguments[@"url"];
+  NSNumber *index = [arguments[@"index"] isKindOfClass:NSNull.class] ? nil : arguments[@"index"];
+  id params = [arguments[@"params"] isKindOfClass:NSNull.class] ? nil : arguments[@"params"];
+  BOOL animated = [arguments[@"animated"] boolValue];
+  return [self settingsWithUrl:url index:index nested:animated params:params];
+}
+
 - (NSDictionary *)toArguments {
   return [self toArgumentsWithParams:_params];
 }

@@ -25,7 +25,6 @@
 #import "UINavigationController+Navigator.h"
 #import "UINavigationController+HotRestart.h"
 #import "UINavigationController+PopDisabled.h"
-#import "UINavigationController+Navigator.h"
 #import "NavigatorFlutterEngineFactory.h"
 #import "ThrioLogger.h"
 
@@ -51,10 +50,6 @@ NS_ASSUME_NONNULL_BEGIN
     [self _onPop];
     [self _onPopTo];
     [self _onRemove];
-    [self _onDidPush];
-    [self _onDidPop];
-    [self _onDidPopTo];
-    [self _onDidRemove];
     [self _onLastIndex];
     [self _onGetAllIndex];
     [self _onSetPopDisabled];
@@ -230,58 +225,6 @@ NS_ASSUME_NONNULL_BEGIN
      if (result) {
        result([ThrioNavigator.navigationController thrio_getAllIndexByUrl:url]);
      }
-  }];
-}
-
-- (void)_onDidPush {
-  [_channel registryMethodCall:@"didPush"
-                        handler:^void(NSDictionary<NSString *,id> * arguments,
-                                      ThrioIdCallback _Nullable result) {
-    NSString *url = arguments[@"url"];
-    NSNumber *index = arguments[@"index"];
-
-    ThrioLogV(@"on didPush: %@.%@", url, index);
-
-    [ThrioNavigator.navigationController thrio_didPushUrl:url index:index];
-  }];
-}
-
-- (void)_onDidPop {
-  [_channel registryMethodCall:@"didPop"
-                        handler:^void(NSDictionary<NSString *,id> * arguments,
-                                      ThrioIdCallback _Nullable result) {
-    NSString *url = arguments[@"url"];
-    NSNumber *index = arguments[@"index"];
-
-    ThrioLogV(@"on didPop: %@.%@", url, index);
-
-    [ThrioNavigator.navigationController thrio_didPopUrl:url index:index];
-  }];
-}
-
-- (void)_onDidPopTo {
-  [_channel registryMethodCall:@"didPopTo"
-                        handler:^void(NSDictionary<NSString *,id> * arguments,
-                                      ThrioIdCallback _Nullable result) {
-    NSString *url = arguments[@"url"];
-    NSNumber *index = arguments[@"index"];
-
-    ThrioLogV(@"on didPopTo: %@.%@", url, index);
-
-    [ThrioNavigator.navigationController thrio_didPopToUrl:url index:index];
-  }];
-}
-
-- (void)_onDidRemove {
-  [_channel registryMethodCall:@"didRemove"
-                        handler:^void(NSDictionary<NSString *,id> * arguments,
-                                      ThrioIdCallback _Nullable result) {
-    NSString *url = arguments[@"url"];
-    NSNumber *index = arguments[@"index"];
-
-    ThrioLogV(@"on didRemove: %@.%@", url, index);
-
-    [ThrioNavigator.navigationController thrio_didRemoveUrl:url index:index];
   }];
 }
 

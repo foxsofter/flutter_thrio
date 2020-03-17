@@ -27,8 +27,8 @@ import '../navigator/navigator_types.dart';
 import 'navigator_route_settings.dart';
 import 'thrio_navigator_implement.dart';
 
-class NavigatorReceiveChannel {
-  NavigatorReceiveChannel(ThrioChannel channel,
+class NavigatorRouteReceiveChannel {
+  NavigatorRouteReceiveChannel(ThrioChannel channel,
       Map<String, NavigatorParamsCallback> pagePoppedResults)
       : _channel = channel,
         _pagePoppedResults = pagePoppedResults {
@@ -61,10 +61,12 @@ class NavigatorReceiveChannel {
         final animatedValue = arguments['animated'];
         final animated =
             (animatedValue != null && animatedValue is bool) && animatedValue;
-        return ThrioNavigatorImplement.navigatorState?.push(
-          routeSettings,
-          animated: animated,
-        );
+        return ThrioNavigatorImplement.navigatorState
+            ?.push(routeSettings, animated: animated)
+            ?.then((it) {
+          _clearPagePoppedResults();
+          return it;
+        });
       });
 
   void _onPop() => _channel.registryMethodCall('__onPop__', ([arguments]) {
@@ -76,10 +78,12 @@ class NavigatorReceiveChannel {
         if (poppedResult != null) {
           poppedResult(routeSettings.params);
         }
-        return ThrioNavigatorImplement.navigatorState?.maybePop(
-          routeSettings,
-          animated: animated,
-        );
+        return ThrioNavigatorImplement.navigatorState
+            ?.maybePop(routeSettings, animated: animated)
+            ?.then((it) {
+          _clearPagePoppedResults();
+          return it;
+        });
       });
 
   void _onPopTo() => _channel.registryMethodCall('__onPopTo__', ([arguments]) {
@@ -87,10 +91,12 @@ class NavigatorReceiveChannel {
         final animatedValue = arguments['animated'];
         final animated =
             (animatedValue != null && animatedValue is bool) && animatedValue;
-        return ThrioNavigatorImplement.navigatorState?.popTo(
-          routeSettings,
-          animated: animated,
-        );
+        return ThrioNavigatorImplement.navigatorState
+            ?.popTo(routeSettings, animated: animated)
+            ?.then((it) {
+          _clearPagePoppedResults();
+          return it;
+        });
       });
 
   void _onRemove() =>
@@ -99,9 +105,28 @@ class NavigatorReceiveChannel {
         final animatedValue = arguments['animated'];
         final animated =
             (animatedValue != null && animatedValue is bool) && animatedValue;
-        return ThrioNavigatorImplement.navigatorState?.remove(
-          routeSettings,
-          animated: animated,
-        );
+        return ThrioNavigatorImplement.navigatorState
+            ?.remove(routeSettings, animated: animated)
+            ?.then((it) {
+          _clearPagePoppedResults();
+          return it;
+        });
       });
+
+  void _clearPagePoppedResults() {
+    if (_pagePoppedResults.isEmpty) {
+      return;
+    }
+    final routeHistory = ThrioNavigatorImplement.navigatorState?.history;
+    if (routeHistory?.isNotEmpty ?? false) {
+      _pagePoppedResults.removeWhere((name, _) =>
+          routeHistory.lastWhere(
+            (it) => it.settings.name == name,
+            orElse: () => null,
+          ) !=
+          null);
+    } else {
+      _pagePoppedResults.clear();
+    }
+  }
 }

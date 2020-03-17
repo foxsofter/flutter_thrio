@@ -17,23 +17,5 @@ class Native2Activity : AppCompatActivity() {
 
     private fun initView() {
         tv_native.text = "Native 2"
-        btn_native_new.setOnClickListener {
-            startActivity(Intent(this, Native2Activity::class.java))
-        }
-        btn_native_top.setOnClickListener {
-            startActivity(Intent(this, Native2Activity::class.java).apply {
-                addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
-                addFlags(FLAG_ACTIVITY_CLEAR_TOP)
-            })
-        }
-        btn_native_next.setOnClickListener {
-            startActivity(Intent(this, Native3Activity::class.java).apply {
-                addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
-                addFlags(FLAG_ACTIVITY_CLEAR_TOP)
-            })
-        }
-        btn_flutter.setOnClickListener {
-            ThrioNavigator.push(this, "flutter2")
-        }
     }
 }

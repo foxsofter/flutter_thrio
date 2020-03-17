@@ -20,7 +20,7 @@
 // IN THE SOFTWARE.
 
 import 'package:flutter/material.dart';
-import 'thrio_navigator.dart';
+import 'thrio_navigator_implement.dart';
 
 class NavigatorHome extends StatefulWidget {
   @override
@@ -51,7 +51,7 @@ class _NavigatorHomeState extends State<NavigatorHome> {
                       ),
                     ),
                     InkWell(
-                      onTap: ThrioNavigator.hotRestart,
+                      onTap: ThrioNavigatorImplement.hotRestart,
                       child: Container(
                           padding: const EdgeInsets.all(8),
                           margin: const EdgeInsets.all(8),

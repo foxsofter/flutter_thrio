@@ -35,6 +35,8 @@ NS_ASSUME_NONNULL_BEGIN
                      nested:(BOOL)nested
                      params:(id _Nullable)params;
 
++ (instancetype)settingsFromArguments:(NSDictionary *)arguments;
+
 - (NSDictionary *)toArguments;
 
 - (NSDictionary *)toArgumentsWithParams:(id _Nullable)params;

@@ -52,9 +52,9 @@
                  dispatch_get_main_queue(), ^{
     ThrioLogV(@"hot restart push");
     NavigatorRouteSettings *settings = viewController.thrio_firstRoute.settings;
-    ThrioChannel *channel =
-      [NavigatorFlutterEngineFactory.shared getChannelByEntrypoint:viewController.entrypoint];
-    [channel invokeMethod:@"__onPush__" arguments:[settings toArguments]];
+    NavigatorSendChannel *channel =
+      [NavigatorFlutterEngineFactory.shared getSendChannelByEntrypoint:viewController.entrypoint];
+    [channel onPush:[settings toArguments] result:nil];
   });
 }
 

@@ -23,7 +23,7 @@ import 'dart:async';
 
 import 'package:flutter/widgets.dart';
 
-import '../navigator/thrio_navigator.dart';
+import '../navigator/thrio_navigator_implement.dart';
 import 'navigator_page_route.dart';
 import 'navigator_route_settings.dart';
 import 'navigator_types.dart';
@@ -75,7 +75,7 @@ class _NavigatorPageNotifyState extends State<NavigatorPageNotify> {
     final route = ModalRoute.of(context);
     if (route != null && route is NavigatorPageRoute) {
       _route = route;
-      _notifyStream = ThrioNavigator.onPageNotify(
+      _notifyStream = ThrioNavigatorImplement.onPageNotify(
         url: _route.settings.url,
         index: _route.settings.index,
         name: widget.name,

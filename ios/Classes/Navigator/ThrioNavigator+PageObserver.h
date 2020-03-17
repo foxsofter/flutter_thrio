@@ -19,23 +19,27 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-package com.hellobike.flutter.thrio.navigator
+#import <Foundation/Foundation.h>
+#import "ThrioNavigator.h"
+#import "ThrioRegistrySet.h"
+#import "NavigatorPageObserverProtocol.h"
 
-import android.app.Activity
-import android.content.Context
-import android.content.Intent
-import com.hellobike.flutter.thrio.NavigationBuilder
-import io.flutter.embedding.android.FlutterActivity
-import io.flutter.embedding.android.ThrioActivity
+NS_ASSUME_NONNULL_BEGIN
 
-internal object FlutterNavigationBuilder : NavigationBuilder {
-    override fun getActivityClz(url: String): Class<out Activity> =
-            ThrioActivity::class.java
+@interface ThrioNavigator (PageObserver)
 
-    override fun buildIntent(context: Context): Intent {
-        return FlutterActivity
-                .withCachedEngine(NavigatorFlutterEngineFactory.THRIO_ENGINE_ID)
-                .destroyEngineWithActivity(false)
-                .build(context)
-    }
-}
++ (ThrioRegistrySet<id<NavigatorPageObserverProtocol>> *)pageObservers;
+
++ (void)onCreate:(NavigatorRouteSettings *)routeSettings;
+
++ (void)willAppear:(NavigatorRouteSettings *)routeSettings;
+
++ (void)didAppear:(NavigatorRouteSettings *)routeSettings;
+
++ (void)willDisappear:(NavigatorRouteSettings *)routeSettings;
+
++ (void)didDisappear:(NavigatorRouteSettings *)routeSettings;
+
+@end
+
+NS_ASSUME_NONNULL_END

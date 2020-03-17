@@ -28,8 +28,11 @@ internal object NavigatorBuilder {
     private val builders = ArrayMap<String, NavigationBuilder>()
     private val flutterBuilder by lazy { FlutterNavigationBuilder }
 
-
     fun hasNavigationBuilder(url: String): Boolean {
+        return builders.contains(url) || true
+    }
+
+    fun hasNativeNavigationBuilder(url: String): Boolean {
         return builders.contains(url)
     }
 
@@ -44,6 +47,5 @@ internal object NavigatorBuilder {
     fun unRegisterNavigationBuilder(url: String) {
         builders.remove(url)
     }
-
 }
 

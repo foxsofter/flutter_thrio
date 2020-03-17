@@ -22,9 +22,12 @@
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
 
+import '../navigator/navigator_page_observer.dart';
+import '../navigator/navigator_route_observer.dart';
 import '../navigator/navigator_types.dart';
-import '../navigator/thrio_navigator.dart';
+import '../navigator/thrio_navigator_implement.dart';
 
 mixin ThrioModule {
   static final _modules = <Type, ThrioModule>{};
@@ -85,7 +88,7 @@ mixin ThrioModule {
     @required String url,
     @required int index,
   }) =>
-      ThrioNavigator.onPageNotify(
+      ThrioNavigatorImplement.onPageNotify(
         url: url,
         index: index,
         name: name,
@@ -95,27 +98,36 @@ mixin ThrioModule {
   ///
   /// Unregistry by calling the return value `VoidCallback`.
   ///
-  VoidCallback registerDefaultPageBuilder(
-    NavigatorPageBuilder builder,
-  ) =>
-      ThrioNavigator.registerDefaultPageBuilder(builder);
+  VoidCallback registerDefaultPageBuilder(NavigatorPageBuilder builder) =>
+      ThrioNavigatorImplement.pageBuilders
+          .registry(Navigator.defaultRouteName, builder);
 
   /// Register an page builder for the router.
   ///
   /// Unregistry by calling the return value `VoidCallback`.
   ///
-  VoidCallback registerPageBuilder(
-    String url,
-    NavigatorPageBuilder builder,
-  ) =>
-      ThrioNavigator.registerPageBuilder(url, builder);
+  VoidCallback registerPageBuilder(String url, NavigatorPageBuilder builder) =>
+      ThrioNavigatorImplement.pageBuilders.registry(url, builder);
 
   /// Register page builders for the router.
   ///
   /// Unregistry by calling the return value `VoidCallback`.
   ///
   VoidCallback registerPageBuilders(
-    Map<String, NavigatorPageBuilder> builders,
-  ) =>
-      ThrioNavigator.registerPageBuilders(builders);
+          Map<String, NavigatorPageBuilder> builders) =>
+      ThrioNavigatorImplement.pageBuilders.registryAll(builders);
+
+  /// Register observer for the page.
+  ///
+  /// Unregistry by calling the return value `VoidCallback`.
+  ///
+  VoidCallback registerPageObserver(NavigatorPageObserver pageObserver) =>
+      ThrioNavigatorImplement.pageObservers.registry(pageObserver);
+
+  /// Register observer for the router.
+  ///
+  /// Unregistry by calling the return value `VoidCallback`.
+  ///
+  VoidCallback registerRouteObserver(NavigatorRouteObserver routeObserver) =>
+      ThrioNavigatorImplement.routeObservers.registry(routeObserver);
 }
