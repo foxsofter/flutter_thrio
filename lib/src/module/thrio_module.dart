@@ -94,14 +94,6 @@ mixin ThrioModule {
         name: name,
       );
 
-  /// Register default page builder for the router.
-  ///
-  /// Unregistry by calling the return value `VoidCallback`.
-  ///
-  VoidCallback registerDefaultPageBuilder(NavigatorPageBuilder builder) =>
-      ThrioNavigatorImplement.pageBuilders
-          .registry(Navigator.defaultRouteName, builder);
-
   /// Register an page builder for the router.
   ///
   /// Unregistry by calling the return value `VoidCallback`.

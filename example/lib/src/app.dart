@@ -34,9 +34,7 @@ class _MainAppState extends State<MainApp> with ThrioModule {
   }
 
   @override
-  void onPageRegister() {
-    registerDefaultPageBuilder((_, {index, params}) => DeaultPage());
-  }
+  void onPageRegister() {}
 
   @override
   void onModuleInit() {}

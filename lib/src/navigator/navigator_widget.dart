@@ -72,7 +72,6 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
       return Future.value(false);
     }
 
-    
     final route = NavigatorPageRoute(
       builder: pageBuilder,
       settings: settings,
