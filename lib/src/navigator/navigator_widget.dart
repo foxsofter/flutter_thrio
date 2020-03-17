@@ -89,6 +89,13 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
   }
 
   Future<bool> maybePop(RouteSettings settings, {bool animated = true}) async {
+    final navigatorState = widget.child.tryStateOf<NavigatorState>();
+    if (navigatorState == null) {
+      return false;
+    }
+    if (history.isEmpty || settings.name != history.last.settings.name) {
+      return false;
+    }
     if (await history.last.willPop() != RoutePopDisposition.pop) {
       return false;
     }

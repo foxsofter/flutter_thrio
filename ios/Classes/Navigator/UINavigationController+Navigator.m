@@ -41,10 +41,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface UINavigationController ()
 
-/// 不是手势触发的当前正要被pop的`UIViewController`
-///
-@property (nonatomic, strong, nullable) UIViewController *thrio_popingViewController;
-
 @end
 
 @implementation UINavigationController (Navigator)
@@ -501,20 +497,24 @@ NS_ASSUME_NONNULL_BEGIN
   }
   // 手势触发的pop，或者UINavigationController的pop方法触发的pop
   if (self.thrio_popingViewController) {
-    __weak typeof(self) weakself = self;
-    [self.thrio_popingViewController thrio_popParams:nil animated:animated result:^(BOOL r) {
-      __strong typeof(weakself) strongSelf = weakself;
-      // 刚关掉的是ThrioFlutterViewController，且当前要显示的页面不是ThrioFlutterViewController，置空引擎的viewController
-      if ([strongSelf.thrio_popingViewController isKindOfClass:ThrioFlutterViewController.class]) {
-        if (![viewController isKindOfClass:ThrioFlutterViewController.class]) {
-          [NavigatorFlutterEngineFactory.shared popViewController:(ThrioFlutterViewController*)strongSelf.thrio_popingViewController];
+    if (self.thrio_popingViewController == viewController) {
+      self.thrio_popingViewController = nil;
+    } else {
+      __weak typeof(self) weakself = self;
+      [self.thrio_popingViewController thrio_popParams:nil animated:animated result:^(BOOL r) {
+        __strong typeof(weakself) strongSelf = weakself;
+        // 刚关掉的是ThrioFlutterViewController，且当前要显示的页面不是ThrioFlutterViewController，置空引擎的viewController
+        if ([strongSelf.thrio_popingViewController isKindOfClass:ThrioFlutterViewController.class]) {
+          if (![viewController isKindOfClass:ThrioFlutterViewController.class]) {
+            [NavigatorFlutterEngineFactory.shared popViewController:(ThrioFlutterViewController*)strongSelf.thrio_popingViewController];
+          }
+          if (strongSelf.navigationBarHidden != viewController.thrio_hidesNavigationBar.boolValue) {
+            [strongSelf setNavigationBarHidden:viewController.thrio_hidesNavigationBar.boolValue];
+          }
         }
-        if (strongSelf.navigationBarHidden != viewController.thrio_hidesNavigationBar.boolValue) {
-          [strongSelf setNavigationBarHidden:viewController.thrio_hidesNavigationBar.boolValue];
-        }
-      }
-      strongSelf.thrio_popingViewController = nil;
-    }];
+        strongSelf.thrio_popingViewController = nil;
+      }];
+    }
   }
 }
 

@@ -365,6 +365,11 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)thrio_viewDidAppear:(BOOL)animated {
   [self thrio_viewDidAppear:animated];
   
+  // 如果侧滑返回的手势放弃，需要清除thrio_popingViewController标记
+  if (self.navigationController.thrio_popingViewController == self) {
+    self.navigationController.thrio_popingViewController = nil;
+  }
+  
   if (self.thrio_firstRoute && ![self isKindOfClass:ThrioFlutterViewController.class]) {
     dispatch_async(dispatch_get_main_queue(), ^{
       [ThrioNavigator didAppear:self.thrio_lastRoute.settings];

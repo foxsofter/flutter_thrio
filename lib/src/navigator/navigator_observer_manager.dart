@@ -71,19 +71,22 @@ class NavigatorObserverManager extends NavigatorObserver {
       _currentPopRoutes.add(route);
       if (_currentPopRoutes.length == 1) {
         Future.delayed(const Duration(milliseconds: 500), () {
+          final previousRoute = pageRoutes.isEmpty ? null : pageRoutes.last;
           if (_currentPopRoutes.length == 1) {
             ThrioLogger().v('didPop: ${route.settings}');
             final observers = Set.from(_routeObservers);
             for (final observer in observers) {
               Future(() => observer.didPop(
                     route.settings,
-                    pageRoutes.last.settings,
+                    previousRoute?.settings,
                   ));
             }
             final pageObservers = Set.from(_pageObservers);
             for (final observer in pageObservers) {
               Future(() => observer.didDisappear(route.settings));
-              Future(() => observer.didAppear(pageRoutes.last.settings));
+              if (previousRoute != null) {
+                Future(() => observer.didAppear(previousRoute.settings));
+              }
             }
           } else if (_currentPopRoutes.length > 1) {
             ThrioLogger().v('didPopTo: ${pageRoutes.last.settings}');

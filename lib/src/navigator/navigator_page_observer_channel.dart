@@ -35,38 +35,36 @@ class NavigatorPageObserverChannel extends NavigatorPageObserver {
   NavigatorPageObserverChannel() {
     _on(
       'onCreate',
-      (pageObserver, routeSettings) =>
-          Future(() => pageObserver.onCreate(routeSettings)),
+      (pageObserver, routeSettings) => pageObserver.onCreate(routeSettings),
     );
     _on(
       'willAppear',
-      (pageObserver, routeSettings) =>
-          Future(() => pageObserver.willAppear(routeSettings)),
+      (pageObserver, routeSettings) => pageObserver.willAppear(routeSettings),
     );
     _on(
       'didAppear',
-      (pageObserver, routeSettings) =>
-          Future(() => pageObserver.didAppear(routeSettings)),
+      (pageObserver, routeSettings) => pageObserver.didAppear(routeSettings),
     );
     _on(
       'willDisappear',
       (pageObserver, routeSettings) =>
-          Future(() => pageObserver.willDisappear(routeSettings)),
+          pageObserver.willDisappear(routeSettings),
     );
     _on(
       'didDisappear',
-      (pageObserver, routeSettings) =>
-          Future(() => pageObserver.didDisappear(routeSettings)),
+      (pageObserver, routeSettings) => pageObserver.didDisappear(routeSettings),
     );
   }
 
   final _channel = ThrioChannel(channel: '__thrio_page_channel__');
 
   @override
-  void onCreate(RouteSettings routeSettings) => _channel.invokeMethod(
-        'onCreate',
-        routeSettings.toArguments(),
-      );
+  void onCreate(RouteSettings routeSettings) {
+    _channel.invokeMethod(
+      'onCreate',
+      routeSettings.toArguments(),
+    );
+  }
 
   @override
   void willAppear(RouteSettings routeSettings) => _channel.invokeMethod(
@@ -82,7 +80,7 @@ class NavigatorPageObserverChannel extends NavigatorPageObserver {
 
   @override
   void didDisappear(RouteSettings routeSettings) => _channel.invokeMethod(
-        'onCreate',
+        'didDisappear',
         routeSettings.toArguments(),
       );
 
