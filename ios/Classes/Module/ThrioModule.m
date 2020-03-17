@@ -23,13 +23,20 @@
 #import "ThrioModule.h"
 #import "ThrioNavigator+NavigatorBuilder.h"
 #import "ThrioNavigator+Internal.h"
+#import "ThrioNavigator+PageObserver.h"
+#import "ThrioNavigator+RouteObserver.h"
 #import "NavigatorFlutterEngineFactory.h"
 
 @implementation ThrioModule
 
 static NSMutableDictionary *modules;
 
-- (void)registerModule:(id<ThrioModuleProtocol>)module {
++ (void)init:(ThrioModule *)rootModule {
+  [rootModule registerModule:rootModule];
+  [rootModule initModule];
+}
+
+- (void)registerModule:(ThrioModule *)module {
   if (!modules) {
     modules = [NSMutableDictionary dictionary];
   }
@@ -65,19 +72,34 @@ static NSMutableDictionary *modules;
   }
 }
 
-- (ThrioVoidCallback)registerNativeViewControllerBuilder:(ThrioNativeViewControllerBuilder)builder
-                                                  forUrl:(NSString *)url {
-  return [ThrioNavigator registerNativeViewControllerBuilder:builder forUrl:url];
+- (void)onModuleRegister { }
+
+- (void)onPageRegister { }
+
+- (void)onModuleInit { }
+
+- (void)onModuleAsyncInit { }
+
+- (ThrioVoidCallback)registerNativePageBuilder:(ThrioNativeViewControllerBuilder)builder
+                                        forUrl:(NSString *)url {
+  return [ThrioNavigator.nativePageBuilders registry:url value:builder];
 }
 
-- (ThrioVoidCallback)registerFlutterViewControllerBuilder:(ThrioFlutterViewControllerBuilder)builder {
-  return [ThrioNavigator registerFlutterViewControllerBuilder:builder];
+- (void)setFlutterPageBuilder:(ThrioFlutterViewControllerBuilder)builder {
+  ThrioNavigator.flutterPageBuilder = builder;
+}
+
+- (ThrioVoidCallback)registerPageObserver:(id<NavigatorPageObserverProtocol>)pageObserver {
+  return [ThrioNavigator.pageObservers registry:pageObserver];
+}
+
+- (ThrioVoidCallback)registerRouteObserver:(id<NavigatorRouteObserverProtocol>)routeObserver {
+  return [ThrioNavigator.routeObservers registry:routeObserver];
 }
 
 - (void)startupFlutterEngineWithEntrypoint:(NSString *)entrypoint {
   [NavigatorFlutterEngineFactory.shared startupWithEntrypoint:entrypoint readyBlock:nil];
 }
 
-- (void)onModuleRegister { }
 
 @end

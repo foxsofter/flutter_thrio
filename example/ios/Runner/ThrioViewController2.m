@@ -36,7 +36,7 @@
 }
 - (IBAction)pushNative1WithoutThrio:(id)sender {
   UIStoryboard *sb = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
-  UIViewController *vc = [sb instantiateViewControllerWithIdentifier:@"ThrioViewController1"];
+  UIViewController *vc = [sb instantiateViewControllerWithIdentifier:@"ThrioViewController"];
 
   [self.navigationController pushViewController:vc animated:YES];
 }

@@ -522,7 +522,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (UIViewController *)thrio_createFlutterViewControllerWithEntrypoint:(NSString *)entrypoint {
   UIViewController *viewController;
-  ThrioFlutterViewControllerBuilder flutterBuilder = [ThrioNavigator flutterViewControllerBuilder];
+  ThrioFlutterViewControllerBuilder flutterBuilder = [ThrioNavigator flutterPageBuilder];
   if (flutterBuilder) {
     viewController = flutterBuilder();
   } else {
@@ -533,7 +533,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (UIViewController * _Nullable)thrio_createNativeViewControllerWithUrl:(NSString *)url params:(NSDictionary *)params {
   UIViewController *viewController;
-  ThrioNativeViewControllerBuilder builder = [ThrioNavigator nativeViewControllerBuilders][url];
+  ThrioNativeViewControllerBuilder builder = [ThrioNavigator nativePageBuilders][url];
   if (builder) {
     viewController = builder(params);
     if (viewController.thrio_hidesNavigationBar == nil) {

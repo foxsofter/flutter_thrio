@@ -12,7 +12,7 @@
 @implementation Module2
 
 - (void)onPageRegister {
-  [self registerNativeViewControllerBuilder:^UIViewController * _Nullable(NSDictionary<NSString *,id> * _Nonnull params) {
+  [self registerNativePageBuilder:^UIViewController * _Nullable(NSDictionary<NSString *,id> * _Nonnull params) {
     UIStoryboard *sb = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     return [sb instantiateViewControllerWithIdentifier:@"ThrioViewController2"];
   } forUrl:@"native2"];

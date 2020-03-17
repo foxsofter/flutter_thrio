@@ -11,14 +11,11 @@
 
 - (BOOL)application:(UIApplication *)application
     didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-//  [ThrioNavigator setMultiEngineEnabled:NO];
-  MainModule *main = [MainModule new];
-  [main registerModule:main];
-  [main initModule];
+  //  [ThrioNavigator setMultiEngineEnabled:NO];
+  [ThrioModule init:[MainModule new]];
   
   // Override point for customization after application launch.
   return [super application:application didFinishLaunchingWithOptions:launchOptions];
 }
-
 
 @end
