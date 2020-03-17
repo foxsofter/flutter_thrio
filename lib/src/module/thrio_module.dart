@@ -94,14 +94,6 @@ mixin ThrioModule {
         name: name,
       );
 
-  /// Register default page builder for the router.
-  ///
-  /// Unregistry by calling the return value `VoidCallback`.
-  ///
-  VoidCallback registerDefaultPageBuilder(NavigatorPageBuilder builder) =>
-      ThrioNavigatorImplement.pageBuilders
-          .registry(Navigator.defaultRouteName, builder);
-
   /// Register an page builder for the router.
   ///
   /// Unregistry by calling the return value `VoidCallback`.
@@ -117,16 +109,20 @@ mixin ThrioModule {
           Map<String, NavigatorPageBuilder> builders) =>
       ThrioNavigatorImplement.pageBuilders.registryAll(builders);
 
-  /// Register observer for the page.
+  /// Register observers for the life cycle of Dart pages.
   ///
   /// Unregistry by calling the return value `VoidCallback`.
+  ///
+  /// Do not override this method.
   ///
   VoidCallback registerPageObserver(NavigatorPageObserver pageObserver) =>
       ThrioNavigatorImplement.pageObservers.registry(pageObserver);
 
-  /// Register observer for the router.
+  /// Register observers for route action of Dart pages.
   ///
   /// Unregistry by calling the return value `VoidCallback`.
+  ///
+  /// Do not override this method.
   ///
   VoidCallback registerRouteObserver(NavigatorRouteObserver routeObserver) =>
       ThrioNavigatorImplement.routeObservers.registry(routeObserver);

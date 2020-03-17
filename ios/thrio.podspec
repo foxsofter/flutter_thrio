@@ -23,6 +23,8 @@ A flutter plugin which enables hybrid integration of flutter for existing ios or
                            'Classes/Navigator/NavigatorRouteSettings.h',
                            'Classes/Navigator/NavigatorPageRoute.h',
                            'Classes/Navigator/NavigatorPageNotifyProtocol.h',
+                           'Classes/Navigator/NavigatorPageObserverProtocol.h',
+                           'Classes/Navigator/NavigatorRouteObserverProtocol.h',
                            'Classes/Navigator/ThrioFlutterViewController.h',
                            'Classes/Navigator/ThrioNavigator.h',
                            'Classes/Navigator/UINavigationController+Navigator.h',

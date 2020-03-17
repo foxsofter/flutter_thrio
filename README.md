@@ -47,12 +47,22 @@ class Module with ThrioModule {
 2. iOS 中注册页面路由
 
 ```objc
+
+@interface Module1 : ThrioModule<NavigatorPageObserverProtocol>
+
+@end
+
+@implementation Module1
+
 - (void)onPageRegister {
   [self registerNativeViewControllerBuilder:^UIViewController * _Nullable(NSDictionary<NSString *,id> * _Nonnull params) {
     UIStoryboard *sb = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     return [sb instantiateViewControllerWithIdentifier:@"ThrioViewController"];
   } forUrl:@"native1"];
 }
+
+@end
+
 ```
 
 3. Android 中注册页面路由
@@ -275,6 +285,135 @@ viewController.thrio_willPopBlock = ^(ThrioBoolCallback _Nonnull result) {
 ```
 
 一旦设置 thrio_willPopBlock，侧滑返回将失效.
+
+### 页面的生命周期
+
+原生端可以获得所有页面的生命周期，Dart 端只能获取自身页面的生命周期
+
+1. dart 端获取页面的生命周期
+
+```dart
+class Module with ThrioModule, NavigatorPageObserver {
+  @override
+  void onPageRegister() {
+    registerPageObserver(this);
+  }
+
+  @override
+  void didAppear(RouteSettings routeSettings) {}
+
+  @override
+  void didDisappear(RouteSettings routeSettings) {}
+
+  @override
+  void onCreate(RouteSettings routeSettings) {}
+
+  @override
+  void willAppear(RouteSettings routeSettings) {}
+
+  @override
+  void willDisappear(RouteSettings routeSettings) {}
+}
+```
+
+2. ios 端获取页面的生命周期
+
+```objc
+@interface Module1 : ThrioModule<NavigatorPageObserverProtocol>
+
+@end
+
+@implementation Module1
+
+- (void)onPageRegister {
+  [self registerPageObserver:self];
+}
+
+- (void)onCreate:(NavigatorRouteSettings *)routeSettings { }
+
+- (void)willAppear:(NavigatorRouteSettings *)routeSettings { }
+
+- (void)didAppear:(NavigatorRouteSettings *)routeSettings { }
+
+- (void)willDisappear:(NavigatorRouteSettings *)routeSettings { }
+
+- (void)didDisappear:(NavigatorRouteSettings *)routeSettings { }
+
+@end
+
+```
+
+### 页面的路由行为
+
+原生端可以获得所有页面的路由行为，Dart 端只能获取自身页面的路由行为
+
+1. dart 端获取页面的路由行为
+
+```dart
+class Module with ThrioModule, NavigatorRouteObserver {
+  @override
+  void onModuleRegister() {
+    registerRouteObserver(this);
+  }
+
+  @override
+  void didPop(
+    RouteSettings routeSettings,
+    RouteSettings previousRouteSettings,
+  ) {}
+
+  @override
+  void didPopTo(
+    RouteSettings routeSettings,
+    RouteSettings previousRouteSettings,
+  ) {}
+
+  @override
+  void didPush(
+    RouteSettings routeSettings,
+    RouteSettings previousRouteSettings,
+  ) {}
+
+  @override
+  void didRemove(
+    RouteSettings routeSettings,
+    RouteSettings previousRouteSettings,
+  ) {}
+}
+```
+
+2. ios 端获取页面的路由行为
+
+```objc
+@interface Module2 : ThrioModule<NavigatorRouteObserverProtocol>
+
+@end
+
+@implementation Module2
+
+- (void)onPageRegister {
+  [self registerRouteObserver:self];
+}
+
+- (void)didPop:(NavigatorRouteSettings *)routeSettings
+ previousRoute:(NavigatorRouteSettings * _Nullable)previousRouteSettings {
+}
+
+- (void)didPopTo:(NavigatorRouteSettings *)routeSettings
+   previousRoute:(NavigatorRouteSettings * _Nullable)previousRouteSettings {
+}
+
+- (void)didPush:(NavigatorRouteSettings *)routeSettings
+  previousRoute:(NavigatorRouteSettings * _Nullable)previousRouteSettings {
+}
+
+- (void)didRemove:(NavigatorRouteSettings *)routeSettings
+    previousRoute:(NavigatorRouteSettings * _Nullable)previousRouteSettings {
+}
+
+@end
+
+```
 
 ### 支持内嵌套 Flutter 页面
 
