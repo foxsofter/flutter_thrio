@@ -68,7 +68,6 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
     }
 
     final pageBuilder = ThrioNavigatorImplement.pageBuilders[settings.url];
-    //使用缺省页面
     if (pageBuilder == null) {
       return Future.value(false);
     }
