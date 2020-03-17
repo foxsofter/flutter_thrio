@@ -62,12 +62,16 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
       return Future.value(false);
     }
 
-    final pageObservers = Set.from(ThrioNavigatorImplement.pageObservers);
-    for (final observer in pageObservers) {
-      observer.onCreate(settings);
+    var pageBuilder = ThrioNavigator.getPageBuilder(settings.url);
+
+    //使用缺省页面
+    if (pageBuilder == null) {
+      pageBuilder = ThrioNavigator.getPageBuilder(Navigator.defaultRouteName);
+      if (pageBuilder == null) {
+        return Future.value(false);
+      }
     }
 
-    final pageBuilder = ThrioNavigatorImplement.pageBuilders[settings.url];
     final route = NavigatorPageRoute(
       builder: pageBuilder,
       settings: settings,
