@@ -93,7 +93,7 @@ NS_ASSUME_NONNULL_BEGIN
                                              animated:animated
                                        fromEntrypoint:entrypoint
                                                result:^(NSNumber *idx) {
-            if (idx) {
+            if (idx && [idx boolValue]) {
               [strongSelf thrio_removePopGesture];
             }
             if (result) {
@@ -391,6 +391,8 @@ NS_ASSUME_NONNULL_BEGIN
   }
 }
 
+/// 侧滑返回有个比较坑的点，刚开始侧滑的时候就触发了`popViewControllerAnimated:`，这函数中的逻辑主要是为了避免这个问题
+///
 - (UIViewController * _Nullable)thrio_popViewControllerAnimated:(BOOL)animated {
   if (self.thrio_popingViewController) { // 不为空表示不是手势触发的pop
     // 如果是FlutterViewController，无视thrio_willPopBlock，willPop在Dart中已经调用过
@@ -588,7 +590,7 @@ NS_ASSUME_NONNULL_BEGIN
                          animated:animated
                    fromEntrypoint:entrypoint
                            result:^(NSNumber *idx) {
-      if (idx) {
+      if (idx && [idx boolValue]) {
         __strong typeof(weakself) strongSelf = weakself;
         [strongSelf pushViewController:viewController animated:animated];
       }
