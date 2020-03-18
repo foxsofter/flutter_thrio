@@ -43,14 +43,10 @@ class ThrioNavigatorImplement {
     NavigatorRouteSendChannel sendChannel,
     NavigatorRouteReceiveChannel receiveChannel,
     Map<String, NavigatorParamsCallback> pagePoppedResults,
-    RegistrySet<NavigatorPageObserver> pageObservers,
-    RegistrySet<NavigatorRouteObserver> routeObservers,
   })  : _channel = channel,
         _sendChannel = sendChannel,
         _receiveChannel = receiveChannel,
-        _pagePoppedResults = pagePoppedResults,
-        _pageObservers = pageObservers,
-        _routeObservers = routeObservers;
+        _pagePoppedResults = pagePoppedResults;
 
   static ThrioNavigatorImplement _default;
 
@@ -60,25 +56,21 @@ class ThrioNavigatorImplement {
     final pagePoppedResults = <String, NavigatorParamsCallback>{};
     final receiveChannel =
         NavigatorRouteReceiveChannel(channel, pagePoppedResults);
-    final pageObservers = RegistrySet<NavigatorPageObserver>()
-      ..registry(NavigatorPageObserverChannel());
-    final routeObservers = RegistrySet<NavigatorRouteObserver>()
-      ..registry(NavigatorRouteObserverChannel());
+    _pageObservers.registry(NavigatorPageObserverChannel());
+    _routeObservers.registry(NavigatorRouteObserverChannel());
     _default = ThrioNavigatorImplement._(
       channel: channel,
       sendChannel: sendChannel,
       receiveChannel: receiveChannel,
       pagePoppedResults: pagePoppedResults,
-      pageObservers: pageObservers,
-      routeObservers: routeObservers,
     );
     sendChannel.registerUrls(_pageBuilders.keys.toList());
 
     return (context, child) => NavigatorWidget(
           key: _stateKey ??= GlobalKey<NavigatorWidgetState>(),
           observerManager: NavigatorObserverManager(
-            pageObservers: _default._pageObservers,
-            routeObservers: _default._routeObservers,
+            pageObservers: _pageObservers,
+            routeObservers: _routeObservers,
           ),
           child: child is Navigator ? child : null,
         );
@@ -96,9 +88,9 @@ class ThrioNavigatorImplement {
 
   final Map<String, NavigatorParamsCallback> _pagePoppedResults;
 
-  final RegistrySet<NavigatorPageObserver> _pageObservers;
+  static final _pageObservers = RegistrySet<NavigatorPageObserver>();
 
-  final RegistrySet<NavigatorRouteObserver> _routeObservers;
+  static final _routeObservers = RegistrySet<NavigatorRouteObserver>();
 
   static final _pageBuilders = RegistryMap<String, NavigatorPageBuilder>();
 
@@ -234,9 +226,8 @@ class ThrioNavigatorImplement {
   static RegistryMap<String, NavigatorPageBuilder> get pageBuilders =>
       _pageBuilders;
 
-  static RegistrySet<NavigatorPageObserver> get pageObservers =>
-      _default?._pageObservers;
+  static RegistrySet<NavigatorPageObserver> get pageObservers => _pageObservers;
 
   static RegistrySet<NavigatorRouteObserver> get routeObservers =>
-      _default?._routeObservers;
+      _routeObservers;
 }

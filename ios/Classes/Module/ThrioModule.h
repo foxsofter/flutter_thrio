@@ -65,8 +65,8 @@ NS_ASSUME_NONNULL_BEGIN
 ///
 /// Do not override this method.
 ///
-- (ThrioVoidCallback)registerNativePageBuilder:(ThrioNativeViewControllerBuilder)builder
-                                        forUrl:(NSString *)url;
+- (ThrioVoidCallback)registerPageBuilder:(ThrioNativeViewControllerBuilder)builder
+                                  forUrl:(NSString *)url;
 
 /// Sets the `ThrioFlutterViewController` builder.
 ///

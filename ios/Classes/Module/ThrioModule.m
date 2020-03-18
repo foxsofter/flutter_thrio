@@ -80,9 +80,9 @@ static NSMutableDictionary *modules;
 
 - (void)onModuleAsyncInit { }
 
-- (ThrioVoidCallback)registerNativePageBuilder:(ThrioNativeViewControllerBuilder)builder
-                                        forUrl:(NSString *)url {
-  return [ThrioNavigator.nativePageBuilders registry:url value:builder];
+- (ThrioVoidCallback)registerPageBuilder:(ThrioNativeViewControllerBuilder)builder
+                                  forUrl:(NSString *)url {
+  return [ThrioNavigator.pageBuilders registry:url value:builder];
 }
 
 - (void)setFlutterPageBuilder:(ThrioFlutterViewControllerBuilder)builder {
