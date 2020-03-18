@@ -318,7 +318,7 @@ NS_ASSUME_NONNULL_BEGIN
   }
   do {
     if ([last.settings.url isEqualToString:url] &&
-        (!index || [last.settings.index isEqualToNumber:index])) {
+        (index == nil || [last.settings.index isEqualToNumber:index])) {
       return last;
     }
   } while ((last = last.prev));
