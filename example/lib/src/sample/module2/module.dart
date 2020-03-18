@@ -1,8 +1,9 @@
+import 'package:flutter/widgets.dart';
 import 'package:thrio/thrio.dart';
 import 'page3.dart';
 import 'page4.dart';
 
-class Module with ThrioModule {
+class Module with ThrioModule, NavigatorRouteObserver {
   @override
   void onPageRegister() {
     registerPageBuilder(
@@ -13,5 +14,30 @@ class Module with ThrioModule {
       'biz2/flutter4',
       (settings) => Page4(index: settings.index, params: settings.params),
     );
+    registerRouteObserver(this);
   }
+
+  @override
+  void didPush(
+    RouteSettings routeSettings,
+    RouteSettings previousRouteSettings,
+  ) {}
+
+  @override
+  void didPop(
+    RouteSettings routeSettings,
+    RouteSettings previousRouteSettings,
+  ) {}
+
+  @override
+  void didPopTo(
+    RouteSettings routeSettings,
+    RouteSettings previousRouteSettings,
+  ) {}
+
+  @override
+  void didRemove(
+    RouteSettings routeSettings,
+    RouteSettings previousRouteSettings,
+  ) {}
 }
