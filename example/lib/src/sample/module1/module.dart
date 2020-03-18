@@ -20,13 +20,13 @@ class Module with ThrioModule, NavigatorPageObserver {
   }
 
   @override
+  void onCreate(RouteSettings routeSettings) {}
+
+  @override
   void didAppear(RouteSettings routeSettings) {}
 
   @override
   void didDisappear(RouteSettings routeSettings) {}
-
-  @override
-  void onCreate(RouteSettings routeSettings) {}
 
   @override
   void willAppear(RouteSettings routeSettings) {}
