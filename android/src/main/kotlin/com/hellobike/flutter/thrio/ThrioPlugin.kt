@@ -21,16 +21,10 @@
 
 package com.hellobike.flutter.thrio
 
-import android.app.Application
-import android.content.Context
 import android.support.annotation.NonNull
-import com.hellobike.flutter.thrio.navigator.NavigatorActivitiesHandler
-import com.hellobike.flutter.thrio.navigator.NavigatorFlutterEngineFactory
 import io.flutter.embedding.engine.plugins.FlutterPlugin
-import io.flutter.plugin.common.BinaryMessenger
 import io.flutter.plugin.common.PluginRegistry.Registrar
 
-/** ThrioPlugin */
 class ThrioPlugin : FlutterPlugin {
 
     companion object {
@@ -45,22 +39,12 @@ class ThrioPlugin : FlutterPlugin {
         // in the same class.
         @JvmStatic
         fun registerWith(registrar: Registrar) {
-            register(registrar.context(), registrar.messenger())
-        }
-
-        private fun register(application: Context, binaryMessenger: BinaryMessenger) {
-            check(application is Application) { "application Context" }
-            application.unregisterActivityLifecycleCallbacks(NavigatorActivitiesHandler)
-            application.registerActivityLifecycleCallbacks(NavigatorActivitiesHandler)
-//            NavigatorFlutterEngineFactory.onRegister(binaryMessenger)
         }
     }
 
     override fun onAttachedToEngine(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {
-        register(binding.applicationContext, binding.binaryMessenger)
     }
 
     override fun onDetachedFromEngine(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {
-//        NavigatorFlutterEngineFactory.unRegister(binding.binaryMessenger)
     }
 }

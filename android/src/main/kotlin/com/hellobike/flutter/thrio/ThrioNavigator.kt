@@ -21,19 +21,20 @@
 
 package com.hellobike.flutter.thrio
 
+import android.app.Application
 import android.content.Context
-import com.hellobike.flutter.thrio.navigator.NavigatorBuilder
+import com.hellobike.flutter.thrio.navigator.NavigatorActivitiesHandler
 import com.hellobike.flutter.thrio.navigator.NavigatorController
 import com.hellobike.flutter.thrio.navigator.NavigatorFlutterEngineFactory
 import com.hellobike.flutter.thrio.navigator.NavigatorFlutterEngineFactory.THRIO_ENGINE_NATIVE_ID
 
-object ThrioNavigator {
+typealias Result = (Boolean) -> Unit
 
-    @JvmStatic
-    @JvmOverloads
-    fun init(context: Context) {
-        NavigatorFlutterEngineFactory.initEngine(context)
-    }
+typealias PushResult = (Int?) -> Unit
+
+typealias PoppedResult = (Any?) -> Unit
+
+object ThrioNavigator {
 
     @JvmStatic
     @JvmOverloads
@@ -71,21 +72,10 @@ object ThrioNavigator {
         NavigatorController.notify(url, index, name, params, result)
     }
 
-    @JvmStatic
-    @JvmOverloads
-    fun registerNavigationBuilder(url: String, builder: NavigationBuilder) {
-        NavigatorBuilder.registerNavigationBuilder(url, builder)
-    }
-
-    @JvmStatic
-    @JvmOverloads
-    fun removeNavigationBuilder(url: String) {
-        NavigatorBuilder.unRegisterNavigationBuilder(url)
+    internal fun init(context: Application) {
+        NavigatorFlutterEngineFactory.initEngine(context)
+        context.registerActivityLifecycleCallbacks(NavigatorActivitiesHandler)
     }
 }
 
-typealias Result = (Boolean) -> Unit
 
-typealias PushResult = (Int?) -> Unit
-
-typealias PoppedResult = (Any?) -> Unit

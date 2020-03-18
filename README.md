@@ -70,11 +70,15 @@ class Module with ThrioModule {
 打开操作逻辑需要实现`NavigationBuilder`接口
 
 ```kotlin
-ThrioNavigator.registerNavigationBuilder("native1", object : NavigationBuilder {
-    override fun getActivityClz(url: String): Class<out Activity> {
-        return Native2Activity::class.java
+class FlutterModule : ThrioModule() {
+    override fun onPageRegister() {
+        registerPageBuilder("native1", object : NavigationBuilder {
+            override fun getActivityClz(url: String): Class<out Activity> {
+                return Native1Activity::class.java
+            }
+        })
     }
-})
+}
 ```
 
 ### 打开页面
@@ -107,10 +111,14 @@ ThrioNavigator.push(
 
 3. Android 端打开页面
 
-TODO: poppedResult 暂未实现，回调会超出页面生命周期
-
 ```kotlin
-ThrioNavigator.push(context, "flutter1", params)
+ThrioNavigator.push(this, "biz1/flutter1",
+        mapOf("k1" to 1),
+        false,
+        poppedResult = {
+            Log.e("Thrio", "native1 popResult call params $it")
+        }
+)
 ```
 
 ### 关闭顶层页面
@@ -140,7 +148,7 @@ ThrioNavigator.pop(params: 'popped flutter1'),
 3. Android 端关闭顶层页面
 
 ```kotlin
-ThrioNavigator.pop(context, animated)
+ThrioNavigator.pop(this, params, animated)
 ```
 
 ### 关闭到页面
@@ -242,11 +250,10 @@ NavigatorPageNotify(
 3. Android 端接收页面通知
 
 `Activity`实现协议`OnNotifyListener`，通过 onNotify 回调来接收页面通知
-TODO: url, index 需要去除
 
 ```kotlin
 class Activity : AppCompatActivity(), OnNotifyListener {
-    override fun onNotify(url: String, index: Int, name: String, params: Any?) {
+    override fun onNotify(name: String, params: Any?) {
     }
 }
 ```

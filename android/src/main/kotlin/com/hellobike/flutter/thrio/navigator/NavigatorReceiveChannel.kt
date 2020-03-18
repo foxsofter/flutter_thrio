@@ -131,9 +131,6 @@ internal class NavigatorReceiveChannel(private val id: String) : MethodChannel.M
             /** hotRestart **/
             "hotRestart" -> {
             }
-            /** unused **/
-            "didPush", "didPop", "didRemove", "didPopTo", "setPopDisabled" -> {
-            }
             else -> {
                 Log.e("Thrio", "flutter call method ${call.method} notImplemented")
                 result.notImplemented()

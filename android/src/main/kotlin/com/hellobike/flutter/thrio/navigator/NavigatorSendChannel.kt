@@ -54,6 +54,7 @@ internal class NavigatorSendChannel constructor(messenger: BinaryMessenger, val 
             }
 
             override fun error(errorCode: String?, errorMessage: String?, errorDetails: Any?) {
+                Log.e("Thrio","__onPush__ error")
             }
 
             override fun notImplemented() {}

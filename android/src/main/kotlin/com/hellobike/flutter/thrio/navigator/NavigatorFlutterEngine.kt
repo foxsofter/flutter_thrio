@@ -10,10 +10,16 @@ internal data class NavigatorFlutterEngine(private val context: Context, private
     var sendChannel: NavigatorSendChannel
     var receiveChannel: NavigatorReceiveChannel
 
+    var routeObserverChannel: NavigatorRouteObserverChannel
+    var pageObserverChannel: NavigatorPageObserverChannel
+
     init {
         sendChannel = NavigatorSendChannel(flutterEngine.dartExecutor, id)
         receiveChannel = NavigatorReceiveChannel(id)
         sendChannel.setMethodCallHandler(receiveChannel)
+
+        routeObserverChannel = NavigatorRouteObserverChannel(flutterEngine.dartExecutor)
+        pageObserverChannel = NavigatorPageObserverChannel(flutterEngine.dartExecutor)
     }
 
 }
