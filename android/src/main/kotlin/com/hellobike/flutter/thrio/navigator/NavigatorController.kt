@@ -122,10 +122,9 @@ internal object NavigatorController {
                     activity.finish()
                 }
                 result(record.index)
-                action = Action.NONE
-                this.result = null
-
             }
+            action = Action.NONE
+            this.result = null
         }
 
         private fun onPush(activity: Activity, record: NavigatorPageRoute, result: Result) {
@@ -187,7 +186,7 @@ internal object NavigatorController {
             }
             val current = record.current
             val from = record.from
-            if (current != from && from != null) {
+            if (current != from && from != null && from != NavigatorFlutterEngineFactory.THRIO_ENGINE_NATIVE_ID) {
                 val engine = NavigatorFlutterEngineFactory.getNavigatorFlutterEngine(from)
                         ?: throw IllegalStateException("engine must not be null")
                 engine.sendChannel.onPop(record.url, record.index, record.resultParams, false) {}
