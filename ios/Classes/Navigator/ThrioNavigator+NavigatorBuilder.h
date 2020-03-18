@@ -27,7 +27,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface ThrioNavigator (NavigatorBuilder)
 
-+ (ThrioRegistryMap *)nativePageBuilders;
++ (ThrioRegistryMap *)pageBuilders;
 
 + (void)setFlutterPageBuilder:(ThrioFlutterViewControllerBuilder _Nullable)builder;
 

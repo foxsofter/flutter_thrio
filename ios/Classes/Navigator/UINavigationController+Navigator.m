@@ -140,10 +140,23 @@ NS_ASSUME_NONNULL_BEGIN
     return;
   }
   if (!vc.thrio_firstRoute) { // 不存在表示页面未经过thrio打开，直接关闭即可
-    self.thrio_popingViewController = vc;
-    id vc = [self popViewControllerAnimated:animated];
+    if (self.viewControllers.count > 1) {
+      self.thrio_popingViewController = vc;
+      id vc = [self popViewControllerAnimated:animated];
+      if (result) {
+        result(vc != nil);
+      }
+    } else {
+      if (result) {
+        result(NO);
+      }
+    }
+    return;
+  }
+  // 仅剩最后一个页面，不允许pop
+  if (vc.thrio_firstRoute == vc.thrio_lastRoute && self.viewControllers.count < 2) {
     if (result) {
-      result(vc != nil);
+      result(NO);
     }
     return;
   }
@@ -182,6 +195,7 @@ NS_ASSUME_NONNULL_BEGIN
     }
     return;
   }
+  
   __weak typeof(self) weakself = self;
   [vc thrio_popToUrl:url index:index animated:animated result:^(BOOL r) {
     __strong typeof(weakself) strongSelf = weakself;
@@ -208,7 +222,14 @@ NS_ASSUME_NONNULL_BEGIN
     }
     return;
   }
-  
+  // 仅剩最后一个页面，不允许remove
+  if (vc.thrio_firstRoute == vc.thrio_lastRoute && self.viewControllers.count < 2) {
+    if (result) {
+      result(NO);
+    }
+    return;
+  }
+
   NavigatorRouteSettings *routeSettings = [vc thrio_getRouteByUrl:url index:index].settings;
   NSArray *vcs = self.navigationController.viewControllers;
   NSUInteger idx = [vcs indexOfObject:vc];
@@ -374,14 +395,16 @@ NS_ASSUME_NONNULL_BEGIN
   if (self.thrio_popingViewController) { // 不为空表示不是手势触发的pop
     // 如果是FlutterViewController，无视thrio_willPopBlock，willPop在Dart中已经调用过
     if ([self.topViewController isKindOfClass:ThrioFlutterViewController.class]) {
-      // 判断前一个页面如果是ThrioFlutterViewController，直接将引擎切换到该页面
-      UIViewController *vc = [self.viewControllers objectAtIndex:self.viewControllers.count - 2];
-      if ([vc isKindOfClass:ThrioFlutterViewController.class]) {
-        [NavigatorFlutterEngineFactory.shared pushViewController:(ThrioFlutterViewController*)vc];
-      }
-      // 判断前一个页面导航栏是否需要切换
-      if (self.navigationBarHidden != vc.thrio_hidesNavigationBar.boolValue) {
-        [self setNavigationBarHidden:vc.thrio_hidesNavigationBar.boolValue];
+      if (self.viewControllers.count > 1) {
+        // 判断前一个页面如果是ThrioFlutterViewController，直接将引擎切换到该页面
+        UIViewController *vc = [self.viewControllers objectAtIndex:self.viewControllers.count - 2];
+        if ([vc isKindOfClass:ThrioFlutterViewController.class]) {
+          [NavigatorFlutterEngineFactory.shared pushViewController:(ThrioFlutterViewController*)vc];
+        }
+        // 判断前一个页面导航栏是否需要切换
+        if (self.navigationBarHidden != vc.thrio_hidesNavigationBar.boolValue) {
+          [self setNavigationBarHidden:vc.thrio_hidesNavigationBar.boolValue];
+        }
       }
 
       return [self thrio_popViewControllerAnimated:animated];
@@ -533,7 +556,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (UIViewController * _Nullable)thrio_createNativeViewControllerWithUrl:(NSString *)url params:(NSDictionary *)params {
   UIViewController *viewController;
-  ThrioNativeViewControllerBuilder builder = [ThrioNavigator nativePageBuilders][url];
+  ThrioNativeViewControllerBuilder builder = [ThrioNavigator pageBuilders][url];
   if (builder) {
     viewController = builder(params);
     if (viewController.thrio_hidesNavigationBar == nil) {

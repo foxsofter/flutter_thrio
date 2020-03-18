@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:thrio/thrio.dart';
 
-import 'default_page.dart';
 import 'sample/module.dart' as sample;
 
 void main() => runApp(const MainApp());

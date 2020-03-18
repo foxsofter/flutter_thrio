@@ -14,7 +14,7 @@ NS_ASSUME_NONNULL_BEGIN
 @implementation Module2
 
 - (void)onPageRegister {
-  [self registerNativePageBuilder:^UIViewController * _Nullable(NSDictionary<NSString *,id> * _params) {
+  [self registerPageBuilder:^UIViewController * _Nullable(NSDictionary<NSString *,id> * _params) {
     UIStoryboard *sb = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     return [sb instantiateViewControllerWithIdentifier:@"ThrioViewController2"];
   } forUrl:@"native2"];

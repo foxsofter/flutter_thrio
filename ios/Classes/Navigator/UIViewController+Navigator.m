@@ -182,6 +182,13 @@ NS_ASSUME_NONNULL_BEGIN
     }
     return;
   }
+  // 是最顶层页面，无法popTo
+  if (self.thrio_lastRoute == route && self == self.navigationController.topViewController) {
+    if (result) {
+      result(NO);
+    }
+    return;
+  }
   if ([self isKindOfClass:ThrioFlutterViewController.class]) {
     NSMutableDictionary *arguments =
     [NSMutableDictionary dictionaryWithDictionary:[route.settings toArgumentsWithParams:nil]];
@@ -189,9 +196,10 @@ NS_ASSUME_NONNULL_BEGIN
     __weak typeof(self) weakself = self;
     NSString *entrypoint = [(ThrioFlutterViewController*)self entrypoint];
     NavigatorSendChannel *channel = [NavigatorFlutterEngineFactory.shared getSendChannelByEntrypoint:entrypoint];
-    [channel onPopTo:arguments result:^(id  _Nullable r) {
+    [channel onPopTo:arguments result:^(id _Nullable r) {
       __strong typeof(weakself) strongSelf = weakself;
       if (r && [r boolValue]) {
+        route.next = nil; // TODO: 多引擎模式下，同步各个引擎的页面
         [strongSelf thrio_onNotify:route];
       }
       if (result) {

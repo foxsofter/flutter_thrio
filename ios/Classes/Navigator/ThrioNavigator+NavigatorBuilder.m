@@ -36,7 +36,7 @@
                            OBJC_ASSOCIATION_COPY_NONATOMIC);
 }
 
-+ (ThrioRegistryMap *)nativePageBuilders {
++ (ThrioRegistryMap *)pageBuilders {
   id builders = objc_getAssociatedObject(self, _cmd);
   if (!builders) {
     builders = [ThrioRegistryMap map];

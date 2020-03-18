@@ -364,28 +364,6 @@ NS_ASSUME_NONNULL_BEGIN
          animated:(BOOL)animated
            result:(ThrioBoolCallback)result;
 
-#pragma mark - predicate methods
-
-/// Returns whether the page can be pushed.
-///
-+ (BOOL)canPushUrl:(NSString *)url params:(NSDictionary *_Nullable)params;
-
-/// Returns whether the page can be notified.
-///
-+ (BOOL)canNotifyUrl:(NSString *)url index:(NSNumber *_Nullable)index;
-
-/// Returns whether the navigation stack can be poped.
-///
-+ (BOOL)canPop;
-
-/// Returns whether the page can be poped to.
-///
-+ (BOOL)canPopToUrl:(NSString *)url index:(NSNumber *_Nullable)index;
-
-/// Returns whether the page can be removed.
-///
-+ (BOOL)canRemoveUrl:(NSString *)url index:(NSNumber *_Nullable)index;
-
 #pragma mark - get index methods
 
 /// Returns the index of the page that was last pushed to the navigation
