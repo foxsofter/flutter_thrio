@@ -74,15 +74,20 @@ internal object NavigationController {
             val record = PageRouteStack.last()
             record.resultParams = params
             record.animated = animated
-            record.poppedResult?.get()?.let { it(record.resultParams) }
-            PageRouteStack.pop(record)
-            onPop(record) { check(it) { "flutter must not pop fail" } }
-            val intent = Intent(context, record.clazz)
-            intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-            context.startActivity(intent)
-            action = RouteAction.NONE
-            result(true)
+            onPop(record) {
+                action = RouteAction.NONE
+                result(it)
+                if (!it) {
+                    // Flutter WillPopScope is false
+                    return@onPop
+                }
+                record.poppedResult?.get()?.let { it(record.resultParams) }
+                PageRouteStack.pop(record)
+                val intent = Intent(context, record.clazz)
+                intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                context.startActivity(intent)
+            }
         }
 
         private fun onPop(record: PageRoute, result: Result) {
