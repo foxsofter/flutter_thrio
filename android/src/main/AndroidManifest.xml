@@ -1,0 +1,13 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.hellobike.flutter.thrio">
+
+    <application>
+        <activity
+            android:name="io.flutter.embedding.android.ThrioActivity"
+            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
+            android:hardwareAccelerated="true"
+            android:launchMode="singleTop"
+            android:theme="@style/Theme.Thrio.Default"
+            android:windowSoftInputMode="adjustResize" />
+    </application>
+</manifest>
