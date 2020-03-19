@@ -48,7 +48,6 @@ open class ThrioActivity : FlutterActivity() {
 
     internal fun onPush(record: PageRoute, isNested: Boolean, result: Result) {
         val id = cachedEngineId ?: throw IllegalStateException("cachedEngineId must not be null")
-        record.current = cachedEngineId
         val engine = FlutterEngineFactory.getEngine(id)
                 ?: throw IllegalStateException("engine must not be null")
         engine.onPush(record, isNested, result)
