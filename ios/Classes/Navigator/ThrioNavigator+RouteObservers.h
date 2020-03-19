@@ -20,18 +20,27 @@
 // IN THE SOFTWARE.
 
 #import "ThrioNavigator.h"
-#import "ThrioRegistryMap.h"
-#import "ThrioTypes.h"
+#import "ThrioNavigator.h"
+#import "ThrioRegistrySet.h"
+#import "NavigatorRouteObserverProtocol.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface ThrioNavigator (NavigatorBuilder)
+@interface ThrioNavigator (RouteObservers)
 
-+ (ThrioRegistryMap *)pageBuilders;
++ (ThrioRegistrySet<id<NavigatorRouteObserverProtocol>> *)routeObservers;
 
-+ (void)setFlutterPageBuilder:(ThrioFlutterViewControllerBuilder _Nullable)builder;
++ (void)didPush:(NavigatorRouteSettings *)routeSettings
+  previousRoute:(NavigatorRouteSettings * _Nullable)previousRouteSettings;
 
-+ (ThrioFlutterViewControllerBuilder _Nullable)flutterPageBuilder;
++ (void)didPop:(NavigatorRouteSettings *)routeSettings
+ previousRoute:(NavigatorRouteSettings * _Nullable)previousRouteSettings;
+
++ (void)didPopTo:(NavigatorRouteSettings *)routeSettings
+   previousRoute:(NavigatorRouteSettings * _Nullable)previousRouteSettings;
+
++ (void)didRemove:(NavigatorRouteSettings *)routeSettings
+    previousRoute:(NavigatorRouteSettings * _Nullable)previousRouteSettings;
 
 @end
 

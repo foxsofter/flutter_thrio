@@ -101,12 +101,12 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 
-- (void)pushViewController:(ThrioFlutterViewController *)viewController {
+- (void)pushViewController:(NavigatorFlutterViewController *)viewController {
   NavigatorFlutterEngine *flutterEngine = self.flutterEngines[viewController.entrypoint];
   [flutterEngine pushViewController:viewController];
 }
 
-- (void)popViewController:(ThrioFlutterViewController *)viewController {
+- (void)popViewController:(NavigatorFlutterViewController *)viewController {
   NavigatorFlutterEngine *flutterEngine = self.flutterEngines[viewController.entrypoint];
   if ([flutterEngine popViewController:viewController] < 1) {
     if (ThrioNavigator.isMultiEngineEnabled &&

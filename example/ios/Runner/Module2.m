@@ -18,7 +18,7 @@ NS_ASSUME_NONNULL_BEGIN
     UIStoryboard *sb = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
     return [sb instantiateViewControllerWithIdentifier:@"ThrioViewController2"];
   } forUrl:@"native2"];
-  [self registerRouteObserver:self];
+  [self registerRouteObserver:self]();
 }
 
 - (void)didPop:(NavigatorRouteSettings *)routeSettings

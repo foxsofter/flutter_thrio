@@ -19,28 +19,26 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-#import "ThrioNavigator.h"
+#import <Foundation/Foundation.h>
 #import "ThrioNavigator.h"
 #import "ThrioRegistrySet.h"
-#import "NavigatorRouteObserverProtocol.h"
+#import "NavigatorPageObserverProtocol.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface ThrioNavigator (RouteObserver)
+@interface ThrioNavigator (PageObservers)
 
-+ (ThrioRegistrySet<id<NavigatorRouteObserverProtocol>> *)routeObservers;
++ (ThrioRegistrySet<id<NavigatorPageObserverProtocol>> *)pageObservers;
 
-+ (void)didPush:(NavigatorRouteSettings *)routeSettings
-  previousRoute:(NavigatorRouteSettings * _Nullable)previousRouteSettings;
++ (void)onCreate:(NavigatorRouteSettings *)routeSettings;
 
-+ (void)didPop:(NavigatorRouteSettings *)routeSettings
- previousRoute:(NavigatorRouteSettings * _Nullable)previousRouteSettings;
++ (void)willAppear:(NavigatorRouteSettings *)routeSettings;
 
-+ (void)didPopTo:(NavigatorRouteSettings *)routeSettings
-   previousRoute:(NavigatorRouteSettings * _Nullable)previousRouteSettings;
++ (void)didAppear:(NavigatorRouteSettings *)routeSettings;
 
-+ (void)didRemove:(NavigatorRouteSettings *)routeSettings
-    previousRoute:(NavigatorRouteSettings * _Nullable)previousRouteSettings;
++ (void)willDisappear:(NavigatorRouteSettings *)routeSettings;
+
++ (void)didDisappear:(NavigatorRouteSettings *)routeSettings;
 
 @end
 

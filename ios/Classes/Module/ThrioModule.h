@@ -65,16 +65,16 @@ NS_ASSUME_NONNULL_BEGIN
 ///
 /// Do not override this method.
 ///
-- (ThrioVoidCallback)registerPageBuilder:(ThrioNativeViewControllerBuilder)builder
+- (ThrioVoidCallback)registerPageBuilder:(NavigatorPageBuilder)builder
                                   forUrl:(NSString *)url;
 
-/// Sets the `ThrioFlutterViewController` builder.
+/// Sets the `NavigatorFlutterViewController` builder.
 ///
-/// Need to be register when extending the `ThrioFlutterViewController` class.
+/// Need to be register when extending the `NavigatorFlutterViewController` class.
 ///
 /// Do not override this method.
 ///
-- (void)setFlutterPageBuilder:(ThrioFlutterViewControllerBuilder)builder;
+- (void)setFlutterPageBuilder:(NavigatorFlutterPageBuilder)builder;
 
 /// Register observers for the life cycle of native pages and Dart pages.
 ///

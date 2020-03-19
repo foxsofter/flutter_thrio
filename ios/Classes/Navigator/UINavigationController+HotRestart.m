@@ -24,7 +24,7 @@
 #import "UIViewController+Navigator.h"
 #import "ThrioLogger.h"
 #import "NavigatorFlutterEngineFactory.h"
-#import "ThrioFlutterViewController.h"
+#import "NavigatorFlutterViewController.h"
 #import "NavigatorRouteSettings.h"
 #import "ThrioNavigator.h"
 #import "ThrioNavigator+Internal.h"
@@ -33,10 +33,10 @@
 
 - (void)thrio_hotRestart:(ThrioBoolCallback)result {
   ThrioLogV(@"enter on hot restart");
-  ThrioFlutterViewController *viewController;
+  NavigatorFlutterViewController *viewController;
   for (UIViewController *vc in self.viewControllers) {
-    if ([vc isKindOfClass:ThrioFlutterViewController.class]) {
-      viewController = (ThrioFlutterViewController*)vc;
+    if ([vc isKindOfClass:NavigatorFlutterViewController.class]) {
+      viewController = (NavigatorFlutterViewController*)vc;
       break;
     }
   }

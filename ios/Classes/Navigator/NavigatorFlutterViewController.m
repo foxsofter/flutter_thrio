@@ -19,21 +19,21 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-#import "ThrioFlutterViewController.h"
+#import "NavigatorFlutterViewController.h"
 #import "UIViewController+Navigator.h"
 #import "UIViewController+HidesNavigationBar.h"
 #import "UINavigationController+Navigator.h"
 #import "NavigatorFlutterEngineFactory.h"
 #import "ThrioNavigator.h"
 #import "ThrioNavigator+Internal.h"
-#import "ThrioNavigator+PageObserver.h"
+#import "ThrioNavigator+PageObservers.h"
 #import "NavigatorFlutterEngine.h"
 #import "ThrioChannel.h"
 #import "ThrioLogger.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface ThrioFlutterViewController ()
+@interface NavigatorFlutterViewController ()
 
 @property (nonatomic, copy, readwrite) NSString *entrypoint;
 
@@ -41,7 +41,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wincomplete-implementation"
-@implementation ThrioFlutterViewController
+@implementation NavigatorFlutterViewController
 
 - (instancetype)initWithEntrypoint:(NSString *)entrypoint {
   FlutterEngine *engine = [NavigatorFlutterEngineFactory.shared getEngineByEntrypoint:entrypoint];
@@ -113,7 +113,7 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 - (void)dealloc {
-  ThrioLogV(@"ThrioFlutterViewController dealloc: %@", self);
+  ThrioLogV(@"NavigatorFlutterViewController dealloc: %@", self);
 }
 
 // override

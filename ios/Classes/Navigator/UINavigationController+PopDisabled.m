@@ -24,7 +24,7 @@
 #import "UINavigationController+Navigator.h"
 #import "UIViewController+WillPopCallback.h"
 #import "UIViewController+Navigator.h"
-#import "ThrioFlutterViewController.h"
+#import "NavigatorFlutterViewController.h"
 #import "NavigatorFlutterEngineFactory.h"
 #import "NavigatorRouteSettings.h"
 

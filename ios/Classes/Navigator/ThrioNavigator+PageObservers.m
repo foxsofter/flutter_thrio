@@ -20,14 +20,14 @@
 // IN THE SOFTWARE.
 
 #import <objc/runtime.h>
-#import "ThrioNavigator+RouteObserver.h"
+#import "ThrioNavigator+PageObservers.h"
 #import "ThrioLogger.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@implementation ThrioNavigator (RouteObserver)
+@implementation ThrioNavigator (PageObservers)
 
-+ (ThrioRegistrySet<id<NavigatorRouteObserverProtocol>> *)routeObservers {
++ (ThrioRegistrySet<id<NavigatorPageObserverProtocol>> *)pageObservers {
   id value = objc_getAssociatedObject(self, _cmd);
   if (!value) {
     value = [ThrioRegistrySet set];
@@ -36,39 +36,43 @@ NS_ASSUME_NONNULL_BEGIN
   return value;
 }
 
-+ (void)didPush:(NavigatorRouteSettings *)routeSettings
-  previousRoute:(NavigatorRouteSettings * _Nullable)previousRouteSettings {
++ (void)onCreate:(NavigatorRouteSettings *)routeSettings {
   ThrioLogV(@"%@ %@.%@", NSStringFromSelector(_cmd), routeSettings.url, routeSettings.index);
-  ThrioRegistrySet *routeObservers = [self.routeObservers copy];
-  for (id<NavigatorRouteObserverProtocol> observer in routeObservers) {
-    [observer didPush:routeSettings previousRoute:previousRouteSettings];
+  ThrioRegistrySet *pageObservers = [self.pageObservers copy];
+  for (id<NavigatorPageObserverProtocol> observer in pageObservers) {
+    [observer onCreate:routeSettings];
   }
 }
 
-+ (void)didPop:(NavigatorRouteSettings *)routeSettings
- previousRoute:(NavigatorRouteSettings * _Nullable)previousRouteSettings {
++ (void)willAppear:(NavigatorRouteSettings *)routeSettings {
   ThrioLogV(@"%@ %@.%@", NSStringFromSelector(_cmd), routeSettings.url, routeSettings.index);
-  ThrioRegistrySet *routeObservers = [self.routeObservers copy];
-  for (id<NavigatorRouteObserverProtocol> observer in routeObservers) {
-    [observer didPop:routeSettings previousRoute:previousRouteSettings];
+  ThrioRegistrySet *pageObservers = [self.pageObservers copy];
+  for (id<NavigatorPageObserverProtocol> observer in pageObservers) {
+    [observer willAppear:routeSettings];
   }
 }
 
-+ (void)didPopTo:(NavigatorRouteSettings *)routeSettings
-   previousRoute:(NavigatorRouteSettings * _Nullable)previousRouteSettings {
++ (void)didAppear:(NavigatorRouteSettings *)routeSettings {
   ThrioLogV(@"%@ %@.%@", NSStringFromSelector(_cmd), routeSettings.url, routeSettings.index);
-  ThrioRegistrySet *routeObservers = [self.routeObservers copy];
-  for (id<NavigatorRouteObserverProtocol> observer in routeObservers) {
-    [observer didPopTo:routeSettings previousRoute:previousRouteSettings];
+  ThrioRegistrySet *pageObservers = [self.pageObservers copy];
+  for (id<NavigatorPageObserverProtocol> observer in pageObservers) {
+    [observer didAppear:routeSettings];
   }
 }
 
-+ (void)didRemove:(NavigatorRouteSettings *)routeSettings
-    previousRoute:(NavigatorRouteSettings * _Nullable)previousRouteSettings {
++ (void)willDisappear:(NavigatorRouteSettings *)routeSettings {
   ThrioLogV(@"%@ %@.%@", NSStringFromSelector(_cmd), routeSettings.url, routeSettings.index);
-  ThrioRegistrySet *routeObservers = [self.routeObservers copy];
-  for (id<NavigatorRouteObserverProtocol> observer in routeObservers) {
-    [observer didRemove:routeSettings previousRoute:previousRouteSettings];
+  ThrioRegistrySet *pageObservers = [self.pageObservers copy];
+  for (id<NavigatorPageObserverProtocol> observer in pageObservers) {
+    [observer willDisappear:routeSettings];
+  }
+}
+
++ (void)didDisappear:(NavigatorRouteSettings *)routeSettings {
+  ThrioLogV(@"%@ %@.%@", NSStringFromSelector(_cmd), routeSettings.url, routeSettings.index);
+  ThrioRegistrySet *pageObservers = [self.pageObservers copy];
+  for (id<NavigatorPageObserverProtocol> observer in pageObservers) {
+    [observer didDisappear:routeSettings];
   }
 }
 

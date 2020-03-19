@@ -61,7 +61,7 @@ NS_ASSUME_NONNULL_BEGIN
   return self;
 }
 
-+ (instancetype)settingsFromArguments:(NSDictionary *)arguments {
++ (id _Nullable)settingsFromArguments:(NSDictionary *)arguments {
   NSString *url = arguments[@"url"];
   NSNumber *index = [arguments[@"index"] isKindOfClass:NSNull.class] ? nil : arguments[@"index"];
   id params = [arguments[@"params"] isKindOfClass:NSNull.class] ? nil : arguments[@"params"];

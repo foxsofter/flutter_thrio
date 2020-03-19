@@ -33,7 +33,7 @@
                            @selector(thrio_willPopBlock),
                            block,
                            OBJC_ASSOCIATION_COPY_NONATOMIC);
-  if (![self isKindOfClass:NSClassFromString(@"ThrioFlutterViewController")]) {
+  if (![self isKindOfClass:NSClassFromString(@"NavigatorFlutterViewController")]) {
     self.navigationController.interactivePopGestureRecognizer.enabled = block == nil;
   }
 }

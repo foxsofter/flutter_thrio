@@ -39,7 +39,7 @@
 #import "NavigatorPageNotifyProtocol.h"
 #import "NavigatorPageObserverProtocol.h"
 #import "NavigatorRouteObserverProtocol.h"
-#import "ThrioFlutterViewController.h"
+#import "NavigatorFlutterViewController.h"
 #import "ThrioNavigator.h"
 #import "UINavigationController+Navigator.h"
 #import "UIViewController+Navigator.h"
