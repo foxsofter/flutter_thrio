@@ -19,30 +19,20 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
+#import "ThrioNavigator.h"
+#import "ThrioRegistryMap.h"
+#import "ThrioTypes.h"
 
-#import <objc/runtime.h>
-#import "ThrioNavigator+NavigatorBuilder.h"
+NS_ASSUME_NONNULL_BEGIN
 
-@implementation ThrioNavigator (NavigatorBuilder)
+@interface ThrioNavigator (PageBuilders)
 
-+ (ThrioFlutterViewControllerBuilder _Nullable)flutterPageBuilder {
-  return objc_getAssociatedObject(self, _cmd);
-}
++ (ThrioRegistryMap *)pageBuilders;
 
-+ (void)setFlutterPageBuilder:(ThrioFlutterViewControllerBuilder _Nullable)builder {
-  objc_setAssociatedObject(self,
-                           @selector(flutterPageBuilder),
-                           builder,
-                           OBJC_ASSOCIATION_COPY_NONATOMIC);
-}
++ (void)setFlutterPageBuilder:(NavigatorFlutterPageBuilder _Nullable)builder;
 
-+ (ThrioRegistryMap *)pageBuilders {
-  id builders = objc_getAssociatedObject(self, _cmd);
-  if (!builders) {
-    builders = [ThrioRegistryMap map];
-    objc_setAssociatedObject(self, _cmd, builders, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-  }
-  return builders;
-}
++ (NavigatorFlutterPageBuilder _Nullable)flutterPageBuilder;
 
 @end
+
+NS_ASSUME_NONNULL_END

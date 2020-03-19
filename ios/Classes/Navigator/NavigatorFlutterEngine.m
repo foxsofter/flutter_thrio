@@ -56,7 +56,7 @@ NS_ASSUME_NONNULL_BEGIN
   }
 }
 
-- (void)pushViewController:(ThrioFlutterViewController *)viewController {
+- (void)pushViewController:(NavigatorFlutterViewController *)viewController {
   if (![_flutterViewControllers containsObject:viewController]) {
     [_flutterViewControllers addObject:viewController];
   }
@@ -64,18 +64,18 @@ NS_ASSUME_NONNULL_BEGIN
   if (_engine.viewController != viewController && viewController != nil) {
     ThrioLogV(@"NavigatorFlutterEngine: set new %@", viewController);
     _engine.viewController = viewController;
-    [(ThrioFlutterViewController*)_engine.viewController surfaceUpdated:YES];
+    [(NavigatorFlutterViewController*)_engine.viewController surfaceUpdated:YES];
   }
 }
 
-- (NSUInteger)popViewController:(ThrioFlutterViewController *)viewController {
+- (NSUInteger)popViewController:(NavigatorFlutterViewController *)viewController {
   [_flutterViewControllers removeObject:viewController];
   ThrioLogV(@"NavigatorFlutterEngine: enter popViewController");
   if (_engine.viewController == viewController && viewController != nil) {
     ThrioLogV(@"NavigatorFlutterEngine: unset %@", viewController);
     _engine.viewController = _flutterViewControllers.lastObject;
     if (_engine.viewController) {
-      [(ThrioFlutterViewController*)_engine.viewController surfaceUpdated:YES];
+      [(NavigatorFlutterViewController*)_engine.viewController surfaceUpdated:YES];
     }
   }
   return _flutterViewControllers.count;

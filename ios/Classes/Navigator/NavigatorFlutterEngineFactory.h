@@ -21,7 +21,7 @@
 
 #import <Foundation/Foundation.h>
 #import <Flutter/Flutter.h>
-#import "ThrioFlutterViewController.h"
+#import "NavigatorFlutterViewController.h"
 #import "ThrioTypes.h"
 #import "NavigatorSendChannel.h"
 #import "NavigatorPageObserverChannel.h"
@@ -40,9 +40,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (NavigatorPageObserverChannel *)getPageObserverChannelByEntrypoint:(NSString *)entrypoint;
 
-- (void)pushViewController:(ThrioFlutterViewController *)viewController;
+- (void)pushViewController:(NavigatorFlutterViewController *)viewController;
 
-- (void)popViewController:(ThrioFlutterViewController *)viewController;
+- (void)popViewController:(NavigatorFlutterViewController *)viewController;
 
 - (void)registerFlutterUrls:(NSArray *)urls;
 

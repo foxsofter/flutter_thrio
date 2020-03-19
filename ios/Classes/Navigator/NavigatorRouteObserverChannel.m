@@ -20,7 +20,7 @@
 // IN THE SOFTWARE.
 
 #import "NavigatorRouteObserverChannel.h"
-#import "ThrioNavigator+RouteObserver.h"
+#import "ThrioNavigator+RouteObservers.h"
 #import "ThrioNavigator+Internal.h"
 
 @interface NavigatorRouteObserverChannel ()

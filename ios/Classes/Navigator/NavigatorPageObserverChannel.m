@@ -21,7 +21,7 @@
 
 #import "NavigatorPageObserverChannel.h"
 #import "ThrioChannel.h"
-#import "ThrioNavigator+PageObserver.h"
+#import "ThrioNavigator+PageObservers.h"
 
 NS_ASSUME_NONNULL_BEGIN
 

@@ -21,7 +21,7 @@
 
 #import "NavigatorReceiveChannel.h"
 #import "ThrioNavigator+Internal.h"
-#import "ThrioNavigator+NavigatorBuilder.h"
+#import "ThrioNavigator+PageBuilders.h"
 #import "UINavigationController+Navigator.h"
 #import "UINavigationController+HotRestart.h"
 #import "UINavigationController+PopDisabled.h"

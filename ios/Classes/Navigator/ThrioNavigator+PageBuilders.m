@@ -19,27 +19,30 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-#import <Foundation/Foundation.h>
-#import "ThrioNavigator.h"
-#import "ThrioRegistrySet.h"
-#import "NavigatorPageObserverProtocol.h"
 
-NS_ASSUME_NONNULL_BEGIN
+#import <objc/runtime.h>
+#import "ThrioNavigator+PageBuilders.h"
 
-@interface ThrioNavigator (PageObserver)
+@implementation ThrioNavigator (PageBuilders)
 
-+ (ThrioRegistrySet<id<NavigatorPageObserverProtocol>> *)pageObservers;
++ (NavigatorFlutterPageBuilder _Nullable)flutterPageBuilder {
+  return objc_getAssociatedObject(self, _cmd);
+}
 
-+ (void)onCreate:(NavigatorRouteSettings *)routeSettings;
++ (void)setFlutterPageBuilder:(NavigatorFlutterPageBuilder _Nullable)builder {
+  objc_setAssociatedObject(self,
+                           @selector(flutterPageBuilder),
+                           builder,
+                           OBJC_ASSOCIATION_COPY_NONATOMIC);
+}
 
-+ (void)willAppear:(NavigatorRouteSettings *)routeSettings;
-
-+ (void)didAppear:(NavigatorRouteSettings *)routeSettings;
-
-+ (void)willDisappear:(NavigatorRouteSettings *)routeSettings;
-
-+ (void)didDisappear:(NavigatorRouteSettings *)routeSettings;
++ (ThrioRegistryMap *)pageBuilders {
+  id builders = objc_getAssociatedObject(self, _cmd);
+  if (!builders) {
+    builders = [ThrioRegistryMap map];
+    objc_setAssociatedObject(self, _cmd, builders, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+  }
+  return builders;
+}
 
 @end
-
-NS_ASSUME_NONNULL_END

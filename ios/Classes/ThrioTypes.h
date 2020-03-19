@@ -54,14 +54,14 @@ typedef void (^ThrioMethodHandler)(NSDictionary<NSString *, id> *arguments, Thri
 ///
 typedef void (^ThrioEventHandler)(NSDictionary<NSString *, id> *arguments, ThrioIdCallback _Nullable result);
 
-/// Signature of a block that creates a ThrioFlutterViewController.
+/// Signature of a block that creates a NavigatorFlutterViewController.
 ///
-@class ThrioFlutterViewController;
-typedef ThrioFlutterViewController *_Nullable (^ThrioFlutterViewControllerBuilder)(void);
+@class NavigatorFlutterViewController;
+typedef NavigatorFlutterViewController *_Nullable (^NavigatorFlutterPageBuilder)(void);
 
 /// Signature for a block that creates a native UIViewController.
 ///
-typedef UIViewController *_Nullable (^ThrioNativeViewControllerBuilder)(NSDictionary<NSString *, id> *params);
+typedef UIViewController *_Nullable (^NavigatorPageBuilder)(NSDictionary<NSString *, id> *params);
 
 NS_ASSUME_NONNULL_END
 

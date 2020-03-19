@@ -25,7 +25,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface ThrioFlutterViewController : FlutterViewController <UINavigationControllerDelegate>
+@interface NavigatorFlutterViewController : FlutterViewController <UINavigationControllerDelegate>
 
 - (instancetype)initWithEntrypoint:(NSString *)entrypoint NS_DESIGNATED_INITIALIZER;
 

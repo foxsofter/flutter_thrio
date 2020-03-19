@@ -21,10 +21,10 @@
 
 
 #import "ThrioModule.h"
-#import "ThrioNavigator+NavigatorBuilder.h"
+#import "ThrioNavigator+PageBuilders.h"
 #import "ThrioNavigator+Internal.h"
-#import "ThrioNavigator+PageObserver.h"
-#import "ThrioNavigator+RouteObserver.h"
+#import "ThrioNavigator+PageObservers.h"
+#import "ThrioNavigator+RouteObservers.h"
 #import "NavigatorFlutterEngineFactory.h"
 
 @implementation ThrioModule
@@ -41,10 +41,12 @@ static NSMutableDictionary *modules;
     modules = [NSMutableDictionary dictionary];
   }
   NSString *key = NSStringFromClass([module class]);
-  if (![[modules allKeys] containsObject:key]) {
-    [modules setObject:module forKey:key];
-    [module onModuleRegister];
+  if ([[modules allKeys] containsObject:key]) {
+    [NSException raise:@"Duplicate registration exception"
+                format:@"%@ already registered", key];
   }
+  [modules setObject:module forKey:key];
+  [module onModuleRegister];
 }
 
 - (void)initModule {
@@ -80,12 +82,12 @@ static NSMutableDictionary *modules;
 
 - (void)onModuleAsyncInit { }
 
-- (ThrioVoidCallback)registerPageBuilder:(ThrioNativeViewControllerBuilder)builder
+- (ThrioVoidCallback)registerPageBuilder:(NavigatorPageBuilder)builder
                                   forUrl:(NSString *)url {
   return [ThrioNavigator.pageBuilders registry:url value:builder];
 }
 
-- (void)setFlutterPageBuilder:(ThrioFlutterViewControllerBuilder)builder {
+- (void)setFlutterPageBuilder:(NavigatorFlutterPageBuilder)builder {
   ThrioNavigator.flutterPageBuilder = builder;
 }
 

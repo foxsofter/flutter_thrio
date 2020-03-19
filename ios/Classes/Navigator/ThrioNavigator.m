@@ -27,7 +27,7 @@
 #import "UINavigationController+Navigator.h"
 #import "UINavigationController+PopGesture.h"
 #import "ThrioNavigator.h"
-#import "ThrioNavigator+NavigatorBuilder.h"
+#import "ThrioNavigator+PageBuilders.h"
 #import "ThrioNavigator+Internal.h"
 
 NS_ASSUME_NONNULL_BEGIN
