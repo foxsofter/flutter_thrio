@@ -128,6 +128,9 @@ internal class ReceiveChannel(private val id: String) : MethodChannel.MethodCall
             "popTo" -> popTo(call, result)
             /** notify **/
             "notify" -> notify(call, result)
+            /** setPopDisabled **/
+            "setPopDisabled" -> {
+            }
             /** hotRestart **/
             "hotRestart" -> {
 
