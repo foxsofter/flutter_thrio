@@ -1,87 +1,46 @@
-# thrio
+# thrio Flutter嵌入原生应用的解决方案
 
-thrio 是一个支持 flutter 嵌入原生应用的路由库，目前只有 iOS 版本可看，Android 版本在开发中。
+## 为什么写thrio
 
-[引擎管理](./doc/FlutterEngine.md)
+在早期Flutter发布的时候，谷歌虽然提供了iOS和Android App上的Flutter嵌入方案，但主要针对的是纯Flutter的情形，混合开发支持的并不友好。
 
-## 为什么写 thrio
+但所谓的纯RN、纯weex的生命周期都不存在，所以也不会存在一个纯Flutter的App的生命周期，因为我们总是要复用现有模块。
 
-thrio 的诞生主要是为了解决我们自身的业务问题。
+所以我们需要一套足够完整的Flutter嵌入原生App的路由解决方案，所以我们自己造了个轮子 [thrio](https://github.com/hellobike/thrio) ，现已开源，遵循MIT协议。
 
-我们目前积累了将近 10 万行 Dart 业务代码，目前使用的页面路由管理方案不能满足业务上需要的能力，所以造了这个轮子。
 
-## 需求是什么
+## thrio的设计原则
 
-1. 三端统一的打开页面的接口，至少支持 push，支持多开页面实例
-2. 三端统一的关闭页面的接口，至少支持关闭顶层页面，关闭特定页面，关闭到特定页面
-3. 三端统一的页面间通知的接口，一定要支持特定页面间的通知传递
-4. dart 页面导航栏自动隐藏，且不影响原生页面的导航栏
-5. iOS 的 FlutterViewController 要支持侧滑返回
-6. 原生页面和 dart 页面要支持页面禁止关闭
-7. 支持 FlutterViewController 内嵌套 Dart 页面，减少内存消耗
+* 原则一，dart端最小改动接入
+* 原则二，原生端最小侵入
+* 原则三，三端保持一致的API
 
-## thrio 提供的功能
+thrio所有功能的设计，都会遵守这三个原则。下面会逐步对功能层面一步步展开进行说明，后面也会有原理性的解析。
 
-### 注册页面路由
+## thrio的页面路由
 
-1. dart 中注册页面路由
+以dart中的 `Navigator` 为主要参照，提供以下路由能力：
 
-```dart
-class Module with ThrioModule {
-  @override
-  void onPageRegister() {
-    registerPageBuilder(
-      'flutter3',
-      (settings) => Page3(index: settings.index, params: settings.params),
-    );
-    registerPageBuilder(
-      'flutter4',
-      (settings) => Page4(index: settings.index, params: settings.params),
-    );
-  }
-}
-```
+* push，打开一个页面并放到路由栈顶
+* pop，关闭路由栈顶的页面
+* popTo，关闭到某一个页面
+* remove，删除任意页面
 
-2. iOS 中注册页面路由
+Navigator中的API几乎都可以通过组合以上方法实现，`replace` 方法暂未提供。
 
-```objc
+不提供iOS中存在的 `present` 功能，因为会导致原生路由栈被覆盖，维护复杂度会非常高，如确实需要可以通过修改转场动画实现。
 
-@interface Module1 : ThrioModule<NavigatorPageObserverProtocol>
+### 页面的索引
 
-@end
+要路由，我们需要对页面建立索引，通常情况下，我们只需要给每个页面设定一个 `url` 就可以了，如果每个页面都只打开一次的话，不会有任何问题。但是当一个页面被打开多次之后，仅仅通过url是无法定位到明确的页面实例的，所以在 `thrio` 中我们增加了页面索引的概念，具体在API中都会以 `index` 来表示，同一个url第一个打开的页面的索引为 `1` ，之后同一个 `url` 的索引不断累加。
 
-@implementation Module1
+如此，唯一定位一个页面的方式为 `url` + `index`，在dart中 `route` 的 `name` 就是由 `'$url.$index'` 组合而成。
 
-- (void)onPageRegister {
-  [self registerPageBuilder:^UIViewController * _Nullable(NSDictionary<NSString *,id> * _Nonnull params) {
-    UIStoryboard *sb = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
-    return [sb instantiateViewControllerWithIdentifier:@"ThrioViewController"];
-  } forUrl:@"native1"];
-}
+很多时候，使用者不需要关注 `index`，只有当需要定位到多开的 `url` 的页面中的某一个时才需要关注 `index`。最简单获取 `index` 的方式为 `push` 方法的回调返回值。
 
-@end
+### 页面的push
 
-```
-
-3. Android 中注册页面路由
-
-打开操作逻辑需要实现`NavigationBuilder`接口
-
-```kotlin
-class FlutterModule : ThrioModule() {
-    override fun onPageRegister() {
-        registerPageBuilder("native1", object : NavigationBuilder {
-            override fun getActivityClz(url: String): Class<out Activity> {
-                return Native1Activity::class.java
-            }
-        })
-    }
-}
-```
-
-### 打开页面
-
-1. Dart 端打开页面
+1. dart 端打开页面
 
 ```dart
 ThrioNavigator.push(url: 'flutter1');
@@ -119,7 +78,16 @@ ThrioNavigator.push(this, "biz1/flutter1",
 )
 ```
 
-### 关闭顶层页面
+4. 连续打开页面
+
+* dart端只需要await push，就可以连续打开页面
+* 原生端需要等待push的result回调返回才能打开第二个页面
+
+5. 获取所打开页面关闭后的回调参数
+
+* 三端都可以通过闭包 poppedResult 来获取
+
+### 页面的pop
 
 1. dart 端关闭顶层页面
 
@@ -149,7 +117,7 @@ ThrioNavigator.pop(params: 'popped flutter1'),
 ThrioNavigator.pop(this, params, animated)
 ```
 
-### 关闭到页面
+### 页面的popTo
 
 1. dart 端关闭到页面
 
@@ -175,7 +143,7 @@ ThrioNavigator.popTo(url: 'flutter1', animated: false);
 ThrioNavigator.popTo(context, url, index)
 ```
 
-### 关闭特定页面
+### 页面的remove
 
 1. dart 端关闭特定页面
 
@@ -199,9 +167,15 @@ ThrioNavigator.remove(url: 'flutter1', animated: true);
 ThrioNavigator.remove(context, url, index)
 ```
 
-### 给特定页面发通知
+## thrio的页面通知
 
-给一个页面发送通知，只有当页面呈现之后才会收到该通知。
+页面通知一般来说并不在路由的范畴之内，但我们在实际开发中却经常需要使用到，由此产生的各种模块化框架一个比一个复杂。
+
+那么问题来了，这些模块化框架很难在三端互通，所有的这些模块化框架提供的能力无非最终是一个页面通知的能力，而且页面通知我们可以非常简单的在三端打通。
+
+鉴于此，页面通知作为thrio的一个必备能力被引入了thrio。
+
+### 发送页面通知
 
 1. dart 端给特定页面发通知
 
@@ -221,11 +195,11 @@ ThrioNavigator.notify(url: 'flutter1', name: 'reload');
 ThrioNavigator.notify(url, index, params)
 ```
 
-### 页面接收通知
+### 接收页面通知
 
 1. dart 端接收页面通知
 
-使用`NavigatorPageNotify`这个 Widget 来实现在任何地方接收当前页面收到的通知。
+使用 `NavigatorPageNotify` 这个 `Widget` 来实现在任何地方接收当前页面收到的通知。
 
 ```dart
 NavigatorPageNotify(
@@ -237,7 +211,7 @@ NavigatorPageNotify(
 
 2. iOS 端接收页面通知
 
-`UIViewController`实现协议`NavigatorPageNotifyProtocol`，通过该协议定义的方法来接收页面通知
+`UIViewController`实现协议`NavigatorPageNotifyProtocol`，通过 `onNotify` 来接收页面通知
 
 ```objc
 - (void)onNotify:(NSString *)name params:(NSDictionary *)params {
@@ -247,7 +221,7 @@ NavigatorPageNotify(
 
 3. Android 端接收页面通知
 
-`Activity`实现协议`OnNotifyListener`，通过 onNotify 回调来接收页面通知
+`Activity`实现协议`OnNotifyListener`，通过 `onNotify` 来接收页面通知
 
 ```kotlin
 class Activity : AppCompatActivity(), OnNotifyListener {
@@ -256,42 +230,74 @@ class Activity : AppCompatActivity(), OnNotifyListener {
 }
 ```
 
-### Flutter 页面导航栏自动隐藏
+因为Android activity在后台可能会被销毁，所以页面通知实现了一个懒响应的行为，只有当页面呈现之后才会收到该通知，这也符合页面需要刷新的场景。
 
-实际上实现了 UIViewController 的分类扩展，FlutterViewController 强制设为 YES，原生页面设置导航栏隐藏，也很简单
+## thrio的模块化
 
-```objc
-viewController.thrio_hidesNavigationBar = NO;
-```
+模块化在thrio里面只是一个非核心功能，仅仅为了实现原则二而引入原生端。
 
-### iOS 的 FlutterViewController 支持侧滑返回
+thrio的模块化能力由一个类提供，`ThrioModule`，很小巧，主要提供了 `Module` 的注册链和初始化链，让代码可以根据路由url进行文件分级分类。
 
-FlutterViewController 默认是不支持侧滑返回的，因为 thrio 支持一个 FlutterViewController 可以打开任意多个 dart 页面，dart 页面本身也是要支持侧滑返回的，手势上存在一定的冲突，在这里 thrio 做了一些特殊处理，基本上支持无缝切换。有兴趣可以参看源码实现。
+注册链将所有模块串起来，字母块由最近的父一级模块注册，新增模块的耦合度最低。
 
-### 原生页面和 dart 页面支持页面关闭前调用闭包
+初始化链将所有模块需要初始化的代码串起来，同样是为了降低耦合度，在初始化链上可以就近注册模块的页面的构造器，页面路由观察者，页面生命周期观察者等，也可以在多引擎模式下提前启动某一个引擎。
 
-每个端各自维护自身的页面，不支持跨端传递闭包逻辑
-
-1. dart 端禁止特定页面关闭
+模块间通信的能力由页面通知实现。
 
 ```dart
-WillPopScope(
-    onWillPop: () async => true,
-    child: Container(),
-);
+mixin ThrioModule {
+    /// A function for registering a module, which will call
+    /// the `onModuleRegister` function of the `module`.
+    ///
+    void registerModule(ThrioModule module);
+    
+    /// A function for module initialization that will call
+    /// the `onPageRegister`, `onModuleInit` and `onModuleAsyncInit`
+    /// methods of all modules.
+    ///
+    void initModule();
+    
+    /// A function for registering submodules.
+    ///
+    void onModuleRegister() {}
+
+    /// A function for registering a page builder.
+    ///
+    void onPageRegister() {}
+
+    /// A function for module initialization.
+    ///
+    void onModuleInit() {}
+
+    /// A function for module asynchronous initialization.
+    ///
+    void onModuleAsyncInit() {}
+    
+    /// Register an page builder for the router.
+    ///
+    /// Unregistry by calling the return value `VoidCallback`.
+    ///
+    VoidCallback registerPageBuilder(String url, NavigatorPageBuilder builder);
+
+    /// Register observers for the life cycle of Dart pages.
+    ///
+    /// Unregistry by calling the return value `VoidCallback`.
+    ///
+    /// Do not override this method.
+    ///
+    VoidCallback registerPageObserver(NavigatorPageObserver pageObserver);
+    
+    /// Register observers for route action of Dart pages.
+    ///
+    /// Unregistry by calling the return value `VoidCallback`.
+    ///
+    /// Do not override this method.
+    ///
+    VoidCallback registerRouteObserver(NavigatorRouteObserver routeObserver);
+}
 ```
 
-2. iOS 端禁止特定页面关闭
-
-```objc
-viewController.thrio_willPopBlock = ^(ThrioBoolCallback _Nonnull result) {
-  result(NO);
-};
-```
-
-一旦设置 thrio_willPopBlock，侧滑返回将失效.
-
-### 页面的生命周期
+## thrio的页面生命周期
 
 原生端可以获得所有页面的生命周期，Dart 端只能获取自身页面的生命周期
 
@@ -321,7 +327,7 @@ class Module with ThrioModule, NavigatorPageObserver {
 }
 ```
 
-2. ios 端获取页面的生命周期
+2. iOS 端获取页面的生命周期
 
 ```objc
 @interface Module1 : ThrioModule<NavigatorPageObserverProtocol>
@@ -348,9 +354,9 @@ class Module with ThrioModule, NavigatorPageObserver {
 
 ```
 
-### 页面的路由行为
+## thrio的页面路由观察者
 
-原生端可以获得所有页面的路由行为，Dart 端只能获取自身页面的路由行为
+原生端可以观察所有页面的路由行为，dart 端只能观察 dart 页面的路由行为
 
 1. dart 端获取页面的路由行为
 
@@ -387,7 +393,7 @@ class Module with ThrioModule, NavigatorRouteObserver {
 }
 ```
 
-2. ios 端获取页面的路由行为
+2. iOS 端获取页面的路由行为
 
 ```objc
 @interface Module2 : ThrioModule<NavigatorRouteObserverProtocol>
@@ -420,15 +426,211 @@ class Module with ThrioModule, NavigatorRouteObserver {
 
 ```
 
-### 支持内嵌套 Flutter 页面
+## thrio的额外功能
 
-这是谷歌推荐的实现方式，导航栈中不被原生页面分隔的所有 Flutter 页面共用一个原生的容器页面，有效减少内存消耗量。
+### iOS 显隐当前页面的导航栏
 
-1. iOS 端
+原生的导航栏在 dart 上一般情况下是不需要的，但切换到原生页面又需要把原生的导航栏置回来，thrio 不提供的话，使用者较难扩展，我之前在目前一个主流的Flutter接入库上进行此项功能的扩展，很不流畅，所以这个功能最好的效果还是 thrio 直接内置，切换到 dart 页面默认会隐藏原生的导航栏，切回原生页面也会自动恢复。另外也可以手动隐藏原生页面的导航栏。
 
-原来的方案是每打开一个 Flutter 页面会创建一个新的原生页面，比如以连续打开 5 个 Flutter 页面计算（比较接近目前我们在项目上的场景），iOS 会消耗 91.67M 内存，新方案 iOS 只消耗 42.76 内存，页面打开内存消耗数据大致如下：
+```objc
+viewController.thrio_hidesNavigationBar = NO;
+```
 
-| demo  | 启动 | 页面 1 | 页面 2 | 页面 3 | 页面 4 | 页面 5 |
-| ----- | ---- | ------ | ------ | ------ | ------ | ------ |
-| thrio | 8.56 | 37.42  | 38.88  | 42.52  | 42.61  | 42.76  |
-| 现有方案 | 6.81 | 36.08  | 50.96  | 66.18  | 78.86  | 91.67  |
+### 支持页面关闭前弹窗确认的功能
+
+如果用户正在填写一个表单，你可能经常会需要弹窗确认是否关闭当前页面的功能。
+
+在 dart 中，有一个 `Widget` 提供了该功能，thrio 完好的保留了这个功能。
+
+```dart
+WillPopScope(
+    onWillPop: () async => true,
+    child: Container(),
+);
+```
+
+在 iOS 中，thrio 提供了类似的功能，返回 `NO` 表示不会关闭，一旦设置会将侧滑返回手势禁用
+
+```objc
+viewController.thrio_willPopBlock = ^(ThrioBoolCallback _Nonnull result) {
+  result(NO);
+};
+```
+关于 `FlutterViewController` 的侧滑返回手势，Flutter 默认支持的是纯Flutter应用，仅支持单一的 `FlutterViewController` 作为整个App的容器，内部已经将 `FlutterViewController` 的侧滑返回手势去掉。但 thrio 要解决的是 Flutter 与原生应用的无缝集成，所以必须将侧滑返回的手势加回来。
+
+
+## thrio的原理
+
+目前开源 Flutter 嵌入原生的库，主要的还是通过切换 FlutterEngine 上的原生容器来实现的，这是 Flutter 原本提供的原生容器之上最小改动而实现，需要小心处理好容器切换的时序，否则在页面导航时会产生崩溃。基于 Flutter 提供的这个功能， thrio 构建了三端一致的页面管理API。
+
+### dart 的核心类
+
+dart 端只管理 dart页面
+
+1. 基于 `RouteSettings` 进行扩展，复用现有的字段
+
+* name = url.index
+* isInitialRoute = !isNested
+* arguments = params
+
+2. 基于 `MaterialPageRoute` 扩展的 `NavigatorPageRoute`
+
+* 主要提供页面描述和转场动画的是否配置的功能
+
+2. 基于 `Navigator` 扩展，封装 `NavigatorWidget`，提供以下方法
+
+```dart
+  Future<bool> push(RouteSettings settings, {
+    bool animated = true,
+    NavigatorParamsCallback poppedResult,
+  });
+  
+  Future<bool> pop(RouteSettings settings, {bool animated = true});
+  
+  Future<bool> popTo(RouteSettings settings, {bool animated = true});
+
+  Future<bool> remove(RouteSettings settings, {bool animated = false});
+  
+```
+
+3. 封装 `ThrioNavigator` 路由API
+
+```dart
+abstract class ThrioNavigator {
+    /// Push the page onto the navigation stack.
+    ///
+    /// If a native page builder exists for the `url`, open the native page,
+    /// otherwise open the flutter page.
+    ///
+    static Future<int> push({
+        @required String url,
+        params,
+        bool animated = true,
+        NavigatorParamsCallback poppedResult,
+    });
+    
+    /// Send a notification to the page.
+    ///
+    /// Notifications will be triggered when the page enters the foreground.
+    /// Notifications with the same `name` will be overwritten.
+    /// 
+    static Future<bool> notify({
+        @required String url,
+        int index,
+        @required String name,
+        params,
+    });
+    
+    /// Pop a page from the navigation stack.
+    ///
+    static Future<bool> pop({params, bool animated = true})
+
+    static Future<bool> popTo({
+        @required String url,
+        int index,
+        bool animated = true,
+    });
+    
+    /// Remove the page with `url` in the navigation stack.
+    ///  
+    static Future<bool> remove({
+        @required String url,
+        int index,
+        bool animated = true,
+    });
+}
+```
+
+### iOS 的核心类
+
+1. `NavigatorRouteSettings` 对应于 dart 的 `RouteSettings` 类，并提供相同数据结构
+
+```objc
+
+@interface NavigatorRouteSettings : NSObject
+
+@property (nonatomic, copy, readonly) NSString *url;
+
+@property (nonatomic, strong, readonly) NSNumber *index;
+
+@property (nonatomic, assign, readonly) BOOL nested;
+
+@property (nonatomic, copy, readonly, nullable) id params;
+
+@end
+
+```
+
+2. `NavigatorPageRoute` 对应于 dart 的 `NavigatorPageRoute` 类
+
+* 存储通知、页面关闭回调、NavigatorRouteSettings
+* route的双向链表
+
+3. 基于 `UINavigationController` 扩展，功能类似 dart 的 `NavigatorWidget`
+
+* 提供一些列的路由内部接口
+* 并能兼容非 thrio 体系内的页面
+
+4. 基于 `UIViewController` 扩展
+
+* 提供 `FlutterViewController` 容器上的 dart 页面的管理功能
+* 提供 popDisable 等功能
+
+5. 封装 `ThrioNavigator` 路由API
+
+```objc
+@interface ThrioNavigator : NSObject
+
+/// Push the page onto the navigation stack.
+///
+/// If a native page builder exists for the url, open the native page,
+/// otherwise open the flutter page.
+///
++ (void)pushUrl:(NSString *)url
+         params:(id)params
+       animated:(BOOL)animated
+         result:(ThrioNumberCallback)result
+   poppedResult:(ThrioIdCallback)poppedResult;
+
+/// Send a notification to the page.
+///
+/// Notifications will be triggered when the page enters the foreground.
+/// Notifications with the same name will be overwritten.
+///
++ (void)notifyUrl:(NSString *)url
+            index:(NSNumber *)index
+             name:(NSString *)name
+           params:(id)params
+           result:(ThrioBoolCallback)result;
+
+/// Pop a page from the navigation stack.
+///
++ (void)popParams:(id)params
+         animated:(BOOL)animated
+           result:(ThrioBoolCallback)result;
+
+/// Pop the page in the navigation stack until the page with `url`.
+///
++ (void)popToUrl:(NSString *)url
+           index:(NSNumber *)index
+        animated:(BOOL)animated
+          result:(ThrioBoolCallback)result;
+
+/// Remove the page with `url` in the navigation stack.
+///
++ (void)removeUrl:(NSString *)url
+            index:(NSNumber *)index
+         animated:(BOOL)animated
+           result:(ThrioBoolCallback)result;
+
+@end
+```
+
+### dart 与 iOS 路由栈的同步
+
+1. 所有路由操作最终汇聚于原生端开始，如果始于 dart 端，则通过 channel 调用原生端的API
+2. 通过 `url+index` 定位到页面
+3. 如果页面是原生页面，则直接进行相关操作
+4. 如果页面是 Flutter 容器，则通过 channel 调用 dart 端对应的路由 API
+5. 接4步，如果 dart 端对应的路由 API 操作完成后回调，如果成功，则执行原生端的路由栈同步，如果失败，则回调入口 API 的result
+6. 接4不，如果 dart 端对应的路由 API操作成功，则通过 route channel 调用原生端对应的 route observer，通过 page channel 调用原生端对应的 page observer。

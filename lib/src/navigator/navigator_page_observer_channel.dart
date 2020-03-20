@@ -20,9 +20,9 @@
 // IN THE SOFTWARE.
 
 import 'package:flutter/widgets.dart';
-import 'package:thrio/src/navigator/thrio_navigator_implement.dart';
 
 import '../channel/thrio_channel.dart';
+import '../navigator/thrio_navigator_implement.dart';
 import 'navigator_page_observer.dart';
 import 'navigator_route_settings.dart';
 
