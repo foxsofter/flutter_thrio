@@ -47,6 +47,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)pushViewController:(NavigatorFlutterViewController *)viewController;
 
+/// 返回当前引擎上剩余的NavigatorFlutterViewController个数
+///
 - (NSUInteger)popViewController:(NavigatorFlutterViewController *)viewController;
 
 @end
