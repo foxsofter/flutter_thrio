@@ -5,11 +5,11 @@
 Pod::Spec.new do |s|
   s.name             = 'thrio'
   s.version          = '0.0.1'
-  s.summary          = 'A flutter plugin which enables hybrid integration of flutter for existing ios or android apps.'
+  s.summary          = 'Thrio makes it easy and fast to add flutter to existing mobile applications, and provide a simple and consistent navigator API.'
   s.description      = <<-DESC
 A flutter plugin which enables hybrid integration of flutter for existing ios or android apps.
                        DESC
-  s.homepage         = 'http://hellobike.com'
+  s.homepage         = 'https://github.com/hellobike/thrio'
   s.license          = { :file => '../LICENSE' }
   s.author           = { 'hellobike' => 'foxsofter@gmail.com' }
   s.source           = { :path => '.' }
