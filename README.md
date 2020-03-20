@@ -192,7 +192,7 @@ ThrioNavigator.notify(url: 'flutter1', name: 'reload');
 3. Android 端给特定页面发通知
 
 ```kotlin
-ThrioNavigator.notify(url, index, name, params)
+ThrioNavigator.notify(url, index, params)
 ```
 
 ### 接收页面通知
