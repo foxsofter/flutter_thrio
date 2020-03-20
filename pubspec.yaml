@@ -1,8 +1,7 @@
 name: thrio
 description: A flutter plugin which enables hybrid integration of flutter for existing ios or android apps.
 version: 0.0.1
-author:
-homepage:
+homepage: https://github.com/hellobike/thrio
 
 environment:
   sdk: '>=2.6.0 <3.0.0'
