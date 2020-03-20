@@ -23,57 +23,7 @@
 #import "NavigatorControllerDelegate.h"
 #import "UINavigationController+Navigator.h"
 
-//@interface Animator : NSObject<UIViewControllerAnimatedTransitioning>
-//
-//@end
-//@implementation Animator
-//
-//- (NSTimeInterval)transitionDuration:(id <UIViewControllerContextTransitioning>)transitionContext
-//{
-//    return 0.1;
-//}
-//
-//- (void)animateTransition:(id<UIViewControllerContextTransitioning>)transitionContext
-//{
-//    UIViewController* toViewController = [transitionContext viewControllerForKey:UITransitionContextToViewControllerKey];
-//    UIViewController* fromViewController = [transitionContext viewControllerForKey:UITransitionContextFromViewControllerKey];
-//    [[transitionContext containerView] addSubview:toViewController.view];
-//    toViewController.view.alpha = 0;
-//    
-//    [UIView animateWithDuration:[self transitionDuration:transitionContext] animations:^{
-//        fromViewController.view.transform = CGAffineTransformMakeScale(0.1, 0.1);
-//        toViewController.view.alpha = 1;
-//    } completion:^(BOOL finished) {
-//        fromViewController.view.transform = CGAffineTransformIdentity;
-//        [transitionContext completeTransition:![transitionContext transitionWasCancelled]];
-//        
-//    }];
-//}
-//
-//@end
-
-@interface NavigatorControllerDelegate ()
-
-//@property (nonatomic, strong) UIPercentDrivenInteractiveTransition *interactiveTransition;
-//@property (strong, nonatomic) Animator* animator;
-
-@end
-
 @implementation NavigatorControllerDelegate
-
-//- (UIPercentDrivenInteractiveTransition *)interactiveTransition {
-//  if (!_interactiveTransition) {
-//    _interactiveTransition = [[UIPercentDrivenInteractiveTransition alloc] init];
-//  }
-//  return _interactiveTransition;
-//}
-//
-//- (Animator *)animator {
-//  if (!_animator) {
-//    _animator = [[Animator alloc] init];
-//  }
-//  return _animator;
-//}
 
 - (void)setNavigationController:(UINavigationController * _Nullable)navigationController {
   _originDelegate = navigationController.delegate;
@@ -149,43 +99,5 @@
   }
   return animator;
 }
-
-#pragma mark - private methods
-
-//- (void)handlePopPan:(UIScreenEdgePanGestureRecognizer*)recognizer {
-//  // Calculate how far the user has dragged across the view
-//  CGFloat progress = [recognizer translationInView:recognizer.view].x / (recognizer.view.bounds.size.width * 1.0);
-//  progress = MIN(1.0, MAX(0.0, progress));
-//  NSLog(@"handlePopPan: %f", progress);
-//  if (recognizer.state == UIGestureRecognizerStateBegan) {
-//    NSLog(@"handlePopPan began: %f", progress);
-//    // Create a interactive transition and pop the view controller
-//    [self.interactiveTransition startInteractiveTransition:self.animator];
-//  }
-//  else if (recognizer.state == UIGestureRecognizerStateChanged) {
-//    CGPoint translation = [recognizer locationInView:self.navigationController.view];
-//    CGFloat progress = translation.x / CGRectGetWidth(self.navigationController.view.bounds);
-//
-//    NSLog(@"handlePopPan changed: %f", progress);
-//    // Update the interactive transition's progress
-//    [self.interactiveTransition updateInteractiveTransition:progress];
-//  }
-//  else if (recognizer.state == UIGestureRecognizerStateEnded || recognizer.state == UIGestureRecognizerStateCancelled) {
-//    NSLog(@"handlePopPan ended or cancelled: %f", progress);
-//    // Finish or cancel the interactive transition
-//    if (progress > 0.5) {
-//      [self.interactiveTransition finishInteractiveTransition];
-//      // pop on finish
-//      [self.navigationController popViewControllerAnimated:YES];
-//    }
-//    else {
-//      [self.interactiveTransition cancelInteractiveTransition];
-//    }
-//
-//    self.interactiveTransition = nil;
-//  }
-//}
-
-
 
 @end
