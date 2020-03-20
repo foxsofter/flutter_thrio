@@ -1,4 +1,3 @@
-# thrio Flutter嵌入原生应用的解决方案
 
 ## 为什么写thrio
 
@@ -173,7 +172,7 @@ ThrioNavigator.remove(context, url, index)
 
 那么问题来了，这些模块化框架很难在三端互通，所有的这些模块化框架提供的能力无非最终是一个页面通知的能力，而且页面通知我们可以非常简单的在三端打通。
 
-鉴于此，页面通知作为thrio的一个必备能力被引入了thrio。
+鉴于此，页面通知作为thrio的一个必备能力被引入。
 
 ### 发送页面通知
 
@@ -633,4 +632,4 @@ abstract class ThrioNavigator {
 3. 如果页面是原生页面，则直接进行相关操作
 4. 如果页面是 Flutter 容器，则通过 channel 调用 dart 端对应的路由 API
 5. 接4步，如果 dart 端对应的路由 API 操作完成后回调，如果成功，则执行原生端的路由栈同步，如果失败，则回调入口 API 的result
-6. 接4不，如果 dart 端对应的路由 API操作成功，则通过 route channel 调用原生端对应的 route observer，通过 page channel 调用原生端对应的 page observer。
+6. 接4步，如果 dart 端对应的路由 API操作成功，则通过 route channel 调用原生端对应的 route observer，通过 page channel 调用原生端对应的 page observer。
