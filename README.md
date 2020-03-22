@@ -1,9 +1,10 @@
+# 如何将Flutter优雅的嵌入现有应用？
 
-## 为什么写thrio
+## 为什么写thrio？
 
 在早期Flutter发布的时候，谷歌虽然提供了iOS和Android App上的Flutter嵌入方案，但主要针对的是纯Flutter的情形，混合开发支持的并不友好。
 
-但所谓的纯RN、纯weex的生命周期都不存在，所以也不会存在一个纯Flutter的App的生命周期，因为我们总是要复用现有模块。
+所谓的纯RN、纯weex应用的生命周期都不存在，所以也不会存在一个纯Flutter的App的生命周期，因为我们总是有需要复用现有模块。
 
 所以我们需要一套足够完整的Flutter嵌入原生App的路由解决方案，所以我们自己造了个轮子 [thrio](https://github.com/hellobike/thrio) ，现已开源，遵循MIT协议。
 
@@ -172,7 +173,7 @@ ThrioNavigator.remove(context, url, index)
 
 那么问题来了，这些模块化框架很难在三端互通，所有的这些模块化框架提供的能力无非最终是一个页面通知的能力，而且页面通知我们可以非常简单的在三端打通。
 
-鉴于此，页面通知作为thrio的一个必备能力被引入。
+鉴于此，页面通知作为thrio的一个必备能力被引入了thrio。
 
 ### 发送页面通知
 
@@ -458,7 +459,7 @@ viewController.thrio_willPopBlock = ^(ThrioBoolCallback _Nonnull result) {
 关于 `FlutterViewController` 的侧滑返回手势，Flutter 默认支持的是纯Flutter应用，仅支持单一的 `FlutterViewController` 作为整个App的容器，内部已经将 `FlutterViewController` 的侧滑返回手势去掉。但 thrio 要解决的是 Flutter 与原生应用的无缝集成，所以必须将侧滑返回的手势加回来。
 
 
-## thrio的原理
+## thrio的设计解析
 
 目前开源 Flutter 嵌入原生的库，主要的还是通过切换 FlutterEngine 上的原生容器来实现的，这是 Flutter 原本提供的原生容器之上最小改动而实现，需要小心处理好容器切换的时序，否则在页面导航时会产生崩溃。基于 Flutter 提供的这个功能， thrio 构建了三端一致的页面管理API。
 
@@ -625,11 +626,43 @@ abstract class ThrioNavigator {
 @end
 ```
 
-### dart 与 iOS 路由栈的同步
+### dart 与 iOS 路由栈的结构
+
+![thrio-architecture](./doc/imgs/thrio-architecture.png)
+
+1. 一个应用允许启动多个Flutter引擎，可让每个引擎运行的代码物理隔离，按需启用，劣势是启动多个Flutter引擎可能导致资源消耗过多而引起问题；
+2. 一个Flutter引擎通过切换可以匹配到多个FlutterViewController，这是Flutter优雅嵌入原生应用的前提条件
+3. 一个FlutterViewController可以内嵌多个Dart页面，有效减少单个FlutterViewController只打开一个Dart页面导致的内存消耗过多问题，关于内存消耗的问题，后续会有提到。
+
+### dart 与 iOS push的时序图
+
+![thrio-push](./doc/imgs/thrio-push.png)
 
 1. 所有路由操作最终汇聚于原生端开始，如果始于 dart 端，则通过 channel 调用原生端的API
 2. 通过 `url+index` 定位到页面
 3. 如果页面是原生页面，则直接进行相关操作
 4. 如果页面是 Flutter 容器，则通过 channel 调用 dart 端对应的路由 API
 5. 接4步，如果 dart 端对应的路由 API 操作完成后回调，如果成功，则执行原生端的路由栈同步，如果失败，则回调入口 API 的result
-6. 接4步，如果 dart 端对应的路由 API操作成功，则通过 route channel 调用原生端对应的 route observer，通过 page channel 调用原生端对应的 page observer。
+6. 接4不，如果 dart 端对应的路由 API操作成功，则通过 route channel 调用原生端对应的 route observer，通过 page channel 调用原生端对应的 page observer。
+
+### dart 与 iOS pop的时序图
+
+![thrio-pop](./doc/imgs/thrio-pop.png)
+
+1. pop 的流程与 push 基本一致；
+2. pop 需要考虑页面是否可关闭的问题；
+2. 但在 iOS 中，侧滑返回手势会导致问题， `popViewControllerAnimated:` 会在手势开始的时候调用，导致 dart 端的页面已经被 pop 掉，但如果手势被放弃了，则导致两端的页面栈不一致，thrio 已经解决了这个问题，具体流程稍复杂，源码可能更好的说明。
+
+### dart 与 iOS popTo的时序图
+
+![thrio-popTo](./doc/imgs/thrio-popTo.png)
+
+1. popTo 的流程与 push 基本一致；
+2. 但在多引擎模式下，popTo需要处理多引擎的路由栈同步的问题；
+3. 另外在 Dart 端，popTo实际上是多个pop或者remove构成的，最终产生多次的didPop或didRemove行为，需要将多个pop或remove组合起来形成一个didPopTo行为。
+
+### dart 与 iOS remove的时序图
+
+![thrio-remove](./doc/imgs/thrio-remove.png)
+
+1. remove 的流程与 push 基本一致。
