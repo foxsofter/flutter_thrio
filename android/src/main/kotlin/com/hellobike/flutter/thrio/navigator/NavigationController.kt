@@ -185,8 +185,10 @@ internal object NavigationController {
                 if (!it) {
                     PageRouteStack.pop(record)
                     activity.finish()
+                    result(null)
+                } else {
+                    result(record.index)
                 }
-                result(record.index)
             }
             action = RouteAction.NONE
             this.result = null
