@@ -38,5 +38,7 @@ internal object FlutterPageBuilder : NavigatorPageBuilder {
                 .withCachedEngine(THRIO_ENGINE_FLUTTER_ID)
                 .destroyEngineWithActivity(false)
                 .build(context)
+                .apply { addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP) }
     }
+
 }

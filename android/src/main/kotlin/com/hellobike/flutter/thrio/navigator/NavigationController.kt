@@ -43,7 +43,7 @@ internal object NavigationController {
 
     private const val THRIO_STACK_INDEX_AUTO = 0
 
-    private const val KEY_THRIO_PUSH_DATA = "KEY_THRIO_PUSH_ANIM"
+    private const val KEY_THRIO_PUSH_DATA = "KEY_THRIO_PUSH_DATA"
 
     var action = RouteAction.NONE
 
@@ -125,7 +125,6 @@ internal object NavigationController {
             val builder = PageBuilders.getPageBuilder(url)
             val intent = builder.buildIntent(context).apply {
                 setClass(context, builder.getActivityClz(url))
-                addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
                 if (!animated) {
                     addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
                 }
