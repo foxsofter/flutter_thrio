@@ -22,17 +22,17 @@
         android:id="@+id/btn_2"
         android:layout_width="180dp"
         android:layout_height="60dp"
-        android:text="Pop" />
+        android:text="push Native 1" />
 
     <Button
-        android:id="@+id/btn_native_top"
+        android:id="@+id/btn_3"
         android:layout_width="180dp"
         android:layout_height="60dp"
-        android:text="Native 1 Clear Top" />
+        android:text="pop" />
 
-    <Button
-        android:id="@+id/btn_flutter"
-        android:layout_width="180dp"
-        android:layout_height="60dp"
-        android:text="Flutter" />
+    <!--    <Button-->
+    <!--        android:id="@+id/btn_flutter"-->
+    <!--        android:layout_width="180dp"-->
+    <!--        android:layout_height="60dp"-->
+    <!--        android:text="Flutter" />-->
 </LinearLayout>

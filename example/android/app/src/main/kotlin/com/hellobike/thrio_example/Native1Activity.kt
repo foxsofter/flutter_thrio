@@ -14,17 +14,35 @@ class Native1Activity : AppCompatActivity(), OnNotifyListener {
         btn_1.setOnClickListener {
             ThrioNavigator.push(this, "biz1/flutter1",
                     mapOf("k1" to 1),
-                    false,
+                    true,
                     poppedResult = {
                         Log.e("Thrio", "native1 popResult call params $it")
                     }
-            )
+            ) {
+                Log.e("Thrio", "push result data $it")
+            }
         }
         btn_2.setOnClickListener {
+            ThrioNavigator.push(this, "native1",
+                    mapOf("k1" to 1),
+                    true,
+                    poppedResult = {
+                        Log.e("Thrio", "native1 popResult call params $it")
+                    }
+            ) {
+                Log.e("Thrio", "push result data $it")
+            }
+        }
+        btn_3.setOnClickListener {
             ThrioNavigator.pop(this, "native 1 popResult")
         }
-        btn_flutter.setOnClickListener {
+    }
 
+    override fun onResume() {
+        super.onResume()
+        val key = intent.getLongExtra("KEY_THRIO_STACK_ID", -1)
+        if (key != -1L) {
+            tv_native.text = "Native 1 \r\nstackId $key"
         }
     }
 
