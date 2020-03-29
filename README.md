@@ -34,3 +34,5 @@ You should then run `flutter pub upgrade` or update your packages in IntelliJ.
 ## Example Project
 
 There is a pretty sweet example project in the `example` folder. Check it out. Otherwise, keep reading to get up and running.
+
+[README CN](./docs/Feature.md)
