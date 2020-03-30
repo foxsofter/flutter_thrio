@@ -1,4 +1,4 @@
-![Name](./docs/imgs/thrio.png)
+![Name](./doc/imgs/thrio.png)
 <br/><br/>
 
 The `Navigator` for iOS, Android, Flutter.
@@ -35,4 +35,4 @@ You should then run `flutter pub upgrade` or update your packages in IntelliJ.
 
 There is a pretty sweet example project in the `example` folder. Check it out. Otherwise, keep reading to get up and running.
 
-[README CN](./docs/Feature.md)
+[README CN](./doc/Feature.md)
