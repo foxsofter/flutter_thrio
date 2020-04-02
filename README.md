@@ -1,6 +1,6 @@
-![Name](./docs/imgs/thrio.png)
+# ![thrio logo](./docs/imgs/thrio.png)
 
---
+[![Gitter Channel][]][gitter badge]
 
 The `Navigator` for iOS, Android, Flutter.
 
@@ -197,3 +197,6 @@ class Activity : AppCompatActivity(), OnNotifyListener {
     }
 }
 ```
+
+[gitter channel]: https://badges.gitter.im/flutter_thrio/flutter_thrio.svg
+[gitter badge]: https://gitter.im/flutter_thrio/flutter_thrio?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge
