@@ -32,9 +32,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, strong, nullable) ThrioChannel *channel;
 
-@property (nonatomic, strong, readwrite, nullable) NavigatorReceiveChannel *receiveChannel;
+@property (nonatomic, strong, readwrite, nullable) NavigatorRouteReceiveChannel *receiveChannel;
 
-@property (nonatomic, strong, readwrite, nullable) NavigatorSendChannel *sendChannel;
+@property (nonatomic, strong, readwrite, nullable) NavigatorRouteSendChannel *sendChannel;
 
 @property (nonatomic, strong) NavigatorRouteObserverChannel *routeObserverChannel;
 
@@ -119,10 +119,10 @@ NS_ASSUME_NONNULL_BEGIN
   [_channel setupEventChannel:_engine.binaryMessenger];
   [_channel setupMethodChannel:_engine.binaryMessenger];
 
-  _receiveChannel = [[NavigatorReceiveChannel alloc] initWithChannel:_channel];
+  _receiveChannel = [[NavigatorRouteReceiveChannel alloc] initWithChannel:_channel];
   [_receiveChannel setReadyBlock:block];
   
-  _sendChannel = [[NavigatorSendChannel alloc] initWithChannel:_channel];
+  _sendChannel = [[NavigatorRouteSendChannel alloc] initWithChannel:_channel];
 
   ThrioChannel *routeChannel = [ThrioChannel channelWithEntrypoint:entrypoint name:@"__thrio_route_channel__"];
   [routeChannel setupMethodChannel:_engine.binaryMessenger];

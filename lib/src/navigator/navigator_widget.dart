@@ -214,7 +214,6 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
   void initState() {
     super.initState();
     if (mounted) {
-      widget.child.observers.add(widget._observerManager);
       ThrioNavigatorImplement.ready();
     }
   }

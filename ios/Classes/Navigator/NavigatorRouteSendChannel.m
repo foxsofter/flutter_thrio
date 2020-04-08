@@ -19,15 +19,15 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-#import "NavigatorSendChannel.h"
+#import "NavigatorRouteSendChannel.h"
 
-@interface NavigatorSendChannel ()
+@interface NavigatorRouteSendChannel ()
 
 @property (nonatomic, strong) ThrioChannel *channel;
 
 @end
 
-@implementation NavigatorSendChannel
+@implementation NavigatorRouteSendChannel
 
 - (instancetype)initWithChannel:(ThrioChannel *)channel {
   self = [super init];

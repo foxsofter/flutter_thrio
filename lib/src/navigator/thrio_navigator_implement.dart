@@ -42,38 +42,48 @@ class ThrioNavigatorImplement {
     ThrioChannel channel,
     NavigatorRouteSendChannel sendChannel,
     NavigatorRouteReceiveChannel receiveChannel,
+    NavigatorObserverManager observerManager,
     Map<String, NavigatorParamsCallback> pagePoppedResults,
   })  : _channel = channel,
         _sendChannel = sendChannel,
         _receiveChannel = receiveChannel,
+        _observerManager = observerManager,
         _pagePoppedResults = pagePoppedResults;
 
   static ThrioNavigatorImplement _default;
 
   static TransitionBuilder builder({String entrypoint = ''}) {
-    final channel = ThrioChannel(channel: '__thrio_app__$entrypoint');
-    final sendChannel = NavigatorRouteSendChannel(channel);
-    final pagePoppedResults = <String, NavigatorParamsCallback>{};
-    final receiveChannel =
-        NavigatorRouteReceiveChannel(channel, pagePoppedResults);
-    _pageObservers.registry(NavigatorPageObserverChannel());
-    _routeObservers.registry(NavigatorRouteObserverChannel());
-    _default = ThrioNavigatorImplement._(
-      channel: channel,
-      sendChannel: sendChannel,
-      receiveChannel: receiveChannel,
-      pagePoppedResults: pagePoppedResults,
-    );
-    sendChannel.registerUrls(_pageBuilders.keys.toList());
+    if (_default == null) {
+      final channel = ThrioChannel(channel: '__thrio_app__$entrypoint');
+      final sendChannel = NavigatorRouteSendChannel(channel);
+      final pagePoppedResults = <String, NavigatorParamsCallback>{};
+      final receiveChannel =
+          NavigatorRouteReceiveChannel(channel, pagePoppedResults);
+      _pageObservers.registry(NavigatorPageObserverChannel());
+      _routeObservers.registry(NavigatorRouteObserverChannel());
+      final observerManager = NavigatorObserverManager(
+        pageObservers: _pageObservers,
+        routeObservers: _routeObservers,
+      );
+      _default = ThrioNavigatorImplement._(
+        channel: channel,
+        sendChannel: sendChannel,
+        receiveChannel: receiveChannel,
+        observerManager: observerManager,
+        pagePoppedResults: pagePoppedResults,
+      );
+      sendChannel.registerUrls(_pageBuilders.keys.toList());
+    }
 
-    return (context, child) => NavigatorWidget(
-          key: _stateKey ??= GlobalKey<NavigatorWidgetState>(),
-          observerManager: NavigatorObserverManager(
-            pageObservers: _pageObservers,
-            routeObservers: _routeObservers,
-          ),
-          child: child is Navigator ? child : null,
-        );
+    return (context, child) {
+      final navigator = child is Navigator ? child : null;
+      navigator.observers.add(_default._observerManager);
+      return NavigatorWidget(
+        key: _stateKey ??= GlobalKey<NavigatorWidgetState>(),
+        observerManager: _default._observerManager,
+        child: navigator,
+      );
+    };
   }
 
   static GlobalKey<NavigatorWidgetState> _stateKey;
@@ -85,6 +95,8 @@ class ThrioNavigatorImplement {
   final NavigatorRouteSendChannel _sendChannel;
 
   final NavigatorRouteReceiveChannel _receiveChannel;
+
+  final NavigatorObserverManager _observerManager;
 
   final Map<String, NavigatorParamsCallback> _pagePoppedResults;
 

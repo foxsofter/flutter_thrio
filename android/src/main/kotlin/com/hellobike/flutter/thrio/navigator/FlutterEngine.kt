@@ -31,15 +31,15 @@ internal data class FlutterEngine(private val context: Context, private val id: 
 
     private var entryPoint: String = id
     private var flutterEngine: FlutterEngine = FlutterEngine(context)
-    private var sendChannel: SendChannel
-    private var receiveChannel: ReceiveChannel
+    private var sendChannel: RouteSendChannel
+    private var receiveChannel: RouteReceiveChannel
 
     private var routeObserverChannel: RouteObserverChannel
     private var pageObserverChannel: PageObserverChannel
 
     init {
-        sendChannel = SendChannel(flutterEngine.dartExecutor, id)
-        receiveChannel = ReceiveChannel(id)
+        sendChannel = RouteSendChannel(flutterEngine.dartExecutor, id)
+        receiveChannel = RouteReceiveChannel(id)
         sendChannel.setMethodCallHandler(receiveChannel)
 
         routeObserverChannel = RouteObserverChannel(flutterEngine.dartExecutor)

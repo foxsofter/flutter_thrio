@@ -19,7 +19,7 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-#import "NavigatorReceiveChannel.h"
+#import "NavigatorRouteReceiveChannel.h"
 #import "ThrioNavigator+Internal.h"
 #import "ThrioNavigator+PageBuilders.h"
 #import "UINavigationController+Navigator.h"
@@ -30,7 +30,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface NavigatorReceiveChannel ()
+@interface NavigatorRouteReceiveChannel ()
 
 @property (nonatomic, strong) ThrioChannel *channel;
 
@@ -38,7 +38,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
-@implementation NavigatorReceiveChannel
+@implementation NavigatorRouteReceiveChannel
 
 - (instancetype)initWithChannel:(ThrioChannel *)channel {
   self = [super init];

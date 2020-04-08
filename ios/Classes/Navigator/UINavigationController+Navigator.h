@@ -76,7 +76,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)thrio_didShowViewController:(UIViewController *)viewController
                            animated:(BOOL)animated;
 
-/// 不是手势触发的当前正要被pop的`UIViewController`
+/// 手势触发的当前正要被pop的`UIViewController`
 ///
 @property (nonatomic, strong, nullable) UIViewController *thrio_popingViewController;
 

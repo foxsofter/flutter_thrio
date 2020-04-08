@@ -83,7 +83,7 @@ NS_ASSUME_NONNULL_BEGIN
   return flutterEngine.engine;
 }
 
-- (NavigatorSendChannel *)getSendChannelByEntrypoint:(NSString *)entrypoint {
+- (NavigatorRouteSendChannel *)getSendChannelByEntrypoint:(NSString *)entrypoint {
   if (!ThrioNavigator.isMultiEngineEnabled) {
     entrypoint = @"";
   }

@@ -20,6 +20,7 @@
 // IN THE SOFTWARE.
 
 #import "NavigatorPopGestureRecognizerDelegate.h"
+#import "UINavigationController+Navigator.h"
 #import "UIViewController+WillPopCallback.h"
 
 @implementation NavigatorPopGestureRecognizerDelegate
@@ -37,6 +38,8 @@
   if ([[self.navigationController valueForKey:@"_isTransitioning"] boolValue]) {
     return NO;
   }
+  
+  self.navigationController.thrio_popingViewController = topViewController;
   
   return YES;
 }
