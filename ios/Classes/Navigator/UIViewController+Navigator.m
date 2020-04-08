@@ -92,7 +92,7 @@ NS_ASSUME_NONNULL_BEGIN
     NSMutableDictionary *arguments = [NSMutableDictionary dictionaryWithDictionary:[settings toArguments]];
     [arguments setObject:[NSNumber numberWithBool:animated] forKey:@"animated"];
     NSString *entrypoint = [(NavigatorFlutterViewController*)self entrypoint];
-    NavigatorSendChannel *channel = [NavigatorFlutterEngineFactory.shared getSendChannelByEntrypoint:entrypoint];
+    NavigatorRouteSendChannel *channel = [NavigatorFlutterEngineFactory.shared getSendChannelByEntrypoint:entrypoint];
     if (result) {
       [channel onPush:arguments result:^(id _Nullable r) {
         result(r && [r boolValue] ? index : nil);
@@ -137,7 +137,7 @@ NS_ASSUME_NONNULL_BEGIN
 
   if ([self isKindOfClass:NavigatorFlutterViewController.class]) {
     NSString *entrypoint = [(NavigatorFlutterViewController*)self entrypoint];
-    NavigatorSendChannel *channel = [NavigatorFlutterEngineFactory.shared getSendChannelByEntrypoint:entrypoint];
+    NavigatorRouteSendChannel *channel = [NavigatorFlutterEngineFactory.shared getSendChannelByEntrypoint:entrypoint];
     __weak typeof(self) weakself = self;
     // 发送给需要关闭页面的引擎
     [channel onPop:arguments result:^(id _Nullable r) {
@@ -158,7 +158,7 @@ NS_ASSUME_NONNULL_BEGIN
         }
         // 检查打开页面的源引擎是否和关闭页面的源引擎不同，不同则继续发送onPop
         if (route.fromEntrypoint && ![route.fromEntrypoint isEqualToString:entrypoint]) {
-          NavigatorSendChannel *channel = [NavigatorFlutterEngineFactory.shared getSendChannelByEntrypoint:route.fromEntrypoint];
+          NavigatorRouteSendChannel *channel = [NavigatorFlutterEngineFactory.shared getSendChannelByEntrypoint:route.fromEntrypoint];
           [channel onPop:arguments result:nil];
         }
       }
@@ -195,7 +195,7 @@ NS_ASSUME_NONNULL_BEGIN
     [arguments setObject:[NSNumber numberWithBool:animated] forKey:@"animated"];
     __weak typeof(self) weakself = self;
     NSString *entrypoint = [(NavigatorFlutterViewController*)self entrypoint];
-    NavigatorSendChannel *channel = [NavigatorFlutterEngineFactory.shared getSendChannelByEntrypoint:entrypoint];
+    NavigatorRouteSendChannel *channel = [NavigatorFlutterEngineFactory.shared getSendChannelByEntrypoint:entrypoint];
     [channel onPopTo:arguments result:^(id _Nullable r) {
       __strong typeof(weakself) strongSelf = weakself;
       if (r && [r boolValue]) {
@@ -231,7 +231,7 @@ NS_ASSUME_NONNULL_BEGIN
     [arguments setObject:[NSNumber numberWithBool:animated] forKey:@"animated"];
     __weak typeof(self) weakself = self;
     NSString *entrypoint = [(NavigatorFlutterViewController*)self entrypoint];
-    NavigatorSendChannel *channel = [NavigatorFlutterEngineFactory.shared getSendChannelByEntrypoint:entrypoint];
+    NavigatorRouteSendChannel *channel = [NavigatorFlutterEngineFactory.shared getSendChannelByEntrypoint:entrypoint];
     [channel onRemove:arguments result:^(id  _Nullable r) {
       __strong typeof(weakself) strongSelf = weakself;
       if ([r boolValue]) {
@@ -437,7 +437,7 @@ NS_ASSUME_NONNULL_BEGIN
         @"name": name,
       };
       NSString *entrypoint = [(NavigatorFlutterViewController*)self entrypoint];
-      NavigatorSendChannel *channel = [NavigatorFlutterEngineFactory.shared getSendChannelByEntrypoint:entrypoint];
+      NavigatorRouteSendChannel *channel = [NavigatorFlutterEngineFactory.shared getSendChannelByEntrypoint:entrypoint];
       [channel onNotify:arguments result:nil];
     } else {
       if ([self conformsToProtocol:@protocol(NavigatorPageNotifyProtocol)]) {

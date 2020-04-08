@@ -24,8 +24,8 @@
 #import "ThrioTypes.h"
 #import "NavigatorFlutterViewController.h"
 #import "ThrioChannel.h"
-#import "NavigatorReceiveChannel.h"
-#import "NavigatorSendChannel.h"
+#import "NavigatorRouteReceiveChannel.h"
+#import "NavigatorRouteSendChannel.h"
 #import "NavigatorPageObserverChannel.h"
 
 NS_ASSUME_NONNULL_BEGIN
@@ -39,9 +39,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, strong, readonly, nullable) FlutterEngine *engine;
 
-@property (nonatomic, strong, readonly, nullable) NavigatorReceiveChannel *receiveChannel;
+@property (nonatomic, strong, readonly, nullable) NavigatorRouteReceiveChannel *receiveChannel;
 
-@property (nonatomic, strong, readonly, nullable) NavigatorSendChannel *sendChannel;
+@property (nonatomic, strong, readonly, nullable) NavigatorRouteSendChannel *sendChannel;
 
 @property (nonatomic, strong, readonly, nullable) NavigatorPageObserverChannel *pageObserverChannel;
 

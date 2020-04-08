@@ -141,7 +141,6 @@ NS_ASSUME_NONNULL_BEGIN
   }
   if (!vc.thrio_firstRoute) { // 不存在表示页面未经过thrio打开，直接关闭即可
     if (self.viewControllers.count > 1) {
-      self.thrio_popingViewController = vc;
       id vc = [self popViewControllerAnimated:animated];
       if (result) {
         result(vc != nil);
@@ -172,7 +171,6 @@ NS_ASSUME_NONNULL_BEGIN
           [strongSelf thrio_addPopGesture];
         }
       } else {
-        strongSelf.thrio_popingViewController = vc;
         [strongSelf popViewControllerAnimated:animated];
       }
     }
@@ -394,7 +392,7 @@ NS_ASSUME_NONNULL_BEGIN
 /// 侧滑返回有个比较坑的点，刚开始侧滑的时候就触发了`popViewControllerAnimated:`，这函数中的逻辑主要是为了避免这个问题
 ///
 - (UIViewController * _Nullable)thrio_popViewControllerAnimated:(BOOL)animated {
-  if (self.thrio_popingViewController) { // 不为空表示不是手势触发的pop
+  if (!self.thrio_popingViewController) { // 为空表示不是手势触发的pop
     // 如果是FlutterViewController，无视thrio_willPopBlock，willPop在Dart中已经调用过
     if ([self.topViewController isKindOfClass:NavigatorFlutterViewController.class]) {
       if (self.viewControllers.count > 1) {
@@ -444,17 +442,11 @@ NS_ASSUME_NONNULL_BEGIN
         // 是否调用willPop的标记位恢复NO
         strongSelf.topViewController.thrio_willPopCalling = NO;
       });
-      
       return nil;
     }
-    
-    self.thrio_popingViewController = nil;    
-  } else {
-    // 手势触发的，记录下到`thrio_didShowViewController:animated:`中进行处理
-    self.thrio_popingViewController = self.topViewController;
   }
   
-  // 处理didPop
+  // 默认处理逻辑，添加didPop
   if (![self.topViewController isKindOfClass:NavigatorFlutterViewController.class] &&
       self.topViewController.thrio_firstRoute) {
     NavigatorRouteSettings *routeSettings = self.topViewController.thrio_lastRoute.settings;
