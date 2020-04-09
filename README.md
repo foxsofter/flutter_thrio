@@ -1,4 +1,4 @@
-# ![thrio logo](./docs/imgs/thrio.png)
+# ![thrio logo](./doc/imgs/thrio.png)
 
 [![Gitter Channel][]][gitter badge]
 
@@ -38,7 +38,7 @@ You should then run `flutter pub upgrade` or update your packages in IntelliJ.
 
 There is a pretty sweet example project in the `example` folder. Check it out. Otherwise, keep reading to get up and running.
 
-[README CN](./docs/Feature.md)
+[README CN](./doc/Feature.md)
 
 ### `push` a page in dart
 
