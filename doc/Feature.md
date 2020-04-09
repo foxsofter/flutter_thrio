@@ -1,44 +1,43 @@
-# 如何将Flutter优雅的嵌入现有应用？
+# 如何将 Flutter 优雅的嵌入现有应用？
 
-## 为什么写thrio？
+## 为什么写 thrio？
 
-在早期Flutter发布的时候，谷歌虽然提供了iOS和Android App上的Flutter嵌入方案，但主要针对的是纯Flutter的情形，混合开发支持的并不友好。
+在早期 Flutter 发布的时候，谷歌虽然提供了 iOS 和 Android App 上的 Flutter 嵌入方案，但主要针对的是纯 Flutter 的情形，混合开发支持的并不友好。
 
-所谓的纯RN、纯weex应用的生命周期都不存在，所以也不会存在一个纯Flutter的App的生命周期，因为我们总是有需要复用现有模块。
+所谓的纯 RN、纯 weex 应用的生命周期都不存在，所以也不会存在一个纯 Flutter 的 App 的生命周期，因为我们总是有需要复用现有模块。
 
-所以我们需要一套足够完整的Flutter嵌入原生App的路由解决方案，所以我们自己造了个轮子 [thrio](https://github.com/hellobike/thrio) ，现已开源，遵循MIT协议。
+所以我们需要一套足够完整的 Flutter 嵌入原生 App 的路由解决方案，所以我们自己造了个轮子 [thrio](https://github.com/hellobike/thrio) ，现已开源，遵循 MIT 协议。
 
+## thrio 的设计原则
 
-## thrio的设计原则
+- 原则一，dart 端最小改动接入
+- 原则二，原生端最小侵入
+- 原则三，三端保持一致的 API
 
-* 原则一，dart端最小改动接入
-* 原则二，原生端最小侵入
-* 原则三，三端保持一致的API
+thrio 所有功能的设计，都会遵守这三个原则。下面会逐步对功能层面一步步展开进行说明，后面也会有原理性的解析。
 
-thrio所有功能的设计，都会遵守这三个原则。下面会逐步对功能层面一步步展开进行说明，后面也会有原理性的解析。
+## thrio 的页面路由
 
-## thrio的页面路由
+以 dart 中的 `Navigator` 为主要参照，提供以下路由能力：
 
-以dart中的 `Navigator` 为主要参照，提供以下路由能力：
+- push，打开一个页面并放到路由栈顶
+- pop，关闭路由栈顶的页面
+- popTo，关闭到某一个页面
+- remove，删除任意页面
 
-* push，打开一个页面并放到路由栈顶
-* pop，关闭路由栈顶的页面
-* popTo，关闭到某一个页面
-* remove，删除任意页面
+Navigator 中的 API 几乎都可以通过组合以上方法实现，`replace` 方法暂未提供。
 
-Navigator中的API几乎都可以通过组合以上方法实现，`replace` 方法暂未提供。
-
-不提供iOS中存在的 `present` 功能，因为会导致原生路由栈被覆盖，维护复杂度会非常高，如确实需要可以通过修改转场动画实现。
+不提供 iOS 中存在的 `present` 功能，因为会导致原生路由栈被覆盖，维护复杂度会非常高，如确实需要可以通过修改转场动画实现。
 
 ### 页面的索引
 
-要路由，我们需要对页面建立索引，通常情况下，我们只需要给每个页面设定一个 `url` 就可以了，如果每个页面都只打开一次的话，不会有任何问题。但是当一个页面被打开多次之后，仅仅通过url是无法定位到明确的页面实例的，所以在 `thrio` 中我们增加了页面索引的概念，具体在API中都会以 `index` 来表示，同一个url第一个打开的页面的索引为 `1` ，之后同一个 `url` 的索引不断累加。
+要路由，我们需要对页面建立索引，通常情况下，我们只需要给每个页面设定一个 `url` 就可以了，如果每个页面都只打开一次的话，不会有任何问题。但是当一个页面被打开多次之后，仅仅通过 url 是无法定位到明确的页面实例的，所以在 `thrio` 中我们增加了页面索引的概念，具体在 API 中都会以 `index` 来表示，同一个 url 第一个打开的页面的索引为 `1` ，之后同一个 `url` 的索引不断累加。
 
-如此，唯一定位一个页面的方式为 `url` + `index`，在dart中 `route` 的 `name` 就是由 `'$url.$index'` 组合而成。
+如此，唯一定位一个页面的方式为 `url` + `index`，在 dart 中 `route` 的 `name` 就是由 `'$url.$index'` 组合而成。
 
 很多时候，使用者不需要关注 `index`，只有当需要定位到多开的 `url` 的页面中的某一个时才需要关注 `index`。最简单获取 `index` 的方式为 `push` 方法的回调返回值。
 
-### 页面的push
+### 页面的 push
 
 1. dart 端打开页面
 
@@ -80,14 +79,14 @@ ThrioNavigator.push(this, "biz1/flutter1",
 
 4. 连续打开页面
 
-* dart端只需要await push，就可以连续打开页面
-* 原生端需要等待push的result回调返回才能打开第二个页面
+- dart 端只需要 await push，就可以连续打开页面
+- 原生端需要等待 push 的 result 回调返回才能打开第二个页面
 
 5. 获取所打开页面关闭后的回调参数
 
-* 三端都可以通过闭包 poppedResult 来获取
+- 三端都可以通过闭包 poppedResult 来获取
 
-### 页面的pop
+### 页面的 pop
 
 1. dart 端关闭顶层页面
 
@@ -117,7 +116,7 @@ ThrioNavigator.pop(params: 'popped flutter1'),
 ThrioNavigator.pop(this, params, animated)
 ```
 
-### 页面的popTo
+### 页面的 popTo
 
 1. dart 端关闭到页面
 
@@ -143,7 +142,7 @@ ThrioNavigator.popTo(url: 'flutter1', animated: false);
 ThrioNavigator.popTo(context, url, index)
 ```
 
-### 页面的remove
+### 页面的 remove
 
 1. dart 端关闭特定页面
 
@@ -167,13 +166,13 @@ ThrioNavigator.remove(url: 'flutter1', animated: true);
 ThrioNavigator.remove(context, url, index)
 ```
 
-## thrio的页面通知
+## thrio 的页面通知
 
 页面通知一般来说并不在路由的范畴之内，但我们在实际开发中却经常需要使用到，由此产生的各种模块化框架一个比一个复杂。
 
 那么问题来了，这些模块化框架很难在三端互通，所有的这些模块化框架提供的能力无非最终是一个页面通知的能力，而且页面通知我们可以非常简单的在三端打通。
 
-鉴于此，页面通知作为thrio的一个必备能力被引入了thrio。
+鉴于此，页面通知作为 thrio 的一个必备能力被引入了 thrio。
 
 ### 发送页面通知
 
@@ -230,13 +229,13 @@ class Activity : AppCompatActivity(), OnNotifyListener {
 }
 ```
 
-因为Android activity在后台可能会被销毁，所以页面通知实现了一个懒响应的行为，只有当页面呈现之后才会收到该通知，这也符合页面需要刷新的场景。
+因为 Android activity 在后台可能会被销毁，所以页面通知实现了一个懒响应的行为，只有当页面呈现之后才会收到该通知，这也符合页面需要刷新的场景。
 
-## thrio的模块化
+## thrio 的模块化
 
-模块化在thrio里面只是一个非核心功能，仅仅为了实现原则二而引入原生端。
+模块化在 thrio 里面只是一个非核心功能，仅仅为了实现原则二而引入原生端。
 
-thrio的模块化能力由一个类提供，`ThrioModule`，很小巧，主要提供了 `Module` 的注册链和初始化链，让代码可以根据路由url进行文件分级分类。
+thrio 的模块化能力由一个类提供，`ThrioModule`，很小巧，主要提供了 `Module` 的注册链和初始化链，让代码可以根据路由 url 进行文件分级分类。
 
 注册链将所有模块串起来，字母块由最近的父一级模块注册，新增模块的耦合度最低。
 
@@ -250,13 +249,13 @@ mixin ThrioModule {
     /// the `onModuleRegister` function of the `module`.
     ///
     void registerModule(ThrioModule module);
-    
+
     /// A function for module initialization that will call
     /// the `onPageRegister`, `onModuleInit` and `onModuleAsyncInit`
     /// methods of all modules.
     ///
     void initModule();
-    
+
     /// A function for registering submodules.
     ///
     void onModuleRegister() {}
@@ -272,7 +271,7 @@ mixin ThrioModule {
     /// A function for module asynchronous initialization.
     ///
     void onModuleAsyncInit() {}
-    
+
     /// Register an page builder for the router.
     ///
     /// Unregistry by calling the return value `VoidCallback`.
@@ -286,7 +285,7 @@ mixin ThrioModule {
     /// Do not override this method.
     ///
     VoidCallback registerPageObserver(NavigatorPageObserver pageObserver);
-    
+
     /// Register observers for route action of Dart pages.
     ///
     /// Unregistry by calling the return value `VoidCallback`.
@@ -297,7 +296,7 @@ mixin ThrioModule {
 }
 ```
 
-## thrio的页面生命周期
+## thrio 的页面生命周期
 
 原生端可以获得所有页面的生命周期，Dart 端只能获取自身页面的生命周期
 
@@ -354,7 +353,7 @@ class Module with ThrioModule, NavigatorPageObserver {
 
 ```
 
-## thrio的页面路由观察者
+## thrio 的页面路由观察者
 
 原生端可以观察所有页面的路由行为，dart 端只能观察 dart 页面的路由行为
 
@@ -426,11 +425,11 @@ class Module with ThrioModule, NavigatorRouteObserver {
 
 ```
 
-## thrio的额外功能
+## thrio 的额外功能
 
 ### iOS 显隐当前页面的导航栏
 
-原生的导航栏在 dart 上一般情况下是不需要的，但切换到原生页面又需要把原生的导航栏置回来，thrio 不提供的话，使用者较难扩展，我之前在目前一个主流的Flutter接入库上进行此项功能的扩展，很不流畅，所以这个功能最好的效果还是 thrio 直接内置，切换到 dart 页面默认会隐藏原生的导航栏，切回原生页面也会自动恢复。另外也可以手动隐藏原生页面的导航栏。
+原生的导航栏在 dart 上一般情况下是不需要的，但切换到原生页面又需要把原生的导航栏置回来，thrio 不提供的话，使用者较难扩展，我之前在目前一个主流的 Flutter 接入库上进行此项功能的扩展，很不流畅，所以这个功能最好的效果还是 thrio 直接内置，切换到 dart 页面默认会隐藏原生的导航栏，切回原生页面也会自动恢复。另外也可以手动隐藏原生页面的导航栏。
 
 ```objc
 viewController.thrio_hidesNavigationBar = NO;
@@ -456,26 +455,26 @@ viewController.thrio_willPopBlock = ^(ThrioBoolCallback _Nonnull result) {
   result(NO);
 };
 ```
-关于 `FlutterViewController` 的侧滑返回手势，Flutter 默认支持的是纯Flutter应用，仅支持单一的 `FlutterViewController` 作为整个App的容器，内部已经将 `FlutterViewController` 的侧滑返回手势去掉。但 thrio 要解决的是 Flutter 与原生应用的无缝集成，所以必须将侧滑返回的手势加回来。
 
+关于 `FlutterViewController` 的侧滑返回手势，Flutter 默认支持的是纯 Flutter 应用，仅支持单一的 `FlutterViewController` 作为整个 App 的容器，内部已经将 `FlutterViewController` 的侧滑返回手势去掉。但 thrio 要解决的是 Flutter 与原生应用的无缝集成，所以必须将侧滑返回的手势加回来。
 
-## thrio的设计解析
+## thrio 的设计解析
 
-目前开源 Flutter 嵌入原生的库，主要的还是通过切换 FlutterEngine 上的原生容器来实现的，这是 Flutter 原本提供的原生容器之上最小改动而实现，需要小心处理好容器切换的时序，否则在页面导航时会产生崩溃。基于 Flutter 提供的这个功能， thrio 构建了三端一致的页面管理API。
+目前开源 Flutter 嵌入原生的库，主要的还是通过切换 FlutterEngine 上的原生容器来实现的，这是 Flutter 原本提供的原生容器之上最小改动而实现，需要小心处理好容器切换的时序，否则在页面导航时会产生崩溃。基于 Flutter 提供的这个功能， thrio 构建了三端一致的页面管理 API。
 
 ### dart 的核心类
 
-dart 端只管理 dart页面
+dart 端只管理 dart 页面
 
 1. 基于 `RouteSettings` 进行扩展，复用现有的字段
 
-* name = url.index
-* isInitialRoute = !isNested
-* arguments = params
+- name = url.index
+- isInitialRoute = !isNested
+- arguments = params
 
 2. 基于 `MaterialPageRoute` 扩展的 `NavigatorPageRoute`
 
-* 主要提供页面描述和转场动画的是否配置的功能
+- 主要提供页面描述和转场动画的是否配置的功能
 
 2. 基于 `Navigator` 扩展，封装 `NavigatorWidget`，提供以下方法
 
@@ -484,16 +483,16 @@ dart 端只管理 dart页面
     bool animated = true,
     NavigatorParamsCallback poppedResult,
   });
-  
+
   Future<bool> pop(RouteSettings settings, {bool animated = true});
-  
+
   Future<bool> popTo(RouteSettings settings, {bool animated = true});
 
   Future<bool> remove(RouteSettings settings, {bool animated = false});
-  
+
 ```
 
-3. 封装 `ThrioNavigator` 路由API
+3. 封装 `ThrioNavigator` 路由 API
 
 ```dart
 abstract class ThrioNavigator {
@@ -508,19 +507,19 @@ abstract class ThrioNavigator {
         bool animated = true,
         NavigatorParamsCallback poppedResult,
     });
-    
+
     /// Send a notification to the page.
     ///
     /// Notifications will be triggered when the page enters the foreground.
     /// Notifications with the same `name` will be overwritten.
-    /// 
+    ///
     static Future<bool> notify({
         @required String url,
         int index,
         @required String name,
         params,
     });
-    
+
     /// Pop a page from the navigation stack.
     ///
     static Future<bool> pop({params, bool animated = true})
@@ -530,9 +529,9 @@ abstract class ThrioNavigator {
         int index,
         bool animated = true,
     });
-    
+
     /// Remove the page with `url` in the navigation stack.
-    ///  
+    ///
     static Future<bool> remove({
         @required String url,
         int index,
@@ -563,20 +562,20 @@ abstract class ThrioNavigator {
 
 2. `NavigatorPageRoute` 对应于 dart 的 `NavigatorPageRoute` 类
 
-* 存储通知、页面关闭回调、NavigatorRouteSettings
-* route的双向链表
+- 存储通知、页面关闭回调、NavigatorRouteSettings
+- route 的双向链表
 
 3. 基于 `UINavigationController` 扩展，功能类似 dart 的 `NavigatorWidget`
 
-* 提供一些列的路由内部接口
-* 并能兼容非 thrio 体系内的页面
+- 提供一些列的路由内部接口
+- 并能兼容非 thrio 体系内的页面
 
 4. 基于 `UIViewController` 扩展
 
-* 提供 `FlutterViewController` 容器上的 dart 页面的管理功能
-* 提供 popDisable 等功能
+- 提供 `FlutterViewController` 容器上的 dart 页面的管理功能
+- 提供 popDisable 等功能
 
-5. 封装 `ThrioNavigator` 路由API
+5. 封装 `ThrioNavigator` 路由 API
 
 ```objc
 @interface ThrioNavigator : NSObject
@@ -630,38 +629,38 @@ abstract class ThrioNavigator {
 
 ![thrio-architecture](./imgs/thrio-architecture.png)
 
-1. 一个应用允许启动多个Flutter引擎，可让每个引擎运行的代码物理隔离，按需启用，劣势是启动多个Flutter引擎可能导致资源消耗过多而引起问题；
-2. 一个Flutter引擎通过切换可以匹配到多个FlutterViewController，这是Flutter优雅嵌入原生应用的前提条件
-3. 一个FlutterViewController可以内嵌多个Dart页面，有效减少单个FlutterViewController只打开一个Dart页面导致的内存消耗过多问题，关于内存消耗的问题，后续会有提到。
+1. 一个应用允许启动多个 Flutter 引擎，可让每个引擎运行的代码物理隔离，按需启用，劣势是启动多个 Flutter 引擎可能导致资源消耗过多而引起问题；
+2. 一个 Flutter 引擎通过切换可以匹配到多个 FlutterViewController，这是 Flutter 优雅嵌入原生应用的前提条件
+3. 一个 FlutterViewController 可以内嵌多个 Dart 页面，有效减少单个 FlutterViewController 只打开一个 Dart 页面导致的内存消耗过多问题，关于内存消耗的问题，后续会有提到。
 
-### dart 与 iOS push的时序图
+### dart 与 iOS push 的时序图
 
 ![thrio-push](./imgs/thrio-push.png)
 
-1. 所有路由操作最终汇聚于原生端开始，如果始于 dart 端，则通过 channel 调用原生端的API
+1. 所有路由操作最终汇聚于原生端开始，如果始于 dart 端，则通过 channel 调用原生端的 API
 2. 通过 `url+index` 定位到页面
 3. 如果页面是原生页面，则直接进行相关操作
 4. 如果页面是 Flutter 容器，则通过 channel 调用 dart 端对应的路由 API
-5. 接4步，如果 dart 端对应的路由 API 操作完成后回调，如果成功，则执行原生端的路由栈同步，如果失败，则回调入口 API 的result
-6. 接4不，如果 dart 端对应的路由 API操作成功，则通过 route channel 调用原生端对应的 route observer，通过 page channel 调用原生端对应的 page observer。
+5. 接 4 步，如果 dart 端对应的路由 API 操作完成后回调，如果成功，则执行原生端的路由栈同步，如果失败，则回调入口 API 的 result
+6. 接 4 不，如果 dart 端对应的路由 API 操作成功，则通过 route channel 调用原生端对应的 route observer，通过 page channel 调用原生端对应的 page observer。
 
-### dart 与 iOS pop的时序图
+### dart 与 iOS pop 的时序图
 
 ![thrio-pop](./imgs/thrio-pop.png)
 
 1. pop 的流程与 push 基本一致；
 2. pop 需要考虑页面是否可关闭的问题；
-2. 但在 iOS 中，侧滑返回手势会导致问题， `popViewControllerAnimated:` 会在手势开始的时候调用，导致 dart 端的页面已经被 pop 掉，但如果手势被放弃了，则导致两端的页面栈不一致，thrio 已经解决了这个问题，具体流程稍复杂，源码可能更好的说明。
+3. 但在 iOS 中，侧滑返回手势会导致问题， `popViewControllerAnimated:` 会在手势开始的时候调用，导致 dart 端的页面已经被 pop 掉，但如果手势被放弃了，则导致两端的页面栈不一致，thrio 已经解决了这个问题，具体流程稍复杂，源码可能更好的说明。
 
-### dart 与 iOS popTo的时序图
+### dart 与 iOS popTo 的时序图
 
 ![thrio-popTo](./imgs/thrio-popTo.png)
 
 1. popTo 的流程与 push 基本一致；
-2. 但在多引擎模式下，popTo需要处理多引擎的路由栈同步的问题；
-3. 另外在 Dart 端，popTo实际上是多个pop或者remove构成的，最终产生多次的didPop或didRemove行为，需要将多个pop或remove组合起来形成一个didPopTo行为。
+2. 但在多引擎模式下，popTo 需要处理多引擎的路由栈同步的问题；
+3. 另外在 Dart 端，popTo 实际上是多个 pop 或者 remove 构成的，最终产生多次的 didPop 或 didRemove 行为，需要将多个 pop 或 remove 组合起来形成一个 didPopTo 行为。
 
-### dart 与 iOS remove的时序图
+### dart 与 iOS remove 的时序图
 
 ![thrio-remove](./imgs/thrio-remove.png)
 
