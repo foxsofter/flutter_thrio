@@ -42,7 +42,7 @@
 }
 
 - (void)onNotify:(id _Nullable)arguments result:(FlutterResult _Nullable)callback {
-  [self _on:@"onNotify" arguments:arguments result:callback];
+  [_channel sendEvent:@"__onNotify__" arguments:arguments];
 }
 
 - (void)onPop:(id _Nullable)arguments result:(FlutterResult _Nullable)callback {

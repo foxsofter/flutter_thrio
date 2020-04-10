@@ -10,3 +10,7 @@
 ## 0.1.1
 
 - Fix: hot restart 导致 pop 失效
+
+## 0.1.2
+
+- Fix: iOS 下面 Dart 页面通知的 bug
