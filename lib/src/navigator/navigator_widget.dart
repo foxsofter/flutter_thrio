@@ -122,6 +122,11 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
     ThrioLogger.v('pop:${history.last.settings.name}');
 
     final route = history.last;
+    // The route has been closed.
+    if (route.routeAction == NavigatorRouteAction.pop) {
+      return Future.value(false);
+    }
+
     final previousRoute =
         history.length > 1 ? history[history.length - 2] : null;
     final pageObservers = Set.from(ThrioNavigatorImplement.pageObservers);
