@@ -74,7 +74,7 @@ class NavigatorObserverManager extends NavigatorObserver {
       pageRoutes.remove(route);
       _currentPopRoutes.add(route);
       if (_currentPopRoutes.length == 1) {
-        Future.delayed(const Duration(milliseconds: 100), () {
+        Future(() {
           final previousRoute = pageRoutes.isEmpty ? null : pageRoutes.last;
           final pageObservers = Set.from(_pageObservers);
           final routeObservers = Set.from(_routeObservers);
@@ -139,7 +139,7 @@ class NavigatorObserverManager extends NavigatorObserver {
       pageRoutes.remove(route);
       _currentRemoveRoutes.add(route);
       if (_currentRemoveRoutes.length == 1) {
-        Future.delayed(const Duration(milliseconds: 100), () {
+        Future(() {
           if (_currentRemoveRoutes.length == 1) {
             ThrioLogger.v('didRemove:${route.settings.name}');
             final routeObservers = Set.from(_routeObservers);
