@@ -1,6 +1,6 @@
 # ![thrio logo](./doc/imgs/thrio.png)
 
-[![Gitter Channel][]][gitter badge]
+[![Gitter Channel][]][gitter badge][![pub package](https://img.shields.io/pub/v/thrio.svg)](https://pub.dartlang.org/packages/thrio)
 
 The `Navigator` for iOS, Android, Flutter.
 
