@@ -254,7 +254,7 @@ internal object NavigationController {
             onPopTo(activity, record) {
                 if (it) {
                     PageRouteStack.popTo(record)
-//                didRemoveAndNotify(activity)
+                    didNotify(activity, record)
                 }
                 result(it)
             }
@@ -267,7 +267,6 @@ internal object NavigationController {
             }
             result(true)
         }
-
     }
 
     object Remove {
@@ -376,6 +375,10 @@ internal object NavigationController {
             activity.finish()
             return
         }
+        didNotify(activity, record)
+    }
+
+    private fun didNotify(activity: Activity, record: PageRoute) {
         record.removeNotify().onEach {
             if (activity is ThrioActivity) {
                 Log.e("Thrio", "page ${record.url} index ${record.index} notify")
