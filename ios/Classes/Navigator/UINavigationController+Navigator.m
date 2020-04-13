@@ -371,8 +371,8 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 - (void)thrio_pushViewController:(UIViewController *)viewController animated:(BOOL)animated {
-  if (![viewController.thrio_hidesNavigationBar isEqualToNumber:self.topViewController.thrio_hidesNavigationBar]) {
-    [self setNavigationBarHidden:viewController.thrio_hidesNavigationBar.boolValue];
+  if (![viewController.thrio_hidesNavigationBar_ isEqualToNumber:self.topViewController.thrio_hidesNavigationBar_]) {
+    [self setNavigationBarHidden:viewController.thrio_hidesNavigationBar_.boolValue];
   }
   
   if (![viewController isKindOfClass:NavigatorFlutterViewController.class] && viewController.thrio_firstRoute) {
@@ -402,8 +402,8 @@ NS_ASSUME_NONNULL_BEGIN
           [NavigatorFlutterEngineFactory.shared pushViewController:(NavigatorFlutterViewController*)vc];
         }
         // 判断前一个页面导航栏是否需要切换
-        if (self.navigationBarHidden != vc.thrio_hidesNavigationBar.boolValue) {
-          [self setNavigationBarHidden:vc.thrio_hidesNavigationBar.boolValue];
+        if (self.navigationBarHidden != vc.thrio_hidesNavigationBar_.boolValue) {
+          [self setNavigationBarHidden:vc.thrio_hidesNavigationBar_.boolValue];
         }
       }
 
@@ -472,8 +472,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (NSArray<__kindof UIViewController *> * _Nullable)thrio_popToViewController:(UIViewController *)viewController
                                                                      animated:(BOOL)animated {
-  if (![viewController.thrio_hidesNavigationBar isEqualToNumber:self.topViewController.thrio_hidesNavigationBar]) {
-    [self setNavigationBarHidden:viewController.thrio_hidesNavigationBar.boolValue];
+  if (![viewController.thrio_hidesNavigationBar_ isEqualToNumber:self.topViewController.thrio_hidesNavigationBar_]) {
+    [self setNavigationBarHidden:viewController.thrio_hidesNavigationBar_.boolValue];
   }
 
   // 处理didPopTo
@@ -500,8 +500,8 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)thrio_setViewControllers:(NSArray<UIViewController *> *)viewControllers {
   UIViewController *willPopVC = self.topViewController;
   UIViewController *willShowVC = viewControllers.lastObject;
-  if (![willPopVC.thrio_hidesNavigationBar isEqualToNumber:willShowVC.thrio_hidesNavigationBar]) {
-    [self setNavigationBarHidden:willShowVC.thrio_hidesNavigationBar.boolValue];
+  if (![willPopVC.thrio_hidesNavigationBar_ isEqualToNumber:willShowVC.thrio_hidesNavigationBar_]) {
+    [self setNavigationBarHidden:willShowVC.thrio_hidesNavigationBar_.boolValue];
   }
   
   [self thrio_setViewControllers:viewControllers];
@@ -525,8 +525,8 @@ NS_ASSUME_NONNULL_BEGIN
           if (![viewController isKindOfClass:NavigatorFlutterViewController.class]) {
             [NavigatorFlutterEngineFactory.shared popViewController:(NavigatorFlutterViewController*)strongSelf.thrio_popingViewController];
           }
-          if (strongSelf.navigationBarHidden != viewController.thrio_hidesNavigationBar.boolValue) {
-            [strongSelf setNavigationBarHidden:viewController.thrio_hidesNavigationBar.boolValue];
+          if (strongSelf.navigationBarHidden != viewController.thrio_hidesNavigationBar_.boolValue) {
+            [strongSelf setNavigationBarHidden:viewController.thrio_hidesNavigationBar_.boolValue];
           }
         }
         strongSelf.thrio_popingViewController = nil;
@@ -553,14 +553,8 @@ NS_ASSUME_NONNULL_BEGIN
   NavigatorPageBuilder builder = [ThrioNavigator pageBuilders][url];
   if (builder) {
     viewController = builder(params);
-    if (viewController.thrio_hidesNavigationBar == nil) {
-        // 寻找不是FlutterViewController的UIViewController，获取其thrio_hidesNavigationBar
-      for (UIViewController *vc in self.viewControllers.reverseObjectEnumerator) {
-        if (![vc isKindOfClass:NavigatorFlutterViewController.class]) {
-          viewController.thrio_hidesNavigationBar = vc.thrio_hidesNavigationBar;
-          break;
-        }
-      }
+    if (viewController.thrio_hidesNavigationBar_ == nil) {
+      viewController.thrio_hidesNavigationBar_ = @NO;
     }
   }
   return viewController;

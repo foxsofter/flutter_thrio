@@ -21,6 +21,7 @@
 
 #import "NavigatorFlutterViewController.h"
 #import "UIViewController+Navigator.h"
+#import "UIViewController+Internal.h"
 #import "UIViewController+HidesNavigationBar.h"
 #import "UINavigationController+Navigator.h"
 #import "NavigatorFlutterEngineFactory.h"
@@ -47,7 +48,7 @@ NS_ASSUME_NONNULL_BEGIN
   FlutterEngine *engine = [NavigatorFlutterEngineFactory.shared getEngineByEntrypoint:entrypoint];
   self = [super initWithEngine:engine nibName:nil bundle:nil];
   if (self) {
-    self.thrio_hidesNavigationBar = @YES;
+    self.thrio_hidesNavigationBar_ = @YES;
     if (ThrioNavigator.isMultiEngineEnabled) {
       _entrypoint = entrypoint;
     } else {
