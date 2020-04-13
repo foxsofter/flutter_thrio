@@ -42,5 +42,10 @@ class _MainAppState extends State<MainApp> with ThrioModule {
   Widget build(BuildContext context) => MaterialApp(
         builder: ThrioNavigator.builder(entrypoint: widget._entrypoint),
         home: NavigatorHome(),
+        theme: ThemeData(
+            pageTransitionsTheme: const PageTransitionsTheme(builders: {
+          TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
+          TargetPlatform.android: CupertinoPageTransitionsBuilder(),
+        })),
       );
 }
