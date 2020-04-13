@@ -36,4 +36,15 @@
                            OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
+- (NSNumber * _Nullable)thrio_hidesNavigationBar_ {
+  return objc_getAssociatedObject(self, @selector(thrio_hidesNavigationBar_));
+}
+
+- (void)setThrio_hidesNavigationBar_:(NSNumber * _Nullable)hidesNavigationBar {
+  objc_setAssociatedObject(self,
+                           @selector(thrio_hidesNavigationBar_),
+                           hidesNavigationBar,
+                           OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
 @end

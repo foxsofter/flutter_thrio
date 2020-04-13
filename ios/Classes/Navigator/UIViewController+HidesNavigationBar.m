@@ -19,20 +19,17 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-#import <objc/runtime.h>
 #import "UIViewController+HidesNavigationBar.h"
+#import "UIViewController+Internal.h"
 
 @implementation UIViewController (HidesNavigationBar)
 
-- (NSNumber * _Nullable)thrio_hidesNavigationBar {
-  return objc_getAssociatedObject(self, @selector(thrio_hidesNavigationBar));
+- (BOOL)thrio_hidesNavigationBar {
+  return [self thrio_hidesNavigationBar_];
 }
 
-- (void)setThrio_hidesNavigationBar:(NSNumber * _Nullable)hidesNavigationBar {
-  objc_setAssociatedObject(self,
-                           @selector(thrio_hidesNavigationBar),
-                           hidesNavigationBar,
-                           OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+- (void)setThrio_hidesNavigationBar:(BOOL)hidesNavigationBar {
+  [self setThrio_hidesNavigationBar_:@(hidesNavigationBar)];
 }
 
 @end

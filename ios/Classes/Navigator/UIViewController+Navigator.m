@@ -386,8 +386,8 @@ NS_ASSUME_NONNULL_BEGIN
   }
   
   if (![self isKindOfClass:NavigatorFlutterViewController.class]) {
-    if (self.thrio_hidesNavigationBar == nil) {
-      self.thrio_hidesNavigationBar = @(self.navigationController.navigationBarHidden);
+    if (self.thrio_hidesNavigationBar_ == nil) {
+      self.thrio_hidesNavigationBar_ = @(self.navigationController.navigationBarHidden);
     }
     if (self.thrio_willPopBlock) {
       self.navigationController.interactivePopGestureRecognizer.enabled = NO;
@@ -399,8 +399,8 @@ NS_ASSUME_NONNULL_BEGIN
       [self.navigationController thrio_removePopGesture];
     }
   }
-  if (self.thrio_hidesNavigationBar.boolValue != self.navigationController.navigationBarHidden) {
-    self.navigationController.navigationBarHidden = self.thrio_hidesNavigationBar.boolValue;
+  if (self.thrio_hidesNavigationBar_.boolValue != self.navigationController.navigationBarHidden) {
+    self.navigationController.navigationBarHidden = self.thrio_hidesNavigationBar_.boolValue;
   }
 }
 

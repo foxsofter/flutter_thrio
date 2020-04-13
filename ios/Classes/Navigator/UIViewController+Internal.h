@@ -29,6 +29,8 @@ NS_ASSUME_NONNULL_BEGIN
 ///
 @property (nonatomic, assign) BOOL thrio_willPopCalling;
 
+@property (nonatomic, strong, nullable) NSNumber *thrio_hidesNavigationBar_;
+
 @end
 
 NS_ASSUME_NONNULL_END

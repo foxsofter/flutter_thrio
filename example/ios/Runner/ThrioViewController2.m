@@ -67,9 +67,17 @@
     [self.label setText:txt];
   }
   
+  self.thrio_hidesNavigationBar = YES;
+  
+  // 禁用手势，可以点击返回键关闭页面
   self.thrio_willPopBlock = ^(ThrioBoolCallback _Nonnull result) {
-    result(NO);
+    result(YES);
   };
+  
+  // 禁用手势，也不能点击返回键关闭页面
+//  self.thrio_willPopBlock = ^(ThrioBoolCallback _Nonnull result) {
+//    result(NO);
+//  };
 }
 
 @end
