@@ -51,7 +51,7 @@ ThrioNavigator.push(url: 'native1', animated:true);
 ThrioNavigator.push(
     url: 'biz2/flutter2',
     params: {'1': {'2': '3'}},
-    poppedResult: (params) => ThrioLogger.v('biz2/flutter2 popped: $params'),
+    poppedResult: (params) => verbose('biz2/flutter2 popped: $params'),
 );
 ```
 
@@ -204,7 +204,7 @@ ThrioNavigator.notify(url, index, params)
 NavigatorPageNotify(
       name: 'page1Notify',
       onPageNotify: (params) =>
-          ThrioLogger.v('flutter1 receive notify: $params'),
+          verbose('flutter1 receive notify: $params'),
       child: Xxxx());
 ```
 
@@ -476,7 +476,7 @@ dart 端只管理 dart 页面
 
 - 主要提供页面描述和转场动画的是否配置的功能
 
-2. 基于 `Navigator` 扩展，封装 `NavigatorWidget`，提供以下方法
+3. 基于 `Navigator` 扩展，封装 `NavigatorWidget`，提供以下方法
 
 ```dart
   Future<bool> push(RouteSettings settings, {

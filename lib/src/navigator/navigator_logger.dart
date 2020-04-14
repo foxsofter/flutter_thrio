@@ -19,22 +19,15 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-library thrio;
+import '../logger/thrio_logger.dart';
 
-export 'src/channel/thrio_channel.dart';
-export 'src/extension/thrio_build_context.dart';
-export 'src/extension/thrio_stateful_widget.dart';
-export 'src/logger/thrio_logger.dart';
-export 'src/module/thrio_module.dart';
-export 'src/navigator/navigator_home.dart';
-export 'src/navigator/navigator_logger.dart';
-export 'src/navigator/navigator_page_notify.dart';
-export 'src/navigator/navigator_page_observer.dart';
-export 'src/navigator/navigator_page_route.dart';
-export 'src/navigator/navigator_route_observer.dart';
-export 'src/navigator/navigator_route_settings.dart';
-export 'src/navigator/navigator_types.dart';
-export 'src/navigator/thrio_navigator.dart';
-export 'src/registry/registry_map.dart';
-export 'src/registry/registry_set.dart';
-export 'src/registry/registry_set_map.dart';
+var navigatorLogging = false;
+
+void verbose(message) {
+  assert(() {
+    if (navigatorLogging) {
+      ThrioLogger.v(message);
+    }
+    return true;
+  }());
+}

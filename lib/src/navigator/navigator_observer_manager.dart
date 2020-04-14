@@ -21,9 +21,9 @@
 
 import 'package:flutter/widgets.dart';
 
-import '../logger/thrio_logger.dart';
 import '../navigator/navigator_page_observer.dart';
 import '../registry/registry_set.dart';
+import 'navigator_logger.dart';
 import 'navigator_page_route.dart';
 import 'navigator_route_observer.dart';
 import 'navigator_route_settings.dart';
@@ -48,7 +48,7 @@ class NavigatorObserverManager extends NavigatorObserver {
   @override
   void didPush(Route<dynamic> route, Route<dynamic> previousRoute) {
     if (route is NavigatorPageRoute) {
-      ThrioLogger.v(
+      verbose(
         'didPush:${route.settings.name} '
         'params:${route.settings.params}',
       );
@@ -86,7 +86,7 @@ class NavigatorObserverManager extends NavigatorObserver {
               }
             }
             if (route.routeAction == NavigatorRouteAction.pop) {
-              ThrioLogger.v(
+              verbose(
                 'didPop:${route.settings.name} '
                 'params:${route.settings.params}',
               );
@@ -97,7 +97,7 @@ class NavigatorObserverManager extends NavigatorObserver {
             if (route.routeAction == NavigatorRouteAction.remove) {
               if (WidgetsBinding.instance.lifecycleState ==
                   AppLifecycleState.resumed) {
-                ThrioLogger.v(
+                verbose(
                   'didRemove:${route.settings.name} '
                   'params:${route.settings.params}',
                 );
@@ -110,7 +110,7 @@ class NavigatorObserverManager extends NavigatorObserver {
               }
             }
           } else if (_currentPopRoutes.length > 1) {
-            ThrioLogger.v('didPopTo:${pageRoutes.last.settings.name}');
+            verbose('didPopTo:${pageRoutes.last.settings.name}');
             final routeObservers = Set.from(_routeObservers);
             for (final observer in routeObservers) {
               observer.didPopTo(
@@ -141,7 +141,7 @@ class NavigatorObserverManager extends NavigatorObserver {
       if (_currentRemoveRoutes.length == 1) {
         Future(() {
           if (_currentRemoveRoutes.length == 1) {
-            ThrioLogger.v('didRemove:${route.settings.name}');
+            verbose('didRemove:${route.settings.name}');
             final routeObservers = Set.from(_routeObservers);
             for (final observer in routeObservers) {
               observer.didRemove(route.settings, prevRoute?.settings);
@@ -160,7 +160,7 @@ class NavigatorObserverManager extends NavigatorObserver {
               }
             }
           } else if (_currentRemoveRoutes.length > 1) {
-            ThrioLogger.v('didPopTo:${pageRoutes.last.settings.name}');
+            verbose('didPopTo:${pageRoutes.last.settings.name}');
             final observers = Set.from(_routeObservers);
             // remove是最后一个route为之前的active route
             for (final observer in observers) {

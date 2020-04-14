@@ -22,8 +22,8 @@
 import 'package:flutter/foundation.dart';
 
 import '../channel/thrio_channel.dart';
-import '../logger/thrio_logger.dart';
 import '../navigator/navigator_types.dart';
+import 'navigator_logger.dart';
 import 'navigator_route_settings.dart';
 import 'thrio_navigator_implement.dart';
 
@@ -57,7 +57,7 @@ class NavigatorRouteReceiveChannel {
 
   void _onPush() => _channel.registryMethodCall('__onPush__', ([arguments]) {
         final routeSettings = NavigatorRouteSettings.fromArguments(arguments);
-        ThrioLogger.v('onPush:${routeSettings.name}');
+        verbose('onPush:${routeSettings.name}');
         final animatedValue = arguments['animated'];
         final animated =
             (animatedValue != null && animatedValue is bool) && animatedValue;
