@@ -77,7 +77,9 @@ class ThrioNavigatorImplement {
 
     return (context, child) {
       final navigator = child is Navigator ? child : null;
-      navigator.observers.add(_default._observerManager);
+      if (!navigator.observers.contains(_default._observerManager)) {
+        navigator.observers.add(_default._observerManager);
+      }
       return NavigatorWidget(
         key: _stateKey ??= GlobalKey<NavigatorWidgetState>(),
         observerManager: _default._observerManager,
