@@ -24,7 +24,6 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
-import '../logger/thrio_logger.dart';
 import '../registry/registry_map.dart';
 
 typedef MethodHandler = Future<dynamic> Function([
@@ -104,7 +103,6 @@ class ThrioChannel {
         final args = call.arguments;
         if (handler != null && args is Map) {
           final arguments = args.cast<String, dynamic>();
-          ThrioLogger.v('receive method: ${call.method}');
           return handler(arguments);
         }
         return Future.value();

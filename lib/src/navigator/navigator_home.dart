@@ -46,7 +46,7 @@ class _NavigatorHomeState extends State<NavigatorHome> {
                       margin: const EdgeInsets.only(top: 10, bottom: 20),
                       alignment: AlignmentDirectional.center,
                       child: Text(
-                        '如果你看到这个页面，点击hot restart按钮',
+                        'If you see this page, click the hot restart button',
                         style: TextStyle(fontSize: 12, color: Colors.blue),
                       ),
                     ),

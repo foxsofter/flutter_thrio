@@ -23,7 +23,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../extension/thrio_stateful_widget.dart';
-import '../logger/thrio_logger.dart';
+import 'navigator_logger.dart';
 import 'navigator_observer_manager.dart';
 import 'navigator_page_route.dart';
 import 'navigator_route_settings.dart';
@@ -77,7 +77,7 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
       settings: settings,
     );
 
-    ThrioLogger.v(
+    verbose(
       'push:${route.settings.name} '
       'params:${route.settings.params}',
     );
@@ -119,7 +119,7 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
       return Future.value(false);
     }
 
-    ThrioLogger.v('pop:${history.last.settings.name}');
+    verbose('pop:${history.last.settings.name}');
 
     final route = history.last;
     // The route has been closed.
@@ -156,7 +156,7 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
       return Future.value(false);
     }
 
-    ThrioLogger.v('popTo:${route.settings.name}');
+    verbose('popTo:${route.settings.name}');
 
     final previousRoute = history.last;
     final pageObservers = Set.from(ThrioNavigatorImplement.pageObservers);
@@ -190,7 +190,7 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
       return Future.value(false);
     }
 
-    ThrioLogger.v('remove:${route.settings.name}');
+    verbose('remove:${route.settings.name}');
 
     route.routeAction = NavigatorRouteAction.remove;
 

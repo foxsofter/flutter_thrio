@@ -36,7 +36,9 @@ class _MainAppState extends State<MainApp> with ThrioModule {
   void onPageRegister() {}
 
   @override
-  void onModuleInit() {}
+  void onModuleInit() {
+    // navigatorLogging = true;
+  }
 
   @override
   Widget build(BuildContext context) => MaterialApp(
