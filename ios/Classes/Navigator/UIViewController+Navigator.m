@@ -168,6 +168,17 @@ NS_ASSUME_NONNULL_BEGIN
       // 原生页面一定只有一个route
       result(route == self.thrio_firstRoute);
     }
+    if (route == self.thrio_firstRoute) {
+      // 关闭成功,处理页面回传参数
+      if (route.poppedResult) {
+        route.poppedResult(params);
+      }
+      // 检查打开页面的源引擎是否和关闭页面的源引擎不同，不同则继续发送onPop
+      if (route.fromEntrypoint) {
+        NavigatorRouteSendChannel *channel = [NavigatorFlutterEngineFactory.shared getSendChannelByEntrypoint:route.fromEntrypoint];
+        [channel onPop:arguments result:nil];
+      }
+    }
   }
 }
 
