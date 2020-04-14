@@ -520,10 +520,12 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 - (void)thrio_setViewControllers:(NSArray<UIViewController *> *)viewControllers {
-  UIViewController *willPopVC = self.topViewController;
-  UIViewController *willShowVC = viewControllers.lastObject;
-  if (![willPopVC.thrio_hidesNavigationBar_ isEqualToNumber:willShowVC.thrio_hidesNavigationBar_]) {
-    [self setNavigationBarHidden:willShowVC.thrio_hidesNavigationBar_.boolValue];
+  if (viewControllers.count > 0) {
+    UIViewController *willPopVC = self.topViewController;
+    UIViewController *willShowVC = viewControllers.lastObject;
+    if (![willPopVC.thrio_hidesNavigationBar_ isEqualToNumber:willShowVC.thrio_hidesNavigationBar_]) {
+      [self setNavigationBarHidden:willShowVC.thrio_hidesNavigationBar_.boolValue];
+    }
   }
   
   [self thrio_setViewControllers:viewControllers];
