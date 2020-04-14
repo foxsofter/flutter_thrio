@@ -229,7 +229,7 @@ NS_ASSUME_NONNULL_BEGIN
   }
 
   NavigatorRouteSettings *routeSettings = [vc thrio_getRouteByUrl:url index:index].settings;
-  NSArray *vcs = self.navigationController.viewControllers;
+  NSArray *vcs = self.viewControllers;
   NSUInteger idx = [vcs indexOfObject:vc];
   NavigatorRouteSettings *previousRouteSettings;
   if (idx > 0) {
@@ -417,11 +417,16 @@ NS_ASSUME_NONNULL_BEGIN
       self.topViewController.thrio_willPopBlock(^(BOOL result) {
         __strong typeof(weakself) strongSelf = weakself;
         if (result) {
+          NSArray *vcs = strongSelf.viewControllers;
+          NavigatorRouteSettings *previousRouteSettings;
+          UIViewController *previousVC;
+          if (vcs.count > 1) {
+            previousVC = vcs[vcs.count - 2];
+            previousRouteSettings = previousVC.thrio_lastRoute.settings;
+          }
+
           if (strongSelf.topViewController.thrio_firstRoute) {
             NavigatorRouteSettings *routeSettings = strongSelf.topViewController.thrio_lastRoute.settings;
-            NSArray *vcs = strongSelf.navigationController.viewControllers;
-            UIViewController *previousVC = vcs[vcs.count - 2];
-            NavigatorRouteSettings *previousRouteSettings = previousVC.thrio_lastRoute.settings;
             if (animated) {
               [CATransaction begin];
               [CATransaction setCompletionBlock:^{
@@ -436,6 +441,11 @@ NS_ASSUME_NONNULL_BEGIN
           } else {
             [strongSelf thrio_popViewControllerAnimated:animated];
           }
+          // 判断前一个页面导航栏是否需要切换
+          if (previousVC && strongSelf.navigationBarHidden != previousVC.thrio_hidesNavigationBar_.boolValue) {
+            [strongSelf setNavigationBarHidden:previousVC.thrio_hidesNavigationBar_.boolValue];
+          }
+
           // 确定要关闭页面，thrio_willPopBlock需要设为nil
           strongSelf.topViewController.thrio_willPopBlock = nil;
         }
@@ -450,20 +460,32 @@ NS_ASSUME_NONNULL_BEGIN
   if (![self.topViewController isKindOfClass:NavigatorFlutterViewController.class] &&
       self.topViewController.thrio_firstRoute) {
     NavigatorRouteSettings *routeSettings = self.topViewController.thrio_lastRoute.settings;
-    NSArray *vcs = self.navigationController.viewControllers;
-    UIViewController *previousVC = vcs[vcs.count - 2];
-    NavigatorRouteSettings *previousRouteSettings = previousVC.thrio_lastRoute.settings;
+    NSArray *vcs = self.viewControllers;
+    
+    NavigatorRouteSettings *previousRouteSettings;
+    UIViewController *previousVC;
+    if (vcs.count > 1) {
+      previousVC = vcs[vcs.count - 2];
+      previousRouteSettings = previousVC.thrio_lastRoute.settings;
+    }
+    UIViewController *vc;
     if (animated) {
       [CATransaction begin];
       [CATransaction setCompletionBlock:^{
         [ThrioNavigator didPop:routeSettings previousRoute:previousRouteSettings];
       }];
-      UIViewController *vc = [self thrio_popViewControllerAnimated:animated];
+      vc = [self thrio_popViewControllerAnimated:animated];
       [CATransaction commit];
-      return vc;
+    } else {
+      vc = [self thrio_popViewControllerAnimated:animated];
+      [ThrioNavigator didPop:routeSettings previousRoute:previousRouteSettings];
     }
-    UIViewController *vc = [self thrio_popViewControllerAnimated:animated];
-    [ThrioNavigator didPop:routeSettings previousRoute:previousRouteSettings];
+    if (previousVC) {
+      // 判断前一个页面导航栏是否需要切换
+      if (self.navigationBarHidden != previousVC.thrio_hidesNavigationBar_.boolValue) {
+        [self setNavigationBarHidden:previousVC.thrio_hidesNavigationBar_.boolValue];
+      }
+    }
     return vc;
   }
 

@@ -402,6 +402,11 @@ NS_ASSUME_NONNULL_BEGIN
   if (self.thrio_hidesNavigationBar_.boolValue != self.navigationController.navigationBarHidden) {
     self.navigationController.navigationBarHidden = self.thrio_hidesNavigationBar_.boolValue;
   }
+  if (self.navigationController.navigationBarHidden) {
+    [self.navigationController thrio_addPopGesture];
+  } else {
+    [self.navigationController thrio_removePopGesture];
+  }
 }
 
 - (void)thrio_viewWillDisappear:(BOOL)animated {

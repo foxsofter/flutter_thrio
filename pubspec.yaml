@@ -1,5 +1,5 @@
 name: thrio
-description: A flutter plugin which enables hybrid integration of flutter for existing ios or android apps.
+description: Thrio makes it easy and fast to add flutter to existing mobile applications, and provide a simple and consistent navigator APIs.
 version: 0.1.3
 homepage: https://github.com/hellobike/thrio
 

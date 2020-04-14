@@ -102,7 +102,7 @@ class _Page2State extends State<Page2> {
                         ),
                         InkWell(
                           onTap: () => ThrioNavigator.push(
-                              url: 'native1',
+                              url: 'native2',
                               params: {
                                 '1': {'2': '3'}
                               },
