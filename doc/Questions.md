@@ -29,3 +29,41 @@ thrio 的出现主要是解决以下问题：
 ## iOS 中如果要 `present` 一个 `UIViewController` 应该怎么办
 
 thrio 暂时不支持 present，因为很难保持三端路由 API 的一致性，且 `present` 可以通过 `push` 模拟，禁用侧滑返回手势，替换转场动画来实现也是可以的。
+
+## 我有一个场景，判断一个页面是否打开，如果打开则给其发送通知，如果未打开则打开并发送通知，如何实现
+
+首先，thrio 提供的 `notify` 函数会有 bool 返回值，如果页面不存在就返回 `false`，在 dart 中实现的方式如下：
+
+```dart
+InkWell(
+    onTap: () async {
+    if (!await ThrioNavigator.notify(
+        url: 'biz1/flutter1',
+        name: 'page1Notify',
+    )) {
+        await ThrioNavigator.push(
+            url: 'biz1/flutter1', params: {'page1Notify': {}});
+    }
+    },
+    child: Container(
+        padding: const EdgeInsets.all(8),
+        margin: const EdgeInsets.all(8),
+        color: Colors.grey,
+        child: Text(
+        'open if needed and notify',
+        style: TextStyle(fontSize: 22, color: Colors.black),
+        )),
+),
+```
+
+在接收页面通知的地方这样处理，
+
+```dart
+NavigatorPageNotify(
+      name: 'page1Notify',
+      initialParams: widget.params['page1Notify'],
+      onPageNotify: (params) =>
+          ThrioLogger.v('flutter1 receive notify:$params'),
+      …
+);
+```

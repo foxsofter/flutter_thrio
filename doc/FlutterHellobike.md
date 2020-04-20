@@ -11,7 +11,7 @@ Flutter 在我们团队的起步算是比较晚的，直到 Flutter 要出 1.0 �
 - 2019 年 4 月中旬，开始大范围使用；
 - 2019 年 6 月中旬，Flutter 在业务上的效率提升效果开始体现出来；
 - 2019 年 7 月中旬，我所在的业务线的 B 端基本上全员转 Flutter 进行移动端开发；
-- 2020 年 1 月初，我们用 Flutter 开发了非常多的页面，积累超过 10 万行 Flutter 代码，开始尝试去 flutter_boost 的解决方案；
+- 2020 年 1 月初，我们用 Flutter 开发了非常多的页面，积累超过 10 万行 Flutter 代码；
 - 2020 年 3 月中旬，开源 Flutter 嵌入原生移动 App 混合栈解决方案。
 
 ## 实践路线
@@ -507,8 +507,6 @@ class Activity : AppCompatActivity(), OnNotifyListener {
 
 ## 总结
 
-总的来说，引入 Flutter 是一个很明智的选择，人效提升是非常明显的。如果你的 App 对包大小不敏感，那完全可以尝试在项目中引入 Flutter。
+总的来说，我们在 B 端引入 Flutter 总结下来人效提升是非常明显的。当然过程中也遇到了非常多的问题，但相对于人效提升来说，解决这些问题的成本都是可接受的。
 
-当然过程中也遇到了非常多的问题，但相对于人效提升来说，解决这些问题的成本都是可接受的。
-
-如果你想要无缝的将 Flutter 引入现有项目，[thrio](https://github.com/hellobike/thrio) 可能会节省你很多精力。
+如果你想要无缝的将 Flutter 引入现有项目，[thrio](https://github.com/hellobike/thrio) 可能会节省你很多精力。当然 thrio 是个非常年轻的库，相比于前辈 flutter_boost 还有很长的路要走，也欢迎有兴趣的同学给 thrio 贡献代码。
