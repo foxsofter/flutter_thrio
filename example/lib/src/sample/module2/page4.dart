@@ -130,6 +130,25 @@ class _Page4State extends State<Page4> {
                         style: TextStyle(fontSize: 22, color: Colors.black),
                       )),
                 ),
+                InkWell(
+                  onTap: () async {
+                    if (!await ThrioNavigator.notify(
+                      url: 'biz1/flutter1',
+                      name: 'page1Notify',
+                    )) {
+                      await ThrioNavigator.push(
+                          url: 'biz1/flutter1', params: {'page1Notify': {}});
+                    }
+                  },
+                  child: Container(
+                      padding: const EdgeInsets.all(8),
+                      margin: const EdgeInsets.all(8),
+                      color: Colors.grey,
+                      child: Text(
+                        'open if needed and notify',
+                        style: TextStyle(fontSize: 22, color: Colors.black),
+                      )),
+                ),
               ]),
         ),
       ));
