@@ -30,7 +30,7 @@
 #import "ThrioNavigator+PageObservers.h"
 #import "NavigatorFlutterEngine.h"
 #import "ThrioChannel.h"
-#import "ThrioLogger.h"
+#import "NavigatorLogger.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -114,7 +114,7 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 - (void)dealloc {
-  ThrioLogV(@"NavigatorFlutterViewController dealloc: %@", self);
+  NavigatorVerbose(@"NavigatorFlutterViewController dealloc: %@", self);
 }
 
 // override

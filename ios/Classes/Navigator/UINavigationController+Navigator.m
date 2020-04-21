@@ -31,7 +31,7 @@
 #import "ThrioRegistryMap.h"
 #import "NavigatorRouteSettings.h"
 #import "NSObject+ThrioSwizzling.h"
-#import "ThrioLogger.h"
+#import "NavigatorLogger.h"
 #import "NavigatorFlutterEngineFactory.h"
 #import "ThrioNavigator.h"
 #import "ThrioNavigator+PageBuilders.h"
@@ -82,7 +82,7 @@ NS_ASSUME_NONNULL_BEGIN
 
       __weak typeof(self) weakself = self;
       ThrioIdCallback readyBlock = ^(id _){
-        ThrioLogV(@"push entrypoint: %@, url:%@", entrypoint, url);
+        NavigatorVerbose(@"push entrypoint: %@, url:%@", entrypoint, url);
         __strong typeof(weakself) strongSelf = weakself;
         if ([strongSelf.topViewController isKindOfClass:NavigatorFlutterViewController.class] &&
             [[(NavigatorFlutterViewController*)strongSelf.topViewController entrypoint] isEqualToString:entrypoint]) {
