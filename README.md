@@ -1,6 +1,6 @@
 # ![thrio logo](./doc/imgs/thrio.png)
 
-[![Gitter Channel][]][gitter badge]  [![pub package](https://img.shields.io/pub/v/thrio.svg)](https://pub.dartlang.org/packages/thrio)  [![license](https://img.shields.io/github/license/hellobike/thrio.svg?maxAge=2592000)](https://github.com/hellobike/thrio/LICENSE)
+[![Gitter Channel][]][gitter badge] [![pub package](https://img.shields.io/pub/v/thrio.svg)](https://pub.dartlang.org/packages/thrio) [![license](https://img.shields.io/github/license/hellobike/thrio.svg?maxAge=2592000)](https://github.com/hellobike/thrio/LICENSE)
 
 [中文文档](./doc/Feature.md) [问题集](./doc/Questions.md)
 
@@ -182,7 +182,7 @@ NavigatorPageNotify(
 `UIViewController` implements the `NavigatorPageNotifyProtocol` and receives page notifications via `onNotify`
 
 ```objc
-- (void)onNotify:(NSString *)name params:(NSDictionary *)params {
+- (void)onNotify:(NSString *)name params:(id)params {
   ThrioLogV(@"native1 onNotify: %@, %@", name, params);
 }
 ```
