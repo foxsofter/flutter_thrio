@@ -67,3 +67,7 @@ NavigatorPageNotify(
       …
 );
 ```
+
+## 如何打开日志
+
+默认路由日志都是关闭的，在 debug 下可以打开日志，在 iOS 中需要添加预编译宏 `NAVIGATOR_LOGGING=1`，在 dart 中设置全局变量 `navigatorLogging = true;`.

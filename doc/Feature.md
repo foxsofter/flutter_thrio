@@ -213,7 +213,7 @@ NavigatorPageNotify(
 `UIViewController`实现协议`NavigatorPageNotifyProtocol`，通过 `onNotify` 来接收页面通知
 
 ```objc
-- (void)onNotify:(NSString *)name params:(NSDictionary *)params {
+- (void)onNotify:(NSString *)name params:(id)params {
   ThrioLogV(@"native1 onNotify: %@, %@", name, params);
 }
 ```
