@@ -22,7 +22,7 @@
 
 #import "UINavigationController+HotRestart.h"
 #import "UIViewController+Navigator.h"
-#import "ThrioLogger.h"
+#import "NavigatorLogger.h"
 #import "NavigatorFlutterEngineFactory.h"
 #import "NavigatorFlutterViewController.h"
 #import "NavigatorRouteSettings.h"
@@ -32,7 +32,7 @@
 @implementation UINavigationController (HotRestart)
 
 - (void)thrio_hotRestart:(ThrioBoolCallback)result {
-  ThrioLogV(@"enter on hot restart");
+  NavigatorVerbose(@"enter on hot restart");
   NavigatorFlutterViewController *viewController;
   for (UIViewController *vc in self.viewControllers) {
     if ([vc isKindOfClass:NavigatorFlutterViewController.class]) {
@@ -50,7 +50,7 @@
   viewController.thrio_firstRoute.next = nil;
   dispatch_after(dispatch_time(DISPATCH_TIME_NOW,(int64_t)(0.6 * NSEC_PER_SEC)),
                  dispatch_get_main_queue(), ^{
-    ThrioLogV(@"hot restart push");
+    NavigatorVerbose(@"hot restart push");
     NavigatorRouteSettings *settings = viewController.thrio_firstRoute.settings;
     NavigatorRouteSendChannel *channel =
       [NavigatorFlutterEngineFactory.shared getSendChannelByEntrypoint:viewController.entrypoint];

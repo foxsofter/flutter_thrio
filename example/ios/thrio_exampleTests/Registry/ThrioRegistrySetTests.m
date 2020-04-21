@@ -31,26 +31,26 @@
 - (void)testRegistry {
   ThrioRegistrySet *set = [ThrioRegistrySet set];
   [set registry:@"test1"];
-  XCTAssertTrue([set.values containsObject:@"test1"]);
+  XCTAssertTrue([[set valueForKey:@"sets"] containsObject:@"test1"]);
 }
 
 - (void)testRegistryAll {
   ThrioRegistrySet *set = [ThrioRegistrySet set];
   [set registryAll:[NSSet setWithObject:@"test1"]];
-  XCTAssertEqual(set.values.allObjects.firstObject, @"test1");
+  XCTAssertEqual([[set valueForKey:@"sets"] allObjects].firstObject, @"test1");
 }
 
 - (void)testClear {
   ThrioRegistrySet *set = [ThrioRegistrySet set];
   [set registryAll:[NSSet setWithObject:@"test1"]];
   [set clear];
-  XCTAssertEqual(set.values.count, 0);
+  XCTAssertEqual([[set valueForKey:@"sets"] count], 0);
 }
 
 - (void)testValues {
   ThrioRegistrySet *set = [ThrioRegistrySet set];
   [set registryAll:[NSSet setWithObject:@"test1"]];
-  XCTAssertEqual(set.values.allObjects.firstObject, @"test1");
+  XCTAssertEqual([[set valueForKey:@"sets"] allObjects].firstObject, @"test1");
 }
 
 - (void)testPerformanceExample {

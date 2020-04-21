@@ -20,7 +20,7 @@
 // IN THE SOFTWARE.
 
 #import "NavigatorFlutterEngine.h"
-#import "ThrioLogger.h"
+#import "NavigatorLogger.h"
 #import "ThrioNavigator.h"
 #import "NavigatorRouteObserverChannel.h"
 
@@ -60,9 +60,9 @@ NS_ASSUME_NONNULL_BEGIN
   if (![_flutterViewControllers containsObject:viewController]) {
     [_flutterViewControllers addObject:viewController];
   }
-  ThrioLogV(@"NavigatorFlutterEngine: enter pushViewController");
+  NavigatorVerbose(@"NavigatorFlutterEngine: enter pushViewController");
   if (_engine.viewController != viewController && viewController != nil) {
-    ThrioLogV(@"NavigatorFlutterEngine: set new %@", viewController);
+    NavigatorVerbose(@"NavigatorFlutterEngine: set new %@", viewController);
     _engine.viewController = viewController;
     [(NavigatorFlutterViewController*)_engine.viewController surfaceUpdated:YES];
   }
@@ -70,9 +70,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (NSUInteger)popViewController:(NavigatorFlutterViewController *)viewController {
   [_flutterViewControllers removeObject:viewController];
-  ThrioLogV(@"NavigatorFlutterEngine: enter popViewController");
+  NavigatorVerbose(@"NavigatorFlutterEngine: enter popViewController");
   if (_engine.viewController == viewController && viewController != nil) {
-    ThrioLogV(@"NavigatorFlutterEngine: unset %@", viewController);
+    NavigatorVerbose(@"NavigatorFlutterEngine: unset %@", viewController);
     _engine.viewController = _flutterViewControllers.lastObject;
     if (_engine.viewController) {
       [(NavigatorFlutterViewController*)_engine.viewController surfaceUpdated:YES];
@@ -134,7 +134,7 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 - (void)dealloc {
-  ThrioLogV(@"NavigatorFlutterEngine: dealloc %@", self);
+  NavigatorVerbose(@"NavigatorFlutterEngine: dealloc %@", self);
   if (_engine) {
     _engine.viewController = nil;
     [_engine destroyContext];

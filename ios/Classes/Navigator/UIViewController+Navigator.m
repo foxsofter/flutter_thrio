@@ -29,7 +29,7 @@
 #import "UIViewController+HidesNavigationBar.h"
 #import "NavigatorFlutterEngineFactory.h"
 #import "ThrioNavigator+PageObservers.h"
-#import "ThrioLogger.h"
+#import "NavigatorLogger.h"
 #import "NavigatorFlutterViewController.h"
 #import "NSObject+ThrioSwizzling.h"
 

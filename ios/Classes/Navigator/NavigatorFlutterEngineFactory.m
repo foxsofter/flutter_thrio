@@ -22,7 +22,7 @@
 #import "NavigatorFlutterEngineFactory.h"
 #import "NavigatorFlutterEngine.h"
 #import "ThrioNavigator.h"
-#import "ThrioLogger.h"
+#import "NavigatorLogger.h"
 #import "ThrioChannel.h"
 
 NS_ASSUME_NONNULL_BEGIN
@@ -68,7 +68,7 @@ NS_ASSUME_NONNULL_BEGIN
   if ([self.flutterEngines.allKeys containsObject:entrypoint]) {
     block(entrypoint);
   } else {
-    ThrioLogV(@"push in startupWithEntrypoint:%@", entrypoint);
+    NavigatorVerbose(@"push in startupWithEntrypoint:%@", entrypoint);
     NavigatorFlutterEngine *flutterEngine = [[NavigatorFlutterEngine alloc] init];
     [self.flutterEngines setObject:flutterEngine forKey:entrypoint];
     [flutterEngine startupWithEntrypoint:entrypoint readyBlock:block];

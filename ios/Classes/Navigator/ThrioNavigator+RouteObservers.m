@@ -21,7 +21,7 @@
 
 #import <objc/runtime.h>
 #import "ThrioNavigator+RouteObservers.h"
-#import "ThrioLogger.h"
+#import "NavigatorLogger.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -38,7 +38,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (void)didPush:(NavigatorRouteSettings *)routeSettings
   previousRoute:(NavigatorRouteSettings * _Nullable)previousRouteSettings {
-  ThrioLogV(@"%@ %@.%@", NSStringFromSelector(_cmd), routeSettings.url, routeSettings.index);
+  NavigatorVerbose(@"%@ %@.%@", NSStringFromSelector(_cmd), routeSettings.url, routeSettings.index);
   ThrioRegistrySet *routeObservers = [self.routeObservers copy];
   for (id<NavigatorRouteObserverProtocol> observer in routeObservers) {
     [observer didPush:routeSettings previousRoute:previousRouteSettings];
@@ -47,7 +47,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (void)didPop:(NavigatorRouteSettings *)routeSettings
  previousRoute:(NavigatorRouteSettings * _Nullable)previousRouteSettings {
-  ThrioLogV(@"%@ %@.%@", NSStringFromSelector(_cmd), routeSettings.url, routeSettings.index);
+  NavigatorVerbose(@"%@ %@.%@", NSStringFromSelector(_cmd), routeSettings.url, routeSettings.index);
   ThrioRegistrySet *routeObservers = [self.routeObservers copy];
   for (id<NavigatorRouteObserverProtocol> observer in routeObservers) {
     [observer didPop:routeSettings previousRoute:previousRouteSettings];
@@ -56,7 +56,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (void)didPopTo:(NavigatorRouteSettings *)routeSettings
    previousRoute:(NavigatorRouteSettings * _Nullable)previousRouteSettings {
-  ThrioLogV(@"%@ %@.%@", NSStringFromSelector(_cmd), routeSettings.url, routeSettings.index);
+  NavigatorVerbose(@"%@ %@.%@", NSStringFromSelector(_cmd), routeSettings.url, routeSettings.index);
   ThrioRegistrySet *routeObservers = [self.routeObservers copy];
   for (id<NavigatorRouteObserverProtocol> observer in routeObservers) {
     [observer didPopTo:routeSettings previousRoute:previousRouteSettings];
@@ -65,7 +65,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (void)didRemove:(NavigatorRouteSettings *)routeSettings
     previousRoute:(NavigatorRouteSettings * _Nullable)previousRouteSettings {
-  ThrioLogV(@"%@ %@.%@", NSStringFromSelector(_cmd), routeSettings.url, routeSettings.index);
+  NavigatorVerbose(@"%@ %@.%@", NSStringFromSelector(_cmd), routeSettings.url, routeSettings.index);
   ThrioRegistrySet *routeObservers = [self.routeObservers copy];
   for (id<NavigatorRouteObserverProtocol> observer in routeObservers) {
     [observer didRemove:routeSettings previousRoute:previousRouteSettings];
