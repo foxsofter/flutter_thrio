@@ -68,7 +68,7 @@
   }
 }
 
-- (void)onNotify:(NSString *)name params:(NSDictionary *)params {
+- (void)onNotify:(NSString *)name params:(id)params {
   ThrioLogV(@"native1 onNotify: %@, %@", name, params);
 }
 

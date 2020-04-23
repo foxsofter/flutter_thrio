@@ -21,6 +21,7 @@
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../extension/thrio_stateful_widget.dart';
 import 'navigator_logger.dart';
@@ -49,6 +50,8 @@ class NavigatorWidget extends StatefulWidget {
 }
 
 class NavigatorWidgetState extends State<NavigatorWidget> {
+  final _style = const SystemUiOverlayStyle();
+
   List<NavigatorPageRoute> get history => widget._observerManager.pageRoutes;
 
   /// 还无法实现animated=false
@@ -89,6 +92,9 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
       }
       observer.willAppear(route.settings);
     }
+
+    // 设置一个空值，避免实际页面打开后不生效
+    SystemChrome.setSystemUIOverlayStyle(_style);
 
     navigatorState.push(route);
 
