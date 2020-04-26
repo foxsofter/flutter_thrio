@@ -19,3 +19,16 @@
 
 - Fix: Android demo 原生页面和 Flutter 页面转场动画不一致
 - Fix: iOS hidesNavigationBar 设置后原生页面一直生效的 bug
+
+## 0.1.4
+
+- feat: remove reuse of isInitialRoute
+- fix: Android setSystemUIOverlayStyle 不生效
+- doc: 添加日志开关文档
+- feat: add iOS log switch
+- doc: add push and notify demo
+- fix: pop with parameters does not cover all cases
+- fix: Repeatedly add NavigatorObserverManager
+- fix: crash at UINavigationController.setViewControllers
+- feat: add dart navigator log disable
+- fix: 优化导航栏切换效果
