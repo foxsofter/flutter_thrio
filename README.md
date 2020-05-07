@@ -6,7 +6,7 @@
 
 The `Navigator` for iOS, Android, Flutter.
 
-Version `0.1.0` requires Flutter `>= 1.12.0` and Dart `>= 2.6.0`.
+Version `0.1.5` requires Flutter `>= 1.12.0` and Dart `>= 2.6.0`.
 
 ## Features
 
@@ -23,7 +23,7 @@ You should ensure that you add `thrio` as a dependency in your flutter project.
 
 ```yaml
 dependencies:
-  thrio: '^0.1.0'
+  thrio: '^0.1.5'
 ```
 
 You can also reference the git repo directly if you want:
