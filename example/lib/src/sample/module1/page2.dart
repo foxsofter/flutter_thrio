@@ -34,12 +34,12 @@ class _Page2State extends State<Page2> {
               appBar: AppBar(
                 brightness: Brightness.light,
                 backgroundColor: Colors.white,
-                textTheme: TextTheme(title: TextStyle(color: Colors.black)),
-                title: const Text('thrio_example'),
-                leading: IconButton(
+                title: const Text('thrio_example',
+                    style: TextStyle(color: Colors.black)),
+                leading: const IconButton(
                   color: Colors.black,
                   tooltip: 'back',
-                  icon: const Icon(Icons.arrow_back_ios),
+                  icon: Icon(Icons.arrow_back_ios),
                   onPressed: ThrioNavigator.pop,
                 ),
               ),
@@ -68,7 +68,7 @@ class _Page2State extends State<Page2> {
                               padding: const EdgeInsets.all(8),
                               margin: const EdgeInsets.all(8),
                               color: Colors.yellow,
-                              child: Text(
+                              child: const Text(
                                 'push flutter3',
                                 style: TextStyle(
                                     fontSize: 22, color: Colors.black),
@@ -81,7 +81,7 @@ class _Page2State extends State<Page2> {
                               padding: const EdgeInsets.all(8),
                               margin: const EdgeInsets.all(8),
                               color: Colors.yellow,
-                              child: Text(
+                              child: const Text(
                                 'remove flutter2',
                                 style: TextStyle(
                                     fontSize: 22, color: Colors.black),
@@ -94,7 +94,7 @@ class _Page2State extends State<Page2> {
                               padding: const EdgeInsets.all(8),
                               margin: const EdgeInsets.all(8),
                               color: Colors.yellow,
-                              child: Text(
+                              child: const Text(
                                 'pop',
                                 style: TextStyle(
                                     fontSize: 22, color: Colors.black),
@@ -112,7 +112,7 @@ class _Page2State extends State<Page2> {
                               padding: const EdgeInsets.all(8),
                               margin: const EdgeInsets.all(8),
                               color: Colors.grey,
-                              child: Text(
+                              child: const Text(
                                 'push native2',
                                 style: TextStyle(
                                     fontSize: 22, color: Colors.black),
@@ -124,7 +124,7 @@ class _Page2State extends State<Page2> {
                               padding: const EdgeInsets.all(8),
                               margin: const EdgeInsets.all(8),
                               color: Colors.grey,
-                              child: Text(
+                              child: const Text(
                                 'pop native1',
                                 style: TextStyle(
                                     fontSize: 22, color: Colors.black),
@@ -139,7 +139,7 @@ class _Page2State extends State<Page2> {
                               padding: const EdgeInsets.all(8),
                               margin: const EdgeInsets.all(8),
                               color: Colors.grey,
-                              child: Text(
+                              child: const Text(
                                 'notify flutter1',
                                 style: TextStyle(
                                     fontSize: 22, color: Colors.black),
@@ -154,7 +154,7 @@ class _Page2State extends State<Page2> {
                               padding: const EdgeInsets.all(8),
                               margin: const EdgeInsets.all(8),
                               color: Colors.grey,
-                              child: Text(
+                              child: const Text(
                                 'notify flutter2',
                                 style: TextStyle(
                                     fontSize: 22, color: Colors.black),

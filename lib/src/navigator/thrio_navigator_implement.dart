@@ -123,7 +123,7 @@ class ThrioNavigatorImplement {
         .push(url: url, params: params, animated: animated)
         .then<int>((index) {
       if (poppedResult != null && index != null && index > 0) {
-        _default._pagePoppedResults['$url.$index'] = poppedResult;
+        _default._pagePoppedResults['$index $url'] = poppedResult;
       }
       return index;
     });
