@@ -33,8 +33,7 @@ class _NavigatorHomeState extends State<NavigatorHome> {
       appBar: AppBar(
         brightness: Brightness.light,
         backgroundColor: Colors.white,
-        textTheme: TextTheme(title: TextStyle(color: Colors.white)),
-        title: const Text(''),
+        title: const Text('', style: TextStyle(color: Colors.white)),
       ),
       body: SingleChildScrollView(
           child: Container(
