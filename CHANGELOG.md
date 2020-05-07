@@ -32,3 +32,7 @@
 - fix: crash at UINavigationController.setViewControllers
 - feat: add dart navigator log disable
 - fix: 优化导航栏切换效果
+
+## 0.1.5
+
+- fix: url 带 . 时引起的冲突，issue #27

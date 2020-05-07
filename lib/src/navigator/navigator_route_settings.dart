@@ -37,7 +37,7 @@ extension NavigatorRouteSettings on RouteSettings {
           isNestedValue != null && isNestedValue is bool && isNestedValue;
       final params = arguments['params'];
       return RouteSettings(
-        name: '$url.$index',
+        name: '$index $url',
         arguments: <String, dynamic>{'isNested': isNested, 'params': params},
       );
     }
@@ -60,15 +60,15 @@ extension NavigatorRouteSettings on RouteSettings {
     params,
   }) =>
       RouteSettings(
-        name: '$url.$index',
+        name: '$index $url',
         arguments: <String, dynamic>{'isNested': isNested, 'params': params},
       );
 
-  String get url => (name?.isNotEmpty ?? false) && name.contains('.')
-      ? name.split('.').first
+  String get url => (name?.isNotEmpty ?? false) && name.contains(' ')
+      ? name.split(' ').last
       : '';
 
-  int get index => int.tryParse(name?.split('.')?.last) ?? 0;
+  int get index => int.tryParse(name?.split(' ')?.first) ?? 0;
 
   bool get isNested {
     if (arguments != null && arguments is Map<String, dynamic>) {
