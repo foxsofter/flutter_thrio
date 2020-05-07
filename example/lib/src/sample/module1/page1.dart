@@ -36,12 +36,12 @@ class _Page1State extends State<Page1> {
           appBar: AppBar(
             brightness: Brightness.light,
             backgroundColor: Colors.blue,
-            textTheme: TextTheme(title: TextStyle(color: Colors.black)),
-            title: const Text('thrio_example'),
-            leading: IconButton(
+            title: const Text('thrio_example',
+                style: TextStyle(color: Colors.black)),
+            leading: const IconButton(
               color: Colors.black,
               tooltip: 'back',
-              icon: const Icon(Icons.arrow_back_ios),
+              icon: Icon(Icons.arrow_back_ios),
               onPressed: ThrioNavigator.pop,
             ),
           ),
@@ -72,7 +72,7 @@ class _Page1State extends State<Page1> {
                           padding: const EdgeInsets.all(8),
                           margin: const EdgeInsets.all(8),
                           color: Colors.yellow,
-                          child: Text(
+                          child: const Text(
                             'push flutter1',
                             style: TextStyle(fontSize: 22, color: Colors.black),
                           )),
@@ -83,7 +83,7 @@ class _Page1State extends State<Page1> {
                           padding: const EdgeInsets.all(8),
                           margin: const EdgeInsets.all(8),
                           color: Colors.yellow,
-                          child: Text(
+                          child: const Text(
                             'remove flutter1',
                             style: TextStyle(fontSize: 22, color: Colors.black),
                           )),
@@ -101,7 +101,7 @@ class _Page1State extends State<Page1> {
                           padding: const EdgeInsets.all(8),
                           margin: const EdgeInsets.all(8),
                           color: Colors.yellow,
-                          child: Text(
+                          child: const Text(
                             'push flutter2',
                             style: TextStyle(fontSize: 22, color: Colors.black),
                           )),
@@ -113,7 +113,7 @@ class _Page1State extends State<Page1> {
                           padding: const EdgeInsets.all(8),
                           margin: const EdgeInsets.all(8),
                           color: Colors.yellow,
-                          child: Text(
+                          child: const Text(
                             'pop',
                             style: TextStyle(fontSize: 22, color: Colors.black),
                           )),
@@ -131,7 +131,7 @@ class _Page1State extends State<Page1> {
                           padding: const EdgeInsets.all(8),
                           margin: const EdgeInsets.all(8),
                           color: Colors.grey,
-                          child: Text(
+                          child: const Text(
                             'push native1',
                             style: TextStyle(fontSize: 22, color: Colors.black),
                           )),
@@ -148,7 +148,7 @@ class _Page1State extends State<Page1> {
                           padding: const EdgeInsets.all(8),
                           margin: const EdgeInsets.all(8),
                           color: Colors.grey,
-                          child: Text(
+                          child: const Text(
                             'notify native1',
                             style: TextStyle(fontSize: 22, color: Colors.black),
                           )),
@@ -159,7 +159,7 @@ class _Page1State extends State<Page1> {
                           padding: const EdgeInsets.all(8),
                           margin: const EdgeInsets.all(8),
                           color: Colors.grey,
-                          child: Text(
+                          child: const Text(
                             'remove native1',
                             style: TextStyle(fontSize: 22, color: Colors.black),
                           )),
