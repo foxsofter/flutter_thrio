@@ -36,3 +36,7 @@
 ## 0.1.5
 
 - fix: url 带 . 时引起的冲突，issue #27
+
+## 0.1.6
+
+- fix: popResult 失败
