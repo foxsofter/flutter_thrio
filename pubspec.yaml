@@ -5,6 +5,7 @@ homepage: https://github.com/hellobike/thrio
 
 environment:
   sdk: '>=2.6.0 <3.0.0'
+  flutter: '>=1.10.0 <2.0.0'
 
 dependencies:
   flutter:
@@ -25,8 +26,12 @@ flutter:
   # be modified. They are used by the tooling to maintain consistency when
   # adding or updating assets for this project.
   plugin:
-    androidPackage: com.hellobike.flutter.thrio
-    pluginClass: ThrioPlugin
+    platforms:
+      android:
+        package: com.hellobike.flutter.thrio
+        pluginClass: ThrioPlugin
+      ios:
+        pluginClass: ThrioPlugin
   # To add assets to your plugin package, add an assets section, like this:
   # assets:
   #  - images/a_dot_burr.jpeg
