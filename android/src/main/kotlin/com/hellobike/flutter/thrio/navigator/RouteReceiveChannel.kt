@@ -105,7 +105,7 @@ internal class RouteReceiveChannel(private val id: String) : MethodChannel.Metho
             result.success(false)
             return
         }
-        val params = call.argument<Map<String, Any>>("params") ?: emptyMap()
+        val params = call.argument<Any>("params")
         NavigationController.notify(url, index, name, params) {
             result.success(it)
         }
