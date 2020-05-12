@@ -24,8 +24,8 @@ package io.flutter.embedding.android
 import android.annotation.SuppressLint
 import android.content.Intent
 import com.hellobike.flutter.thrio.Result
-import com.hellobike.flutter.thrio.navigator.NavigationController
 import com.hellobike.flutter.thrio.navigator.FlutterEngineFactory
+import com.hellobike.flutter.thrio.navigator.NavigationController
 import com.hellobike.flutter.thrio.navigator.PageRoute
 
 open class ThrioActivity : FlutterActivity() {
