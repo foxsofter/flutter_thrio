@@ -21,7 +21,7 @@
 
 package com.hellobike.flutter.thrio
 
-import android.support.annotation.NonNull
+import androidx.annotation.NonNull
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.plugin.common.PluginRegistry.Registrar
 

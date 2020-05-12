@@ -21,11 +21,10 @@
 
 package com.hellobike.flutter.thrio.channel
 
-import android.support.annotation.UiThread
+import androidx.annotation.UiThread
 import io.flutter.plugin.common.BinaryMessenger
 import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.MethodChannel
-
 
 internal open class ThrioChannel constructor(messenger: BinaryMessenger, name: String) {
 
