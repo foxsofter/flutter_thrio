@@ -26,7 +26,7 @@ dependencies:
   thrio: '^0.1.5'
 ```
 
-You can also reference the git repo directly if you want:
+You can also reference the git repo directly if you want to support AndroidX:
 
 ```yaml
 dependencies:
