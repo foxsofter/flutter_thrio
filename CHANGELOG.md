@@ -40,3 +40,8 @@
 ## 0.1.6
 
 - fix: popResult 失败
+
+## 0.1.7
+
+- fix: Android didn't notify after popTo
+- fix: Android didn't call onPopResult from native pop to flutter
