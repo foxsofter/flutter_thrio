@@ -93,19 +93,20 @@ internal object NavigationController {
         private fun onPop(record: PageRoute, result: Result) {
             val entryPoint = record.entryPoint
                     ?: throw IllegalStateException("record $record must have current engineId, current is null")
-            if (entryPoint == THRIO_ENGINE_NATIVE_ID) {
-                result(true)
-                return
-            }
-            FlutterEngineFactory.getEngine(entryPoint)?.onPop(record, result)
-                    ?: throw IllegalStateException("current engine must not be null")
             val parentEntryPoint = record.parentEntryPoint
                     ?: throw IllegalStateException("record $record must have from engineId, current is null")
-            if (entryPoint == parentEntryPoint || parentEntryPoint == THRIO_ENGINE_NATIVE_ID) {
-                return
+            val onResult: Result = {
+                if (it && parentEntryPoint != entryPoint && parentEntryPoint != THRIO_ENGINE_NATIVE_ID) {
+                    FlutterEngineFactory.getEngine(parentEntryPoint)?.onPop(record) {}
+                            ?: throw IllegalStateException("from engine must not be null")
+                }
+                result(it)
             }
-            FlutterEngineFactory.getEngine(parentEntryPoint)?.onPop(record) {}
-                    ?: throw IllegalStateException("from engine must not be null")
+            if (entryPoint == THRIO_ENGINE_NATIVE_ID) {
+                return onResult(true)
+            }
+            FlutterEngineFactory.getEngine(entryPoint)?.onPop(record, onResult)
+                    ?: throw IllegalStateException("current engine must not be null")
         }
     }
 
@@ -392,19 +393,20 @@ internal object NavigationController {
     }
 
     fun clearStack(activity: Activity) {
-//        if (!hasKey(activity)) {
-//            return
-//        }
-//        val key = getKey(activity)
-//        if (!NavigatorPageRouteStack.hasRoute(key)) {
-//            return
-//        }
-//        val record = NavigatorPageRouteStack.first(key)
-//        if (activity is ThrioActivity) {
-//            activity.onPopTo(record.url, record.index, false) { }
-//            activity.onPop(record) { }
-//        }
-//        NavigatorPageRouteStack.popStack(key)
+        // TODO: 旧实现，Android singleTop 反向从底部向上destroy可能有问题
+        if (!hasKey(activity)) {
+            return
+        }
+        val key = getKey(activity)
+        if (!PageRouteStack.hasRoute(key)) {
+            return
+        }
+        val record = PageRouteStack.first(key)
+        if (activity is ThrioActivity) {
+            activity.onPopTo(record.url, record.index, false) { }
+            activity.onPop(record) { }
+        }
+        PageRouteStack.popStack(key)
     }
 
 
