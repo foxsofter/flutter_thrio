@@ -22,10 +22,8 @@
 package com.hellobike.flutter.thrio.navigator
 
 import android.util.Log
-import com.hellobike.flutter.thrio.Result
 import com.hellobike.flutter.thrio.channel.ThrioChannel
 import io.flutter.plugin.common.BinaryMessenger
-import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 
