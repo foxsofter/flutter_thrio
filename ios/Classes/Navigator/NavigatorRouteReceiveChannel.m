@@ -143,7 +143,6 @@ NS_ASSUME_NONNULL_BEGIN
     BOOL animated = [arguments[@"animated"] boolValue];
 
     NavigatorVerbose(@"on pop");
-
     [ThrioNavigator.navigationController thrio_popParams:params
                                                 animated:animated
                                                   result:^(BOOL r) {

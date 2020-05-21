@@ -46,6 +46,13 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (instancetype)initWithEntrypoint:(NSString *)entrypoint {
   FlutterEngine *engine = [NavigatorFlutterEngineFactory.shared getEngineByEntrypoint:entrypoint];
+  if (engine.viewController) {
+    if ([engine.viewController isKindOfClass:NavigatorFlutterViewController.class]) {
+      [NavigatorFlutterEngineFactory.shared popViewController:(NavigatorFlutterViewController *)engine.viewController];
+    } else {
+      engine.viewController = nil;
+    }
+  }
   self = [super initWithEngine:engine nibName:nil bundle:nil];
   if (self) {
     self.thrio_hidesNavigationBar_ = @YES;
@@ -68,10 +75,8 @@ NS_ASSUME_NONNULL_BEGIN
   
   if (![self isMovingToParentViewController]) {
     [ThrioNavigator willAppear:self.thrio_lastRoute.settings];
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-      NavigatorPageObserverChannel *channel = [NavigatorFlutterEngineFactory.shared getPageObserverChannelByEntrypoint:self.entrypoint];
-      [channel willAppear:self.thrio_lastRoute.settings];
-    });
+    NavigatorPageObserverChannel *channel = [NavigatorFlutterEngineFactory.shared getPageObserverChannelByEntrypoint:self.entrypoint];
+    [channel willAppear:self.thrio_lastRoute.settings];
   }
 }
 
@@ -80,10 +85,8 @@ NS_ASSUME_NONNULL_BEGIN
   
   if (![self isMovingToParentViewController]) {
     [ThrioNavigator didAppear:self.thrio_lastRoute.settings];
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-      NavigatorPageObserverChannel *channel = [NavigatorFlutterEngineFactory.shared getPageObserverChannelByEntrypoint:self.entrypoint];
-      [channel didAppear:self.thrio_lastRoute.settings];
-    });
+    NavigatorPageObserverChannel *channel = [NavigatorFlutterEngineFactory.shared getPageObserverChannelByEntrypoint:self.entrypoint];
+    [channel didAppear:self.thrio_lastRoute.settings];
   }
 }
 
@@ -92,10 +95,8 @@ NS_ASSUME_NONNULL_BEGIN
   
   if (![self isMovingFromParentViewController]) {
     [ThrioNavigator willDisappear:self.thrio_lastRoute.settings];
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-      NavigatorPageObserverChannel *channel = [NavigatorFlutterEngineFactory.shared getPageObserverChannelByEntrypoint:self.entrypoint];
-      [channel willDisappear:self.thrio_lastRoute.settings];
-    });
+    NavigatorPageObserverChannel *channel = [NavigatorFlutterEngineFactory.shared getPageObserverChannelByEntrypoint:self.entrypoint];
+    [channel willDisappear:self.thrio_lastRoute.settings];
   }
   
   [[UIApplication sharedApplication].delegate.window endEditing:YES];
@@ -106,10 +107,8 @@ NS_ASSUME_NONNULL_BEGIN
   
   if (![self isMovingFromParentViewController]) {
     [ThrioNavigator didDisappear:self.thrio_lastRoute.settings];
-    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-      NavigatorPageObserverChannel *channel = [NavigatorFlutterEngineFactory.shared getPageObserverChannelByEntrypoint:self.entrypoint];
-      [channel didDisappear:self.thrio_lastRoute.settings];
-    });
+    NavigatorPageObserverChannel *channel = [NavigatorFlutterEngineFactory.shared getPageObserverChannelByEntrypoint:self.entrypoint];
+    [channel didDisappear:self.thrio_lastRoute.settings];
   }
 }
 

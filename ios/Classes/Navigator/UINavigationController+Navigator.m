@@ -400,6 +400,8 @@ NS_ASSUME_NONNULL_BEGIN
         UIViewController *vc = [self.viewControllers objectAtIndex:self.viewControllers.count - 2];
         if ([vc isKindOfClass:NavigatorFlutterViewController.class]) {
           [NavigatorFlutterEngineFactory.shared pushViewController:(NavigatorFlutterViewController*)vc];
+        } else {
+          [NavigatorFlutterEngineFactory.shared popViewController:(NavigatorFlutterViewController*)self.topViewController];
         }
         // 判断前一个页面导航栏是否需要切换
         if (self.navigationBarHidden != vc.thrio_hidesNavigationBar_.boolValue) {
