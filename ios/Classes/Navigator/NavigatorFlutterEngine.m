@@ -62,9 +62,12 @@ NS_ASSUME_NONNULL_BEGIN
   }
   NavigatorVerbose(@"NavigatorFlutterEngine: enter pushViewController");
   if (_engine.viewController != viewController && viewController != nil) {
+    [_flutterViewControllers removeObject:viewController];
     NavigatorVerbose(@"NavigatorFlutterEngine: set new %@", viewController);
+    _engine.viewController = nil;
     _engine.viewController = viewController;
     [(NavigatorFlutterViewController*)_engine.viewController surfaceUpdated:YES];
+    
   }
 }
 
@@ -73,6 +76,7 @@ NS_ASSUME_NONNULL_BEGIN
   NavigatorVerbose(@"NavigatorFlutterEngine: enter popViewController");
   if (_engine.viewController == viewController && viewController != nil) {
     NavigatorVerbose(@"NavigatorFlutterEngine: unset %@", viewController);
+    _engine.viewController = nil;
     _engine.viewController = _flutterViewControllers.lastObject;
     if (_engine.viewController) {
       [(NavigatorFlutterViewController*)_engine.viewController surfaceUpdated:YES];

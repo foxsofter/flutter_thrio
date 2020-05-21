@@ -45,6 +45,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, strong, readonly, nullable) NavigatorPageObserverChannel *pageObserverChannel;
 
+/// 返回当前引擎上剩余的NavigatorFlutterViewController个数
+///
 - (void)pushViewController:(NavigatorFlutterViewController *)viewController;
 
 /// 返回当前引擎上剩余的NavigatorFlutterViewController个数
