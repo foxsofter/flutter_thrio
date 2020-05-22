@@ -61,12 +61,12 @@ class _Page1State extends State<Page1> {
                     ),
                     InkWell(
                       onTap: () => ThrioNavigator.push(
-                        url: 'biz1/flutter1',
+                        url: '/biz1/flutter1',
                         params: {
                           '1': {'2': '3'}
                         },
                         poppedResult: (params) =>
-                            ThrioLogger.v('biz1/flutter1 popped:$params'),
+                            ThrioLogger.v('/biz1/flutter1 popped:$params'),
                       ),
                       child: Container(
                           padding: const EdgeInsets.all(8),
@@ -78,7 +78,7 @@ class _Page1State extends State<Page1> {
                           )),
                     ),
                     InkWell(
-                      onTap: () => ThrioNavigator.remove(url: 'biz1/flutter1'),
+                      onTap: () => ThrioNavigator.remove(url: '/biz1/flutter1'),
                       child: Container(
                           padding: const EdgeInsets.all(8),
                           margin: const EdgeInsets.all(8),
@@ -90,12 +90,12 @@ class _Page1State extends State<Page1> {
                     ),
                     InkWell(
                       onTap: () => ThrioNavigator.push(
-                        url: 'biz2/flutter2',
+                        url: '/biz2/flutter2',
                         params: {
                           '1': {'2': '3'}
                         },
                         poppedResult: (params) => ThrioLogger.v(
-                            'biz1/flutter1 poppedResult call popped:$params'),
+                            '/biz1/flutter1 poppedResult call popped:$params'),
                       ),
                       child: Container(
                           padding: const EdgeInsets.all(8),
@@ -125,7 +125,7 @@ class _Page1State extends State<Page1> {
                           '1': {'2': '3'}
                         },
                         poppedResult: (params) => ThrioLogger.v(
-                            'biz1/flutter1 poppedResult call params:$params'),
+                            '/biz1/flutter1 poppedResult call params:$params'),
                       ),
                       child: Container(
                           padding: const EdgeInsets.all(8),

@@ -108,6 +108,9 @@ class ThrioNavigatorImplement {
 
   static final _pageBuilders = RegistryMap<String, NavigatorPageBuilder>();
 
+  static final _routeTransitionsBuilders =
+      RegistryMap<RegExp, RouteTransitionsBuilder>();
+
   static void ready() => _default._channel?.invokeMethod<bool>('ready');
 
   static Future<int> push({
@@ -244,4 +247,7 @@ class ThrioNavigatorImplement {
 
   static RegistrySet<NavigatorRouteObserver> get routeObservers =>
       _routeObservers;
+
+  static RegistryMap<RegExp, RouteTransitionsBuilder>
+      get routeTransitionsBuilders => _routeTransitionsBuilders;
 }

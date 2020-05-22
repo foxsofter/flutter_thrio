@@ -53,7 +53,7 @@ class _Page4State extends State<Page4> {
                 ),
                 InkWell(
                   onTap: () => ThrioNavigator.push(
-                    url: 'biz1/flutter1',
+                    url: '/biz1/flutter1',
                     params: {
                       '1': {'2': '3'}
                     },
@@ -68,7 +68,7 @@ class _Page4State extends State<Page4> {
                       )),
                 ),
                 InkWell(
-                  onTap: () => ThrioNavigator.remove(url: 'biz1/flutter3'),
+                  onTap: () => ThrioNavigator.remove(url: '/biz1/flutter3'),
                   child: Container(
                       padding: const EdgeInsets.all(8),
                       margin: const EdgeInsets.all(8),
@@ -91,7 +91,7 @@ class _Page4State extends State<Page4> {
                 ),
                 InkWell(
                   onTap: () => ThrioNavigator.popTo(
-                    url: 'biz2/flutter2',
+                    url: '/biz2/flutter2',
                     animated: false,
                   ),
                   child: Container(
@@ -133,11 +133,11 @@ class _Page4State extends State<Page4> {
                 InkWell(
                   onTap: () async {
                     if (!await ThrioNavigator.notify(
-                      url: 'biz1/flutter1',
+                      url: '/biz1/flutter1',
                       name: 'page1Notify',
                     )) {
                       await ThrioNavigator.push(
-                          url: 'biz1/flutter1', params: {'page1Notify': {}});
+                          url: '/biz1/flutter1', params: {'page1Notify': {}});
                     }
                   },
                   child: Container(
