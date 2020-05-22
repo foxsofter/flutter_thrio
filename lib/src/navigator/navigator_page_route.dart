@@ -86,15 +86,25 @@ class NavigatorPageRoute extends MaterialPageRoute<bool> {
     Animation<double> animation,
     Animation<double> secondaryAnimation,
     Widget child,
-  ) =>
-      settings.isNested
-          ? super.buildTransitions(
-              context,
-              animation,
-              secondaryAnimation,
-              child,
-            )
-          : child;
+  ) {
+    if (settings.isNested) {
+      final urlPatterns = ThrioNavigatorImplement.routeTransitionsBuilders.keys;
+      for (final urlPattern in urlPatterns) {
+        if (urlPattern.hasMatch(settings.url)) {
+          final builder =
+              ThrioNavigatorImplement.routeTransitionsBuilders[urlPattern];
+          return builder(context, animation, secondaryAnimation, child);
+        }
+      }
+      return super.buildTransitions(
+        context,
+        animation,
+        secondaryAnimation,
+        child,
+      );
+    }
+    return child;
+  }
 
   @override
   void dispose() {

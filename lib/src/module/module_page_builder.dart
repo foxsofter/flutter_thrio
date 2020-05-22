@@ -19,26 +19,29 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-library thrio;
+import 'package:flutter/foundation.dart';
 
-export 'src/channel/thrio_channel.dart';
-export 'src/extension/thrio_build_context.dart';
-export 'src/extension/thrio_stateful_widget.dart';
-export 'src/logger/thrio_logger.dart';
-export 'src/module/module_page_builder.dart';
-export 'src/module/module_page_observer.dart';
-export 'src/module/module_route_observer.dart';
-export 'src/module/module_route_transitions_builder.dart';
-export 'src/module/thrio_module.dart';
-export 'src/navigator/navigator_home.dart';
-export 'src/navigator/navigator_logger.dart';
-export 'src/navigator/navigator_page_notify.dart';
-export 'src/navigator/navigator_page_observer.dart';
-export 'src/navigator/navigator_page_route.dart';
-export 'src/navigator/navigator_route_observer.dart';
-export 'src/navigator/navigator_route_settings.dart';
-export 'src/navigator/navigator_types.dart';
-export 'src/navigator/thrio_navigator.dart';
-export 'src/registry/registry_map.dart';
-export 'src/registry/registry_set.dart';
-export 'src/registry/registry_set_map.dart';
+import '../navigator/navigator_types.dart';
+import '../navigator/thrio_navigator_implement.dart';
+import 'thrio_module.dart';
+
+mixin ModulePageBuilder on ThrioModule {
+  /// A function for register a page builder.
+  ///
+  void onPageBuilderRegister() {}
+
+  /// Register an page builder for the router.
+  ///
+  /// Unregistry by calling the return value `VoidCallback`.
+  ///
+  VoidCallback registerPageBuilder(String url, NavigatorPageBuilder builder) =>
+      ThrioNavigatorImplement.pageBuilders.registry(url, builder);
+
+  /// Register page builders for the router.
+  ///
+  /// Unregistry by calling the return value `VoidCallback`.
+  ///
+  VoidCallback registerPageBuilders(
+          Map<String, NavigatorPageBuilder> builders) =>
+      ThrioNavigatorImplement.pageBuilders.registryAll(builders);
+}

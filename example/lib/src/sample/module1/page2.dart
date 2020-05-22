@@ -59,7 +59,7 @@ class _Page2State extends State<Page2> {
                         ),
                         InkWell(
                           onTap: () => ThrioNavigator.push(
-                            url: 'biz1/flutter3',
+                            url: '/biz1/flutter3',
                             params: {
                               '1': {'2': '3'}
                             },
@@ -76,7 +76,7 @@ class _Page2State extends State<Page2> {
                         ),
                         InkWell(
                           onTap: () =>
-                              ThrioNavigator.remove(url: 'biz2/flutter2'),
+                              ThrioNavigator.remove(url: '/biz2/flutter2'),
                           child: Container(
                               padding: const EdgeInsets.all(8),
                               margin: const EdgeInsets.all(8),
@@ -89,7 +89,7 @@ class _Page2State extends State<Page2> {
                         ),
                         InkWell(
                           onTap: () => ThrioNavigator.pop(
-                              params: 'popResult biz2/flutter2'),
+                              params: 'popResult /biz2/flutter2'),
                           child: Container(
                               padding: const EdgeInsets.all(8),
                               margin: const EdgeInsets.all(8),
@@ -133,7 +133,7 @@ class _Page2State extends State<Page2> {
                         InkWell(
                           onTap: () {
                             ThrioNavigator.notify(
-                                url: 'biz1/flutter1', name: 'page1Notify');
+                                url: '/biz1/flutter1', name: 'page1Notify');
                           },
                           child: Container(
                               padding: const EdgeInsets.all(8),
@@ -148,7 +148,7 @@ class _Page2State extends State<Page2> {
                         InkWell(
                           onTap: () {
                             ThrioNavigator.notify(
-                                url: 'biz2/flutter2', name: 'page2Notify');
+                                url: '/biz2/flutter2', name: 'page2Notify');
                           },
                           child: Container(
                               padding: const EdgeInsets.all(8),

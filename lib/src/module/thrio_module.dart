@@ -24,10 +24,11 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
-import '../navigator/navigator_page_observer.dart';
-import '../navigator/navigator_route_observer.dart';
-import '../navigator/navigator_types.dart';
 import '../navigator/thrio_navigator_implement.dart';
+import 'module_page_builder.dart';
+import 'module_page_observer.dart';
+import 'module_route_observer.dart';
+import 'module_route_transitions_builder.dart';
 
 mixin ThrioModule {
   static final _modules = <Type, ThrioModule>{};
@@ -51,7 +52,18 @@ mixin ThrioModule {
   void initModule() {
     final values = _modules.values;
     for (final module in values) {
-      module.onPageRegister();
+      if (module is ModulePageBuilder) {
+        module.onPageBuilderRegister();
+      }
+      if (module is ModulePageObserver) {
+        module.onPageObserverRegister();
+      }
+      if (module is ModuleRouteObserver) {
+        module.onRouteObserverRegister();
+      }
+      if (module is ModuleRouteTransitionsBuilder) {
+        module.onRouteTransitionsBuilderRegister();
+      }
     }
     for (final module in values) {
       module.onModuleInit();
@@ -66,10 +78,6 @@ mixin ThrioModule {
   /// A function for registering submodules.
   ///
   void onModuleRegister() {}
-
-  /// A function for registering a page builder.
-  ///
-  void onPageRegister() {}
 
   /// A function for module initialization.
   ///
@@ -93,37 +101,4 @@ mixin ThrioModule {
         index: index,
         name: name,
       );
-
-  /// Register an page builder for the router.
-  ///
-  /// Unregistry by calling the return value `VoidCallback`.
-  ///
-  VoidCallback registerPageBuilder(String url, NavigatorPageBuilder builder) =>
-      ThrioNavigatorImplement.pageBuilders.registry(url, builder);
-
-  /// Register page builders for the router.
-  ///
-  /// Unregistry by calling the return value `VoidCallback`.
-  ///
-  VoidCallback registerPageBuilders(
-          Map<String, NavigatorPageBuilder> builders) =>
-      ThrioNavigatorImplement.pageBuilders.registryAll(builders);
-
-  /// Register observers for the life cycle of Dart pages.
-  ///
-  /// Unregistry by calling the return value `VoidCallback`.
-  ///
-  /// Do not override this method.
-  ///
-  VoidCallback registerPageObserver(NavigatorPageObserver pageObserver) =>
-      ThrioNavigatorImplement.pageObservers.registry(pageObserver);
-
-  /// Register observers for route action of Dart pages.
-  ///
-  /// Unregistry by calling the return value `VoidCallback`.
-  ///
-  /// Do not override this method.
-  ///
-  VoidCallback registerRouteObserver(NavigatorRouteObserver routeObserver) =>
-      ThrioNavigatorImplement.routeObservers.registry(routeObserver);
 }
