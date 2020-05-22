@@ -380,7 +380,13 @@ NS_ASSUME_NONNULL_BEGIN
 ///
 + (NSArray *)getAllIndexByUrl:(NSString *)url;
 
-#pragma mark - multi-engine methods
+#pragma mark - engine methods
+
+/// Get `FlutterEngine` instance by entrypoint.
+///
+/// Should be called after the engine is initialized.
+///
++ (FlutterEngine *)getEngineByEntrypoint:(NSString *)entrypoint;
 
 /// Set multi-engine mode to `enabled`, default is NO.
 ///
