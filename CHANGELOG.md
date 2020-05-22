@@ -49,3 +49,7 @@
 ## 0.1.8
 
 - fix: ios memory leak
+
+## 0.2.0
+
+- feat: add flutter custom transition builder api.
