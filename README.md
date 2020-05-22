@@ -2,7 +2,7 @@
 
 [![Gitter Channel][]][gitter badge] [![pub package](https://img.shields.io/pub/v/thrio.svg)](https://pub.dartlang.org/packages/thrio) [![license](https://img.shields.io/github/license/hellobike/thrio.svg?maxAge=2592000)](https://github.com/hellobike/thrio/LICENSE)
 
-[中文文档](./doc/Feature.md) [问题集](./doc/Questions.md)
+[中文文档](./doc/Feature.md) [问题集](./doc/Questions.md) QQ 群号码：1014085473
 
 The `Navigator` for iOS, Android, Flutter.
 
