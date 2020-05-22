@@ -29,6 +29,7 @@
 #import "ThrioNavigator.h"
 #import "ThrioNavigator+PageBuilders.h"
 #import "ThrioNavigator+Internal.h"
+#import "NavigatorFlutterEngineFactory.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -373,7 +374,11 @@ NS_ASSUME_NONNULL_BEGIN
   return [self.navigationController thrio_getAllIndexByUrl:url];
 }
 
-#pragma mark - multi-engine methods
+#pragma mark - engine methods
+
++ (FlutterEngine *)getEngineByEntrypoint:(NSString *)entrypoint {
+  return [NavigatorFlutterEngineFactory.shared getEngineByEntrypoint:entrypoint];
+}
 
 static BOOL multiEngineEnabled = NO;
 
