@@ -2,11 +2,11 @@
 
 [![Gitter Channel][]][gitter badge] [![pub package](https://img.shields.io/pub/v/thrio.svg)](https://pub.dartlang.org/packages/thrio) [![license](https://img.shields.io/github/license/hellobike/thrio.svg?maxAge=2592000)](https://github.com/hellobike/thrio/LICENSE)
 
-[中文文档](./doc/Feature.md) [问题集](./doc/Questions.md) QQ 群号码：1014085473
+[中文文档](./doc/Feature.md) [问题集](./doc/Questions.md) QQ 群号码：<font color=#008000>1014085473</font>
 
 The `Navigator` for iOS, Android, Flutter.
 
-Version `0.1.5` requires Flutter `>= 1.12.0` and Dart `>= 2.6.0`.
+Version `0.2.0` requires Flutter `>= 1.12.0` and Dart `>= 2.6.0`.
 
 ## Features
 
@@ -16,6 +16,7 @@ Version `0.1.5` requires Flutter `>= 1.12.0` and Dart `>= 2.6.0`.
 - Register observers for the life cycle of pages
 - Register observers for the route actions of pages
 - Hide native navigation bar for flutter pages
+- Supports custom transition animation on the Flutter side
 
 ## Getting started
 
@@ -23,10 +24,10 @@ You should ensure that you add `thrio` as a dependency in your flutter project.
 
 ```yaml
 dependencies:
-  thrio: '^0.1.5'
+  thrio: '^0.2.0'
 ```
 
-You can also reference the git repo directly if you want to support AndroidX:
+You can also reference the git repo directly if you want:
 
 ```yaml
 dependencies:
