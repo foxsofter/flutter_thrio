@@ -12,7 +12,7 @@ class Native1Activity : AppCompatActivity(), OnNotifyListener {
     private fun initView() {
         tv_native.text = "Native 1"
         btn_1.setOnClickListener {
-            ThrioNavigator.push(this, "biz1/flutter1",
+            ThrioNavigator.push(this, "/biz1/flutter1",
                     mapOf("k1" to 1),
                     true,
                     poppedResult = {
