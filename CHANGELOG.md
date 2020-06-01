@@ -53,3 +53,7 @@
 ## 0.2.0
 
 - feat: add flutter custom transition builder api.
+
+## 0.2.1
+
+- fix: crash case on f->n->f .
