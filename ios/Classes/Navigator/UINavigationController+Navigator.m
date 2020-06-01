@@ -470,6 +470,11 @@ NS_ASSUME_NONNULL_BEGIN
       previousVC = vcs[vcs.count - 2];
       previousRouteSettings = previousVC.thrio_lastRoute.settings;
     }
+    // 判断前一个页面如果是NavigatorFlutterViewController，直接将引擎切换到该页面
+    if ([previousVC isKindOfClass:NavigatorFlutterViewController.class]) {
+      [NavigatorFlutterEngineFactory.shared pushViewController:(NavigatorFlutterViewController*)previousVC];
+    }
+
     UIViewController *vc;
     if (animated) {
       [CATransaction begin];
