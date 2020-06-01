@@ -125,7 +125,7 @@ NS_ASSUME_NONNULL_BEGIN
   
   NSArray *vcs = self.viewControllers;
   for (UIViewController *vc in vcs) {
-    NavigatorPageRoute *last = [vc thrio_getRouteByUrl:url index:nil];
+    NavigatorPageRoute *last = [vc thrio_getRouteByUrl:url index:index];
     if (last) {
       [vc thrio_notifyUrl:url index:index name:name params:params];
       isMatch = YES;
