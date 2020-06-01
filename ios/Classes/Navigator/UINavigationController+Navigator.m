@@ -121,12 +121,18 @@ NS_ASSUME_NONNULL_BEGIN
                   index:(NSNumber * _Nullable)index
                    name:(NSString *)name
                  params:(id _Nullable)params {
-  UIViewController *vc = [self getViewControllerByUrl:url index:index];
-  if ([vc isKindOfClass:NavigatorFlutterViewController.class] ||
-      [vc conformsToProtocol:@protocol(NavigatorPageNotifyProtocol)]) {
-    return [vc thrio_notifyUrl:url index:index name:name params:params];
+  BOOL isMatch = NO;
+  
+  NSArray *vcs = self.viewControllers;
+  for (UIViewController *vc in vcs) {
+    NavigatorPageRoute *last = [vc thrio_getRouteByUrl:url index:nil];
+    if (last) {
+      [vc thrio_notifyUrl:url index:index name:name params:params];
+      isMatch = YES;
+    }
   }
-  return NO;
+  
+  return isMatch;
 }
 
 - (void)thrio_popParams:(id _Nullable)params
@@ -463,7 +469,7 @@ NS_ASSUME_NONNULL_BEGIN
       self.topViewController.thrio_firstRoute) {
     NavigatorRouteSettings *routeSettings = self.topViewController.thrio_lastRoute.settings;
     NSArray *vcs = self.viewControllers;
-    
+        
     NavigatorRouteSettings *previousRouteSettings;
     UIViewController *previousVC;
     if (vcs.count > 1) {
