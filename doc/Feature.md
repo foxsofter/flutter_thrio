@@ -49,9 +49,9 @@ ThrioNavigator.push(url: 'native1', params: { '1': {'2': '3'}});
 ThrioNavigator.push(url: 'native1', animated:true);
 // 接收锁打开页面的关闭回调
 ThrioNavigator.push(
-    url: 'biz2/flutter2',
+    url: '/biz2/flutter2',
     params: {'1': {'2': '3'}},
-    poppedResult: (params) => verbose('biz2/flutter2 popped: $params'),
+    poppedResult: (params) => verbose('/biz2/flutter2 popped: $params'),
 );
 ```
 
@@ -60,15 +60,15 @@ ThrioNavigator.push(
 ```objc
 [ThrioNavigator pushUrl:@"flutter1"];
 // 接收所打开页面的关闭回调
-[ThrioNavigator pushUrl:@"biz2/flutter2" poppedResult:^(id _Nonnull params) {
-    ThrioLogV(@"biz2/flutter2 popped: %@", params);
+[ThrioNavigator pushUrl:@"/biz2/flutter2" poppedResult:^(id _Nonnull params) {
+    ThrioLogV(@"/biz2/flutter2 popped: %@", params);
 }];
 ```
 
 3. Android 端打开页面
 
 ```kotlin
-ThrioNavigator.push(this, "biz1/flutter1",
+ThrioNavigator.push(this, "/biz1/flutter1",
         mapOf("k1" to 1),
         false,
         poppedResult = {

@@ -1,5 +1,5 @@
 #import "AppDelegate.h"
-@import thrio;
+#import <thrio/Thrio.h>
 
 #import "MainModule.h"
 
@@ -15,7 +15,7 @@
   [ThrioModule init:[MainModule new]];
   
   // Override point for customization after application launch.
-  return [super application:application didFinishLaunchingWithOptions:launchOptions];
+  return YES;
 }
 
 @end

@@ -1,7 +1,7 @@
-#import <Flutter/Flutter.h>
 #import <UIKit/UIKit.h>
-#import <thrio/Thrio.h>
 
-@interface AppDelegate : FlutterAppDelegate
+@interface AppDelegate : UIResponder <UIApplicationDelegate>
+
+@property(strong, nonatomic) UIWindow* window;
 
 @end

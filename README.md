@@ -2,11 +2,11 @@
 
 [![Gitter Channel][]][gitter badge] [![pub package](https://img.shields.io/pub/v/thrio.svg)](https://pub.dartlang.org/packages/thrio) [![license](https://img.shields.io/github/license/hellobike/thrio.svg?maxAge=2592000)](https://github.com/hellobike/thrio/LICENSE)
 
-[中文文档](./doc/Feature.md) [问题集](./doc/Questions.md) QQ 群号码：<font color=#008000>1014085473</font>
+[中文文档](./doc/Feature.md) [问题集](./doc/Questions.md) QQ 群号码：1014085473
 
 The `Navigator` for iOS, Android, Flutter.
 
-Version `0.2.0` requires Flutter `>= 1.12.0` and Dart `>= 2.6.0`.
+Version `0.2.1` requires Flutter `>= 1.12.0` and Dart `>= 2.6.0`.
 
 ## Features
 
@@ -24,7 +24,7 @@ You should ensure that you add `thrio` as a dependency in your flutter project.
 
 ```yaml
 dependencies:
-  thrio: '^0.2.0'
+  thrio: '^0.2.1'
 ```
 
 You can also reference the git repo directly if you want:
@@ -51,9 +51,9 @@ ThrioNavigator.push(url: 'native1', params: { '1': {'2': '3'}});
 ThrioNavigator.push(url: 'native1', animated:true);
 
 ThrioNavigator.push(
-    url: 'biz2/flutter2',
+    url: '/biz2/flutter2',
     params: {'1': {'2': '3'}},
-    poppedResult: (params) => ThrioLogger.v('biz2/flutter2 popped: $params'),
+    poppedResult: (params) => ThrioLogger.v('/biz2/flutter2 popped: $params'),
 );
 ```
 
@@ -62,15 +62,15 @@ ThrioNavigator.push(
 ```objc
 [ThrioNavigator pushUrl:@"flutter1"];
 
-[ThrioNavigator pushUrl:@"biz2/flutter2" poppedResult:^(id _Nonnull params) {
-    ThrioLogV(@"biz2/flutter2 popped: %@", params);
+[ThrioNavigator pushUrl:@"/biz2/flutter2" poppedResult:^(id _Nonnull params) {
+    ThrioLogV(@"/biz2/flutter2 popped: %@", params);
 }];
 ```
 
 ### `push` a page in Android
 
 ```kotlin
-ThrioNavigator.push(this, "biz1/flutter1",
+ThrioNavigator.push(this, "/biz1/flutter1",
         mapOf("k1" to 1),
         false,
         poppedResult = {
