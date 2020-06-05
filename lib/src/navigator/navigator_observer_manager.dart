@@ -85,7 +85,8 @@ class NavigatorObserverManager extends NavigatorObserver {
                 observer.didAppear(previousRoute.settings);
               }
             }
-            if (route.routeAction == NavigatorRouteAction.pop) {
+            if (route.routeAction == NavigatorRouteAction.pop ||
+                route.routeAction == null) {
               verbose(
                 'didPop:${route.settings.name} '
                 'params:${route.settings.params}',
