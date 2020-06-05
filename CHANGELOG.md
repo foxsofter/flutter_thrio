@@ -57,3 +57,7 @@
 ## 0.2.1
 
 - fix: crash case on f->n->f .
+
+## 0.2.2
+
+- fix: iOS index not sync when back gesture.
