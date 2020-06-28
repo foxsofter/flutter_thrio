@@ -31,7 +31,7 @@ import com.hellobike.flutter.thrio.OnNotifyListener
 import com.hellobike.flutter.thrio.PoppedResult
 import com.hellobike.flutter.thrio.PushResult
 import com.hellobike.flutter.thrio.Result
-import com.hellobike.flutter.thrio.navigator.FlutterEngineFactory.THRIO_ENGINE_FLUTTER_ID
+import com.hellobike.flutter.thrio.navigator.FlutterEngineFactory.THRIO_ENGINE_ENTRYPOINT
 import com.hellobike.flutter.thrio.navigator.FlutterEngineFactory.THRIO_ENGINE_NATIVE_ID
 import io.flutter.embedding.android.ThrioActivity
 import java.lang.ref.WeakReference
@@ -136,7 +136,7 @@ internal object NavigationController {
                 }
                 data["animated"] = animated
                 if (PageBuilders.isFlutterPageBuilder(builder)) {
-                    data["entryPoint"] = THRIO_ENGINE_FLUTTER_ID
+                    data["entryPoint"] = THRIO_ENGINE_ENTRYPOINT
                 } else {
                     data["entryPoint"] = THRIO_ENGINE_NATIVE_ID
                 }

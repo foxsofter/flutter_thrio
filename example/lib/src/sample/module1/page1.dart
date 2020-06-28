@@ -1,3 +1,5 @@
+import 'dart:io' show Platform;
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:thrio/thrio.dart';
@@ -18,11 +20,20 @@ class Page1 extends StatefulWidget {
 }
 
 class _Page1State extends State<Page1> {
+  TextEditingController _inputController;
   @override
   void initState() {
     super.initState();
 
-    if (mounted) {}
+    if (mounted) {
+      _inputController = TextEditingController();
+    }
+  }
+
+  @override
+  void dispose() {
+    _inputController.dispose();
+    super.dispose();
   }
 
   @override
@@ -33,18 +44,22 @@ class _Page1State extends State<Page1> {
       onPageNotify: (params) =>
           ThrioLogger.v('flutter1 receive notify:$params'),
       child: Scaffold(
-          appBar: AppBar(
-            brightness: Brightness.light,
-            backgroundColor: Colors.blue,
-            title: const Text('thrio_example',
-                style: TextStyle(color: Colors.black)),
-            leading: const IconButton(
-              color: Colors.black,
-              tooltip: 'back',
-              icon: Icon(Icons.arrow_back_ios),
-              onPressed: ThrioNavigator.pop,
-            ),
-          ),
+          appBar: PreferredSize(
+              preferredSize: Platform.isIOS
+                  ? const Size.fromHeight(44)
+                  : const Size.fromHeight(56),
+              child: AppBar(
+                brightness: Brightness.light,
+                backgroundColor: Colors.blue,
+                title: const Text('thrio_example',
+                    style: TextStyle(color: Colors.black)),
+                leading: const IconButton(
+                  color: Colors.black,
+                  tooltip: 'back',
+                  icon: Icon(Icons.arrow_back_ios),
+                  onPressed: ThrioNavigator.pop,
+                ),
+              )),
           body: SingleChildScrollView(
             child: Container(
               margin: const EdgeInsets.all(24),
@@ -59,6 +74,21 @@ class _Page1State extends State<Page1> {
                         style: TextStyle(fontSize: 28, color: Colors.blue),
                       ),
                     ),
+                    Container(
+                        height: 25,
+                        width: 100,
+                        child: TextField(
+                            maxLines: 1,
+                            controller: _inputController,
+                            autofocus: true,
+                            textInputAction: TextInputAction.search,
+                            // onSubmitted: onSubmitted,
+                            decoration: InputDecoration(
+                              hintText: 'hintText',
+                              contentPadding: const EdgeInsets.only(bottom: 12),
+                              border: InputBorder.none,
+                            ),
+                            onChanged: print)),
                     InkWell(
                       onTap: () => ThrioNavigator.push(
                         url: '/biz1/flutter1',

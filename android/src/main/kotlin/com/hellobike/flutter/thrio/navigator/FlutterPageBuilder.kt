@@ -25,7 +25,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import com.hellobike.flutter.thrio.NavigatorPageBuilder
-import com.hellobike.flutter.thrio.navigator.FlutterEngineFactory.THRIO_ENGINE_FLUTTER_ID
+import com.hellobike.flutter.thrio.navigator.FlutterEngineFactory.THRIO_ENGINE_ENTRYPOINT
 import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.android.ThrioActivity
 
@@ -35,7 +35,7 @@ internal object FlutterPageBuilder : NavigatorPageBuilder {
 
     override fun buildIntent(context: Context): Intent {
         return FlutterActivity
-                .withCachedEngine(THRIO_ENGINE_FLUTTER_ID)
+                .withCachedEngine(THRIO_ENGINE_ENTRYPOINT)
                 .destroyEngineWithActivity(false)
                 .build(context)
                 .apply { addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP) }
