@@ -28,7 +28,7 @@ import io.flutter.plugin.common.BinaryMessenger
 import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.MethodChannel
 
-internal class RouteSendChannel constructor(messenger: BinaryMessenger, val id: String)
+ class RouteSendChannel constructor(messenger: BinaryMessenger, val id: String)
     : ThrioChannel(messenger, "__thrio_app__"), EventChannel.StreamHandler {
 
     init {

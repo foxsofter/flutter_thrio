@@ -22,13 +22,17 @@
 package io.flutter.embedding.android
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
+import android.view.View
 import com.hellobike.flutter.thrio.Result
 import com.hellobike.flutter.thrio.navigator.FlutterEngineFactory
 import com.hellobike.flutter.thrio.navigator.NavigationController
 import com.hellobike.flutter.thrio.navigator.PageRoute
+import io.flutter.plugin.platform.PlatformViewsController
+import java.util.*
 
-open class ThrioActivity : FlutterActivity() {
+open class ThrioActivity : ThrioFlutterActivity() {
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
@@ -38,8 +42,16 @@ open class ThrioActivity : FlutterActivity() {
     @SuppressLint("VisibleForTests")
     override fun finish() {
         super.finish()
-        super.delegate.onStop()
-        super.delegate.onDetach()
+//        super.delegate?.onStop()
+//        super.delegate?.onDetach()
+    }
+
+    override fun shouldAttachEngineToActivity(): Boolean {
+        return true
+    }
+
+    override fun shouldDestroyEngineWithHost(): Boolean {
+        return false
     }
 
     override fun onBackPressed() {
