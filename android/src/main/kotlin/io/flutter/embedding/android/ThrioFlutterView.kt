@@ -36,18 +36,18 @@ import java.util.*
  * Displays a Flutter UI on an Android device.
  *
  *
- * A `FlutterView`'s UI is painted by a corresponding [FlutterEngine].
+ * A `ThrioFlutterView`'s UI is painted by a corresponding [FlutterEngine].
  *
  *
- * A `FlutterView` can operate in 2 different [ ]s:
+ * A `ThrioFlutterView` can operate in 2 different [ ]s:
  *
  *
  *  1. [io.flutter.embedding.android.RenderMode.surface], which paints a Flutter UI to a
- * [android.view.SurfaceView]. This mode has the best performance, but a `FlutterView` in this mode cannot be positioned between 2 other Android `View`s in the
+ * [android.view.SurfaceView]. This mode has the best performance, but a `ThrioFlutterView` in this mode cannot be positioned between 2 other Android `View`s in the
  * z-index, nor can it be animated/transformed. Unless the special capabilities of a [       ] are required, developers should strongly prefer this
  * render mode.
  *  1. [io.flutter.embedding.android.RenderMode.texture], which paints a Flutter UI to a
- * [android.graphics.SurfaceTexture]. This mode is not as performant as [       ][io.flutter.embedding.android.RenderMode.surface], but a `FlutterView` in this mode
+ * [android.graphics.SurfaceTexture]. This mode is not as performant as [       ][io.flutter.embedding.android.RenderMode.surface], but a `ThrioFlutterView` in this mode
  * can be animated and transformed, as well as positioned in the z-index between 2+ other
  * Android `Views`. Unless the special capabilities of a [       ] are required, developers should strongly prefer the [       ][io.flutter.embedding.android.RenderMode.surface] render mode.
  *
@@ -64,8 +64,8 @@ class ThrioFlutterView : FrameLayout {
     private var isFlutterUiDisplayed = false
 
     /**
-     * Returns the [FlutterEngine] to which this `FlutterView` is currently attached, or
-     * null if this `FlutterView` is not currently attached to a [FlutterEngine].
+     * Returns the [FlutterEngine] to which this `ThrioFlutterView` is currently attached, or
+     * null if this `ThrioFlutterView` is not currently attached to a [FlutterEngine].
      */
     // Connections to a Flutter execution context.
     @get:VisibleForTesting
@@ -108,7 +108,7 @@ class ThrioFlutterView : FrameLayout {
     }
 
     /**
-     * Constructs a `FlutterView` programmatically, without any XML attributes.
+     * Constructs a `ThrioFlutterView` programmatically, without any XML attributes.
      *
      *
      *
@@ -118,7 +118,7 @@ class ThrioFlutterView : FrameLayout {
      *  * `transparencyMode` defaults to [TransparencyMode.opaque].
      *
      *
-     * `FlutterView` requires an `Activity` instead of a generic `Context` to be
+     * `ThrioFlutterView` requires an `Activity` instead of a generic `Context` to be
      * compatible with [PlatformViewsController].
      */
     constructor(context: Context) : this(context, null, FlutterSurfaceView(context)) {}
@@ -142,10 +142,10 @@ class ThrioFlutterView : FrameLayout {
      * Deprecated - use [.FlutterView] or [ ][.FlutterView] instead, and configure the incoming `FlutterSurfaceView` or `FlutterTextureView` for transparency as desired.
      *
      *
-     * Constructs a `FlutterView` programmatically, without any XML attributes, uses a [ ] to render the Flutter UI, and allows selection of a `transparencyMode`.
+     * Constructs a `ThrioFlutterView` programmatically, without any XML attributes, uses a [ ] to render the Flutter UI, and allows selection of a `transparencyMode`.
      *
      *
-     * `FlutterView` requires an `Activity` instead of a generic `Context` to be
+     * `ThrioFlutterView` requires an `Activity` instead of a generic `Context` to be
      * compatible with [PlatformViewsController].
      */
     @Deprecated("")
@@ -156,30 +156,30 @@ class ThrioFlutterView : FrameLayout {
     }
 
     /**
-     * Constructs a `FlutterView` programmatically, without any XML attributes, uses the given
+     * Constructs a `ThrioFlutterView` programmatically, without any XML attributes, uses the given
      * [FlutterSurfaceView] to render the Flutter UI, and allows selection of a `transparencyMode`.
      *
      *
-     * `FlutterView` requires an `Activity` instead of a generic `Context` to be
+     * `ThrioFlutterView` requires an `Activity` instead of a generic `Context` to be
      * compatible with [PlatformViewsController].
      */
     constructor(context: Context, flutterSurfaceView: FlutterSurfaceView) : this(context, null, flutterSurfaceView) {}
 
     /**
-     * Constructs a `FlutterView` programmatically, without any XML attributes, uses the given
+     * Constructs a `ThrioFlutterView` programmatically, without any XML attributes, uses the given
      * [FlutterTextureView] to render the Flutter UI, and allows selection of a `transparencyMode`.
      *
      *
-     * `FlutterView` requires an `Activity` instead of a generic `Context` to be
+     * `ThrioFlutterView` requires an `Activity` instead of a generic `Context` to be
      * compatible with [PlatformViewsController].
      */
     constructor(context: Context, flutterTextureView: FlutterTextureView) : this(context, null, flutterTextureView) {}
 
     /**
-     * Constructs a `FlutterView` in an XML-inflation-compliant manner.
+     * Constructs a `ThrioFlutterView` in an XML-inflation-compliant manner.
      *
      *
-     * `FlutterView` requires an `Activity` instead of a generic `Context` to be
+     * `ThrioFlutterView` requires an `Activity` instead of a generic `Context` to be
      * compatible with [PlatformViewsController].
      */
     // TODO(mattcarroll): expose renderMode in XML when build system supports R.attr
@@ -237,7 +237,7 @@ class ThrioFlutterView : FrameLayout {
     }
 
     /**
-     * Returns true if an attached [FlutterEngine] has rendered at least 1 frame to this `FlutterView`.
+     * Returns true if an attached [FlutterEngine] has rendered at least 1 frame to this `ThrioFlutterView`.
      *
      *
      * Returns false if no [FlutterEngine] is attached.
@@ -247,11 +247,11 @@ class ThrioFlutterView : FrameLayout {
      * demonstrates how this flag changes over time.
      *
      *
-     *  1. `flutterEngineA` is attached to this `FlutterView`: returns false
-     *  1. `flutterEngineA` renders its first frame to this `FlutterView`: returns true
-     *  1. `flutterEngineA` is detached from this `FlutterView`: returns false
-     *  1. `flutterEngineB` is attached to this `FlutterView`: returns false
-     *  1. `flutterEngineB` renders its first frame to this `FlutterView`: returns true
+     *  1. `flutterEngineA` is attached to this `ThrioFlutterView`: returns false
+     *  1. `flutterEngineA` renders its first frame to this `ThrioFlutterView`: returns true
+     *  1. `flutterEngineA` is detached from this `ThrioFlutterView`: returns false
+     *  1. `flutterEngineB` is attached to this `ThrioFlutterView`: returns false
+     *  1. `flutterEngineB` renders its first frame to this `ThrioFlutterView`: returns true
      *
      */
     fun hasRenderedFirstFrame(): Boolean {
@@ -259,7 +259,7 @@ class ThrioFlutterView : FrameLayout {
     }
 
     /**
-     * Adds the given `listener` to this `FlutterView`, to be notified upon Flutter's
+     * Adds the given `listener` to this `ThrioFlutterView`, to be notified upon Flutter's
      * first rendered frame.
      */
     fun addOnFirstFrameRenderedListener(listener: FlutterUiDisplayListener) {
@@ -297,7 +297,7 @@ class ThrioFlutterView : FrameLayout {
     }
 
     /**
-     * Invoked when this `FlutterView` changes size, including upon initial measure.
+     * Invoked when this `ThrioFlutterView` changes size, including upon initial measure.
      *
      *
      * The initial measure reports an `oldWidth` and `oldHeight` of zero.
@@ -413,12 +413,12 @@ class ThrioFlutterView : FrameLayout {
      *
      * Any `View` that can take focus or process text input must implement this method by
      * returning a non-null `InputConnection`. Flutter may render one or many focusable and
-     * text-input widgets, therefore `FlutterView` must support an `InputConnection`.
+     * text-input widgets, therefore `ThrioFlutterView` must support an `InputConnection`.
      *
      *
      * The `InputConnection` returned from this method comes from a [TextInputPlugin],
-     * which is owned by this `FlutterView`. A [TextInputPlugin] exists to encapsulate the
-     * nuances of input communication, rather than spread that logic throughout this `FlutterView`.
+     * which is owned by this `ThrioFlutterView`. A [TextInputPlugin] exists to encapsulate the
+     * nuances of input communication, rather than spread that logic throughout this `ThrioFlutterView`.
      */
     override fun onCreateInputConnection(outAttrs: EditorInfo): InputConnection? {
         return if (!isAttachedToFlutterEngine) {
@@ -562,11 +562,11 @@ class ThrioFlutterView : FrameLayout {
     }
 
     /**
-     * Connects this `FlutterView` to the given [FlutterEngine].
+     * Connects this `ThrioFlutterView` to the given [FlutterEngine].
      *
      *
-     * This `FlutterView` will begin rendering the UI painted by the given [ ]. This `FlutterView` will also begin forwarding interaction events from
-     * this `FlutterView` to the given [FlutterEngine], e.g., user touch events,
+     * This `ThrioFlutterView` will begin rendering the UI painted by the given [ ]. This `ThrioFlutterView` will also begin forwarding interaction events from
+     * this `ThrioFlutterView` to the given [FlutterEngine], e.g., user touch events,
      * accessibility events, keyboard events, and others.
      *
      *
@@ -642,72 +642,73 @@ class ThrioFlutterView : FrameLayout {
         }
     }
 
-    fun resumeToFlutterEngine(flutterEngine: FlutterEngine) {
-        Log.v(TAG, "Attaching to a FlutterEngine: $flutterEngine")
-        if (attachedFlutterEngine == null || (attachedFlutterEngine != null && attachedFlutterEngine != flutterEngine)) {
-            return
-        }
+    /**
+     * Reconnects this `ThrioFlutterView` to the given [attachedFlutterEngine].
+     *
+     *
+     * This `ThrioFlutterView` will begin rendering the UI painted by the given [ ]. This
+     * `ThrioFlutterView` will also begin forwarding interaction events from
+     * this `ThrioFlutterView` to the given [attachedFlutterEngine], e.g., user touch events,
+     * accessibility events, keyboard events, and others.
+     *
+     *
+     * See [.detachFromFlutterEngine] for information on how to detach from a [ ].
+     */
+    fun reattachToFlutterEngine() {
+        attachedFlutterEngine?.let { engine ->
+            // Instruct our FlutterRenderer that we are now its designated RenderSurface.
+            isFlutterUiDisplayed = engine.renderer.isDisplayingFlutterUi
 
-//        this.requestFocus()
+            renderSurface!!.attachToRenderer(engine.renderer)
+            engine.renderer.addIsDisplayingFlutterUiListener(flutterUiDisplayListener)
 
-        // Instruct our FlutterRenderer that we are now its designated RenderSurface.
-//        val flutterRenderer = attachedFlutterEngine!!.renderer
-//        isFlutterUiDisplayed = flutterRenderer.isDisplayingFlutterUi
-//        renderSurface!!.attachToRenderer(flutterRenderer)
-//        flutterRenderer.addIsDisplayingFlutterUiListener(flutterUiDisplayListener)
+            // Initialize various components that know how to process Android View I/O
+            // in a way that Flutter understands.
+            textInputPlugin = TextInputPlugin(this, engine.dartExecutor, engine.platformViewsController)
+            androidKeyProcessor = AndroidKeyProcessor(engine.keyEventChannel, textInputPlugin!!)
+            androidTouchProcessor = AndroidTouchProcessor(engine.renderer)
+            accessibilityBridge = AccessibilityBridge(
+                    this,
+                    engine.accessibilityChannel,
+                    (context.getSystemService(Context.ACCESSIBILITY_SERVICE) as AccessibilityManager),
+                    context.contentResolver,
+                    engine.platformViewsController)
+            accessibilityBridge!!.setOnAccessibilityChangeListener(onAccessibilityChangeListener)
+            resetWillNotDraw(
+                    accessibilityBridge!!.isAccessibilityEnabled,
+                    accessibilityBridge!!.isTouchExplorationEnabled)
 
-        // Initialize various components that know how to process Android View I/O
-        // in a way that Flutter understands.
-        textInputPlugin = TextInputPlugin(
-                this,
-                attachedFlutterEngine!!.dartExecutor,
-                attachedFlutterEngine!!.platformViewsController)
-        androidKeyProcessor = AndroidKeyProcessor(attachedFlutterEngine!!.keyEventChannel, textInputPlugin!!)
-        androidTouchProcessor = AndroidTouchProcessor(attachedFlutterEngine!!.renderer)
-        accessibilityBridge = AccessibilityBridge(
-                this,
-                flutterEngine.accessibilityChannel,
-                (context.getSystemService(Context.ACCESSIBILITY_SERVICE) as AccessibilityManager),
-                context.contentResolver,
-                attachedFlutterEngine!!.platformViewsController)
-        accessibilityBridge!!.setOnAccessibilityChangeListener(onAccessibilityChangeListener)
-        resetWillNotDraw(
-                accessibilityBridge!!.isAccessibilityEnabled,
-                accessibilityBridge!!.isTouchExplorationEnabled)
+            // Connect AccessibilityBridge to the PlatformViewsController within the FlutterEngine.
+            // This allows platform Views to hook into Flutter's overall accessibility system.
+            engine.platformViewsController.attachAccessibilityBridge(accessibilityBridge)
 
-        // Connect AccessibilityBridge to the PlatformViewsController within the FlutterEngine.
-        // This allows platform Views to hook into Flutter's overall accessibility system.
-        attachedFlutterEngine!!.platformViewsController.attachAccessibilityBridge(accessibilityBridge)
+            // Inform the Android framework that it should retrieve a new InputConnection
+            // now that an engine is attached.
+            // TODO(mattcarroll): once this is proven to work, move this line ot TextInputPlugin
+            textInputPlugin!!.inputMethodManager.restartInput(this)
 
-        // Inform the Android framework that it should retrieve a new InputConnection
-        // now that an engine is attached.
-        // TODO(mattcarroll): once this is proven to work, move this line ot TextInputPlugin
-        textInputPlugin!!.inputMethodManager.restartInput(this)
+            // Push View and Context related information from Android to Flutter.
+            engine.platformViewsController.attachToView(this)
 
-        // Push View and Context related information from Android to Flutter.
-        sendUserSettingsToFlutter()
-        sendLocalesToFlutter(resources.configuration)
-        sendViewportMetricsToFlutter()
-        flutterEngine.platformViewsController.attachToView(this)
+            // Notify engine attachment listeners of the attachment.
+            for (listener in flutterEngineAttachmentListeners) {
+                listener.onFlutterEngineAttachedToFlutterView(engine)
+            }
 
-        // Notify engine attachment listeners of the attachment.
-        for (listener in flutterEngineAttachmentListeners) {
-            listener.onFlutterEngineAttachedToFlutterView(flutterEngine)
-        }
-
-        // If the first frame has already been rendered, notify all first frame listeners.
-        // Do this after all other initialization so that listeners don't inadvertently interact
-        // with a FlutterView that is only partially attached to a FlutterEngine.
-        if (isFlutterUiDisplayed) {
-            flutterUiDisplayListener.onFlutterUiDisplayed()
+            // If the first frame has already been rendered, notify all first frame listeners.
+            // Do this after all other initialization so that listeners don't inadvertently interact
+            // with a FlutterView that is only partially attached to a FlutterEngine.
+            if (isFlutterUiDisplayed) {
+                flutterUiDisplayListener.onFlutterUiDisplayed()
+            }
         }
     }
 
     /**
-     * Disconnects this `FlutterView` from a previously attached [FlutterEngine].
+     * Disconnects this `ThrioFlutterView` from a previously attached [FlutterEngine].
      *
      *
-     * This `FlutterView` will clear its UI and stop forwarding all events to the
+     * This `ThrioFlutterView` will clear its UI and stop forwarding all events to the
      * previously-attached [FlutterEngine]. This includes touch events, accessibility events,
      * keyboard events, and others.
      *
@@ -725,40 +726,44 @@ class ThrioFlutterView : FrameLayout {
         for (listener in flutterEngineAttachmentListeners) {
             listener.onFlutterEngineDetachedFromFlutterView()
         }
-        attachedFlutterEngine!!.platformViewsController.detachFromView()
+        attachedFlutterEngine?.let { engine ->
+            engine.platformViewsController.detachFromView()
 
-        // Disconnect the FlutterEngine's PlatformViewsController from the AccessibilityBridge.
-        attachedFlutterEngine!!.platformViewsController.detachAccessibiltyBridge()
+            // Disconnect the FlutterEngine's PlatformViewsController from the AccessibilityBridge.
+            engine.platformViewsController.detachAccessibiltyBridge()
 
+
+        }
         // Disconnect and clean up the AccessibilityBridge.
-        accessibilityBridge!!.release()
+        accessibilityBridge?.release()
         accessibilityBridge = null
 
         // Inform the Android framework that it should retrieve a new InputConnection
         // now that the engine is detached. The new InputConnection will be null, which
         // signifies that this View does not process input (until a new engine is attached).
         // TODO(mattcarroll): once this is proven to work, move this line ot TextInputPlugin
-        textInputPlugin!!.inputMethodManager.restartInput(this)
-        textInputPlugin!!.destroy()
+        textInputPlugin?.inputMethodManager?.restartInput(this)
+        textInputPlugin?.destroy()
 
         // Instruct our FlutterRenderer that we are no longer interested in being its RenderSurface.
-        val flutterRenderer = attachedFlutterEngine!!.renderer
         isFlutterUiDisplayed = false
-        flutterRenderer.removeIsDisplayingFlutterUiListener(flutterUiDisplayListener)
-        flutterRenderer.stopRenderingToSurface()
-        flutterRenderer.setSemanticsEnabled(false)
-        renderSurface!!.detachFromRenderer()
+        attachedFlutterEngine?.renderer?.let {
+            it.removeIsDisplayingFlutterUiListener(flutterUiDisplayListener)
+            it.stopRenderingToSurface()
+            it.setSemanticsEnabled(false)
+        }
+        renderSurface?.detachFromRenderer()
         attachedFlutterEngine = null
     }
 
-    /** Returns true if this `FlutterView` is currently attached to a [FlutterEngine].  */
+    /** Returns true if this `ThrioFlutterView` is currently attached to a [FlutterEngine].  */
     @get:VisibleForTesting
     val isAttachedToFlutterEngine: Boolean
         get() = (attachedFlutterEngine != null
                 && attachedFlutterEngine!!.renderer === renderSurface!!.attachedRenderer)
 
     /**
-     * Adds a [FlutterEngineAttachmentListener], which is notifed whenever this `FlutterView` attached to/detaches from a [FlutterEngine].
+     * Adds a [FlutterEngineAttachmentListener], which is notifed whenever this `ThrioFlutterView` attached to/detaches from a [FlutterEngine].
      */
     @VisibleForTesting
     fun addFlutterEngineAttachmentListener(
@@ -844,7 +849,7 @@ class ThrioFlutterView : FrameLayout {
 //    enum class RenderMode {
 //        /**
 //         * `RenderMode`, which paints a Flutter UI to a [android.view.SurfaceView]. This
-//         * mode has the best performance, but a `FlutterView` in this mode cannot be positioned
+//         * mode has the best performance, but a `ThrioFlutterView` in this mode cannot be positioned
 //         * between 2 other Android `View`s in the z-index, nor can it be animated/transformed.
 //         * Unless the special capabilities of a [android.graphics.SurfaceTexture] are required,
 //         * developers should strongly prefer this render mode.
@@ -853,7 +858,7 @@ class ThrioFlutterView : FrameLayout {
 //
 //        /**
 //         * `RenderMode`, which paints a Flutter UI to a [android.graphics.SurfaceTexture].
-//         * This mode is not as performant as [RenderMode.surface], but a `FlutterView` in
+//         * This mode is not as performant as [RenderMode.surface], but a `ThrioFlutterView` in
 //         * this mode can be animated and transformed, as well as positioned in the z-index between 2+
 //         * other Android `Views`. Unless the special capabilities of a [ ] are required, developers should strongly prefer the [ ][RenderMode.surface] render mode.
 //         */
@@ -861,23 +866,23 @@ class ThrioFlutterView : FrameLayout {
 //    }
 
     /**
-     * Transparency mode for a `FlutterView`.
+     * Transparency mode for a `ThrioFlutterView`.
      *
      *
      * Deprecated - please use [io.flutter.embedding.android.TransparencyMode] instead.
      *
      *
-     * `TransparencyMode` impacts the visual behavior and performance of a [ ], which is displayed when a `FlutterView` uses [ ][RenderMode.surface].
+     * `TransparencyMode` impacts the visual behavior and performance of a [ ], which is displayed when a `ThrioFlutterView` uses [ ][RenderMode.surface].
      *
      *
      * `TransparencyMode` does not impact [FlutterTextureView], which is displayed when
-     * a `FlutterView` uses [RenderMode.texture], because a [FlutterTextureView]
+     * a `ThrioFlutterView` uses [RenderMode.texture], because a [FlutterTextureView]
      * automatically comes with transparency.
      */
 //    @Deprecated("")
 //    enum class TransparencyMode {
 //        /**
-//         * Renders a `FlutterView` without any transparency. This affects `FlutterView`s in
+//         * Renders a `ThrioFlutterView` without any transparency. This affects `ThrioFlutterView`s in
 //         * [io.flutter.embedding.android.RenderMode.surface] by introducing a base color of black,
 //         * and places the [FlutterSurfaceView]'s `Window` behind all other content.
 //         *
@@ -888,7 +893,7 @@ class ThrioFlutterView : FrameLayout {
 //        opaque,
 //
 //        /**
-//         * Renders a `FlutterView` with transparency. This affects `FlutterView`s in [ ][io.flutter.embedding.android.RenderMode.surface] by allowing background transparency, and
+//         * Renders a `ThrioFlutterView` with transparency. This affects `ThrioFlutterView`s in [ ][io.flutter.embedding.android.RenderMode.surface] by allowing background transparency, and
 //         * places the [FlutterSurfaceView]'s `Window` on top of all other content.
 //         *
 //         *
@@ -902,15 +907,15 @@ class ThrioFlutterView : FrameLayout {
 
     /**
      * Listener that is notified when a [FlutterEngine] is attached to/detached from a given
-     * `FlutterView`.
+     * `ThrioFlutterView`.
      */
     @VisibleForTesting
     interface FlutterEngineAttachmentListener {
-        /** The given `engine` has been attached to the associated `FlutterView`.  */
+        /** The given `engine` has been attached to the associated `ThrioFlutterView`.  */
         fun onFlutterEngineAttachedToFlutterView(engine: FlutterEngine)
 
         /**
-         * A previously attached [FlutterEngine] has been detached from the associated `FlutterView`.
+         * A previously attached [FlutterEngine] has been detached from the associated `ThrioFlutterView`.
          */
         fun onFlutterEngineDetachedFromFlutterView()
     }

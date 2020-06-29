@@ -71,12 +71,12 @@ internal class ThrioFlutterSplashView @JvmOverloads constructor(
     }
 
     /**
-     * Displays the given `splashScreen` on top of the given `flutterView` until Flutter
+     * Displays the given `splashScreen` on top of the given `ThrioFlutterView` until Flutter
      * has rendered its first frame, then the `splashScreen` is transitioned away.
      *
      *
      * If no `splashScreen` is provided, this `FlutterSplashView` displays the given
-     * `flutterView` on its own.
+     * `ThrioFlutterView` on its own.
      */
     fun displayFlutterViewWithSplash(
             flutterView: ThrioFlutterView, splashScreen: SplashScreen?) {
@@ -155,7 +155,7 @@ internal class ThrioFlutterSplashView @JvmOverloads constructor(
      * interrupted, e.g., by an Android configuration change. Returns false otherwise.
      *
      *
-     * Invoking this method expects that a `flutterView` exists and it is attached to a
+     * Invoking this method expects that a `ThrioFlutterView` exists and it is attached to a
      * `FlutterEngine`.
      */
     private fun wasPreviousSplashTransitionInterrupted(): Boolean {

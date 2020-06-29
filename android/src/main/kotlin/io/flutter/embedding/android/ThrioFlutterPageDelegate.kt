@@ -19,7 +19,6 @@ import io.flutter.embedding.engine.FlutterShellArgs
 import io.flutter.embedding.engine.dart.DartExecutor.DartEntrypoint
 import io.flutter.embedding.engine.renderer.FlutterUiDisplayListener
 import io.flutter.plugin.platform.PlatformPlugin
-import io.flutter.plugin.platform.PlatformViewsController
 import java.util.*
 
 /**
@@ -341,19 +340,13 @@ internal class ThrioFlutterPageDelegate(private var host: ThrioFlutterActivity) 
     fun onResume() {
         Log.v(TAG, "onResume()")
         ensureAlive()
-
-//        flutterEngine?.let { engine ->
-//            engine.lifecycleChannel.appIsResumed()
-//            flutterView?.let { view ->
-//                view.resumeToFlutterEngine(engine)
-//                val clazz = PlatformViewsController::class.java
-//                val field = clazz.getDeclaredField("contextToPlatformView")
-//                field.isAccessible = true
-//                val contextToPlatformView = field.get(engine.platformViewsController) as HashMap<Context, View>
-//                contextToPlatformView[host.context] = view
-//                engine.platformViewsController.attachToView(view)
-//            }
-//        }
+        flutterEngine?.let { engine ->
+            engine.lifecycleChannel?.appIsResumed()
+            engine.activityControlSurface.attachToActivity(host.activity, host.lifecycle)
+            if (host.shouldAttachEngineToActivity()) {
+                flutterView?.reattachToFlutterEngine()
+            }
+        }
     }
 
     /**

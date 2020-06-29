@@ -46,27 +46,6 @@ open class ThrioActivity : ThrioFlutterActivity() {
 //        super.delegate?.onDetach()
     }
 
-    override fun onResume() {
-        super.onResume()
-//        super.delegate?.onResume()
-
-
-        val clazz = ThrioFlutterPageDelegate::class.java
-        val field = clazz.getDeclaredField("flutterView")
-        field.isAccessible = true
-        val flutterView = field.get(super.delegate) as? ThrioFlutterView
-
-        flutterEngine?.let { engine ->
-            engine.lifecycleChannel.appIsResumed()
-            engine.activityControlSurface.attachToActivity(this, lifecycle)
-            flutterView?.let { view ->
-                engine.platformViewsController.attachToView(view)
-                engine.activityControlSurface.attachToActivity(this, lifecycle)
-                view.resumeToFlutterEngine(engine)
-            }
-        }
-    }
-
     override fun shouldAttachEngineToActivity(): Boolean {
         return true
     }
