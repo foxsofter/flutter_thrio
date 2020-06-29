@@ -61,3 +61,7 @@
 ## 0.2.2
 
 - fix: iOS index not sync when back gesture.
+
+## 0.3.0
+
+- fix: issue 44, android keyboard not showing up
