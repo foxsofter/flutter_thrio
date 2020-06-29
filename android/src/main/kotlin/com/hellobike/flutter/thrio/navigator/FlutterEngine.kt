@@ -22,32 +22,33 @@
 package com.hellobike.flutter.thrio.navigator
 
 import android.content.Context
-import io.flutter.embedding.engine.FlutterEngine
 import com.hellobike.flutter.thrio.Result
+import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.embedding.engine.FlutterEngineCache
 import io.flutter.embedding.engine.dart.DartExecutor
+import io.flutter.view.FlutterMain
 
-internal data class FlutterEngine(private val context: Context, private val id: String) {
+data class FlutterEngine(private val context: Context, private val entrypoint: String) {
 
-    private var entryPoint: String = id
-    private var flutterEngine: FlutterEngine = FlutterEngine(context)
-    private var sendChannel: RouteSendChannel
-    private var receiveChannel: RouteReceiveChannel
+    private var entryPoint: String = entrypoint
+    var flutterEngine: FlutterEngine = FlutterEngine(context)
+    var sendChannel: RouteSendChannel
+    var receiveChannel: RouteReceiveChannel
 
-    private var routeObserverChannel: RouteObserverChannel
-    private var pageObserverChannel: PageObserverChannel
+    var routeObserverChannel: RouteObserverChannel
+    var pageObserverChannel: PageObserverChannel
 
     init {
-        sendChannel = RouteSendChannel(flutterEngine.dartExecutor, id)
-        receiveChannel = RouteReceiveChannel(id)
+        sendChannel = RouteSendChannel(flutterEngine.dartExecutor, entrypoint)
+        receiveChannel = RouteReceiveChannel(entrypoint)
         sendChannel.setMethodCallHandler(receiveChannel)
 
         routeObserverChannel = RouteObserverChannel(flutterEngine.dartExecutor)
         pageObserverChannel = PageObserverChannel(flutterEngine.dartExecutor)
 
-        flutterEngine.dartExecutor.executeDartEntrypoint(
-                DartExecutor.DartEntrypoint.createDefault()
-        )
+        val dartEntrypoint = DartExecutor.DartEntrypoint(FlutterMain.findAppBundlePath(), entrypoint)
+        flutterEngine.dartExecutor.executeDartEntrypoint(dartEntrypoint)
+
         FlutterEngineCache.getInstance().put(entryPoint, flutterEngine)
     }
 
@@ -70,4 +71,6 @@ internal data class FlutterEngine(private val context: Context, private val id: 
     fun onNotify(url: String, index: Int, name: String, params: Any?) {
         sendChannel.onNotify(url, index, name, params)
     }
+
+
 }

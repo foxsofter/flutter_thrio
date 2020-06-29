@@ -26,7 +26,7 @@ import io.flutter.plugin.common.BinaryMessenger
 import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.MethodChannel
 
-internal open class ThrioChannel constructor(messenger: BinaryMessenger, name: String) {
+open class ThrioChannel constructor(messenger: BinaryMessenger, name: String) {
 
     private val methodProxy = MethodChannel(messenger, "_method_$name")
 

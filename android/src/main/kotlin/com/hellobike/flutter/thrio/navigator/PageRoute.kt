@@ -25,7 +25,7 @@ import android.app.Activity
 import com.hellobike.flutter.thrio.PoppedResult
 import java.lang.ref.WeakReference
 
-internal data class PageRoute(val url: String, val index: Int, val clazz: Class<out Activity>) {
+data class PageRoute(val url: String, val index: Int, val clazz: Class<out Activity>) {
 
     var poppedResult: WeakReference<PoppedResult>? = null
     var resultParams: Any? = null

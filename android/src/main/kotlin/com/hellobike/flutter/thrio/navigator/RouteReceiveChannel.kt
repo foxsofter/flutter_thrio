@@ -26,7 +26,7 @@ import com.hellobike.flutter.thrio.navigator.ActivitiesDelegate.activity
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 
-internal class RouteReceiveChannel(private val id: String) : MethodChannel.MethodCallHandler {
+class RouteReceiveChannel(private val id: String) : MethodChannel.MethodCallHandler {
 
     private fun push(call: MethodCall, result: MethodChannel.Result) {
         val url = call.argument<String>("url")

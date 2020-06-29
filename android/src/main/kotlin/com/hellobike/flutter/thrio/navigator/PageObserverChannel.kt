@@ -27,7 +27,7 @@ import io.flutter.plugin.common.BinaryMessenger
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 
-internal class PageObserverChannel constructor(messenger: BinaryMessenger)
+class PageObserverChannel constructor(messenger: BinaryMessenger)
     : ThrioChannel(messenger, "__thrio_page_channel__"), MethodChannel.MethodCallHandler {
 
     init {
