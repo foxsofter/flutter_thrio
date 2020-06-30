@@ -1,23 +1,25 @@
-// The MIT License (MIT)
-//
-// Copyright (c) 2019 Hellobike Group
-//
-// Permission is hereby granted, free of charge, to any person obtaining a
-// copy of this software and associated documentation files (the "Software"),
-// to deal in the Software without restriction, including without limitation
-// the rights to use, copy, modify, merge, publish, distribute, sublicense,
-// and/or sell copies of the Software, and to permit persons to whom the
-// Software is furnished to do so, subject to the following conditions:
-// The above copyright notice and this permission notice shall be included
-// in all copies or substantial portions of the Software.
-//
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
-// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
-// THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
-// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
-// IN THE SOFTWARE.
+/**
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2019 Hellobike Group
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a
+ * copy of this software and associated documentation files (the "Software"),
+ * to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense,
+ * and/or sell copies of the Software, and to permit persons to whom the
+ * Software is furnished to do so, subject to the following conditions:
+ * The above copyright notice and this permission notice shall be included
+ * in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+ * OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+ * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+ * IN THE SOFTWARE.
+ */
 
 package com.hellobike.flutter.thrio.navigator
 
@@ -28,9 +30,9 @@ import android.os.Bundle
 import android.util.Log
 import androidx.annotation.UiThread
 import com.hellobike.flutter.thrio.OnNotifyListener
-import com.hellobike.flutter.thrio.PoppedResult
-import com.hellobike.flutter.thrio.PushResult
-import com.hellobike.flutter.thrio.Result
+import com.hellobike.flutter.thrio.NullableAnyCallback
+import com.hellobike.flutter.thrio.NullableIntCallback
+import com.hellobike.flutter.thrio.BooleanCallback
 import com.hellobike.flutter.thrio.navigator.FlutterEngineFactory.THRIO_ENGINE_ENTRYPOINT
 import com.hellobike.flutter.thrio.navigator.FlutterEngineFactory.THRIO_ENGINE_NATIVE_ID
 import io.flutter.embedding.android.ThrioActivity
@@ -61,7 +63,7 @@ internal object NavigationController {
     object Navigator {
 
         @UiThread
-        fun pop(context: Context, params: Any? = null, animated: Boolean, result: Result = {}) {
+        fun pop(context: Context, params: Any? = null, animated: Boolean, result: BooleanCallback = {}) {
             if (action != RouteAction.NONE) {
                 result(false)
                 return
@@ -81,7 +83,7 @@ internal object NavigationController {
                     // Flutter WillPopScope is false
                     return@onPop
                 }
-                record.poppedResult?.get()?.let { it(record.resultParams) }
+                record.nullableAnyCallback?.get()?.let { it(record.resultParams) }
                 PageRouteStack.pop(record)
                 val intent = Intent(context, record.clazz)
                 intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
@@ -90,12 +92,12 @@ internal object NavigationController {
             }
         }
 
-        private fun onPop(record: PageRoute, result: Result) {
+        private fun onPop(record: PageRoute, result: BooleanCallback) {
             val entryPoint = record.entryPoint
                     ?: throw IllegalStateException("record $record must have current engineId, current is null")
             val parentEntryPoint = record.parentEntryPoint
                     ?: throw IllegalStateException("record $record must have from engineId, current is null")
-            val onResult: Result = {
+            val onResult: BooleanCallback = {
                 if (it && parentEntryPoint != entryPoint && parentEntryPoint != THRIO_ENGINE_NATIVE_ID) {
                     FlutterEngineFactory.getEngine(parentEntryPoint)?.onPop(record) {}
                             ?: throw IllegalStateException("from engine must not be null")
@@ -112,13 +114,16 @@ internal object NavigationController {
 
     object Push {
 
-        private var result: PushResult? = null
-        private var poppedResult: PoppedResult? = null
+        private var result: NullableIntCallback? = null
+        private var poppedResult: NullableAnyCallback? = null
 
         fun push(context: Context,
-                 url: String, params: Any? = null, animated: Boolean,
-                 from: String, poppedResult: PoppedResult? = null,
-                 result: PushResult) {
+                 url: String,
+                 params: Any? = null,
+                 animated: Boolean,
+                 from: String = THRIO_ENGINE_NATIVE_ID,
+                 poppedResult: NullableAnyCallback? = null,
+                 result: NullableIntCallback) {
             if (action != RouteAction.NONE) {
                 result(null)
                 return
@@ -175,7 +180,7 @@ internal object NavigationController {
             val poppedResult = poppedResult
             this.poppedResult = null
             if (poppedResult != null) {
-                record.poppedResult = WeakReference(poppedResult)
+                record.nullableAnyCallback = WeakReference(poppedResult)
             }
 
             record.parentEntryPoint = parentEntryPoint
@@ -194,7 +199,7 @@ internal object NavigationController {
             this.result = null
         }
 
-        private fun onPush(activity: Activity, record: PageRoute, isNested: Boolean, result: Result) {
+        private fun onPush(activity: Activity, record: PageRoute, isNested: Boolean, result: BooleanCallback) {
             if (activity is ThrioActivity) {
                 activity.onPush(record, isNested, result)
                 return
@@ -207,10 +212,10 @@ internal object NavigationController {
 
     object PopTo {
 
-        private var result: Result? = null
+        private var result: BooleanCallback? = null
         private var record: PageRoute? = null
 
-        fun popTo(context: Context, url: String, index: Int, animated: Boolean, result: Result) {
+        fun popTo(context: Context, url: String, index: Int, animated: Boolean, result: BooleanCallback) {
             if (index < 0 || !PageRouteStack.hasRoute(url, index)) {
                 result(false)
                 return
@@ -261,7 +266,7 @@ internal object NavigationController {
             }
         }
 
-        private fun onPopTo(activity: Activity, record: PageRoute, result: Result) {
+        private fun onPopTo(activity: Activity, record: PageRoute, result: BooleanCallback) {
             if (activity is ThrioActivity) {
                 activity.onPopTo(record.url, record.index, record.animated, result)
                 return
@@ -272,10 +277,10 @@ internal object NavigationController {
 
     object Remove {
 
-        private var result: Result? = null
+        private var result: BooleanCallback? = null
         private var record: PageRoute? = null
 
-        fun remove(context: Context, url: String, index: Int, animated: Boolean, result: Result) {
+        fun remove(context: Context, url: String, index: Int, animated: Boolean, result: BooleanCallback) {
             if (action != RouteAction.NONE) {
                 result(false)
                 return
@@ -330,7 +335,7 @@ internal object NavigationController {
             return
         }
 
-        private fun onRemove(activity: Activity, record: PageRoute, result: Result) {
+        private fun onRemove(activity: Activity, record: PageRoute, result: BooleanCallback) {
             if (activity is ThrioActivity) {
                 activity.onRemove(record.url, record.index, record.animated, result)
                 return
@@ -339,7 +344,7 @@ internal object NavigationController {
         }
     }
 
-    fun notify(url: String, index: Int, name: String, params: Any? = null, result: Result) {
+    fun notify(url: String, index: Int, name: String, params: Any? = null, result: BooleanCallback) {
         if (index < 0 || !PageRouteStack.hasRoute(url)) {
             result(false)
             return
