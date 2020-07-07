@@ -30,8 +30,10 @@ import io.flutter.plugin.common.BinaryMessenger
 import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.MethodChannel
 
- class RouteSendChannel constructor(messenger: BinaryMessenger, val id: String)
-    : ThrioChannel(messenger, "__thrio_app__"), EventChannel.StreamHandler {
+class RouteSendChannel constructor(messenger: BinaryMessenger, val entrypoint: String)
+    : ThrioChannel(messenger, "__thrio_app__"),
+        RouteSendHandler,
+        EventChannel.StreamHandler {
 
     init {
         setStreamHandler(this)
@@ -39,15 +41,8 @@ import io.flutter.plugin.common.MethodChannel
 
     private var sink: EventChannel.EventSink? = null
 
-    fun onPush(url: String, index: Int, params: Any?, animated: Boolean, isNested: Boolean, result: BooleanCallback) {
-        val data = mapOf(
-                "url" to url,
-                "index" to index,
-                "params" to params,
-                "animated" to animated,
-                "isNested" to isNested
-        )
-        invokeMethod("__onPush__", data, object : MethodChannel.Result {
+    override fun onPush(arguments: Any?, result: BooleanCallback) {
+        invokeMethod("__onPush__", arguments, object : MethodChannel.Result {
             override fun success(result: Any?) {
                 if (result !is Boolean) {
                     return
@@ -56,21 +51,20 @@ import io.flutter.plugin.common.MethodChannel
             }
 
             override fun error(errorCode: String?, errorMessage: String?, errorDetails: Any?) {
-                Log.e("Thrio", "__onPush__ error")
+                Log.e("Thrio", "onPush error: $errorMessage")
             }
 
             override fun notImplemented() {}
         })
     }
 
-    fun onPop(url: String, index: Int, params: Any?, animated: Boolean, result: BooleanCallback) {
-        val data = mapOf(
-                "url" to url,
-                "index" to index,
-                "params" to params,
-                "animated" to animated
-        )
-        invokeMethod("__onPop__", data, object : MethodChannel.Result {
+    override fun onNotify(arguments: Any?, result: BooleanCallback) {
+        Log.e("Thrio", "onNotify channel data $arguments")
+        sink?.success(arguments)
+    }
+
+    override fun onPop(arguments: Any?, result: BooleanCallback) {
+        invokeMethod("__onPop__", arguments, object : MethodChannel.Result {
             override fun success(result: Any?) {
                 if (result !is Boolean) {
                     return
@@ -79,19 +73,15 @@ import io.flutter.plugin.common.MethodChannel
             }
 
             override fun error(errorCode: String?, errorMessage: String?, errorDetails: Any?) {
+                Log.e("Thrio", "onPop error: $errorMessage")
             }
 
             override fun notImplemented() {}
         })
     }
 
-    fun onRemove(url: String, index: Int, animated: Boolean, result: BooleanCallback) {
-        val data = mapOf(
-                "url" to url,
-                "index" to index,
-                "animated" to animated
-        )
-        invokeMethod("__onRemove__", data, object : MethodChannel.Result {
+    override fun onPopTo(arguments: Any?, result: BooleanCallback) {
+        invokeMethod("__onPopTo__", arguments, object : MethodChannel.Result {
             override fun success(result: Any?) {
                 if (result !is Boolean) {
                     return
@@ -100,19 +90,15 @@ import io.flutter.plugin.common.MethodChannel
             }
 
             override fun error(errorCode: String?, errorMessage: String?, errorDetails: Any?) {
+                Log.e("Thrio", "onPopTo error: $errorMessage")
             }
 
             override fun notImplemented() {}
         })
     }
 
-    fun onPopTo(url: String, index: Int, animated: Boolean, result: BooleanCallback) {
-        val data = mapOf(
-                "url" to url,
-                "index" to index,
-                "animated" to animated
-        )
-        invokeMethod("__onPopTo__", data, object : MethodChannel.Result {
+    override fun onRemove(arguments: Any?, result: BooleanCallback) {
+        invokeMethod("__onRemove__", arguments, object : MethodChannel.Result {
             override fun success(result: Any?) {
                 if (result !is Boolean) {
                     return
@@ -121,22 +107,11 @@ import io.flutter.plugin.common.MethodChannel
             }
 
             override fun error(errorCode: String?, errorMessage: String?, errorDetails: Any?) {
+                Log.e("Thrio", "onRemove error: $errorMessage")
             }
 
             override fun notImplemented() {}
         })
-    }
-
-    fun onNotify(url: String, index: Int, name: String, params: Any?) {
-        val data = mapOf(
-                "__event_name__" to "__onNotify__",
-                "url" to url,
-                "index" to index,
-                "name" to name,
-                "params" to params
-        )
-        Log.e("Thrio", "onNotify channel data $data")
-        sink?.success(data)
     }
 
     override fun onListen(arguments: Any?, events: EventChannel.EventSink?) {

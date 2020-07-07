@@ -21,22 +21,17 @@
  * IN THE SOFTWARE.
  */
 
-package com.hellobike.flutter.thrio
+package com.hellobike.flutter.thrio.navigator
 
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
 
+interface IntentBuilder {
 
-interface NavigatorPageBuilder {
+    fun getActivityClz(): Class<out Activity>
 
-    fun getActivityClz(url: String): Class<out Activity>
-
-    fun buildIntent(context: Context): Intent {
+    fun build(context: Context, entrypoint: String): Intent {
         return Intent()
-    }
-
-    fun navigation(context: Context, intent: Intent, params: Any?) {
-        context.startActivity(intent)
     }
 }

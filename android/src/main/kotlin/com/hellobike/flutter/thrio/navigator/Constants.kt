@@ -23,25 +23,16 @@
 
 package com.hellobike.flutter.thrio.navigator
 
-import android.content.Context
+internal const val NAVIGATION_PAGE_ID_KEY = "NAVIGATION_PAGE_ID"
+internal const val NAVIGATION_PAGE_ID_NONE = -1
+internal const val NAVIGATION_ROUTE_INDEX_DEFAULT = 0
+internal const val NAVIGATION_ROUTE_SETTINGS_KEY = "NAVIGATION_ROUTE_SETTINGS"
+internal const val NAVIGATION_ROUTE_FROM_ENTRYPOINT_KEY = "NAVIGATION_ROUTE_FROM_ENTRYPOINT"
+internal const val NAVIGATION_ROUTE_ENTRYPOINT_KEY = "NAVIGATION_ROUTE_ENTRYPOINT"
+internal const val NAVIGATION_ROUTE_ENTRYPOINT_NONE = ""
 
-object FlutterEngineFactory {
+internal const val THRIO_ENGINE_FLUTTER_ENTRYPOINT_DEFAULT = "main"
+internal const val THRIO_ENGINE_NATIVE_ENTRYPOINT = "_"
 
-    private val manager = mutableMapOf<String, FlutterEngine>()
-
-    var isMultiEngineEnabled = false
-
-    fun startup(context: Context,
-                entryPoint: String = THRIO_ENGINE_FLUTTER_ENTRYPOINT_DEFAULT,
-                readyListener: EngineReadyListener? = null) {
-        if (manager.contains(entryPoint)) {
-            readyListener?.onReady(entryPoint)
-        } else {
-            manager[entryPoint] = FlutterEngine(context, entryPoint, readyListener)
-        }
-    }
-
-    fun getEngine(entryPoint: String = THRIO_ENGINE_FLUTTER_ENTRYPOINT_DEFAULT): FlutterEngine? {
-        return manager[entryPoint]
-    }
-}
+internal const val THRIO_ACTIVITY_SAVE_KEY = "THRIO_ACTIVITY_SAVE_KEY"
+internal const val THRIO_ACTIVITY_SAVE_NONE = false

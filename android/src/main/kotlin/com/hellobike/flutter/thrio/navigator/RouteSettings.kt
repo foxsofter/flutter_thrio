@@ -23,25 +23,34 @@
 
 package com.hellobike.flutter.thrio.navigator
 
-import android.content.Context
+data class RouteSettings(val url: String, val index: Int) {
 
-object FlutterEngineFactory {
+    var params: Any? = null
+    var animated: Boolean = true
+    var isNested: Boolean = false
 
-    private val manager = mutableMapOf<String, FlutterEngine>()
-
-    var isMultiEngineEnabled = false
-
-    fun startup(context: Context,
-                entryPoint: String = THRIO_ENGINE_FLUTTER_ENTRYPOINT_DEFAULT,
-                readyListener: EngineReadyListener? = null) {
-        if (manager.contains(entryPoint)) {
-            readyListener?.onReady(entryPoint)
-        } else {
-            manager[entryPoint] = FlutterEngine(context, entryPoint, readyListener)
+    fun toArguments(): Map<String, Any> = mutableMapOf(
+            "url" to url,
+            "index" to index,
+            "animated" to animated,
+            "isNested" to isNested
+    ).also {
+        if (params != null) {
+            it["params"] =  params as Any
         }
     }
 
-    fun getEngine(entryPoint: String = THRIO_ENGINE_FLUTTER_ENTRYPOINT_DEFAULT): FlutterEngine? {
-        return manager[entryPoint]
+    companion object {
+        @JvmStatic
+        fun fromArguments(arguments: Map<String, Any>): RouteSettings {
+            val url = arguments["url"] as String
+            val index = if (arguments["index"] != null) arguments["index"] as Int else 0
+            val params = arguments["params"]
+            val animated = if (arguments["animated"] != null) arguments["animated"] as Boolean else false
+            return RouteSettings(url, index).also {
+                it.params = params
+                it.animated = animated
+            }
+        }
     }
 }

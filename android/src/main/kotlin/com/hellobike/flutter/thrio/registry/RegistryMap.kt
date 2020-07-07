@@ -21,27 +21,26 @@
  * IN THE SOFTWARE.
  */
 
-package com.hellobike.flutter.thrio.navigator
+package com.hellobike.flutter.thrio.registry
 
-import android.content.Context
+import com.hellobike.flutter.thrio.VoidCallback
 
-object FlutterEngineFactory {
+class RegistryMap<K, V> : Iterable<Map.Entry<K, V>> {
+    private val maps by lazy { mutableMapOf<K, V>() }
 
-    private val manager = mutableMapOf<String, FlutterEngine>()
-
-    var isMultiEngineEnabled = false
-
-    fun startup(context: Context,
-                entryPoint: String = THRIO_ENGINE_FLUTTER_ENTRYPOINT_DEFAULT,
-                readyListener: EngineReadyListener? = null) {
-        if (manager.contains(entryPoint)) {
-            readyListener?.onReady(entryPoint)
-        } else {
-            manager[entryPoint] = FlutterEngine(context, entryPoint, readyListener)
-        }
+    fun registry(key: K, value: V): VoidCallback {
+        maps[key] = value
+        return { maps.remove(key) }
     }
 
-    fun getEngine(entryPoint: String = THRIO_ENGINE_FLUTTER_ENTRYPOINT_DEFAULT): FlutterEngine? {
-        return manager[entryPoint]
+    fun registryAll(values: Map<K, V>): VoidCallback {
+        maps.putAll(values)
+        return { values.keys.forEach { maps.remove(it) } }
     }
+
+    fun clear() = maps.clear()
+
+    operator fun get(key: K): V? = maps[key]
+
+    override fun iterator(): Iterator<Map.Entry<K, V>> = maps.iterator()
 }

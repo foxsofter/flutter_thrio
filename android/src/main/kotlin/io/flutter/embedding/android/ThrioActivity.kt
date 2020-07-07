@@ -28,9 +28,9 @@ import android.content.Intent
 import com.hellobike.flutter.thrio.BooleanCallback
 import com.hellobike.flutter.thrio.navigator.FlutterEngineFactory
 import com.hellobike.flutter.thrio.navigator.NavigationController
-import com.hellobike.flutter.thrio.navigator.PageRoute
+import com.hellobike.flutter.thrio.navigator.RouteSendHandler
 
-open class ThrioActivity : ThrioFlutterActivity() {
+open class ThrioActivity : ThrioFlutterActivity(), RouteSendHandler {
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
@@ -53,42 +53,42 @@ open class ThrioActivity : ThrioFlutterActivity() {
     }
 
     override fun onBackPressed() {
-        NavigationController.Navigator.pop(context, null, true)
+        NavigationController.Pop.pop(context, null, true)
     }
 
-    internal fun onPush(record: PageRoute, isNested: Boolean, result: BooleanCallback) {
+    override fun onPush(arguments: Any?, result: BooleanCallback) {
         val id = cachedEngineId ?: throw IllegalStateException("cachedEngineId must not be null")
         val engine = FlutterEngineFactory.getEngine(id)
                 ?: throw IllegalStateException("engine must not be null")
-        engine.onPush(record, isNested, result)
+        engine.onPush(arguments, result)
     }
 
-    internal fun onPop(record: PageRoute, result: BooleanCallback) {
+    override fun onNotify(arguments: Any?, result: BooleanCallback) {
         val id = cachedEngineId ?: throw IllegalStateException("cachedEngineId must not be null")
         val engine = FlutterEngineFactory.getEngine(id)
                 ?: throw IllegalStateException("engine must not be null")
-        engine.onPop(record, result)
+        engine.onNotify(arguments, result)
     }
 
-    internal fun onRemove(url: String, index: Int, animated: Boolean, result: BooleanCallback) {
+    override fun onPop(arguments: Any?, result: BooleanCallback) {
         val id = cachedEngineId ?: throw IllegalStateException("cachedEngineId must not be null")
         val engine = FlutterEngineFactory.getEngine(id)
                 ?: throw IllegalStateException("engine must not be null")
-        engine.onRemove(url, index, animated, result)
+        engine.onPop(arguments, result)
     }
 
-    internal fun onPopTo(url: String, index: Int, animated: Boolean, result: BooleanCallback) {
+    override fun onPopTo(arguments: Any?, result: BooleanCallback) {
         val id = cachedEngineId ?: throw IllegalStateException("cachedEngineId must not be null")
         val engine = FlutterEngineFactory.getEngine(id)
                 ?: throw IllegalStateException("engine must not be null")
-        engine.onPopTo(url, index, animated, result)
+        engine.onPopTo(arguments, result)
     }
 
-    internal fun onNotify(url: String, index: Int, name: String, params: Any?) {
+    override fun onRemove(arguments: Any?, result: BooleanCallback) {
         val id = cachedEngineId ?: throw IllegalStateException("cachedEngineId must not be null")
         val engine = FlutterEngineFactory.getEngine(id)
                 ?: throw IllegalStateException("engine must not be null")
-        engine.onNotify(url, index, name, params)
+        engine.onRemove(arguments, result)
     }
 
 }

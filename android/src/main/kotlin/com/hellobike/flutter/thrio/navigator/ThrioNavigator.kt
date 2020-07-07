@@ -21,14 +21,14 @@
  * IN THE SOFTWARE.
  */
 
-package com.hellobike.flutter.thrio
+package com.hellobike.flutter.thrio.navigator
 
 import android.app.Application
 import android.content.Context
-import com.hellobike.flutter.thrio.navigator.ActivitiesDelegate
-import com.hellobike.flutter.thrio.navigator.FlutterEngineFactory
-import com.hellobike.flutter.thrio.navigator.FlutterEngineFactory.THRIO_ENGINE_NATIVE_ID
-import com.hellobike.flutter.thrio.navigator.NavigationController
+import com.hellobike.flutter.thrio.BooleanCallback
+import com.hellobike.flutter.thrio.NullableAnyCallback
+import com.hellobike.flutter.thrio.NullableIntCallback
+import com.hellobike.flutter.thrio.navigator.FlutterEngineFactory.THRIO_ENGINE_NATIVE_ENTRYPOINT
 
 object ThrioNavigator {
 
@@ -38,40 +38,61 @@ object ThrioNavigator {
              url: String,
              params: Any? = null,
              animated: Boolean = true,
-             result: NullableIntCallback = {},
-             poppedResult: NullableAnyCallback? = null
-    ) = NavigationController.Push.push(context, url, params, animated, THRIO_ENGINE_NATIVE_ID, poppedResult, result)
+             poppedResult: NullableAnyCallback? = null,
+             result: NullableIntCallback = {}) {
+        NavigationController.Push.push(context,
+                url,
+                params,
+                animated,
+                THRIO_ENGINE_NATIVE_ENTRYPOINT,
+                poppedResult,
+                result)
+    }
 
 
     @JvmStatic
     @JvmOverloads
-    fun pop(context: Context, params: Any? = null, animated: Boolean = true, result: BooleanCallback = {}) {
-        NavigationController.Navigator.pop(context, params, animated, result)
+    fun pop(context: Context,
+            params: Any? = null,
+            animated: Boolean = true,
+            result: BooleanCallback = {}) {
+        NavigationController.Pop.pop(context, params, animated, result)
     }
 
     @JvmStatic
     @JvmOverloads
-    fun remove(context: Context, url: String, index: Int, animated: Boolean = true, result: BooleanCallback = {}) {
+    fun remove(context: Context,
+               url: String,
+               index: Int = 0,
+               animated: Boolean = true,
+               result: BooleanCallback = {}) {
         NavigationController.Remove.remove(context, url, index, animated, result)
     }
 
     @JvmStatic
     @JvmOverloads
-    fun popTo(context: Context, url: String, index: Int = 0,
-              animated: Boolean = true, result: BooleanCallback = {}
+    fun popTo(context: Context,
+              url: String,
+              index: Int = 0,
+              animated: Boolean = true,
+              result: BooleanCallback = {}
     ) {
         NavigationController.PopTo.popTo(context, url, index, animated, result)
     }
 
     @JvmStatic
     @JvmOverloads
-    fun notify(url: String, index: Int = 0, name: String, params: Any?, result: BooleanCallback = {}) {
-        NavigationController.notify(url, index, name, params, result)
+    fun notify(url: String,
+               index: Int = 0,
+               name: String,
+               params: Any?,
+               result: BooleanCallback = {}) {
+        NavigationController.Notify.notify(url, index, name, params, result)
     }
 
     internal fun init(context: Application) {
         FlutterEngineFactory.startup(context)
-        context.registerActivityLifecycleCallbacks(ActivitiesDelegate)
+        context.registerActivityLifecycleCallbacks(ActivityDelegate)
     }
 }
 

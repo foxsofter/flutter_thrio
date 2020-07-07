@@ -21,35 +21,26 @@
  * IN THE SOFTWARE.
  */
 
-package com.hellobike.flutter.thrio.navigator
+package com.hellobike.flutter.thrio.module
 
-import android.util.ArrayMap
-import com.hellobike.flutter.thrio.NavigatorPageBuilder
+import android.content.Context
+import com.hellobike.flutter.thrio.VoidCallback
+import com.hellobike.flutter.thrio.navigator.FlutterIntentBuilder
+import com.hellobike.flutter.thrio.navigator.IntentBuilder
+import com.hellobike.flutter.thrio.navigator.IntentBuilders
 
-internal object PageBuilders {
-    private val builders = ArrayMap<String, NavigatorPageBuilder>()
-    private val flutterBuilder by lazy { FlutterPageBuilder }
+interface ModuleIntentBuilder {
+    fun onIntentBuilderRegister(context: Context)
 
-    fun hasPageBuilder(url: String): Boolean {
-        return builders.contains(url) || true
+    fun registerIntentBuilder(url: String, builder: IntentBuilder) : VoidCallback {
+        return IntentBuilders.intentBuilders.registry(url, builder)
     }
 
-    fun hasNativePageBuilder(url: String): Boolean {
-        return builders.contains(url)
+    fun registerIntentBuilders(builders: Map<String, IntentBuilder>) : VoidCallback {
+        return IntentBuilders.intentBuilders.registryAll(builders)
     }
 
-    fun isFlutterPageBuilder(builder: NavigatorPageBuilder): Boolean {
-        return builder is FlutterPageBuilder
-    }
-
-    fun getPageBuilder(url: String): NavigatorPageBuilder {
-        return builders[url] ?: flutterBuilder
-    }
-
-    fun registerPageBuilder(url: String, builder: NavigatorPageBuilder): () -> Unit {
-        builders[url] = builder
-        return { builders.remove(url) }
+    fun setFlutterIntentBuilder(builder: FlutterIntentBuilder) {
+        IntentBuilders.flutterIntentBuilder = builder
     }
 }
-
-

@@ -23,25 +23,17 @@
 
 package com.hellobike.flutter.thrio.navigator
 
-import android.content.Context
+import com.hellobike.flutter.thrio.BooleanCallback
 
-object FlutterEngineFactory {
+interface RouteSendHandler {
 
-    private val manager = mutableMapOf<String, FlutterEngine>()
+    fun onPush(arguments: Any?, result: BooleanCallback)
 
-    var isMultiEngineEnabled = false
+    fun onNotify(arguments: Any?, result: BooleanCallback)
 
-    fun startup(context: Context,
-                entryPoint: String = THRIO_ENGINE_FLUTTER_ENTRYPOINT_DEFAULT,
-                readyListener: EngineReadyListener? = null) {
-        if (manager.contains(entryPoint)) {
-            readyListener?.onReady(entryPoint)
-        } else {
-            manager[entryPoint] = FlutterEngine(context, entryPoint, readyListener)
-        }
-    }
+    fun onPop(arguments: Any?, result: BooleanCallback)
 
-    fun getEngine(entryPoint: String = THRIO_ENGINE_FLUTTER_ENTRYPOINT_DEFAULT): FlutterEngine? {
-        return manager[entryPoint]
-    }
+    fun onPopTo(arguments: Any?, result: BooleanCallback)
+
+    fun onRemove(arguments: Any?, result: BooleanCallback)
 }

@@ -23,25 +23,25 @@
 
 package com.hellobike.flutter.thrio.navigator
 
-import android.content.Context
+import android.content.Intent
 
-object FlutterEngineFactory {
 
-    private val manager = mutableMapOf<String, FlutterEngine>()
+internal fun Intent.getPageId(): Int {
+    return getIntExtra(NAVIGATION_PAGE_ID_KEY, NAVIGATION_PAGE_ID_NONE)
+}
 
-    var isMultiEngineEnabled = false
+internal fun Intent.getEntrypoint(): String {
+    return getStringExtra(NAVIGATION_ROUTE_ENTRYPOINT_KEY) ?: ""
+}
 
-    fun startup(context: Context,
-                entryPoint: String = THRIO_ENGINE_FLUTTER_ENTRYPOINT_DEFAULT,
-                readyListener: EngineReadyListener? = null) {
-        if (manager.contains(entryPoint)) {
-            readyListener?.onReady(entryPoint)
-        } else {
-            manager[entryPoint] = FlutterEngine(context, entryPoint, readyListener)
-        }
+internal fun Intent.getFromEntrypoint(): String {
+    return getStringExtra(NAVIGATION_ROUTE_FROM_ENTRYPOINT_KEY) ?: ""
+}
+
+internal fun Intent.getRouteSettings(): RouteSettings {
+    val data = getSerializableExtra(NAVIGATION_ROUTE_SETTINGS_KEY).let {
+        checkNotNull(it) { "RouteSettings not found" }
+        it as Map<String, Any>
     }
-
-    fun getEngine(entryPoint: String = THRIO_ENGINE_FLUTTER_ENTRYPOINT_DEFAULT): FlutterEngine? {
-        return manager[entryPoint]
-    }
+    return RouteSettings.fromArguments(data)
 }

@@ -27,13 +27,15 @@ import android.app.Activity
 import com.hellobike.flutter.thrio.NullableAnyCallback
 import java.lang.ref.WeakReference
 
-data class PageRoute(val url: String, val index: Int, val clazz: Class<out Activity>) {
+data class PageRoute(val settings: RouteSettings, val clazz: Class<out Activity>) {
 
-    var nullableAnyCallback: WeakReference<NullableAnyCallback>? = null
-    var resultParams: Any? = null
-
-    var params: Any? = null
     private val notifications: MutableMap<String, Any?> = mutableMapOf()
+
+    var entryPoint: String = THRIO_ENGINE_FLUTTER_ENTRYPOINT_DEFAULT
+    var fromEntryPoint: String = THRIO_ENGINE_NATIVE_ENTRYPOINT
+
+    var poppedResult: NullableAnyCallback? = null
+    var resultParams: Any? = null
 
     fun addNotify(name: String, params: Any?) {
         notifications[name] = params
@@ -44,10 +46,4 @@ data class PageRoute(val url: String, val index: Int, val clazz: Class<out Activ
         notifications.clear()
         return result
     }
-
-    var animated: Boolean = true
-    var removed: Boolean = false
-
-    var parentEntryPoint: String? = null
-    var entryPoint: String? = null
 }

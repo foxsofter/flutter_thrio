@@ -21,8 +21,24 @@
  * IN THE SOFTWARE.
  */
 
-package com.hellobike.flutter.thrio
+package com.hellobike.flutter.thrio.navigator
 
-interface OnNotifyListener {
-    fun onNotify(name: String, params: Any?)
+import android.app.Activity
+import android.content.Context
+import android.content.Intent
+import io.flutter.embedding.android.ThrioActivity
+import io.flutter.embedding.android.ThrioFlutterActivity
+
+object FlutterIntentBuilder : IntentBuilder {
+
+    override fun getActivityClz(): Class<out Activity> = ThrioActivity::class.java
+
+    override fun build(context: Context, entrypoint: String): Intent {
+        return ThrioFlutterActivity
+                .withCachedEngine(entrypoint)
+                .destroyEngineWithActivity(false)
+                .build(context).apply {
+                    setClass(context, getActivityClz())
+                }
+    }
 }

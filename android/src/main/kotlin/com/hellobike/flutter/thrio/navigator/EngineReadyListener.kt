@@ -23,25 +23,6 @@
 
 package com.hellobike.flutter.thrio.navigator
 
-import android.content.Context
-
-object FlutterEngineFactory {
-
-    private val manager = mutableMapOf<String, FlutterEngine>()
-
-    var isMultiEngineEnabled = false
-
-    fun startup(context: Context,
-                entryPoint: String = THRIO_ENGINE_FLUTTER_ENTRYPOINT_DEFAULT,
-                readyListener: EngineReadyListener? = null) {
-        if (manager.contains(entryPoint)) {
-            readyListener?.onReady(entryPoint)
-        } else {
-            manager[entryPoint] = FlutterEngine(context, entryPoint, readyListener)
-        }
-    }
-
-    fun getEngine(entryPoint: String = THRIO_ENGINE_FLUTTER_ENTRYPOINT_DEFAULT): FlutterEngine? {
-        return manager[entryPoint]
-    }
+interface EngineReadyListener {
+    fun onReady(params: Any?)
 }

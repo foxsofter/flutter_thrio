@@ -21,27 +21,41 @@
  * IN THE SOFTWARE.
  */
 
-package com.hellobike.flutter.thrio.navigator
+package com.hellobike.flutter.thrio.registry
 
-import android.content.Context
+import com.hellobike.flutter.thrio.VoidCallback
 
-object FlutterEngineFactory {
+class RegistrySetMap<K, V> : Iterable<Map.Entry<K, Set<V>>> {
 
-    private val manager = mutableMapOf<String, FlutterEngine>()
+    private val maps by lazy { mutableMapOf<K, MutableSet<V>>() }
 
-    var isMultiEngineEnabled = false
-
-    fun startup(context: Context,
-                entryPoint: String = THRIO_ENGINE_FLUTTER_ENTRYPOINT_DEFAULT,
-                readyListener: EngineReadyListener? = null) {
-        if (manager.contains(entryPoint)) {
-            readyListener?.onReady(entryPoint)
+    fun registry(key: K, value: V): VoidCallback {
+        if (maps[key] == null) {
+            maps[key] = mutableSetOf(value)
         } else {
-            manager[entryPoint] = FlutterEngine(context, entryPoint, readyListener)
+            maps[key]?.add(value)
+        }
+        return { maps[key]?.remove(value) }
+    }
+
+    fun registryAll(values: Map<K, V>): VoidCallback {
+        values.forEach {
+            if (maps[it.key] == null) {
+                maps[it.key] = mutableSetOf(it.value)
+            } else {
+                maps[it.key]?.add(it.value)
+            }
+        }
+        return {
+            values.forEach {
+                maps[it.key]?.remove(it.value)
+            }
         }
     }
 
-    fun getEngine(entryPoint: String = THRIO_ENGINE_FLUTTER_ENTRYPOINT_DEFAULT): FlutterEngine? {
-        return manager[entryPoint]
-    }
+    fun clear() = maps.clear()
+
+    operator fun get(key: K): Set<V>? = maps[key]
+
+    override fun iterator(): Iterator<Map.Entry<K, Set<V>>> = maps.iterator()
 }

@@ -30,13 +30,15 @@ import io.flutter.embedding.engine.FlutterEngineCache
 import io.flutter.embedding.engine.dart.DartExecutor
 import io.flutter.view.FlutterMain
 
-data class FlutterEngine(private val context: Context, private val entrypoint: String) {
+data class FlutterEngine(private val context: Context,
+                         private val entrypoint: String,
+                         private val readyListener: EngineReadyListener? = null) : RouteSendHandler {
 
     private var entryPoint: String = entrypoint
+
     var flutterEngine: FlutterEngine = FlutterEngine(context)
     var sendChannel: RouteSendChannel
     var receiveChannel: RouteReceiveChannel
-
     var routeObserverChannel: RouteObserverChannel
     var pageObserverChannel: PageObserverChannel
 
@@ -54,25 +56,13 @@ data class FlutterEngine(private val context: Context, private val entrypoint: S
         FlutterEngineCache.getInstance().put(entryPoint, flutterEngine)
     }
 
-    fun onPush(record: PageRoute, isNested: Boolean, result: BooleanCallback) {
-        sendChannel.onPush(record.url, record.index, record.params, record.animated, isNested, result)
-    }
+    override fun onPush(arguments: Any?, result: BooleanCallback) = sendChannel.onPush(arguments, result)
 
-    fun onPop(record: PageRoute, result: BooleanCallback) {
-        sendChannel.onPop(record.url, record.index, record.resultParams, record.animated, result)
-    }
+    override fun onNotify(arguments: Any?, result: BooleanCallback) = sendChannel.onNotify(arguments, result)
 
-    fun onRemove(url: String, index: Int, animated: Boolean, result: BooleanCallback) {
-        sendChannel.onRemove(url, index, animated, result)
-    }
+    override fun onPop(arguments: Any?, result: BooleanCallback) = sendChannel.onPop(arguments, result)
 
-    fun onPopTo(url: String, index: Int, animated: Boolean, result: BooleanCallback) {
-        sendChannel.onPopTo(url, index, animated, result)
-    }
+    override fun onPopTo(arguments: Any?, result: BooleanCallback) = sendChannel.onPopTo(arguments, result)
 
-    fun onNotify(url: String, index: Int, name: String, params: Any?) {
-        sendChannel.onNotify(url, index, name, params)
-    }
-
-
+    override fun onRemove(arguments: Any?, result: BooleanCallback) = sendChannel.onRemove(arguments, result)
 }

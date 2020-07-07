@@ -24,11 +24,12 @@
 package com.hellobike.flutter.thrio.navigator
 
 import android.util.Log
-import com.hellobike.flutter.thrio.navigator.ActivitiesDelegate.activity
 import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 
-class RouteReceiveChannel(private val id: String) : MethodChannel.MethodCallHandler {
+class RouteReceiveChannel(private val entrypoint: String,
+                          private var readyListener: EngineReadyListener? = null)
+    : MethodChannel.MethodCallHandler {
 
     private fun push(call: MethodCall, result: MethodChannel.Result) {
         val url = call.argument<String>("url")
@@ -38,8 +39,11 @@ class RouteReceiveChannel(private val id: String) : MethodChannel.MethodCallHand
         }
         val params = call.argument<Any>("params")
         val animated = call.argument<Boolean>("animated") ?: true
-        val activity = activity ?: throw IllegalArgumentException("activity must not be null")
-        NavigationController.Push.push(activity, url, params, animated, id) {
+
+        val activity = NavigationController.currencyActivity
+                ?: throw IllegalArgumentException("activity must not be null")
+
+        NavigationController.Push.push(activity, url, params, animated, entrypoint) {
             result.success(it)
         }
     }
@@ -47,14 +51,13 @@ class RouteReceiveChannel(private val id: String) : MethodChannel.MethodCallHand
     private fun pop(call: MethodCall, result: MethodChannel.Result) {
         val params = call.argument<Any>("params")
         val animated = call.argument<Boolean>("animated") ?: true
-        val activity = activity ?: throw IllegalArgumentException("activity must not be null")
-        NavigationController.Navigator.pop(activity, params, animated) {
-            result.success(it)
-        }
+        val activity = NavigationController.currencyActivity
+                ?: throw IllegalArgumentException("activity must not be null")
+
+        NavigationController.Pop.pop(activity, params, animated) { result.success(it) }
     }
 
     private fun remove(call: MethodCall, result: MethodChannel.Result) {
-        // 暂不可用
         val url = call.argument<String>("url")
         if (url.isNullOrBlank()) {
             result.success(false)
@@ -65,13 +68,13 @@ class RouteReceiveChannel(private val id: String) : MethodChannel.MethodCallHand
             result.success(false)
             return
         }
-        val animated = call.argument<Boolean>("animated") ?: true
-        val activity = activity ?: throw IllegalArgumentException("activity must not be null")
-        NavigationController.Remove.remove(activity, url, index, animated) {
-            result.success(it)
-        }
-    }
 
+        val animated = call.argument<Boolean>("animated") ?: true
+        val activity = NavigationController.currencyActivity
+                ?: throw IllegalArgumentException("activity must not be null")
+
+        NavigationController.Remove.remove(activity, url, index, animated) { result.success(it) }
+    }
 
     private fun popTo(call: MethodCall, result: MethodChannel.Result) {
         val url = call.argument<String>("url")
@@ -85,10 +88,10 @@ class RouteReceiveChannel(private val id: String) : MethodChannel.MethodCallHand
             return
         }
         val animated = call.argument<Boolean>("animated") ?: true
-        val activity = activity ?: throw IllegalArgumentException("activity must not be null")
-        NavigationController.PopTo.popTo(activity, url, index, animated) {
-            result.success(it)
-        }
+        val activity = NavigationController.currencyActivity
+                ?: throw IllegalArgumentException("activity must not be null")
+
+        NavigationController.PopTo.popTo(activity, url, index, animated) { result.success(it) }
     }
 
     private fun notify(call: MethodCall, result: MethodChannel.Result) {
@@ -108,34 +111,29 @@ class RouteReceiveChannel(private val id: String) : MethodChannel.MethodCallHand
             return
         }
         val params = call.argument<Any>("params")
-        NavigationController.notify(url, index, name, params) {
-            result.success(it)
-        }
+
+        NavigationController.notify(url, index, name, params) { result.success(it) }
     }
 
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
         Log.e("Thrio", "flutter call method ${call.method}")
         when (call.method) {
             "ready" -> {
+                readyListener?.onReady(entrypoint)
+                readyListener = null
+            }
+            "push" -> push(call, result)
+            "notify" -> notify(call, result)
+            "pop" -> pop(call, result)
+            "remove" -> remove(call, result)
+            "popTo" -> popTo(call, result)
+            "setPopDisabled" -> {
+            }
+            "hotRestart" -> {
             }
             "registerUrls" -> {
             }
-            /** push **/
-            "push" -> push(call, result)
-            /** pop **/
-            "pop" -> pop(call, result)
-            /** remove **/
-            "remove" -> remove(call, result)
-            /** popTo **/
-            "popTo" -> popTo(call, result)
-            /** notify **/
-            "notify" -> notify(call, result)
-            /** setPopDisabled **/
-            "setPopDisabled" -> {
-            }
-            /** hotRestart **/
-            "hotRestart" -> {
-
+            "unregisterUrls" -> {
             }
             else -> {
                 Log.e("Thrio", "flutter call method ${call.method} notImplemented")

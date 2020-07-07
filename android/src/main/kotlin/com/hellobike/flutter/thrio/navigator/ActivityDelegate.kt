@@ -29,76 +29,72 @@ import android.app.Application
 import android.os.Bundle
 
 @SuppressLint("StaticFieldLeak")
-internal object ActivitiesDelegate : Application.ActivityLifecycleCallbacks {
-
-    private const val KEY_THRIO_ACTIVITY_SAVE = "KEY_THRIO_ACTIVITY_SAVE"
-    private const val THRIO_ACTIVITY_SAVE_NONE = false
-
-    var activity: Activity? = null
+internal object ActivityDelegate : Application.ActivityLifecycleCallbacks {
 
     override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
-        NavigationController.restoreData(activity, savedInstanceState)
+
+        PageRoutes.restorePageId(activity, savedInstanceState)
+
+        PageRoutes.setActivityReference(activity)
     }
 
     override fun onActivityStarted(activity: Activity) {
+        if (NavigationController.routeAction == RouteAction.PUSH) {
+            NavigationController.Push.doPush(activity)
+        }
     }
 
     override fun onActivityPaused(activity: Activity) {
     }
 
     override fun onActivityResumed(activity: Activity) {
+
+        PageRoutes.setActivityReference(activity)
+
         clearSystemDestroyed(activity)
-        this.activity = activity
-        if (NavigationController.action == RouteAction.NONE) {
-            NavigationController.removeOrNotify(activity)
-            return
+
+        when (NavigationController.routeAction) {
+            RouteAction.PUSH -> NavigationController.Push.doPush(activity)
+            RouteAction.REMOVE -> NavigationController.Remove.didRemove(activity)
+            RouteAction.POP_TO -> NavigationController.PopTo.didPopTo(activity)
         }
-        /** push 添加stack key **/
-        if (NavigationController.action == RouteAction.PUSH) {
-            NavigationController.Push.didPush(activity)
-            return
-        }
-        if (NavigationController.action == RouteAction.REMOVE) {
-            NavigationController.Remove.didRemove(activity)
-            return
-        }
-        if (NavigationController.action == RouteAction.POP_TO) {
-            NavigationController.PopTo.didPopTo(activity)
-            return
-        }
+        NavigationController.Notify.doNotify(activity)
     }
 
     override fun onActivityStopped(activity: Activity?) {
     }
 
-    override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle?) {
+    override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {
+
+        PageRoutes.savePageId(activity, outState)
+
         setSystemDestroyed(activity)
-        NavigationController.backUpData(activity, outState)
     }
 
     override fun onActivityDestroyed(activity: Activity) {
-        if (this.activity == activity) {
-            this.activity = null
-        }
+
+        PageRoutes.unsetActivityReference(activity)
+
         if (isSystemDestroyed(activity)) {
             return
         }
+
         // 清空页面记录
-        if (NavigationController.action == RouteAction.NONE) {
+        if (NavigationController.routeAction == RouteAction.NONE) {
             NavigationController.clearStack(activity)
             return
         }
     }
 
-    private fun clearSystemDestroyed(activity: Activity) {
-        activity.intent.removeExtra(KEY_THRIO_ACTIVITY_SAVE)
+    private inline fun clearSystemDestroyed(activity: Activity) {
+        activity.intent.removeExtra(THRIO_ACTIVITY_SAVE_KEY)
     }
 
-    private fun setSystemDestroyed(activity: Activity) {
-        activity.intent.putExtra(KEY_THRIO_ACTIVITY_SAVE, true)
+    private inline fun setSystemDestroyed(activity: Activity) {
+        activity.intent.putExtra(THRIO_ACTIVITY_SAVE_KEY, true)
     }
 
-    private fun isSystemDestroyed(activity: Activity): Boolean {
-        return activity.intent.getBooleanExtra(KEY_THRIO_ACTIVITY_SAVE, THRIO_ACTIVITY_SAVE_NONE)
+    private inline fun isSystemDestroyed(activity: Activity): Boolean {
+        return activity.intent.getBooleanExtra(THRIO_ACTIVITY_SAVE_KEY, THRIO_ACTIVITY_SAVE_NONE)
     }
 }
