@@ -27,10 +27,8 @@ internal enum class RouteAction {
     NONE,
     PUSH,
     PUSHING,
-    POP,
     POPPING,
     POP_TO,
     POPPING_TO,
-    REMOVE,
     REMOVING
 }

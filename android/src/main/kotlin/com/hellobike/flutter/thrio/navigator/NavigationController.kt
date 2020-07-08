@@ -31,11 +31,11 @@ import androidx.annotation.UiThread
 import com.hellobike.flutter.thrio.BooleanCallback
 import com.hellobike.flutter.thrio.NullableAnyCallback
 import com.hellobike.flutter.thrio.NullableIntCallback
-import com.hellobike.flutter.thrio.navigator.FlutterEngineFactory.THRIO_ENGINE_FLUTTER_ENTRYPOINT_DEFAULT
-import com.hellobike.flutter.thrio.navigator.FlutterEngineFactory.THRIO_ENGINE_NATIVE_ENTRYPOINT
 import io.flutter.embedding.android.ThrioActivity
 
 internal object NavigationController {
+
+    var context: Context? = null
 
     var routeAction = RouteAction.NONE
 
@@ -44,8 +44,7 @@ internal object NavigationController {
         private var result: NullableIntCallback? = null
         private var poppedResult: NullableAnyCallback? = null
 
-        fun push(context: Context,
-                 url: String,
+        fun push(url: String,
                  params: Any? = null,
                  animated: Boolean,
                  fromEntrypoint: String = "",
@@ -69,8 +68,8 @@ internal object NavigationController {
             var entrypoint = THRIO_ENGINE_NATIVE_ENTRYPOINT
             var isSingleTop = false
 
-            val lastActivity = PageRoutes.lastActivity()
-            var lastEntrypoint = lastActivity?.intent?.getEntrypoint()
+            val lastActivityHolder = PageRoutes.lastActivityHolder()
+            val lastEntrypoint = lastActivityHolder?.entryPoint
 
             if (builder is FlutterIntentBuilder) {
                 entrypoint = if (FlutterEngineFactory.isMultiEngineEnabled) {
@@ -84,6 +83,8 @@ internal object NavigationController {
             val settingsData = hashMapOf<String, Any>().also {
                 it.putAll(settings.toArguments())
             }
+
+            val context = lastActivityHolder?.activity?.get() ?: context!!
 
             val intent = builder.build(context, entrypoint).apply {
                 if (!animated) {
@@ -102,6 +103,7 @@ internal object NavigationController {
             this.result = result
             this.poppedResult = poppedResult
 
+
             if (builder is FlutterIntentBuilder) {
                 FlutterEngineFactory.startup(context, entrypoint, object : EngineReadyListener {
                     override fun onReady(params: Any?) {
@@ -117,6 +119,11 @@ internal object NavigationController {
         }
 
         fun doPush(activity: Activity) {
+            if (routeAction != RouteAction.PUSH) {
+                result = null
+                poppedResult = null
+                return
+            }
             routeAction = RouteAction.PUSHING
 
             checkNotNull(result) { "result must not be null" }
@@ -171,7 +178,7 @@ internal object NavigationController {
                 result?.invoke(it)
             }
 
-            PageRoutes.lastActivity()?.let { activity ->
+            PageRoutes.lastActivityHolder()?.activity?.get()?.let { activity ->
                 doNotify(activity)
             }
         }
@@ -201,13 +208,15 @@ internal object NavigationController {
 
     object Pop {
         @UiThread
-        fun pop(params: Any? = null, animated: Boolean, result: BooleanCallback? = null) {
+        fun pop(params: Any? = null,
+                animated: Boolean = true,
+                result: BooleanCallback? = null) {
             if (routeAction != RouteAction.NONE) {
                 result?.invoke(false)
                 return
             }
 
-            routeAction = RouteAction.POP
+            routeAction = RouteAction.POPPING
 
             PageRoutes.pop(params, animated) {
                 result?.invoke(it)
@@ -218,138 +227,99 @@ internal object NavigationController {
 
     object PopTo {
 
+        var result: BooleanCallback? = null
+        var popToRoute: PageRoute? = null
+
         fun popTo(url: String, index: Int?, animated: Boolean, result: BooleanCallback? = null) {
-            if ((index != null && index < 0) || !PageRoutes.hasRoute(url, index)) {
+            if (routeAction != RouteAction.NONE) {
                 result?.invoke(false)
                 return
             }
 
-            PageRoutes.popTo(url, index, animated) {
-                result?.invoke(it)
+            this.result = result
+
+            if (index != null && index < 0) {
+                result(false)
+                routeAction = RouteAction.NONE
+                return
+            }
+
+            val popToRoute = PageRoutes.lastRoute(url, index)
+            if (popToRoute == null || popToRoute == PageRoutes.lastRoute()) {
+                result(false)
+                routeAction = RouteAction.NONE
+                return
+            }
+
+            routeAction = RouteAction.POP_TO
+            popToRoute.settings.animated = animated
+            this.popToRoute = popToRoute
+
+            PageRoutes.lastActivityHolder()?.activity?.get()?.let {
+                val intent = Intent(it.applicationContext, popToRoute.clazz)
+                intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                it.startActivity(intent)
             }
         }
 
-//        fun didPopTo(activity: Activity) {
-//            val result = result
-//            checkNotNull(result) { "result must not be null" }
-//            val record = route
-//            checkNotNull(record) { "popTo record not found" }
-//            if (record.clazz != activity::class.java) {
-//                return
-//            }
-//            val key = getPageId(activity)
-//            if (PageRouteStack.getPageId(record) != key) {
-//                activity.finish()
-//                popTo(activity, record.url, record.index, record.animated, result)
-//                return
-//            }
-//            routeAction = RouteAction.NONE
-//            this.route = null
-//            this.result = null
-//            onPopTo(activity, record) {
-//                if (it) {
-//                    PageRouteStack.popTo(record)
-//                    didNotify(activity, record)
-//                }
-//                result(it)
-//            }
-//        }
+        fun doPopTo(activity: Activity) {
+            if (routeAction != RouteAction.POP_TO) {
+                result(false)
+                return
+            }
 
-//        private fun onPopTo(activity: Activity, record: PageRoute, result: BooleanCallback) {
-//            if (activity is ThrioActivity) {
-//                activity.onPopTo(record.url, record.index, record.animated, result)
-//                return
-//            }
-//            result(true)
-//        }
+            if (popToRoute == null || popToRoute?.clazz != activity.javaClass) {
+                result(false)
+                routeAction = RouteAction.NONE
+                return
+            }
+
+            routeAction = RouteAction.POPPING_TO
+
+            popToRoute?.let { route ->
+                PageRoutes.popTo(route.settings.url, route.settings.index, route.settings.animated) {
+                    result(it)
+                    routeAction = RouteAction.NONE
+                }
+            }
+        }
+
+        private fun result(success: Boolean) {
+            result?.invoke(success)
+            result = null
+            popToRoute = null
+        }
     }
 
     object Remove {
 
-        private var result: BooleanCallback? = null
-        private var route: PageRoute? = null
-
-        fun remove(context: Context,
-                   url: String,
-                   index: Int = 0,
+        fun remove(url: String,
+                   index: Int?,
                    animated: Boolean = true,
-                   result: BooleanCallback) {
+                   result: BooleanCallback? = null) {
             if (routeAction != RouteAction.NONE) {
-                result(false)
+                result?.invoke(false)
                 return
             }
 
-            if (!PageRouteStack.hasRoute()) {
-                result(false)
-                return
-            }
+            routeAction = RouteAction.REMOVING
 
-            if (index < 0 || (index > 0 && !PageRouteStack.hasRoute(url, index))) {
-                Log.e("Thrio", "action remove no route url $url index $index")
-                result(false)
-                return
+            PageRoutes.remove(url, index, animated) {
+                result?.invoke(it)
+                routeAction = RouteAction.NONE
             }
-            val targetIndex = when (index) {
-                NAVIGATION_ROUTE_INDEX_DEFAULT -> PageRouteStack.lastRoute(url)?.settings?.index
-                else -> index
-            }
-            if (targetIndex == null) {
-                result(false)
-                return
-            }
-
-            val route = PageRouteStack.lastRoute(url, targetIndex)
-            val last = PageRouteStack.lastRoute()
-            if (last == route) {
-                route.settings.animated = animated
-            }
-            val intent = Intent(context, route.clazz)
-            intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-
-            context.startActivity(intent)
-
-            routeAction = RouteAction.REMOVE
-
-            this.route = route
-            this.result = result
         }
 
-        fun didRemove(activity: Activity) {
-            val result = result
-            checkNotNull(result) { "result must not be null" }
-            val record = route
-            checkNotNull(record) { "remove record not found" }
-            check(PageRouteStack.hasRoute()) { "must has record" }
-            val last = PageRouteStack.lastRoute()
-            check(last.clazz == activity::class.java) {
-                "activity is not match record ${record.clazz}"
-            }
-            routeAction = RouteAction.NONE
-            this.route = null
-            this.result = null
-            if (last == record) {
-                PageRouteStack.pop(record)
-                onRemove(activity, record, result)
+        fun doRemove(activity: Activity) {
+            val pageId = activity.intent.getPageId()
+            if (pageId == NAVIGATION_PAGE_ID_NONE) {
                 return
             }
-            record.removed = true
-            result(true)
-            return
-        }
-
-        private fun onRemove(activity: Activity, record: PageRoute, result: BooleanCallback) {
-            if (activity is ThrioActivity) {
-                activity.onRemove(record.url, record.index, record.animated, result)
-                return
+            if (PageRoutes.lastRemovedActivityHolder(pageId) != null) {
+                activity.finish()
             }
-            result(true)
         }
     }
-
-
-    private fun String.getEntrypoint(): String = substring(1).split("/").firstOrNull()
-            ?: throw IllegalArgumentException("entrypoint must not be null")
-
 
 }

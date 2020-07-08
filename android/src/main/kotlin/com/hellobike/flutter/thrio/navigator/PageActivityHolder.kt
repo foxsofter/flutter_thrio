@@ -29,7 +29,9 @@ import com.hellobike.flutter.thrio.NullableIntCallback
 import io.flutter.embedding.android.ThrioActivity
 import java.lang.ref.WeakReference
 
-internal data class PageActivityHolder(val pageId: Int) {
+internal data class PageActivityHolder(val pageId: Int,
+                                       val clazz: Class<out Activity>,
+                                       val entryPoint: String = THRIO_ENGINE_FLUTTER_ENTRYPOINT_DEFAULT) {
 
     private val routes by lazy { mutableListOf<PageRoute>() }
 
@@ -121,6 +123,8 @@ internal data class PageActivityHolder(val pageId: Int) {
             return
         }
 
+        route.settings.animated = animated
+
         activity?.get()?.let { activity ->
             if (activity is ThrioActivity) {
                 activity.onPop(route.settings.toArguments()) {
@@ -139,12 +143,14 @@ internal data class PageActivityHolder(val pageId: Int) {
         result(false)
     }
 
-    fun remove(url: String, index: Int?, result: BooleanCallback) {
+    fun remove(url: String, index: Int?, animated: Boolean, result: BooleanCallback) {
         val route = lastRoute(url, index)
         if (route == null) {
             result(false)
             return
         }
+
+        route.settings.animated = animated
 
         activity?.get()?.let { activity ->
             if (activity is ThrioActivity) {

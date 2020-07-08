@@ -35,19 +35,22 @@ internal object PageRoutes {
 
     private val removedActivityHolders by lazy { mutableListOf<PageActivityHolder>() }
 
-    fun lastActivity(pageId: Int? = null): Activity? = when (pageId) {
-        null, NAVIGATION_PAGE_ID_NONE -> activityHolders.last()?.activity?.get()
-        else -> {
-            var activity: Activity? = null
-            for (i in activityHolders.size downTo 0) {
-                val activityHolder = activityHolders[i]
-                activity = activityHolder.activity?.get()
-            }
-            activity
-        }
+    fun lastActivityHolder(pageId: Int? = null): PageActivityHolder? = when (pageId) {
+        null, NAVIGATION_PAGE_ID_NONE -> activityHolders.lastOrNull()
+        else -> activityHolders.lastOrNull { it.pageId == pageId }
     }
 
-    fun hasRoute(pageId: Int): Boolean = activityHolders.any { it.pageId == pageId && it.hasRoute() }
+    fun lastRemovedActivityHolder(pageId: Int): PageActivityHolder? {
+        return removedActivityHolders.lastOrNull { it.pageId == pageId }
+    }
+
+    fun lastActivityHolder(url: String, index: Int? = null): PageActivityHolder? {
+        return activityHolders.lastOrNull { it.hasRoute(url, index) }
+    }
+
+    fun hasRoute(pageId: Int): Boolean {
+        return activityHolders.any { it.pageId == pageId && it.hasRoute() }
+    }
 
     fun hasRoute(url: String? = null, index: Int? = null): Boolean = activityHolders.any {
         it.hasRoute(url, index)
@@ -76,10 +79,11 @@ internal object PageRoutes {
     }
 
     fun push(activity: Activity, route: PageRoute, result: NullableIntCallback) {
+        val entrypoint = activity.intent.getEntrypoint()
         val pageId = activity.intent.getPageId()
         var activityHolder = activityHolders.lastOrNull { it.pageId == pageId }
         if (activityHolder == null) {
-            activityHolder = PageActivityHolder(pageId).apply {
+            activityHolder = PageActivityHolder(pageId, activity.javaClass, entrypoint).apply {
                 this.activity = WeakReference(activity)
             }
             activityHolders.add(activityHolder)
@@ -123,31 +127,44 @@ internal object PageRoutes {
 
     fun popTo(url: String, index: Int?, animated: Boolean, result: BooleanCallback) {
         val activityHolder = activityHolders.lastOrNull { it.lastRoute(url, index) != null }
-        if (activityHolder == null || activityHolder.lastRoute(url, index) == lastRoute()) {
+        if (activityHolder == null || activityHolder.activity?.get() == null) {
             result(false)
             return
         }
 
         activityHolder.popTo(url, index, animated) {
             if (it) {
-                val index = activityHolders.lastIndexOf(activityHolder)
-                for (i in activityHolders.size downTo index + 1) {
-                    // TODO: 多引擎模式下的栈同步
-                    activityHolders.removeAt(i)
+                val activityHolderIndex = activityHolders.lastIndexOf(activityHolder)
+                val entrypoints = mutableListOf<String>()
+                for (i in activityHolders.size downTo activityHolderIndex + 1) {
+                    entrypoints.add(activityHolders.removeAt(i).entryPoint)
+                }
+                // 多引擎模式下的处理
+                entrypoints.forEach { entrypoint ->
+                    val lastActivityHolder = activityHolders.lastOrNull { activityHolder ->
+                        activityHolder.entryPoint == entrypoint && activityHolder.hasRoute()
+                    }
+                    if (lastActivityHolder != null) {
+                        val engine = FlutterEngineFactory.getEngine(entrypoint)
+                        lastActivityHolder.lastRoute()?.let { route ->
+                            engine?.onPopTo(route.settings.toArguments()) {}
+                        }
+                    }
                 }
             }
             result(it)
         }
+
     }
 
-    fun remove(url: String, index: Int?, result: BooleanCallback) {
+    fun remove(url: String, index: Int?, animated: Boolean, result: BooleanCallback) {
         val activityHolder = activityHolders.lastOrNull { it.lastRoute(url, index) != null }
         if (activityHolder == null) {
             result(false)
             return
         }
 
-        activityHolder.remove(url, index) {
+        activityHolder.remove(url, index, animated) {
             if (it) {
                 if (!activityHolder.hasRoute()) {
                     val activity = activityHolder.activity?.get()
@@ -170,6 +187,8 @@ internal object PageRoutes {
         val pageId = savedInstanceState.getInt(NAVIGATION_PAGE_ID_KEY, NAVIGATION_PAGE_ID_NONE)
         if (pageId != NAVIGATION_PAGE_ID_NONE) {
             activity.intent.putExtra(NAVIGATION_PAGE_ID_KEY, pageId)
+        } else {
+            activity.intent.putExtra(NAVIGATION_PAGE_ID_KEY, activity.hashCode())
         }
     }
 

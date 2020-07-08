@@ -6,6 +6,7 @@ import com.hellobike.flutter.thrio.module.ThrioModule
 class App : Application() {
     override fun onCreate() {
         super.onCreate()
-        ThrioModule.init(this)
+
+        ThrioModule.init(this, FlutterModule)
     }
 }

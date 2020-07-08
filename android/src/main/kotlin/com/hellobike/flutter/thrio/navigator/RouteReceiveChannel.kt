@@ -40,10 +40,7 @@ class RouteReceiveChannel(private val entrypoint: String,
         val params = call.argument<Any>("params")
         val animated = call.argument<Boolean>("animated") ?: true
 
-        val activity = NavigationController.currencyActivity
-                ?: throw IllegalArgumentException("activity must not be null")
-
-        NavigationController.Push.push(activity, url, params, animated, entrypoint) {
+        NavigationController.Push.push(url, params, animated, entrypoint) {
             result.success(it)
         }
     }
@@ -51,10 +48,8 @@ class RouteReceiveChannel(private val entrypoint: String,
     private fun pop(call: MethodCall, result: MethodChannel.Result) {
         val params = call.argument<Any>("params")
         val animated = call.argument<Boolean>("animated") ?: true
-        val activity = NavigationController.currencyActivity
-                ?: throw IllegalArgumentException("activity must not be null")
 
-        NavigationController.Pop.pop(activity, params, animated) { result.success(it) }
+        NavigationController.Pop.pop(params, animated) { result.success(it) }
     }
 
     private fun remove(call: MethodCall, result: MethodChannel.Result) {
@@ -70,10 +65,8 @@ class RouteReceiveChannel(private val entrypoint: String,
         }
 
         val animated = call.argument<Boolean>("animated") ?: true
-        val activity = NavigationController.currencyActivity
-                ?: throw IllegalArgumentException("activity must not be null")
 
-        NavigationController.Remove.remove(activity, url, index, animated) { result.success(it) }
+        NavigationController.Remove.remove(url, index, animated) { result.success(it) }
     }
 
     private fun popTo(call: MethodCall, result: MethodChannel.Result) {
@@ -88,10 +81,8 @@ class RouteReceiveChannel(private val entrypoint: String,
             return
         }
         val animated = call.argument<Boolean>("animated") ?: true
-        val activity = NavigationController.currencyActivity
-                ?: throw IllegalArgumentException("activity must not be null")
 
-        NavigationController.PopTo.popTo(activity, url, index, animated) { result.success(it) }
+        NavigationController.PopTo.popTo(url, index, animated) { result.success(it) }
     }
 
     private fun notify(call: MethodCall, result: MethodChannel.Result) {
@@ -112,7 +103,7 @@ class RouteReceiveChannel(private val entrypoint: String,
         }
         val params = call.argument<Any>("params")
 
-        NavigationController.notify(url, index, name, params) { result.success(it) }
+        NavigationController.Notify.notify(url, index, name, params) { result.success(it) }
     }
 
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {

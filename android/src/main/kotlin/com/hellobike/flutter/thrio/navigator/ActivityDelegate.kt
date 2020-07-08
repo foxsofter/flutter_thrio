@@ -32,16 +32,18 @@ import android.os.Bundle
 internal object ActivityDelegate : Application.ActivityLifecycleCallbacks {
 
     override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
+        NavigationController.context = NavigationController.context ?: activity
 
         PageRoutes.restorePageId(activity, savedInstanceState)
 
         PageRoutes.setActivityReference(activity)
+
+        NavigationController.PopTo.doPopTo(activity)
+        NavigationController.Remove.doRemove(activity)
+        NavigationController.Push.doPush(activity)
     }
 
     override fun onActivityStarted(activity: Activity) {
-        if (NavigationController.routeAction == RouteAction.PUSH) {
-            NavigationController.Push.doPush(activity)
-        }
     }
 
     override fun onActivityPaused(activity: Activity) {
@@ -53,11 +55,9 @@ internal object ActivityDelegate : Application.ActivityLifecycleCallbacks {
 
         clearSystemDestroyed(activity)
 
-        when (NavigationController.routeAction) {
-            RouteAction.PUSH -> NavigationController.Push.doPush(activity)
-            RouteAction.REMOVE -> NavigationController.Remove.didRemove(activity)
-            RouteAction.POP_TO -> NavigationController.PopTo.didPopTo(activity)
-        }
+        NavigationController.PopTo.doPopTo(activity)
+        NavigationController.Remove.doRemove(activity)
+        NavigationController.Push.doPush(activity)
         NavigationController.Notify.doNotify(activity)
     }
 
@@ -78,23 +78,17 @@ internal object ActivityDelegate : Application.ActivityLifecycleCallbacks {
         if (isSystemDestroyed(activity)) {
             return
         }
-
-        // 清空页面记录
-        if (NavigationController.routeAction == RouteAction.NONE) {
-            NavigationController.clearStack(activity)
-            return
-        }
     }
 
-    private inline fun clearSystemDestroyed(activity: Activity) {
+    private fun clearSystemDestroyed(activity: Activity) {
         activity.intent.removeExtra(THRIO_ACTIVITY_SAVE_KEY)
     }
 
-    private inline fun setSystemDestroyed(activity: Activity) {
+    private fun setSystemDestroyed(activity: Activity) {
         activity.intent.putExtra(THRIO_ACTIVITY_SAVE_KEY, true)
     }
 
-    private inline fun isSystemDestroyed(activity: Activity): Boolean {
+    private fun isSystemDestroyed(activity: Activity): Boolean {
         return activity.intent.getBooleanExtra(THRIO_ACTIVITY_SAVE_KEY, THRIO_ACTIVITY_SAVE_NONE)
     }
 }

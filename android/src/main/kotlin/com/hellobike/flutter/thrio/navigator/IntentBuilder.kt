@@ -32,6 +32,6 @@ interface IntentBuilder {
     fun getActivityClz(): Class<out Activity>
 
     fun build(context: Context, entrypoint: String): Intent {
-        return Intent()
+        return Intent(context, getActivityClz())
     }
 }

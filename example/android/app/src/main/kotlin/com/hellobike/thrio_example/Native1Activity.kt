@@ -13,7 +13,7 @@ class Native1Activity : AppCompatActivity(), PageNotifyListener {
         tv_native.text = "Native 1"
 
         btn_1.setOnClickListener {
-            ThrioNavigator.push(this, "/biz1/flutter1",
+            ThrioNavigator.push( "/biz1/flutter1",
                     params = mapOf("k1" to 1),
                     result = {
                         Log.e("Thrio", "push result data $it")
@@ -25,7 +25,7 @@ class Native1Activity : AppCompatActivity(), PageNotifyListener {
         }
 
         btn_2.setOnClickListener {
-            ThrioNavigator.push(this, "native1",
+            ThrioNavigator.push( "native1",
                     mapOf("k1" to 1),
                     true,
                     result = {
@@ -38,7 +38,7 @@ class Native1Activity : AppCompatActivity(), PageNotifyListener {
         }
 
         btn_3.setOnClickListener {
-            ThrioNavigator.pop(this, "native 1 popResult")
+            ThrioNavigator.pop( "native 1 popResult")
         }
     }
 

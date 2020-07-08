@@ -34,8 +34,8 @@ open class ThrioModule {
         private val root by lazy { ThrioModule() }
 
         @JvmStatic
-        fun init(context: Application) {
-            root.registerModule(context, root)
+        fun init(context: Application, module: ThrioModule) {
+            root.registerModule(context, module)
             root.initModule(context)
             ThrioNavigator.init(context)
         }
@@ -53,18 +53,14 @@ open class ThrioModule {
             it.onModuleInit(context)
             it.initModule(context)
         }
-        modules.values.forEach{
+        modules.values.forEach {
             if (it is ModuleIntentBuilder) {
                 it.onIntentBuilderRegister(context)
             }
         }
     }
 
-    protected open fun onModuleRegister(context: Context) {
+    protected open fun onModuleRegister(context: Context) {}
 
-    }
-
-    protected open fun onModuleInit(context: Context) {
-
-    }
+    protected open fun onModuleInit(context: Context) {}
 }

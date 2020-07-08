@@ -45,3 +45,8 @@ internal fun Intent.getRouteSettings(): RouteSettings {
     }
     return RouteSettings.fromArguments(data)
 }
+
+internal fun String.getEntrypoint(): String {
+    return substring(1).split("/").firstOrNull()
+            ?: throw IllegalArgumentException("entrypoint must not be null")
+}

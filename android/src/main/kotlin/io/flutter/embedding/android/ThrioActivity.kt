@@ -53,7 +53,7 @@ open class ThrioActivity : ThrioFlutterActivity(), RouteSendHandler {
     }
 
     override fun onBackPressed() {
-        NavigationController.Pop.pop(context, null, true)
+        NavigationController.Pop.pop()
     }
 
     override fun onPush(arguments: Any?, result: BooleanCallback) {

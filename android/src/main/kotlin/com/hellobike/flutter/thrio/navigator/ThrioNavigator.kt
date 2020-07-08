@@ -24,60 +24,49 @@
 package com.hellobike.flutter.thrio.navigator
 
 import android.app.Application
-import android.content.Context
 import com.hellobike.flutter.thrio.BooleanCallback
 import com.hellobike.flutter.thrio.NullableAnyCallback
 import com.hellobike.flutter.thrio.NullableIntCallback
-import com.hellobike.flutter.thrio.navigator.FlutterEngineFactory.THRIO_ENGINE_NATIVE_ENTRYPOINT
 
 object ThrioNavigator {
 
     @JvmStatic
     @JvmOverloads
-    fun push(context: Context,
-             url: String,
+    fun push(url: String,
              params: Any? = null,
              animated: Boolean = true,
              poppedResult: NullableAnyCallback? = null,
              result: NullableIntCallback = {}) {
-        NavigationController.Push.push(context,
-                url,
-                params,
-                animated,
-                THRIO_ENGINE_NATIVE_ENTRYPOINT,
-                poppedResult,
-                result)
+        NavigationController.Push.push(url, params, animated,
+                THRIO_ENGINE_NATIVE_ENTRYPOINT, poppedResult, result)
     }
 
 
     @JvmStatic
     @JvmOverloads
-    fun pop(context: Context,
-            params: Any? = null,
+    fun pop(params: Any? = null,
             animated: Boolean = true,
             result: BooleanCallback = {}) {
-        NavigationController.Pop.pop(context, params, animated, result)
+        NavigationController.Pop.pop(params, animated, result)
     }
 
     @JvmStatic
     @JvmOverloads
-    fun remove(context: Context,
-               url: String,
+    fun remove(url: String,
                index: Int = 0,
                animated: Boolean = true,
                result: BooleanCallback = {}) {
-        NavigationController.Remove.remove(context, url, index, animated, result)
+        NavigationController.Remove.remove(url, index, animated, result)
     }
 
     @JvmStatic
     @JvmOverloads
-    fun popTo(context: Context,
-              url: String,
+    fun popTo(url: String,
               index: Int = 0,
               animated: Boolean = true,
               result: BooleanCallback = {}
     ) {
-        NavigationController.PopTo.popTo(context, url, index, animated, result)
+        NavigationController.PopTo.popTo(url, index, animated, result)
     }
 
     @JvmStatic
