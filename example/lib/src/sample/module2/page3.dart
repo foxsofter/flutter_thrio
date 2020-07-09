@@ -90,8 +90,7 @@ class _Page3State extends State<Page3> {
                     ),
                     InkWell(
                       onTap: () => ThrioNavigator.popTo(
-                        url: '/biz1/flutter1',
-                        index: 1,
+                        url: '/biz1/flutter1'
                       ),
                       child: Container(
                           padding: const EdgeInsets.all(8),

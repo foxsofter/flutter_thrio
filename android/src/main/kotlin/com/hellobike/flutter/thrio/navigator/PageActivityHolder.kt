@@ -53,22 +53,26 @@ internal data class PageActivityHolder(val pageId: Int,
 
     fun allRoute(url: String): List<PageRoute> = routes.takeWhile { it.settings.url == url }
 
-    fun push(route: PageRoute, result: NullableIntCallback) =
-            activity?.get()?.let { activity ->
-                if (activity is ThrioActivity) {
-                    activity.onPush(route.settings.toArguments()) {
-                        if (it) {
-                            routes.add(route)
-                            result(route.settings.index)
-                        } else {
-                            result(null)
-                        }
+    fun push(route: PageRoute, result: NullableIntCallback) {
+        val activity = activity?.get()
+        if (activity != null) {
+            if (activity is ThrioActivity) {
+                activity.onPush(route.settings.toArguments()) {
+                    if (it) {
+                        routes.add(route)
+                        result(route.settings.index)
+                    } else {
+                        result(null)
                     }
-                } else {
-                    routes.add(route)
-                    result(route.settings.index)
                 }
+            } else {
+                routes.add(route)
+                result(route.settings.index)
             }
+        } else {
+            result(null)
+        }
+    }
 
     fun notify(url: String, index: Int?, name: String, params: Any?, result: BooleanCallback) {
         var isMatch = false
@@ -89,8 +93,8 @@ internal data class PageActivityHolder(val pageId: Int,
             result(false)
             return
         }
-
-        activity?.get()?.let { activity ->
+        val activity = activity?.get()
+        if (activity != null) {
             if (activity is ThrioActivity) {
                 lastRoute.settings.params = params
                 lastRoute.settings.animated = animated
@@ -102,8 +106,9 @@ internal data class PageActivityHolder(val pageId: Int,
                     if (it) {
                         lastRoute.poppedResult?.invoke(params)
                         lastRoute.poppedResult = null
-                        if (lastRoute.entryPoint != lastRoute.fromEntryPoint) {
-                            FlutterEngineFactory.getEngine(lastRoute.fromEntryPoint)?.onPop(lastRoute.settings.toArguments()) {}
+                        if (lastRoute.fromEntrypoint != THRIO_ENGINE_NATIVE_ENTRYPOINT
+                                &&lastRoute.entrypoint != lastRoute.fromEntrypoint) {
+                            FlutterEngineFactory.getEngine(lastRoute.fromEntrypoint)?.onPop(lastRoute.settings.toArguments()) {}
                         }
                     }
                 }
@@ -112,8 +117,9 @@ internal data class PageActivityHolder(val pageId: Int,
                 result(true)
                 lastRoute.poppedResult?.invoke(params)
             }
+        } else {
+            result(false)
         }
-        result(false)
     }
 
     fun popTo(url: String, index: Int?, animated: Boolean, result: BooleanCallback) {
@@ -125,12 +131,13 @@ internal data class PageActivityHolder(val pageId: Int,
 
         route.settings.animated = animated
 
-        activity?.get()?.let { activity ->
+        val activity = activity?.get()
+        if (activity != null) {
             if (activity is ThrioActivity) {
-                activity.onPop(route.settings.toArguments()) {
+                activity.onPopTo(route.settings.toArguments()) {
                     if (it) {
                         val lastIndex = routes.indexOf(route)
-                        for (i in routes.size downTo lastIndex + 1) {
+                        for (i in routes.size - 1 downTo lastIndex + 1) {
                             routes.removeAt(i)
                         }
                     }
@@ -139,8 +146,9 @@ internal data class PageActivityHolder(val pageId: Int,
             } else {
                 result(true)
             }
+        } else {
+            result(false)
         }
-        result(false)
     }
 
     fun remove(url: String, index: Int?, animated: Boolean, result: BooleanCallback) {
@@ -152,7 +160,8 @@ internal data class PageActivityHolder(val pageId: Int,
 
         route.settings.animated = animated
 
-        activity?.get()?.let { activity ->
+        val activity = activity?.get()
+        if (activity != null) {
             if (activity is ThrioActivity) {
                 activity.onRemove(route.settings.toArguments()) {
                     if (it) {
@@ -164,7 +173,8 @@ internal data class PageActivityHolder(val pageId: Int,
                 routes.remove(route)
                 result(true)
             }
+        } else {
+            result(false)
         }
-        result(false)
     }
 }

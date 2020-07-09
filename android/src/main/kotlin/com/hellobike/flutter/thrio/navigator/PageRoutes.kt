@@ -136,7 +136,7 @@ internal object PageRoutes {
             if (it) {
                 val activityHolderIndex = activityHolders.lastIndexOf(activityHolder)
                 val entrypoints = mutableListOf<String>()
-                for (i in activityHolders.size downTo activityHolderIndex + 1) {
+                for (i in activityHolders.size - 1 downTo activityHolderIndex + 1) {
                     entrypoints.add(activityHolders.removeAt(i).entryPoint)
                 }
                 // 多引擎模式下的处理
@@ -176,6 +176,13 @@ internal object PageRoutes {
                 }
             }
             result(it)
+        }
+    }
+
+    fun destroy(pageId: Int) {
+        val activityHolder = activityHolders.lastOrNull { it.pageId == pageId }
+        if (activityHolder != null) {
+            activityHolders.remove(activityHolder)
         }
     }
 

@@ -1,4 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Thrio Demo</string>
+    <string name="push_flutter_1">push Flutter 1</string>
+    <string name="push_native_1">push Native 1</string>
+    <string name="remove_native_1">remove Native 1</string>
+    <string name="pop">pop</string>
+    <string name="remove_flutter1">remove flutter1</string>
+    <string name="push_flutter_2">push Flutter 2</string>
+    <string name="remove_flutter_2">remove Flutter 2</string>
 </resources>

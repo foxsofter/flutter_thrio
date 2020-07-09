@@ -78,6 +78,8 @@ internal object ActivityDelegate : Application.ActivityLifecycleCallbacks {
         if (isSystemDestroyed(activity)) {
             return
         }
+        // 如果原生页面被关闭，在这里同步其页面栈
+        NavigationController.doDestroy(activity)
     }
 
     private fun clearSystemDestroyed(activity: Activity) {

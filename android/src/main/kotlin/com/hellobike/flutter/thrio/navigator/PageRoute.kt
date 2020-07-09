@@ -31,11 +31,10 @@ data class PageRoute(val settings: RouteSettings, val clazz: Class<out Activity>
 
     private val notifications: MutableMap<String, Any?> = mutableMapOf()
 
-    var entryPoint: String = THRIO_ENGINE_FLUTTER_ENTRYPOINT_DEFAULT
-    var fromEntryPoint: String = THRIO_ENGINE_NATIVE_ENTRYPOINT
+    var entrypoint: String = THRIO_ENGINE_FLUTTER_ENTRYPOINT_DEFAULT
+    var fromEntrypoint: String = THRIO_ENGINE_NATIVE_ENTRYPOINT
 
     var poppedResult: NullableAnyCallback? = null
-    var resultParams: Any? = null
 
     fun addNotify(name: String, params: Any?) {
         notifications[name] = params

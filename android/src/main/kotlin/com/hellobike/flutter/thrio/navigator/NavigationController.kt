@@ -139,11 +139,15 @@ internal object NavigationController {
             val fromEntryPoint = activity.intent.getFromEntrypoint()
 
             var pageId = activity.intent.getPageId()
+            if (pageId == NAVIGATION_PAGE_ID_NONE) {
+                pageId = activity.hashCode()
+                activity.intent.putExtra(NAVIGATION_PAGE_ID_KEY, pageId)
+            }
             settings.isNested = PageRoutes.hasRoute(pageId)
 
             val route = PageRoute(settings, activity::class.java)
-            route.fromEntryPoint = fromEntryPoint
-            route.entryPoint = entrypoint
+            route.fromEntrypoint = fromEntryPoint
+            route.entrypoint = entrypoint
             route.poppedResult = poppedResult
             poppedResult = null
 
@@ -255,11 +259,22 @@ internal object NavigationController {
             popToRoute.settings.animated = animated
             this.popToRoute = popToRoute
 
-            PageRoutes.lastActivityHolder()?.activity?.get()?.let {
-                val intent = Intent(it.applicationContext, popToRoute.clazz)
-                intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                it.startActivity(intent)
+            PageRoutes.lastActivityHolder()?.activity?.get()?.let { activity ->
+                val builder = IntentBuilders.intentBuilders[popToRoute.settings.url]
+                        ?: FlutterIntentBuilder
+                val intent = builder.build(activity, popToRoute.entrypoint).let { intent ->
+                    if (!animated) {
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
+                    }
+
+                    intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                    val settingsData = HashMap<String, Any>().also { it.putAll(popToRoute.settings.toArguments()) }
+                    intent.putExtra(NAVIGATION_ROUTE_SETTINGS_KEY, settingsData)
+                    intent.putExtra(NAVIGATION_ROUTE_ENTRYPOINT_KEY, popToRoute.entrypoint)
+                    intent.putExtra(NAVIGATION_ROUTE_FROM_ENTRYPOINT_KEY, popToRoute.fromEntrypoint)
+                }
+                activity.startActivity(intent)
             }
         }
 
@@ -316,10 +331,19 @@ internal object NavigationController {
             if (pageId == NAVIGATION_PAGE_ID_NONE) {
                 return
             }
-            if (PageRoutes.lastRemovedActivityHolder(pageId) != null) {
+            val activityHolder = PageRoutes.lastRemovedActivityHolder(pageId)
+            if (activityHolder != null) {
                 activity.finish()
             }
         }
+    }
+
+    fun doDestroy(activity: Activity) {
+        val pageId = activity.intent.getPageId()
+        if (pageId == NAVIGATION_PAGE_ID_NONE) {
+            return
+        }
+        PageRoutes.destroy(pageId)
     }
 
 }

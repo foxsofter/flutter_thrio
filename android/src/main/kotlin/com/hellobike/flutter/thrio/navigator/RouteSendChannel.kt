@@ -43,11 +43,11 @@ class RouteSendChannel constructor(messenger: BinaryMessenger, val entrypoint: S
 
     override fun onPush(arguments: Any?, result: BooleanCallback) {
         invokeMethod("__onPush__", arguments, object : MethodChannel.Result {
-            override fun success(result: Any?) {
-                if (result !is Boolean) {
+            override fun success(success: Any?) {
+                if (success !is Boolean) {
                     return
                 }
-                result(result)
+                result(success)
             }
 
             override fun error(errorCode: String?, errorMessage: String?, errorDetails: Any?) {
@@ -65,11 +65,11 @@ class RouteSendChannel constructor(messenger: BinaryMessenger, val entrypoint: S
 
     override fun onPop(arguments: Any?, result: BooleanCallback) {
         invokeMethod("__onPop__", arguments, object : MethodChannel.Result {
-            override fun success(result: Any?) {
-                if (result !is Boolean) {
+            override fun success(success: Any?) {
+                if (success !is Boolean) {
                     return
                 }
-                result(result)
+                result(success)
             }
 
             override fun error(errorCode: String?, errorMessage: String?, errorDetails: Any?) {
@@ -82,11 +82,11 @@ class RouteSendChannel constructor(messenger: BinaryMessenger, val entrypoint: S
 
     override fun onPopTo(arguments: Any?, result: BooleanCallback) {
         invokeMethod("__onPopTo__", arguments, object : MethodChannel.Result {
-            override fun success(result: Any?) {
-                if (result !is Boolean) {
+            override fun success(success: Any?) {
+                if (success !is Boolean) {
                     return
                 }
-                result(result)
+                result(success)
             }
 
             override fun error(errorCode: String?, errorMessage: String?, errorDetails: Any?) {
@@ -99,11 +99,11 @@ class RouteSendChannel constructor(messenger: BinaryMessenger, val entrypoint: S
 
     override fun onRemove(arguments: Any?, result: BooleanCallback) {
         invokeMethod("__onRemove__", arguments, object : MethodChannel.Result {
-            override fun success(result: Any?) {
-                if (result !is Boolean) {
+            override fun success(success: Any?) {
+                if (success !is Boolean) {
                     return
                 }
-                result(result)
+                result(success)
             }
 
             override fun error(errorCode: String?, errorMessage: String?, errorDetails: Any?) {

@@ -12,8 +12,8 @@ class Native1Activity : AppCompatActivity(), PageNotifyListener {
     private fun initView() {
         tv_native.text = "Native 1"
 
-        btn_1.setOnClickListener {
-            ThrioNavigator.push( "/biz1/flutter1",
+        btn_10.setOnClickListener {
+            ThrioNavigator.push("/biz1/flutter1",
                     params = mapOf("k1" to 1),
                     result = {
                         Log.e("Thrio", "push result data $it")
@@ -24,8 +24,32 @@ class Native1Activity : AppCompatActivity(), PageNotifyListener {
             )
         }
 
-        btn_2.setOnClickListener {
-            ThrioNavigator.push( "native1",
+        btn_11.setOnClickListener {
+            ThrioNavigator.remove("/biz1/flutter1") {
+                Log.e("Thrio", "push result data $it")
+            }
+        }
+
+        btn_12.setOnClickListener {
+            ThrioNavigator.push("/biz2/flutter2",
+                    params = mapOf("k1" to 1),
+                    result = {
+                        Log.e("Thrio", "push result data $it")
+                    },
+                    poppedResult = {
+                        Log.e("Thrio", "native1 poppedResult call params $it")
+                    }
+            )
+        }
+
+        btn_13.setOnClickListener {
+            ThrioNavigator.remove("/biz2/flutter2") {
+                Log.e("Thrio", "push result data $it")
+            }
+        }
+
+        btn_20.setOnClickListener {
+            ThrioNavigator.push("native1",
                     mapOf("k1" to 1),
                     true,
                     result = {
@@ -37,17 +61,41 @@ class Native1Activity : AppCompatActivity(), PageNotifyListener {
             )
         }
 
+        btn_21.setOnClickListener {
+            ThrioNavigator.remove("native1")
+        }
+
+        btn_22.setOnClickListener {
+            ThrioNavigator.push("native2",
+                    mapOf("k1" to 1),
+                    true,
+                    result = {
+                        Log.e("Thrio", "push result data $it")
+                    },
+                    poppedResult = {
+                        Log.e("Thrio", "native1 poppedResult call params $it")
+                    }
+            )
+        }
+
+        btn_23.setOnClickListener {
+            ThrioNavigator.remove("native2")
+        }
+
         btn_3.setOnClickListener {
-            ThrioNavigator.pop( "native 1 popResult")
+            ThrioNavigator.pop("native 1 popResult")
         }
     }
 
     override fun onResume() {
         super.onResume()
+
         val key = intent.getLongExtra("KEY_THRIO_STACK_ID", -1)
         if (key != -1L) {
             tv_native.text = "Native 1 \r\nstackId $key"
         }
+
+
     }
 
     override fun onNotify(name: String, params: Any?) {
@@ -61,5 +109,7 @@ class Native1Activity : AppCompatActivity(), PageNotifyListener {
         setContentView(R.layout.activity_native)
         initView()
     }
+
+
 }
 
