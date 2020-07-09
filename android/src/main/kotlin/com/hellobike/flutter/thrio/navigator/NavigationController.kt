@@ -65,7 +65,7 @@ internal object NavigationController {
 
             val builder = IntentBuilders.intentBuilders[url] ?: IntentBuilders.flutterIntentBuilder
 
-            var entrypoint = THRIO_ENGINE_NATIVE_ENTRYPOINT
+            var entrypoint = NAVIGATION_NATIVE_ENTRYPOINT
             var isSingleTop = false
 
             val lastActivityHolder = PageRoutes.lastActivityHolder()
@@ -75,7 +75,7 @@ internal object NavigationController {
                 entrypoint = if (FlutterEngineFactory.isMultiEngineEnabled) {
                     url.getEntrypoint()
                 } else {
-                    THRIO_ENGINE_FLUTTER_ENTRYPOINT_DEFAULT
+                    NAVIGATION_FLUTTER_ENTRYPOINT_DEFAULT
                 }
                 isSingleTop = lastEntrypoint == entrypoint
             }
@@ -133,8 +133,6 @@ internal object NavigationController {
             }
 
             val settings = RouteSettings.fromArguments(settingsData)
-            activity.intent.removeExtra(NAVIGATION_ROUTE_SETTINGS_KEY)
-
             val entrypoint = activity.intent.getEntrypoint()
             val fromEntryPoint = activity.intent.getFromEntrypoint()
 
@@ -231,8 +229,9 @@ internal object NavigationController {
 
     object PopTo {
 
-        var result: BooleanCallback? = null
-        var popToRoute: PageRoute? = null
+        private var result: BooleanCallback? = null
+        private var poppedToRoute: PageRoute? = null
+        private val poppedPageIds by lazy { mutableListOf<Int>() }
 
         fun popTo(url: String, index: Int?, animated: Boolean, result: BooleanCallback? = null) {
             if (routeAction != RouteAction.NONE) {
@@ -248,43 +247,72 @@ internal object NavigationController {
                 return
             }
 
-            val popToRoute = PageRoutes.lastRoute(url, index)
-            if (popToRoute == null || popToRoute == PageRoutes.lastRoute()) {
+            val poppedToRoute = PageRoutes.lastRoute(url, index)
+            if (poppedToRoute == null || poppedToRoute == PageRoutes.lastRoute()) {
                 result(false)
                 routeAction = RouteAction.NONE
                 return
             }
 
             routeAction = RouteAction.POP_TO
-            popToRoute.settings.animated = animated
-            this.popToRoute = popToRoute
 
-            PageRoutes.lastActivityHolder()?.activity?.get()?.let { activity ->
-                val builder = IntentBuilders.intentBuilders[popToRoute.settings.url]
-                        ?: FlutterIntentBuilder
-                val intent = builder.build(activity, popToRoute.entrypoint).let { intent ->
-                    if (!animated) {
-                        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
+            poppedToRoute.settings.animated = animated
+            this.poppedToRoute = poppedToRoute
+
+            val lastActivity = PageRoutes.lastActivityHolder()?.activity?.get()
+            fun startActivity(poppedToRoute: PageRoute) {
+                lastActivity?.let { activity ->
+                    val builder = IntentBuilders.intentBuilders[poppedToRoute.settings.url]
+                            ?: FlutterIntentBuilder
+                    val intent = builder.build(activity, poppedToRoute.entrypoint).let { intent ->
+                        if (!animated) {
+                            intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
+                        }
+
+                        intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                        val settingsData = HashMap<String, Any>().also { it.putAll(poppedToRoute.settings.toArguments()) }
+                        intent.putExtra(NAVIGATION_ROUTE_SETTINGS_KEY, settingsData)
+                        intent.putExtra(NAVIGATION_ROUTE_ENTRYPOINT_KEY, poppedToRoute.entrypoint)
+                        intent.putExtra(NAVIGATION_ROUTE_FROM_ENTRYPOINT_KEY, poppedToRoute.fromEntrypoint)
                     }
-
-                    intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                    val settingsData = HashMap<String, Any>().also { it.putAll(popToRoute.settings.toArguments()) }
-                    intent.putExtra(NAVIGATION_ROUTE_SETTINGS_KEY, settingsData)
-                    intent.putExtra(NAVIGATION_ROUTE_ENTRYPOINT_KEY, popToRoute.entrypoint)
-                    intent.putExtra(NAVIGATION_ROUTE_FROM_ENTRYPOINT_KEY, popToRoute.fromEntrypoint)
+                    activity.startActivity(intent)
                 }
-                activity.startActivity(intent)
             }
+
+            val activityHolders = PageRoutes.removeByPopToActivityHolder(url, index)
+
+            if (activityHolders == null || activityHolders.isEmpty()) {
+                startActivity(poppedToRoute)
+            } else {
+                var poppedClazzCount = 1
+                for (activityHolder in activityHolders) {
+                    if (activityHolder.clazz == poppedToRoute.clazz) {
+                        poppedPageIds.add(activityHolder.pageId)
+                        poppedClazzCount += 1
+                    }
+                }
+                repeat(poppedClazzCount) {
+                    startActivity(poppedToRoute)
+                }
+            }
+
+
         }
 
         fun doPopTo(activity: Activity) {
+            // 清掉popTo还未关闭的Activity
+            val pageId = activity.intent.getPageId()
+            if (pageId != NAVIGATION_PAGE_ID_NONE && poppedPageIds.contains(pageId)) {
+                activity.finish()
+            }
+
             if (routeAction != RouteAction.POP_TO) {
                 result(false)
                 return
             }
 
-            if (popToRoute == null || popToRoute?.clazz != activity.javaClass) {
+            if (poppedToRoute == null || poppedToRoute?.clazz != activity.javaClass) {
                 result(false)
                 routeAction = RouteAction.NONE
                 return
@@ -292,7 +320,7 @@ internal object NavigationController {
 
             routeAction = RouteAction.POPPING_TO
 
-            popToRoute?.let { route ->
+            poppedToRoute?.let { route ->
                 PageRoutes.popTo(route.settings.url, route.settings.index, route.settings.animated) {
                     result(it)
                     routeAction = RouteAction.NONE
@@ -303,7 +331,7 @@ internal object NavigationController {
         private fun result(success: Boolean) {
             result?.invoke(success)
             result = null
-            popToRoute = null
+            poppedToRoute = null
         }
     }
 

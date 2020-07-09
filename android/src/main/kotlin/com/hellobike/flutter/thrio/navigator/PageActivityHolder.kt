@@ -31,7 +31,7 @@ import java.lang.ref.WeakReference
 
 internal data class PageActivityHolder(val pageId: Int,
                                        val clazz: Class<out Activity>,
-                                       val entryPoint: String = THRIO_ENGINE_FLUTTER_ENTRYPOINT_DEFAULT) {
+                                       val entryPoint: String = NAVIGATION_FLUTTER_ENTRYPOINT_DEFAULT) {
 
     private val routes by lazy { mutableListOf<PageRoute>() }
 
@@ -106,7 +106,7 @@ internal data class PageActivityHolder(val pageId: Int,
                     if (it) {
                         lastRoute.poppedResult?.invoke(params)
                         lastRoute.poppedResult = null
-                        if (lastRoute.fromEntrypoint != THRIO_ENGINE_NATIVE_ENTRYPOINT
+                        if (lastRoute.fromEntrypoint != NAVIGATION_NATIVE_ENTRYPOINT
                                 &&lastRoute.entrypoint != lastRoute.fromEntrypoint) {
                             FlutterEngineFactory.getEngine(lastRoute.fromEntrypoint)?.onPop(lastRoute.settings.toArguments()) {}
                         }

@@ -35,6 +35,8 @@ internal object PageRoutes {
 
     private val removedActivityHolders by lazy { mutableListOf<PageActivityHolder>() }
 
+    private val poppedToActivityHolders by lazy { mutableListOf<PageActivityHolder>() }
+
     fun lastActivityHolder(pageId: Int? = null): PageActivityHolder? = when (pageId) {
         null, NAVIGATION_PAGE_ID_NONE -> activityHolders.lastOrNull()
         else -> activityHolders.lastOrNull { it.pageId == pageId }
@@ -42,6 +44,18 @@ internal object PageRoutes {
 
     fun lastRemovedActivityHolder(pageId: Int): PageActivityHolder? {
         return removedActivityHolders.lastOrNull { it.pageId == pageId }
+    }
+
+    fun removeByPopToActivityHolder(url: String, index: Int?) : List<PageActivityHolder>? {
+        val activityHolder = activityHolders.lastOrNull { it.lastRoute(url, index) != null }
+                ?: return null
+
+        val activityHolderIndex = activityHolders.lastIndexOf(activityHolder)
+        val activityHolders = mutableListOf<PageActivityHolder>()
+        for (i in this.activityHolders.size - 1 downTo activityHolderIndex + 1) {
+            activityHolders.add(this.activityHolders[i])
+        }
+        return activityHolders
     }
 
     fun lastActivityHolder(url: String, index: Int? = null): PageActivityHolder? {
@@ -137,7 +151,9 @@ internal object PageRoutes {
                 val activityHolderIndex = activityHolders.lastIndexOf(activityHolder)
                 val entrypoints = mutableListOf<String>()
                 for (i in activityHolders.size - 1 downTo activityHolderIndex + 1) {
-                    entrypoints.add(activityHolders.removeAt(i).entryPoint)
+                    val poppedActivityHolder = activityHolders.removeAt(i)
+                    poppedToActivityHolders.add(poppedActivityHolder)
+                    entrypoints.add(poppedActivityHolder.entryPoint)
                 }
                 // 多引擎模式下的处理
                 entrypoints.forEach { entrypoint ->

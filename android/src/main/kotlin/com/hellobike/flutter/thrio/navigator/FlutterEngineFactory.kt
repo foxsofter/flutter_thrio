@@ -32,7 +32,7 @@ object FlutterEngineFactory {
     var isMultiEngineEnabled = false
 
     fun startup(context: Context,
-                entryPoint: String = THRIO_ENGINE_FLUTTER_ENTRYPOINT_DEFAULT,
+                entryPoint: String = NAVIGATION_FLUTTER_ENTRYPOINT_DEFAULT,
                 readyListener: EngineReadyListener? = null) {
         if (manager.contains(entryPoint)) {
             readyListener?.onReady(entryPoint)
@@ -41,7 +41,7 @@ object FlutterEngineFactory {
         }
     }
 
-    fun getEngine(entryPoint: String = THRIO_ENGINE_FLUTTER_ENTRYPOINT_DEFAULT): FlutterEngine? {
+    fun getEngine(entryPoint: String = NAVIGATION_FLUTTER_ENTRYPOINT_DEFAULT): FlutterEngine? {
         return manager[entryPoint]
     }
 }

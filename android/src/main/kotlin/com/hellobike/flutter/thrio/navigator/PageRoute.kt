@@ -25,14 +25,13 @@ package com.hellobike.flutter.thrio.navigator
 
 import android.app.Activity
 import com.hellobike.flutter.thrio.NullableAnyCallback
-import java.lang.ref.WeakReference
 
 data class PageRoute(val settings: RouteSettings, val clazz: Class<out Activity>) {
 
     private val notifications: MutableMap<String, Any?> = mutableMapOf()
 
-    var entrypoint: String = THRIO_ENGINE_FLUTTER_ENTRYPOINT_DEFAULT
-    var fromEntrypoint: String = THRIO_ENGINE_NATIVE_ENTRYPOINT
+    var entrypoint: String = NAVIGATION_FLUTTER_ENTRYPOINT_DEFAULT
+    var fromEntrypoint: String = NAVIGATION_NATIVE_ENTRYPOINT
 
     var poppedResult: NullableAnyCallback? = null
 

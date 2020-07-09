@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.hellobike.flutter.thrio.navigator.PageNotifyListener
+import com.hellobike.flutter.thrio.navigator.RouteSettings
 import com.hellobike.flutter.thrio.navigator.ThrioNavigator
 import kotlinx.android.synthetic.main.activity_native.*
 
@@ -90,12 +91,12 @@ class Native1Activity : AppCompatActivity(), PageNotifyListener {
     override fun onResume() {
         super.onResume()
 
-        val key = intent.getLongExtra("KEY_THRIO_STACK_ID", -1)
-        if (key != -1L) {
-            tv_native.text = "Native 1 \r\nstackId $key"
+        val data = intent.getSerializableExtra("NAVIGATION_ROUTE_SETTINGS")
+
+        if (data != null) {
+            val settings = RouteSettings.fromArguments(data as Map<String, Any>)
+            tv_native.text = "native1 index ${settings.index}"
         }
-
-
     }
 
     override fun onNotify(name: String, params: Any?) {

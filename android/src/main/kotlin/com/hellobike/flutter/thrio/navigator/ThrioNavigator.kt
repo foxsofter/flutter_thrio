@@ -38,7 +38,7 @@ object ThrioNavigator {
              poppedResult: NullableAnyCallback? = null,
              result: NullableIntCallback = {}) {
         NavigationController.Push.push(url, params, animated,
-                THRIO_ENGINE_NATIVE_ENTRYPOINT, poppedResult, result)
+                NAVIGATION_NATIVE_ENTRYPOINT, poppedResult, result)
     }
 
 
