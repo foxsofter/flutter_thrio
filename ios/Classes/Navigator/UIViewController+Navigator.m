@@ -109,16 +109,22 @@ NS_ASSUME_NONNULL_BEGIN
                   index:(NSNumber * _Nullable)index
                    name:(NSString *)name
                  params:(id _Nullable)params {
-  NavigatorPageRoute *route = [self thrio_getRouteByUrl:url index:index];
-  if (route) {
-    [route addNotify:name params:params];
-    if (self == self.navigationController.topViewController &&
-        route == self.thrio_lastRoute) {
-      [self thrio_onNotify:route];
+  BOOL isMatch = NO;
+
+  NavigatorPageRoute *last = self.thrio_lastRoute;
+  do {
+    if ([last.settings.url isEqualToString:url] &&
+        (index == nil || [last.settings.index isEqualToNumber:index])) {
+      [last addNotify:name params:params];
+      if (self == self.navigationController.topViewController &&
+          last == self.thrio_lastRoute) {
+        [self thrio_onNotify:last];
+      }
+      isMatch = YES;
     }
-    return YES;
-  }
-  return NO;
+  } while ((last = last.prev));
+
+  return isMatch;
 }
 
 - (void)thrio_popParams:(id _Nullable)params
