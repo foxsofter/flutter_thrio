@@ -95,7 +95,7 @@ class Native1Activity : AppCompatActivity(), PageNotifyListener {
 
         if (data != null) {
             val settings = RouteSettings.fromArguments(data as Map<String, Any>)
-            tv_native.text = "native1 index ${settings.index}"
+            tv_native.text = "native1 index " + settings.index
         }
     }
 

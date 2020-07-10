@@ -116,6 +116,9 @@ internal data class PageActivityHolder(val pageId: Int,
                 routes.remove(lastRoute)
                 result(true)
                 lastRoute.poppedResult?.invoke(params)
+                if (lastRoute.fromEntrypoint != NAVIGATION_NATIVE_ENTRYPOINT) {
+                    FlutterEngineFactory.getEngine(lastRoute.fromEntrypoint)?.onPop(lastRoute.settings.toArguments()) {}
+                }
             }
         } else {
             result(false)

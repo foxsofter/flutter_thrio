@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import com.hellobike.flutter.thrio.navigator.RouteSettings
 import com.hellobike.flutter.thrio.navigator.ThrioNavigator
 import kotlinx.android.synthetic.main.activity_native.*
 
@@ -16,7 +17,7 @@ class Native2Activity : AppCompatActivity() {
     }
 
     private fun initView() {
-        tv_native.text = "Native 2"
+        tv_native.text = "native 2"
 
         btn_10.setOnClickListener {
             ThrioNavigator.push("/biz2/flutter2",
@@ -25,7 +26,7 @@ class Native2Activity : AppCompatActivity() {
                         Log.e("Thrio", "push result data $it")
                     },
                     poppedResult = {
-                        Log.e("Thrio", "native1 poppedResult call params $it")
+                        Log.e("Thrio", "native2 poppedResult call params $it")
                     }
             )
         }
@@ -43,7 +44,7 @@ class Native2Activity : AppCompatActivity() {
                         Log.e("Thrio", "push result data $it")
                     },
                     poppedResult = {
-                        Log.e("Thrio", "native1 poppedResult call params $it")
+                        Log.e("Thrio", "native2 poppedResult call params $it")
                     }
             )
         }
@@ -64,7 +65,18 @@ class Native2Activity : AppCompatActivity() {
         }
 
         btn_3.setOnClickListener {
-            ThrioNavigator.pop("native 1 popResult")
+            ThrioNavigator.pop("native 2 popResult")
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        val data = intent.getSerializableExtra("NAVIGATION_ROUTE_SETTINGS")
+
+        if (data != null) {
+            val settings = RouteSettings.fromArguments(data as Map<String, Any>)
+            tv_native.text = "native2 index " + settings.index
         }
     }
 }
