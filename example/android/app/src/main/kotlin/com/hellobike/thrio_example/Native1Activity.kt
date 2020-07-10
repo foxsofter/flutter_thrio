@@ -3,46 +3,99 @@ package com.hellobike.thrio_example
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
-import com.hellobike.flutter.thrio.OnNotifyListener
-import com.hellobike.flutter.thrio.ThrioNavigator
+import com.hellobike.flutter.thrio.navigator.PageNotifyListener
+import com.hellobike.flutter.thrio.navigator.RouteSettings
+import com.hellobike.flutter.thrio.navigator.ThrioNavigator
 import kotlinx.android.synthetic.main.activity_native.*
 
-class Native1Activity : AppCompatActivity(), OnNotifyListener {
+class Native1Activity : AppCompatActivity(), PageNotifyListener {
 
     private fun initView() {
         tv_native.text = "Native 1"
-        btn_1.setOnClickListener {
-            ThrioNavigator.push(this, "/biz1/flutter1",
-                    mapOf("k1" to 1),
-                    true,
+
+        btn_10.setOnClickListener {
+            ThrioNavigator.push("/biz1/flutter1",
+                    params = mapOf("k1" to 1),
+                    result = {
+                        Log.e("Thrio", "push result data $it")
+                    },
                     poppedResult = {
-                        Log.e("Thrio", "native1 popResult call params $it")
+                        Log.e("Thrio", "native1 poppedResult call params $it")
                     }
-            ) {
+            )
+        }
+
+        btn_11.setOnClickListener {
+            ThrioNavigator.remove("/biz1/flutter1") {
                 Log.e("Thrio", "push result data $it")
             }
         }
-        btn_2.setOnClickListener {
-            ThrioNavigator.push(this, "native1",
-                    mapOf("k1" to 1),
-                    true,
+
+        btn_12.setOnClickListener {
+            ThrioNavigator.push("/biz2/flutter2",
+                    params = mapOf("k1" to 1),
+                    result = {
+                        Log.e("Thrio", "push result data $it")
+                    },
                     poppedResult = {
-                        Log.e("Thrio", "native1 popResult call params $it")
+                        Log.e("Thrio", "native1 poppedResult call params $it")
                     }
-            ) {
+            )
+        }
+
+        btn_13.setOnClickListener {
+            ThrioNavigator.remove("/biz2/flutter2") {
                 Log.e("Thrio", "push result data $it")
             }
         }
+
+        btn_20.setOnClickListener {
+            ThrioNavigator.push("native1",
+                    mapOf("k1" to 1),
+                    true,
+                    result = {
+                        Log.e("Thrio", "push result data $it")
+                    },
+                    poppedResult = {
+                        Log.e("Thrio", "native1 poppedResult call params $it")
+                    }
+            )
+        }
+
+        btn_21.setOnClickListener {
+            ThrioNavigator.remove("native1")
+        }
+
+        btn_22.setOnClickListener {
+            ThrioNavigator.push("native2",
+                    mapOf("k1" to 1),
+                    true,
+                    result = {
+                        Log.e("Thrio", "push result data $it")
+                    },
+                    poppedResult = {
+                        Log.e("Thrio", "native1 poppedResult call params $it")
+                    }
+            )
+        }
+
+        btn_23.setOnClickListener {
+            ThrioNavigator.remove("native2")
+        }
+
         btn_3.setOnClickListener {
-            ThrioNavigator.pop(this, "native 1 popResult")
+            ThrioNavigator.pop("native 1 popResult")
         }
     }
 
     override fun onResume() {
         super.onResume()
-        val key = intent.getLongExtra("KEY_THRIO_STACK_ID", -1)
-        if (key != -1L) {
-            tv_native.text = "Native 1 \r\nstackId $key"
+
+        val data = intent.getSerializableExtra("NAVIGATION_ROUTE_SETTINGS")
+
+        if (data != null) {
+            val settings = RouteSettings.fromArguments(data as Map<String, Any>)
+            tv_native.text = "native1 index " + settings.index
         }
     }
 
@@ -57,5 +110,7 @@ class Native1Activity : AppCompatActivity(), OnNotifyListener {
         setContentView(R.layout.activity_native)
         initView()
     }
+
+
 }
 

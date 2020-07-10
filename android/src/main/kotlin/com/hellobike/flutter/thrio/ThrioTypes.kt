@@ -21,31 +21,25 @@
  * IN THE SOFTWARE.
  */
 
-package com.hellobike.flutter.thrio.navigator
+package com.hellobike.flutter.thrio
 
-import android.util.Log
-import com.hellobike.flutter.thrio.channel.ThrioChannel
-import io.flutter.plugin.common.BinaryMessenger
-import io.flutter.plugin.common.MethodCall
-import io.flutter.plugin.common.MethodChannel
+/**
+ * Signature of callbacks that have no arguments.
+ */
+typealias VoidCallback = () -> Unit
 
-class RouteObserverChannel constructor(messenger: BinaryMessenger)
-    : ThrioChannel(messenger, "__thrio_route_channel__"), MethodChannel.MethodCallHandler {
+/**
+ * Signature of callbacks with boolean parameters.
+ */
+typealias BooleanCallback = (Boolean) -> Unit
 
-    init {
-        setMethodCallHandler(this)
-    }
+/**
+ * Signature of callbacks with Int? parameters.
+ */
+typealias NullableIntCallback = (Int?) -> Unit
 
-    override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
-        when (call.method) {
-            /** unused **/
-            "didPush", "didPop", "didRemove", "didPopTo", "setPopDisabled" -> {
-            }
-            else -> {
-                Log.e("Thrio", "flutter call method ${call.method} notImplemented")
-//                result.notImplemented()
-            }
-        }
-    }
+/**
+ * Signature of callbacks with any parameters.
+ */
+typealias NullableAnyCallback = (Any?) -> Unit
 
-}

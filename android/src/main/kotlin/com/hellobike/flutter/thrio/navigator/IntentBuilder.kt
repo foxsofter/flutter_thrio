@@ -23,29 +23,15 @@
 
 package com.hellobike.flutter.thrio.navigator
 
-import android.util.Log
-import com.hellobike.flutter.thrio.channel.ThrioChannel
-import io.flutter.plugin.common.BinaryMessenger
-import io.flutter.plugin.common.MethodCall
-import io.flutter.plugin.common.MethodChannel
+import android.app.Activity
+import android.content.Context
+import android.content.Intent
 
-class RouteObserverChannel constructor(messenger: BinaryMessenger)
-    : ThrioChannel(messenger, "__thrio_route_channel__"), MethodChannel.MethodCallHandler {
+interface IntentBuilder {
 
-    init {
-        setMethodCallHandler(this)
+    fun getActivityClz(): Class<out Activity>
+
+    fun build(context: Context, entrypoint: String): Intent {
+        return Intent(context, getActivityClz())
     }
-
-    override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
-        when (call.method) {
-            /** unused **/
-            "didPush", "didPop", "didRemove", "didPopTo", "setPopDisabled" -> {
-            }
-            else -> {
-                Log.e("Thrio", "flutter call method ${call.method} notImplemented")
-//                result.notImplemented()
-            }
-        }
-    }
-
 }

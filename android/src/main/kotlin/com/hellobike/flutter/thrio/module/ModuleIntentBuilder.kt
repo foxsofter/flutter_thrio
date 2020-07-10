@@ -21,31 +21,26 @@
  * IN THE SOFTWARE.
  */
 
-package com.hellobike.flutter.thrio.navigator
+package com.hellobike.flutter.thrio.module
 
-import android.util.Log
-import com.hellobike.flutter.thrio.channel.ThrioChannel
-import io.flutter.plugin.common.BinaryMessenger
-import io.flutter.plugin.common.MethodCall
-import io.flutter.plugin.common.MethodChannel
+import android.content.Context
+import com.hellobike.flutter.thrio.VoidCallback
+import com.hellobike.flutter.thrio.navigator.FlutterIntentBuilder
+import com.hellobike.flutter.thrio.navigator.IntentBuilder
+import com.hellobike.flutter.thrio.navigator.IntentBuilders
 
-class RouteObserverChannel constructor(messenger: BinaryMessenger)
-    : ThrioChannel(messenger, "__thrio_route_channel__"), MethodChannel.MethodCallHandler {
+interface ModuleIntentBuilder {
+    fun onIntentBuilderRegister(context: Context)
 
-    init {
-        setMethodCallHandler(this)
+    fun registerIntentBuilder(url: String, builder: IntentBuilder) : VoidCallback {
+        return IntentBuilders.intentBuilders.registry(url, builder)
     }
 
-    override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
-        when (call.method) {
-            /** unused **/
-            "didPush", "didPop", "didRemove", "didPopTo", "setPopDisabled" -> {
-            }
-            else -> {
-                Log.e("Thrio", "flutter call method ${call.method} notImplemented")
-//                result.notImplemented()
-            }
-        }
+    fun registerIntentBuilders(builders: Map<String, IntentBuilder>) : VoidCallback {
+        return IntentBuilders.intentBuilders.registryAll(builders)
     }
 
+    fun setFlutterIntentBuilder(builder: FlutterIntentBuilder) {
+        IntentBuilders.flutterIntentBuilder = builder
+    }
 }

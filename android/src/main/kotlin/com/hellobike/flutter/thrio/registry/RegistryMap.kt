@@ -21,31 +21,26 @@
  * IN THE SOFTWARE.
  */
 
-package com.hellobike.flutter.thrio.navigator
+package com.hellobike.flutter.thrio.registry
 
-import android.util.Log
-import com.hellobike.flutter.thrio.channel.ThrioChannel
-import io.flutter.plugin.common.BinaryMessenger
-import io.flutter.plugin.common.MethodCall
-import io.flutter.plugin.common.MethodChannel
+import com.hellobike.flutter.thrio.VoidCallback
 
-class RouteObserverChannel constructor(messenger: BinaryMessenger)
-    : ThrioChannel(messenger, "__thrio_route_channel__"), MethodChannel.MethodCallHandler {
+class RegistryMap<K, V> : Iterable<Map.Entry<K, V>> {
+    private val maps by lazy { mutableMapOf<K, V>() }
 
-    init {
-        setMethodCallHandler(this)
+    fun registry(key: K, value: V): VoidCallback {
+        maps[key] = value
+        return { maps.remove(key) }
     }
 
-    override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
-        when (call.method) {
-            /** unused **/
-            "didPush", "didPop", "didRemove", "didPopTo", "setPopDisabled" -> {
-            }
-            else -> {
-                Log.e("Thrio", "flutter call method ${call.method} notImplemented")
-//                result.notImplemented()
-            }
-        }
+    fun registryAll(values: Map<K, V>): VoidCallback {
+        maps.putAll(values)
+        return { values.keys.forEach { maps.remove(it) } }
     }
 
+    fun clear() = maps.clear()
+
+    operator fun get(key: K): V? = maps[key]
+
+    override fun iterator(): Iterator<Map.Entry<K, V>> = maps.iterator()
 }

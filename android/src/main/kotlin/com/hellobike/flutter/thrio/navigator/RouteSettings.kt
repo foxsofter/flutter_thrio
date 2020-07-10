@@ -23,29 +23,34 @@
 
 package com.hellobike.flutter.thrio.navigator
 
-import android.util.Log
-import com.hellobike.flutter.thrio.channel.ThrioChannel
-import io.flutter.plugin.common.BinaryMessenger
-import io.flutter.plugin.common.MethodCall
-import io.flutter.plugin.common.MethodChannel
+data class RouteSettings(val url: String, val index: Int) {
 
-class RouteObserverChannel constructor(messenger: BinaryMessenger)
-    : ThrioChannel(messenger, "__thrio_route_channel__"), MethodChannel.MethodCallHandler {
+    var params: Any? = null
+    var animated: Boolean = true
+    var isNested: Boolean = false
 
-    init {
-        setMethodCallHandler(this)
-    }
-
-    override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
-        when (call.method) {
-            /** unused **/
-            "didPush", "didPop", "didRemove", "didPopTo", "setPopDisabled" -> {
-            }
-            else -> {
-                Log.e("Thrio", "flutter call method ${call.method} notImplemented")
-//                result.notImplemented()
-            }
+    fun toArguments(): Map<String, Any> = mutableMapOf(
+            "url" to url,
+            "index" to index,
+            "animated" to animated,
+            "isNested" to isNested
+    ).also {
+        if (params != null) {
+            it["params"] =  params as Any
         }
     }
 
+    companion object {
+        @JvmStatic
+        fun fromArguments(arguments: Map<String, Any>): RouteSettings {
+            val url = arguments["url"] as String
+            val index = if (arguments["index"] != null) arguments["index"] as Int else 0
+            val params = arguments["params"]
+            val animated = if (arguments["animated"] != null) arguments["animated"] as Boolean else false
+            return RouteSettings(url, index).also {
+                it.params = params
+                it.animated = animated
+            }
+        }
+    }
 }
