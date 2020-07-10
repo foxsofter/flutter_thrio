@@ -23,29 +23,16 @@
 
 package com.hellobike.flutter.thrio.navigator
 
-import android.util.Log
-import com.hellobike.flutter.thrio.channel.ThrioChannel
-import io.flutter.plugin.common.BinaryMessenger
-import io.flutter.plugin.common.MethodCall
-import io.flutter.plugin.common.MethodChannel
+internal const val NAVIGATION_PAGE_ID_KEY = "NAVIGATION_PAGE_ID"
+internal const val NAVIGATION_PAGE_ID_NONE = -1
+internal const val NAVIGATION_ROUTE_INDEX_DEFAULT = 0
+internal const val NAVIGATION_ROUTE_SETTINGS_KEY = "NAVIGATION_ROUTE_SETTINGS"
+internal const val NAVIGATION_ROUTE_FROM_ENTRYPOINT_KEY = "NAVIGATION_ROUTE_FROM_ENTRYPOINT"
+internal const val NAVIGATION_ROUTE_ENTRYPOINT_KEY = "NAVIGATION_ROUTE_ENTRYPOINT"
+internal const val NAVIGATION_ROUTE_ENTRYPOINT_NONE = ""
 
-class RouteObserverChannel constructor(messenger: BinaryMessenger)
-    : ThrioChannel(messenger, "__thrio_route_channel__"), MethodChannel.MethodCallHandler {
+internal const val NAVIGATION_FLUTTER_ENTRYPOINT_DEFAULT = "main"
+internal const val NAVIGATION_NATIVE_ENTRYPOINT = "_"
 
-    init {
-        setMethodCallHandler(this)
-    }
-
-    override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
-        when (call.method) {
-            /** unused **/
-            "didPush", "didPop", "didRemove", "didPopTo", "setPopDisabled" -> {
-            }
-            else -> {
-                Log.e("Thrio", "flutter call method ${call.method} notImplemented")
-//                result.notImplemented()
-            }
-        }
-    }
-
-}
+internal const val THRIO_ACTIVITY_SAVE_KEY = "THRIO_ACTIVITY_SAVE_KEY"
+internal const val THRIO_ACTIVITY_SAVE_NONE = false
