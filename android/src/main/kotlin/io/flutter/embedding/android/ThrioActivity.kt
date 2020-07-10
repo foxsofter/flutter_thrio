@@ -40,8 +40,8 @@ open class ThrioActivity : ThrioFlutterActivity(), RouteSendHandler {
     @SuppressLint("VisibleForTests")
     override fun finish() {
         super.finish()
-//        super.delegate?.onStop()
-//        super.delegate?.onDetach()
+        super.delegate?.onStop()
+        super.delegate?.onDetach()
     }
 
     override fun shouldAttachEngineToActivity(): Boolean {

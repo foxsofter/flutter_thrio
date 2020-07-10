@@ -46,7 +46,7 @@ internal object PageRoutes {
         return removedActivityHolders.lastOrNull { it.pageId == pageId }
     }
 
-    fun removeByPopToActivityHolder(url: String, index: Int?) : List<PageActivityHolder>? {
+    fun removeByPopToActivityHolder(url: String, index: Int?): List<PageActivityHolder>? {
         val activityHolder = activityHolders.lastOrNull { it.lastRoute(url, index) != null }
                 ?: return null
 
@@ -127,11 +127,13 @@ internal object PageRoutes {
             return
         }
 
-        activityHolder.pop(params, animated) {
+        activityHolder.pop(params, animated) { it ->
             if (it) {
                 if (!activityHolder.hasRoute()) {
                     activityHolders.remove(activityHolder)
-                    activityHolder.activity?.get()?.finish()
+                    activityHolder.activity?.get()?.let { activity ->
+                        activity.finish()
+                    }
                 }
             }
             result(it)
@@ -153,12 +155,12 @@ internal object PageRoutes {
                 for (i in activityHolders.size - 1 downTo activityHolderIndex + 1) {
                     val poppedActivityHolder = activityHolders.removeAt(i)
                     poppedToActivityHolders.add(poppedActivityHolder)
-                    entrypoints.add(poppedActivityHolder.entryPoint)
+                    entrypoints.add(poppedActivityHolder.entrypoint)
                 }
                 // 多引擎模式下的处理
                 entrypoints.forEach { entrypoint ->
                     val lastActivityHolder = activityHolders.lastOrNull { activityHolder ->
-                        activityHolder.entryPoint == entrypoint && activityHolder.hasRoute()
+                        activityHolder.entrypoint == entrypoint && activityHolder.hasRoute()
                     }
                     if (lastActivityHolder != null) {
                         val engine = FlutterEngineFactory.getEngine(entrypoint)

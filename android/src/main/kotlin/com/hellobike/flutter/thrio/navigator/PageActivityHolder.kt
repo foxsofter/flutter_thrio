@@ -31,7 +31,7 @@ import java.lang.ref.WeakReference
 
 internal data class PageActivityHolder(val pageId: Int,
                                        val clazz: Class<out Activity>,
-                                       val entryPoint: String = NAVIGATION_FLUTTER_ENTRYPOINT_DEFAULT) {
+                                       val entrypoint: String = NAVIGATION_FLUTTER_ENTRYPOINT_DEFAULT) {
 
     private val routes by lazy { mutableListOf<PageRoute>() }
 

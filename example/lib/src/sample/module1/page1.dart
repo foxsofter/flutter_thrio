@@ -80,7 +80,7 @@ class _Page1State extends State<Page1> {
                         child: TextField(
                             maxLines: 1,
                             controller: _inputController,
-                            autofocus: true,
+                            autofocus: false,
                             textInputAction: TextInputAction.search,
                             // onSubmitted: onSubmitted,
                             decoration: InputDecoration(

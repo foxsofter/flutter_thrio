@@ -39,6 +39,7 @@ object FlutterIntentBuilder : IntentBuilder {
                 .destroyEngineWithActivity(false)
                 .build(context).apply {
                     setClass(context, getActivityClz())
+                    addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 }
     }
 }
