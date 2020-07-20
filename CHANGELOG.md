@@ -65,3 +65,9 @@
 ## 0.3.0
 
 - fix: issue 44, android keyboard not showing up
+
+## 0.4.0
+
+- refact: 重构 Android 源码
+- feat: 增加通知所有对应 url 实例的能力
+- fix: 修复部分已知bug
