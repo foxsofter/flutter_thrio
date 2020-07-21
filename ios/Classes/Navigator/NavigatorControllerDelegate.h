@@ -20,10 +20,11 @@
 // IN THE SOFTWARE.
 
 #import <Foundation/Foundation.h>
+#import <UIKit/UIKit.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface NavigatorControllerDelegate : NSObject <UINavigationControllerDelegate>
+@interface NavigatorControllerDelegate : NSObject <UINavigationControllerDelegate, UIImagePickerControllerDelegate>
 
 @property (nonatomic, weak) UINavigationController *navigationController;
 
