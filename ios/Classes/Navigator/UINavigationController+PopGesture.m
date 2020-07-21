@@ -102,7 +102,7 @@
     if (self.delegate == self.thrio_navigationControllerDelegate) {
         self.thrio_navigationControllerDelegate.originDelegate = delegate;
     } else {
-        [self setValue:delegate forKey:@"_delegate"];
+        [self setValue:self.thrio_navigationControllerDelegate forKey:@"_delegate"];
     }
 }
 
