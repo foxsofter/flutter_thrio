@@ -28,19 +28,19 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface ThrioNavigator (RouteObservers)
 
-+ (ThrioRegistrySet<id<NavigatorRouteObserverProtocol>> *)routeObservers;
++ (ThrioRegistrySet<id<NavigatorRouteObserverProtocol> > *)routeObservers;
 
-+ (void)didPush:(NavigatorRouteSettings *)routeSettings
-  previousRoute:(NavigatorRouteSettings * _Nullable)previousRouteSettings;
++ (void)  didPush:(NavigatorRouteSettings *)routeSettings
+    previousRoute:(NavigatorRouteSettings *_Nullable)previousRouteSettings;
 
-+ (void)didPop:(NavigatorRouteSettings *)routeSettings
- previousRoute:(NavigatorRouteSettings * _Nullable)previousRouteSettings;
++ (void)   didPop:(NavigatorRouteSettings *)routeSettings
+    previousRoute:(NavigatorRouteSettings *_Nullable)previousRouteSettings;
 
-+ (void)didPopTo:(NavigatorRouteSettings *)routeSettings
-   previousRoute:(NavigatorRouteSettings * _Nullable)previousRouteSettings;
++ (void) didPopTo:(NavigatorRouteSettings *)routeSettings
+    previousRoute:(NavigatorRouteSettings *_Nullable)previousRouteSettings;
 
 + (void)didRemove:(NavigatorRouteSettings *)routeSettings
-    previousRoute:(NavigatorRouteSettings * _Nullable)previousRouteSettings;
+    previousRoute:(NavigatorRouteSettings *_Nullable)previousRouteSettings;
 
 @end
 

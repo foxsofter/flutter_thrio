@@ -25,11 +25,11 @@
 @implementation UIViewController (HidesNavigationBar)
 
 - (BOOL)thrio_hidesNavigationBar {
-  return [[self thrio_hidesNavigationBar_] boolValue];
+    return [[self thrio_hidesNavigationBar_] boolValue];
 }
 
 - (void)setThrio_hidesNavigationBar:(BOOL)hidesNavigationBar {
-  [self setThrio_hidesNavigationBar_:@(hidesNavigationBar)];
+    [self setThrio_hidesNavigationBar_:@(hidesNavigationBar)];
 }
 
 @end

@@ -26,25 +26,25 @@
 @implementation UIViewController (Internal)
 
 - (BOOL)thrio_willPopCalling {
-  return [(NSNumber *)objc_getAssociatedObject(self, _cmd) boolValue];
+    return [(NSNumber *)objc_getAssociatedObject (self, _cmd)boolValue];
 }
 
 - (void)setThrio_willPopCalling:(BOOL)calling {
-  objc_setAssociatedObject(self,
-                           @selector(thrio_willPopCalling),
-                           @(calling),
-                           OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    objc_setAssociatedObject(self,
+                             @selector(thrio_willPopCalling),
+                             @(calling),
+                             OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
-- (NSNumber * _Nullable)thrio_hidesNavigationBar_ {
-  return objc_getAssociatedObject(self, @selector(thrio_hidesNavigationBar_));
+- (NSNumber *_Nullable)thrio_hidesNavigationBar_ {
+    return objc_getAssociatedObject(self, @selector(thrio_hidesNavigationBar_));
 }
 
-- (void)setThrio_hidesNavigationBar_:(NSNumber * _Nullable)hidesNavigationBar {
-  objc_setAssociatedObject(self,
-                           @selector(thrio_hidesNavigationBar_),
-                           hidesNavigationBar,
-                           OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+- (void)setThrio_hidesNavigationBar_:(NSNumber *_Nullable)hidesNavigationBar {
+    objc_setAssociatedObject(self,
+                             @selector(thrio_hidesNavigationBar_),
+                             hidesNavigationBar,
+                             OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
 @end

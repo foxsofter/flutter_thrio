@@ -32,40 +32,40 @@
 @implementation NavigatorRouteObserverChannel
 
 - (instancetype)initWithChannel:(ThrioChannel *)channel {
-  self = [super init];
-  if (self) {
-    _channel = channel;
-    [self _on:@"didPush"];
-    [self _on:@"didPop"];
-    [self _on:@"didPopTo"];
-    [self _on:@"didRemove"];
-  }
-  return self;
+    self = [super init];
+    if (self) {
+        _channel = channel;
+        [self _on:@"didPush"];
+        [self _on:@"didPop"];
+        [self _on:@"didPopTo"];
+        [self _on:@"didRemove"];
+    }
+    return self;
 }
 
 - (void)_on:(NSString *)method {
-  [_channel registryMethodCall:method
-                       handler:^void(NSDictionary<NSString *,id> * arguments,
-                                     ThrioIdCallback _Nullable result) {
-    NavigatorRouteSettings *routeSettings = [NavigatorRouteSettings settingsFromArguments:arguments[@"route"]];
-    NavigatorRouteSettings *previousRouteSettings;
-    if (arguments[@"previousRoute"]) {
-      previousRouteSettings = [NavigatorRouteSettings settingsFromArguments:arguments[@"previousRoute"]];
-    }
-    
+    [_channel registryMethodCall:method
+                         handler:^void (NSDictionary<NSString *, id> *arguments,
+                                        ThrioIdCallback _Nullable result) {
+        NavigatorRouteSettings *routeSettings = [NavigatorRouteSettings settingsFromArguments:arguments[@"route"]];
+        NavigatorRouteSettings *previousRouteSettings;
+        if (arguments[@"previousRoute"]) {
+            previousRouteSettings = [NavigatorRouteSettings settingsFromArguments:arguments[@"previousRoute"]];
+        }
+
     #pragma clang diagnostic push
     #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
-    SEL navigationSelector = NSSelectorFromString([NSString stringWithFormat:@"thrio_%@Url:index:", method]);
-    [ThrioNavigator.navigationController performSelector:navigationSelector
-                                              withObject:routeSettings.url
-                                              withObject:routeSettings.index];
-    
-    SEL observerSelector = NSSelectorFromString([NSString stringWithFormat:@"%@:previousRoute:", method]);
-    
-    [ThrioNavigator performSelector:observerSelector withObject:routeSettings withObject:previousRouteSettings];
+        SEL navigationSelector = NSSelectorFromString([NSString stringWithFormat:@"thrio_%@Url:index:", method]);
+        [ThrioNavigator.navigationController performSelector:navigationSelector
+                                                  withObject:routeSettings.url
+                                                  withObject:routeSettings.index];
+
+        SEL observerSelector = NSSelectorFromString([NSString stringWithFormat:@"%@:previousRoute:", method]);
+
+        [ThrioNavigator performSelector:observerSelector withObject:routeSettings withObject:previousRouteSettings];
 
     #pragma clang diagnostic pop
-  }];
+    }];
 }
 
 @end

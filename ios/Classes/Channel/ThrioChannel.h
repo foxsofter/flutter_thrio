@@ -38,7 +38,7 @@ NS_ASSUME_NONNULL_BEGIN
 ///
 + (instancetype)channelWithEntrypoint:(NSString *)entrypoint name:(NSString *)channelName;
 
-+ (instancetype) new NS_UNAVAILABLE;
++ (instancetype)new NS_UNAVAILABLE;
 - (instancetype)init NS_UNAVAILABLE;
 
 @property (nonatomic, copy, readonly) NSString *entrypoint;

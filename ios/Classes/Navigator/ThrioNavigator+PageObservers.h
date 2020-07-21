@@ -28,7 +28,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface ThrioNavigator (PageObservers)
 
-+ (ThrioRegistrySet<id<NavigatorPageObserverProtocol>> *)pageObservers;
++ (ThrioRegistrySet<id<NavigatorPageObserverProtocol> > *)pageObservers;
 
 + (void)onCreate:(NavigatorRouteSettings *)routeSettings;
 

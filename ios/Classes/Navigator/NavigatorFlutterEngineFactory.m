@@ -38,114 +38,112 @@ NS_ASSUME_NONNULL_BEGIN
 @implementation NavigatorFlutterEngineFactory
 
 + (instancetype)shared {
-  static NavigatorFlutterEngineFactory *_instance;
-  static dispatch_once_t onceToken;
-  dispatch_once(&onceToken, ^{
-    _instance = [[self alloc] init];
-  });
-  return _instance;
+    static NavigatorFlutterEngineFactory *_instance;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        _instance = [[self alloc] init];
+    });
+    return _instance;
 }
 
 - (NSMutableDictionary *)flutterEngines {
-  if (!_flutterEngines) {
-    _flutterEngines = [NSMutableDictionary dictionary];
-  }
-  return _flutterEngines;
+    if (!_flutterEngines) {
+        _flutterEngines = [NSMutableDictionary dictionary];
+    }
+    return _flutterEngines;
 }
 
 - (NSMutableSet *)flutterUrls {
-  if (!_flutterUrls) {
-    _flutterUrls = [NSMutableSet set];
-  }
-  return _flutterUrls;
+    if (!_flutterUrls) {
+        _flutterUrls = [NSMutableSet set];
+    }
+    return _flutterUrls;
 }
 
 - (void)startupWithEntrypoint:(NSString *)entrypoint readyBlock:(ThrioIdCallback _Nullable)block {
-  if (!ThrioNavigator.isMultiEngineEnabled) {
-    entrypoint = @"";
-  }
+    if (!ThrioNavigator.isMultiEngineEnabled) {
+        entrypoint = @"";
+    }
 
-  if ([self.flutterEngines.allKeys containsObject:entrypoint]) {
-    block(entrypoint);
-  } else {
-    NavigatorVerbose(@"push in startupWithEntrypoint:%@", entrypoint);
-    NavigatorFlutterEngine *flutterEngine = [[NavigatorFlutterEngine alloc] init];
-    [self.flutterEngines setObject:flutterEngine forKey:entrypoint];
-    [flutterEngine startupWithEntrypoint:entrypoint readyBlock:block];
-  }
+    if ([self.flutterEngines.allKeys containsObject:entrypoint]) {
+        block(entrypoint);
+    } else {
+        NavigatorVerbose(@"push in startupWithEntrypoint:%@", entrypoint);
+        NavigatorFlutterEngine *flutterEngine = [[NavigatorFlutterEngine alloc] init];
+        [self.flutterEngines setObject:flutterEngine forKey:entrypoint];
+        [flutterEngine startupWithEntrypoint:entrypoint readyBlock:block];
+    }
 }
 
 - (FlutterEngine *)getEngineByEntrypoint:(NSString *)entrypoint {
-  if (!ThrioNavigator.isMultiEngineEnabled) {
-    entrypoint = @"";
-  }
-  NavigatorFlutterEngine *flutterEngine = self.flutterEngines[entrypoint];
-  return flutterEngine.engine;
+    if (!ThrioNavigator.isMultiEngineEnabled) {
+        entrypoint = @"";
+    }
+    NavigatorFlutterEngine *flutterEngine = self.flutterEngines[entrypoint];
+    return flutterEngine.engine;
 }
 
 - (NavigatorRouteSendChannel *)getSendChannelByEntrypoint:(NSString *)entrypoint {
-  if (!ThrioNavigator.isMultiEngineEnabled) {
-    entrypoint = @"";
-  }
-  NavigatorFlutterEngine *flutterEngine = self.flutterEngines[entrypoint];
-  return flutterEngine.sendChannel;
+    if (!ThrioNavigator.isMultiEngineEnabled) {
+        entrypoint = @"";
+    }
+    NavigatorFlutterEngine *flutterEngine = self.flutterEngines[entrypoint];
+    return flutterEngine.sendChannel;
 }
-
 
 - (NavigatorPageObserverChannel *)getPageObserverChannelByEntrypoint:(NSString *)entrypoint {
-  if (!ThrioNavigator.isMultiEngineEnabled) {
-    entrypoint = @"";
-  }
-  NavigatorFlutterEngine *flutterEngine = self.flutterEngines[entrypoint];
-  return flutterEngine.pageObserverChannel;
+    if (!ThrioNavigator.isMultiEngineEnabled) {
+        entrypoint = @"";
+    }
+    NavigatorFlutterEngine *flutterEngine = self.flutterEngines[entrypoint];
+    return flutterEngine.pageObserverChannel;
 }
 
-
 - (void)pushViewController:(NavigatorFlutterViewController *)viewController {
-  NavigatorFlutterEngine *flutterEngine = self.flutterEngines[viewController.entrypoint];
-  [flutterEngine pushViewController:viewController];
+    NavigatorFlutterEngine *flutterEngine = self.flutterEngines[viewController.entrypoint];
+    [flutterEngine pushViewController:viewController];
 }
 
 - (void)popViewController:(NavigatorFlutterViewController *)viewController {
-  NavigatorFlutterEngine *flutterEngine = self.flutterEngines[viewController.entrypoint];
-  if ([flutterEngine popViewController:viewController] < 1) {
-    if (ThrioNavigator.isMultiEngineEnabled &&
-        _flutterEngines.count > 1 &&
-        flutterEngine.registerUrlCount < ThrioNavigator.multiEngineKeepAliveUrlCount) {
-      [self.flutterEngines removeObjectForKey:viewController.entrypoint];
+    NavigatorFlutterEngine *flutterEngine = self.flutterEngines[viewController.entrypoint];
+    if ([flutterEngine popViewController:viewController] < 1) {
+        if (ThrioNavigator.isMultiEngineEnabled &&
+            _flutterEngines.count > 1 &&
+            flutterEngine.registerUrlCount < ThrioNavigator.multiEngineKeepAliveUrlCount) {
+            [self.flutterEngines removeObjectForKey:viewController.entrypoint];
+        }
     }
-  }
 }
 
 - (void)registerFlutterUrls:(NSArray *)urls {
-  [self.flutterUrls addObjectsFromArray:urls];
-  [self recalculateUrlsCount];
+    [self.flutterUrls addObjectsFromArray:urls];
+    [self recalculateUrlsCount];
 }
 
 - (void)unregisterFlutterUrls:(NSArray *)urls {
-  [self.flutterUrls minusSet:[NSSet setWithArray:urls]];
-  [self recalculateUrlsCount];
+    [self.flutterUrls minusSet:[NSSet setWithArray:urls]];
+    [self recalculateUrlsCount];
 }
 
 #pragma mark - private methods
 
 - (void)recalculateUrlsCount {
-  NSMutableDictionary *kvs = [NSMutableDictionary dictionary];
-  
-  for (NSString *url in self.flutterUrls) {
-    NSString *entrypoint = [url componentsSeparatedByString:@"/"].firstObject;
-    if (![kvs.allKeys containsObject:entrypoint]) {
-      kvs[entrypoint] = @1;
-    } else {
-      NSNumber *v = kvs[entrypoint];
-      kvs[entrypoint] = @(v.integerValue + 1);
-    }
-  }
+    NSMutableDictionary *kvs = [NSMutableDictionary dictionary];
 
-  for (NSString *entrypoint in kvs) {
-    NavigatorFlutterEngine *flutterEngine = self.flutterEngines[entrypoint];
-    flutterEngine.registerUrlCount = [kvs[entrypoint] integerValue];
-  }
+    for (NSString *url in self.flutterUrls) {
+        NSString *entrypoint = [url componentsSeparatedByString:@"/"].firstObject;
+        if (![kvs.allKeys containsObject:entrypoint]) {
+            kvs[entrypoint] = @1;
+        } else {
+            NSNumber *v = kvs[entrypoint];
+            kvs[entrypoint] = @(v.integerValue + 1);
+        }
+    }
+
+    for (NSString *entrypoint in kvs) {
+        NavigatorFlutterEngine *flutterEngine = self.flutterEngines[entrypoint];
+        flutterEngine.registerUrlCount = [kvs[entrypoint] integerValue];
+    }
 }
 
 @end

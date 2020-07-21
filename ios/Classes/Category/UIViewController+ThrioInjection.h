@@ -27,11 +27,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 typedef void (^ThrioViewControllerLifecycleInjectionBlock)(UIViewController *viewController, BOOL animated);
 
-typedef NS_ENUM(NSUInteger, ThrioViewControllerLifecycle) {
-  ThrioViewControllerLifecycleViewWillAppear,
-  ThrioViewControllerLifecycleViewDidAppear,
-  ThrioViewControllerLifecycleViewWillDisappear,
-  ThrioViewControllerLifecycleViewDidDisappear,
+typedef NS_ENUM (NSUInteger, ThrioViewControllerLifecycle) {
+    ThrioViewControllerLifecycleViewWillAppear,
+    ThrioViewControllerLifecycleViewDidAppear,
+    ThrioViewControllerLifecycleViewWillDisappear,
+    ThrioViewControllerLifecycleViewDidDisappear,
 };
 
 @interface UIViewController (ThrioInjection)

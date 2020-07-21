@@ -112,7 +112,7 @@
         if ([self.originDelegate conformsToProtocol:@protocol(UIImagePickerControllerDelegate)] &&
             [self.originDelegate respondsToSelector:@selector(imagePickerController:didFinishPickingMediaWithInfo:)]) {
             [(id<UIImagePickerControllerDelegate>)self.originDelegate imagePickerController:picker
-                                                            didFinishPickingMediaWithInfo:info];
+                                                              didFinishPickingMediaWithInfo:info];
         }
     }
 }

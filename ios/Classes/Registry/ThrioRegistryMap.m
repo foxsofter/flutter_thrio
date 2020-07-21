@@ -19,7 +19,6 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-
 #import "ThrioRegistryMap.h"
 
 NS_ASSUME_NONNULL_BEGIN
@@ -33,67 +32,67 @@ NS_ASSUME_NONNULL_BEGIN
 @implementation ThrioRegistryMap
 
 + (instancetype)map {
-  return [[self alloc] init];
+    return [[self alloc] init];
 }
 
 - (instancetype)init {
-  self = [super init];
-  if (self) {
-    _maps = [NSMutableDictionary dictionary];
-  }
-  return self;
+    self = [super init];
+    if (self) {
+        _maps = [NSMutableDictionary dictionary];
+    }
+    return self;
 }
 
 - (ThrioVoidCallback)registry:(id<NSCopying>)key value:(id)value {
-  NSAssert(key, @"key must not be null.");
-  NSAssert(value, @"value must not be null.");
-  
-  [_maps setObject:value forKey:key];
+    NSAssert(key, @"key must not be null.");
+    NSAssert(value, @"value must not be null.");
 
-  __weak typeof(self) weakself = self;
-  return ^{
-    __strong typeof(weakself) strongSelf = weakself;
-    
-    [strongSelf.maps removeObjectForKey:key];
-  };
+    [_maps setObject:value forKey:key];
+
+    __weak typeof(self) weakself = self;
+    return ^{
+               __strong typeof(weakself) strongSelf = weakself;
+
+               [strongSelf.maps removeObjectForKey:key];
+    };
 }
 
 - (ThrioVoidCallback)registryAll:(NSDictionary *)values {
-  NSAssert(values || values.count < 1, @"values must not be null or empty");
-  for (id key in values) {
-    [_maps setObject:[values objectForKey:key] forKey:key];
-  }
-  
-  __weak typeof(self) weakself = self;
-  return ^{
-    __strong typeof(weakself) strongSelf = weakself;
-
+    NSAssert(values || values.count < 1, @"values must not be null or empty");
     for (id key in values) {
-      [strongSelf.maps removeObjectForKey:key];
+        [_maps setObject:[values objectForKey:key] forKey:key];
     }
-  };
+
+    __weak typeof(self) weakself = self;
+    return ^{
+               __strong typeof(weakself) strongSelf = weakself;
+
+               for (id key in values) {
+                   [strongSelf.maps removeObjectForKey:key];
+               }
+    };
 }
 
 - (void)clear {
-  [_maps removeAllObjects];
+    [_maps removeAllObjects];
 }
 
-- (NSSet * _Nullable)objectForKeyedSubscript:(id)key {
-  return [_maps objectForKey:key];
+- (NSSet *_Nullable)objectForKeyedSubscript:(id)key {
+    return [_maps objectForKey:key];
 }
 
 - (NSUInteger)countByEnumeratingWithState:(NSFastEnumerationState *)enumerationState
                                   objects:(id __unsafe_unretained _Nullable [])buffer
-                                    count:(NSUInteger) len {
+                                    count:(NSUInteger)len {
     return [_maps.allKeys countByEnumeratingWithState:enumerationState
                                               objects:buffer
                                                 count:len];
 }
 
 - (id)copy {
-  ThrioRegistryMap *map = [ThrioRegistryMap map];
-  map.maps = [self.maps mutableCopy];
-  return map;
+    ThrioRegistryMap *map = [ThrioRegistryMap map];
+    map.maps = [self.maps mutableCopy];
+    return map;
 }
 
 @end
