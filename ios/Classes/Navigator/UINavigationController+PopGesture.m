@@ -96,13 +96,11 @@
 /// Make sure that external delegate can take effect.
 ///
 - (void)thrio_setDelegate:(id<UINavigationControllerDelegate> _Nullable)delegate {
-    if (self.delegate == delegate) {
-        return;
-    }
-    if (self.delegate == self.thrio_navigationControllerDelegate) {
-        self.thrio_navigationControllerDelegate.originDelegate = delegate;
-    } else {
+    if (!self.delegate) {
         [self setValue:self.thrio_navigationControllerDelegate forKey:@"_delegate"];
+    }
+    if (delegate != self.thrio_navigationControllerDelegate) {
+        self.thrio_navigationControllerDelegate.originDelegate = delegate;
     }
 }
 
