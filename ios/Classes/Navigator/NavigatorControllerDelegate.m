@@ -19,85 +19,111 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
+#import <UIKit/UIKit.h>
 
 #import "NavigatorControllerDelegate.h"
 #import "UINavigationController+Navigator.h"
 
 @implementation NavigatorControllerDelegate
 
-- (void)setNavigationController:(UINavigationController * _Nullable)navigationController {
-  _originDelegate = navigationController.delegate;
-  _navigationController = navigationController;
+- (void)setNavigationController:(UINavigationController *_Nullable)navigationController {
+    _originDelegate = navigationController.delegate;
+    _navigationController = navigationController;
 }
 
 - (void)navigationController:(UINavigationController *)navigationController
       willShowViewController:(UIViewController *)viewController
                     animated:(BOOL)animated {
-  if (self.originDelegate && ![self.originDelegate isEqual:self]) {
-    if ([self.originDelegate respondsToSelector:@selector(navigationController:willShowViewController:animated:)]) {
-      [self.originDelegate navigationController:navigationController
-                         willShowViewController:viewController
-                                       animated:animated];
+    if (self.originDelegate && ![self.originDelegate isEqual:self]) {
+        if ([self.originDelegate respondsToSelector:@selector(navigationController:willShowViewController:animated:)]) {
+            [self.originDelegate navigationController:navigationController
+                               willShowViewController:viewController
+                                             animated:animated];
+        }
     }
-  }
 }
+
+#pragma mark - UINavigationControllerDelegate
 
 - (void)navigationController:(UINavigationController *)navigationController
        didShowViewController:(UIViewController *)viewController
                     animated:(BOOL)animated {
-  if (self.originDelegate && ![self.originDelegate isEqual:self]) {
-    if ([self.originDelegate respondsToSelector:@selector(navigationController:didShowViewController:animated:)]) {
-      [self.originDelegate navigationController:navigationController
-                          didShowViewController:viewController
-                                       animated:animated];
+    if (self.originDelegate && ![self.originDelegate isEqual:self]) {
+        if ([self.originDelegate respondsToSelector:@selector(navigationController:didShowViewController:animated:)]) {
+            [self.originDelegate navigationController:navigationController
+                                didShowViewController:viewController
+                                             animated:animated];
+        }
     }
-  }
-  [self.navigationController thrio_didShowViewController:viewController animated:animated];
+    [self.navigationController thrio_didShowViewController:viewController animated:animated];
 }
 
 - (UIInterfaceOrientationMask)navigationControllerSupportedInterfaceOrientations:(UINavigationController *)navigationController {
-  if (self.originDelegate && ![self.originDelegate isEqual:self]) {
-    if ([self.originDelegate respondsToSelector:@selector(navigationControllerSupportedInterfaceOrientations:)]) {
-      return [self.originDelegate navigationControllerSupportedInterfaceOrientations:navigationController];
+    if (self.originDelegate && ![self.originDelegate isEqual:self]) {
+        if ([self.originDelegate respondsToSelector:@selector(navigationControllerSupportedInterfaceOrientations:)]) {
+            return [self.originDelegate navigationControllerSupportedInterfaceOrientations:navigationController];
+        }
     }
-  }
-  return UIInterfaceOrientationMaskPortrait;
+    return UIInterfaceOrientationMaskPortrait;
 }
+
 - (UIInterfaceOrientation)navigationControllerPreferredInterfaceOrientationForPresentation:(UINavigationController *)navigationController {
-  if (self.originDelegate && ![self.originDelegate isEqual:self]) {
-    if ([self.originDelegate respondsToSelector:@selector(navigationControllerPreferredInterfaceOrientationForPresentation:)]) {
-      return [self.originDelegate navigationControllerSupportedInterfaceOrientations:navigationController];
+    if (self.originDelegate && ![self.originDelegate isEqual:self]) {
+        if ([self.originDelegate respondsToSelector:@selector(navigationControllerPreferredInterfaceOrientationForPresentation:)]) {
+            return [self.originDelegate navigationControllerSupportedInterfaceOrientations:navigationController];
+        }
     }
-  }
-  return UIInterfaceOrientationUnknown;
+    return UIInterfaceOrientationUnknown;
 }
 
 - (nullable id<UIViewControllerInteractiveTransitioning>)navigationController:(UINavigationController *)navigationController
                                   interactionControllerForAnimationController:(id <UIViewControllerAnimatedTransitioning>)animationController {
-  id<UIViewControllerInteractiveTransitioning> controller;
-  if (self.originDelegate && ![self.originDelegate isEqual:self]) {
-    if ([self.originDelegate respondsToSelector:@selector(navigationController:interactionControllerForAnimationController:)]) {
-      controller = [self.originDelegate navigationController:navigationController interactionControllerForAnimationController:animationController];
+    id<UIViewControllerInteractiveTransitioning> controller;
+    if (self.originDelegate && ![self.originDelegate isEqual:self]) {
+        if ([self.originDelegate respondsToSelector:@selector(navigationController:interactionControllerForAnimationController:)]) {
+            controller = [self.originDelegate navigationController:navigationController interactionControllerForAnimationController:animationController];
+        }
     }
-  }
-  return controller;
+    return controller;
 }
 
 - (nullable id<UIViewControllerAnimatedTransitioning>)navigationController:(UINavigationController *)navigationController
-                                            animationControllerForOperation:(UINavigationControllerOperation)operation
-                                                         fromViewController:(UIViewController *)fromVC
-                                                           toViewController:(UIViewController *)toVC {
-  NSLog(@"fromVC: %@ toVC: %@", fromVC, toVC);
-  id<UIViewControllerAnimatedTransitioning> animator;
-  if (self.originDelegate && ![self.originDelegate isEqual:self]) {
-    if ([self.originDelegate respondsToSelector:@selector(navigationController:animationControllerForOperation:fromViewController:toViewController:)]) {
-      animator = [self.originDelegate navigationController:navigationController
-                              animationControllerForOperation:operation
-                                           fromViewController:fromVC
-                                             toViewController:toVC];
+                                           animationControllerForOperation:(UINavigationControllerOperation)operation
+                                                        fromViewController:(UIViewController *)fromVC
+                                                          toViewController:(UIViewController *)toVC {
+    NSLog(@"fromVC: %@ toVC: %@", fromVC, toVC);
+    id<UIViewControllerAnimatedTransitioning> animator;
+    if (self.originDelegate && ![self.originDelegate isEqual:self]) {
+        if ([self.originDelegate respondsToSelector:@selector(navigationController:animationControllerForOperation:fromViewController:toViewController:)]) {
+            animator = [self.originDelegate navigationController:navigationController
+                                 animationControllerForOperation:operation
+                                              fromViewController:fromVC
+                                                toViewController:toVC];
+        }
     }
-  }
-  return animator;
+    return animator;
+}
+
+#pragma mark - UIImagePickerControllerDelegate
+
+- (void)    imagePickerController:(UIImagePickerController *)picker
+    didFinishPickingMediaWithInfo:(NSDictionary<UIImagePickerControllerInfoKey, id> *)info {
+    if (self.originDelegate && ![self.originDelegate isEqual:self]) {
+        if ([self.originDelegate conformsToProtocol:@protocol(UIImagePickerControllerDelegate)] &&
+            [self.originDelegate respondsToSelector:@selector(imagePickerController:didFinishPickingMediaWithInfo:)]) {
+            [(id<UIImagePickerControllerDelegate>)self.originDelegate imagePickerController:picker
+                                                              didFinishPickingMediaWithInfo:info];
+        }
+    }
+}
+
+- (void)imagePickerControllerDidCancel:(UIImagePickerController *)picker {
+    if (self.originDelegate && ![self.originDelegate isEqual:self]) {
+        if ([self.originDelegate conformsToProtocol:@protocol(UIImagePickerControllerDelegate)] &&
+            [self.originDelegate respondsToSelector:@selector(imagePickerControllerDidCancel:)]) {
+            [(id<UIImagePickerControllerDelegate>)self.originDelegate imagePickerControllerDidCancel:picker];
+        }
+    }
 }
 
 @end

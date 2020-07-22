@@ -19,7 +19,6 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-
 #import "NavigatorPageRoute.h"
 
 NS_ASSUME_NONNULL_BEGIN
@@ -30,42 +29,43 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
-@implementation NavigatorPageRoute {
-  NSMutableDictionary *_notifications;
+@implementation NavigatorPageRoute
+{
+    NSMutableDictionary *_notifications;
 }
 
 + (instancetype)routeWithSettings:(NavigatorRouteSettings *)settings {
-  return [[self alloc] initWithSettings:settings];
+    return [[self alloc] initWithSettings:settings];
 }
 
 - (instancetype)initWithSettings:(NavigatorRouteSettings *)settings {
-  self = [super init];
-  if (self) {
-    _settings = settings;
-    _notifications = [NSMutableDictionary dictionary];
-  }
-  return self;
+    self = [super init];
+    if (self) {
+        _settings = settings;
+        _notifications = [NSMutableDictionary dictionary];
+    }
+    return self;
 }
 
 - (void)addNotify:(NSString *)name params:(id _Nullable)params {
-  if (!params) {
-    [_notifications setObject:[NSNull null] forKey:name];
-  } else {
-    [_notifications setObject:params forKey:name];
-  }
+    if (!params) {
+        [_notifications setObject:[NSNull null] forKey:name];
+    } else {
+        [_notifications setObject:params forKey:name];
+    }
 }
 
 - (id _Nullable)removeNotify:(NSString *)name {
-  id params = _notifications[name];
-  if ([params isKindOfClass:NSNull.class]) {
-    params = nil;
-  }
-  [_notifications removeObjectForKey:name];
-  return params;
+    id params = _notifications[name];
+    if ([params isKindOfClass:NSNull.class]) {
+        params = nil;
+    }
+    [_notifications removeObjectForKey:name];
+    return params;
 }
 
 - (NSDictionary *)notifications {
-  return [_notifications copy];
+    return [_notifications copy];
 }
 
 @end

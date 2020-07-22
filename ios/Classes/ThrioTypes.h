@@ -36,7 +36,7 @@ typedef void (^ThrioBoolCallback)(BOOL);
 
 /// Signature of callbacks with NSNumber parameters.
 ///
-typedef void (^ThrioNumberCallback)(NSNumber * _Nullable);
+typedef void (^ThrioNumberCallback)(NSNumber *_Nullable);
 
 /// Signature of callbacks with id parameters.
 ///

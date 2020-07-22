@@ -35,30 +35,30 @@ NS_ASSUME_NONNULL_BEGIN
 /// The route immediately below that one, and thus the previously active
 /// route, is `previousRoute`.
 ///
-- (void)didPush:(NavigatorRouteSettings *)routeSettings
-  previousRoute:(NavigatorRouteSettings * _Nullable)previousRouteSettings;
+- (void)  didPush:(NavigatorRouteSettings *)routeSettings
+    previousRoute:(NavigatorRouteSettings *_Nullable)previousRouteSettings;
 
 /// The [ThrioNavigator] popped `route`.
 ///
 /// The route immediately below that one, and thus the newly active
 /// route, is `previousRoute`.
 ///
-- (void)didPop:(NavigatorRouteSettings *)routeSettings
- previousRoute:(NavigatorRouteSettings * _Nullable)previousRouteSettings;
+- (void)   didPop:(NavigatorRouteSettings *)routeSettings
+    previousRoute:(NavigatorRouteSettings *_Nullable)previousRouteSettings;
 
 /// The [ThrioNavigator] popped to `route`.
 ///
 /// The previously active route, is `previousRoute`.
 ///
-- (void)didPopTo:(NavigatorRouteSettings *)routeSettings
-   previousRoute:(NavigatorRouteSettings * _Nullable)previousRouteSettings;
+- (void) didPopTo:(NavigatorRouteSettings *)routeSettings
+    previousRoute:(NavigatorRouteSettings *_Nullable)previousRouteSettings;
 
 /// The [ThrioNavigator] removed `route`.
 ///
 /// The route immediately below that one, if any, is `previousRoute`.
 ///
 - (void)didRemove:(NavigatorRouteSettings *)routeSettings
-    previousRoute:(NavigatorRouteSettings * _Nullable)previousRouteSettings;
+    previousRoute:(NavigatorRouteSettings *_Nullable)previousRouteSettings;
 
 @end
 

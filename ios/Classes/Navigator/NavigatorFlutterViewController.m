@@ -45,85 +45,85 @@ NS_ASSUME_NONNULL_BEGIN
 @implementation NavigatorFlutterViewController
 
 - (instancetype)initWithEntrypoint:(NSString *)entrypoint {
-  FlutterEngine *engine = [NavigatorFlutterEngineFactory.shared getEngineByEntrypoint:entrypoint];
-  if (engine.viewController) {
-    if ([engine.viewController isKindOfClass:NavigatorFlutterViewController.class]) {
-      [NavigatorFlutterEngineFactory.shared popViewController:(NavigatorFlutterViewController *)engine.viewController];
-    } else {
-      engine.viewController = nil;
+    FlutterEngine *engine = [NavigatorFlutterEngineFactory.shared getEngineByEntrypoint:entrypoint];
+    if (engine.viewController) {
+        if ([engine.viewController isKindOfClass:NavigatorFlutterViewController.class]) {
+            [NavigatorFlutterEngineFactory.shared popViewController:(NavigatorFlutterViewController *)engine.viewController];
+        } else {
+            engine.viewController = nil;
+        }
     }
-  }
-  self = [super initWithEngine:engine nibName:nil bundle:nil];
-  if (self) {
-    self.thrio_hidesNavigationBar_ = @YES;
-    if (ThrioNavigator.isMultiEngineEnabled) {
-      _entrypoint = entrypoint;
-    } else {
-      _entrypoint = @"";
+    self = [super initWithEngine:engine nibName:nil bundle:nil];
+    if (self) {
+        self.thrio_hidesNavigationBar_ = @YES;
+        if (ThrioNavigator.isMultiEngineEnabled) {
+            _entrypoint = entrypoint;
+        } else {
+            _entrypoint = @"";
+        }
     }
-  }
-  return self;
+    return self;
 }
 
 - (void)viewDidLoad {
-  [super viewDidLoad];
-  self.view.backgroundColor = UIColor.whiteColor;
+    [super viewDidLoad];
+    self.view.backgroundColor = UIColor.whiteColor;
 }
 
 - (void)viewWillAppear:(BOOL)animated {
-  [super viewWillAppear:animated];
-  
-  if (![self isMovingToParentViewController]) {
-    [ThrioNavigator willAppear:self.thrio_lastRoute.settings];
-    NavigatorPageObserverChannel *channel = [NavigatorFlutterEngineFactory.shared getPageObserverChannelByEntrypoint:self.entrypoint];
-    [channel willAppear:self.thrio_lastRoute.settings];
-  }
+    [super viewWillAppear:animated];
+
+    if (![self isMovingToParentViewController]) {
+        [ThrioNavigator willAppear:self.thrio_lastRoute.settings];
+        NavigatorPageObserverChannel *channel = [NavigatorFlutterEngineFactory.shared getPageObserverChannelByEntrypoint:self.entrypoint];
+        [channel willAppear:self.thrio_lastRoute.settings];
+    }
 }
 
 - (void)viewDidAppear:(BOOL)animated {
-  [super viewDidAppear:animated];
-  
-  if (![self isMovingToParentViewController]) {
-    [ThrioNavigator didAppear:self.thrio_lastRoute.settings];
-    NavigatorPageObserverChannel *channel = [NavigatorFlutterEngineFactory.shared getPageObserverChannelByEntrypoint:self.entrypoint];
-    [channel didAppear:self.thrio_lastRoute.settings];
-  }
+    [super viewDidAppear:animated];
+
+    if (![self isMovingToParentViewController]) {
+        [ThrioNavigator didAppear:self.thrio_lastRoute.settings];
+        NavigatorPageObserverChannel *channel = [NavigatorFlutterEngineFactory.shared getPageObserverChannelByEntrypoint:self.entrypoint];
+        [channel didAppear:self.thrio_lastRoute.settings];
+    }
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
-  [super viewWillDisappear:animated];
-  
-  if (![self isMovingFromParentViewController]) {
-    [ThrioNavigator willDisappear:self.thrio_lastRoute.settings];
-    NavigatorPageObserverChannel *channel = [NavigatorFlutterEngineFactory.shared getPageObserverChannelByEntrypoint:self.entrypoint];
-    [channel willDisappear:self.thrio_lastRoute.settings];
-  }
-  
-  [[UIApplication sharedApplication].delegate.window endEditing:YES];
+    [super viewWillDisappear:animated];
+
+    if (![self isMovingFromParentViewController]) {
+        [ThrioNavigator willDisappear:self.thrio_lastRoute.settings];
+        NavigatorPageObserverChannel *channel = [NavigatorFlutterEngineFactory.shared getPageObserverChannelByEntrypoint:self.entrypoint];
+        [channel willDisappear:self.thrio_lastRoute.settings];
+    }
+
+    [[UIApplication sharedApplication].delegate.window endEditing:YES];
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
-  [super viewDidDisappear:animated];
-  
-  if (![self isMovingFromParentViewController]) {
-    [ThrioNavigator didDisappear:self.thrio_lastRoute.settings];
-    NavigatorPageObserverChannel *channel = [NavigatorFlutterEngineFactory.shared getPageObserverChannelByEntrypoint:self.entrypoint];
-    [channel didDisappear:self.thrio_lastRoute.settings];
-  }
+    [super viewDidDisappear:animated];
+
+    if (![self isMovingFromParentViewController]) {
+        [ThrioNavigator didDisappear:self.thrio_lastRoute.settings];
+        NavigatorPageObserverChannel *channel = [NavigatorFlutterEngineFactory.shared getPageObserverChannelByEntrypoint:self.entrypoint];
+        [channel didDisappear:self.thrio_lastRoute.settings];
+    }
 }
 
 - (void)dealloc {
-  NavigatorVerbose(@"NavigatorFlutterViewController dealloc: %@", self);
+    NavigatorVerbose(@"NavigatorFlutterViewController dealloc: %@", self);
 }
 
 // override
 - (void)installSplashScreenViewIfNecessary {
-  // Do nothing.
+    // Do nothing.
 }
 
 // override
 - (BOOL)loadDefaultSplashScreenView {
-  return NO;
+    return NO;
 }
 
 @end

@@ -19,7 +19,6 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-
 #import "ThrioModule.h"
 #import "ThrioNavigator+PageBuilders.h"
 #import "ThrioNavigator+Internal.h"
@@ -32,76 +31,79 @@
 static NSMutableDictionary *modules;
 
 + (void)init:(ThrioModule *)rootModule {
-  [rootModule registerModule:rootModule];
-  [rootModule initModule];
+    [rootModule registerModule:rootModule];
+    [rootModule initModule];
 }
 
 - (void)registerModule:(ThrioModule *)module {
-  if (!modules) {
-    modules = [NSMutableDictionary dictionary];
-  }
-  NSString *key = NSStringFromClass([module class]);
-  if ([[modules allKeys] containsObject:key]) {
-    [NSException raise:@"Duplicate registration exception"
-                format:@"%@ already registered", key];
-  }
-  [modules setObject:module forKey:key];
-  [module onModuleRegister];
+    if (!modules) {
+        modules = [NSMutableDictionary dictionary];
+    }
+    NSString *key = NSStringFromClass([module class]);
+    if ([[modules allKeys] containsObject:key]) {
+        [NSException raise:@"Duplicate registration exception"
+                    format:@"%@ already registered", key];
+    }
+    [modules setObject:module forKey:key];
+    [module onModuleRegister];
 }
 
 - (void)initModule {
-  NSArray *values = modules.allValues;
-  for (ThrioModule *module in values) {
-    if ([module respondsToSelector:@selector(onPageRegister)]) {
-      [module onPageRegister];
-    }
-  }
-  for (ThrioModule *module in values) {
-    if ([module respondsToSelector:@selector(onModuleInit)]) {
-      [module onModuleInit];
-    }
-  }
-  dispatch_async(dispatch_get_main_queue(), ^{
+    NSArray *values = modules.allValues;
     for (ThrioModule *module in values) {
-      if ([module respondsToSelector:@selector(onModuleAsyncInit)]) {
-        [module onModuleAsyncInit];
-      }
+        if ([module respondsToSelector:@selector(onPageRegister)]) {
+            [module onPageRegister];
+        }
     }
-  });
-  // 单引擎模式下，提前启动
-  if (!ThrioNavigator.isMultiEngineEnabled) {
-    [NavigatorFlutterEngineFactory.shared startupWithEntrypoint:@"" readyBlock:nil];
-  }
+    for (ThrioModule *module in values) {
+        if ([module respondsToSelector:@selector(onModuleInit)]) {
+            [module onModuleInit];
+        }
+    }
+    dispatch_async(dispatch_get_main_queue(), ^{
+        for (ThrioModule *module in values) {
+            if ([module respondsToSelector:@selector(onModuleAsyncInit)]) {
+                [module onModuleAsyncInit];
+            }
+        }
+    });
+    // 单引擎模式下，提前启动
+    if (!ThrioNavigator.isMultiEngineEnabled) {
+        [NavigatorFlutterEngineFactory.shared startupWithEntrypoint:@"" readyBlock:nil];
+    }
 }
 
-- (void)onModuleRegister { }
+- (void)onModuleRegister {
+}
 
-- (void)onPageRegister { }
+- (void)onPageRegister {
+}
 
-- (void)onModuleInit { }
+- (void)onModuleInit {
+}
 
-- (void)onModuleAsyncInit { }
+- (void)onModuleAsyncInit {
+}
 
 - (ThrioVoidCallback)registerPageBuilder:(NavigatorPageBuilder)builder
                                   forUrl:(NSString *)url {
-  return [ThrioNavigator.pageBuilders registry:url value:builder];
+    return [ThrioNavigator.pageBuilders registry:url value:builder];
 }
 
 - (void)setFlutterPageBuilder:(NavigatorFlutterPageBuilder)builder {
-  ThrioNavigator.flutterPageBuilder = builder;
+    ThrioNavigator.flutterPageBuilder = builder;
 }
 
 - (ThrioVoidCallback)registerPageObserver:(id<NavigatorPageObserverProtocol>)pageObserver {
-  return [ThrioNavigator.pageObservers registry:pageObserver];
+    return [ThrioNavigator.pageObservers registry:pageObserver];
 }
 
 - (ThrioVoidCallback)registerRouteObserver:(id<NavigatorRouteObserverProtocol>)routeObserver {
-  return [ThrioNavigator.routeObservers registry:routeObserver];
+    return [ThrioNavigator.routeObservers registry:routeObserver];
 }
 
 - (void)startupFlutterEngineWithEntrypoint:(NSString *)entrypoint {
-  [NavigatorFlutterEngineFactory.shared startupWithEntrypoint:entrypoint readyBlock:nil];
+    [NavigatorFlutterEngineFactory.shared startupWithEntrypoint:entrypoint readyBlock:nil];
 }
-
 
 @end

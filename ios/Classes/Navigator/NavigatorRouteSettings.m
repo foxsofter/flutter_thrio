@@ -19,7 +19,6 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-
 #import "NavigatorRouteSettings.h"
 
 NS_ASSUME_NONNULL_BEGIN
@@ -42,52 +41,52 @@ NS_ASSUME_NONNULL_BEGIN
                           index:(NSNumber *)index
                          nested:(BOOL)nested
                          params:(id _Nullable)params {
-  return [[self alloc] initWithUrl:url index:index nested:nested params:params];
+    return [[self alloc] initWithUrl:url index:index nested:nested params:params];
 }
 
 - (instancetype)initWithUrl:(NSString *)url
                       index:(NSNumber *)index
                      nested:(BOOL)nested
                      params:(id _Nullable)params {
-  NSAssert(url && url.length > 0, @"url must not be null or empty.");
+    NSAssert(url && url.length > 0, @"url must not be null or empty.");
 
-  self = [super init];
-  if (self) {
-    _url = url;
-    _index = index;
-    _nested = nested;
-    _params = params;
-  }
-  return self;
+    self = [super init];
+    if (self) {
+        _url = url;
+        _index = index;
+        _nested = nested;
+        _params = params;
+    }
+    return self;
 }
 
 + (id _Nullable)settingsFromArguments:(NSDictionary *)arguments {
-  NSString *url = arguments[@"url"];
-  NSNumber *index = [arguments[@"index"] isKindOfClass:NSNull.class] ? nil : arguments[@"index"];
-  id params = [arguments[@"params"] isKindOfClass:NSNull.class] ? nil : arguments[@"params"];
-  BOOL animated = [arguments[@"animated"] boolValue];
-  return [self settingsWithUrl:url index:index nested:animated params:params];
+    NSString *url = arguments[@"url"];
+    NSNumber *index = [arguments[@"index"] isKindOfClass:NSNull.class] ? nil : arguments[@"index"];
+    id params = [arguments[@"params"] isKindOfClass:NSNull.class] ? nil : arguments[@"params"];
+    BOOL animated = [arguments[@"animated"] boolValue];
+    return [self settingsWithUrl:url index:index nested:animated params:params];
 }
 
 - (NSDictionary *)toArguments {
-  return [self toArgumentsWithParams:_params];
+    return [self toArgumentsWithParams:_params];
 }
 
 - (NSDictionary *)toArgumentsWithParams:(id _Nullable)params {
-  return params ? @{
-    @"url": _url,
-    @"index": _index,
-    @"isNested": @(_nested),
-    @"params": params,
-  } : @{
-    @"url": _url,
-    @"index": _index,
-    @"isNested": @(_nested),
-  };
+    return params ? @{
+        @"url": _url,
+        @"index": _index,
+        @"isNested": @(_nested),
+        @"params": params,
+    } : @{
+        @"url": _url,
+        @"index": _index,
+        @"isNested": @(_nested),
+    };
 }
 
 - (NSString *)description {
-  return [NSString stringWithFormat:@"settings: %@", [self toArguments]];
+    return [NSString stringWithFormat:@"settings: %@", [self toArguments]];
 }
 
 @end
