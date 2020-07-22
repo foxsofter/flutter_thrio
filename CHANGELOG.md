@@ -75,3 +75,7 @@
 ## 0.4.1
 
 - fix: #57，兼容 UIImagePickerControllerDelegate
+
+## 0.4.2
+
+- fix: UINavigationController.setDelete nil
