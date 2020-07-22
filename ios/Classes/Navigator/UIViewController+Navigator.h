@@ -36,12 +36,12 @@ NS_ASSUME_NONNULL_BEGIN
                 index:(NSNumber *)index
                params:(id _Nullable)params
              animated:(BOOL)animated
-       fromEntrypoint:(NSString * _Nullable)entrypoint
+       fromEntrypoint:(NSString *_Nullable)entrypoint
                result:(ThrioNumberCallback _Nullable)result
          poppedResult:(ThrioIdCallback _Nullable)poppedResult;
 
 - (BOOL)thrio_notifyUrl:(NSString *)url
-                  index:(NSNumber * _Nullable)index
+                  index:(NSNumber *_Nullable)index
                    name:(NSString *)name
                  params:(id _Nullable)params;
 
@@ -50,12 +50,12 @@ NS_ASSUME_NONNULL_BEGIN
                  result:(ThrioBoolCallback _Nullable)result;
 
 - (void)thrio_popToUrl:(NSString *)url
-                 index:(NSNumber * _Nullable)index
+                 index:(NSNumber *_Nullable)index
               animated:(BOOL)animated
                 result:(ThrioBoolCallback _Nullable)result;
 
 - (void)thrio_removeUrl:(NSString *)url
-                  index:(NSNumber * _Nullable)index
+                  index:(NSNumber *_Nullable)index
                animated:(BOOL)animated
                  result:(ThrioBoolCallback _Nullable)result;
 
@@ -68,9 +68,9 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)thrio_didRemoveUrl:(NSString *)url index:(NSNumber *)index;
 
 - (NavigatorPageRoute *_Nullable)thrio_getRouteByUrl:(NSString *)url
-                                               index:(NSNumber * _Nullable)index;
+                                               index:(NSNumber *_Nullable)index;
 
-- (NSNumber * _Nullable)thrio_getLastIndexByUrl:(NSString *)url;
+- (NSNumber *_Nullable)thrio_getLastIndexByUrl:(NSString *)url;
 
 - (NSArray *)thrio_getAllIndexByUrl:(NSString *)url;
 

@@ -74,19 +74,19 @@ NS_ASSUME_NONNULL_BEGIN
 /// If a native page builder exists for the url, open the native page,
 /// otherwise open the flutter page.
 ///
-+ (void)pushUrl:(NSString *)url
-         params:(id)params
-   poppedResult:(ThrioIdCallback)poppedResult;
++ (void) pushUrl:(NSString *)url
+          params:(id)params
+    poppedResult:(ThrioIdCallback)poppedResult;
 
 /// Push the page onto the navigation stack.
 ///
 /// If a native page builder exists for the url, open the native page,
 /// otherwise open the flutter page.
 ///
-+ (void)pushUrl:(NSString *)url
-         params:(id)params
-         result:(ThrioNumberCallback)result
-   poppedResult:(ThrioIdCallback)poppedResult;
++ (void) pushUrl:(NSString *)url
+          params:(id)params
+          result:(ThrioNumberCallback)result
+    poppedResult:(ThrioIdCallback)poppedResult;
 
 /// Push the page onto the navigation stack.
 ///
@@ -109,19 +109,19 @@ NS_ASSUME_NONNULL_BEGIN
 /// If a native page builder exists for the url, open the native page,
 /// otherwise open the flutter page.
 ///
-+ (void)pushUrl:(NSString *)url
-       animated:(BOOL)animated
-   poppedResult:(ThrioIdCallback)poppedResult;
++ (void) pushUrl:(NSString *)url
+        animated:(BOOL)animated
+    poppedResult:(ThrioIdCallback)poppedResult;
 
 /// Push the page onto the navigation stack.
 ///
 /// If a native page builder exists for the url, open the native page,
 /// otherwise open the flutter page.
 ///
-+ (void)pushUrl:(NSString *)url
-       animated:(BOOL)animated
-         result:(ThrioNumberCallback)result
-   poppedResult:(ThrioIdCallback)poppedResult;
++ (void) pushUrl:(NSString *)url
+        animated:(BOOL)animated
+          result:(ThrioNumberCallback)result
+    poppedResult:(ThrioIdCallback)poppedResult;
 
 /// Push the page onto the navigation stack.
 ///
@@ -147,21 +147,21 @@ NS_ASSUME_NONNULL_BEGIN
 /// If a native page builder exists for the url, open the native page,
 /// otherwise open the flutter page.
 ///
-+ (void)pushUrl:(NSString *)url
-         params:(id)params
-       animated:(BOOL)animated
-   poppedResult:(ThrioIdCallback)poppedResult;
++ (void) pushUrl:(NSString *)url
+          params:(id)params
+        animated:(BOOL)animated
+    poppedResult:(ThrioIdCallback)poppedResult;
 
 /// Push the page onto the navigation stack.
 ///
 /// If a native page builder exists for the url, open the native page,
 /// otherwise open the flutter page.
 ///
-+ (void)pushUrl:(NSString *)url
-         params:(id)params
-       animated:(BOOL)animated
-         result:(ThrioNumberCallback)result
-   poppedResult:(ThrioIdCallback)poppedResult;
++ (void) pushUrl:(NSString *)url
+          params:(id)params
+        animated:(BOOL)animated
+          result:(ThrioNumberCallback)result
+    poppedResult:(ThrioIdCallback)poppedResult;
 
 #pragma mark - notify methods
 
@@ -369,12 +369,12 @@ NS_ASSUME_NONNULL_BEGIN
 /// Returns the index of the page that was last pushed to the navigation
 /// stack.
 ///
-+ (NSNumber * _Nullable)lastIndex;
++ (NSNumber *_Nullable)lastIndex;
 
 /// Returns the index of the page that was last pushed to the navigation
 /// stack.
 ///
-+ (NSNumber * _Nullable)getLastIndexByUrl:(NSString *)url;
++ (NSNumber *_Nullable)getLastIndexByUrl:(NSString *)url;
 
 /// Returns all index of the page with `url` in the navigation stack.
 ///

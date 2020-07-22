@@ -19,7 +19,6 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-
 #import "UINavigationController+PopDisabled.h"
 #import "UINavigationController+Navigator.h"
 #import "UIViewController+WillPopCallback.h"
@@ -31,21 +30,21 @@
 - (void)thrio_setPopDisabledUrl:(NSString *)url
                           index:(NSNumber *)index
                        disabled:(BOOL)disabled {
-  UIViewController *viewController = [self getViewControllerByUrl:url index:index];
-  NavigatorRouteSettings *settings = viewController.thrio_firstRoute.settings;
-  if ([settings.url isEqualToString:url] && [settings.index isEqualToNumber:index]) {
-    if (disabled) {
-      // 设为具体值，拦截侧滑返回，但会继续传递给dart端，在dart端触发willPop
-      viewController.thrio_willPopBlock = ^(ThrioBoolCallback _Nonnull result) {
-        if (result) {
-          result(YES);
+    UIViewController *viewController = [self getViewControllerByUrl:url index:index];
+    NavigatorRouteSettings *settings = viewController.thrio_firstRoute.settings;
+    if ([settings.url isEqualToString:url] && [settings.index isEqualToNumber:index]) {
+        if (disabled) {
+            // 设为具体值，拦截侧滑返回，但会继续传递给dart端，在dart端触发willPop
+            viewController.thrio_willPopBlock = ^(ThrioBoolCallback _Nonnull result) {
+                if (result) {
+                    result(YES);
+                }
+            };
+        } else {
+            // 设为nil，不拦截侧滑返回
+            viewController.thrio_willPopBlock = nil;
         }
-      };
-    } else {
-      // 设为nil，不拦截侧滑返回
-      viewController.thrio_willPopBlock = nil;
     }
-  }
 }
 
 @end

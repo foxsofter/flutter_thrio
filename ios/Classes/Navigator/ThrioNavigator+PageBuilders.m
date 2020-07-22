@@ -19,30 +19,29 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-
 #import <objc/runtime.h>
 #import "ThrioNavigator+PageBuilders.h"
 
 @implementation ThrioNavigator (PageBuilders)
 
 + (NavigatorFlutterPageBuilder _Nullable)flutterPageBuilder {
-  return objc_getAssociatedObject(self, _cmd);
+    return objc_getAssociatedObject(self, _cmd);
 }
 
 + (void)setFlutterPageBuilder:(NavigatorFlutterPageBuilder _Nullable)builder {
-  objc_setAssociatedObject(self,
-                           @selector(flutterPageBuilder),
-                           builder,
-                           OBJC_ASSOCIATION_COPY_NONATOMIC);
+    objc_setAssociatedObject(self,
+                             @selector(flutterPageBuilder),
+                             builder,
+                             OBJC_ASSOCIATION_COPY_NONATOMIC);
 }
 
 + (ThrioRegistryMap *)pageBuilders {
-  id builders = objc_getAssociatedObject(self, _cmd);
-  if (!builders) {
-    builders = [ThrioRegistryMap map];
-    objc_setAssociatedObject(self, _cmd, builders, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-  }
-  return builders;
+    id builders = objc_getAssociatedObject(self, _cmd);
+    if (!builders) {
+        builders = [ThrioRegistryMap map];
+        objc_setAssociatedObject(self, _cmd, builders, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    }
+    return builders;
 }
 
 @end

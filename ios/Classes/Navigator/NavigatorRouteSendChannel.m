@@ -30,38 +30,38 @@
 @implementation NavigatorRouteSendChannel
 
 - (instancetype)initWithChannel:(ThrioChannel *)channel {
-  self = [super init];
-  if (self) {
-    _channel = channel;
-  }
-  return self;
+    self = [super init];
+    if (self) {
+        _channel = channel;
+    }
+    return self;
 }
 
 - (void)onPush:(id _Nullable)arguments result:(FlutterResult _Nullable)callback {
-  [self _on:@"onPush" arguments:arguments result:callback];
+    [self _on:@"onPush" arguments:arguments result:callback];
 }
 
 - (void)onNotify:(id _Nullable)arguments result:(FlutterResult _Nullable)callback {
-  [_channel sendEvent:@"__onNotify__" arguments:arguments];
+    [_channel sendEvent:@"__onNotify__" arguments:arguments];
 }
 
 - (void)onPop:(id _Nullable)arguments result:(FlutterResult _Nullable)callback {
-  [self _on:@"onPop" arguments:arguments result:callback];
+    [self _on:@"onPop" arguments:arguments result:callback];
 }
 
 - (void)onPopTo:(id _Nullable)arguments result:(FlutterResult _Nullable)callback {
-  [self _on:@"onPopTo" arguments:arguments result:callback];
+    [self _on:@"onPopTo" arguments:arguments result:callback];
 }
 
 - (void)onRemove:(id _Nullable)arguments result:(FlutterResult _Nullable)callback {
-  [self _on:@"onRemove" arguments:arguments result:callback];
+    [self _on:@"onRemove" arguments:arguments result:callback];
 }
 
-- (void)_on:(NSString *)method
-  arguments:(id _Nullable)arguments
-     result:(FlutterResult _Nullable)callback {
-  NSString *channelMethod = [NSString stringWithFormat:@"__%@__", method];
-  [_channel invokeMethod:channelMethod arguments:arguments result:callback];
+- (void)  _on:(NSString *)method
+    arguments:(id _Nullable)arguments
+       result:(FlutterResult _Nullable)callback {
+    NSString *channelMethod = [NSString stringWithFormat:@"__%@__", method];
+    [_channel invokeMethod:channelMethod arguments:arguments result:callback];
 }
 
 @end

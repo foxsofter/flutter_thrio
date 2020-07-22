@@ -25,17 +25,17 @@
 @implementation UIViewController (WillPopCallback)
 
 - (ThrioWillPopCallback _Nullable)thrio_willPopBlock {
-  return objc_getAssociatedObject(self, _cmd);
+    return objc_getAssociatedObject(self, _cmd);
 }
 
 - (void)setThrio_willPopBlock:(ThrioWillPopCallback _Nullable)block {
-  objc_setAssociatedObject(self,
-                           @selector(thrio_willPopBlock),
-                           block,
-                           OBJC_ASSOCIATION_COPY_NONATOMIC);
-  if (![self isKindOfClass:NSClassFromString(@"NavigatorFlutterViewController")]) {
-    self.navigationController.interactivePopGestureRecognizer.enabled = block == nil;
-  }
+    objc_setAssociatedObject(self,
+                             @selector(thrio_willPopBlock),
+                             block,
+                             OBJC_ASSOCIATION_COPY_NONATOMIC);
+    if (![self isKindOfClass:NSClassFromString(@"NavigatorFlutterViewController")]) {
+        self.navigationController.interactivePopGestureRecognizer.enabled = block == nil;
+    }
 }
 
 @end

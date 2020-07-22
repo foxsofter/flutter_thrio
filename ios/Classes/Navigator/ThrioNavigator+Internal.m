@@ -19,14 +19,13 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-
 #import "ThrioNavigator+Internal.h"
 #import "UIApplication+Thrio.h"
 
 @implementation ThrioNavigator (Internal)
 
-+ (UINavigationController * _Nullable)navigationController {
-  return [[UIApplication sharedApplication] topmostNavigationController];
++ (UINavigationController *_Nullable)navigationController {
+    return [[UIApplication sharedApplication] topmostNavigationController];
 }
 
 @end
