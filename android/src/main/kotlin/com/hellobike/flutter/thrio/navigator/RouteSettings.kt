@@ -36,13 +36,16 @@ data class RouteSettings(val url: String, val index: Int) {
             "isNested" to isNested
     ).also {
         if (params != null) {
-            it["params"] =  params as Any
+            it["params"] = params as Any
         }
     }
 
     companion object {
         @JvmStatic
-        fun fromArguments(arguments: Map<String, Any>): RouteSettings {
+        fun fromArguments(arguments: Map<String, Any>): RouteSettings? {
+            if (arguments == null || !arguments.containsKey("url")) {
+                return null
+            }
             val url = arguments["url"] as String
             val index = if (arguments["index"] != null) arguments["index"] as Int else 0
             val params = arguments["params"]

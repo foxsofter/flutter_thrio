@@ -23,6 +23,8 @@ import 'package:flutter/widgets.dart';
 
 extension ThrioStatefulWidget on StatefulWidget {
   /// Get widget state from the global key.
+  /// 
+  /// Throw `Exception` if the key is not a GlobalKey<T>.
   ///
   T stateOf<T extends State<StatefulWidget>>() {
     if (this.key == null) {
@@ -32,12 +34,10 @@ extension ThrioStatefulWidget on StatefulWidget {
     if (key is GlobalKey<T>) {
       return key.currentState;
     }
-    return null;
+    throw Exception('${key.runtimeType} is not a GlobalKey<T>');
   }
 
   /// Get widget state from the global key.
-  ///
-  /// Throw `Exception` if the key is not a GlobalKey<T>.
   ///
   T tryStateOf<T extends State<StatefulWidget>>() {
     if (this.key == null) {
@@ -47,6 +47,6 @@ extension ThrioStatefulWidget on StatefulWidget {
     if (key is GlobalKey<T>) {
       return key.currentState;
     }
-    throw Exception('${key.runtimeType} is not a GlobalKey<T>');
+    return null;
   }
 }
