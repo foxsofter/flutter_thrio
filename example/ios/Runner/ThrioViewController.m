@@ -8,6 +8,8 @@
 
 #import "ThrioViewController.h"
 #import <thrio/Thrio.h>
+#import <Flutter/Flutter.h>
+#import <SSZipArchive/SSZipArchive.h>
 
 @interface ThrioViewController ()<NavigatorPageNotifyProtocol>
 
@@ -18,8 +20,50 @@
 @implementation ThrioViewController
 
 - (IBAction)pushFlutterPage:(id)sender {
-  [ThrioNavigator pushUrl:@"/biz1/flutter1"];
+//  [ThrioNavigator pushUrl:@"/biz1/flutter1"];
+    
+    NSString* flutterAssetsName = [[NSBundle mainBundle] pathForResource:@"flutter_assets" ofType:@"zip"];
+    
+    NSString *unzipPath = [self tempUnzipPath];
+    
+    [SSZipArchive unzipFileAtPath:flutterAssetsName toDestination:unzipPath];
+    NSLog(@"flutter_assets path: %@", unzipPath);
+
+    NSString *bin = [NSString stringWithFormat:@"%@/flutter_assets/kernel_blob.bin", unzipPath];
+    NSLog(@"bin path: %@", bin);
+    if (![NSFileManager.defaultManager fileExistsAtPath:bin]) {
+        @throw @1;
+    }
+
+    FlutterDartProject *project = [[FlutterDartProject alloc] initWithFlutterAssetsURL: [NSURL URLWithString:[NSString stringWithFormat:@"%@/flutter_assets", unzipPath]] ];
+
+//    FlutterEngine *engine = [[FlutterEngine alloc] initWithName:@"hahaha" project:project allowHeadlessExecution:YES];
+    
+    FlutterViewController *vc = [[FlutterViewController alloc] initWithProject:project nibName:nil bundle:nil];
+    
+    [self.navigationController pushViewController:vc animated:YES];
+    
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(500 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+        self.navigationController.navigationBarHidden = YES;
+    });
 }
+
+- (NSString *)tempUnzipPath {
+    NSString *path = [NSString stringWithFormat:@"%@",
+                      NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES)[0]
+                      ];
+    NSURL *url = [NSURL fileURLWithPath:path];
+    NSError *error = nil;
+    [[NSFileManager defaultManager] createDirectoryAtURL:url
+                             withIntermediateDirectories:YES
+                                              attributes:nil
+                                                   error:&error];
+    if (error) {
+        return nil;
+    }
+    return url.path;
+}
+
 - (IBAction)popFlutter1:(id)sender {
   [ThrioNavigator removeUrl:@"/biz1/flutter1"];
 }

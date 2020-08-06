@@ -25,6 +25,29 @@ package com.hellobike.flutter.thrio.navigator
 
 import android.content.Intent
 
+fun Intent.GetRouteUrl() = when (
+    val routeSettings = getRouteSettings()) {
+    null -> null
+    else -> routeSettings.url
+}
+
+fun Intent.GetRouteIndex(): Int? = when (
+    val routeSettings = getRouteSettings()) {
+    null -> null
+    else -> routeSettings.index
+}
+
+fun Intent.GetRouteAnimated(): Boolean? = when (
+    val routeSettings = getRouteSettings()) {
+    null -> null
+    else -> routeSettings.animated
+}
+
+fun Intent.GetRouteParams(): Any? = when (
+    val routeSettings = getRouteSettings()) {
+    null -> null
+    else -> routeSettings.params
+}
 
 internal fun Intent.getPageId(): Int {
     return getIntExtra(NAVIGATION_PAGE_ID_KEY, NAVIGATION_PAGE_ID_NONE)
@@ -38,7 +61,7 @@ internal fun Intent.getFromEntrypoint(): String {
     return getStringExtra(NAVIGATION_ROUTE_FROM_ENTRYPOINT_KEY) ?: ""
 }
 
-internal fun Intent.getRouteSettings(): RouteSettings {
+internal fun Intent.getRouteSettings(): RouteSettings? {
     val data = getSerializableExtra(NAVIGATION_ROUTE_SETTINGS_KEY).let {
         checkNotNull(it) { "RouteSettings not found" }
         it as Map<String, Any>

@@ -1,5 +1,6 @@
 #import "AppDelegate.h"
 #import <thrio/Thrio.h>
+#import <Flutter/Flutter.h>
 
 #import "MainModule.h"
 
@@ -9,13 +10,14 @@
 
 @implementation AppDelegate
 
-- (BOOL)application:(UIApplication *)application
+- (BOOL)              application:(UIApplication *)application
     didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-  //  [ThrioNavigator setMultiEngineEnabled:NO];
-  [ThrioModule init:[MainModule new]];
-  
-  // Override point for customization after application launch.
-  return YES;
+    //  [ThrioNavigator setMultiEngineEnabled:NO];
+    //  [ThrioModule init:[MainModule new]];
+
+//    NSBundle *bundle = [NSBundle bundleWithIdentifier:[FlutterDartProject defaultBundleIdentifier]];
+    
+    return YES;
 }
 
 @end

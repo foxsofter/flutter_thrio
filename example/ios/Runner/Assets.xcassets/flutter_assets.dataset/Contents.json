@@ -1,0 +1,12 @@
+{
+  "data" : [
+    {
+      "filename" : "flutter_assets.zip",
+      "idiom" : "universal"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}
