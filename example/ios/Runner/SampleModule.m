@@ -13,8 +13,8 @@
 @implementation SampleModule
 
 - (void)onModuleRegister {
-  [self registerModule:[Module1 new]];
-  [self registerModule:[Module2 new]];
+    [self registerModule:[Module1 new]];
+    [self registerModule:[Module2 new]];
 }
 
 @end
