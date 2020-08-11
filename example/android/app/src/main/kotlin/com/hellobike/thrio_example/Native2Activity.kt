@@ -75,8 +75,9 @@ class Native2Activity : AppCompatActivity() {
         val data = intent.getSerializableExtra("NAVIGATION_ROUTE_SETTINGS")
 
         if (data != null) {
-            val settings = RouteSettings.fromArguments(data as Map<String, Any>)
-            tv_native.text = "native2 index " + settings.index
+            RouteSettings.fromArguments(data as Map<String, Any>)?.apply {
+                tv_native.text = "native2 index $index"
+            }
         }
     }
 }

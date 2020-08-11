@@ -71,7 +71,8 @@ class _Page1State extends State<Page1> {
                       alignment: AlignmentDirectional.center,
                       child: Text(
                         'flutter1: index is ${widget.index}',
-                        style: TextStyle(fontSize: 28, color: Colors.blue),
+                        style:
+                            const TextStyle(fontSize: 28, color: Colors.blue),
                       ),
                     ),
                     Container(
@@ -83,9 +84,9 @@ class _Page1State extends State<Page1> {
                             autofocus: false,
                             textInputAction: TextInputAction.search,
                             // onSubmitted: onSubmitted,
-                            decoration: InputDecoration(
+                            decoration: const InputDecoration(
                               hintText: 'hintText',
-                              contentPadding: const EdgeInsets.only(bottom: 12),
+                              contentPadding: EdgeInsets.only(bottom: 12),
                               border: InputBorder.none,
                             ),
                             onChanged: print)),

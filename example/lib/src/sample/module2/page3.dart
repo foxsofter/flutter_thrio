@@ -47,7 +47,8 @@ class _Page3State extends State<Page3> {
                       alignment: AlignmentDirectional.center,
                       child: Text(
                         'flutter3: index is ${widget.index}',
-                        style: TextStyle(fontSize: 28, color: Colors.blue),
+                        style:
+                            const TextStyle(fontSize: 28, color: Colors.blue),
                       ),
                     ),
                     InkWell(
@@ -89,9 +90,7 @@ class _Page3State extends State<Page3> {
                           )),
                     ),
                     InkWell(
-                      onTap: () => ThrioNavigator.popTo(
-                        url: '/biz1/flutter1'
-                      ),
+                      onTap: () => ThrioNavigator.popTo(url: '/biz1/flutter1'),
                       child: Container(
                           padding: const EdgeInsets.all(8),
                           margin: const EdgeInsets.all(8),

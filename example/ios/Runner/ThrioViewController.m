@@ -9,7 +9,6 @@
 #import "ThrioViewController.h"
 #import <thrio/Thrio.h>
 #import <Flutter/Flutter.h>
-#import <SSZipArchive/SSZipArchive.h>
 
 @interface ThrioViewController ()<NavigatorPageNotifyProtocol>
 
