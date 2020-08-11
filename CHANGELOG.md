@@ -70,7 +70,7 @@
 
 - refact: 重构 Android 源码
 - feat: 增加通知所有对应 url 实例的能力
-- fix: 修复部分已知bug
+- fix: 修复部分已知 bug
 
 ## 0.4.1
 
@@ -84,3 +84,7 @@
 
 - fix: ThrioStatefulWidget.tryStateOf should not throw an exception.
 - feat: add extension methods for get `RouteSettings` properties.
+
+## 0.4.4
+
+- fix: issue 63
