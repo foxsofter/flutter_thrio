@@ -130,7 +130,7 @@ internal object NavigationController {
                 it as Map<String, Any>
             }
 
-            val settings = RouteSettings.fromArguments(settingsData)
+            val settings = RouteSettings.fromArguments(settingsData) ?: return
             val entrypoint = activity.intent.getEntrypoint()
             val fromEntryPoint = activity.intent.getFromEntrypoint()
 

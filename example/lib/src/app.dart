@@ -39,13 +39,15 @@ class _MainAppState extends State<MainApp> with ThrioModule {
 
   @override
   Widget build(BuildContext context) => ExcludeSemantics(
-          child: MaterialApp(
-        builder: ThrioNavigator.builder(entrypoint: widget._entrypoint),
-        home: NavigatorHome(),
-        theme: ThemeData(
+        child: MaterialApp(
+          builder: ThrioNavigator.builder(entrypoint: widget._entrypoint),
+          home: NavigatorHome(),
+          theme: ThemeData(
             pageTransitionsTheme: const PageTransitionsTheme(builders: {
-          TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
-          TargetPlatform.android: CupertinoPageTransitionsBuilder(),
-        })),
-      ));
+              TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
+              TargetPlatform.android: CupertinoPageTransitionsBuilder(),
+            }),
+          ),
+        ),
+      );
 }

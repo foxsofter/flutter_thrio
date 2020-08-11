@@ -54,7 +54,8 @@ class _Page2State extends State<Page2> {
                           alignment: AlignmentDirectional.center,
                           child: Text(
                             'flutter2: index is ${widget.index}',
-                            style: TextStyle(fontSize: 28, color: Colors.blue),
+                            style: const TextStyle(
+                                fontSize: 28, color: Colors.blue),
                           ),
                         ),
                         InkWell(

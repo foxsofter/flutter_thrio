@@ -44,7 +44,7 @@ class _NavigatorHomeState extends State<NavigatorHome> {
                     Container(
                       margin: const EdgeInsets.only(top: 10, bottom: 20),
                       alignment: AlignmentDirectional.center,
-                      child: Text(
+                      child: const Text(
                         'If you see this page, click the hot restart button',
                         style: TextStyle(fontSize: 12, color: Colors.blue),
                       ),
@@ -55,7 +55,7 @@ class _NavigatorHomeState extends State<NavigatorHome> {
                           padding: const EdgeInsets.all(8),
                           margin: const EdgeInsets.all(8),
                           color: Colors.yellow,
-                          child: Text(
+                          child: const Text(
                             'hot restart',
                             style: TextStyle(fontSize: 22, color: Colors.black),
                           )),
