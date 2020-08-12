@@ -341,7 +341,7 @@ internal class ThrioFlutterPageDelegate(private var host: ThrioFlutterActivity) 
         Log.v(TAG, "onResume()")
         ensureAlive()
         flutterEngine?.let { engine ->
-            engine.lifecycleChannel?.appIsResumed()
+            engine.lifecycleChannel.appIsResumed()
             engine.activityControlSurface.attachToActivity(host.activity, host.lifecycle)
             if (host.shouldAttachEngineToActivity()) {
                 flutterView?.reattachToFlutterEngine()

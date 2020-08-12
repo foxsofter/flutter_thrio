@@ -31,7 +31,6 @@ import io.flutter.plugin.platform.PlatformViewsController
 import io.flutter.view.AccessibilityBridge
 import java.util.*
 
-
 /**
  * Displays a Flutter UI on an Android device.
  *
@@ -599,10 +598,10 @@ class ThrioFlutterView : FrameLayout {
         // in a way that Flutter understands.
         textInputPlugin = TextInputPlugin(
                 this,
-                attachedFlutterEngine!!.dartExecutor,
+                attachedFlutterEngine!!.textInputChannel,
                 attachedFlutterEngine!!.platformViewsController)
         androidKeyProcessor = AndroidKeyProcessor(attachedFlutterEngine!!.keyEventChannel, textInputPlugin!!)
-        androidTouchProcessor = AndroidTouchProcessor(attachedFlutterEngine!!.renderer)
+        androidTouchProcessor = AndroidTouchProcessor(attachedFlutterEngine!!.renderer, /*trackMotionEvents=*/false)
         accessibilityBridge = AccessibilityBridge(
                 this,
                 flutterEngine.accessibilityChannel,
@@ -664,9 +663,9 @@ class ThrioFlutterView : FrameLayout {
 
             // Initialize various components that know how to process Android View I/O
             // in a way that Flutter understands.
-            textInputPlugin = TextInputPlugin(this, engine.dartExecutor, engine.platformViewsController)
+            textInputPlugin = TextInputPlugin(this, engine.textInputChannel, engine.platformViewsController)
             androidKeyProcessor = AndroidKeyProcessor(engine.keyEventChannel, textInputPlugin!!)
-            androidTouchProcessor = AndroidTouchProcessor(engine.renderer)
+            androidTouchProcessor = AndroidTouchProcessor(engine.renderer, /*trackMotionEvents=*/false)
             accessibilityBridge = AccessibilityBridge(
                     this,
                     engine.accessibilityChannel,

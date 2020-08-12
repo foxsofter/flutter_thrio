@@ -43,7 +43,7 @@ data class RouteSettings(val url: String, val index: Int) {
     companion object {
         @JvmStatic
         fun fromArguments(arguments: Map<String, Any>): RouteSettings? {
-            if (arguments == null || !arguments.containsKey("url")) {
+            if (!arguments.containsKey("url")) {
                 return null
             }
             val url = arguments["url"] as String

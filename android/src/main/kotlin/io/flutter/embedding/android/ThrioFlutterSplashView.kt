@@ -128,7 +128,7 @@ internal class ThrioFlutterSplashView @JvmOverloads constructor(
      * resume. See [.isSplashScreenTransitionNeededNow] to answer that question.
      */
     private val isSplashScreenNeededNow: Boolean
-        private get() = ((flutterView != null
+        get() = ((flutterView != null
                 ) && flutterView!!.isAttachedToFlutterEngine
                 && !flutterView!!.hasRenderedFirstFrame()
                 && !hasSplashCompleted())
@@ -142,7 +142,7 @@ internal class ThrioFlutterSplashView @JvmOverloads constructor(
      * this method will return false even if a previous visual transition was interrupted.
      */
     private val isSplashScreenTransitionNeededNow: Boolean
-        private get() {
+        get() {
             return ((flutterView != null
                     ) && flutterView!!.isAttachedToFlutterEngine
                     && (splashScreen != null
