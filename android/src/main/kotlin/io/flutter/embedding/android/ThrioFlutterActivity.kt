@@ -196,7 +196,7 @@ open class ThrioFlutterActivity : Activity(), Host, LifecycleOwner {
      * to be used in a manifest file.
      */
     private val splashScreenFromManifest: Drawable?
-        private get() = try {
+        get() = try {
             val activityInfo = packageManager.getActivityInfo(componentName, PackageManager.GET_META_DATA)
             val metadata = activityInfo.metaData
             val splashScreenId = metadata?.getInt(FlutterActivityLaunchConfigs.SPLASH_SCREEN_META_DATA_KEY)
@@ -423,7 +423,7 @@ open class ThrioFlutterActivity : Activity(), Host, LifecycleOwner {
      */
     override fun getInitialRoute(): String {
         if (intent.hasExtra(FlutterActivityLaunchConfigs.EXTRA_INITIAL_ROUTE)) {
-            return intent.getStringExtra(FlutterActivityLaunchConfigs.EXTRA_INITIAL_ROUTE)
+            return intent.getStringExtra(FlutterActivityLaunchConfigs.EXTRA_INITIAL_ROUTE)!!
         }
         return try {
             val activityInfo = packageManager.getActivityInfo(componentName, PackageManager.GET_META_DATA)
@@ -465,6 +465,13 @@ open class ThrioFlutterActivity : Activity(), Host, LifecycleOwner {
         return FlutterMain.findAppBundlePath()
     }
 
+    override fun shouldRestoreAndSaveState(): Boolean {
+        if (intent.hasExtra(FlutterActivityLaunchConfigs.EXTRA_ENABLE_STATE_RESTORATION)) {
+            return intent.getBooleanExtra(FlutterActivityLaunchConfigs.EXTRA_ENABLE_STATE_RESTORATION, false)
+        }
+        return cachedEngineId == null
+    }
+
     /**
      * Returns true if Flutter is running in "debug mode", and false otherwise.
      *
@@ -472,7 +479,7 @@ open class ThrioFlutterActivity : Activity(), Host, LifecycleOwner {
      * Debug mode allows Flutter to operate with hot reload and hot restart. Release mode does not.
      */
     private val isDebuggable: Boolean
-        private get() = (applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE) != 0
+        get() = (applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE) != 0
 
     /**
      * [FlutterActivityAndFragmentDelegate.Host] method that is used by [ ] to obtain the desired
@@ -496,7 +503,7 @@ open class ThrioFlutterActivity : Activity(), Host, LifecycleOwner {
     private val backgroundMode: BackgroundMode
         get() {
             return if (intent.hasExtra(FlutterActivityLaunchConfigs.EXTRA_BACKGROUND_MODE)) {
-                BackgroundMode.valueOf(intent.getStringExtra(FlutterActivityLaunchConfigs.EXTRA_BACKGROUND_MODE))
+                BackgroundMode.valueOf(intent.getStringExtra(FlutterActivityLaunchConfigs.EXTRA_BACKGROUND_MODE)!!)
             } else {
                 BackgroundMode.opaque
             }
@@ -518,7 +525,7 @@ open class ThrioFlutterActivity : Activity(), Host, LifecycleOwner {
      * `ThrioFlutterActivity`.
      */
     protected val flutterEngine: FlutterEngine?
-        protected get() = delegate?.flutterEngine
+        get() = delegate?.flutterEngine
 
     override fun providePlatformPlugin(activity: Activity?, flutterEngine: FlutterEngine): PlatformPlugin? {
         return if (activity != null) {
@@ -616,6 +623,13 @@ open class ThrioFlutterActivity : Activity(), Host, LifecycleOwner {
 
     override fun onFlutterUiNoLongerDisplayed() {
         // no-op
+    }
+
+    override fun shouldRestoreAndSaveState(): Boolean {
+        if (intent.hasExtra(FlutterActivityLaunchConfigs.EXTRA_ENABLE_STATE_RESTORATION)) {
+            return intent.getBooleanExtra(FlutterActivityLaunchConfigs.EXTRA_ENABLE_STATE_RESTORATION, false)
+        }
+        return cachedEngineId == null
     }
 
     companion object {
