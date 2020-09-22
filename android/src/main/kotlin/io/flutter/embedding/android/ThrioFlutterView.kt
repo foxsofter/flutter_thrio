@@ -601,7 +601,7 @@ class ThrioFlutterView : FrameLayout {
                 attachedFlutterEngine!!.textInputChannel,
                 attachedFlutterEngine!!.platformViewsController)
         androidKeyProcessor = AndroidKeyProcessor(attachedFlutterEngine!!.keyEventChannel, textInputPlugin!!)
-        androidTouchProcessor = AndroidTouchProcessor(attachedFlutterEngine!!.renderer, /*trackMotionEvents=*/false)
+        androidTouchProcessor = AndroidTouchProcessor(attachedFlutterEngine!!.renderer, false)
         accessibilityBridge = AccessibilityBridge(
                 this,
                 flutterEngine.accessibilityChannel,
@@ -666,6 +666,7 @@ class ThrioFlutterView : FrameLayout {
             textInputPlugin = TextInputPlugin(this, engine.textInputChannel, engine.platformViewsController)
             androidKeyProcessor = AndroidKeyProcessor(engine.keyEventChannel, textInputPlugin!!)
             androidTouchProcessor = AndroidTouchProcessor(engine.renderer, /*trackMotionEvents=*/false)
+
             accessibilityBridge = AccessibilityBridge(
                     this,
                     engine.accessibilityChannel,
