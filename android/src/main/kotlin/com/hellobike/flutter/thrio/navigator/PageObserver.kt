@@ -21,19 +21,31 @@
  * IN THE SOFTWARE.
  */
 
-package com.hellobike.flutter.thrio.module
+package com.hellobike.flutter.thrio.navigator
 
-import com.hellobike.flutter.thrio.VoidCallback
-import com.hellobike.flutter.thrio.navigator.PageObserver
-import com.hellobike.flutter.thrio.navigator.PageObservers
+interface PageObserver {
+    /**
+     * The [ThrioNavigator] created `route`.
+     */
+    fun onCreate(routeSettings: RouteSettings) {}
 
-interface ModulePageObserver {
+    /**
+     * The `route` is about to be activated.
+     */
+    fun willAppear(routeSettings: RouteSettings) {}
 
-    fun registerPageObserver(observer: PageObserver): VoidCallback {
-        return PageObservers.observers.registry(observer)
-    }
+    /**
+     * The `route` has been activated.
+     */
+    fun didAppear(routeSettings: RouteSettings) {}
 
-    fun registerPageObservers(observers: List<PageObserver>): VoidCallback {
-        return PageObservers.observers.registryAll(observers.toSet())
-    }
+    /**
+     * The `route` is about to disappear.
+     */
+    fun willDisappear(routeSettings: RouteSettings) {}
+
+    /**
+     * The `route` is has disappeared.
+     */
+    fun didDisappear(routeSettings: RouteSettings) {}
 }

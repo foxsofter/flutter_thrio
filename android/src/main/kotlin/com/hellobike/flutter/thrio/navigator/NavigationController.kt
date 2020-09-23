@@ -147,6 +147,10 @@ internal object NavigationController {
             route.poppedResult = poppedResult
             poppedResult = null
 
+            val previousRouteSettings = PageRoutes.lastRoute()?.settings;
+
+            PageObservers.onCreate(settings)
+
             PageRoutes.push(activity, route) { index ->
                 if (index == null) {
                     if (!PageRoutes.hasRoute(pageId)) {
@@ -158,6 +162,10 @@ internal object NavigationController {
                 }
                 routeAction = RouteAction.NONE
                 result = null
+
+                if (index != null) {
+                    RouteObservers.didPush(settings, previousRouteSettings)
+                }
             }
         }
     }
@@ -218,9 +226,19 @@ internal object NavigationController {
 
             routeAction = RouteAction.POPPING
 
+            val routeSettings = PageRoutes.lastRoute()?.settings
+            if (routeSettings == null) {
+                result?.invoke(false)
+                routeAction = RouteAction.NONE
+            }
+
             PageRoutes.pop(params, animated) {
                 result?.invoke(it)
                 routeAction = RouteAction.NONE
+                if (it) {
+                    val previousRouteSettings = PageRoutes.lastRoute()?.settings
+                    RouteObservers.didPop(routeSettings!!, previousRouteSettings)
+                }
             }
         }
     }
@@ -258,6 +276,7 @@ internal object NavigationController {
             this.poppedToRoute = poppedToRoute
 
             var lastActivity = PageRoutes.lastActivityHolder()?.activity?.get()
+
             fun startActivity() {
                 var context = if (poppedToRoute.clazz is ThrioActivity) context else lastActivity
                 val builder = IntentBuilders.intentBuilders[poppedToRoute.settings.url]
@@ -314,6 +333,9 @@ internal object NavigationController {
 
             poppedToRoute?.let { route ->
                 PageRoutes.popTo(route.settings.url, route.settings.index, route.settings.animated) {
+                    if (it && poppedToRoute != null) {
+                        RouteObservers.didPopTo(poppedToRoute!!.settings, route.settings)
+                    }
                     result(it)
                     routeAction = RouteAction.NONE
                 }
@@ -357,13 +379,4 @@ internal object NavigationController {
             }
         }
     }
-
-    fun doDestroy(activity: Activity) {
-        val pageId = activity.intent.getPageId()
-        if (pageId == NAVIGATION_PAGE_ID_NONE) {
-            return
-        }
-        PageRoutes.destroy(pageId)
-    }
-
 }

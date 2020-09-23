@@ -197,7 +197,27 @@ internal object PageRoutes {
         }
     }
 
-    fun destroy(pageId: Int) {
+    fun onCreate(pageId: Int) {
+
+    }
+
+    fun willAppear(pageId: Int) {
+
+    }
+
+    fun didAppear(pageId: Int) {
+
+    }
+
+    fun willDisappear(pageId: Int) {
+
+    }
+
+    fun didDisappear(pageId: Int) {
+
+    }
+
+    fun onDestroy(pageId: Int) {
         val activityHolder = activityHolders.lastOrNull { it.pageId == pageId }
         if (activityHolder != null) {
             activityHolders.remove(activityHolder)

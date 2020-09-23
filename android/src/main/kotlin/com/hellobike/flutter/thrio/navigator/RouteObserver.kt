@@ -21,19 +21,38 @@
  * IN THE SOFTWARE.
  */
 
-package com.hellobike.flutter.thrio.module
+package com.hellobike.flutter.thrio.navigator
 
-import com.hellobike.flutter.thrio.VoidCallback
-import com.hellobike.flutter.thrio.navigator.PageObserver
-import com.hellobike.flutter.thrio.navigator.PageObservers
+interface RouteObserver {
 
-interface ModulePageObserver {
+    /**
+     * The [ThrioNavigator] pushed `route`.
+     *
+     * The route immediately below that one, and thus the previously active
+     * route, is `previousRoute`.
+     */
+    fun didPush(routeSettings: RouteSettings, previousRouteSettings: RouteSettings?) {}
 
-    fun registerPageObserver(observer: PageObserver): VoidCallback {
-        return PageObservers.observers.registry(observer)
-    }
+    /**
+     * The [ThrioNavigator] popped `route`.
+     *
+     * The route immediately below that one, and thus the newly active
+     * route, is `previousRoute`.
+     */
+    fun didPop(routeSettings: RouteSettings, previousRouteSettings: RouteSettings?) {}
 
-    fun registerPageObservers(observers: List<PageObserver>): VoidCallback {
-        return PageObservers.observers.registryAll(observers.toSet())
-    }
+    /**
+     * The [ThrioNavigator] popped to `route`.
+     *
+     * The previously active route, is `previousRoute`.
+     */
+    fun didPopTo(routeSettings: RouteSettings, previousRouteSettings: RouteSettings?) {}
+
+    /**
+     * The [ThrioNavigator] removed `route`.
+     *
+     * The route immediately below that one, if any, is `previousRoute`.
+     */
+    fun didRemove(routeSettings: RouteSettings, previousRouteSettings: RouteSettings?) {}
+
 }

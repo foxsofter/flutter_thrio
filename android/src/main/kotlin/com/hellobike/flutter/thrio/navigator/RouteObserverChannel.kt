@@ -37,13 +37,29 @@ class RouteObserverChannel constructor(messenger: BinaryMessenger)
     }
 
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
+//        val routeArguments = call.argument<Map<String, Any>>("route") ?: return
+//        val routeSettings = RouteSettings.fromArguments(routeArguments) ?: return
+//        val previousRouteArguments = call.argument<Map<String, Any>>("previousRoute")
+//        val previousRouteSettings = if (previousRouteArguments == null) null else {
+//            RouteSettings.fromArguments(previousRouteArguments)
+//        }
         when (call.method) {
-            /** unused **/
-            "didPush", "didPop", "didRemove", "didPopTo", "setPopDisabled" -> {
+            "didPush" -> {
+                // RouteObservers.didPush(routeSettings, previousRouteSettings)
+            }
+            "didPop" -> {
+                // RouteObservers.didPop(routeSettings, previousRouteSettings)
+            }
+            "didPopTo" -> {
+                // RouteObservers.didPopTo(routeSettings, previousRouteSettings)
+            }
+            "didRemove" -> {
+                // RouteObservers.didRemove(routeSettings, previousRouteSettings)
+            }
+            "setPopDisabled" -> {
             }
             else -> {
                 Log.e("Thrio", "flutter call method ${call.method} notImplemented")
-//                result.notImplemented()
             }
         }
     }

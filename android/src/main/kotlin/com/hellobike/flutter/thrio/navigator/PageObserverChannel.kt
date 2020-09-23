@@ -37,13 +37,26 @@ class PageObserverChannel constructor(messenger: BinaryMessenger)
     }
 
     override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
+        val routeArguments = call.argument<Map<String, Any>>("route") ?: return
+        val routeSettings = RouteSettings.fromArguments(routeArguments) ?: return
         when (call.method) {
-            /** unused **/
-            "didPush", "didPop", "didRemove", "didPopTo", "setPopDisabled" -> {
+            "onCreate" -> {
+                PageObservers.onCreate(routeSettings)
+            }
+            "willAppear" -> {
+                PageObservers.willAppear(routeSettings)
+            }
+            "didAppear" -> {
+                PageObservers.didAppear(routeSettings)
+            }
+            "willDisappear" -> {
+                PageObservers.willDisappear(routeSettings)
+            }
+            "didDisappear" -> {
+                PageObservers.didDisappear(routeSettings)
             }
             else -> {
                 Log.e("Thrio", "flutter call method ${call.method} notImplemented")
-//                result.notImplemented()
             }
         }
     }

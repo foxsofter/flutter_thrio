@@ -24,16 +24,16 @@
 package com.hellobike.flutter.thrio.module
 
 import com.hellobike.flutter.thrio.VoidCallback
-import com.hellobike.flutter.thrio.navigator.PageObserver
-import com.hellobike.flutter.thrio.navigator.PageObservers
+import com.hellobike.flutter.thrio.navigator.RouteObserver
+import com.hellobike.flutter.thrio.navigator.RouteObservers
 
-interface ModulePageObserver {
+interface ModuleRouteObserver {
 
-    fun registerPageObserver(observer: PageObserver): VoidCallback {
-        return PageObservers.observers.registry(observer)
+    fun registerRouteObserver(observer: RouteObserver): VoidCallback {
+        return RouteObservers.observers.registry(observer)
     }
 
-    fun registerPageObservers(observers: List<PageObserver>): VoidCallback {
-        return PageObservers.observers.registryAll(observers.toSet())
+    fun registerRouteObservers(observers: List<RouteObserver>): VoidCallback {
+        return RouteObservers.observers.registryAll(observers.toSet())
     }
 }
