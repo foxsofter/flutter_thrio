@@ -175,6 +175,8 @@ internal data class PageActivityHolder(val pageId: Int,
             } else {
                 routes.remove(route)
                 result(true)
+
+                RouteObservers.didRemove(route.settings, lastRoute()?.settings);
             }
         } else {
             result(false)

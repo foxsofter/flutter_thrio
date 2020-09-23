@@ -46,7 +46,11 @@ internal object ActivityDelegate : Application.ActivityLifecycleCallbacks {
     override fun onActivityStarted(activity: Activity) {
     }
 
-    override fun onActivityPaused(activity: Activity) {
+    override fun onActivityPreResumed(activity: Activity) {
+        val pageId = activity.intent.getPageId()
+        if (pageId != NAVIGATION_PAGE_ID_NONE) {
+            PageRoutes.willAppear(pageId)
+        }
     }
 
     override fun onActivityResumed(activity: Activity) {
@@ -59,6 +63,25 @@ internal object ActivityDelegate : Application.ActivityLifecycleCallbacks {
         NavigationController.Remove.doRemove(activity)
         NavigationController.Push.doPush(activity)
         NavigationController.Notify.doNotify(activity)
+
+        val pageId = activity.intent.getPageId()
+        if (pageId != NAVIGATION_PAGE_ID_NONE) {
+            PageRoutes.didAppear(pageId)
+        }
+    }
+
+    override fun onActivityPrePaused(activity: Activity) {
+        val pageId = activity.intent.getPageId()
+        if (pageId != NAVIGATION_PAGE_ID_NONE) {
+            PageRoutes.willDisappear(pageId)
+        }
+    }
+
+    override fun onActivityPaused(activity: Activity) {
+        val pageId = activity.intent.getPageId()
+        if (pageId != NAVIGATION_PAGE_ID_NONE) {
+            PageRoutes.didDisappear(pageId)
+        }
     }
 
     override fun onActivityStopped(activity: Activity?) {
@@ -79,7 +102,10 @@ internal object ActivityDelegate : Application.ActivityLifecycleCallbacks {
             return
         }
         // 如果原生页面被关闭，在这里同步其页面栈
-        NavigationController.doDestroy(activity)
+        val pageId = activity.intent.getPageId()
+        if (pageId != NAVIGATION_PAGE_ID_NONE) {
+            PageRoutes.onDestroy(pageId)
+        }
     }
 
     private fun clearSystemDestroyed(activity: Activity) {
