@@ -21,19 +21,34 @@
  * IN THE SOFTWARE.
  */
 
-package com.hellobike.flutter.thrio.module
+package com.hellobike.flutter.thrio.navigator
 
-import com.hellobike.flutter.thrio.VoidCallback
-import com.hellobike.flutter.thrio.navigator.PageObserver
-import com.hellobike.flutter.thrio.navigator.PageObservers
+import com.hellobike.flutter.thrio.registry.RegistrySet
 
-interface ModulePageObserver {
+internal object RouteObservers : RouteObserver {
+    val observers by lazy { RegistrySet<RouteObserver>() }
 
-    fun registerPageObserver(observer: PageObserver): VoidCallback {
-        return PageObservers.observers.registry(observer)
+    override fun didPush(routeSettings: RouteSettings, previousRouteSettings: RouteSettings?) {
+        observers.forEach {
+            it.didPush(routeSettings, previousRouteSettings)
+        }
     }
 
-    fun registerPageObservers(observers: List<PageObserver>): VoidCallback {
-        return PageObservers.observers.registryAll(observers.toSet())
+    override fun didPop(routeSettings: RouteSettings, previousRouteSettings: RouteSettings?) {
+        observers.forEach {
+            it.didPop(routeSettings, previousRouteSettings)
+        }
+    }
+
+    override fun didPopTo(routeSettings: RouteSettings, previousRouteSettings: RouteSettings?) {
+        observers.forEach {
+            it.didPopTo(routeSettings, previousRouteSettings)
+        }
+    }
+
+    override fun didRemove(routeSettings: RouteSettings, previousRouteSettings: RouteSettings?) {
+        observers.forEach {
+            it.didRemove(routeSettings, previousRouteSettings)
+        }
     }
 }

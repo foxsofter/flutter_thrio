@@ -665,8 +665,7 @@ class ThrioFlutterView : FrameLayout {
             // in a way that Flutter understands.
             textInputPlugin = TextInputPlugin(this, engine.textInputChannel, engine.platformViewsController)
             androidKeyProcessor = AndroidKeyProcessor(engine.keyEventChannel, textInputPlugin!!)
-            androidTouchProcessor = AndroidTouchProcessor(engine.renderer, /*trackMotionEvents=*/false)
-
+            androidTouchProcessor = AndroidTouchProcessor(engine.renderer, false)
             accessibilityBridge = AccessibilityBridge(
                     this,
                     engine.accessibilityChannel,

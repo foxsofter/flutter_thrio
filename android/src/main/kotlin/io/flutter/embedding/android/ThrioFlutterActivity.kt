@@ -625,13 +625,6 @@ open class ThrioFlutterActivity : Activity(), Host, LifecycleOwner {
         // no-op
     }
 
-    override fun shouldRestoreAndSaveState(): Boolean {
-        if (intent.hasExtra(FlutterActivityLaunchConfigs.EXTRA_ENABLE_STATE_RESTORATION)) {
-            return intent.getBooleanExtra(FlutterActivityLaunchConfigs.EXTRA_ENABLE_STATE_RESTORATION, false)
-        }
-        return cachedEngineId == null
-    }
-
     companion object {
         private const val TAG = "ThrioFlutterActivity"
 
