@@ -24,37 +24,54 @@
 package com.hellobike.flutter.thrio.navigator
 
 import com.hellobike.flutter.thrio.registry.RegistrySet
+import io.flutter.Log
 
 internal object PageObservers : PageObserver {
+    const val TAG = "PageObservers"
     val observers by lazy { RegistrySet<PageObserver>() }
 
     override fun onCreate(routeSettings: RouteSettings) {
         observers.forEach {
             it.onCreate(routeSettings)
         }
+        Log.i(TAG, "onCreate: url->${routeSettings.url} " +
+                "index->${routeSettings.index} " +
+                "params->${routeSettings.params?.toString()}")
     }
 
     override fun willAppear(routeSettings: RouteSettings) {
         observers.forEach {
             it.willAppear(routeSettings)
         }
+        Log.i(TAG, "willAppear: url->${routeSettings.url} " +
+                "index->${routeSettings.index} " +
+                "params->${routeSettings.params?.toString()}")
     }
 
     override fun didAppear(routeSettings: RouteSettings) {
         observers.forEach {
             it.didAppear(routeSettings)
         }
+        Log.i(TAG, "didAppear: url->${routeSettings.url} " +
+                "index->${routeSettings.index} " +
+                "params->${routeSettings.params?.toString()}")
     }
 
     override fun willDisappear(routeSettings: RouteSettings) {
         observers.forEach {
             it.willDisappear(routeSettings)
         }
+        Log.i(TAG, "willDisappear: url->${routeSettings.url} " +
+                "index->${routeSettings.index} " +
+                "params->${routeSettings.params?.toString()}")
     }
 
     override fun didDisappear(routeSettings: RouteSettings) {
         observers.forEach {
             it.didDisappear(routeSettings)
         }
+        Log.i(TAG, "didDisappear: url->${routeSettings.url} " +
+                "index->${routeSettings.index} " +
+                "params->${routeSettings.params?.toString()}")
     }
 }

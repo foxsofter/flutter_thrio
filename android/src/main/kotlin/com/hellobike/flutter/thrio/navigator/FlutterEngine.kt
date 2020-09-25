@@ -24,7 +24,7 @@
 package com.hellobike.flutter.thrio.navigator
 
 import android.content.Context
-import com.hellobike.flutter.thrio.BooleanCallback
+import com.hellobike.flutter.thrio.channel.ThrioChannel
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.embedding.engine.FlutterEngineCache
 import io.flutter.embedding.engine.dart.DartExecutor
@@ -32,37 +32,27 @@ import io.flutter.view.FlutterMain
 
 data class FlutterEngine(private val context: Context,
                          private val entrypoint: String,
-                         private val readyListener: EngineReadyListener? = null) : RouteSendHandler {
+                         private val readyListener: EngineReadyListener? = null) {
 
     private var entryPoint: String = entrypoint
 
-    var flutterEngine: FlutterEngine = FlutterEngine(context)
-    var sendChannel: RouteSendChannel
-    var receiveChannel: RouteReceiveChannel
-    var routeObserverChannel: RouteObserverChannel
-    var pageObserverChannel: PageObserverChannel
+    val flutterEngine: FlutterEngine = FlutterEngine(context)
+    var sendChannel: RouteSendChannel private set
+    var receiveChannel: RouteReceiveChannel private set
+    var routeObserverChannel: RouteObserverChannel private set
+    var pageObserverChannel: PageObserverChannel private set
 
     init {
-        sendChannel = RouteSendChannel(flutterEngine.dartExecutor, entrypoint)
-        receiveChannel = RouteReceiveChannel(entrypoint)
-        sendChannel.setMethodCallHandler(receiveChannel)
+        val channel = ThrioChannel(entrypoint, "__thrio_app__")
+        sendChannel = RouteSendChannel(channel)
+        receiveChannel = RouteReceiveChannel(channel)
 
-        routeObserverChannel = RouteObserverChannel(flutterEngine.dartExecutor)
-        pageObserverChannel = PageObserverChannel(flutterEngine.dartExecutor)
+        routeObserverChannel = RouteObserverChannel(entrypoint, flutterEngine.dartExecutor)
+        pageObserverChannel = PageObserverChannel(entrypoint, flutterEngine.dartExecutor)
 
         val dartEntrypoint = DartExecutor.DartEntrypoint(FlutterMain.findAppBundlePath(), entrypoint)
         flutterEngine.dartExecutor.executeDartEntrypoint(dartEntrypoint)
 
         FlutterEngineCache.getInstance().put(entryPoint, flutterEngine)
     }
-
-    override fun onPush(arguments: Any?, result: BooleanCallback) = sendChannel.onPush(arguments, result)
-
-    override fun onNotify(arguments: Any?, result: BooleanCallback) = sendChannel.onNotify(arguments, result)
-
-    override fun onPop(arguments: Any?, result: BooleanCallback) = sendChannel.onPop(arguments, result)
-
-    override fun onPopTo(arguments: Any?, result: BooleanCallback) = sendChannel.onPopTo(arguments, result)
-
-    override fun onRemove(arguments: Any?, result: BooleanCallback) = sendChannel.onRemove(arguments, result)
 }

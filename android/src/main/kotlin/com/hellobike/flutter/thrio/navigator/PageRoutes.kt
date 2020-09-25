@@ -165,7 +165,7 @@ internal object PageRoutes {
                     if (lastActivityHolder != null) {
                         val engine = FlutterEngineFactory.getEngine(entrypoint)
                         lastActivityHolder.lastRoute()?.let { route ->
-                            engine?.onPopTo(route.settings.toArguments()) {}
+                            engine?.sendChannel?.onPopTo(route.settings.toArguments()) {}
                         }
                     }
                 }
@@ -197,30 +197,33 @@ internal object PageRoutes {
         }
     }
 
-    fun onCreate(pageId: Int) {
-
-    }
-
     fun willAppear(pageId: Int) {
-
+        activityHolders.lastOrNull { it.pageId == pageId }?.apply {
+            willAppear()
+        }
     }
 
     fun didAppear(pageId: Int) {
-
+        activityHolders.lastOrNull { it.pageId == pageId }?.apply {
+            didAppear()
+        }
     }
 
     fun willDisappear(pageId: Int) {
-
+        activityHolders.lastOrNull { it.pageId == pageId }?.apply {
+            willDisappear()
+        }
     }
 
     fun didDisappear(pageId: Int) {
-
+        activityHolders.lastOrNull { it.pageId == pageId }?.apply {
+            didDisappear()
+        }
     }
 
     fun onDestroy(pageId: Int) {
-        val activityHolder = activityHolders.lastOrNull { it.pageId == pageId }
-        if (activityHolder != null) {
-            activityHolders.remove(activityHolder)
+        activityHolders.lastOrNull { it.pageId == pageId }?.apply {
+            activityHolders.remove(this)
         }
     }
 

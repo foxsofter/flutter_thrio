@@ -77,16 +77,19 @@ class NavigatorRouteObserverChannel with NavigatorRouteObserver {
               'route': {
                 'url': routeSettings.url,
                 'index': routeSettings.index,
+                'params': routeSettings.params,
               },
             }
           : <String, dynamic>{
               'route': {
                 'url': routeSettings.url,
                 'index': routeSettings.index,
+                'params': routeSettings.params,
               },
               'previousRoute': {
                 'url': previousRouteSettings.url,
                 'index': previousRouteSettings.index,
+                'params': previousRouteSettings.params,
               },
             };
 }

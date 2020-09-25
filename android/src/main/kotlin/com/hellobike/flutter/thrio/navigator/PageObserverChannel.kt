@@ -23,42 +23,35 @@
 
 package com.hellobike.flutter.thrio.navigator
 
-import android.util.Log
 import com.hellobike.flutter.thrio.channel.ThrioChannel
 import io.flutter.plugin.common.BinaryMessenger
-import io.flutter.plugin.common.MethodCall
-import io.flutter.plugin.common.MethodChannel
 
-class PageObserverChannel constructor(messenger: BinaryMessenger)
-    : ThrioChannel(messenger, "__thrio_page_channel__"), MethodChannel.MethodCallHandler {
+class PageObserverChannel constructor(private val entrypoint: String,
+                                      private val messenger: BinaryMessenger) {
+
+    private val channel: ThrioChannel = ThrioChannel(entrypoint, "__thrio_page_channel__")
 
     init {
-        setMethodCallHandler(this)
+        channel.setupMethodChannel(messenger)
+        on("onCreate")
+        on("willAppear")
+        on("didAppear")
+        on("willDisappear")
+        on("didDisappear")
     }
 
-    override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
-        val routeArguments = call.argument<Map<String, Any>>("route") ?: return
-        val routeSettings = RouteSettings.fromArguments(routeArguments) ?: return
-        when (call.method) {
-            "onCreate" -> {
-                PageObservers.onCreate(routeSettings)
-            }
-            "willAppear" -> {
-                PageObservers.willAppear(routeSettings)
-            }
-            "didAppear" -> {
-                PageObservers.didAppear(routeSettings)
-            }
-            "willDisappear" -> {
-                PageObservers.willDisappear(routeSettings)
-            }
-            "didDisappear" -> {
-                PageObservers.didDisappear(routeSettings)
-            }
-            else -> {
-                Log.e("Thrio", "flutter call method ${call.method} notImplemented")
+    private fun on(method: String) {
+        channel.registryMethod(method) { arguments, _ ->
+            val routeArguments = arguments["route"] ?: return@registryMethod
+            val routeSettings = RouteSettings.fromArguments(routeArguments as Map<String, Any>)
+                    ?: return@registryMethod
+            when (method) {
+                "onCreate" -> PageObservers.onCreate(routeSettings)
+                "willAppear" -> PageObservers.willAppear(routeSettings)
+                "didAppear" -> PageObservers.didAppear(routeSettings)
+                "willDisappear" -> PageObservers.willDisappear(routeSettings)
+                "didDisappear" -> PageObservers.didDisappear(routeSettings)
             }
         }
     }
-
 }

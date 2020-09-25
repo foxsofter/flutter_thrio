@@ -93,8 +93,8 @@ NS_ASSUME_NONNULL_BEGIN
         NSString *entrypoint = [(NavigatorFlutterViewController *)self entrypoint];
         NavigatorRouteSendChannel *channel = [NavigatorFlutterEngineFactory.shared getSendChannelByEntrypoint:entrypoint];
         if (result) {
-            [channel onPush:arguments result:^(id _Nullable r) {
-                result(r && [r boolValue] ? index : nil);
+            [channel onPush:arguments result:^(BOOL r) {
+                result(r ? index : nil);
             }];
         } else {
             [channel onPush:arguments result:nil];
@@ -145,19 +145,19 @@ NS_ASSUME_NONNULL_BEGIN
         NavigatorRouteSendChannel *channel = [NavigatorFlutterEngineFactory.shared getSendChannelByEntrypoint:entrypoint];
         __weak typeof(self) weakself = self;
         // 发送给需要关闭页面的引擎
-        [channel onPop:arguments result:^(id _Nullable r) {
+        [channel onPop:arguments result:^(BOOL r) {
             __strong typeof(weakself) strongSelf = weakself;
-            if (r && [r boolValue]) {
+            if (r) {
                 if (route != strongSelf.thrio_firstRoute) {
                     [strongSelf thrio_onNotify:route.prev];
                 }
             }
             if (result) {
-                result(r && [r boolValue]);
+                result(r);
             }
 
             // 关闭成功,处理页面回传参数
-            if (r && [r boolValue]) {
+            if (r) {
                 if (route.poppedResult) {
                     route.poppedResult(params);
                 }
@@ -212,14 +212,14 @@ NS_ASSUME_NONNULL_BEGIN
         __weak typeof(self) weakself = self;
         NSString *entrypoint = [(NavigatorFlutterViewController *)self entrypoint];
         NavigatorRouteSendChannel *channel = [NavigatorFlutterEngineFactory.shared getSendChannelByEntrypoint:entrypoint];
-        [channel onPopTo:arguments result:^(id _Nullable r) {
+        [channel onPopTo:arguments result:^(BOOL r) {
             __strong typeof(weakself) strongSelf = weakself;
-            if (r && [r boolValue]) {
+            if (r) {
                 route.next = nil; // TODO: 多引擎模式下，同步各个引擎的页面
                 [strongSelf thrio_onNotify:route];
             }
             if (result) {
-                result(r && [r boolValue]);
+                result(r);
             }
         }];
     } else {
@@ -248,9 +248,9 @@ NS_ASSUME_NONNULL_BEGIN
         __weak typeof(self) weakself = self;
         NSString *entrypoint = [(NavigatorFlutterViewController *)self entrypoint];
         NavigatorRouteSendChannel *channel = [NavigatorFlutterEngineFactory.shared getSendChannelByEntrypoint:entrypoint];
-        [channel onRemove:arguments result:^(id _Nullable r) {
+        [channel onRemove:arguments result:^(BOOL r) {
             __strong typeof(weakself) strongSelf = weakself;
-            if ([r boolValue]) {
+            if (r) {
                 if (route == strongSelf.thrio_firstRoute) {
                     strongSelf.thrio_firstRoute = route.next;
                     route.prev.next = nil;
@@ -263,7 +263,7 @@ NS_ASSUME_NONNULL_BEGIN
                 }
             }
             if (result) {
-                result(r && [r boolValue]);
+                result(r);
             }
         }];
     } else {

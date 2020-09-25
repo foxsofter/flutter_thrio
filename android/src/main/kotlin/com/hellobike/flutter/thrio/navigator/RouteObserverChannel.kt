@@ -23,43 +23,36 @@
 
 package com.hellobike.flutter.thrio.navigator
 
-import android.util.Log
 import com.hellobike.flutter.thrio.channel.ThrioChannel
 import io.flutter.plugin.common.BinaryMessenger
-import io.flutter.plugin.common.MethodCall
-import io.flutter.plugin.common.MethodChannel
 
-class RouteObserverChannel constructor(messenger: BinaryMessenger)
-    : ThrioChannel(messenger, "__thrio_route_channel__"), MethodChannel.MethodCallHandler {
+class RouteObserverChannel constructor(private val entrypoint: String,
+                                       private val messenger: BinaryMessenger) {
+
+    private val channel: ThrioChannel = ThrioChannel(entrypoint, "__thrio_route_channel__")
 
     init {
-        setMethodCallHandler(this)
+        channel.setupMethodChannel(messenger)
+        did("didPush")
+        did("didPop")
+        did("didPopTo")
+        did("didRemove")
     }
 
-    override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
-//        val routeArguments = call.argument<Map<String, Any>>("route") ?: return
-//        val routeSettings = RouteSettings.fromArguments(routeArguments) ?: return
-//        val previousRouteArguments = call.argument<Map<String, Any>>("previousRoute")
-//        val previousRouteSettings = if (previousRouteArguments == null) null else {
-//            RouteSettings.fromArguments(previousRouteArguments)
-//        }
-        when (call.method) {
-            "didPush" -> {
-                // RouteObservers.didPush(routeSettings, previousRouteSettings)
+    private fun did(method: String) {
+        channel.registryMethod(method) { arguments, _ ->
+            val routeArguments = arguments["route"] ?: return@registryMethod
+            val routeSettings = RouteSettings.fromArguments(routeArguments as Map<String, Any>)
+                    ?: return@registryMethod
+            val previousRouteArguments = arguments["previousRoute"]
+            val previousRouteSettings = if (previousRouteArguments == null) null else {
+                RouteSettings.fromArguments(previousRouteArguments as Map<String, Any>)
             }
-            "didPop" -> {
-                // RouteObservers.didPop(routeSettings, previousRouteSettings)
-            }
-            "didPopTo" -> {
-                // RouteObservers.didPopTo(routeSettings, previousRouteSettings)
-            }
-            "didRemove" -> {
-                // RouteObservers.didRemove(routeSettings, previousRouteSettings)
-            }
-            "setPopDisabled" -> {
-            }
-            else -> {
-                Log.e("Thrio", "flutter call method ${call.method} notImplemented")
+            when (method) {
+                "didPush" -> RouteObservers.didPush(routeSettings, previousRouteSettings)
+                "didPop" -> RouteObservers.didPop(routeSettings, previousRouteSettings)
+                "didPopTo" -> RouteObservers.didPopTo(routeSettings, previousRouteSettings)
+                "didRemove" -> RouteObservers.didRemove(routeSettings, previousRouteSettings)
             }
         }
     }

@@ -29,15 +29,15 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (instancetype)initWithChannel:(ThrioChannel *)channel;
 
-- (void)onPush:(id _Nullable)arguments result:(FlutterResult _Nullable)callback;
+- (void)onPush:(id _Nullable)arguments result:(ThrioBoolCallback _Nullable)result;
 
-- (void)onNotify:(id _Nullable)arguments result:(FlutterResult _Nullable)callback;
+- (void)onNotify:(id _Nullable)arguments result:(ThrioBoolCallback _Nullable)result;
 
-- (void)onPop:(id _Nullable)arguments result:(FlutterResult _Nullable)callback;
+- (void)onPop:(id _Nullable)arguments result:(ThrioBoolCallback _Nullable)result;
 
-- (void)onPopTo:(id _Nullable)arguments result:(FlutterResult _Nullable)callback;
+- (void)onPopTo:(id _Nullable)arguments result:(ThrioBoolCallback _Nullable)result;
 
-- (void)onRemove:(id _Nullable)arguments result:(FlutterResult _Nullable)callback;
+- (void)onRemove:(id _Nullable)arguments result:(ThrioBoolCallback _Nullable)result;
 
 @end
 

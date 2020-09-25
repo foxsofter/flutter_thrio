@@ -57,7 +57,8 @@ class NavigatorRouteReceiveChannel {
 
   void _onPush() => _channel.registryMethodCall('__onPush__', ([arguments]) {
         final routeSettings = NavigatorRouteSettings.fromArguments(arguments);
-        verbose('onPush:${routeSettings.name}');
+        verbose('onPush: url->${routeSettings.url} '
+            'index->${routeSettings.index}');
         final animatedValue = arguments['animated'];
         final animated =
             (animatedValue != null && animatedValue is bool) && animatedValue;

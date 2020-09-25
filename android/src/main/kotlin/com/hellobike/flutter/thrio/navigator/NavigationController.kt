@@ -147,9 +147,11 @@ internal object NavigationController {
             route.poppedResult = poppedResult
             poppedResult = null
 
-            val previousRouteSettings = PageRoutes.lastRoute()?.settings;
+            val previousRouteSettings = PageRoutes.lastRoute()?.settings
 
-            PageObservers.onCreate(settings)
+            if (entrypoint == NAVIGATION_NATIVE_ENTRYPOINT) { // 原生页面
+                PageObservers.onCreate(settings)
+            }
 
             PageRoutes.push(activity, route) { index ->
                 if (index == null) {
@@ -163,7 +165,7 @@ internal object NavigationController {
                 routeAction = RouteAction.NONE
                 result = null
 
-                if (index != null) {
+                if (index != null && entrypoint == NAVIGATION_NATIVE_ENTRYPOINT) {
                     RouteObservers.didPush(settings, previousRouteSettings)
                 }
             }
@@ -198,12 +200,17 @@ internal object NavigationController {
             val notifications = route.removeNotify()
             notifications.forEach {
                 if (activity is ThrioActivity) {
-                    val arguments = mapOf(
+                    val arguments = if (it.value == null) mapOf<String, Any>(
+                            "__event_name__" to "__onNotify__",
+                            "url" to route.settings.url,
+                            "index" to route.settings.index,
+                            "name" to it.key
+                    ) else mapOf<String, Any>(
                             "__event_name__" to "__onNotify__",
                             "url" to route.settings.url,
                             "index" to route.settings.index,
                             "name" to it.key,
-                            "params" to it.value
+                            "params" to it.value!!
                     )
                     Log.i("Thrio", "page ${route.settings.url} index ${route.settings.index} notify")
                     activity.onNotify(arguments) {}
@@ -226,8 +233,8 @@ internal object NavigationController {
 
             routeAction = RouteAction.POPPING
 
-            val routeSettings = PageRoutes.lastRoute()?.settings
-            if (routeSettings == null) {
+            val route = PageRoutes.lastRoute()
+            if (route?.settings == null) {
                 result?.invoke(false)
                 routeAction = RouteAction.NONE
             }
@@ -235,9 +242,9 @@ internal object NavigationController {
             PageRoutes.pop(params, animated) {
                 result?.invoke(it)
                 routeAction = RouteAction.NONE
-                if (it) {
+                if (it && route?.entrypoint == NAVIGATION_NATIVE_ENTRYPOINT) {
                     val previousRouteSettings = PageRoutes.lastRoute()?.settings
-                    RouteObservers.didPop(routeSettings!!, previousRouteSettings)
+                    RouteObservers.didPop(route.settings, previousRouteSettings)
                 }
             }
         }
@@ -333,7 +340,7 @@ internal object NavigationController {
 
             poppedToRoute?.let { route ->
                 PageRoutes.popTo(route.settings.url, route.settings.index, route.settings.animated) {
-                    if (it && poppedToRoute != null) {
+                    if (it && poppedToRoute != null && route.entrypoint == NAVIGATION_NATIVE_ENTRYPOINT) {
                         RouteObservers.didPopTo(poppedToRoute!!.settings, route.settings)
                     }
                     result(it)
