@@ -16,7 +16,7 @@
         UIStoryboard *sb = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
         return [sb instantiateViewControllerWithIdentifier:@"ThrioViewController"];
     } forUrl:@"native1"];
-
+    
     [self registerPageObserver:self];
 }
 
