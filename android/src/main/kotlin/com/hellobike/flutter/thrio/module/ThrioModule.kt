@@ -54,13 +54,14 @@ open class ThrioModule {
             it.initModule(context)
         }
         modules.values.forEach {
-            if (it is ModuleIntentBuilder) {
-                it.onIntentBuilderRegister(context)
-            }
+            it.onPageRegister(context)
         }
     }
 
     protected open fun onModuleRegister(context: Context) {}
 
+    protected open fun onPageRegister(context: Context) {}
+
     protected open fun onModuleInit(context: Context) {}
+
 }
