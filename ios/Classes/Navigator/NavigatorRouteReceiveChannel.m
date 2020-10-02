@@ -68,7 +68,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)_onReady {
     __weak typeof(self) weakself = self;
-    [_channel registryMethodCall:@"ready"
+    [_channel registryMethod:@"ready"
                          handler:^void (NSDictionary<NSString *, id> *arguments,
                                         ThrioIdCallback _Nullable result) {
         __strong typeof(weakself) strongSelf = weakself;
@@ -82,7 +82,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)_onPush {
     __weak typeof(self) weakself = self;
-    [_channel registryMethodCall:@"push"
+    [_channel registryMethod:@"push"
                          handler:^void (NSDictionary<NSString *, id> *arguments,
                                         ThrioIdCallback _Nullable result) {
         NSString *url = arguments[@"url"];
@@ -106,7 +106,7 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 - (void)_onNotify {
-    [_channel registryMethodCall:@"notify"
+    [_channel registryMethod:@"notify"
                          handler:^void (NSDictionary<NSString *, id> *arguments,
                                         ThrioIdCallback _Nullable result) {
         NSString *name = arguments[@"name"];
@@ -136,7 +136,7 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 - (void)_onPop {
-    [_channel registryMethodCall:@"pop"
+    [_channel registryMethod:@"pop"
                          handler:^void (NSDictionary<NSString *, id> *arguments,
                                         ThrioIdCallback _Nullable result) {
         id params = [arguments[@"params"] isKindOfClass:NSNull.class] ? nil : arguments[@"params"];
@@ -154,7 +154,7 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 - (void)_onPopTo {
-    [_channel registryMethodCall:@"popTo"
+    [_channel registryMethod:@"popTo"
                          handler:^void (NSDictionary<NSString *, id> *arguments,
                                         ThrioIdCallback _Nullable result) {
         NSString *url = arguments[@"url"];
@@ -181,7 +181,7 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 - (void)_onRemove {
-    [_channel registryMethodCall:@"remove"
+    [_channel registryMethod:@"remove"
                          handler:^void (NSDictionary<NSString *, id> *arguments,
                                         ThrioIdCallback _Nullable result) {
         NSString *url = arguments[@"url"];
@@ -202,7 +202,7 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 - (void)_onLastIndex {
-    [_channel registryMethodCall:@"lastIndex"
+    [_channel registryMethod:@"lastIndex"
                          handler:^void (NSDictionary<NSString *, id> *arguments,
                                         ThrioIdCallback _Nullable result) {
         if (result) {
@@ -217,7 +217,7 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 - (void)_onGetAllIndex {
-    [_channel registryMethodCall:@"allIndex"
+    [_channel registryMethod:@"allIndex"
                          handler:^void (NSDictionary<NSString *, id> *arguments,
                                         ThrioIdCallback _Nullable result) {
         NSString *url = arguments[@"url"];
@@ -228,7 +228,7 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 - (void)_onSetPopDisabled {
-    [_channel registryMethodCall:@"setPopDisabled"
+    [_channel registryMethod:@"setPopDisabled"
                          handler:^void (NSDictionary<NSString *, id> *arguments,
                                         ThrioIdCallback _Nullable result) {
         NSString *url = arguments[@"url"];
@@ -242,7 +242,7 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 - (void)_onHotRestart {
-    [_channel registryMethodCall:@"hotRestart"
+    [_channel registryMethod:@"hotRestart"
                          handler:^void (NSDictionary<NSString *, id> *arguments,
                                         ThrioIdCallback _Nullable result) {
         if (!ThrioNavigator.isMultiEngineEnabled) {
@@ -254,7 +254,7 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 - (void)_onRegisterUrls {
-    [_channel registryMethodCall:@"registerUrls"
+    [_channel registryMethod:@"registerUrls"
                          handler:^void (NSDictionary<NSString *, id> *arguments,
                                         ThrioIdCallback _Nullable result) {
         NSArray *urls = arguments[@"urls"];
@@ -263,7 +263,7 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 - (void)_onUnregisterUrls {
-    [_channel registryMethodCall:@"unregisterUrls"
+    [_channel registryMethod:@"unregisterUrls"
                          handler:^void (NSDictionary<NSString *, id> *arguments,
                                         ThrioIdCallback _Nullable result) {
         NSArray *urls = arguments[@"urls"];

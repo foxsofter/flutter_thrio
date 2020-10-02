@@ -8,7 +8,7 @@ void biz1() => runApp(const MainApp(entrypoint: 'biz1'));
 void biz2() => runApp(const MainApp(entrypoint: 'biz2'));
 
 class MainApp extends StatefulWidget {
-  const MainApp({Key key, String entrypoint = ''})
+  const MainApp({Key key, String entrypoint = 'main'})
       : _entrypoint = entrypoint,
         super(key: key);
 
@@ -40,7 +40,6 @@ class _MainAppState extends State<MainApp> with ThrioModule {
   @override
   Widget build(BuildContext context) => ExcludeSemantics(
         child: MaterialApp(
-          navigatorObservers: [],
           builder: ThrioNavigator.builder(entrypoint: widget._entrypoint),
           navigatorObservers: [], // ignore: prefer_const_literals_to_create_immutables
           home: NavigatorHome(),

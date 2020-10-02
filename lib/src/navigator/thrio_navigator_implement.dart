@@ -52,15 +52,15 @@ class ThrioNavigatorImplement {
 
   static ThrioNavigatorImplement _default;
 
-  static TransitionBuilder builder({String entrypoint = ''}) {
+  static TransitionBuilder builder({String entrypoint = 'main'}) {
     if (_default == null) {
       final channel = ThrioChannel(channel: '__thrio_app__$entrypoint');
       final sendChannel = NavigatorRouteSendChannel(channel);
       final pagePoppedResults = <String, NavigatorParamsCallback>{};
       final receiveChannel =
           NavigatorRouteReceiveChannel(channel, pagePoppedResults);
-      _pageObservers.registry(NavigatorPageObserverChannel());
-      _routeObservers.registry(NavigatorRouteObserverChannel());
+      _pageObservers.registry(NavigatorPageObserverChannel(entrypoint));
+      _routeObservers.registry(NavigatorRouteObserverChannel(entrypoint));
       final observerManager = NavigatorObserverManager(
         pageObservers: _pageObservers,
         routeObservers: _routeObservers,

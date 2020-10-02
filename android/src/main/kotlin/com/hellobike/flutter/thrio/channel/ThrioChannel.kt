@@ -23,87 +23,97 @@
 
 package com.hellobike.flutter.thrio.channel
 
-import androidx.annotation.UiThread
+import com.hellobike.flutter.thrio.EventHandler
+import com.hellobike.flutter.thrio.MethodHandler
+import com.hellobike.flutter.thrio.NullableAnyCallback
+import com.hellobike.flutter.thrio.VoidCallback
+import com.hellobike.flutter.thrio.registry.RegistryMap
+import com.hellobike.flutter.thrio.registry.RegistrySetMap
+import io.flutter.Log
 import io.flutter.plugin.common.BinaryMessenger
 import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.MethodChannel
 
-open class ThrioChannel constructor(messenger: BinaryMessenger, name: String) {
+open class ThrioChannel constructor(val entrypoint: String, private val channelName: String = "__thrio__") {
 
-    private val methodProxy = MethodChannel(messenger, "_method_$name")
+    private var methodChannel: MethodChannel? = null
 
-    private val eventProxy = EventChannel(messenger, "_event_$name")
+    private var eventChannel: EventChannel? = null
 
-    /**
-     * Invokes a method on this channel, expecting no result.
-     *
-     * @param method the name String of the method.
-     * @param arguments the arguments for the invocation, possibly null.
-     */
-    @UiThread
-    fun invokeMethod(method: String, arguments: Any?) {
-        methodProxy.invokeMethod(method, arguments)
+    private val methodHandlers = RegistryMap<String, MethodHandler>()
+
+    private val eventHandlers = RegistrySetMap<String, EventHandler>()
+
+    fun setupMethodChannel(messenger: BinaryMessenger) {
+        val methodChannelName = "_method_$channelName"
+        methodChannel = MethodChannel(messenger, methodChannelName)
+        methodChannel?.setMethodCallHandler { call, result ->
+            val methodHandler = methodHandlers[call.method]
+            if (methodHandler == null) {
+                result.notImplemented()
+            } else {
+                try {
+                    val args = if (call.arguments == null) null else call.arguments as Map<String, Any?>
+                    methodHandler.invoke(args) {
+                        result.success(it)
+                    }
+                } catch (e: Exception) {
+                    result.error("", e.message, e.localizedMessage)
+                }
+            }
+        }
     }
 
-    /**
-     * Invokes a method on this channel, optionally expecting a result.
-     *
-     *
-     * Any uncaught exception thrown by the result callback will be caught and logged.
-     *
-     * @param method the name String of the method.
-     * @param arguments the arguments for the invocation, possibly null.
-     * @param callback a [Result] callback for the invocation result, or null.
-     */
-    @UiThread
-    fun invokeMethod(method: String, arguments: Any?, callback: MethodChannel.Result?) {
-        methodProxy.invokeMethod(method, arguments, callback)
+    fun invokeMethod(method: String, arguments: Map<String, Any?>?) {
+        methodChannel?.invokeMethod(method, arguments)
     }
 
-    /**
-     * Registers a method call handler on this channel.
-     *
-     *
-     * Overrides any existing handler registration for (the name of) this channel.
-     *
-     *
-     * If no handler has been registered, any incoming method call on this channel will be handled
-     * silently by sending a null reply. This results in a
-     * [MissingPluginException](https://docs.flutter.io/flutter/services/MissingPluginException-class.html)
-     * on the Dart side, unless an
-     * [OptionalMethodChannel](https://docs.flutter.io/flutter/services/OptionalMethodChannel-class.html)
-     * is used.
-     *
-     * @param handler a [MethodChannel.MethodCallHandler], or null to deregister.
-     */
-    @UiThread
-    fun setMethodCallHandler(handler: MethodChannel.MethodCallHandler?) {
-        methodProxy.setMethodCallHandler(handler)
+    fun invokeMethod(method: String, arguments: Map<String, Any?>?, callback: NullableAnyCallback?) {
+        methodChannel?.invokeMethod(method, arguments, object : MethodChannel.Result {
+            override fun success(value: Any?) {
+                callback?.invoke(value)
+            }
+
+            override fun error(errorCode: String?, errorMessage: String?, errorDetails: Any?) {
+                Log.e("ThrioChannel", "call $method return error: $errorMessage")
+            }
+
+            override fun notImplemented() {
+                Log.e("ThrioChannel", "call $method notImplemented")
+            }
+        })
     }
 
-    /**
-     * Adjusts the number of messages that will get buffered when sending messages to
-     * channels that aren't fully setup yet.  For example, the engine isn't running
-     * yet or the channel's message handler isn't setup on the Dart side yet.
-     */
-    fun resizeChannelBuffer(newSize: Int) {
-        methodProxy.resizeChannelBuffer(newSize)
+    fun registryMethod(method: String, handler: MethodHandler): VoidCallback {
+        return methodHandlers.registry(method, handler)
     }
 
-    /**
-     * Registers a stream handler on this channel.
-     *
-     *
-     * Overrides any existing handler registration for (the name of) this channel.
-     *
-     *
-     * If no handler has been registered, any incoming stream setup requests will be handled
-     * silently by providing an empty stream.
-     *
-     * @param handler a [EventChannel.StreamHandler], or null to deregister.
-     */
-    @UiThread
-    fun setStreamHandler(handler: EventChannel.StreamHandler?) {
-        eventProxy.setStreamHandler(handler)
+    fun setupEventChannel(messenger: BinaryMessenger) {
+        val eventChannelName = "_event_$channelName"
+        eventChannel = EventChannel(messenger, eventChannelName)
+        eventChannel?.setStreamHandler(EventStreamHandler)
+    }
+
+    fun sendEvent(name: String, arguments: Map<String, Any?>?) {
+        var args = arguments?.toMutableMap()?.also { it["__event_name__"] = name }
+                ?: mapOf<String, Any>("__event_name__" to name)
+        EventStreamHandler.sink?.success(args)
+    }
+
+    fun registryEvent(name: String, handler: EventHandler): VoidCallback {
+        return eventHandlers.registry(name, handler)
+    }
+
+    object EventStreamHandler : EventChannel.StreamHandler {
+        var sink: EventChannel.EventSink? = null
+
+        override fun onListen(arguments: Any?, events: EventChannel.EventSink?) {
+            sink = events
+            Log.i("Thrio", "onListen arguments $arguments events $events")
+        }
+
+        override fun onCancel(arguments: Any?) {
+            Log.i("Thrio", "onCancel arguments $arguments")
+        }
     }
 }

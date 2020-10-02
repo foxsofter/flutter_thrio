@@ -81,8 +81,9 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
     );
 
     verbose(
-      'push:${route.settings.name} '
-      'params:${route.settings.params}',
+      'push: url->${route.settings.url} '
+      'index->${route.settings.index} '
+      'params->${route.settings.params}',
     );
 
     final previousRoute = history.isNotEmpty ? history.last : null;
@@ -125,7 +126,8 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
       return Future.value(false);
     }
 
-    verbose('pop:${history.last.settings.name}');
+    verbose('pop: url->${history.last.settings.url} '
+        'index->${history.last.settings.index}');
 
     final route = history.last;
     // The route has been closed.
@@ -162,7 +164,8 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
       return Future.value(false);
     }
 
-    verbose('popTo:${route.settings.name}');
+    verbose('popTo: url->${route.settings.url} '
+        'index->${route.settings.index}');
 
     final previousRoute = history.last;
     final pageObservers = Set.from(ThrioNavigatorImplement.pageObservers);
@@ -196,7 +199,8 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
       return Future.value(false);
     }
 
-    verbose('remove:${route.settings.name}');
+    verbose('remove: url->${route.settings.url} '
+        'index->${route.settings.index}');
 
     route.routeAction = NavigatorRouteAction.remove;
 

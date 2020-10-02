@@ -47,7 +47,7 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 - (void)_on:(NSString *)method {
-    [_channel registryMethodCall:method
+    [_channel registryMethod:method
                          handler:^void (NSDictionary<NSString *, id> *arguments,
                                         ThrioIdCallback _Nullable result) {
         NavigatorRouteSettings *settings = [NavigatorRouteSettings settingsFromArguments:arguments];

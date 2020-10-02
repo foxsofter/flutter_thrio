@@ -24,31 +24,46 @@
 package com.hellobike.flutter.thrio.navigator
 
 import com.hellobike.flutter.thrio.registry.RegistrySet
+import io.flutter.Log
 
 internal object RouteObservers : RouteObserver {
+    private const val TAG = "RouteObservers"
+
     val observers by lazy { RegistrySet<RouteObserver>() }
 
     override fun didPush(routeSettings: RouteSettings, previousRouteSettings: RouteSettings?) {
         observers.forEach {
             it.didPush(routeSettings, previousRouteSettings)
         }
+        Log.i(TAG, "didPush: url->${routeSettings.url} " +
+                "index->${routeSettings.index} " +
+                "params->${routeSettings.params?.toString()}")
     }
 
     override fun didPop(routeSettings: RouteSettings, previousRouteSettings: RouteSettings?) {
         observers.forEach {
             it.didPop(routeSettings, previousRouteSettings)
         }
+        Log.i(TAG, "didPop: url->${routeSettings.url} " +
+                "index->${routeSettings.index} " +
+                "params->${routeSettings.params?.toString()}")
     }
 
     override fun didPopTo(routeSettings: RouteSettings, previousRouteSettings: RouteSettings?) {
         observers.forEach {
             it.didPopTo(routeSettings, previousRouteSettings)
         }
+        Log.i(TAG, "didPopTo: url->${routeSettings.url} " +
+                "index->${routeSettings.index} " +
+                "params->${routeSettings.params?.toString()}")
     }
 
     override fun didRemove(routeSettings: RouteSettings, previousRouteSettings: RouteSettings?) {
         observers.forEach {
             it.didRemove(routeSettings, previousRouteSettings)
         }
+        Log.i(TAG, "didRemove: url->${routeSettings.url} " +
+                "index->${routeSettings.index} " +
+                "params->${routeSettings.params?.toString()}")
     }
 }

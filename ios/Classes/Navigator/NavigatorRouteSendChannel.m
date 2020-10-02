@@ -37,31 +37,66 @@
     return self;
 }
 
-- (void)onPush:(id _Nullable)arguments result:(FlutterResult _Nullable)callback {
-    [self _on:@"onPush" arguments:arguments result:callback];
+- (void)onPush:(id _Nullable)arguments result:(ThrioBoolCallback _Nullable)result {
+    [self _on:@"onPush" arguments:arguments result:^(id _Nullable value) {
+        if (result) {
+            if ([value isKindOfClass:NSNumber.class]) {
+                result([value boolValue]);
+            } else {
+                result(NO);
+            }
+        }
+    }];
 }
 
-- (void)onNotify:(id _Nullable)arguments result:(FlutterResult _Nullable)callback {
+- (void)onNotify:(id _Nullable)arguments result:(ThrioBoolCallback _Nullable)result {
     [_channel sendEvent:@"__onNotify__" arguments:arguments];
+    result(YES);
 }
 
-- (void)onPop:(id _Nullable)arguments result:(FlutterResult _Nullable)callback {
-    [self _on:@"onPop" arguments:arguments result:callback];
+- (void)onPop:(id _Nullable)arguments result:(ThrioBoolCallback _Nullable)result {
+    [self _on:@"onPop" arguments:arguments result:^(id _Nullable value) {
+        if (result) {
+            if ([value isKindOfClass:NSNumber.class]) {
+                result([value boolValue]);
+            } else {
+                result(NO);
+            }
+        }
+    }];
 }
 
-- (void)onPopTo:(id _Nullable)arguments result:(FlutterResult _Nullable)callback {
-    [self _on:@"onPopTo" arguments:arguments result:callback];
+- (void)onPopTo:(id _Nullable)arguments result:(ThrioBoolCallback _Nullable)result {
+    [self _on:@"onPopTo" arguments:arguments result:^(id _Nullable value) {
+        if (result) {
+            if ([value isKindOfClass:NSNumber.class]) {
+                result([value boolValue]);
+            } else {
+                result(NO);
+            }
+        }
+    }];
 }
 
-- (void)onRemove:(id _Nullable)arguments result:(FlutterResult _Nullable)callback {
-    [self _on:@"onRemove" arguments:arguments result:callback];
+- (void)onRemove:(id _Nullable)arguments result:(ThrioBoolCallback _Nullable)result {
+    [self _on:@"onRemove" arguments:arguments result:^(id _Nullable value) {
+        if (result) {
+            if ([value isKindOfClass:NSNumber.class]) {
+                result([value boolValue]);
+            } else {
+                result(NO);
+            }
+        }
+    }];
 }
 
 - (void)  _on:(NSString *)method
     arguments:(id _Nullable)arguments
-       result:(FlutterResult _Nullable)callback {
+       result:(ThrioIdCallback _Nullable)result {
     NSString *channelMethod = [NSString stringWithFormat:@"__%@__", method];
-    [_channel invokeMethod:channelMethod arguments:arguments result:callback];
+    [_channel invokeMethod:channelMethod
+                 arguments:arguments
+                    result:result];
 }
 
 @end

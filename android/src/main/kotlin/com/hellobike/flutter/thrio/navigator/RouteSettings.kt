@@ -29,20 +29,17 @@ data class RouteSettings(val url: String, val index: Int) {
     var animated: Boolean = true
     var isNested: Boolean = false
 
-    fun toArguments(): Map<String, Any> = mutableMapOf(
+    fun toArguments(): Map<String, Any?> = mapOf(
             "url" to url,
             "index" to index,
             "animated" to animated,
-            "isNested" to isNested
-    ).also {
-        if (params != null) {
-            it["params"] = params as Any
-        }
-    }
+            "isNested" to isNested,
+            "params" to params
+    )
 
     companion object {
         @JvmStatic
-        fun fromArguments(arguments: Map<String, Any>): RouteSettings? {
+        fun fromArguments(arguments: Map<String, Any?>): RouteSettings? {
             if (!arguments.containsKey("url")) {
                 return null
             }

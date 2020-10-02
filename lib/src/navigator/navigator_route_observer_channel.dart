@@ -26,7 +26,9 @@ import 'navigator_route_observer.dart';
 import 'navigator_route_settings.dart';
 
 class NavigatorRouteObserverChannel with NavigatorRouteObserver {
-  final _channel = ThrioChannel(channel: '__thrio_route_channel__');
+  NavigatorRouteObserverChannel(String entrypoint)
+      : _channel = ThrioChannel(channel: '__thrio_route_channel__$entrypoint');
+  final ThrioChannel _channel;
 
   @override
   void didPush(
@@ -77,16 +79,19 @@ class NavigatorRouteObserverChannel with NavigatorRouteObserver {
               'route': {
                 'url': routeSettings.url,
                 'index': routeSettings.index,
+                'params': routeSettings.params,
               },
             }
           : <String, dynamic>{
               'route': {
                 'url': routeSettings.url,
                 'index': routeSettings.index,
+                'params': routeSettings.params,
               },
               'previousRoute': {
                 'url': previousRouteSettings.url,
                 'index': previousRouteSettings.index,
+                'params': previousRouteSettings.params,
               },
             };
 }

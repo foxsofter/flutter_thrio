@@ -49,8 +49,9 @@ class NavigatorObserverManager extends NavigatorObserver {
   void didPush(Route<dynamic> route, Route<dynamic> previousRoute) {
     if (route is NavigatorPageRoute) {
       verbose(
-        'didPush:${route.settings.name} '
-        'params:${route.settings.params}',
+        'didPush: url->${route.settings.url} '
+        'index->${route.settings.index} '
+        'params->${route.settings.params}',
       );
       final lastRoute = pageRoutes.isNotEmpty ? pageRoutes.last : null;
       pageRoutes.add(route);
@@ -88,7 +89,8 @@ class NavigatorObserverManager extends NavigatorObserver {
             if (route.routeAction == NavigatorRouteAction.pop ||
                 route.routeAction == null) {
               verbose(
-                'didPop:${route.settings.name} '
+                'didPop: url->${route.settings.url} '
+                'index->${route.settings.index} '
                 'params:${route.settings.params}',
               );
               for (final observer in routeObservers) {
@@ -99,8 +101,9 @@ class NavigatorObserverManager extends NavigatorObserver {
               if (WidgetsBinding.instance.lifecycleState ==
                   AppLifecycleState.resumed) {
                 verbose(
-                  'didRemove:${route.settings.name} '
-                  'params:${route.settings.params}',
+                  'didRemove: url->${route.settings.url} '
+                  'index->${route.settings.index} '
+                  'params->${route.settings.params}',
                 );
                 for (final observer in routeObservers) {
                   observer.didRemove(
@@ -111,7 +114,8 @@ class NavigatorObserverManager extends NavigatorObserver {
               }
             }
           } else if (_currentPopRoutes.length > 1) {
-            verbose('didPopTo:${pageRoutes.last.settings.name}');
+            verbose('didPopTo: url->${pageRoutes.last.settings.url}'
+                'index->${pageRoutes.last.settings.index}');
             final routeObservers = Set.from(_routeObservers);
             for (final observer in routeObservers) {
               observer.didPopTo(
@@ -142,7 +146,8 @@ class NavigatorObserverManager extends NavigatorObserver {
       if (_currentRemoveRoutes.length == 1) {
         Future(() {
           if (_currentRemoveRoutes.length == 1) {
-            verbose('didRemove:${route.settings.name}');
+            verbose('didRemove: url->${route.settings.url} '
+                'index->${route.settings.index}');
             final routeObservers = Set.from(_routeObservers);
             for (final observer in routeObservers) {
               observer.didRemove(route.settings, prevRoute?.settings);
@@ -161,7 +166,8 @@ class NavigatorObserverManager extends NavigatorObserver {
               }
             }
           } else if (_currentRemoveRoutes.length > 1) {
-            verbose('didPopTo:${pageRoutes.last.settings.name}');
+            verbose('didPopTo: url->${pageRoutes.last.settings.url} '
+                'index->${pageRoutes.last.settings.index}');
             final observers = Set.from(_routeObservers);
             // remove是最后一个route为之前的active route
             for (final observer in observers) {

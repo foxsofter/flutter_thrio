@@ -37,6 +37,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @implementation NavigatorFlutterEngineFactory
 
+static NSString *const kDefaultEntrypoint = @"main";
+
 + (instancetype)shared {
     static NavigatorFlutterEngineFactory *_instance;
     static dispatch_once_t onceToken;
@@ -62,7 +64,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)startupWithEntrypoint:(NSString *)entrypoint readyBlock:(ThrioIdCallback _Nullable)block {
     if (!ThrioNavigator.isMultiEngineEnabled) {
-        entrypoint = @"";
+        entrypoint = kDefaultEntrypoint;
     }
 
     if ([self.flutterEngines.allKeys containsObject:entrypoint]) {
@@ -77,7 +79,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (FlutterEngine *)getEngineByEntrypoint:(NSString *)entrypoint {
     if (!ThrioNavigator.isMultiEngineEnabled) {
-        entrypoint = @"";
+        entrypoint = kDefaultEntrypoint;
     }
     NavigatorFlutterEngine *flutterEngine = self.flutterEngines[entrypoint];
     return flutterEngine.engine;
@@ -85,7 +87,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (NavigatorRouteSendChannel *)getSendChannelByEntrypoint:(NSString *)entrypoint {
     if (!ThrioNavigator.isMultiEngineEnabled) {
-        entrypoint = @"";
+        entrypoint = kDefaultEntrypoint;
     }
     NavigatorFlutterEngine *flutterEngine = self.flutterEngines[entrypoint];
     return flutterEngine.sendChannel;
@@ -93,7 +95,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (NavigatorPageObserverChannel *)getPageObserverChannelByEntrypoint:(NSString *)entrypoint {
     if (!ThrioNavigator.isMultiEngineEnabled) {
-        entrypoint = @"";
+        entrypoint = kDefaultEntrypoint;
     }
     NavigatorFlutterEngine *flutterEngine = self.flutterEngines[entrypoint];
     return flutterEngine.pageObserverChannel;

@@ -37,7 +37,10 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 + (void)onCreate:(NavigatorRouteSettings *)routeSettings {
-    NavigatorVerbose(@"%@ %@.%@", NSStringFromSelector(_cmd), routeSettings.url, routeSettings.index);
+    NavigatorVerbose(@"%@: url->%@ index->%@",
+                     NSStringFromSelector(_cmd),
+                     routeSettings.url,
+                     routeSettings.index);
     ThrioRegistrySet *pageObservers = [self.pageObservers copy];
     for (id<NavigatorPageObserverProtocol> observer in pageObservers) {
         [observer onCreate:routeSettings];
@@ -45,7 +48,10 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 + (void)willAppear:(NavigatorRouteSettings *)routeSettings {
-    NavigatorVerbose(@"%@ %@.%@", NSStringFromSelector(_cmd), routeSettings.url, routeSettings.index);
+    NavigatorVerbose(@"%@: url->%@ index->%@",
+                     NSStringFromSelector(_cmd),
+                     routeSettings.url,
+                     routeSettings.index);
     ThrioRegistrySet *pageObservers = [self.pageObservers copy];
     for (id<NavigatorPageObserverProtocol> observer in pageObservers) {
         [observer willAppear:routeSettings];
@@ -53,7 +59,10 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 + (void)didAppear:(NavigatorRouteSettings *)routeSettings {
-    NavigatorVerbose(@"%@ %@.%@", NSStringFromSelector(_cmd), routeSettings.url, routeSettings.index);
+    NavigatorVerbose(@"%@: url->%@ index->%@",
+                     NSStringFromSelector(_cmd),
+                     routeSettings.url,
+                     routeSettings.index);
     ThrioRegistrySet *pageObservers = [self.pageObservers copy];
     for (id<NavigatorPageObserverProtocol> observer in pageObservers) {
         [observer didAppear:routeSettings];
@@ -61,7 +70,10 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 + (void)willDisappear:(NavigatorRouteSettings *)routeSettings {
-    NavigatorVerbose(@"%@ %@.%@", NSStringFromSelector(_cmd), routeSettings.url, routeSettings.index);
+    NavigatorVerbose(@"%@: url->%@ index->%@",
+                     NSStringFromSelector(_cmd),
+                     routeSettings.url,
+                     routeSettings.index);
     ThrioRegistrySet *pageObservers = [self.pageObservers copy];
     for (id<NavigatorPageObserverProtocol> observer in pageObservers) {
         [observer willDisappear:routeSettings];
@@ -69,7 +81,10 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 + (void)didDisappear:(NavigatorRouteSettings *)routeSettings {
-    NavigatorVerbose(@"%@ %@.%@", NSStringFromSelector(_cmd), routeSettings.url, routeSettings.index);
+    NavigatorVerbose(@"%@: url->%@ index->%@",
+                     NSStringFromSelector(_cmd),
+                     routeSettings.url,
+                     routeSettings.index);
     ThrioRegistrySet *pageObservers = [self.pageObservers copy];
     for (id<NavigatorPageObserverProtocol> observer in pageObservers) {
         [observer didDisappear:routeSettings];

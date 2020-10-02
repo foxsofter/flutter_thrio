@@ -36,7 +36,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// Construct the instance with a `channelName`.
 ///
-+ (instancetype)channelWithEntrypoint:(NSString *)entrypoint name:(NSString *)channelName;
++ (instancetype)channelWithEntrypoint:(NSString *)entrypoint
+                                 name:(NSString *)channelName;
 
 + (instancetype)new NS_UNAVAILABLE;
 - (instancetype)init NS_UNAVAILABLE;
@@ -52,13 +53,13 @@ NS_ASSUME_NONNULL_BEGIN
 ///
 - (void)invokeMethod:(NSString *)method
            arguments:(id _Nullable)arguments
-              result:(FlutterResult _Nullable)callback;
+              result:(ThrioIdCallback _Nullable)callback;
 
 /// Register a handler for the specified Flutter method with the specified
 /// method.
 ///
-- (ThrioVoidCallback)registryMethodCall:(NSString *)method
-                                handler:(ThrioMethodHandler)handler;
+- (ThrioVoidCallback)registryMethod:(NSString *)method
+                            handler:(ThrioMethodHandler)handler;
 
 /// Must be called before `invokeMethod` to setup the method channel.
 ///
@@ -71,8 +72,8 @@ NS_ASSUME_NONNULL_BEGIN
 /// Register a handler for the specified Flutter event with the specified
 /// name.
 ///
-- (ThrioVoidCallback)registryEventHandling:(NSString *)name
-                                   handler:(ThrioEventHandler)handler;
+- (ThrioVoidCallback)registryEvent:(NSString *)name
+                           handler:(ThrioEventHandler)handler;
 
 /// Must be called before `sendEvent` to setup the event channel.
 ///
