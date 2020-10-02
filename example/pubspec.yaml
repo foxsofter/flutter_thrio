@@ -1,6 +1,6 @@
 name: thrio_example
 description: Demonstrates how to use the thrio plugin.
-version: 0.0.1
+version: 0.5.0
 publish_to: 'none'
 
 environment:
