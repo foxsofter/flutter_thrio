@@ -28,9 +28,8 @@ import android.content.Intent
 import com.hellobike.flutter.thrio.BooleanCallback
 import com.hellobike.flutter.thrio.navigator.FlutterEngineFactory
 import com.hellobike.flutter.thrio.navigator.NavigationController
-import com.hellobike.flutter.thrio.navigator.RouteSendHandler
 
-open class ThrioActivity : ThrioFlutterActivity(), RouteSendHandler {
+open class ThrioActivity : ThrioFlutterActivity() {
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
@@ -56,39 +55,39 @@ open class ThrioActivity : ThrioFlutterActivity(), RouteSendHandler {
         NavigationController.Pop.pop()
     }
 
-    override fun onPush(arguments: Any?, result: BooleanCallback) {
+    fun onPush(arguments: Map<String, Any?>?, result: BooleanCallback) {
         val id = cachedEngineId ?: throw IllegalStateException("cachedEngineId must not be null")
         val engine = FlutterEngineFactory.getEngine(id)
                 ?: throw IllegalStateException("engine must not be null")
-        engine.onPush(arguments, result)
+        engine.sendChannel.onPush(arguments, result)
     }
 
-    override fun onNotify(arguments: Any?, result: BooleanCallback) {
+    fun onNotify(arguments: Map<String, Any?>?, result: BooleanCallback) {
         val id = cachedEngineId ?: throw IllegalStateException("cachedEngineId must not be null")
         val engine = FlutterEngineFactory.getEngine(id)
                 ?: throw IllegalStateException("engine must not be null")
-        engine.onNotify(arguments, result)
+        engine.sendChannel.onNotify(arguments, result)
     }
 
-    override fun onPop(arguments: Any?, result: BooleanCallback) {
+    fun onPop(arguments: Map<String, Any?>?, result: BooleanCallback) {
         val id = cachedEngineId ?: throw IllegalStateException("cachedEngineId must not be null")
         val engine = FlutterEngineFactory.getEngine(id)
                 ?: throw IllegalStateException("engine must not be null")
-        engine.onPop(arguments, result)
+        engine.sendChannel.onPop(arguments, result)
     }
 
-    override fun onPopTo(arguments: Any?, result: BooleanCallback) {
+    fun onPopTo(arguments: Map<String, Any?>?, result: BooleanCallback) {
         val id = cachedEngineId ?: throw IllegalStateException("cachedEngineId must not be null")
         val engine = FlutterEngineFactory.getEngine(id)
                 ?: throw IllegalStateException("engine must not be null")
-        engine.onPopTo(arguments, result)
+        engine.sendChannel.onPopTo(arguments, result)
     }
 
-    override fun onRemove(arguments: Any?, result: BooleanCallback) {
+    fun onRemove(arguments: Map<String, Any?>?, result: BooleanCallback) {
         val id = cachedEngineId ?: throw IllegalStateException("cachedEngineId must not be null")
         val engine = FlutterEngineFactory.getEngine(id)
                 ?: throw IllegalStateException("engine must not be null")
-        engine.onRemove(arguments, result)
+        engine.sendChannel.onRemove(arguments, result)
     }
 
 }

@@ -23,17 +23,17 @@ class Native2Activity : AppCompatActivity() {
             ThrioNavigator.push("/biz2/flutter2",
                     params = mapOf("k1" to 1),
                     result = {
-                        Log.e("Thrio", "push result data $it")
+                        Log.i("Thrio", "push result data $it")
                     },
                     poppedResult = {
-                        Log.e("Thrio", "native2 poppedResult call params $it")
+                        Log.i("Thrio", "native2 poppedResult call params $it")
                     }
             )
         }
 
         btn_11.setOnClickListener {
             ThrioNavigator.remove("/biz2/flutter2") {
-                Log.e("Thrio", "push result data $it")
+                Log.i("Thrio", "push result data $it")
             }
         }
 
@@ -41,17 +41,17 @@ class Native2Activity : AppCompatActivity() {
             ThrioNavigator.push("native1",
                     params = mapOf("k1" to 1),
                     result = {
-                        Log.e("Thrio", "push result data $it")
+                        Log.i("Thrio", "push result data $it")
                     },
                     poppedResult = {
-                        Log.e("Thrio", "native2 poppedResult call params $it")
+                        Log.i("Thrio", "native2 poppedResult call params $it")
                     }
             )
         }
 
         btn_13.setOnClickListener {
             ThrioNavigator.remove("native1") {
-                Log.e("Thrio", "push result data $it")
+                Log.i("Thrio", "push result data $it")
             }
         }
 
@@ -75,7 +75,7 @@ class Native2Activity : AppCompatActivity() {
         val data = intent.getSerializableExtra("NAVIGATION_ROUTE_SETTINGS")
 
         if (data != null) {
-            RouteSettings.fromArguments(data as Map<String, Any>)?.apply {
+            RouteSettings.fromArguments(data as Map<String, Any?>)?.apply {
                 tv_native.text = "native2 index $index"
             }
         }

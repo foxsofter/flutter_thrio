@@ -25,7 +25,7 @@ import 'navigator_types.dart';
 import 'thrio_navigator_implement.dart';
 
 abstract class ThrioNavigator {
-  static TransitionBuilder builder({String entrypoint = ''}) =>
+  static TransitionBuilder builder({String entrypoint = 'main'}) =>
       ThrioNavigatorImplement.builder(entrypoint: entrypoint);
 
   /// Push the page onto the navigation stack.

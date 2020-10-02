@@ -107,8 +107,8 @@ internal data class PageActivityHolder(val pageId: Int,
                         lastRoute.poppedResult?.invoke(params)
                         lastRoute.poppedResult = null
                         if (lastRoute.fromEntrypoint != NAVIGATION_NATIVE_ENTRYPOINT
-                                &&lastRoute.entrypoint != lastRoute.fromEntrypoint) {
-                            FlutterEngineFactory.getEngine(lastRoute.fromEntrypoint)?.onPop(lastRoute.settings.toArguments()) {}
+                                && lastRoute.entrypoint != lastRoute.fromEntrypoint) {
+                            FlutterEngineFactory.getEngine(lastRoute.fromEntrypoint)?.sendChannel?.onPop(lastRoute.settings.toArguments()) {}
                         }
                     }
                 }
@@ -117,7 +117,7 @@ internal data class PageActivityHolder(val pageId: Int,
                 result(true)
                 lastRoute.poppedResult?.invoke(params)
                 if (lastRoute.fromEntrypoint != NAVIGATION_NATIVE_ENTRYPOINT) {
-                    FlutterEngineFactory.getEngine(lastRoute.fromEntrypoint)?.onPop(lastRoute.settings.toArguments()) {}
+                    FlutterEngineFactory.getEngine(lastRoute.fromEntrypoint)?.sendChannel?.onPop(lastRoute.settings.toArguments()) {}
                 }
             }
         } else {
@@ -175,11 +175,37 @@ internal data class PageActivityHolder(val pageId: Int,
             } else {
                 routes.remove(route)
                 result(true)
-
-                RouteObservers.didRemove(route.settings, lastRoute()?.settings);
+                if (route.entrypoint == NAVIGATION_NATIVE_ENTRYPOINT) {
+                    RouteObservers.didRemove(route.settings, lastRoute()?.settings)
+                }
             }
         } else {
             result(false)
+        }
+    }
+
+    fun willAppear() {
+        routes.lastOrNull()?.let {
+            PageObservers.willAppear(it.settings)
+        }
+
+    }
+
+    fun didAppear() {
+        routes.lastOrNull()?.let {
+            PageObservers.didAppear(it.settings)
+        }
+    }
+
+    fun willDisappear() {
+        routes.lastOrNull()?.let {
+            PageObservers.willDisappear(it.settings)
+        }
+    }
+
+    fun didDisappear() {
+        routes.lastOrNull()?.let {
+            PageObservers.didDisappear(it.settings)
         }
     }
 }

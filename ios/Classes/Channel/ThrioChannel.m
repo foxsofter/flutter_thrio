@@ -77,21 +77,21 @@ static NSString *const kEventNameKey = @"__event_name__";
 #pragma mark - method channel methods
 
 - (void)invokeMethod:(NSString *)method
-           arguments:(id _Nullable)arguments {
+           arguments:(NSDictionary *_Nullable)arguments {
     return [_methodChannel invokeMethod:method
                               arguments:arguments];
 }
 
 - (void)invokeMethod:(NSString *)method
-           arguments:(id _Nullable)arguments
-              result:(FlutterResult _Nullable)callback {
+           arguments:(NSDictionary *_Nullable)arguments
+              result:(ThrioIdCallback _Nullable)callback {
     return [_methodChannel invokeMethod:method
                               arguments:arguments
                                  result:callback];
 }
 
-- (ThrioVoidCallback)registryMethodCall:(NSString *)method
-                                handler:(ThrioMethodHandler)handler {
+- (ThrioVoidCallback)registryMethod:(NSString *)method
+                            handler:(ThrioMethodHandler)handler {
     return [_methodHandlers registry:method value:handler];
 }
 
@@ -107,16 +107,21 @@ static NSString *const kEventNameKey = @"__event_name__";
         __strong typeof(weakself) strongSelf = weakself;
         ThrioMethodHandler handler = strongSelf.methodHandlers[call.method];
         if (handler) {
-            handler(call.arguments, ^(id r) {
-                        result(r);
-                    });
+            @try {
+                handler(call.arguments, ^(id r) {
+                            result(r);
+                        });
+            } @catch (NSException *exception) {
+                [FlutterError errorWithCode:exception.name message:exception.reason details:exception.userInfo];
+                result(result);
+            }
         }
     }];
 }
 
 #pragma mark - event channel methods
 
-- (void)sendEvent:(NSString *)name arguments:(id _Nullable)arguments {
+- (void)sendEvent:(NSString *)name arguments:(NSDictionary *_Nullable)arguments {
     if (self.eventSink) {
         id args = [NSMutableDictionary dictionaryWithDictionary:arguments];
         [args setValue:name forKey:kEventNameKey];
@@ -124,15 +129,15 @@ static NSString *const kEventNameKey = @"__event_name__";
     }
 }
 
-- (ThrioVoidCallback)registryEventHandling:(NSString *)name
-                                   handler:(ThrioEventHandler)handler {
+- (ThrioVoidCallback)registryEvent:(NSString *)name
+                           handler:(ThrioEventHandler)handler {
     return [_eventHandlers registry:name value:handler];
 }
 
 - (void)setupEventChannel:(NSObject<FlutterBinaryMessenger> *)messenger {
     _eventHandlers = [ThrioRegistrySetMap map];
 
-    NSString *eventChannelName = [NSString stringWithFormat:@"_event_%@", _channelName];
+    NSString *eventChannelName = [NSString stringWithFormat:@"_event_%@%@", _channelName, _entrypoint];
     _eventChannel = [FlutterEventChannel eventChannelWithName:eventChannelName
                                               binaryMessenger:messenger];
     [_eventChannel setStreamHandler:self];

@@ -23,113 +23,104 @@
 
 package com.hellobike.flutter.thrio.navigator
 
-import android.util.Log
-import io.flutter.plugin.common.MethodCall
-import io.flutter.plugin.common.MethodChannel
+import com.hellobike.flutter.thrio.channel.ThrioChannel
 
-class RouteReceiveChannel(private val entrypoint: String,
-                          private var readyListener: EngineReadyListener? = null)
-    : MethodChannel.MethodCallHandler {
+class RouteReceiveChannel(private val channel: ThrioChannel,
+                          private var readyListener: EngineReadyListener? = null) {
+    init {
+        onReady()
+        onPush()
+        onNotify()
+        onPop()
+        onPopTo()
+        onRemove()
+        onLastIndex()
+        onGetAllIndex()
+        onSetPopDisabled()
+        onHotRestart()
+        onRegisterUrls()
+        onUnregisterUrls()
+    }
 
-    private fun push(call: MethodCall, result: MethodChannel.Result) {
-        val url = call.argument<String>("url")
-        if (url.isNullOrBlank()) {
-            result.success(false)
-            return
-        }
-        val params = call.argument<Any>("params")
-        val animated = call.argument<Boolean>("animated") ?: true
-
-        NavigationController.Push.push(url, params, animated, entrypoint) {
-            result.success(it)
+    private fun onReady() {
+        channel.registryMethod("ready") { _, _ ->
+            readyListener?.onReady(channel.entrypoint)
+            readyListener = null
         }
     }
 
-    private fun pop(call: MethodCall, result: MethodChannel.Result) {
-        val params = call.argument<Any>("params")
-        val animated = call.argument<Boolean>("animated") ?: true
-
-        NavigationController.Pop.pop(params, animated) { result.success(it) }
-    }
-
-    private fun remove(call: MethodCall, result: MethodChannel.Result) {
-        val url = call.argument<String>("url")
-        if (url.isNullOrBlank()) {
-            result.success(false)
-            return
-        }
-        val index = call.argument<Int>("index") ?: 0
-        if (index < 0) {
-            result.success(false)
-            return
-        }
-
-        val animated = call.argument<Boolean>("animated") ?: true
-
-        NavigationController.Remove.remove(url, index, animated) { result.success(it) }
-    }
-
-    private fun popTo(call: MethodCall, result: MethodChannel.Result) {
-        val url = call.argument<String>("url")
-        if (url.isNullOrBlank()) {
-            result.success(false)
-            return
-        }
-        val index = call.argument<Int>("index") ?: 0
-        if (index < 0) {
-            result.success(false)
-            return
-        }
-        val animated = call.argument<Boolean>("animated") ?: true
-
-        NavigationController.PopTo.popTo(url, index, animated) { result.success(it) }
-    }
-
-    private fun notify(call: MethodCall, result: MethodChannel.Result) {
-        val url = call.argument<String>("url")
-        if (url.isNullOrBlank()) {
-            result.success(false)
-            return
-        }
-        val index = call.argument<Int>("index") ?: 0
-        if (index < 0) {
-            result.success(false)
-            return
-        }
-        val name = call.argument<String>("name")
-        if (name.isNullOrBlank()) {
-            result.success(false)
-            return
-        }
-        val params = call.argument<Any>("params")
-
-        NavigationController.Notify.notify(url, index, name, params) { result.success(it) }
-    }
-
-    override fun onMethodCall(call: MethodCall, result: MethodChannel.Result) {
-        Log.e("Thrio", "flutter call method ${call.method}")
-        when (call.method) {
-            "ready" -> {
-                readyListener?.onReady(entrypoint)
-                readyListener = null
-            }
-            "push" -> push(call, result)
-            "notify" -> notify(call, result)
-            "pop" -> pop(call, result)
-            "remove" -> remove(call, result)
-            "popTo" -> popTo(call, result)
-            "setPopDisabled" -> {
-            }
-            "hotRestart" -> {
-            }
-            "registerUrls" -> {
-            }
-            "unregisterUrls" -> {
-            }
-            else -> {
-                Log.e("Thrio", "flutter call method ${call.method} notImplemented")
-                result.notImplemented()
-            }
+    private fun onPush() {
+        channel.registryMethod("push") { arguments, result ->
+            if (arguments == null) return@registryMethod
+            val url = arguments["url"] as String
+            val params = arguments["params"]
+            val animated = if (arguments["animated"] != null) arguments["animated"] as Boolean else true
+            NavigationController.Push.push(url, params, animated, channel.entrypoint, result = result)
         }
     }
+
+    private fun onNotify() {
+        channel.registryMethod("notify") { arguments, result ->
+            if (arguments == null) return@registryMethod
+            val url = arguments["url"] as String
+            val index = if (arguments["index"] != null) arguments["index"] as Int else 0
+            val name = arguments["name"] as String
+            val params = arguments["params"]
+            NavigationController.Notify.notify(url, index, name, params, result)
+        }
+    }
+
+    private fun onPop() {
+        channel.registryMethod("pop") { arguments, result ->
+            if (arguments == null) return@registryMethod
+            val params = arguments["params"]
+            val animated = if (arguments["animated"] != null) arguments["animated"] as Boolean else true
+            NavigationController.Pop.pop(params, animated, result)
+        }
+    }
+
+    private fun onPopTo() {
+        channel.registryMethod("popTo") { arguments, result ->
+            if (arguments == null) return@registryMethod
+            val url = arguments["url"] as String
+            val index = if (arguments["index"] != null) arguments["index"] as Int else 0
+            val animated = if (arguments["animated"] != null) arguments["animated"] as Boolean else true
+            NavigationController.PopTo.popTo(url, index, animated, result)
+        }
+    }
+
+    private fun onRemove() {
+        channel.registryMethod("remove") { arguments, result ->
+            if (arguments == null) return@registryMethod
+            val url = arguments["url"] as String
+            val index = if (arguments["index"] != null) arguments["index"] as Int else 0
+            val animated = if (arguments["animated"] != null) arguments["animated"] as Boolean else true
+            NavigationController.Remove.remove(url, index, animated, result)
+        }
+    }
+
+    private fun onLastIndex() {
+        channel.registryMethod("lastIndex") { _, _ -> {} }
+    }
+
+    private fun onGetAllIndex() {
+        channel.registryMethod("getAllIndex") { _, _ -> {} }
+    }
+
+    private fun onSetPopDisabled() {
+        channel.registryMethod("setPopDisabled") { _, _ -> {} }
+    }
+
+    private fun onHotRestart() {
+        channel.registryMethod("hotRestart") { _, _ -> {} }
+    }
+
+    private fun onRegisterUrls() {
+        channel.registryMethod("registerUrls") { _, _ -> {} }
+    }
+
+    private fun onUnregisterUrls() {
+        channel.registryMethod("unregisterUrls") { _, _ -> {} }
+    }
+
 }

@@ -64,7 +64,7 @@ internal fun Intent.getFromEntrypoint(): String {
 internal fun Intent.getRouteSettings(): RouteSettings? {
     val data = getSerializableExtra(NAVIGATION_ROUTE_SETTINGS_KEY).let {
         checkNotNull(it) { "RouteSettings not found" }
-        it as Map<String, Any>
+        it as Map<String, Any?>
     }
     return RouteSettings.fromArguments(data)
 }

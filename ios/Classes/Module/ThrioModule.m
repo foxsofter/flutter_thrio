@@ -67,9 +67,9 @@ static NSMutableDictionary *modules;
             }
         }
     });
-    // 单引擎模式下，提前启动
+    // 单引擎模式下，提前启动，默认 `entrypoint` 为 main
     if (!ThrioNavigator.isMultiEngineEnabled) {
-        [NavigatorFlutterEngineFactory.shared startupWithEntrypoint:@"" readyBlock:nil];
+        [NavigatorFlutterEngineFactory.shared startupWithEntrypoint:@"main" readyBlock:nil];
     }
 }
 

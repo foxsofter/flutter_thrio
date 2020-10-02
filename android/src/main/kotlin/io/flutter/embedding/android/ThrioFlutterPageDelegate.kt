@@ -560,7 +560,7 @@ internal class ThrioFlutterPageDelegate(private var host: ThrioFlutterActivity) 
      *
      * This method forwards to interested Flutter plugins.
      */
-    fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
+    fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         ensureAlive()
         if (flutterEngine != null) {
             Log.v(

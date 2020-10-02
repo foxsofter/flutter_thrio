@@ -23,103 +23,55 @@
 
 package com.hellobike.flutter.thrio.navigator
 
-import android.util.Log
 import com.hellobike.flutter.thrio.BooleanCallback
 import com.hellobike.flutter.thrio.channel.ThrioChannel
-import io.flutter.plugin.common.BinaryMessenger
-import io.flutter.plugin.common.EventChannel
-import io.flutter.plugin.common.MethodChannel
+import io.flutter.Log
 
-class RouteSendChannel constructor(messenger: BinaryMessenger, val entrypoint: String)
-    : ThrioChannel(messenger, "__thrio_app__"),
-        RouteSendHandler,
-        EventChannel.StreamHandler {
+class RouteSendChannel constructor(private val channel: ThrioChannel) {
 
-    init {
-        setStreamHandler(this)
+    fun onPush(arguments: Map<String, Any?>?, result: BooleanCallback) {
+        channel.invokeMethod("__onPush__", arguments) {
+            if (it is Boolean) {
+                result(it)
+            } else {
+                result(false)
+            }
+        }
     }
 
-    private var sink: EventChannel.EventSink? = null
-
-    override fun onPush(arguments: Any?, result: BooleanCallback) {
-        invokeMethod("__onPush__", arguments, object : MethodChannel.Result {
-            override fun success(success: Any?) {
-                if (success !is Boolean) {
-                    return
-                }
-                result(success)
-            }
-
-            override fun error(errorCode: String?, errorMessage: String?, errorDetails: Any?) {
-                Log.e("Thrio", "onPush error: $errorMessage")
-            }
-
-            override fun notImplemented() {}
-        })
+    fun onNotify(arguments: Map<String, Any?>?, result: BooleanCallback) {
+        Log.i("Thrio", "onNotify channel data $arguments")
+        channel.sendEvent("__onNotify__", arguments)
+        result(true)
     }
 
-    override fun onNotify(arguments: Any?, result: BooleanCallback) {
-        Log.e("Thrio", "onNotify channel data $arguments")
-        sink?.success(arguments)
+    fun onPop(arguments: Map<String, Any?>?, result: BooleanCallback) {
+        channel.invokeMethod("__onPop__", arguments) {
+            if (it is Boolean) {
+                result(it)
+            } else {
+                result(false)
+            }
+        }
     }
 
-    override fun onPop(arguments: Any?, result: BooleanCallback) {
-        invokeMethod("__onPop__", arguments, object : MethodChannel.Result {
-            override fun success(success: Any?) {
-                if (success !is Boolean) {
-                    return
-                }
-                result(success)
+    fun onPopTo(arguments: Map<String, Any?>?, result: BooleanCallback) {
+        channel.invokeMethod("__onPopTo__", arguments) {
+            if (it is Boolean) {
+                result(it)
+            } else {
+                result(false)
             }
-
-            override fun error(errorCode: String?, errorMessage: String?, errorDetails: Any?) {
-                Log.e("Thrio", "onPop error: $errorMessage")
-            }
-
-            override fun notImplemented() {}
-        })
+        }
     }
 
-    override fun onPopTo(arguments: Any?, result: BooleanCallback) {
-        invokeMethod("__onPopTo__", arguments, object : MethodChannel.Result {
-            override fun success(success: Any?) {
-                if (success !is Boolean) {
-                    return
-                }
-                result(success)
+    fun onRemove(arguments: Map<String, Any?>?, result: BooleanCallback) {
+        channel.invokeMethod("__onPop__", arguments) {
+            if (it is Boolean) {
+                result(it)
+            } else {
+                result(false)
             }
-
-            override fun error(errorCode: String?, errorMessage: String?, errorDetails: Any?) {
-                Log.e("Thrio", "onPopTo error: $errorMessage")
-            }
-
-            override fun notImplemented() {}
-        })
-    }
-
-    override fun onRemove(arguments: Any?, result: BooleanCallback) {
-        invokeMethod("__onRemove__", arguments, object : MethodChannel.Result {
-            override fun success(success: Any?) {
-                if (success !is Boolean) {
-                    return
-                }
-                result(success)
-            }
-
-            override fun error(errorCode: String?, errorMessage: String?, errorDetails: Any?) {
-                Log.e("Thrio", "onRemove error: $errorMessage")
-            }
-
-            override fun notImplemented() {}
-        })
-    }
-
-    override fun onListen(arguments: Any?, events: EventChannel.EventSink?) {
-        sink = events
-        Log.e("Thrio", "onListen arguments $arguments events $events")
-    }
-
-    override fun onCancel(arguments: Any?) {
-        Log.e("Thrio", "onCancel arguments $arguments")
+        }
     }
 }
