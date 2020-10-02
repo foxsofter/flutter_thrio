@@ -21,12 +21,13 @@
 
 #import <Foundation/Foundation.h>
 #import "ThrioTypes.h"
+#import "ThrioModulePageBuilder.h"
 #import "NavigatorPageObserverProtocol.h"
 #import "NavigatorRouteObserverProtocol.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface ThrioModule : NSObject
+@interface ThrioModule : ThrioModulePageBuilder
 
 /// Module entrypoint method.
 ///
@@ -49,10 +50,6 @@ NS_ASSUME_NONNULL_BEGIN
 ///
 - (void)onModuleRegister;
 
-/// A function for registering page builders.
-///
-- (void)onPageRegister;
-
 /// A function for module initialization.
 ///
 - (void)onModuleInit;
@@ -60,33 +57,6 @@ NS_ASSUME_NONNULL_BEGIN
 /// A function for module asynchronous initialization.
 ///
 - (void)onModuleAsyncInit;
-
-/// Register native view controller builder for url.
-///
-/// Do not override this method.
-///
-- (ThrioVoidCallback)registerPageBuilder:(NavigatorPageBuilder)builder
-                                  forUrl:(NSString *)url;
-
-/// Sets the `NavigatorFlutterViewController` builder.
-///
-/// Need to be register when extending the `NavigatorFlutterViewController` class.
-///
-/// Do not override this method.
-///
-- (void)setFlutterPageBuilder:(NavigatorFlutterPageBuilder)builder;
-
-/// Register observers for the life cycle of native pages and Dart pages.
-///
-/// Do not override this method.
-///
-- (ThrioVoidCallback)registerPageObserver:(id<NavigatorPageObserverProtocol>)pageObserver;
-
-/// Register observers for route action of native pages and Dart pages.
-///
-/// Do not override this method.
-///
-- (ThrioVoidCallback)registerRouteObserver:(id<NavigatorRouteObserverProtocol>)routeObserver;
 
 /// Startup the flutter engine with `entrypoint`.
 ///

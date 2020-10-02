@@ -20,8 +20,8 @@
 // IN THE SOFTWARE.
 
 #import "ThrioModule.h"
-#import "ThrioNavigator+PageBuilders.h"
 #import "ThrioNavigator+Internal.h"
+#import "ThrioNavigator+PageBuilders.h"
 #import "ThrioNavigator+PageObservers.h"
 #import "ThrioNavigator+RouteObservers.h"
 #import "NavigatorFlutterEngineFactory.h"
@@ -55,6 +55,7 @@ static NSMutableDictionary *modules;
             [module onPageRegister];
         }
     }
+
     for (ThrioModule *module in values) {
         if ([module respondsToSelector:@selector(onModuleInit)]) {
             [module onModuleInit];
@@ -83,23 +84,6 @@ static NSMutableDictionary *modules;
 }
 
 - (void)onModuleAsyncInit {
-}
-
-- (ThrioVoidCallback)registerPageBuilder:(NavigatorPageBuilder)builder
-                                  forUrl:(NSString *)url {
-    return [ThrioNavigator.pageBuilders registry:url value:builder];
-}
-
-- (void)setFlutterPageBuilder:(NavigatorFlutterPageBuilder)builder {
-    ThrioNavigator.flutterPageBuilder = builder;
-}
-
-- (ThrioVoidCallback)registerPageObserver:(id<NavigatorPageObserverProtocol>)pageObserver {
-    return [ThrioNavigator.pageObservers registry:pageObserver];
-}
-
-- (ThrioVoidCallback)registerRouteObserver:(id<NavigatorRouteObserverProtocol>)routeObserver {
-    return [ThrioNavigator.routeObservers registry:routeObserver];
 }
 
 - (void)startupFlutterEngineWithEntrypoint:(NSString *)entrypoint {
