@@ -10,7 +10,8 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface Module1 : ThrioModule<NavigatorPageObserverProtocol>
+@interface Module1 : ThrioModule<ThrioModulePageObserver,
+                                 NavigatorPageObserverProtocol>
 
 @end
 
