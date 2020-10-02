@@ -8,7 +8,7 @@ import com.hellobike.flutter.thrio.navigator.IntentBuilder
 
 object FlutterModule : ThrioModule(), ModuleIntentBuilder {
 
-    override fun onIntentBuilderRegister(context: Context) {
+    override fun onPageRegister(context: Context) {
         registerIntentBuilder("native1", object : IntentBuilder {
             override fun getActivityClz(): Class<out Activity> {
                 return Native1Activity::class.java

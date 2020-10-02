@@ -24,7 +24,7 @@ You should ensure that you add `thrio` as a dependency in your flutter project.
 
 ```yaml
 dependencies:
-  thrio: '^0.2.2'
+  thrio: '^0.5.0'
 ```
 
 You can also reference the git repo directly if you want:

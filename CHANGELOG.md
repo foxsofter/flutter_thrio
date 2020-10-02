@@ -88,3 +88,8 @@
 ## 0.4.4
 
 - fix: issue 63
+
+## 0.5.0
+
+- feat: add android page & route lifecycle
+- feat: now it can run under Flutter SDK 1.20.x
