@@ -29,7 +29,7 @@ import io.flutter.plugin.common.BinaryMessenger
 class PageObserverChannel constructor(private val entrypoint: String,
                                       private val messenger: BinaryMessenger) {
 
-    private val channel: ThrioChannel = ThrioChannel(entrypoint, "__thrio_page_channel__")
+    private val channel: ThrioChannel = ThrioChannel(entrypoint, "__thrio_page_channel__$entrypoint")
 
     init {
         channel.setupMethodChannel(messenger)
@@ -42,9 +42,8 @@ class PageObserverChannel constructor(private val entrypoint: String,
 
     private fun on(method: String) {
         channel.registryMethod(method) { arguments, _ ->
-            val routeArguments = arguments["route"] ?: return@registryMethod
-            val routeSettings = RouteSettings.fromArguments(routeArguments as Map<String, Any>)
-                    ?: return@registryMethod
+            if (arguments == null) return@registryMethod
+            val routeSettings = RouteSettings.fromArguments(arguments) ?: return@registryMethod
             when (method) {
                 "onCreate" -> PageObservers.onCreate(routeSettings)
                 "willAppear" -> PageObservers.willAppear(routeSettings)

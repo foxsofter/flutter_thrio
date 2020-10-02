@@ -80,7 +80,7 @@ internal object NavigationController {
                 isSingleTop = lastEntrypoint == entrypoint
             }
 
-            val settingsData = hashMapOf<String, Any>().also {
+            val settingsData = hashMapOf<String, Any?>().also {
                 it.putAll(settings.toArguments())
             }
 
@@ -125,12 +125,7 @@ internal object NavigationController {
             routeAction = RouteAction.PUSHING
 
             checkNotNull(result) { "result must not be null" }
-            val settingsData = activity.intent.getSerializableExtra(NAVIGATION_ROUTE_SETTINGS_KEY).let {
-                checkNotNull(it) { "push params not found" }
-                it as Map<String, Any>
-            }
-
-            val settings = RouteSettings.fromArguments(settingsData) ?: return
+            val settings = activity.intent.getRouteSettings() ?: return
             val entrypoint = activity.intent.getEntrypoint()
             val fromEntryPoint = activity.intent.getFromEntrypoint()
 

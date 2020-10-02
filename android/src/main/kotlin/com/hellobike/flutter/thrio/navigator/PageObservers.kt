@@ -27,7 +27,7 @@ import com.hellobike.flutter.thrio.registry.RegistrySet
 import io.flutter.Log
 
 internal object PageObservers : PageObserver {
-    const val TAG = "PageObservers"
+    private const val TAG = "PageObservers"
     val observers by lazy { RegistrySet<PageObserver>() }
 
     override fun onCreate(routeSettings: RouteSettings) {

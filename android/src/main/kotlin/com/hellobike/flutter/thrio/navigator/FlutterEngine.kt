@@ -39,13 +39,15 @@ data class FlutterEngine(private val context: Context,
     val flutterEngine: FlutterEngine = FlutterEngine(context)
     var sendChannel: RouteSendChannel private set
     var receiveChannel: RouteReceiveChannel private set
-    var routeObserverChannel: RouteObserverChannel private set
+    private var routeObserverChannel: RouteObserverChannel
     var pageObserverChannel: PageObserverChannel private set
 
     init {
-        val channel = ThrioChannel(entrypoint, "__thrio_app__")
+        val channel = ThrioChannel(entrypoint, "__thrio_app__$entryPoint")
+        channel.setupMethodChannel(flutterEngine.dartExecutor)
+        channel.setupEventChannel(flutterEngine.dartExecutor)
         sendChannel = RouteSendChannel(channel)
-        receiveChannel = RouteReceiveChannel(channel)
+        receiveChannel = RouteReceiveChannel(channel, readyListener)
 
         routeObserverChannel = RouteObserverChannel(entrypoint, flutterEngine.dartExecutor)
         pageObserverChannel = PageObserverChannel(entrypoint, flutterEngine.dartExecutor)

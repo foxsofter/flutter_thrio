@@ -32,7 +32,8 @@ typedef NavigatorPageObserverCallback = void Function(
 );
 
 class NavigatorPageObserverChannel with NavigatorPageObserver {
-  NavigatorPageObserverChannel() {
+  NavigatorPageObserverChannel(String entrypoint)
+      : _channel = ThrioChannel(channel: '__thrio_page_channel__$entrypoint') {
     _on(
       'onCreate',
       (pageObserver, routeSettings) => pageObserver.onCreate(routeSettings),
@@ -56,7 +57,7 @@ class NavigatorPageObserverChannel with NavigatorPageObserver {
     );
   }
 
-  final _channel = ThrioChannel(channel: '__thrio_page_channel__');
+  final ThrioChannel _channel;
 
   @override
   void onCreate(RouteSettings routeSettings) {

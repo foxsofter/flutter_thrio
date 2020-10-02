@@ -34,7 +34,7 @@ import io.flutter.plugin.common.BinaryMessenger
 import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.MethodChannel
 
-open class ThrioChannel constructor(val entrypoint: String, private val channelName: String) {
+open class ThrioChannel constructor(val entrypoint: String, private val channelName: String = "__thrio__") {
 
     private var methodChannel: MethodChannel? = null
 
@@ -45,7 +45,7 @@ open class ThrioChannel constructor(val entrypoint: String, private val channelN
     private val eventHandlers = RegistrySetMap<String, EventHandler>()
 
     fun setupMethodChannel(messenger: BinaryMessenger) {
-        val methodChannelName = "_method_${channelName}${entrypoint}"
+        val methodChannelName = "_method_$channelName"
         methodChannel = MethodChannel(messenger, methodChannelName)
         methodChannel?.setMethodCallHandler { call, result ->
             val methodHandler = methodHandlers[call.method]
@@ -53,7 +53,8 @@ open class ThrioChannel constructor(val entrypoint: String, private val channelN
                 result.notImplemented()
             } else {
                 try {
-                    methodHandler.invoke(call.arguments as Map<String, Any>) {
+                    val args = if (call.arguments == null) null else call.arguments as Map<String, Any?>
+                    methodHandler.invoke(args) {
                         result.success(it)
                     }
                 } catch (e: Exception) {
@@ -63,11 +64,11 @@ open class ThrioChannel constructor(val entrypoint: String, private val channelN
         }
     }
 
-    fun invokeMethod(method: String, arguments: Map<String, Any>?) {
+    fun invokeMethod(method: String, arguments: Map<String, Any?>?) {
         methodChannel?.invokeMethod(method, arguments)
     }
 
-    fun invokeMethod(method: String, arguments: Map<String, Any>?, callback: NullableAnyCallback?) {
+    fun invokeMethod(method: String, arguments: Map<String, Any?>?, callback: NullableAnyCallback?) {
         methodChannel?.invokeMethod(method, arguments, object : MethodChannel.Result {
             override fun success(value: Any?) {
                 callback?.invoke(value)
@@ -88,12 +89,12 @@ open class ThrioChannel constructor(val entrypoint: String, private val channelN
     }
 
     fun setupEventChannel(messenger: BinaryMessenger) {
-        val eventChannelName = "_event_${channelName}${entrypoint}"
+        val eventChannelName = "_event_$channelName"
         eventChannel = EventChannel(messenger, eventChannelName)
         eventChannel?.setStreamHandler(EventStreamHandler)
     }
 
-    fun sendEvent(name: String, arguments: Map<String, Any>?) {
+    fun sendEvent(name: String, arguments: Map<String, Any?>?) {
         var args = arguments?.toMutableMap()?.also { it["__event_name__"] = name }
                 ?: mapOf<String, Any>("__event_name__" to name)
         EventStreamHandler.sink?.success(args)

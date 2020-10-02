@@ -66,13 +66,13 @@
         [self.label setText:txt];
     } else {
         // 只是给根部的ViewController标记url和index，这样才能定位到这个页面
-        [self thrio_pushUrl:@"native1"
-                      index:@1
-                     params:nil
-                   animated:NO
-             fromEntrypoint:nil
-                     result:nil
-               poppedResult:nil];
+//        [self thrio_pushUrl:@"native1"
+//                      index:@1
+//                     params:nil
+//                   animated:NO
+//             fromEntrypoint:nil
+//                     result:nil
+//               poppedResult:nil];
     }
 }
 

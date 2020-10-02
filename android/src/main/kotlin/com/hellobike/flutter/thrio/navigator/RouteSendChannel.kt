@@ -29,7 +29,7 @@ import io.flutter.Log
 
 class RouteSendChannel constructor(private val channel: ThrioChannel) {
 
-    fun onPush(arguments: Map<String, Any>?, result: BooleanCallback) {
+    fun onPush(arguments: Map<String, Any?>?, result: BooleanCallback) {
         channel.invokeMethod("__onPush__", arguments) {
             if (it is Boolean) {
                 result(it)
@@ -39,13 +39,13 @@ class RouteSendChannel constructor(private val channel: ThrioChannel) {
         }
     }
 
-    fun onNotify(arguments: Map<String, Any>?, result: BooleanCallback) {
+    fun onNotify(arguments: Map<String, Any?>?, result: BooleanCallback) {
         Log.i("Thrio", "onNotify channel data $arguments")
         channel.sendEvent("__onNotify__", arguments)
         result(true)
     }
 
-    fun onPop(arguments: Map<String, Any>?, result: BooleanCallback) {
+    fun onPop(arguments: Map<String, Any?>?, result: BooleanCallback) {
         channel.invokeMethod("__onPop__", arguments) {
             if (it is Boolean) {
                 result(it)
@@ -55,7 +55,7 @@ class RouteSendChannel constructor(private val channel: ThrioChannel) {
         }
     }
 
-    fun onPopTo(arguments: Map<String, Any>?, result: BooleanCallback) {
+    fun onPopTo(arguments: Map<String, Any?>?, result: BooleanCallback) {
         channel.invokeMethod("__onPopTo__", arguments) {
             if (it is Boolean) {
                 result(it)
@@ -65,7 +65,7 @@ class RouteSendChannel constructor(private val channel: ThrioChannel) {
         }
     }
 
-    fun onRemove(arguments: Map<String, Any>?, result: BooleanCallback) {
+    fun onRemove(arguments: Map<String, Any?>?, result: BooleanCallback) {
         channel.invokeMethod("__onPop__", arguments) {
             if (it is Boolean) {
                 result(it)

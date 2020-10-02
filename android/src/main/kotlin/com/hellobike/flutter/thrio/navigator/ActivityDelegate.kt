@@ -47,9 +47,11 @@ internal object ActivityDelegate : Application.ActivityLifecycleCallbacks {
     }
 
     override fun onActivityPreResumed(activity: Activity) {
-        val pageId = activity.intent.getPageId()
-        if (pageId != NAVIGATION_PAGE_ID_NONE) {
-            PageRoutes.willAppear(pageId)
+        if (NavigationController.routeAction == RouteAction.NONE) {
+            val pageId = activity.intent.getPageId()
+            if (pageId != NAVIGATION_PAGE_ID_NONE) {
+                PageRoutes.willAppear(pageId)
+            }
         }
     }
 
@@ -59,28 +61,34 @@ internal object ActivityDelegate : Application.ActivityLifecycleCallbacks {
 
         clearSystemDestroyed(activity)
 
+        if (NavigationController.routeAction == RouteAction.NONE) {
+            val pageId = activity.intent.getPageId()
+            if (pageId != NAVIGATION_PAGE_ID_NONE) {
+                PageRoutes.didAppear(pageId)
+            }
+        }
+
         NavigationController.PopTo.doPopTo(activity)
         NavigationController.Remove.doRemove(activity)
         NavigationController.Push.doPush(activity)
         NavigationController.Notify.doNotify(activity)
-
-        val pageId = activity.intent.getPageId()
-        if (pageId != NAVIGATION_PAGE_ID_NONE) {
-            PageRoutes.didAppear(pageId)
-        }
     }
 
     override fun onActivityPrePaused(activity: Activity) {
-        val pageId = activity.intent.getPageId()
-        if (pageId != NAVIGATION_PAGE_ID_NONE) {
-            PageRoutes.willDisappear(pageId)
+        if (NavigationController.routeAction == RouteAction.NONE) {
+            val pageId = activity.intent.getPageId()
+            if (pageId != NAVIGATION_PAGE_ID_NONE) {
+                PageRoutes.willDisappear(pageId)
+            }
         }
     }
 
     override fun onActivityPaused(activity: Activity) {
-        val pageId = activity.intent.getPageId()
-        if (pageId != NAVIGATION_PAGE_ID_NONE) {
-            PageRoutes.didDisappear(pageId)
+        if (NavigationController.routeAction == RouteAction.NONE) {
+            val pageId = activity.intent.getPageId()
+            if (pageId != NAVIGATION_PAGE_ID_NONE) {
+                PageRoutes.didDisappear(pageId)
+            }
         }
     }
 

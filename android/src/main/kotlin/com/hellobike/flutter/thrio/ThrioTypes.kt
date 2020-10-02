@@ -46,9 +46,9 @@ typealias NullableAnyCallback = (Any?) -> Unit
 /**
  * Signature for a callbacks that handlers channel method invocation.
  */
-typealias MethodHandler = (Map<String, Any>, NullableAnyCallback) -> Unit
+typealias MethodHandler = (Map<String, Any?>?, NullableAnyCallback) -> Unit
 
 /**
  * Signature for a callbacks that handlers channel event handling.
  */
-typealias EventHandler = (Map<String, Any>, NullableAnyCallback) -> Unit
+typealias EventHandler = (Map<String, Any?>?, NullableAnyCallback) -> Unit

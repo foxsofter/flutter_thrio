@@ -26,7 +26,9 @@ import 'navigator_route_observer.dart';
 import 'navigator_route_settings.dart';
 
 class NavigatorRouteObserverChannel with NavigatorRouteObserver {
-  final _channel = ThrioChannel(channel: '__thrio_route_channel__');
+  NavigatorRouteObserverChannel(String entrypoint)
+      : _channel = ThrioChannel(channel: '__thrio_route_channel__$entrypoint');
+  final ThrioChannel _channel;
 
   @override
   void didPush(

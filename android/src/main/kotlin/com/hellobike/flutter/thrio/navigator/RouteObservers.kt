@@ -27,13 +27,15 @@ import com.hellobike.flutter.thrio.registry.RegistrySet
 import io.flutter.Log
 
 internal object RouteObservers : RouteObserver {
+    private const val TAG = "RouteObservers"
+
     val observers by lazy { RegistrySet<RouteObserver>() }
 
     override fun didPush(routeSettings: RouteSettings, previousRouteSettings: RouteSettings?) {
         observers.forEach {
             it.didPush(routeSettings, previousRouteSettings)
         }
-        Log.i(PageObservers.TAG, "didPush: url->${routeSettings.url} " +
+        Log.i(TAG, "didPush: url->${routeSettings.url} " +
                 "index->${routeSettings.index} " +
                 "params->${routeSettings.params?.toString()}")
     }
@@ -42,7 +44,7 @@ internal object RouteObservers : RouteObserver {
         observers.forEach {
             it.didPop(routeSettings, previousRouteSettings)
         }
-        Log.i(PageObservers.TAG, "didPop: url->${routeSettings.url} " +
+        Log.i(TAG, "didPop: url->${routeSettings.url} " +
                 "index->${routeSettings.index} " +
                 "params->${routeSettings.params?.toString()}")
     }
@@ -51,7 +53,7 @@ internal object RouteObservers : RouteObserver {
         observers.forEach {
             it.didPopTo(routeSettings, previousRouteSettings)
         }
-        Log.i(PageObservers.TAG, "didPopTo: url->${routeSettings.url} " +
+        Log.i(TAG, "didPopTo: url->${routeSettings.url} " +
                 "index->${routeSettings.index} " +
                 "params->${routeSettings.params?.toString()}")
     }
@@ -60,7 +62,7 @@ internal object RouteObservers : RouteObserver {
         observers.forEach {
             it.didRemove(routeSettings, previousRouteSettings)
         }
-        Log.i(PageObservers.TAG, "didRemove: url->${routeSettings.url} " +
+        Log.i(TAG, "didRemove: url->${routeSettings.url} " +
                 "index->${routeSettings.index} " +
                 "params->${routeSettings.params?.toString()}")
     }

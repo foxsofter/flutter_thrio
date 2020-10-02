@@ -137,7 +137,7 @@ static NSString *const kEventNameKey = @"__event_name__";
 - (void)setupEventChannel:(NSObject<FlutterBinaryMessenger> *)messenger {
     _eventHandlers = [ThrioRegistrySetMap map];
 
-    NSString *eventChannelName = [NSString stringWithFormat:@"_event_%@", _channelName];
+    NSString *eventChannelName = [NSString stringWithFormat:@"_event_%@%@", _channelName, _entrypoint];
     _eventChannel = [FlutterEventChannel eventChannelWithName:eventChannelName
                                               binaryMessenger:messenger];
     [_eventChannel setStreamHandler:self];

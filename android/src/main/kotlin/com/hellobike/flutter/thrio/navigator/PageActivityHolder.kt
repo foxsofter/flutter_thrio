@@ -188,6 +188,7 @@ internal data class PageActivityHolder(val pageId: Int,
         routes.lastOrNull()?.let {
             PageObservers.willAppear(it.settings)
         }
+
     }
 
     fun didAppear() {

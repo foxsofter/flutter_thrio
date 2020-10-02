@@ -34,28 +34,36 @@ class RouteReceiveChannel(private val channel: ThrioChannel,
         onPop()
         onPopTo()
         onRemove()
+        onLastIndex()
+        onGetAllIndex()
+        onSetPopDisabled()
+        onHotRestart()
+        onRegisterUrls()
+        onUnregisterUrls()
     }
 
     private fun onReady() {
-        channel.registryMethod("onReady") { _, _ ->
+        channel.registryMethod("ready") { _, _ ->
             readyListener?.onReady(channel.entrypoint)
             readyListener = null
         }
     }
 
     private fun onPush() {
-        channel.registryMethod("onPush") { arguments, result ->
+        channel.registryMethod("push") { arguments, result ->
+            if (arguments == null) return@registryMethod
             val url = arguments["url"] as String
             val params = arguments["params"]
-            val animated = arguments["animated"] as Boolean
+            val animated = if (arguments["animated"] != null) arguments["animated"] as Boolean else true
             NavigationController.Push.push(url, params, animated, channel.entrypoint, result = result)
         }
     }
 
     private fun onNotify() {
-        channel.registryMethod("onNotify") { arguments, result ->
+        channel.registryMethod("notify") { arguments, result ->
+            if (arguments == null) return@registryMethod
             val url = arguments["url"] as String
-            val index = arguments["index"] as Int
+            val index = if (arguments["index"] != null) arguments["index"] as Int else 0
             val name = arguments["name"] as String
             val params = arguments["params"]
             NavigationController.Notify.notify(url, index, name, params, result)
@@ -63,28 +71,56 @@ class RouteReceiveChannel(private val channel: ThrioChannel,
     }
 
     private fun onPop() {
-        channel.registryMethod("onPop") { arguments, result ->
+        channel.registryMethod("pop") { arguments, result ->
+            if (arguments == null) return@registryMethod
             val params = arguments["params"]
-            val animated = arguments["animated"] as Boolean
+            val animated = if (arguments["animated"] != null) arguments["animated"] as Boolean else true
             NavigationController.Pop.pop(params, animated, result)
         }
     }
 
     private fun onPopTo() {
-        channel.registryMethod("onPop") { arguments, result ->
+        channel.registryMethod("popTo") { arguments, result ->
+            if (arguments == null) return@registryMethod
             val url = arguments["url"] as String
-            val index = arguments["index"] as Int
-            val animated = arguments["animated"] as Boolean
+            val index = if (arguments["index"] != null) arguments["index"] as Int else 0
+            val animated = if (arguments["animated"] != null) arguments["animated"] as Boolean else true
             NavigationController.PopTo.popTo(url, index, animated, result)
         }
     }
 
     private fun onRemove() {
-        channel.registryMethod("onRemove") { arguments, result ->
+        channel.registryMethod("remove") { arguments, result ->
+            if (arguments == null) return@registryMethod
             val url = arguments["url"] as String
-            val index = arguments["index"] as Int
-            val animated = arguments["animated"] as Boolean
+            val index = if (arguments["index"] != null) arguments["index"] as Int else 0
+            val animated = if (arguments["animated"] != null) arguments["animated"] as Boolean else true
             NavigationController.Remove.remove(url, index, animated, result)
         }
     }
+
+    private fun onLastIndex() {
+        channel.registryMethod("lastIndex") { _, _ -> {} }
+    }
+
+    private fun onGetAllIndex() {
+        channel.registryMethod("getAllIndex") { _, _ -> {} }
+    }
+
+    private fun onSetPopDisabled() {
+        channel.registryMethod("setPopDisabled") { _, _ -> {} }
+    }
+
+    private fun onHotRestart() {
+        channel.registryMethod("hotRestart") { _, _ -> {} }
+    }
+
+    private fun onRegisterUrls() {
+        channel.registryMethod("registerUrls") { _, _ -> {} }
+    }
+
+    private fun onUnregisterUrls() {
+        channel.registryMethod("unregisterUrls") { _, _ -> {} }
+    }
+
 }

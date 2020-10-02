@@ -55,35 +55,35 @@ open class ThrioActivity : ThrioFlutterActivity() {
         NavigationController.Pop.pop()
     }
 
-    fun onPush(arguments: Map<String, Any>?, result: BooleanCallback) {
+    fun onPush(arguments: Map<String, Any?>?, result: BooleanCallback) {
         val id = cachedEngineId ?: throw IllegalStateException("cachedEngineId must not be null")
         val engine = FlutterEngineFactory.getEngine(id)
                 ?: throw IllegalStateException("engine must not be null")
         engine.sendChannel.onPush(arguments, result)
     }
 
-    fun onNotify(arguments: Map<String, Any>?, result: BooleanCallback) {
+    fun onNotify(arguments: Map<String, Any?>?, result: BooleanCallback) {
         val id = cachedEngineId ?: throw IllegalStateException("cachedEngineId must not be null")
         val engine = FlutterEngineFactory.getEngine(id)
                 ?: throw IllegalStateException("engine must not be null")
         engine.sendChannel.onNotify(arguments, result)
     }
 
-    fun onPop(arguments: Map<String, Any>?, result: BooleanCallback) {
+    fun onPop(arguments: Map<String, Any?>?, result: BooleanCallback) {
         val id = cachedEngineId ?: throw IllegalStateException("cachedEngineId must not be null")
         val engine = FlutterEngineFactory.getEngine(id)
                 ?: throw IllegalStateException("engine must not be null")
         engine.sendChannel.onPop(arguments, result)
     }
 
-    fun onPopTo(arguments: Map<String, Any>?, result: BooleanCallback) {
+    fun onPopTo(arguments: Map<String, Any?>?, result: BooleanCallback) {
         val id = cachedEngineId ?: throw IllegalStateException("cachedEngineId must not be null")
         val engine = FlutterEngineFactory.getEngine(id)
                 ?: throw IllegalStateException("engine must not be null")
         engine.sendChannel.onPopTo(arguments, result)
     }
 
-    fun onRemove(arguments: Map<String, Any>?, result: BooleanCallback) {
+    fun onRemove(arguments: Map<String, Any?>?, result: BooleanCallback) {
         val id = cachedEngineId ?: throw IllegalStateException("cachedEngineId must not be null")
         val engine = FlutterEngineFactory.getEngine(id)
                 ?: throw IllegalStateException("engine must not be null")
