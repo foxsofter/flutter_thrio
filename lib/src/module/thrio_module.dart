@@ -23,7 +23,7 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
-
+import '../navigator/navigator_logger.dart';
 import '../navigator/thrio_navigator_implement.dart';
 import 'module_page_builder.dart';
 import 'module_page_observer.dart';
@@ -101,4 +101,7 @@ mixin ThrioModule {
         index: index,
         name: name,
       );
+
+  bool get navigatorLogEnabled => navigatorLogging;
+  set navigatorLogEnabled(bool enabled) => navigatorLogging = enabled;
 }

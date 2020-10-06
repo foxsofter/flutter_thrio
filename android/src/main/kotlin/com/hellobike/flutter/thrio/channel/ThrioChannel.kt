@@ -27,9 +27,9 @@ import com.hellobike.flutter.thrio.EventHandler
 import com.hellobike.flutter.thrio.MethodHandler
 import com.hellobike.flutter.thrio.NullableAnyCallback
 import com.hellobike.flutter.thrio.VoidCallback
+import com.hellobike.flutter.thrio.navigator.Log
 import com.hellobike.flutter.thrio.registry.RegistryMap
 import com.hellobike.flutter.thrio.registry.RegistrySetMap
-import io.flutter.Log
 import io.flutter.plugin.common.BinaryMessenger
 import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.MethodChannel

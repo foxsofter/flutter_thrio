@@ -108,7 +108,7 @@ class _Page2State extends State<Page2> {
                                 '1': {'2': '3'}
                               },
                               poppedResult: (params) =>
-                                  verbose('native1 popped:$params')),
+                                  ThrioLogger.v('native1 popped:$params')),
                           child: Container(
                               padding: const EdgeInsets.all(8),
                               margin: const EdgeInsets.all(8),

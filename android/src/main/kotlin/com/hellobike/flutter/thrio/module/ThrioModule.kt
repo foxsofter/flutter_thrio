@@ -25,6 +25,7 @@ package com.hellobike.flutter.thrio.module
 
 import android.app.Application
 import android.content.Context
+import com.hellobike.flutter.thrio.navigator.Log
 import com.hellobike.flutter.thrio.navigator.ThrioNavigator
 
 open class ThrioModule {
@@ -64,4 +65,9 @@ open class ThrioModule {
 
     protected open fun onModuleInit(context: Context) {}
 
+    protected open var navigatorLogEnabled
+        get() = Log.navigatorLogging
+        set(enabled) {
+            Log.navigatorLogging = enabled
+        }
 }

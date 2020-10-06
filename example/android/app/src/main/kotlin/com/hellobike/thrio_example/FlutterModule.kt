@@ -8,6 +8,10 @@ import com.hellobike.flutter.thrio.navigator.IntentBuilder
 
 object FlutterModule : ThrioModule(), ModuleIntentBuilder {
 
+    override fun onModuleInit(context: Context) {
+        navigatorLogEnabled = false
+    }
+
     override fun onPageRegister(context: Context) {
         registerIntentBuilder("native1", object : IntentBuilder {
             override fun getActivityClz(): Class<out Activity> {
