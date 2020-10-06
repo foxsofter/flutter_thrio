@@ -23,6 +23,8 @@ import 'package:flutter/material.dart';
 import 'thrio_navigator_implement.dart';
 
 class NavigatorHome extends StatefulWidget {
+  const NavigatorHome();
+
   @override
   _NavigatorHomeState createState() => _NavigatorHomeState();
 }
