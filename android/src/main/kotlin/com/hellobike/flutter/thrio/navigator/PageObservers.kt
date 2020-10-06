@@ -24,8 +24,7 @@
 package com.hellobike.flutter.thrio.navigator
 
 import com.hellobike.flutter.thrio.registry.RegistrySet
-import io.flutter.Log
-
+import com.hellobike.flutter.thrio.navigator.Log
 internal object PageObservers : PageObserver {
     private const val TAG = "PageObservers"
     val observers by lazy { RegistrySet<PageObserver>() }

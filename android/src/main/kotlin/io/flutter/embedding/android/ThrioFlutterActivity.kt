@@ -174,7 +174,7 @@ open class ThrioFlutterActivity : Activity(), Host, LifecycleOwner {
                 Log.v(TAG, "Using the launch theme as normal theme.")
             }
         } catch (exception: PackageManager.NameNotFoundException) {
-            Log.e(TAG,"Could not read meta-data for FlutterActivity. Using the launch theme as normal theme.")
+            Log.e(TAG, "Could not read meta-data for FlutterActivity. Using the launch theme as normal theme.")
         }
     }
 
@@ -680,9 +680,9 @@ open class ThrioFlutterActivity : Activity(), Host, LifecycleOwner {
                 val registrationMethod = generatedPluginRegistrant.getDeclaredMethod("registerWith", FlutterEngine::class.java)
                 registrationMethod.invoke(null, flutterEngine)
             } catch (e: Exception) {
-                Log.w(TAG,"Tried to automatically register plugins with FlutterEngine ("
-                                + flutterEngine
-                                + ") but could not find and invoke the GeneratedPluginRegistrant.")
+                Log.w(TAG, "Tried to automatically register plugins with FlutterEngine ("
+                        + flutterEngine
+                        + ") but could not find and invoke the GeneratedPluginRegistrant.")
             }
         }
     }

@@ -2,10 +2,10 @@ package com.hellobike.thrio_example
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.hellobike.flutter.thrio.navigator.RouteSettings
 import com.hellobike.flutter.thrio.navigator.ThrioNavigator
+import io.flutter.Log
 import kotlinx.android.synthetic.main.activity_native.*
 
 class Native2Activity : AppCompatActivity() {
