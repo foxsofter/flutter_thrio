@@ -34,7 +34,7 @@ class _MainAppState extends State<MainApp> with ThrioModule {
 
   @override
   void onModuleInit() {
-    // navigatorLogEnabled = true;
+    navigatorLogEnabled = true;
   }
 
   @override

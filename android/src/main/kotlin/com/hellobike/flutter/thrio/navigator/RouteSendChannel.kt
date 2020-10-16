@@ -65,7 +65,7 @@ class RouteSendChannel constructor(private val channel: ThrioChannel) {
     }
 
     fun onRemove(arguments: Map<String, Any?>?, result: BooleanCallback) {
-        channel.invokeMethod("__onPop__", arguments) {
+        channel.invokeMethod("__onRemove__", arguments) {
             if (it is Boolean) {
                 result(it)
             } else {

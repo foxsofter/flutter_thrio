@@ -93,3 +93,9 @@
 
 - feat: add android page & route lifecycle
 - feat: now it can run under Flutter SDK 1.20.x
+
+## 0.5.1
+
+- feat: add android log disabled
+- fix: onRemove typepo
+- fix: flutter to flutter notify not working
