@@ -23,6 +23,7 @@ import 'package:flutter/widgets.dart';
 
 import '../navigator/navigator_page_observer.dart';
 import '../registry/registry_set.dart';
+import 'navigator_home.dart';
 import 'navigator_logger.dart';
 import 'navigator_page_route.dart';
 import 'navigator_route_observer.dart';
@@ -43,7 +44,11 @@ class NavigatorObserverManager extends NavigatorObserver {
 
   final _currentRemoveRoutes = <NavigatorPageRoute>[];
 
-  final pageRoutes = <NavigatorPageRoute>[];
+  final pageRoutes = <NavigatorPageRoute>[
+    NavigatorPageRoute(
+        builder: (settings) => const NavigatorHome(),
+        settings: const RouteSettings(name: '1 /shit'))
+  ];
 
   @override
   void didPush(Route<dynamic> route, Route<dynamic> previousRoute) {
@@ -159,7 +164,7 @@ class NavigatorObserverManager extends NavigatorObserver {
                 final pageObservers = Set.from(_pageObservers);
                 for (final observer in pageObservers) {
                   observer.didDisappear(route.settings);
-                  if (previousRoute != null) {
+                  if (prevRoute != null) {
                     observer.didAppear(prevRoute.settings);
                   }
                 }

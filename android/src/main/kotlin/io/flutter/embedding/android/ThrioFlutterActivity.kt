@@ -15,6 +15,7 @@ import android.view.WindowManager
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
+import com.hellobike.flutter.thrio.navigator.getPageId
 import io.flutter.Log
 import io.flutter.embedding.android.FlutterActivityAndFragmentDelegate.Host
 import io.flutter.embedding.android.FlutterActivityLaunchConfigs.BackgroundMode
@@ -154,9 +155,7 @@ open class ThrioFlutterActivity : Activity(), Host, LifecycleOwner {
         delegate?.onActivityCreated(savedInstanceState)
 
         configureWindowForTransparency()
-
         setContentView(createFlutterView())
-
         configureStatusBarForFullscreenFlutterExperience()
     }
 
@@ -164,9 +163,7 @@ open class ThrioFlutterActivity : Activity(), Host, LifecycleOwner {
         try {
             val activityInfo = packageManager.getActivityInfo(componentName, PackageManager.GET_META_DATA)
             if (activityInfo.metaData != null) {
-                val normalThemeRID = activityInfo.metaData.getInt(
-                        FlutterActivityLaunchConfigs.NORMAL_THEME_META_DATA_KEY,
-                        -1)
+                val normalThemeRID = activityInfo.metaData.getInt(FlutterActivityLaunchConfigs.NORMAL_THEME_META_DATA_KEY, -1)
                 if (normalThemeRID != -1) {
                     setTheme(normalThemeRID)
                 }
@@ -246,13 +243,16 @@ open class ThrioFlutterActivity : Activity(), Host, LifecycleOwner {
         delegate?.onStart()
     }
 
-    override fun onResume() {
+    public override fun onResume() {
+        val pageId = intent.getPageId()
+        Log.v("ThrioFlutterActivity", "onResume: $pageId")
+
         super.onResume()
         lifecycle.handleLifecycleEvent(Lifecycle.Event.ON_RESUME)
         delegate?.onResume()
     }
 
-    public override fun onPostResume() {
+    override fun onPostResume() {
         super.onPostResume()
         delegate?.onPostResume()
     }
@@ -276,6 +276,8 @@ open class ThrioFlutterActivity : Activity(), Host, LifecycleOwner {
 
     override fun onDestroy() {
         super.onDestroy()
+        val pageId = intent.getPageId()
+        Log.v("ThrioFlutterActivity", "onResume: $pageId")
         delegate?.onDestroyView()
         delegate?.onDetach()
         lifecycle.handleLifecycleEvent(Lifecycle.Event.ON_DESTROY)

@@ -35,8 +35,6 @@ internal object PageRoutes {
 
     private val removedActivityHolders by lazy { mutableListOf<PageActivityHolder>() }
 
-    private val poppedToActivityHolders by lazy { mutableListOf<PageActivityHolder>() }
-
     fun lastActivityHolder(pageId: Int? = null): PageActivityHolder? = when (pageId) {
         null, NAVIGATION_PAGE_ID_NONE -> activityHolders.lastOrNull()
         else -> activityHolders.lastOrNull { it.pageId == pageId }
@@ -46,9 +44,9 @@ internal object PageRoutes {
         return removedActivityHolders.lastOrNull { it.pageId == pageId }
     }
 
-    fun removeByPopToActivityHolder(url: String, index: Int?): List<PageActivityHolder>? {
+    fun removeByPopToActivityHolder(url: String, index: Int?): List<PageActivityHolder> {
         val activityHolder = activityHolders.lastOrNull { it.lastRoute(url, index) != null }
-                ?: return null
+                ?: return listOf()
 
         val activityHolderIndex = activityHolders.lastIndexOf(activityHolder)
         val activityHolders = mutableListOf<PageActivityHolder>()
@@ -131,9 +129,7 @@ internal object PageRoutes {
             if (it) {
                 if (!activityHolder.hasRoute()) {
                     activityHolders.remove(activityHolder)
-                    activityHolder.activity?.get()?.let { activity ->
-                        activity.finish()
-                    }
+                    activityHolder.activity?.get()?.finish()
                 }
             }
             result(it)
@@ -151,21 +147,28 @@ internal object PageRoutes {
         activityHolder.popTo(url, index, animated) {
             if (it) {
                 val activityHolderIndex = activityHolders.lastIndexOf(activityHolder)
-                val entrypoints = mutableListOf<String>()
+                val entrypoints = mutableSetOf<String>()
+                val poppedToActivityHolders = mutableListOf<PageActivityHolder>()
                 for (i in activityHolders.size - 1 downTo activityHolderIndex + 1) {
                     val poppedActivityHolder = activityHolders.removeAt(i)
                     poppedToActivityHolders.add(poppedActivityHolder)
-                    entrypoints.add(poppedActivityHolder.entrypoint)
+                    if (poppedActivityHolder.entrypoint != poppedActivityHolder.entrypoint
+                            && poppedActivityHolder.entrypoint != NAVIGATION_NATIVE_ENTRYPOINT) {
+                        entrypoints.add(poppedActivityHolder.entrypoint)
+                    }
                 }
-                // 多引擎模式下的处理
+
+                // 清理其它引擎的页面
                 entrypoints.forEach { entrypoint ->
-                    val lastActivityHolder = activityHolders.lastOrNull { activityHolder ->
-                        activityHolder.entrypoint == entrypoint && activityHolder.hasRoute()
+                    val lastActivityHolder = poppedToActivityHolders.lastOrNull { activityHolder ->
+                        activityHolder.entrypoint == entrypoint
                     }
                     if (lastActivityHolder != null) {
                         val engine = FlutterEngineFactory.getEngine(entrypoint)
-                        lastActivityHolder.lastRoute()?.let { route ->
-                            engine?.sendChannel?.onPopTo(route.settings.toArguments()) {}
+                        for (i in activityHolders.size - 1 downTo 0) {
+                            val poppedToSettings = activityHolders[i].lastRoute(entrypoint)?.settings
+                                    ?: RouteSettings("/", 1)
+                            engine?.sendChannel?.onPopTo(poppedToSettings.toArguments()) {}
                         }
                     }
                 }

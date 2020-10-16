@@ -153,21 +153,25 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
     return Future.value(true);
   }
 
-  Future<bool> popTo(RouteSettings settings, {bool animated = true}) {
+  Future<bool> popTo(
+    RouteSettings settings, {
+    bool animated = true,
+  }) {
     final navigatorState = widget.child.tryStateOf<NavigatorState>();
     if (navigatorState == null) {
       return Future.value(false);
     }
-    final route = history.lastWhere((it) => it.settings.name == settings.name,
-        orElse: () => null);
-    if (route == null || settings.name == history.last.settings.name) {
+
+    final index = history.indexWhere((it) => it.settings.name == settings.name);
+    if (index == -1) {
       return Future.value(false);
     }
+    final previousRoute = history.last;
+    final route = history[index];
 
     verbose('popTo: url->${route.settings.url} '
         'index->${route.settings.index}');
 
-    final previousRoute = history.last;
     final pageObservers = Set.from(ThrioNavigatorImplement.pageObservers);
     for (final observer in pageObservers) {
       observer.willAppear(route.settings);

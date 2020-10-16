@@ -51,6 +51,9 @@ internal data class PageActivityHolder(val pageId: Int,
         }
     }
 
+    fun lastRoute(entrypoint: String): PageRoute? = routes.lastOrNull { it.entrypoint == entrypoint }
+
+
     fun allRoute(url: String): List<PageRoute> = routes.takeWhile { it.settings.url == url }
 
     fun push(route: PageRoute, result: NullableIntCallback) {
@@ -94,7 +97,7 @@ internal data class PageActivityHolder(val pageId: Int,
             return
         }
         val activity = activity?.get()
-        if (activity != null) {
+        if (activity != null && !activity.isDestroyed) {
             if (activity is ThrioActivity) {
                 lastRoute.settings.params = params
                 lastRoute.settings.animated = animated

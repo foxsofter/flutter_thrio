@@ -91,15 +91,15 @@ class _Page4State extends State<Page4> {
                 ),
                 InkWell(
                   onTap: () => ThrioNavigator.popTo(
-                    url: '/biz2/flutter2',
-                    animated: false,
+                    url: '/biz1/flutter1',
+                    animated: true,
                   ),
                   child: Container(
                       padding: const EdgeInsets.all(8),
                       margin: const EdgeInsets.all(8),
                       color: Colors.yellow,
                       child: const Text(
-                        'popTo flutter2',
+                        'popTo flutter1',
                         style: TextStyle(fontSize: 22, color: Colors.black),
                       )),
                 ),

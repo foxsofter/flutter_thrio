@@ -20,7 +20,6 @@
 // IN THE SOFTWARE.
 
 import 'package:flutter/material.dart';
-import 'thrio_navigator_implement.dart';
 
 class NavigatorHome extends StatefulWidget {
   const NavigatorHome();
@@ -32,35 +31,19 @@ class NavigatorHome extends StatefulWidget {
 class _NavigatorHomeState extends State<NavigatorHome> {
   @override
   Widget build(BuildContext context) => Scaffold(
-      appBar: AppBar(
-        brightness: Brightness.light,
-        backgroundColor: Colors.white,
-        title: const Text('', style: TextStyle(color: Colors.white)),
-      ),
-      body: SingleChildScrollView(
-          child: Container(
-              margin: const EdgeInsets.all(24),
-              child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    Container(
-                      margin: const EdgeInsets.only(top: 10, bottom: 20),
-                      alignment: AlignmentDirectional.center,
-                      child: const Text(
-                        'If you see this page, click the hot restart button',
-                        style: TextStyle(fontSize: 12, color: Colors.blue),
-                      ),
-                    ),
-                    InkWell(
-                      onTap: ThrioNavigatorImplement.hotRestart,
-                      child: Container(
-                          padding: const EdgeInsets.all(8),
-                          margin: const EdgeInsets.all(8),
-                          color: Colors.yellow,
-                          child: const Text(
-                            'hot restart',
-                            style: TextStyle(fontSize: 22, color: Colors.black),
-                          )),
-                    ),
-                  ]))));
+        appBar: AppBar(
+          brightness: Brightness.light,
+          backgroundColor: Colors.white,
+          title: const Text('...', style: TextStyle(color: Colors.blue)),
+        ),
+        body: const Center(
+          child: SizedBox(
+            width: 60,
+            height: 60,
+            child: CircularProgressIndicator(
+              strokeWidth: 4,
+            ),
+          ),
+        ),
+      );
 }

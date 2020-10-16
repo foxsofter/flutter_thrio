@@ -63,6 +63,7 @@ internal object ActivityDelegate : Application.ActivityLifecycleCallbacks {
 
         if (NavigationController.routeAction == RouteAction.NONE) {
             val pageId = activity.intent.getPageId()
+            Log.i("ActivityDelegate", "onActivityResumed: $pageId")
             if (pageId != NAVIGATION_PAGE_ID_NONE) {
                 PageRoutes.didAppear(pageId)
             }
@@ -113,6 +114,7 @@ internal object ActivityDelegate : Application.ActivityLifecycleCallbacks {
         val pageId = activity.intent.getPageId()
         if (pageId != NAVIGATION_PAGE_ID_NONE) {
             PageRoutes.onDestroy(pageId)
+            NavigationController.PopTo.didDestroy()
         }
     }
 
@@ -125,6 +127,6 @@ internal object ActivityDelegate : Application.ActivityLifecycleCallbacks {
     }
 
     private fun isSystemDestroyed(activity: Activity): Boolean {
-        return activity.intent.getBooleanExtra(THRIO_ACTIVITY_SAVE_KEY, THRIO_ACTIVITY_SAVE_NONE)
+        return activity.intent.getBooleanExtra(THRIO_ACTIVITY_SAVE_KEY, false)
     }
 }

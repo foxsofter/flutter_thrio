@@ -23,7 +23,6 @@
 
 package io.flutter.embedding.android
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import com.hellobike.flutter.thrio.BooleanCallback
 import com.hellobike.flutter.thrio.navigator.FlutterEngineFactory
@@ -34,13 +33,6 @@ open class ThrioActivity : ThrioFlutterActivity() {
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         intent.extras?.let { this.intent.putExtras(it) }
-    }
-
-    @SuppressLint("VisibleForTests")
-    override fun finish() {
-        super.finish()
-        super.delegate?.onStop()
-        super.delegate?.onDetach()
     }
 
     override fun shouldAttachEngineToActivity(): Boolean {
