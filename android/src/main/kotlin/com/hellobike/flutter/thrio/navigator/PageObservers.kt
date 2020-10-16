@@ -54,6 +54,9 @@ internal object PageObservers : PageObserver {
         Log.i(TAG, "didAppear: url->${routeSettings.url} " +
                 "index->${routeSettings.index} " +
                 "params->${routeSettings.params?.toString()}")
+        PageRoutes.lastActivityHolder(routeSettings.url, routeSettings.index)?.activity?.get()?.apply {
+            NavigationController.Notify.doNotify(this)
+        }
     }
 
     override fun willDisappear(routeSettings: RouteSettings) {
