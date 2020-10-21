@@ -32,6 +32,7 @@ import java.lang.ref.WeakReference
 internal data class PageActivityHolder(val pageId: Int,
                                        val clazz: Class<out Activity>,
                                        val entrypoint: String = NAVIGATION_FLUTTER_ENTRYPOINT_DEFAULT) {
+    var pushByThrio = false
 
     private val routes by lazy { mutableListOf<PageRoute>() }
 
@@ -119,12 +120,14 @@ internal data class PageActivityHolder(val pageId: Int,
                 routes.remove(lastRoute)
                 result(true)
                 lastRoute.poppedResult?.invoke(params)
+                lastRoute.poppedResult = null
                 if (lastRoute.fromEntrypoint != NAVIGATION_NATIVE_ENTRYPOINT) {
                     FlutterEngineFactory.getEngine(lastRoute.fromEntrypoint)?.sendChannel?.onPop(lastRoute.settings.toArguments()) {}
                 }
             }
         } else {
             result(false)
+            lastRoute.poppedResult = null
         }
     }
 
@@ -210,5 +213,9 @@ internal data class PageActivityHolder(val pageId: Int,
         routes.lastOrNull()?.let {
             PageObservers.didDisappear(it.settings)
         }
+    }
+
+    companion object {
+        private const val TAG = "PageActivityHolder"
     }
 }

@@ -328,7 +328,7 @@ internal class ThrioFlutterPageDelegate(private var host: ThrioFlutterActivity) 
         // Configure the Dart entrypoint and execute it.
         val entrypoint = DartEntrypoint(
                 host.appBundlePath, host.dartEntrypointFunctionName)
-        Log.i(TAG, "executeDartEntrypoint: $entrypoint")
+        Log.v(TAG, "executeDartEntrypoint: $entrypoint")
         flutterEngine!!.dartExecutor.executeDartEntrypoint(entrypoint)
     }
 
@@ -340,11 +340,11 @@ internal class ThrioFlutterPageDelegate(private var host: ThrioFlutterActivity) 
      * lifecycle.
      */
     fun onResume() {
-        Log.i(TAG, "onResume()")
+        Log.v(TAG, "onResume()")
         ensureAlive()
         flutterEngine?.let { engine ->
             engine.lifecycleChannel.appIsResumed()
-            Log.i(TAG, "onResume: ${host.intent.getPageId()}")
+            Log.v(TAG, "onResume: ${host.intent.getPageId()}")
             engine.activityControlSurface.attachToActivity(host.activity, host.lifecycle)
             if (host.shouldAttachEngineToActivity()) {
                 flutterView?.reattachToFlutterEngine()

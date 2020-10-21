@@ -5,6 +5,7 @@
         <activity
             android:name="io.flutter.embedding.android.ThrioActivity"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
+            android:screenOrientation="sensor"
             android:hardwareAccelerated="true"
             android:launchMode="standard"
             android:theme="@style/Theme.Thrio.Default"

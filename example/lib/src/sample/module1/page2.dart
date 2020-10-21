@@ -123,7 +123,9 @@ class _Page2State extends State<Page2> {
                     InkWell(
                       onTap: () {
                         ThrioNavigator.notify(
-                            url: '/biz1/flutter1', name: 'page1Notify');
+                            url: '/biz1/flutter1',
+                            name: 'page1Notify',
+                            params: 2);
                       },
                       child: Container(
                           padding: const EdgeInsets.all(8),

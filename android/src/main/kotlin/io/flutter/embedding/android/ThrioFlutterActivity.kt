@@ -244,9 +244,6 @@ open class ThrioFlutterActivity : Activity(), Host, LifecycleOwner {
     }
 
     public override fun onResume() {
-        val pageId = intent.getPageId()
-        Log.v("ThrioFlutterActivity", "onResume: $pageId")
-
         super.onResume()
         lifecycle.handleLifecycleEvent(Lifecycle.Event.ON_RESUME)
         delegate?.onResume()
@@ -275,12 +272,10 @@ open class ThrioFlutterActivity : Activity(), Host, LifecycleOwner {
     }
 
     override fun onDestroy() {
-        super.onDestroy()
-        val pageId = intent.getPageId()
-        Log.v("ThrioFlutterActivity", "onResume: $pageId")
         delegate?.onDestroyView()
         delegate?.onDetach()
         lifecycle.handleLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+        super.onDestroy()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
@@ -299,6 +294,12 @@ open class ThrioFlutterActivity : Activity(), Host, LifecycleOwner {
     override fun onRequestPermissionsResult(
             requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
         delegate?.onRequestPermissionsResult(requestCode, permissions, grantResults)
+    }
+
+    override fun finish() {
+        val pageId = intent.getPageId()
+        Log.v("ThrioFlutterActivity", "onDestroy: $pageId")
+        super.finish()
     }
 
     public override fun onUserLeaveHint() {

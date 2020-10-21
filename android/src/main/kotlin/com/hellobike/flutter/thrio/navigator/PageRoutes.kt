@@ -24,40 +24,37 @@
 package com.hellobike.flutter.thrio.navigator
 
 import android.app.Activity
+import android.app.Application
 import android.os.Bundle
 import com.hellobike.flutter.thrio.BooleanCallback
 import com.hellobike.flutter.thrio.NullableIntCallback
 import java.lang.ref.WeakReference
 
-internal object PageRoutes {
+internal object PageRoutes : Application.ActivityLifecycleCallbacks {
 
     private val activityHolders by lazy { mutableListOf<PageActivityHolder>() }
 
     private val removedActivityHolders by lazy { mutableListOf<PageActivityHolder>() }
 
-    fun lastActivityHolder(pageId: Int? = null): PageActivityHolder? = when (pageId) {
-        null, NAVIGATION_PAGE_ID_NONE -> activityHolders.lastOrNull()
-        else -> activityHolders.lastOrNull { it.pageId == pageId }
+    fun lastActivityHolder(pageId: Int): PageActivityHolder? {
+        return activityHolders.lastOrNull { it.pageId == pageId }
     }
 
-    fun lastRemovedActivityHolder(pageId: Int): PageActivityHolder? {
-        return removedActivityHolders.lastOrNull { it.pageId == pageId }
+    fun lastActivityHolder(url: String? = null, index: Int? = null): PageActivityHolder? {
+        return activityHolders.lastOrNull { it.hasRoute(url, index) }
     }
 
-    fun removeByPopToActivityHolder(url: String, index: Int?): List<PageActivityHolder> {
+    fun removedByRemoveActivityHolder(pageId: Int): PageActivityHolder? {
+        val index = removedActivityHolders.indexOfLast { it.pageId == pageId }
+        return if (index != -1) removedActivityHolders.removeAt(index) else null
+    }
+
+    fun popToActivityHolders(url: String, index: Int?): List<PageActivityHolder> {
         val activityHolder = activityHolders.lastOrNull { it.lastRoute(url, index) != null }
                 ?: return listOf()
 
         val activityHolderIndex = activityHolders.lastIndexOf(activityHolder)
-        val activityHolders = mutableListOf<PageActivityHolder>()
-        for (i in this.activityHolders.size - 1 downTo activityHolderIndex + 1) {
-            activityHolders.add(this.activityHolders[i])
-        }
-        return activityHolders
-    }
-
-    fun lastActivityHolder(url: String, index: Int? = null): PageActivityHolder? {
-        return activityHolders.lastOrNull { it.hasRoute(url, index) }
+        return activityHolders.subList(activityHolderIndex + 1, activityHolders.size).toMutableList()
     }
 
     fun hasRoute(pageId: Int): Boolean {
@@ -100,6 +97,7 @@ internal object PageRoutes {
             }
             activityHolders.add(activityHolder)
         }
+        activityHolder.pushByThrio = true
         activityHolder.push(route, result)
     }
 
@@ -125,14 +123,21 @@ internal object PageRoutes {
             return
         }
 
-        activityHolder.pop(params, animated) { it ->
-            if (it) {
-                if (!activityHolder.hasRoute()) {
-                    activityHolders.remove(activityHolder)
-                    activityHolder.activity?.get()?.finish()
+        if (!activityHolder.pushByThrio) {
+            activityHolder.activity?.get()?.finish()
+            result(true)
+        } else {
+            activityHolder.pop(params, animated) { it ->
+                if (it) {
+                    if (!activityHolder.hasRoute()) {
+                        activityHolder.activity?.get()?.let {
+                            activityHolders.remove(activityHolder)
+                            it.finish()
+                        }
+                    }
                 }
+                result(it)
             }
-            result(it)
         }
     }
 
@@ -144,38 +149,34 @@ internal object PageRoutes {
             return
         }
 
-        activityHolder.popTo(url, index, animated) {
-            if (it) {
-                val activityHolderIndex = activityHolders.lastIndexOf(activityHolder)
+        activityHolder.popTo(url, index, animated) { ret ->
+            if (ret) {
+                val poppedToIndex = activityHolders.lastIndexOf(activityHolder)
+                val removedByPopToHolders = activityHolders.subList(poppedToIndex + 1, activityHolders.size).toMutableList()
                 val entrypoints = mutableSetOf<String>()
-                val poppedToActivityHolders = mutableListOf<PageActivityHolder>()
-                for (i in activityHolders.size - 1 downTo activityHolderIndex + 1) {
-                    val poppedActivityHolder = activityHolders.removeAt(i)
-                    poppedToActivityHolders.add(poppedActivityHolder)
-                    if (poppedActivityHolder.entrypoint != poppedActivityHolder.entrypoint
-                            && poppedActivityHolder.entrypoint != NAVIGATION_NATIVE_ENTRYPOINT) {
-                        entrypoints.add(poppedActivityHolder.entrypoint)
+                for (holder in removedByPopToHolders) {
+                    if (holder.entrypoint != activityHolder.entrypoint && holder.entrypoint != NAVIGATION_NATIVE_ENTRYPOINT) {
+                        entrypoints.add(holder.entrypoint)
                     }
                 }
 
                 // 清理其它引擎的页面
                 entrypoints.forEach { entrypoint ->
-                    val lastActivityHolder = poppedToActivityHolders.lastOrNull { activityHolder ->
-                        activityHolder.entrypoint == entrypoint
-                    }
-                    if (lastActivityHolder != null) {
-                        val engine = FlutterEngineFactory.getEngine(entrypoint)
-                        for (i in activityHolders.size - 1 downTo 0) {
-                            val poppedToSettings = activityHolders[i].lastRoute(entrypoint)?.settings
-                                    ?: RouteSettings("/", 1)
-                            engine?.sendChannel?.onPopTo(poppedToSettings.toArguments()) {}
+                    removedByPopToHolders.firstOrNull { holder -> holder.entrypoint == entrypoint }?.let {
+                        var poppedToSettings = RouteSettings("/shit", 1)
+                        for (i in poppedToIndex downTo 0) {
+                            val poppedToRoute = activityHolders[i].lastRoute(entrypoint)
+                            if (poppedToRoute != null) {
+                                poppedToSettings = poppedToRoute.settings
+                                break
+                            }
                         }
+                        FlutterEngineFactory.getEngine(entrypoint)?.sendChannel?.onPopTo(poppedToSettings.toArguments()) {}
                     }
                 }
             }
-            result(it)
+            result(ret)
         }
-
     }
 
     fun remove(url: String, index: Int?, animated: Boolean, result: BooleanCallback) {
@@ -200,73 +201,102 @@ internal object PageRoutes {
         }
     }
 
-    fun willAppear(pageId: Int) {
-        activityHolders.lastOrNull { it.pageId == pageId }?.apply {
-            willAppear()
-        }
-    }
-
-    fun didAppear(pageId: Int) {
-        activityHolders.lastOrNull { it.pageId == pageId }?.apply {
-            didAppear()
-        }
-    }
-
-    fun willDisappear(pageId: Int) {
-        activityHolders.lastOrNull { it.pageId == pageId }?.apply {
-            willDisappear()
-        }
-    }
-
-    fun didDisappear(pageId: Int) {
-        activityHolders.lastOrNull { it.pageId == pageId }?.apply {
-            didDisappear()
-        }
-    }
-
-    fun onDestroy(pageId: Int) {
-        activityHolders.lastOrNull { it.pageId == pageId }?.apply {
-            activityHolders.remove(this)
-        }
-    }
-
-
-    fun restorePageId(activity: Activity, savedInstanceState: Bundle?) {
+    override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
         if (savedInstanceState == null) {
-            return
-        }
-        val pageId = savedInstanceState.getInt(NAVIGATION_PAGE_ID_KEY, NAVIGATION_PAGE_ID_NONE)
-        if (pageId != NAVIGATION_PAGE_ID_NONE) {
-            activity.intent.putExtra(NAVIGATION_PAGE_ID_KEY, pageId)
+            var pageId = activity.intent.getPageId()
+            if (pageId == NAVIGATION_PAGE_ID_NONE) {
+                pageId = activity.hashCode()
+                activity.intent.putExtra(NAVIGATION_PAGE_ID_KEY, pageId)
+                val entrypoint = activity.intent.getEntrypoint()
+                val activityHolder = PageActivityHolder(pageId, activity.javaClass, entrypoint).also {
+                    it.activity = WeakReference(activity)
+                }
+                activityHolders.add(activityHolder)
+            }
         } else {
-            activity.intent.putExtra(NAVIGATION_PAGE_ID_KEY, activity.hashCode())
+            val pageId = savedInstanceState.getInt(NAVIGATION_PAGE_ID_KEY, NAVIGATION_PAGE_ID_NONE)
+            if (pageId != NAVIGATION_PAGE_ID_NONE) {
+                activity.intent.putExtra(NAVIGATION_PAGE_ID_KEY, pageId)
+                val activityHolder = activityHolders.lastOrNull { it.pageId == pageId }
+                activityHolder?.activity = WeakReference(activity)
+            }
         }
     }
 
-    fun savePageId(activity: Activity, outState: Bundle) {
+    override fun onActivityStarted(activity: Activity) {
+        val pageId = activity.intent.getPageId()
+        if (pageId != NAVIGATION_PAGE_ID_NONE) {
+            val activityHolder = activityHolders.lastOrNull { it.pageId == pageId }
+            activityHolder?.activity = WeakReference(activity)
+        }
+    }
+
+    override fun onActivityPreResumed(activity: Activity) {
+        val pageId = activity.intent.getPageId()
+        if (pageId != NAVIGATION_PAGE_ID_NONE) {
+            if (NavigationController.routeAction == RouteAction.NONE) {
+                activityHolders.lastOrNull { it.pageId == pageId }?.apply {
+                    willAppear()
+                }
+            }
+        }
+    }
+
+    override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {
         val pageId = activity.intent.getIntExtra(NAVIGATION_PAGE_ID_KEY, NAVIGATION_PAGE_ID_NONE)
         if (pageId != NAVIGATION_PAGE_ID_NONE) {
             outState.putInt(NAVIGATION_PAGE_ID_KEY, pageId)
         }
     }
 
-    fun setActivityReference(activity: Activity) {
+    override fun onActivityResumed(activity: Activity) {
         val pageId = activity.intent.getIntExtra(NAVIGATION_PAGE_ID_KEY, NAVIGATION_PAGE_ID_NONE)
         if (pageId != NAVIGATION_PAGE_ID_NONE) {
             val activityHolder = activityHolders.lastOrNull { it.pageId == pageId }
-            activityHolder?.activity = WeakReference<Activity>(activity)
-        }
-    }
+            activityHolder?.activity = WeakReference(activity)
 
-    fun unsetActivityReference(activity: Activity) {
-        val pageId = activity.intent.getPageId()
-        if (pageId != NAVIGATION_PAGE_ID_NONE) {
-            val activityHolder = activityHolders.lastOrNull { it.pageId == pageId }
-            if (activityHolder != null) {
-                activityHolder.activity = null
+            if (NavigationController.routeAction == RouteAction.NONE) {
+                activityHolders.lastOrNull { it.pageId == pageId }?.apply {
+                    didAppear()
+                }
             }
         }
     }
 
+    override fun onActivityPrePaused(activity: Activity) {
+        val pageId = activity.intent.getIntExtra(NAVIGATION_PAGE_ID_KEY, NAVIGATION_PAGE_ID_NONE)
+        if (pageId != NAVIGATION_PAGE_ID_NONE) {
+            if (NavigationController.routeAction == RouteAction.NONE) {
+                activityHolders.lastOrNull { it.pageId == pageId }?.apply {
+                    willDisappear()
+                }
+            }
+        }
+    }
 
+    override fun onActivityPaused(activity: Activity) {
+        val pageId = activity.intent.getIntExtra(NAVIGATION_PAGE_ID_KEY, NAVIGATION_PAGE_ID_NONE)
+        if (pageId != NAVIGATION_PAGE_ID_NONE) {
+            if (NavigationController.routeAction == RouteAction.NONE) {
+                activityHolders.lastOrNull { it.pageId == pageId }?.apply {
+                    didDisappear()
+                }
+            }
+        }
+    }
+
+    override fun onActivityStopped(activity: Activity?) {
+    }
+
+    override fun onActivityDestroyed(activity: Activity) {
+        val pageId = activity.intent.getPageId()
+        if (pageId != NAVIGATION_PAGE_ID_NONE) {
+            activityHolders.lastOrNull { it.pageId == pageId }?.apply {
+                if (activity.isFinishing) {
+                    activityHolders.remove(this)
+                }
+                this.activity = null
+            }
+        }
+    }
 }

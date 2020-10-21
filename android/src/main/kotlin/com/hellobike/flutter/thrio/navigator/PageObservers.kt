@@ -33,7 +33,7 @@ internal object PageObservers : PageObserver {
         observers.forEach {
             it.onCreate(routeSettings)
         }
-        Log.i(TAG, "onCreate: url->${routeSettings.url} " +
+        Log.v(TAG, "onCreate: url->${routeSettings.url} " +
                 "index->${routeSettings.index} " +
                 "params->${routeSettings.params?.toString()}")
     }
@@ -42,7 +42,7 @@ internal object PageObservers : PageObserver {
         observers.forEach {
             it.willAppear(routeSettings)
         }
-        Log.i(TAG, "willAppear: url->${routeSettings.url} " +
+        Log.v(TAG, "willAppear: url->${routeSettings.url} " +
                 "index->${routeSettings.index} " +
                 "params->${routeSettings.params?.toString()}")
     }
@@ -51,7 +51,7 @@ internal object PageObservers : PageObserver {
         observers.forEach {
             it.didAppear(routeSettings)
         }
-        Log.i(TAG, "didAppear: url->${routeSettings.url} " +
+        Log.v(TAG, "didAppear: url->${routeSettings.url} " +
                 "index->${routeSettings.index} " +
                 "params->${routeSettings.params?.toString()}")
         PageRoutes.lastActivityHolder(routeSettings.url, routeSettings.index)?.activity?.get()?.apply {
@@ -63,7 +63,7 @@ internal object PageObservers : PageObserver {
         observers.forEach {
             it.willDisappear(routeSettings)
         }
-        Log.i(TAG, "willDisappear: url->${routeSettings.url} " +
+        Log.v(TAG, "willDisappear: url->${routeSettings.url} " +
                 "index->${routeSettings.index} " +
                 "params->${routeSettings.params?.toString()}")
     }
@@ -72,7 +72,7 @@ internal object PageObservers : PageObserver {
         observers.forEach {
             it.didDisappear(routeSettings)
         }
-        Log.i(TAG, "didDisappear: url->${routeSettings.url} " +
+        Log.v(TAG, "didDisappear: url->${routeSettings.url} " +
                 "index->${routeSettings.index} " +
                 "params->${routeSettings.params?.toString()}")
     }

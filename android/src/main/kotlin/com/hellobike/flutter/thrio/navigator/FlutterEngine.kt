@@ -33,14 +33,13 @@ import io.flutter.view.FlutterMain
 data class FlutterEngine(private val context: Context,
                          private val entrypoint: String,
                          private val readyListener: EngineReadyListener? = null) {
+    val flutterEngine = FlutterEngine(context)
     internal var sendChannel: RouteSendChannel private set
     private var receiveChannel: RouteReceiveChannel
     private var routeObserverChannel: RouteObserverChannel
     private var pageObserverChannel: PageObserverChannel
 
     init {
-        Log.i(TAG, "init FlutterEngine")
-        val flutterEngine = FlutterEngine(context)
         val channel = ThrioChannel(this.entrypoint, "__thrio_app__${this.entrypoint}")
         channel.setupMethodChannel(flutterEngine.dartExecutor)
         channel.setupEventChannel(flutterEngine.dartExecutor)

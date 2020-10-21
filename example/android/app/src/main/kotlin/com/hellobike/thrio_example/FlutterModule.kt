@@ -9,7 +9,8 @@ import com.hellobike.flutter.thrio.navigator.IntentBuilder
 object FlutterModule : ThrioModule(), ModuleIntentBuilder {
 
     override fun onModuleInit(context: Context) {
-         navigatorLogEnabled = true
+        navigatorLogEnabled = true
+        multiEngineEnabled = true
     }
 
     override fun onPageRegister(context: Context) {

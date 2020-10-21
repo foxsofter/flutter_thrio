@@ -30,103 +30,73 @@ import android.os.Bundle
 
 @SuppressLint("StaticFieldLeak")
 internal object ActivityDelegate : Application.ActivityLifecycleCallbacks {
+    private const val TAG = "ActivityDelegate"
 
     override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
-        NavigationController.context = NavigationController.context ?: activity
+        PageRoutes.onActivityCreated(activity, savedInstanceState)
 
-        PageRoutes.restorePageId(activity, savedInstanceState)
+        NavigationController.onActivityCreated(activity, savedInstanceState)
 
-        PageRoutes.setActivityReference(activity)
-
-        NavigationController.PopTo.doPopTo(activity)
-        NavigationController.Remove.doRemove(activity)
-        NavigationController.Push.doPush(activity)
+        Log.v(TAG, "onActivityCreated: ${activity.intent.getPageId()}")
     }
 
     override fun onActivityStarted(activity: Activity) {
+        PageRoutes.onActivityStarted(activity)
+
+        NavigationController.onActivityStarted(activity)
+
+        Log.v(TAG, "onActivityStarted: ${activity.intent.getPageId()}")
     }
 
     override fun onActivityPreResumed(activity: Activity) {
-        if (NavigationController.routeAction == RouteAction.NONE) {
-            val pageId = activity.intent.getPageId()
-            if (pageId != NAVIGATION_PAGE_ID_NONE) {
-                PageRoutes.willAppear(pageId)
-            }
-        }
+        PageRoutes.onActivityPreResumed(activity)
+
+        Log.v(TAG, "onActivityPreResumed: ${activity.intent.getPageId()}")
     }
 
     override fun onActivityResumed(activity: Activity) {
+        PageRoutes.onActivityResumed(activity)
 
-        PageRoutes.setActivityReference(activity)
+        NavigationController.onActivityResumed(activity)
 
-        clearSystemDestroyed(activity)
-
-        if (NavigationController.routeAction == RouteAction.NONE) {
-            val pageId = activity.intent.getPageId()
-            Log.i("ActivityDelegate", "onActivityResumed: $pageId")
-            if (pageId != NAVIGATION_PAGE_ID_NONE) {
-                PageRoutes.didAppear(pageId)
-            }
-        }
-
-        NavigationController.PopTo.doPopTo(activity)
-        NavigationController.Remove.doRemove(activity)
-        NavigationController.Push.doPush(activity)
-        NavigationController.Notify.doNotify(activity)
+        Log.v(TAG, "onActivityResumed: ${activity.intent.getPageId()}")
     }
 
     override fun onActivityPrePaused(activity: Activity) {
-        if (NavigationController.routeAction == RouteAction.NONE) {
-            val pageId = activity.intent.getPageId()
-            if (pageId != NAVIGATION_PAGE_ID_NONE) {
-                PageRoutes.willDisappear(pageId)
-            }
-        }
+        PageRoutes.onActivityPrePaused(activity)
+
+        Log.v(TAG, "onActivityPrePaused: ${activity.intent.getPageId()}")
     }
 
     override fun onActivityPaused(activity: Activity) {
-        if (NavigationController.routeAction == RouteAction.NONE) {
-            val pageId = activity.intent.getPageId()
-            if (pageId != NAVIGATION_PAGE_ID_NONE) {
-                PageRoutes.didDisappear(pageId)
-            }
-        }
+        PageRoutes.onActivityPaused(activity)
+
+        NavigationController.onActivityPaused(activity)
+
+        Log.v(TAG, "onActivityPaused: ${activity.intent.getPageId()}")
     }
 
     override fun onActivityStopped(activity: Activity?) {
+        PageRoutes.onActivityStopped(activity)
+
+        NavigationController.onActivityStopped(activity)
+
+        Log.v(TAG, "onActivityStopped: ${activity?.intent?.getPageId()}")
     }
 
     override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {
+        PageRoutes.onActivitySaveInstanceState(activity, outState)
 
-        PageRoutes.savePageId(activity, outState)
+        NavigationController.onActivitySaveInstanceState(activity, outState)
 
-        setSystemDestroyed(activity)
+        Log.v(TAG, "onActivitySaveInstanceState: ${activity.intent.getPageId()}")
     }
 
     override fun onActivityDestroyed(activity: Activity) {
+        PageRoutes.onActivityDestroyed(activity)
 
-        PageRoutes.unsetActivityReference(activity)
+        NavigationController.onActivityDestroyed(activity)
 
-        if (isSystemDestroyed(activity)) {
-            return
-        }
-        // 如果原生页面被关闭，在这里同步其页面栈
-        val pageId = activity.intent.getPageId()
-        if (pageId != NAVIGATION_PAGE_ID_NONE) {
-            PageRoutes.onDestroy(pageId)
-            NavigationController.PopTo.didDestroy()
-        }
-    }
-
-    private fun clearSystemDestroyed(activity: Activity) {
-        activity.intent.removeExtra(THRIO_ACTIVITY_SAVE_KEY)
-    }
-
-    private fun setSystemDestroyed(activity: Activity) {
-        activity.intent.putExtra(THRIO_ACTIVITY_SAVE_KEY, true)
-    }
-
-    private fun isSystemDestroyed(activity: Activity): Boolean {
-        return activity.intent.getBooleanExtra(THRIO_ACTIVITY_SAVE_KEY, false)
+        Log.v(TAG, "onActivityDestroyed: ${activity.intent.getPageId()}")
     }
 }
