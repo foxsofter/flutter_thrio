@@ -24,7 +24,7 @@
 package com.hellobike.flutter.thrio.navigator
 
 import com.hellobike.flutter.thrio.registry.RegistrySet
-import com.hellobike.flutter.thrio.navigator.Log
+
 internal object PageObservers : PageObserver {
     private const val TAG = "PageObservers"
     val observers by lazy { RegistrySet<PageObserver>() }
@@ -54,7 +54,7 @@ internal object PageObservers : PageObserver {
         Log.v(TAG, "didAppear: url->${routeSettings.url} " +
                 "index->${routeSettings.index} " +
                 "params->${routeSettings.params?.toString()}")
-        PageRoutes.lastActivityHolder(routeSettings.url, routeSettings.index)?.activity?.get()?.apply {
+        PageRoutes.lastRouteHolder(routeSettings.url, routeSettings.index)?.activity?.get()?.apply {
             NavigationController.Notify.doNotify(this)
         }
     }

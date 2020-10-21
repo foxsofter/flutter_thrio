@@ -29,9 +29,9 @@ import com.hellobike.flutter.thrio.NullableIntCallback
 import io.flutter.embedding.android.ThrioActivity
 import java.lang.ref.WeakReference
 
-internal data class PageActivityHolder(val pageId: Int,
-                                       val clazz: Class<out Activity>,
-                                       val entrypoint: String = NAVIGATION_FLUTTER_ENTRYPOINT_DEFAULT) {
+internal data class PageRouteHolder(val pageId: Int,
+                                    val clazz: Class<out Activity>,
+                                    val entrypoint: String = NAVIGATION_FLUTTER_ENTRYPOINT_DEFAULT) {
     var pushByThrio = false
 
     private val routes by lazy { mutableListOf<PageRoute>() }
@@ -216,6 +216,6 @@ internal data class PageActivityHolder(val pageId: Int,
     }
 
     companion object {
-        private const val TAG = "PageActivityHolder"
+        private const val TAG = "PageRouteHolder"
     }
 }

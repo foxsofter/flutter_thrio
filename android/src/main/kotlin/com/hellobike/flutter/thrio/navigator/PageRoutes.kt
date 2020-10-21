@@ -32,57 +32,57 @@ import java.lang.ref.WeakReference
 
 internal object PageRoutes : Application.ActivityLifecycleCallbacks {
 
-    private val activityHolders by lazy { mutableListOf<PageActivityHolder>() }
+    private val routeHolders by lazy { mutableListOf<PageRouteHolder>() }
 
-    private val removedActivityHolders by lazy { mutableListOf<PageActivityHolder>() }
+    private val removedRouteHolders by lazy { mutableListOf<PageRouteHolder>() }
 
-    fun lastActivityHolder(pageId: Int): PageActivityHolder? {
-        return activityHolders.lastOrNull { it.pageId == pageId }
+    fun lastRouteHolder(pageId: Int): PageRouteHolder? {
+        return routeHolders.lastOrNull { it.pageId == pageId }
     }
 
-    fun lastActivityHolder(url: String? = null, index: Int? = null): PageActivityHolder? {
-        return activityHolders.lastOrNull { it.hasRoute(url, index) }
+    fun lastRouteHolder(url: String? = null, index: Int? = null): PageRouteHolder? {
+        return routeHolders.lastOrNull { it.hasRoute(url, index) }
     }
 
-    fun removedByRemoveActivityHolder(pageId: Int): PageActivityHolder? {
-        val index = removedActivityHolders.indexOfLast { it.pageId == pageId }
-        return if (index != -1) removedActivityHolders.removeAt(index) else null
+    fun removedByRemoveRouteHolder(pageId: Int): PageRouteHolder? {
+        val index = removedRouteHolders.indexOfLast { it.pageId == pageId }
+        return if (index != -1) removedRouteHolders.removeAt(index) else null
     }
 
-    fun popToActivityHolders(url: String, index: Int?): List<PageActivityHolder> {
-        val activityHolder = activityHolders.lastOrNull { it.lastRoute(url, index) != null }
+    fun popToRouteHolders(url: String, index: Int?): List<PageRouteHolder> {
+        val holder = routeHolders.lastOrNull { it.lastRoute(url, index) != null }
                 ?: return listOf()
 
-        val activityHolderIndex = activityHolders.lastIndexOf(activityHolder)
-        return activityHolders.subList(activityHolderIndex + 1, activityHolders.size).toMutableList()
+        val holderIndex = routeHolders.lastIndexOf(holder)
+        return routeHolders.subList(holderIndex + 1, routeHolders.size).toMutableList()
     }
 
     fun hasRoute(pageId: Int): Boolean {
-        return activityHolders.any { it.pageId == pageId && it.hasRoute() }
+        return routeHolders.any { it.pageId == pageId && it.hasRoute() }
     }
 
-    fun hasRoute(url: String? = null, index: Int? = null): Boolean = activityHolders.any {
+    fun hasRoute(url: String? = null, index: Int? = null): Boolean = routeHolders.any {
         it.hasRoute(url, index)
     }
 
     fun lastRoute(url: String? = null, index: Int? = null): PageRoute? {
-        for (i in activityHolders.size - 1 downTo 0) {
-            val activityHolder = activityHolders[i]
-            return activityHolder.lastRoute(url, index) ?: continue
+        for (i in routeHolders.size - 1 downTo 0) {
+            val holder = routeHolders[i]
+            return holder.lastRoute(url, index) ?: continue
         }
         return null
     }
 
     fun lastRoute(pageId: Int): PageRoute? {
-        val activityHolder = activityHolders.lastOrNull { it.pageId == pageId }
-        return activityHolder?.lastRoute()
+        val holder = routeHolders.lastOrNull { it.pageId == pageId }
+        return holder?.lastRoute()
     }
 
     fun allRoute(url: String): List<PageRoute> {
         val allRoutes = mutableListOf<PageRoute>()
-        for (i in activityHolders.size - 1 downTo 0) {
-            val activityHolder = activityHolders[i]
-            allRoutes.addAll(activityHolder.allRoute(url))
+        for (i in routeHolders.size - 1 downTo 0) {
+            val holder = routeHolders[i]
+            allRoutes.addAll(holder.allRoute(url))
         }
         return allRoutes.toList()
     }
@@ -90,15 +90,15 @@ internal object PageRoutes : Application.ActivityLifecycleCallbacks {
     fun push(activity: Activity, route: PageRoute, result: NullableIntCallback) {
         val entrypoint = activity.intent.getEntrypoint()
         val pageId = activity.intent.getPageId()
-        var activityHolder = activityHolders.lastOrNull { it.pageId == pageId }
-        if (activityHolder == null) {
-            activityHolder = PageActivityHolder(pageId, activity.javaClass, entrypoint).apply {
+        var holder = routeHolders.lastOrNull { it.pageId == pageId }
+        if (holder == null) {
+            holder = PageRouteHolder(pageId, activity.javaClass, entrypoint).apply {
                 this.activity = WeakReference(activity)
             }
-            activityHolders.add(activityHolder)
+            routeHolders.add(holder)
         }
-        activityHolder.pushByThrio = true
-        activityHolder.push(route, result)
+        holder.pushByThrio = true
+        holder.push(route, result)
     }
 
     fun notify(url: String, index: Int? = null, name: String, params: Any?, result: BooleanCallback) {
@@ -108,8 +108,8 @@ internal object PageRoutes : Application.ActivityLifecycleCallbacks {
         }
 
         var isMatch = false
-        activityHolders.forEach { activityHolder ->
-            activityHolder.notify(url, index, name, params) {
+        routeHolders.forEach { holder ->
+            holder.notify(url, index, name, params) {
                 if (it) isMatch = true
             }
         }
@@ -117,21 +117,21 @@ internal object PageRoutes : Application.ActivityLifecycleCallbacks {
     }
 
     fun pop(params: Any? = null, animated: Boolean, result: BooleanCallback) {
-        val activityHolder = activityHolders.lastOrNull()
-        if (activityHolder == null) {
+        val holder = routeHolders.lastOrNull()
+        if (holder == null) {
             result(false)
             return
         }
 
-        if (!activityHolder.pushByThrio) {
-            activityHolder.activity?.get()?.finish()
+        if (!holder.pushByThrio) {
+            holder.activity?.get()?.finish()
             result(true)
         } else {
-            activityHolder.pop(params, animated) { it ->
+            holder.pop(params, animated) { it ->
                 if (it) {
-                    if (!activityHolder.hasRoute()) {
-                        activityHolder.activity?.get()?.let {
-                            activityHolders.remove(activityHolder)
+                    if (!holder.hasRoute()) {
+                        holder.activity?.get()?.let {
+                            routeHolders.remove(holder)
                             it.finish()
                         }
                     }
@@ -143,19 +143,19 @@ internal object PageRoutes : Application.ActivityLifecycleCallbacks {
 
 
     fun popTo(url: String, index: Int?, animated: Boolean, result: BooleanCallback) {
-        val activityHolder = activityHolders.lastOrNull { it.lastRoute(url, index) != null }
-        if (activityHolder == null || activityHolder.activity?.get() == null) {
+        val holder = routeHolders.lastOrNull { it.lastRoute(url, index) != null }
+        if (holder == null || holder.activity?.get() == null) {
             result(false)
             return
         }
 
-        activityHolder.popTo(url, index, animated) { ret ->
+        holder.popTo(url, index, animated) { ret ->
             if (ret) {
-                val poppedToIndex = activityHolders.lastIndexOf(activityHolder)
-                val removedByPopToHolders = activityHolders.subList(poppedToIndex + 1, activityHolders.size).toMutableList()
+                val poppedToIndex = routeHolders.lastIndexOf(holder)
+                val removedByPopToHolders = routeHolders.subList(poppedToIndex + 1, routeHolders.size).toMutableList()
                 val entrypoints = mutableSetOf<String>()
                 for (holder in removedByPopToHolders) {
-                    if (holder.entrypoint != activityHolder.entrypoint && holder.entrypoint != NAVIGATION_NATIVE_ENTRYPOINT) {
+                    if (holder.entrypoint != holder.entrypoint && holder.entrypoint != NAVIGATION_NATIVE_ENTRYPOINT) {
                         entrypoints.add(holder.entrypoint)
                     }
                 }
@@ -165,7 +165,7 @@ internal object PageRoutes : Application.ActivityLifecycleCallbacks {
                     removedByPopToHolders.firstOrNull { holder -> holder.entrypoint == entrypoint }?.let {
                         var poppedToSettings = RouteSettings("/shit", 1)
                         for (i in poppedToIndex downTo 0) {
-                            val poppedToRoute = activityHolders[i].lastRoute(entrypoint)
+                            val poppedToRoute = routeHolders[i].lastRoute(entrypoint)
                             if (poppedToRoute != null) {
                                 poppedToSettings = poppedToRoute.settings
                                 break
@@ -180,18 +180,18 @@ internal object PageRoutes : Application.ActivityLifecycleCallbacks {
     }
 
     fun remove(url: String, index: Int?, animated: Boolean, result: BooleanCallback) {
-        val activityHolder = activityHolders.lastOrNull { it.lastRoute(url, index) != null }
-        if (activityHolder == null) {
+        val holder = routeHolders.lastOrNull { it.lastRoute(url, index) != null }
+        if (holder == null) {
             result(false)
             return
         }
 
-        activityHolder.remove(url, index, animated) {
+        holder.remove(url, index, animated) {
             if (it) {
-                if (!activityHolder.hasRoute()) {
-                    val activity = activityHolder.activity?.get()
+                if (!holder.hasRoute()) {
+                    val activity = holder.activity?.get()
                     if (activity == null) {
-                        removedActivityHolders.add(activityHolder)
+                        removedRouteHolders.add(holder)
                     } else {
                         activity.finish()
                     }
@@ -208,17 +208,17 @@ internal object PageRoutes : Application.ActivityLifecycleCallbacks {
                 pageId = activity.hashCode()
                 activity.intent.putExtra(NAVIGATION_PAGE_ID_KEY, pageId)
                 val entrypoint = activity.intent.getEntrypoint()
-                val activityHolder = PageActivityHolder(pageId, activity.javaClass, entrypoint).also {
+                val holder = PageRouteHolder(pageId, activity.javaClass, entrypoint).also {
                     it.activity = WeakReference(activity)
                 }
-                activityHolders.add(activityHolder)
+                routeHolders.add(holder)
             }
         } else {
             val pageId = savedInstanceState.getInt(NAVIGATION_PAGE_ID_KEY, NAVIGATION_PAGE_ID_NONE)
             if (pageId != NAVIGATION_PAGE_ID_NONE) {
                 activity.intent.putExtra(NAVIGATION_PAGE_ID_KEY, pageId)
-                val activityHolder = activityHolders.lastOrNull { it.pageId == pageId }
-                activityHolder?.activity = WeakReference(activity)
+                val holder = routeHolders.lastOrNull { it.pageId == pageId }
+                holder?.activity = WeakReference(activity)
             }
         }
     }
@@ -226,8 +226,8 @@ internal object PageRoutes : Application.ActivityLifecycleCallbacks {
     override fun onActivityStarted(activity: Activity) {
         val pageId = activity.intent.getPageId()
         if (pageId != NAVIGATION_PAGE_ID_NONE) {
-            val activityHolder = activityHolders.lastOrNull { it.pageId == pageId }
-            activityHolder?.activity = WeakReference(activity)
+            val holder = routeHolders.lastOrNull { it.pageId == pageId }
+            holder?.activity = WeakReference(activity)
         }
     }
 
@@ -235,7 +235,7 @@ internal object PageRoutes : Application.ActivityLifecycleCallbacks {
         val pageId = activity.intent.getPageId()
         if (pageId != NAVIGATION_PAGE_ID_NONE) {
             if (NavigationController.routeAction == RouteAction.NONE) {
-                activityHolders.lastOrNull { it.pageId == pageId }?.apply {
+                routeHolders.lastOrNull { it.pageId == pageId }?.apply {
                     willAppear()
                 }
             }
@@ -252,11 +252,11 @@ internal object PageRoutes : Application.ActivityLifecycleCallbacks {
     override fun onActivityResumed(activity: Activity) {
         val pageId = activity.intent.getIntExtra(NAVIGATION_PAGE_ID_KEY, NAVIGATION_PAGE_ID_NONE)
         if (pageId != NAVIGATION_PAGE_ID_NONE) {
-            val activityHolder = activityHolders.lastOrNull { it.pageId == pageId }
-            activityHolder?.activity = WeakReference(activity)
+            val holder = routeHolders.lastOrNull { it.pageId == pageId }
+            holder?.activity = WeakReference(activity)
 
             if (NavigationController.routeAction == RouteAction.NONE) {
-                activityHolders.lastOrNull { it.pageId == pageId }?.apply {
+                routeHolders.lastOrNull { it.pageId == pageId }?.apply {
                     didAppear()
                 }
             }
@@ -267,7 +267,7 @@ internal object PageRoutes : Application.ActivityLifecycleCallbacks {
         val pageId = activity.intent.getIntExtra(NAVIGATION_PAGE_ID_KEY, NAVIGATION_PAGE_ID_NONE)
         if (pageId != NAVIGATION_PAGE_ID_NONE) {
             if (NavigationController.routeAction == RouteAction.NONE) {
-                activityHolders.lastOrNull { it.pageId == pageId }?.apply {
+                routeHolders.lastOrNull { it.pageId == pageId }?.apply {
                     willDisappear()
                 }
             }
@@ -278,7 +278,7 @@ internal object PageRoutes : Application.ActivityLifecycleCallbacks {
         val pageId = activity.intent.getIntExtra(NAVIGATION_PAGE_ID_KEY, NAVIGATION_PAGE_ID_NONE)
         if (pageId != NAVIGATION_PAGE_ID_NONE) {
             if (NavigationController.routeAction == RouteAction.NONE) {
-                activityHolders.lastOrNull { it.pageId == pageId }?.apply {
+                routeHolders.lastOrNull { it.pageId == pageId }?.apply {
                     didDisappear()
                 }
             }
@@ -291,9 +291,9 @@ internal object PageRoutes : Application.ActivityLifecycleCallbacks {
     override fun onActivityDestroyed(activity: Activity) {
         val pageId = activity.intent.getPageId()
         if (pageId != NAVIGATION_PAGE_ID_NONE) {
-            activityHolders.lastOrNull { it.pageId == pageId }?.apply {
+            routeHolders.lastOrNull { it.pageId == pageId }?.apply {
                 if (activity.isFinishing) {
-                    activityHolders.remove(this)
+                    routeHolders.remove(this)
                 }
                 this.activity = null
             }

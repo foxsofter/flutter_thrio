@@ -103,9 +103,9 @@ internal object NavigationController : Application.ActivityLifecycleCallbacks {
 
             var entrypoint = NAVIGATION_NATIVE_ENTRYPOINT
 
-            val lastActivityHolder = PageRoutes.lastActivityHolder()
-            val lastActivity = lastActivityHolder?.activity?.get()
-            val lastEntrypoint = lastActivityHolder?.entrypoint
+            val lastHolder = PageRoutes.lastRouteHolder()
+            val lastActivity = lastHolder?.activity?.get()
+            val lastEntrypoint = lastHolder?.entrypoint
 
             if (builder is FlutterIntentBuilder) {
                 entrypoint = if (FlutterEngineFactory.isMultiEngineEnabled) {
@@ -221,7 +221,7 @@ internal object NavigationController : Application.ActivityLifecycleCallbacks {
                 result?.invoke(it)
             }
 
-            PageRoutes.lastActivityHolder()?.activity?.get()?.let { activity ->
+            PageRoutes.lastRouteHolder()?.activity?.get()?.let { activity ->
                 doNotify(activity)
             }
         }
@@ -275,11 +275,11 @@ internal object NavigationController : Application.ActivityLifecycleCallbacks {
     object PopTo {
         private var result: BooleanCallback? = null
         private var poppedToRoute: PageRoute? = null
-        private var poppedToHolder: PageActivityHolder? = null
-        private val poppedToHolders by lazy { mutableListOf<PageActivityHolder>() }
+        private var poppedToHolder: PageRouteHolder? = null
+        private val poppedToHolders by lazy { mutableListOf<PageRouteHolder>() }
         private var poppedToHolderCount = 0
-        private val poppingToHolders by lazy { mutableListOf<PageActivityHolder>() }
-        private val destroyingHolders by lazy { mutableListOf<PageActivityHolder>() }
+        private val poppingToHolders by lazy { mutableListOf<PageRouteHolder>() }
+        private val destroyingHolders by lazy { mutableListOf<PageRouteHolder>() }
 
         fun popTo(url: String, index: Int?, animated: Boolean, result: BooleanCallback? = null) {
             if (routeAction != RouteAction.NONE || (index != null && index < 0)) {
@@ -297,8 +297,8 @@ internal object NavigationController : Application.ActivityLifecycleCallbacks {
             routeAction = RouteAction.POP_TO
 
             poppedToRoute.settings.animated = animated
-            val poppedToHolder = PageRoutes.lastActivityHolder(url, index)
-            val poppedToHolders = PageRoutes.popToActivityHolders(url, index)
+            val poppedToHolder = PageRoutes.lastRouteHolder(url, index)
+            val poppedToHolders = PageRoutes.popToRouteHolders(url, index)
 
             val lastRoute = PageRoutes.lastRoute()
             PageRoutes.popTo(url, index, animated) { ret ->
@@ -342,6 +342,7 @@ internal object NavigationController : Application.ActivityLifecycleCallbacks {
                 poppedToHolder?.activity?.get()?.let {
                     poppedToHolder = null
                     if (it is ThrioActivity) {
+                        // 需要延迟一小段时间，等待 FlutterEngine 切换完成
                         Timer().schedule(timerTask {
                             it.runOnUiThread {
                                 it.surfaceUpdated()
@@ -406,7 +407,7 @@ internal object NavigationController : Application.ActivityLifecycleCallbacks {
             if (pageId == NAVIGATION_PAGE_ID_NONE) {
                 return
             }
-            PageRoutes.removedByRemoveActivityHolder(pageId)?.activity?.get()?.apply {
+            PageRoutes.removedByRemoveRouteHolder(pageId)?.activity?.get()?.apply {
                 this.finish()
             }
         }
