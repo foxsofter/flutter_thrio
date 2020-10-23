@@ -13,7 +13,6 @@
 @implementation MainModule
 
 - (void)onModuleInit {
-
 }
 
 - (void)onModuleRegister {

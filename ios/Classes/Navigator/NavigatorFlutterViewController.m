@@ -59,7 +59,7 @@ NS_ASSUME_NONNULL_BEGIN
         if (ThrioNavigator.isMultiEngineEnabled) {
             _entrypoint = entrypoint;
         } else {
-            _entrypoint = @"";
+            _entrypoint = @"main";
         }
     }
     return self;

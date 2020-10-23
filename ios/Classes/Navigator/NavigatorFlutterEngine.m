@@ -40,7 +40,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, strong, readwrite, nullable) NavigatorPageObserverChannel *pageObserverChannel;
 
-@property (nonatomic, strong) NSMutableArray *flutterViewControllers;
+@property (nonatomic, strong) NSHashTable *flutterViewControllers;
 
 @end
 
@@ -49,7 +49,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)startupWithEntrypoint:(NSString *)entrypoint
                    readyBlock:(ThrioIdCallback _Nullable)block {
     if (!_engine) {
-        _flutterViewControllers = [NSMutableArray array];
+        _flutterViewControllers = [NSHashTable weakObjectsHashTable];
         [self startupFlutterWithEntrypoint:entrypoint];
         [self registerPlugins];
         [self setupChannelWithEntrypoint:entrypoint readyBlock:block];
@@ -57,29 +57,31 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 - (void)pushViewController:(NavigatorFlutterViewController *)viewController {
-    if (![_flutterViewControllers containsObject:viewController]) {
-        [_flutterViewControllers addObject:viewController];
-    }
     NavigatorVerbose(@"NavigatorFlutterEngine: enter pushViewController");
-    if (_engine.viewController != viewController && viewController != nil) {
-        [_flutterViewControllers removeObject:viewController];
+    if (viewController != nil && (_engine.viewController == nil || _engine.viewController != viewController)) {
         NavigatorVerbose(@"NavigatorFlutterEngine: set new %@", viewController);
-        _engine.viewController = nil;
+        if (_engine.viewController) {
+            [_flutterViewControllers removeObject:_engine.viewController];
+        }
+
         _engine.viewController = viewController;
         [(NavigatorFlutterViewController *)_engine.viewController surfaceUpdated:YES];
+
+        if (![_flutterViewControllers containsObject:viewController]) {
+            [_flutterViewControllers addObject:viewController];
+        }
     }
 }
 
 - (NSUInteger)popViewController:(NavigatorFlutterViewController *)viewController {
-    [_flutterViewControllers removeObject:viewController];
     NavigatorVerbose(@"NavigatorFlutterEngine: enter popViewController");
-    if (_engine.viewController == viewController && viewController != nil) {
+    if (viewController != nil && _engine.viewController == viewController) {
         NavigatorVerbose(@"NavigatorFlutterEngine: unset %@", viewController);
-        _engine.viewController = nil;
-        _engine.viewController = _flutterViewControllers.lastObject;
         if (_engine.viewController) {
-            [(NavigatorFlutterViewController *)_engine.viewController surfaceUpdated:YES];
+            [_flutterViewControllers removeObject:_engine.viewController];
+            [(NavigatorFlutterViewController *)_engine.viewController surfaceUpdated:NO];
         }
+        _engine.viewController = nil;
     }
     return _flutterViewControllers.count;
 }

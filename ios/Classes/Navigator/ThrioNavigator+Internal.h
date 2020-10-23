@@ -29,6 +29,48 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (NSPointerArray *)navigationControllers;
 
++ (void)  _pushUrl:(NSString *)url
+            params:(id _Nullable)params
+          animated:(BOOL)animated
+    fromEntrypoint:fromEntrypoint
+            result:(ThrioNumberCallback _Nullable)result
+      poppedResult:(ThrioIdCallback _Nullable)poppedResult;
+
++ (void)_notifyUrl:(NSString *)url
+             index:(NSNumber *_Nullable)index
+              name:(NSString *)name
+            params:(id _Nullable)params
+            result:(ThrioBoolCallback _Nullable)result;
+
++ (void)_popParams:(id _Nullable)params
+          animated:(BOOL)animated
+            result:(ThrioBoolCallback _Nullable)result;
+
++ (void)_popToUrl:(NSString *)url
+            index:(NSNumber *_Nullable)index
+         animated:(BOOL)animated
+           result:(ThrioBoolCallback _Nullable)result;
+
++ (void)_removeUrl:(NSString *)url
+             index:(NSNumber *_Nullable)index
+          animated:(BOOL)animated
+            result:(ThrioBoolCallback _Nullable)result;
+
++ (void)_didPushUrl:(NSString *)url index:(NSNumber *)index;
+
++ (void)_didPopUrl:(NSString *)url index:(NSNumber *)index;
+
++ (void)_didPopToUrl:(NSString *)url index:(NSNumber *)index;
+
++ (void)_didRemoveUrl:(NSString *)url index:(NSNumber *)index;
+
+
++ (void)_setPopDisabledUrl:(NSString *)url
+                     index:(NSNumber *)index
+                  disabled:(BOOL)disabled;
+
++ (void)_hotRestart:(ThrioBoolCallback)result;
+
 @end
 
 NS_ASSUME_NONNULL_END

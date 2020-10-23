@@ -75,7 +75,7 @@ NS_ASSUME_NONNULL_BEGIN
                                     result:result
                               poppedResult:poppedResult];
         } else {
-            NSString *entrypoint = @"";
+            NSString *entrypoint = @"main";
             if (ThrioNavigator.isMultiEngineEnabled) {
                 entrypoint = [url componentsSeparatedByString:@"/"].firstObject;
             }
@@ -369,6 +369,8 @@ NS_ASSUME_NONNULL_BEGIN
               newSelector:@selector(thrio_popViewControllerAnimated:)];
     [self instanceSwizzle:@selector(popToViewController:animated:)
               newSelector:@selector(thrio_popToViewController:animated:)];
+    [self instanceSwizzle:@selector(popToRootViewControllerAnimated:)
+              newSelector:@selector(thrio_popToRootViewControllerAnimated:)];
     [self instanceSwizzle:@selector(setViewControllers:)
               newSelector:@selector(thrio_setViewControllers:)];
 }
@@ -529,6 +531,17 @@ NS_ASSUME_NONNULL_BEGIN
     return [self thrio_popToViewController:viewController animated:animated];
 }
 
+- (nullable NSArray<__kindof UIViewController *> *)thrio_popToRootViewControllerAnimated:(BOOL)animated {
+    NSArray *nvcs = [self.viewControllers subarrayWithRange:NSMakeRange(1, self.viewControllers.count - 1)];
+    for (UIViewController *vc in nvcs) {
+        if ([vc isKindOfClass:NavigatorFlutterViewController.class]) {
+            
+        }
+    }
+    
+    return [self thrio_popToRootViewControllerAnimated:animated];
+}
+
 - (void)thrio_setViewControllers:(NSArray<UIViewController *> *)viewControllers {
     if (viewControllers.count > 0) {
         UIViewController *willPopVC = self.topViewController;
@@ -554,7 +567,8 @@ NS_ASSUME_NONNULL_BEGIN
             __weak typeof(self) weakself = self;
             [self.thrio_popingViewController thrio_popParams:nil animated:animated result:^(BOOL r) {
                 __strong typeof(weakself) strongSelf = weakself;
-                // 刚关掉的是NavigatorFlutterViewController，且当前要显示的页面不是NavigatorFlutterViewController，置空引擎的viewController
+                // 刚关掉的是NavigatorFlutterViewController，且当前要显示的页面不是
+                // NavigatorFlutterViewController，置空引擎的viewController
                 if ([strongSelf.thrio_popingViewController isKindOfClass:NavigatorFlutterViewController.class]) {
                     if (![viewController isKindOfClass:NavigatorFlutterViewController.class]) {
                         [NavigatorFlutterEngineFactory.shared popViewController:(NavigatorFlutterViewController *)strongSelf.thrio_popingViewController];

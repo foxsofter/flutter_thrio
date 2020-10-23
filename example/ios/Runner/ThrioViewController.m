@@ -56,6 +56,23 @@
     [ThrioNavigator pop];
 }
 
+- (IBAction)pushNative1WithNvc:(id)sender {
+    UIStoryboard *sb = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
+    UIViewController *vc =
+        [sb instantiateViewControllerWithIdentifier:@"ThrioViewController"];
+
+    UINavigationController *nvc = [[UINavigationController alloc] initWithRootViewController:vc];
+    
+    [self.navigationController presentViewController:nvc animated:YES completion:^{
+        
+    }];
+}
+- (IBAction)dismiss:(id)sender {
+    [self.navigationController dismissViewControllerAnimated:YES completion:^{
+        
+    }];
+}
+
 - (void)viewDidLoad {
     [super viewDidLoad];
 
