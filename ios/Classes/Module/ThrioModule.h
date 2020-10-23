@@ -58,6 +58,10 @@ NS_ASSUME_NONNULL_BEGIN
 ///
 - (void)onModuleAsyncInit;
 
+/// A function for register a `PageBuilder`, `PageObserver` and `RouteObserver` .
+///
+- (void)onPageRegister;
+
 /// Startup the flutter engine with `entrypoint`.
 ///
 /// Should be called in `onModuleAsyncInit`. Subsequent calls will return immediately if the entrypoint is the same.

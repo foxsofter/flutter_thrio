@@ -19,15 +19,27 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-#import "ThrioNavigator.h"
+#import <Foundation/Foundation.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface ThrioNavigator (Internal)
+@interface NSPointerArray (Thrio)
 
-+ (UINavigationController *_Nullable)navigationController;
+@property (nonatomic, readonly) BOOL empty;
 
-+ (NSPointerArray *)navigationControllers;
+@property (nonatomic, readonly) id first;
+
+@property (nonatomic, readonly) id last;
+
+- (void)addObject:(id)object;
+
+- (void)removeFirstObject:(id)object;
+
+- (void)removeLastObject:(id)object;
+
+/// Remove all existing `object`，add `object` to array.
+///
+- (void)addAndRemoveObject:(id)object;
 
 @end
 

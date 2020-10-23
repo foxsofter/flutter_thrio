@@ -28,4 +28,13 @@
     return [[UIApplication sharedApplication] topmostNavigationController];
 }
 
++ (NSPointerArray *)navigationControllers {
+    static NSPointerArray *controllers;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        controllers = [NSPointerArray weakObjectsPointerArray];
+    });
+    return controllers;
+}
+
 @end

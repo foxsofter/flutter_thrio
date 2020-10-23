@@ -10,10 +10,6 @@
 
 @implementation ThrioModulePageBuilder
 
-- (void)onPageRegister {
-    
-}
-
 - (ThrioVoidCallback)registerPageBuilder:(NavigatorPageBuilder)builder
                                   forUrl:(NSString *)url {
     return [ThrioNavigator.pageBuilders registry:url value:builder];

@@ -86,7 +86,7 @@ NS_ASSUME_NONNULL_BEGIN
                 __strong typeof(weakself) strongSelf = weakself;
                 if ([strongSelf.topViewController isKindOfClass:NavigatorFlutterViewController.class] &&
                     [[(NavigatorFlutterViewController *)strongSelf.topViewController entrypoint] isEqualToString:entrypoint]) {
-                    NSNumber *index = @([strongSelf thrio_getLastIndexByUrl:url].integerValue + 1);
+                    NSNumber *index = @([ThrioNavigator getLastIndexByUrl:url].integerValue + 1);
                     [strongSelf.topViewController thrio_pushUrl:url
                                                           index:index
                                                          params:params
@@ -338,11 +338,11 @@ NS_ASSUME_NONNULL_BEGIN
     return indexs;
 }
 
-- (BOOL)thrio_ContainsUrl:(NSString *)url {
+- (BOOL)thrio_containsUrl:(NSString *)url {
     return [self getViewControllerByUrl:url index:nil] != nil;
 }
 
-- (BOOL)thrio_ContainsUrl:(NSString *)url index:(NSNumber *)index {
+- (BOOL)thrio_containsUrl:(NSString *)url index:(NSNumber *_Nullable)index {
     return [self getViewControllerByUrl:url index:index] != nil;
 }
 

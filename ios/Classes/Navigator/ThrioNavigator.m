@@ -29,6 +29,7 @@
 #import "ThrioNavigator+PageBuilders.h"
 #import "ThrioNavigator+Internal.h"
 #import "NavigatorFlutterEngineFactory.h"
+#import "NSPointerArray+Thrio.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -127,11 +128,9 @@ NS_ASSUME_NONNULL_BEGIN
         animated:(BOOL)animated
           result:(ThrioNumberCallback _Nullable)result
     poppedResult:(ThrioIdCallback _Nullable)poppedResult {
-    [self.navigationController thrio_pushUrl:url
-                                      params:params
-                                    animated:animated
-                              fromEntrypoint:nil
-                                      result:^(NSNumber *idx) {
+    UINavigationController *nvc = self.navigationController;
+    [nvc thrio_pushUrl:url params:params animated:animated fromEntrypoint:nil result:^(NSNumber *idx) {
+        [self.navigationControllers addAndRemoveObject:nvc];
         if (result) {
             result(idx);
         }
@@ -196,10 +195,14 @@ NS_ASSUME_NONNULL_BEGIN
               name:(NSString *)name
             params:(id _Nullable)params
             result:(ThrioBoolCallback _Nullable)result {
-    BOOL canNotify = [self.navigationController thrio_notifyUrl:url
-                                                          index:index
-                                                           name:name
-                                                         params:params];
+    // 给所有的 UINavigationController 发通知
+    BOOL canNotify = NO;
+    NSEnumerator *allNvcs = self.navigationControllers.allObjects.reverseObjectEnumerator;
+    for (UINavigationController *nvc in allNvcs) {
+        if ([nvc thrio_notifyUrl:url index:index name:name params:params]) {
+            canNotify = YES;
+        }
+    }
     if (result) {
         result(canNotify);
     }
@@ -295,10 +298,13 @@ NS_ASSUME_NONNULL_BEGIN
             index:(NSNumber *_Nullable)index
          animated:(BOOL)animated
            result:(ThrioBoolCallback _Nullable)result {
-    [self.navigationController thrio_popToUrl:url
-                                        index:index
-                                     animated:animated
-                                       result:result];
+    UINavigationController *nvc = self.navigationController;
+    if ([nvc thrio_containsUrl:url index:index]) {
+        [nvc thrio_popToUrl:url index:index animated:animated result:result];
+    } else {
+        [NSException raise:@"Can not popTo"
+                    format:@"Can not popTo when UINavigationController not on top"];
+    }
 }
 
 #pragma mark - remove methods
@@ -351,24 +357,55 @@ NS_ASSUME_NONNULL_BEGIN
              index:(NSNumber *_Nullable)index
           animated:(BOOL)animated
             result:(ThrioBoolCallback _Nullable)result {
-    [self.navigationController thrio_removeUrl:url
-                                         index:index
-                                      animated:animated
-                                        result:result];
+    NSEnumerator *allNvcs = self.navigationControllers.allObjects.reverseObjectEnumerator;
+    for (UINavigationController *nvc in allNvcs) {
+        if ([nvc thrio_containsUrl:url index:index]) {
+            [nvc thrio_removeUrl:url index:index animated:animated result:result];
+        }
+    }
 }
 
 #pragma mark - get index methods
 
 + (NSNumber *_Nullable)lastIndex {
-    return [self.navigationController thrio_lastIndex];
+    NSEnumerator *allNvcs = self.navigationControllers.allObjects.reverseObjectEnumerator;
+    for (UINavigationController *nvc in allNvcs) {
+        NSNumber *index = [nvc thrio_lastIndex];
+        if (index && ![index isEqualToNumber:@0]) {
+            return index;
+        }
+    }
+    return nil;
 }
 
 + (NSNumber *_Nullable)getLastIndexByUrl:(NSString *)url {
-    return [self.navigationController thrio_getLastIndexByUrl:url];
+    NSNumber *lastIndex = nil;
+    NSEnumerator *allNvcs = self.navigationControllers.allObjects.reverseObjectEnumerator;
+    for (UINavigationController *nvc in allNvcs) {
+        NSNumber *index = [nvc thrio_getLastIndexByUrl:url];
+        if (index && ![index isEqualToNumber:@0]) {
+            if (!lastIndex) {
+                lastIndex = index;
+            } else {
+                if (lastIndex.integerValue < index.integerValue) {
+                    lastIndex = index;
+                }
+            }
+        }
+    }
+    return lastIndex;
 }
 
 + (NSArray *)getAllIndexByUrl:(NSString *)url {
-    return [self.navigationController thrio_getAllIndexByUrl:url];
+    NSMutableArray *allIndexs = [NSMutableArray array];
+    NSEnumerator *allNvcs = self.navigationControllers.allObjects.reverseObjectEnumerator;
+    for (UINavigationController *nvc in allNvcs) {
+        NSArray *indexs = [nvc thrio_getAllIndexByUrl:url];
+        if (indexs.count > 0) {
+            [allIndexs addObjectsFromArray:indexs];
+        }
+    }
+    return allIndexs;
 }
 
 #pragma mark - engine methods

@@ -66,9 +66,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (NSArray *)thrio_getAllIndexByUrl:(NSString *)url;
 
-- (BOOL)thrio_ContainsUrl:(NSString *)url;
+- (BOOL)thrio_containsUrl:(NSString *)url;
 
-- (BOOL)thrio_ContainsUrl:(NSString *)url index:(NSNumber *)index;
+- (BOOL)thrio_containsUrl:(NSString *)url index:(NSNumber *_Nullable)index;
 
 - (UIViewController *_Nullable)getViewControllerByUrl:(NSString *)url
                                                 index:(NSNumber *_Nullable)index;
