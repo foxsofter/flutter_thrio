@@ -153,21 +153,25 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
     return Future.value(true);
   }
 
-  Future<bool> popTo(RouteSettings settings, {bool animated = true}) {
+  Future<bool> popTo(
+    RouteSettings settings, {
+    bool animated = true,
+  }) {
     final navigatorState = widget.child.tryStateOf<NavigatorState>();
-    if (navigatorState == null) {
+    if (navigatorState == null || history.length < 2) {
       return Future.value(false);
     }
-    final route = history.lastWhere((it) => it.settings.name == settings.name,
-        orElse: () => null);
-    if (route == null || settings.name == history.last.settings.name) {
+
+    final index = history.indexWhere((it) => it.settings.name == settings.name);
+    if (index == -1) {
       return Future.value(false);
     }
+    final previousRoute = history.last;
+    final route = history[index];
 
     verbose('popTo: url->${route.settings.url} '
         'index->${route.settings.index}');
 
-    final previousRoute = history.last;
     final pageObservers = Set.from(ThrioNavigatorImplement.pageObservers);
     for (final observer in pageObservers) {
       observer.willAppear(route.settings);
@@ -177,13 +181,15 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
     if (animated) {
       navigatorState.popUntil((it) => it.settings.name == settings.name);
     } else {
-      for (var i = history.length - 2; i >= 0; i--) {
-        if (history[i].settings.name == settings.name) {
-          break;
+      if (history.last != route) {
+        for (var i = history.length - 2; i > index; i--) {
+          if (history[i].settings.name == route.settings.name) {
+            break;
+          }
+          navigatorState.removeRoute(history[i]);
         }
-        navigatorState.removeRoute(history[i]);
+        navigatorState.removeRoute(history.last);
       }
-      navigatorState.removeRoute(history.last);
     }
     return Future.value(true);
   }

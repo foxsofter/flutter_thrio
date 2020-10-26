@@ -80,7 +80,9 @@ object ThrioNavigator {
     }
 
     internal fun init(context: Application) {
-        FlutterEngineFactory.startup(context)
+        if (!FlutterEngineFactory.isMultiEngineEnabled) {
+            FlutterEngineFactory.startup(context)
+        }
         context.registerActivityLifecycleCallbacks(ActivityDelegate)
     }
 }

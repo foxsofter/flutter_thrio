@@ -35,6 +35,13 @@ static NSMutableDictionary *modules;
     [rootModule initModule];
 }
 
++ (void)init:(ThrioModule *)rootModule multiEngineEnabled:(BOOL)enabled {
+    ThrioNavigator.multiEngineEnabled = YES;
+    [rootModule registerModule:rootModule];
+    [rootModule initModule];
+}
+
+
 - (void)registerModule:(ThrioModule *)module {
     if (!modules) {
         modules = [NSMutableDictionary dictionary];

@@ -33,6 +33,8 @@ NS_ASSUME_NONNULL_BEGIN
 ///
 + (void)init:(ThrioModule *)rootModule;
 
++ (void)init:(ThrioModule *)rootModule multiEngineEnabled:(BOOL)enabled;
+
 /// A function for registering a module.
 ///
 /// Should be called in `onModuleRegister`.
@@ -57,6 +59,10 @@ NS_ASSUME_NONNULL_BEGIN
 /// A function for module asynchronous initialization.
 ///
 - (void)onModuleAsyncInit;
+
+/// A function for register a `PageBuilder`, `PageObserver` and `RouteObserver` .
+///
+- (void)onPageRegister;
 
 /// Startup the flutter engine with `entrypoint`.
 ///

@@ -24,17 +24,52 @@
 package com.hellobike.flutter.thrio.navigator
 
 import android.app.Activity
+import android.app.Application
 import android.content.Context
 import android.content.Intent
-import androidx.annotation.UiThread
+import android.os.Bundle
 import com.hellobike.flutter.thrio.BooleanCallback
 import com.hellobike.flutter.thrio.NullableAnyCallback
 import com.hellobike.flutter.thrio.NullableIntCallback
 import io.flutter.embedding.android.ThrioActivity
+import java.util.*
+import kotlin.concurrent.timerTask
 
-internal object NavigationController {
+internal object NavigationController : Application.ActivityLifecycleCallbacks {
 
-    var context: Context? = null
+    override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
+        context = context ?: activity
+
+        Remove.doRemove(activity)
+        Push.doPush(activity)
+    }
+
+    override fun onActivityStarted(activity: Activity) {
+        PopTo.doPopTo(activity)
+        Remove.doRemove(activity)
+        Push.doPush(activity)
+    }
+
+    override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {
+    }
+
+    override fun onActivityResumed(activity: Activity) {
+        Notify.doNotify(activity)
+    }
+
+    override fun onActivityPaused(activity: Activity) {
+    }
+
+    override fun onActivityStopped(activity: Activity?) {
+    }
+
+    override fun onActivityDestroyed(activity: Activity) {
+        if (activity.isFinishing) {
+            PopTo.didPopTo(activity)
+        }
+    }
+
+    private var context: Context? = null
 
     var routeAction = RouteAction.NONE
 
@@ -54,6 +89,8 @@ internal object NavigationController {
                 return
             }
 
+            routeAction = RouteAction.PUSH
+
             val lastRoute = PageRoutes.lastRoute(url)
             val index = (lastRoute?.settings?.index?.plus(1)) ?: 1
 
@@ -65,10 +102,10 @@ internal object NavigationController {
             val builder = IntentBuilders.intentBuilders[url] ?: IntentBuilders.flutterIntentBuilder
 
             var entrypoint = NAVIGATION_NATIVE_ENTRYPOINT
-            var isSingleTop = false
 
-            val lastActivityHolder = PageRoutes.lastActivityHolder()
-            val lastEntrypoint = lastActivityHolder?.entrypoint
+            val lastHolder = PageRoutes.lastRouteHolder()
+            val lastActivity = lastHolder?.activity?.get()
+            val lastEntrypoint = lastHolder?.entrypoint
 
             if (builder is FlutterIntentBuilder) {
                 entrypoint = if (FlutterEngineFactory.isMultiEngineEnabled) {
@@ -76,54 +113,58 @@ internal object NavigationController {
                 } else {
                     NAVIGATION_FLUTTER_ENTRYPOINT_DEFAULT
                 }
-                isSingleTop = lastEntrypoint == entrypoint
             }
 
             val settingsData = hashMapOf<String, Any?>().also {
                 it.putAll(settings.toArguments())
             }
 
-            val intent = builder.build(context!!, entrypoint).apply {
-                if (!animated) {
-                    addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
+            val intent = if (lastActivity != null
+                    && lastActivity is ThrioActivity
+                    && lastEntrypoint == entrypoint) {
+                lastActivity.intent
+            } else {
+                builder.build(context!!, entrypoint).apply {
+                    if (!animated) {
+                        addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
+                    }
                 }
-                if (isSingleTop) {
-                    addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
-                }
+            }?.apply {
                 putExtra(NAVIGATION_ROUTE_SETTINGS_KEY, settingsData)
                 putExtra(NAVIGATION_ROUTE_ENTRYPOINT_KEY, entrypoint)
                 putExtra(NAVIGATION_ROUTE_FROM_ENTRYPOINT_KEY, fromEntrypoint)
             }
 
-            routeAction = RouteAction.PUSH
 
             this.result = result
             this.poppedResult = poppedResult
 
-
             if (builder is FlutterIntentBuilder) {
-                FlutterEngineFactory.startup(context!!, entrypoint, object : EngineReadyListener {
-                    override fun onReady(params: Any?) {
-                        if (params !is String || params != entrypoint) {
-                            throw IllegalStateException("entrypoint must match.")
+                if (lastActivity != null
+                        && lastActivity is ThrioActivity
+                        && lastEntrypoint == entrypoint) {
+                    doPush(lastActivity)
+                } else {
+                    FlutterEngineFactory.startup(context!!, entrypoint, object : EngineReadyListener {
+                        override fun onReady(params: Any?) {
+                            if (params !is String || params != entrypoint) {
+                                throw IllegalStateException("entrypoint must match.")
+                            }
+                            context!!.startActivity(intent)
                         }
-                        context!!.startActivity(intent)
-                    }
-                })
+                    })
+                }
             } else {
                 context!!.startActivity(intent)
             }
         }
 
-        fun doPush(activity: Activity) {
+        internal fun doPush(activity: Activity) {
             if (routeAction != RouteAction.PUSH) {
-                result = null
-                poppedResult = null
                 return
             }
             routeAction = RouteAction.PUSHING
 
-            checkNotNull(result) { "result must not be null" }
             val settings = activity.intent.getRouteSettings() ?: return
             val entrypoint = activity.intent.getEntrypoint()
             val fromEntryPoint = activity.intent.getFromEntrypoint()
@@ -143,7 +184,7 @@ internal object NavigationController {
 
             val previousRouteSettings = PageRoutes.lastRoute()?.settings
 
-            if (entrypoint == NAVIGATION_NATIVE_ENTRYPOINT) { // 原生页面
+            if (entrypoint == NAVIGATION_NATIVE_ENTRYPOINT) { // 只触发原生页面
                 PageObservers.onCreate(settings)
             }
 
@@ -152,14 +193,12 @@ internal object NavigationController {
                     if (!PageRoutes.hasRoute(pageId)) {
                         activity.finish()
                     }
-                    result?.invoke(null)
-                } else {
-                    result?.invoke(index)
                 }
-                routeAction = RouteAction.NONE
+                result?.invoke(index)
                 result = null
+                routeAction = RouteAction.NONE
 
-                if (index != null && entrypoint == NAVIGATION_NATIVE_ENTRYPOINT) {
+                if (index != null && entrypoint == NAVIGATION_NATIVE_ENTRYPOINT) {  // 只触发原生页面
                     RouteObservers.didPush(settings, previousRouteSettings)
                 }
             }
@@ -182,12 +221,12 @@ internal object NavigationController {
                 result?.invoke(it)
             }
 
-            PageRoutes.lastActivityHolder()?.activity?.get()?.let { activity ->
+            PageRoutes.lastRouteHolder()?.activity?.get()?.let { activity ->
                 doNotify(activity)
             }
         }
 
-        fun doNotify(activity: Activity) {
+        internal fun doNotify(activity: Activity) {
             val pageId = activity.intent.getPageId()
             val route = PageRoutes.lastRoute(pageId) ?: return
 
@@ -199,14 +238,14 @@ internal object NavigationController {
                             "url" to route.settings.url,
                             "index" to route.settings.index,
                             "name" to it.key
-                    ) else mapOf<String, Any>(
+                    ) else mapOf(
                             "__event_name__" to "__onNotify__",
                             "url" to route.settings.url,
                             "index" to route.settings.index,
                             "name" to it.key,
                             "params" to it.value!!
                     )
-                    Log.i("Thrio", "page ${route.settings.url} index ${route.settings.index} notify")
+                    Log.v("Thrio", "page ${route.settings.url} index ${route.settings.index} notify")
                     activity.onNotify(arguments) {}
                 } else if (activity is PageNotifyListener) {
                     activity.onNotify(it.key, it.value)
@@ -216,7 +255,6 @@ internal object NavigationController {
     }
 
     object Pop {
-        @UiThread
         fun pop(params: Any? = null,
                 animated: Boolean = true,
                 result: BooleanCallback? = null) {
@@ -227,126 +265,121 @@ internal object NavigationController {
 
             routeAction = RouteAction.POPPING
 
-            val route = PageRoutes.lastRoute()
-            if (route?.settings == null) {
-                result?.invoke(false)
-                routeAction = RouteAction.NONE
-            }
-
             PageRoutes.pop(params, animated) {
                 result?.invoke(it)
                 routeAction = RouteAction.NONE
-                if (it && route?.entrypoint == NAVIGATION_NATIVE_ENTRYPOINT) {
-                    val previousRouteSettings = PageRoutes.lastRoute()?.settings
-                    RouteObservers.didPop(route.settings, previousRouteSettings)
-                }
             }
         }
     }
 
     object PopTo {
-
         private var result: BooleanCallback? = null
         private var poppedToRoute: PageRoute? = null
-        private val poppedPageIds by lazy { mutableListOf<Int>() }
+        private var poppedToHolder: PageRouteHolder? = null
+        private val poppedToHolders by lazy { mutableListOf<PageRouteHolder>() }
+        private var poppedToHolderCount = 0
+        private val poppingToHolders by lazy { mutableListOf<PageRouteHolder>() }
+        private val destroyingHolders by lazy { mutableListOf<PageRouteHolder>() }
 
         fun popTo(url: String, index: Int?, animated: Boolean, result: BooleanCallback? = null) {
-            if (routeAction != RouteAction.NONE) {
+            if (routeAction != RouteAction.NONE || (index != null && index < 0)) {
                 result?.invoke(false)
-                return
-            }
-
-            this.result = result
-
-            if (index != null && index < 0) {
-                result(false)
                 routeAction = RouteAction.NONE
                 return
             }
 
             val poppedToRoute = PageRoutes.lastRoute(url, index)
             if (poppedToRoute == null || poppedToRoute == PageRoutes.lastRoute()) {
-                result(false)
+                result?.invoke(false)
                 routeAction = RouteAction.NONE
                 return
             }
-
             routeAction = RouteAction.POP_TO
 
             poppedToRoute.settings.animated = animated
-            this.poppedToRoute = poppedToRoute
+            val poppedToHolder = PageRoutes.lastRouteHolder(url, index)
+            val poppedToHolders = PageRoutes.popToRouteHolders(url, index)
 
-            var lastActivity = PageRoutes.lastActivityHolder()?.activity?.get()
-
-            fun startActivity() {
-                var context = if (poppedToRoute.clazz is ThrioActivity) context else lastActivity
-                val builder = IntentBuilders.intentBuilders[poppedToRoute.settings.url]
-                        ?: FlutterIntentBuilder
-                val intent = builder.build(context!!, poppedToRoute.entrypoint).let { intent ->
-                    if (!animated) {
-                        intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
+            val lastRoute = PageRoutes.lastRoute()
+            PageRoutes.popTo(url, index, animated) { ret ->
+                if (ret) {
+                    if (ret && poppedToRoute.entrypoint == NAVIGATION_NATIVE_ENTRYPOINT) {
+                        RouteObservers.didPopTo(poppedToRoute.settings, lastRoute?.settings)
                     }
-                    intent.addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP)
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                }
-                context.startActivity(intent)
-            }
-
-            val activityHolders = PageRoutes.removeByPopToActivityHolder(url, index)
-
-            if (activityHolders == null || activityHolders.isEmpty()) {
-                startActivity()
-            } else {
-                var count = 0
-                for (activityHolder in activityHolders) {
-                    poppedPageIds.add(activityHolder.pageId)
-                    if (activityHolder.clazz == poppedToRoute.clazz) {
-                        count += 1
+                    // 顶上不存在其它的 Activity
+                    if (poppedToHolders.isEmpty()) {
+                        result?.invoke(true)
+                        routeAction = RouteAction.NONE
+                    } else { // 顶上存在其它的 Activity
+                        this.result = result
+                        this.poppedToRoute = poppedToRoute
+                        this.poppedToHolder = poppedToHolder
+                        this.poppedToHolders.addAll(poppedToHolders)
+                        poppedToHolderCount = poppedToHolders.count()
+                        val holder = this.poppedToHolders.last()
+                        poppingToHolders.add(holder)
+                        this.poppedToHolders.remove(holder)
+                        Log.v("NavigationController", "finish->${holder.pageId}")
+                        holder.activity?.get()?.finish()
                     }
-                }
-                repeat(count) {
-                    startActivity()
-                }
-                startActivity()
-            }
-        }
-
-        fun doPopTo(activity: Activity) {
-            if (routeAction != RouteAction.POP_TO) {
-                result(false)
-                return
-            }
-
-            if (poppedToRoute == null || poppedToRoute?.clazz != activity.javaClass) {
-                result(false)
-                routeAction = RouteAction.NONE
-                return
-            }
-
-            // 清掉popTo还未关闭的Activity
-            val pageId = activity.intent.getPageId()
-            if (pageId != NAVIGATION_PAGE_ID_NONE && poppedPageIds.contains(pageId)) {
-                poppedPageIds.remove(pageId)
-                activity.finish()
-            }
-
-            routeAction = RouteAction.POPPING_TO
-
-            poppedToRoute?.let { route ->
-                PageRoutes.popTo(route.settings.url, route.settings.index, route.settings.animated) {
-                    if (it && poppedToRoute != null && route.entrypoint == NAVIGATION_NATIVE_ENTRYPOINT) {
-                        RouteObservers.didPopTo(poppedToRoute!!.settings, route.settings)
-                    }
-                    result(it)
+                } else {
+                    result?.invoke(false)
                     routeAction = RouteAction.NONE
                 }
             }
         }
 
-        private fun result(success: Boolean) {
-            result?.invoke(success)
-            result = null
-            poppedToRoute = null
+        internal fun doPopTo(activity: Activity) {
+            if (routeAction != RouteAction.POP_TO) {
+                return
+            }
+            val pageId = activity.intent.getPageId()
+            if (pageId == NAVIGATION_PAGE_ID_NONE) {
+                return
+            }
+            val index = poppedToHolders.indexOfLast { it.pageId == pageId }
+            if (index == -1 && poppedToHolder != null && poppedToHolder!!.pageId == pageId) {
+                poppedToHolder?.activity?.get()?.let {
+                    poppedToHolder = null
+                    if (it is ThrioActivity) {
+                        // 需要延迟一小段时间，等待 FlutterEngine 切换完成
+                        Timer().schedule(timerTask {
+                            it.runOnUiThread {
+                                it.surfaceUpdated()
+                            }
+                        }, 400)
+                    }
+                }
+                return
+            }
+            val holder = poppedToHolders[index]
+            if (!poppingToHolders.contains(holder)) {
+                poppedToHolders.removeAt(index)
+                poppingToHolders.add(holder)
+                Log.v("NavigationController", "finish->$pageId")
+                activity.finish()
+            }
+        }
+
+        internal fun didPopTo(activity: Activity) {
+            if (routeAction != RouteAction.POP_TO) {
+                return
+            }
+            val pageId = activity.intent.getPageId()
+            val index = poppingToHolders.indexOfLast { it.pageId == pageId }
+            if (pageId != NAVIGATION_PAGE_ID_NONE && index != -1) {
+                destroyingHolders.add(poppingToHolders[index])
+                if (poppingToHolders.count() == poppedToHolderCount &&
+                        destroyingHolders.count() == poppedToHolderCount) {
+                    result?.invoke(true)
+                    result = null
+                    routeAction = RouteAction.NONE
+                    poppedToRoute = null
+                    poppedToHolderCount = 0
+                    poppingToHolders.clear()
+                    destroyingHolders.clear()
+                }
+            }
         }
     }
 
@@ -369,14 +402,13 @@ internal object NavigationController {
             }
         }
 
-        fun doRemove(activity: Activity) {
+        internal fun doRemove(activity: Activity) {
             val pageId = activity.intent.getPageId()
             if (pageId == NAVIGATION_PAGE_ID_NONE) {
                 return
             }
-            val activityHolder = PageRoutes.lastRemovedActivityHolder(pageId)
-            if (activityHolder != null) {
-                activity.finish()
+            PageRoutes.removedByRemoveRouteHolder(pageId)?.activity?.get()?.apply {
+                this.finish()
             }
         }
     }

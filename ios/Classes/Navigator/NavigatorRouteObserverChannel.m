@@ -45,8 +45,8 @@
 
 - (void)_on:(NSString *)method {
     [_channel registryMethod:method
-                         handler:^void (NSDictionary<NSString *, id> *arguments,
-                                        ThrioIdCallback _Nullable result) {
+                     handler:^void (NSDictionary<NSString *, id> *arguments,
+                                    ThrioIdCallback _Nullable result) {
         NavigatorRouteSettings *routeSettings = [NavigatorRouteSettings settingsFromArguments:arguments[@"route"]];
         NavigatorRouteSettings *previousRouteSettings;
         if (arguments[@"previousRoute"]) {
@@ -55,10 +55,10 @@
 
     #pragma clang diagnostic push
     #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
-        SEL navigationSelector = NSSelectorFromString([NSString stringWithFormat:@"thrio_%@Url:index:", method]);
-        [ThrioNavigator.navigationController performSelector:navigationSelector
-                                                  withObject:routeSettings.url
-                                                  withObject:routeSettings.index];
+        SEL navigationSelector = NSSelectorFromString([NSString stringWithFormat:@"_%@Url:index:", method]);
+        [ThrioNavigator performSelector:navigationSelector
+                             withObject:routeSettings.url
+                             withObject:routeSettings.index];
 
         SEL observerSelector = NSSelectorFromString([NSString stringWithFormat:@"%@:previousRoute:", method]);
 

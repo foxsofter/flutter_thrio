@@ -6,19 +6,23 @@
 //  Copyright © 2020 The Chromium Authors. All rights reserved.
 //
 
-#import <UIKit/UIKit.h>
 #import "Module2.h"
+#import <UIKit/UIKit.h>
 
 NS_ASSUME_NONNULL_BEGIN
 
 @implementation Module2
 
 - (void)onPageRegister {
-    [self registerPageBuilder:^UIViewController *_Nullable (NSDictionary<NSString *, id> *_params) {
+    [self
+     registerPageBuilder:^UIViewController *_Nullable (
+         NSDictionary<NSString *, id> *_params) {
         UIStoryboard *sb = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
-        return [sb instantiateViewControllerWithIdentifier:@"ThrioViewController2"];
-    } forUrl:@"native2"];
-    
+        return [sb
+                instantiateViewControllerWithIdentifier:@"ThrioViewController2"];
+    }
+                  forUrl:@"/biz1/native2"];
+
     [self registerRouteObserver:self];
 }
 

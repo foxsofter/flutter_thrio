@@ -34,6 +34,7 @@
 #import "NavigatorLogger.h"
 #import "NavigatorFlutterEngineFactory.h"
 #import "ThrioNavigator.h"
+#import "ThrioNavigator+Internal.h"
 #import "ThrioNavigator+PageBuilders.h"
 #import "ThrioNavigator+RouteObservers.h"
 
@@ -75,9 +76,9 @@ NS_ASSUME_NONNULL_BEGIN
                                     result:result
                               poppedResult:poppedResult];
         } else {
-            NSString *entrypoint = @"";
+            NSString *entrypoint = @"main";
             if (ThrioNavigator.isMultiEngineEnabled) {
-                entrypoint = [url componentsSeparatedByString:@"/"].firstObject;
+                entrypoint = [url componentsSeparatedByString:@"/"][1];
             }
 
             __weak typeof(self) weakself = self;
@@ -86,7 +87,7 @@ NS_ASSUME_NONNULL_BEGIN
                 __strong typeof(weakself) strongSelf = weakself;
                 if ([strongSelf.topViewController isKindOfClass:NavigatorFlutterViewController.class] &&
                     [[(NavigatorFlutterViewController *)strongSelf.topViewController entrypoint] isEqualToString:entrypoint]) {
-                    NSNumber *index = @([strongSelf thrio_getLastIndexByUrl:url].integerValue + 1);
+                    NSNumber *index = @([ThrioNavigator getLastIndexByUrl:url].integerValue + 1);
                     [strongSelf.topViewController thrio_pushUrl:url
                                                           index:index
                                                          params:params
@@ -338,11 +339,28 @@ NS_ASSUME_NONNULL_BEGIN
     return indexs;
 }
 
-- (BOOL)thrio_ContainsUrl:(NSString *)url {
+- (NavigatorPageRoute *)thrio_getLastRouteByEntrypoint:(NSString *)entrypoint {
+    NSEnumerator *vcs = [self.viewControllers reverseObjectEnumerator];
+    for (UIViewController *vc in vcs) {
+        if ([vc isKindOfClass:NavigatorFlutterViewController.class]) {
+            NavigatorFlutterViewController *fvc = (NavigatorFlutterViewController *)vc;
+            if ([fvc.entrypoint isEqualToString:entrypoint]) {
+                return fvc.thrio_lastRoute;
+            }
+        } else {
+            if (!entrypoint || entrypoint.length < 1) {
+                return vc.thrio_lastRoute;
+            }
+        }
+    }
+    return nil;
+}
+
+- (BOOL)thrio_containsUrl:(NSString *)url {
     return [self getViewControllerByUrl:url index:nil] != nil;
 }
 
-- (BOOL)thrio_ContainsUrl:(NSString *)url index:(NSNumber *)index {
+- (BOOL)thrio_containsUrl:(NSString *)url index:(NSNumber *_Nullable)index {
     return [self getViewControllerByUrl:url index:index] != nil;
 }
 
@@ -554,7 +572,8 @@ NS_ASSUME_NONNULL_BEGIN
             __weak typeof(self) weakself = self;
             [self.thrio_popingViewController thrio_popParams:nil animated:animated result:^(BOOL r) {
                 __strong typeof(weakself) strongSelf = weakself;
-                // 刚关掉的是NavigatorFlutterViewController，且当前要显示的页面不是NavigatorFlutterViewController，置空引擎的viewController
+                // 刚关掉的是NavigatorFlutterViewController，且当前要显示的页面不是
+                // NavigatorFlutterViewController，置空引擎的viewController
                 if ([strongSelf.thrio_popingViewController isKindOfClass:NavigatorFlutterViewController.class]) {
                     if (![viewController isKindOfClass:NavigatorFlutterViewController.class]) {
                         [NavigatorFlutterEngineFactory.shared popViewController:(NavigatorFlutterViewController *)strongSelf.thrio_popingViewController];

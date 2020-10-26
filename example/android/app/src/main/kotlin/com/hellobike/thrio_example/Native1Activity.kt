@@ -17,17 +17,17 @@ class Native1Activity : AppCompatActivity(), PageNotifyListener {
             ThrioNavigator.push("/biz1/flutter1",
                     params = mapOf("k1" to 1),
                     result = {
-                        Log.i("Thrio", "push result data $it")
+                        Log.v("Thrio", "push result data $it")
                     },
                     poppedResult = {
-                        Log.i("Thrio", "native1 poppedResult call params $it")
+                        Log.v("Thrio", "/biz1/native1 poppedResult call params $it")
                     }
             )
         }
 
         btn_11.setOnClickListener {
             ThrioNavigator.remove("/biz1/flutter1") {
-                Log.i("Thrio", "push result data $it")
+                Log.v("Thrio", "push result data $it")
             }
         }
 
@@ -35,52 +35,52 @@ class Native1Activity : AppCompatActivity(), PageNotifyListener {
             ThrioNavigator.push("/biz2/flutter2",
                     params = mapOf("k1" to 1),
                     result = {
-                        Log.i("Thrio", "push result data $it")
+                        Log.v("Thrio", "push result data $it")
                     },
                     poppedResult = {
-                        Log.i("Thrio", "native1 poppedResult call params $it")
+                        Log.v("Thrio", "/biz1/native1 poppedResult call params $it")
                     }
             )
         }
 
         btn_13.setOnClickListener {
             ThrioNavigator.remove("/biz2/flutter2") {
-                Log.i("Thrio", "push result data $it")
+                Log.v("Thrio", "push result data $it")
             }
         }
 
         btn_20.setOnClickListener {
-            ThrioNavigator.push("native1",
+            ThrioNavigator.push("/biz1/native1",
                     mapOf("k1" to 1),
                     true,
                     result = {
-                        Log.i("Thrio", "push result data $it")
+                        Log.v("Thrio", "push result data $it")
                     },
                     poppedResult = {
-                        Log.i("Thrio", "native1 poppedResult call params $it")
+                        Log.v("Thrio", "/biz1/native1 poppedResult call params $it")
                     }
             )
         }
 
         btn_21.setOnClickListener {
-            ThrioNavigator.remove("native1")
+            ThrioNavigator.remove("/biz1/native1")
         }
 
         btn_22.setOnClickListener {
-            ThrioNavigator.push("native2",
+            ThrioNavigator.push("/biz1/native2",
                     mapOf("k1" to 1),
                     true,
                     result = {
-                        Log.i("Thrio", "push result data $it")
+                        Log.v("Thrio", "push result data $it")
                     },
                     poppedResult = {
-                        Log.i("Thrio", "native1 poppedResult call params $it")
+                        Log.v("Thrio", "/biz1/native1 poppedResult call params $it")
                     }
             )
         }
 
         btn_23.setOnClickListener {
-            ThrioNavigator.remove("native2")
+            ThrioNavigator.remove("/biz1/native2")
         }
 
         btn_3.setOnClickListener {
@@ -96,18 +96,18 @@ class Native1Activity : AppCompatActivity(), PageNotifyListener {
         if (data != null) {
             @Suppress("UNCHECKED_CAST")
             RouteSettings.fromArguments(data as Map<String, Any?>)?.apply {
-                tv_native.text = "native1 index $index"
+                tv_native.text = "/biz1/native1 index $index"
             }
         }
     }
 
     override fun onNotify(name: String, params: Any?) {
-        Log.i("Thrio", "native1 onNotify name $name params $params")
+        Log.v("Thrio", "/biz1/native1 onNotify name $name params $params")
         // result with url
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        Log.i("FlutterView", "onCreate activity $this")
+        Log.v("FlutterView", "onCreate activity $this")
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_native)
         initView()

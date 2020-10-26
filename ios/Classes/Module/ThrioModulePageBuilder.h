@@ -31,10 +31,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface ThrioModulePageBuilder : NSObject<ThrioModulePageBuilder>
 
-/// A function for registering page builders.
-///
-- (void)onPageRegister;
-
 @end
 
 NS_ASSUME_NONNULL_END

@@ -29,19 +29,28 @@ object FlutterEngineFactory {
 
     private val manager = mutableMapOf<String, FlutterEngine>()
 
-    var isMultiEngineEnabled = false
+    internal var isMultiEngineEnabled = false
 
     fun startup(context: Context,
-                entryPoint: String = NAVIGATION_FLUTTER_ENTRYPOINT_DEFAULT,
+                entrypoint: String = NAVIGATION_FLUTTER_ENTRYPOINT_DEFAULT,
                 readyListener: EngineReadyListener? = null) {
-        if (manager.contains(entryPoint)) {
-            readyListener?.onReady(entryPoint)
+        val ep = if (!isMultiEngineEnabled)
+            NAVIGATION_FLUTTER_ENTRYPOINT_DEFAULT
+        else
+            entrypoint
+
+        if (manager.contains(ep)) {
+            readyListener?.onReady(ep)
         } else {
-            manager[entryPoint] = FlutterEngine(context, entryPoint, readyListener)
+            manager[ep] = FlutterEngine(context, ep, readyListener)
         }
     }
 
-    fun getEngine(entryPoint: String = NAVIGATION_FLUTTER_ENTRYPOINT_DEFAULT): FlutterEngine? {
-        return manager[entryPoint]
+    fun getEngine(entrypoint: String = NAVIGATION_FLUTTER_ENTRYPOINT_DEFAULT): FlutterEngine? {
+        val ep = if (!isMultiEngineEnabled)
+            NAVIGATION_FLUTTER_ENTRYPOINT_DEFAULT
+        else
+            entrypoint
+        return manager[ep]
     }
 }

@@ -29,9 +29,10 @@ import com.hellobike.flutter.thrio.NullableIntCallback
 import io.flutter.embedding.android.ThrioActivity
 import java.lang.ref.WeakReference
 
-internal data class PageActivityHolder(val pageId: Int,
-                                       val clazz: Class<out Activity>,
-                                       val entrypoint: String = NAVIGATION_FLUTTER_ENTRYPOINT_DEFAULT) {
+internal data class PageRouteHolder(val pageId: Int,
+                                    val clazz: Class<out Activity>,
+                                    val entrypoint: String = NAVIGATION_FLUTTER_ENTRYPOINT_DEFAULT) {
+    var pushByThrio = false
 
     private val routes by lazy { mutableListOf<PageRoute>() }
 
@@ -50,6 +51,9 @@ internal data class PageActivityHolder(val pageId: Int,
             it.settings.url == url && (index == null || index == 0 || it.settings.index == index)
         }
     }
+
+    fun lastRoute(entrypoint: String): PageRoute? = routes.lastOrNull { it.entrypoint == entrypoint }
+
 
     fun allRoute(url: String): List<PageRoute> = routes.takeWhile { it.settings.url == url }
 
@@ -94,7 +98,7 @@ internal data class PageActivityHolder(val pageId: Int,
             return
         }
         val activity = activity?.get()
-        if (activity != null) {
+        if (activity != null && !activity.isDestroyed) {
             if (activity is ThrioActivity) {
                 lastRoute.settings.params = params
                 lastRoute.settings.animated = animated
@@ -116,12 +120,14 @@ internal data class PageActivityHolder(val pageId: Int,
                 routes.remove(lastRoute)
                 result(true)
                 lastRoute.poppedResult?.invoke(params)
+                lastRoute.poppedResult = null
                 if (lastRoute.fromEntrypoint != NAVIGATION_NATIVE_ENTRYPOINT) {
                     FlutterEngineFactory.getEngine(lastRoute.fromEntrypoint)?.sendChannel?.onPop(lastRoute.settings.toArguments()) {}
                 }
             }
         } else {
             result(false)
+            lastRoute.poppedResult = null
         }
     }
 
@@ -207,5 +213,9 @@ internal data class PageActivityHolder(val pageId: Int,
         routes.lastOrNull()?.let {
             PageObservers.didDisappear(it.settings)
         }
+    }
+
+    companion object {
+        private const val TAG = "PageRouteHolder"
     }
 }

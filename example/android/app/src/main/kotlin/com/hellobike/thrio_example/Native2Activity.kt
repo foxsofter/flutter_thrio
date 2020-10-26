@@ -23,40 +23,40 @@ class Native2Activity : AppCompatActivity() {
             ThrioNavigator.push("/biz2/flutter2",
                     params = mapOf("k1" to 1),
                     result = {
-                        Log.i("Thrio", "push result data $it")
+                        Log.v("Thrio", "push result data $it")
                     },
                     poppedResult = {
-                        Log.i("Thrio", "native2 poppedResult call params $it")
+                        Log.v("Thrio", "/biz1/native2 poppedResult call params $it")
                     }
             )
         }
 
         btn_11.setOnClickListener {
             ThrioNavigator.remove("/biz2/flutter2") {
-                Log.i("Thrio", "push result data $it")
+                Log.v("Thrio", "push result data $it")
             }
         }
 
         btn_12.setOnClickListener {
-            ThrioNavigator.push("native1",
+            ThrioNavigator.push("/biz1/native1",
                     params = mapOf("k1" to 1),
                     result = {
-                        Log.i("Thrio", "push result data $it")
+                        Log.v("Thrio", "push result data $it")
                     },
                     poppedResult = {
-                        Log.i("Thrio", "native2 poppedResult call params $it")
+                        Log.v("Thrio", "/biz1/native2 poppedResult call params $it")
                     }
             )
         }
 
         btn_13.setOnClickListener {
-            ThrioNavigator.remove("native1") {
-                Log.i("Thrio", "push result data $it")
+            ThrioNavigator.remove("/biz1/native1") {
+                Log.v("Thrio", "push result data $it")
             }
         }
 
         btn_20.setOnClickListener {
-            ThrioNavigator.popTo("native1")
+            ThrioNavigator.popTo("/biz1/native1")
         }
 
         btn_21.setOnClickListener {
@@ -77,7 +77,7 @@ class Native2Activity : AppCompatActivity() {
         if (data != null) {
             @Suppress("UNCHECKED_CAST")
             RouteSettings.fromArguments(data as Map<String, Any?>)?.apply {
-                tv_native.text = "native2 index $index"
+                tv_native.text = "/biz1/native2 index $index"
             }
         }
     }

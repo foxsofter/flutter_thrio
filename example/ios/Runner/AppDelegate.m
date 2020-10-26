@@ -12,8 +12,8 @@
 
 - (BOOL)              application:(UIApplication *)application
     didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
-    //  [ThrioNavigator setMultiEngineEnabled:NO];
-    [ThrioModule init:[MainModule new]];
+//    [ThrioModule init:[MainModule new]];
+    [ThrioModule init:[MainModule new] multiEngineEnabled:YES];
 
     return YES;
 }

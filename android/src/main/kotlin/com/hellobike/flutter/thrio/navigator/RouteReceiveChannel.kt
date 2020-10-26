@@ -25,8 +25,8 @@ package com.hellobike.flutter.thrio.navigator
 
 import com.hellobike.flutter.thrio.channel.ThrioChannel
 
-class RouteReceiveChannel(private val channel: ThrioChannel,
-                          private var readyListener: EngineReadyListener? = null) {
+internal class RouteReceiveChannel(private val channel: ThrioChannel,
+                                   private var readyListener: EngineReadyListener? = null) {
     init {
         onReady()
         onPush()
@@ -100,27 +100,27 @@ class RouteReceiveChannel(private val channel: ThrioChannel,
     }
 
     private fun onLastIndex() {
-        channel.registryMethod("lastIndex") { _, _ -> {} }
+        channel.registryMethod("lastIndex") { _, _ ->  }
     }
 
     private fun onGetAllIndex() {
-        channel.registryMethod("getAllIndex") { _, _ -> {} }
+        channel.registryMethod("getAllIndex") { _, _ ->  }
     }
 
     private fun onSetPopDisabled() {
-        channel.registryMethod("setPopDisabled") { _, _ -> {} }
+        channel.registryMethod("setPopDisabled") { _, _ ->  }
     }
 
     private fun onHotRestart() {
-        channel.registryMethod("hotRestart") { _, _ -> {} }
+        channel.registryMethod("hotRestart") { _, _ ->  }
     }
 
     private fun onRegisterUrls() {
-        channel.registryMethod("registerUrls") { _, _ -> {} }
+        channel.registryMethod("registerUrls") { _, _ ->  }
     }
 
     private fun onUnregisterUrls() {
-        channel.registryMethod("unregisterUrls") { _, _ -> {} }
+        channel.registryMethod("unregisterUrls") { _, _ -> }
     }
 
 }

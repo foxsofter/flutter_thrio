@@ -380,6 +380,7 @@ NS_ASSUME_NONNULL_BEGIN
 ///
 + (NSArray *)getAllIndexByUrl:(NSString *)url;
 
+
 #pragma mark - engine methods
 
 /// Get `FlutterEngine` instance by entrypoint.
@@ -388,27 +389,6 @@ NS_ASSUME_NONNULL_BEGIN
 ///
 + (FlutterEngine *)getEngineByEntrypoint:(NSString *)entrypoint;
 
-/// Set multi-engine mode to `enabled`, default is NO.
-///
-/// Should be called before the engine is initialized.
-///
-+ (void)setMultiEngineEnabled:(BOOL)enabled;
-
-/// Get multi-engine mode enabled or not.
-///
-+ (BOOL)isMultiEngineEnabled;
-
-/// Set the number of urls that the engine keeps alive in multi-engine mode.
-///
-/// The default value of `count` is 10.
-/// If `count` set to 0, no engines are kept alive.
-/// Should be called before the engine is initialized.
-///
-+ (void)setMultiEngineKeepAliveUrlCount:(NSUInteger)count;
-
-/// Get the number of urls that the engine keeps alive in multi-engine mode.
-///
-+ (NSUInteger)multiEngineKeepAliveUrlCount;
 
 @end
 

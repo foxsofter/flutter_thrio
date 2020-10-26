@@ -22,11 +22,12 @@
 import 'dart:async';
 
 import 'package:flutter/widgets.dart';
-
-import '../navigator/thrio_navigator_implement.dart';
+import '../extension/thrio_build_context.dart';
 import 'navigator_page_route.dart';
 import 'navigator_route_settings.dart';
 import 'navigator_types.dart';
+import 'navigator_widget.dart';
+import 'thrio_navigator_implement.dart';
 
 class NavigatorPageNotify extends StatefulWidget {
   const NavigatorPageNotify({
@@ -72,7 +73,8 @@ class _NavigatorPageNotifyState extends State<NavigatorPageNotify> {
     if (widget.onPageNotify != null) {
       _notifySubscription?.cancel();
     }
-    final route = ModalRoute.of(context);
+    final state = context.stateOf<NavigatorWidgetState>();
+    final route = state.history.last;
     if (route != null && route is NavigatorPageRoute) {
       _route = route;
       _notifyStream = ThrioNavigatorImplement.onPageNotify(
@@ -84,6 +86,27 @@ class _NavigatorPageNotifyState extends State<NavigatorPageNotify> {
     }
     super.didChangeDependencies();
   }
+
+  // @override
+  // void didUpdateWidget(NavigatorPageNotify oldWidget) {
+  //   super.didUpdateWidget(oldWidget);
+  //   final state = context.stateOf<NavigatorWidgetState>();
+  //   final route = state.history.last;
+  //   if (widget.onPageNotify != oldWidget.onPageNotify && _route != null) {
+  //     if (oldWidget.onPageNotify != null) {
+  //       _notifySubscription?.cancel();
+  //     }
+  //     if (widget.onPageNotify != null) {
+  //       _route = route;
+  //       _notifyStream = ThrioNavigatorImplement.onPageNotify(
+  //         url: _route.settings.url,
+  //         index: _route.settings.index,
+  //         name: widget.name,
+  //       );
+  //       _notifySubscription = _notifyStream.listen(widget.onPageNotify);
+  //     }
+  //   }
+  // }
 
   @override
   void dispose() {
