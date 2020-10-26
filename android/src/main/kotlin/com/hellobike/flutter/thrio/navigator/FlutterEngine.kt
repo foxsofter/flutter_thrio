@@ -33,28 +33,29 @@ import io.flutter.view.FlutterMain
 data class FlutterEngine(private val context: Context,
                          private val entrypoint: String,
                          private val readyListener: EngineReadyListener? = null) {
-
-    private var entryPoint: String = entrypoint
-
-    val flutterEngine: FlutterEngine = FlutterEngine(context)
-    var sendChannel: RouteSendChannel private set
-    var receiveChannel: RouteReceiveChannel private set
+    val flutterEngine = FlutterEngine(context)
+    internal var sendChannel: RouteSendChannel private set
+    private var receiveChannel: RouteReceiveChannel
     private var routeObserverChannel: RouteObserverChannel
-    var pageObserverChannel: PageObserverChannel private set
+    private var pageObserverChannel: PageObserverChannel
 
     init {
-        val channel = ThrioChannel(entrypoint, "__thrio_app__$entryPoint")
+        val channel = ThrioChannel(this.entrypoint, "__thrio_app__${this.entrypoint}")
         channel.setupMethodChannel(flutterEngine.dartExecutor)
         channel.setupEventChannel(flutterEngine.dartExecutor)
         sendChannel = RouteSendChannel(channel)
         receiveChannel = RouteReceiveChannel(channel, readyListener)
 
-        routeObserverChannel = RouteObserverChannel(entrypoint, flutterEngine.dartExecutor)
-        pageObserverChannel = PageObserverChannel(entrypoint, flutterEngine.dartExecutor)
+        routeObserverChannel = RouteObserverChannel(this.entrypoint, flutterEngine.dartExecutor)
+        pageObserverChannel = PageObserverChannel(this.entrypoint, flutterEngine.dartExecutor)
 
-        val dartEntrypoint = DartExecutor.DartEntrypoint(FlutterMain.findAppBundlePath(), entrypoint)
+        val dartEntrypoint = DartExecutor.DartEntrypoint(FlutterMain.findAppBundlePath(), this.entrypoint)
         flutterEngine.dartExecutor.executeDartEntrypoint(dartEntrypoint)
 
-        FlutterEngineCache.getInstance().put(entryPoint, flutterEngine)
+        FlutterEngineCache.getInstance().put(this.entrypoint, flutterEngine)
+    }
+
+    companion object {
+        private const val TAG = "FlutterEngine"
     }
 }

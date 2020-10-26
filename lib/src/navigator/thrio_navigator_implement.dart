@@ -28,6 +28,7 @@ import '../exception/thrio_exception.dart';
 import '../navigator/navigator_page_observer.dart';
 import '../registry/registry_map.dart';
 import '../registry/registry_set.dart';
+import 'navigator_logger.dart';
 import 'navigator_observer_manager.dart';
 import 'navigator_page_observer_channel.dart';
 import 'navigator_route_observer.dart';
@@ -72,6 +73,7 @@ class ThrioNavigatorImplement {
         observerManager: observerManager,
         pagePoppedResults: pagePoppedResults,
       );
+      verbose('TransitionBuilder builder');
       sendChannel.registerUrls(_pageBuilders.keys.toList());
     }
 

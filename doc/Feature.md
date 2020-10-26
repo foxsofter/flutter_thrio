@@ -44,9 +44,9 @@ Navigator 中的 API 几乎都可以通过组合以上方法实现，`replace` �
 ```dart
 ThrioNavigator.push(url: 'flutter1');
 // 传入参数
-ThrioNavigator.push(url: 'native1', params: { '1': {'2': '3'}});
+ThrioNavigator.push(url: '/biz1/native1', params: { '1': {'2': '3'}});
 // 是否动画，目前在内嵌的dart页面中动画无法取消，原生iOS页面有效果
-ThrioNavigator.push(url: 'native1', animated:true);
+ThrioNavigator.push(url: '/biz1/native1', animated:true);
 // 接收锁打开页面的关闭回调
 ThrioNavigator.push(
     url: '/biz2/flutter2',
@@ -72,7 +72,7 @@ ThrioNavigator.push(this, "/biz1/flutter1",
         mapOf("k1" to 1),
         false,
         poppedResult = {
-            Log.e("Thrio", "native1 popResult call params $it")
+            Log.e("Thrio", "/biz1/native1 popResult call params $it")
         }
 )
 ```
@@ -214,7 +214,7 @@ NavigatorPageNotify(
 
 ```objc
 - (void)onNotify:(NSString *)name params:(id)params {
-  ThrioLogV(@"native1 onNotify: %@, %@", name, params);
+  ThrioLogV(@"/biz1/native1 onNotify: %@, %@", name, params);
 }
 ```
 

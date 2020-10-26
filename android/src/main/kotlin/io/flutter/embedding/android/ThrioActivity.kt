@@ -23,24 +23,30 @@
 
 package io.flutter.embedding.android
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import com.hellobike.flutter.thrio.BooleanCallback
 import com.hellobike.flutter.thrio.navigator.FlutterEngineFactory
 import com.hellobike.flutter.thrio.navigator.NavigationController
+import java.lang.ref.WeakReference
 
 open class ThrioActivity : ThrioFlutterActivity() {
+
+    private var flutterSurfaceView : WeakReference<out FlutterSurfaceView>? = null
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
         intent.extras?.let { this.intent.putExtras(it) }
     }
 
-    @SuppressLint("VisibleForTests")
-    override fun finish() {
-        super.finish()
-        super.delegate?.onStop()
-        super.delegate?.onDetach()
+    override fun onFlutterSurfaceViewCreated(flutterSurfaceView: FlutterSurfaceView) {
+        this.flutterSurfaceView = WeakReference(flutterSurfaceView)
+    }
+
+    // 开始渲染 Flutter 界面
+    fun surfaceUpdated() {
+        flutterSurfaceView?.get()?.holder?.surface?.apply {
+            flutterEngine?.renderer?.startRenderingToSurface(this)
+        }
     }
 
     override fun shouldAttachEngineToActivity(): Boolean {

@@ -10,3 +10,4 @@ class App : Application() {
         ThrioModule.init(this, FlutterModule)
     }
 }
+

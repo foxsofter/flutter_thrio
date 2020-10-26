@@ -34,7 +34,10 @@ mixin ModulePageBuilder on ThrioModule {
   ///
   /// Unregistry by calling the return value `VoidCallback`.
   ///
-  VoidCallback registerPageBuilder(String url, NavigatorPageBuilder builder) =>
+  VoidCallback registerPageBuilder(
+    String url,
+    NavigatorPageBuilder builder,
+  ) =>
       ThrioNavigatorImplement.pageBuilders.registry(url, builder);
 
   /// Register page builders for the router.

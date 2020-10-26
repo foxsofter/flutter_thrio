@@ -36,28 +36,28 @@ class Module
 
   @override
   void onRouteTransitionsBuilderRegister() {
-    registerRouteTransitionsBuilder(
-        '\/biz1\/flutter[0-9]*',
-        (
-          context,
-          animation,
-          secondaryAnimation,
-          child,
-        ) =>
-            SlideTransition(
-              transformHitTests: false,
-              position: Tween<Offset>(
-                begin: const Offset(0, -1),
-                end: Offset.zero,
-              ).animate(animation),
-              child: SlideTransition(
-                position: Tween<Offset>(
-                  begin: Offset.zero,
-                  end: const Offset(0, 1),
-                ).animate(secondaryAnimation),
-                child: child,
-              ),
-            ));
+    // registerRouteTransitionsBuilder(
+    //     '\/biz1\/flutter[0-9]*',
+    //     (
+    //       context,
+    //       animation,
+    //       secondaryAnimation,
+    //       child,
+    //     ) =>
+    //         SlideTransition(
+    //           transformHitTests: false,
+    //           position: Tween<Offset>(
+    //             begin: const Offset(0, -1),
+    //             end: Offset.zero,
+    //           ).animate(animation),
+    //           child: SlideTransition(
+    //             position: Tween<Offset>(
+    //               begin: Offset.zero,
+    //               end: const Offset(0, 1),
+    //             ).animate(secondaryAnimation),
+    //             child: child,
+    //           ),
+    //         ));
   }
 
   @override

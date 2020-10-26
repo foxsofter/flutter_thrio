@@ -29,15 +29,15 @@
 }
 
 - (IBAction)pushNativePage:(id)sender {
-    [ThrioNavigator pushUrl:@"native1"];
+    [ThrioNavigator pushUrl:@"/biz1/native1"];
 }
 
 - (IBAction)popNative1:(id)sender {
-    [ThrioNavigator removeUrl:@"native1"];
+    [ThrioNavigator removeUrl:@"/biz1/native1"];
 }
 
 - (IBAction)popToNative1:(id)sender {
-    [ThrioNavigator popToUrl:@"native1"];
+    [ThrioNavigator popToUrl:@"/biz1/native1"];
 }
 
 - (IBAction)pushNative1WithoutThrio:(id)sender {

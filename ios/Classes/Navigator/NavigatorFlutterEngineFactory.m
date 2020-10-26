@@ -22,6 +22,7 @@
 #import "NavigatorFlutterEngineFactory.h"
 #import "NavigatorFlutterEngine.h"
 #import "ThrioNavigator.h"
+#import "ThrioNavigator+Internal.h"
 #import "NavigatorLogger.h"
 #import "ThrioChannel.h"
 
@@ -109,11 +110,11 @@ static NSString *const kDefaultEntrypoint = @"main";
 - (void)popViewController:(NavigatorFlutterViewController *)viewController {
     NavigatorFlutterEngine *flutterEngine = self.flutterEngines[viewController.entrypoint];
     if ([flutterEngine popViewController:viewController] < 1) {
-        if (ThrioNavigator.isMultiEngineEnabled &&
-            _flutterEngines.count > 1 &&
-            flutterEngine.registerUrlCount < ThrioNavigator.multiEngineKeepAliveUrlCount) {
-            [self.flutterEngines removeObjectForKey:viewController.entrypoint];
-        }
+//        if (ThrioNavigator.isMultiEngineEnabled &&
+//            _flutterEngines.count > 1 &&
+//            flutterEngine.registerUrlCount < ThrioNavigator.multiEngineKeepAliveUrlCount) {
+//            [self.flutterEngines removeObjectForKey:viewController.entrypoint];
+//        }
     }
 }
 

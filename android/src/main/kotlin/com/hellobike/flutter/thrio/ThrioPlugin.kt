@@ -24,18 +24,22 @@
 package com.hellobike.flutter.thrio
 
 import androidx.annotation.NonNull
+import com.hellobike.flutter.thrio.navigator.Log
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.plugin.common.PluginRegistry.Registrar
 
 class ThrioPlugin : FlutterPlugin {
 
     override fun onAttachedToEngine(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {
+        Log.i(TAG, "onAttachedToEngine")
     }
 
     override fun onDetachedFromEngine(@NonNull binding: FlutterPlugin.FlutterPluginBinding) {
+        Log.i(TAG, "onDetachedFromEngine")
     }
 
     companion object {
+        private const val TAG = "ThrioPlugin"
         // This static function is optional and equivalent to onAttachedToEngine. It supports the old
         // pre-Flutter-1.12 Android projects. You are encouraged to continue supporting
         // plugin registration via this function while apps migrate to use the new Android APIs

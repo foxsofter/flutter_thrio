@@ -34,7 +34,7 @@ internal object RouteObservers : RouteObserver {
         observers.forEach {
             it.didPush(routeSettings, previousRouteSettings)
         }
-        Log.i(TAG, "didPush: url->${routeSettings.url} " +
+        Log.v(TAG, "didPush: url->${routeSettings.url} " +
                 "index->${routeSettings.index} " +
                 "params->${routeSettings.params?.toString()}")
     }
@@ -43,7 +43,7 @@ internal object RouteObservers : RouteObserver {
         observers.forEach {
             it.didPop(routeSettings, previousRouteSettings)
         }
-        Log.i(TAG, "didPop: url->${routeSettings.url} " +
+        Log.v(TAG, "didPop: url->${routeSettings.url} " +
                 "index->${routeSettings.index} " +
                 "params->${routeSettings.params?.toString()}")
     }
@@ -52,7 +52,7 @@ internal object RouteObservers : RouteObserver {
         observers.forEach {
             it.didPopTo(routeSettings, previousRouteSettings)
         }
-        Log.i(TAG, "didPopTo: url->${routeSettings.url} " +
+        Log.v(TAG, "didPopTo: url->${routeSettings.url} " +
                 "index->${routeSettings.index} " +
                 "params->${routeSettings.params?.toString()}")
     }
@@ -61,7 +61,7 @@ internal object RouteObservers : RouteObserver {
         observers.forEach {
             it.didRemove(routeSettings, previousRouteSettings)
         }
-        Log.i(TAG, "didRemove: url->${routeSettings.url} " +
+        Log.v(TAG, "didRemove: url->${routeSettings.url} " +
                 "index->${routeSettings.index} " +
                 "params->${routeSettings.params?.toString()}")
     }

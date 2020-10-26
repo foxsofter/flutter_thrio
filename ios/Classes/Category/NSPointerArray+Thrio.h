@@ -20,36 +20,28 @@
 // IN THE SOFTWARE.
 
 #import <Foundation/Foundation.h>
-#import <Flutter/Flutter.h>
-#import "ThrioTypes.h"
-#import "NavigatorFlutterViewController.h"
-#import "ThrioChannel.h"
-#import "NavigatorRouteReceiveChannel.h"
-#import "NavigatorRouteSendChannel.h"
-#import "NavigatorPageObserverChannel.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface NavigatorFlutterEngine : NSObject
+@interface NSPointerArray (Thrio)
 
-- (void)startupWithEntrypoint:(NSString *)entrypoint
-                   readyBlock:(ThrioIdCallback _Nullable)block;
+@property (nonatomic, readonly) BOOL empty;
 
-@property (nonatomic, assign) NSUInteger registerUrlCount;
+@property (nonatomic, readonly) id first;
 
-@property (nonatomic, strong, readonly, nullable) FlutterEngine *engine;
+@property (nonatomic, readonly) id last;
 
-@property (nonatomic, strong, readonly, nullable) NavigatorRouteReceiveChannel *receiveChannel;
+- (void)addObject:(id)object;
 
-@property (nonatomic, strong, readonly, nullable) NavigatorRouteSendChannel *sendChannel;
+- (BOOL)containsObject:(id)object;
 
-@property (nonatomic, strong, readonly, nullable) NavigatorPageObserverChannel *pageObserverChannel;
+- (void)removeFirstObject:(id)object;
 
-- (void)pushViewController:(NavigatorFlutterViewController *)viewController;
+- (void)removeLastObject:(id)object;
 
-/// 返回当前引擎上剩余的NavigatorFlutterViewController个数
+/// Remove all existing `object`，add `object` to array.
 ///
-- (NSUInteger)popViewController:(NavigatorFlutterViewController *)viewController;
+- (void)addAndRemoveObject:(id)object;
 
 @end
 

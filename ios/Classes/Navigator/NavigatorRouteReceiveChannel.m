@@ -69,8 +69,8 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)_onReady {
     __weak typeof(self) weakself = self;
     [_channel registryMethod:@"ready"
-                         handler:^void (NSDictionary<NSString *, id> *arguments,
-                                        ThrioIdCallback _Nullable result) {
+                     handler:^void (NSDictionary<NSString *, id> *arguments,
+                                    ThrioIdCallback _Nullable result) {
         __strong typeof(weakself) strongSelf = weakself;
         if (strongSelf.readyBlock) {
             NavigatorVerbose(@"on ready: %@", strongSelf.channel.entrypoint);
@@ -83,8 +83,8 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)_onPush {
     __weak typeof(self) weakself = self;
     [_channel registryMethod:@"push"
-                         handler:^void (NSDictionary<NSString *, id> *arguments,
-                                        ThrioIdCallback _Nullable result) {
+                     handler:^void (NSDictionary<NSString *, id> *arguments,
+                                    ThrioIdCallback _Nullable result) {
         NSString *url = arguments[@"url"];
         if (url.length < 1) {
             if (result) {
@@ -96,19 +96,19 @@ NS_ASSUME_NONNULL_BEGIN
         BOOL animated = [arguments[@"animated"] boolValue];
         NavigatorVerbose(@"on push: %@", url);
         __strong typeof(weakself) strongSelf = weakself;
-        [ThrioNavigator.navigationController thrio_pushUrl:url
-                                                    params:params
-                                                  animated:animated
-                                            fromEntrypoint:strongSelf.channel.entrypoint
-                                                    result:^(NSNumber *idx) { result(idx); }
-                                              poppedResult:nil];
+        [ThrioNavigator _pushUrl:url
+                          params:params
+                        animated:animated
+                  fromEntrypoint:strongSelf.channel.entrypoint
+                          result:^(NSNumber *idx) { result(idx); }
+                    poppedResult:nil];
     }];
 }
 
 - (void)_onNotify {
     [_channel registryMethod:@"notify"
-                         handler:^void (NSDictionary<NSString *, id> *arguments,
-                                        ThrioIdCallback _Nullable result) {
+                     handler:^void (NSDictionary<NSString *, id> *arguments,
+                                    ThrioIdCallback _Nullable result) {
         NSString *name = arguments[@"name"];
         if (name.length < 1) {
             if (result) {
@@ -125,27 +125,26 @@ NS_ASSUME_NONNULL_BEGIN
         }
         NSNumber *index = [arguments[@"index"] isKindOfClass:NSNull.class] ? nil : arguments[@"index"];
         id params = [arguments[@"params"] isKindOfClass:NSNull.class] ? nil : arguments[@"params"];
-        BOOL r = [ThrioNavigator.navigationController thrio_notifyUrl:url
-                                                                index:index
-                                                                 name:name
-                                                               params:params];
-        if (result) {
-            result(@(r));
-        }
+        [ThrioNavigator _notifyUrl:url
+                             index:index
+                              name:name
+                            params:params result:^(BOOL r) {
+            if (result) {
+                result(@(r));
+            }
+        }];
     }];
 }
 
 - (void)_onPop {
     [_channel registryMethod:@"pop"
-                         handler:^void (NSDictionary<NSString *, id> *arguments,
-                                        ThrioIdCallback _Nullable result) {
+                     handler:^void (NSDictionary<NSString *, id> *arguments,
+                                    ThrioIdCallback _Nullable result) {
         id params = [arguments[@"params"] isKindOfClass:NSNull.class] ? nil : arguments[@"params"];
         BOOL animated = [arguments[@"animated"] boolValue];
 
         NavigatorVerbose(@"on pop");
-        [ThrioNavigator.navigationController thrio_popParams:params
-                                                    animated:animated
-                                                      result:^(BOOL r) {
+        [ThrioNavigator _popParams:params animated:animated result:^(BOOL r) {
             if (result) {
                 result(@(r));
             }
@@ -155,8 +154,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)_onPopTo {
     [_channel registryMethod:@"popTo"
-                         handler:^void (NSDictionary<NSString *, id> *arguments,
-                                        ThrioIdCallback _Nullable result) {
+                     handler:^void (NSDictionary<NSString *, id> *arguments,
+                                    ThrioIdCallback _Nullable result) {
         NSString *url = arguments[@"url"];
         if (url.length < 1) {
             if (result) {
@@ -169,10 +168,7 @@ NS_ASSUME_NONNULL_BEGIN
 
         NavigatorVerbose(@"on popTo: %@.%@", url, index);
 
-        [ThrioNavigator.navigationController thrio_popToUrl:url
-                                                      index:index
-                                                   animated:animated
-                                                     result:^(BOOL r) {
+        [ThrioNavigator _popToUrl:url index:index animated:animated result:^(BOOL r) {
             if (result) {
                 result(@(r));
             }
@@ -182,18 +178,15 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)_onRemove {
     [_channel registryMethod:@"remove"
-                         handler:^void (NSDictionary<NSString *, id> *arguments,
-                                        ThrioIdCallback _Nullable result) {
+                     handler:^void (NSDictionary<NSString *, id> *arguments,
+                                    ThrioIdCallback _Nullable result) {
         NSString *url = arguments[@"url"];
         NSNumber *index = [arguments[@"index"] isKindOfClass:NSNull.class] ? nil : arguments[@"index"];
         BOOL animated = [arguments[@"animated"] boolValue];
 
         NavigatorVerbose(@"on remove: %@.%@", url, index);
 
-        [ThrioNavigator.navigationController thrio_removeUrl:url
-                                                       index:index
-                                                    animated:animated
-                                                      result:^(BOOL r) {
+        [ThrioNavigator _removeUrl:url index:index animated:animated result:^(BOOL r) {
             if (result) {
                 result(@(r));
             }
@@ -203,14 +196,14 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)_onLastIndex {
     [_channel registryMethod:@"lastIndex"
-                         handler:^void (NSDictionary<NSString *, id> *arguments,
-                                        ThrioIdCallback _Nullable result) {
+                     handler:^void (NSDictionary<NSString *, id> *arguments,
+                                    ThrioIdCallback _Nullable result) {
         if (result) {
             NSString *url = arguments[@"url"];
             if (url.length < 1) {
-                result([ThrioNavigator.navigationController thrio_lastIndex]);
+                result([ThrioNavigator lastIndex]);
             } else {
-                result([ThrioNavigator.navigationController thrio_getLastIndexByUrl:url]);
+                result([ThrioNavigator getLastIndexByUrl:url]);
             }
         }
     }];
@@ -218,35 +211,33 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)_onGetAllIndex {
     [_channel registryMethod:@"allIndex"
-                         handler:^void (NSDictionary<NSString *, id> *arguments,
-                                        ThrioIdCallback _Nullable result) {
+                     handler:^void (NSDictionary<NSString *, id> *arguments,
+                                    ThrioIdCallback _Nullable result) {
         NSString *url = arguments[@"url"];
         if (result) {
-            result([ThrioNavigator.navigationController thrio_getAllIndexByUrl:url]);
+            result([ThrioNavigator getAllIndexByUrl:url]);
         }
     }];
 }
 
 - (void)_onSetPopDisabled {
     [_channel registryMethod:@"setPopDisabled"
-                         handler:^void (NSDictionary<NSString *, id> *arguments,
-                                        ThrioIdCallback _Nullable result) {
+                     handler:^void (NSDictionary<NSString *, id> *arguments,
+                                    ThrioIdCallback _Nullable result) {
         NSString *url = arguments[@"url"];
         NSNumber *index = arguments[@"index"];
         BOOL disabled = [arguments[@"disabled"] boolValue];
         NavigatorVerbose(@"setPopDisabled: %@.%@ %@", url, index, @(disabled));
-        [ThrioNavigator.navigationController thrio_setPopDisabledUrl:url
-                                                               index:index
-                                                            disabled:disabled];
+        [ThrioNavigator _setPopDisabledUrl:url index:index disabled:disabled];
     }];
 }
 
 - (void)_onHotRestart {
     [_channel registryMethod:@"hotRestart"
-                         handler:^void (NSDictionary<NSString *, id> *arguments,
-                                        ThrioIdCallback _Nullable result) {
+                     handler:^void (NSDictionary<NSString *, id> *arguments,
+                                    ThrioIdCallback _Nullable result) {
         if (!ThrioNavigator.isMultiEngineEnabled) {
-            [ThrioNavigator.navigationController thrio_hotRestart:^(BOOL r) {
+            [ThrioNavigator _hotRestart:^(BOOL r) {
                 result(@(r));
             }];
         }
@@ -255,8 +246,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)_onRegisterUrls {
     [_channel registryMethod:@"registerUrls"
-                         handler:^void (NSDictionary<NSString *, id> *arguments,
-                                        ThrioIdCallback _Nullable result) {
+                     handler:^void (NSDictionary<NSString *, id> *arguments,
+                                    ThrioIdCallback _Nullable result) {
         NSArray *urls = arguments[@"urls"];
         [NavigatorFlutterEngineFactory.shared registerFlutterUrls:urls];
     }];
@@ -264,8 +255,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)_onUnregisterUrls {
     [_channel registryMethod:@"unregisterUrls"
-                         handler:^void (NSDictionary<NSString *, id> *arguments,
-                                        ThrioIdCallback _Nullable result) {
+                     handler:^void (NSDictionary<NSString *, id> *arguments,
+                                    ThrioIdCallback _Nullable result) {
         NSArray *urls = arguments[@"urls"];
         [NavigatorFlutterEngineFactory.shared unregisterFlutterUrls:urls];
     }];

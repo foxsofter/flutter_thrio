@@ -21,11 +21,198 @@
 
 #import "ThrioNavigator+Internal.h"
 #import "UIApplication+Thrio.h"
+#import "ThrioRegistrySet.h"
+#import "UINavigationController+Navigator.h"
+#import "UINavigationController+PopGesture.h"
+#import "UINavigationController+PopDisabled.h"
+#import "UINavigationController+HotRestart.h"
+#import "ThrioNavigator.h"
+#import "ThrioNavigator+PageBuilders.h"
+#import "ThrioNavigator+Internal.h"
+#import "NavigatorFlutterEngineFactory.h"
+#import "NSPointerArray+Thrio.h"
 
 @implementation ThrioNavigator (Internal)
 
 + (UINavigationController *_Nullable)navigationController {
     return [[UIApplication sharedApplication] topmostNavigationController];
+}
+
++ (NSPointerArray *)navigationControllers {
+    static NSPointerArray *controllers;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        controllers = [NSPointerArray weakObjectsPointerArray];
+    });
+    return controllers;
+}
+
++ (void)  _pushUrl:(NSString *)url
+            params:(id _Nullable)params
+          animated:(BOOL)animated
+    fromEntrypoint:fromEntrypoint
+            result:(ThrioNumberCallback _Nullable)result
+      poppedResult:(ThrioIdCallback _Nullable)poppedResult
+{
+    UINavigationController *nvc = self.navigationController;
+    [nvc thrio_pushUrl:url
+                params:params
+              animated:animated
+        fromEntrypoint:fromEntrypoint
+                result:^(NSNumber *idx) {
+        [self.navigationControllers addAndRemoveObject:nvc];
+        if (result) {
+            result(idx);
+        }
+    } poppedResult:poppedResult];
+}
+
++ (void)_notifyUrl:(NSString *)url
+             index:(NSNumber *_Nullable)index
+              name:(NSString *)name
+            params:(id _Nullable)params
+            result:(ThrioBoolCallback _Nullable)result {
+    // 给所有的 UINavigationController 发通知
+    BOOL canNotify = NO;
+    NSEnumerator *allNvcs = self.navigationControllers.allObjects.reverseObjectEnumerator;
+    for (UINavigationController *nvc in allNvcs) {
+        if ([nvc thrio_notifyUrl:url index:index name:name params:params]) {
+            canNotify = YES;
+        }
+    }
+    if (result) {
+        result(canNotify);
+    }
+}
+
++ (void)_popParams:(id _Nullable)params
+          animated:(BOOL)animated
+            result:(ThrioBoolCallback _Nullable)result {
+    [self.navigationController thrio_popParams:params
+                                      animated:animated
+                                        result:result];
+}
+
++ (void)_popToUrl:(NSString *)url
+            index:(NSNumber *_Nullable)index
+         animated:(BOOL)animated
+           result:(ThrioBoolCallback _Nullable)result {
+    UINavigationController *nvc = self.navigationController;
+    if ([nvc thrio_containsUrl:url index:index]) {
+        [nvc thrio_popToUrl:url index:index animated:animated result:result];
+    } else {
+        if (result) {
+            result(NO);
+        }
+    }
+}
+
++ (void)_removeUrl:(NSString *)url
+             index:(NSNumber *_Nullable)index
+          animated:(BOOL)animated
+            result:(ThrioBoolCallback _Nullable)result {
+    NSEnumerator *allNvcs = self.navigationControllers.allObjects.reverseObjectEnumerator;
+    for (UINavigationController *nvc in allNvcs) {
+        if ([nvc thrio_containsUrl:url index:index]) {
+            [nvc thrio_removeUrl:url index:index animated:animated result:result];
+        }
+    }
+}
+
++ (void)_didPushUrl:(NSString *)url index:(NSNumber *)index {
+    NSEnumerator *allNvcs = self.navigationControllers.allObjects.reverseObjectEnumerator;
+    for (UINavigationController *nvc in allNvcs) {
+        if ([nvc thrio_containsUrl:url index:index]) {
+            [nvc thrio_didPushUrl:url index:index];
+            break;
+        }
+    }
+}
+
++ (void)_didPopUrl:(NSString *)url index:(NSNumber *)index {
+    NSEnumerator *allNvcs = self.navigationControllers.allObjects.reverseObjectEnumerator;
+    for (UINavigationController *nvc in allNvcs) {
+        if ([nvc thrio_containsUrl:url index:index]) {
+            [nvc thrio_didPopUrl:url index:index];
+            break;
+        }
+    }
+}
+
++ (void)_didPopToUrl:(NSString *)url index:(NSNumber *)index {
+    NSEnumerator *allNvcs = self.navigationControllers.allObjects.reverseObjectEnumerator;
+    for (UINavigationController *nvc in allNvcs) {
+        if ([nvc thrio_containsUrl:url index:index]) {
+            [nvc thrio_didPopToUrl:url index:index];
+            break;
+        }
+    }
+}
+
++ (void)_didRemoveUrl:(NSString *)url index:(NSNumber *)index {
+    NSEnumerator *allNvcs = self.navigationControllers.allObjects.reverseObjectEnumerator;
+    for (UINavigationController *nvc in allNvcs) {
+        if ([nvc thrio_containsUrl:url index:index]) {
+            [nvc thrio_didRemoveUrl:url index:index];
+            break;
+        }
+    }
+}
+
++ (void)_setPopDisabledUrl:(NSString *)url index:(NSNumber *)index disabled:(BOOL)disabled {
+    NSEnumerator *allNvcs = self.navigationControllers.allObjects.reverseObjectEnumerator;
+    for (UINavigationController *nvc in allNvcs) {
+        if ([nvc thrio_containsUrl:url index:index]) {
+            [nvc thrio_setPopDisabledUrl:url index:index disabled:disabled];
+            break;
+        }
+    }
+}
+
++ (void)_hotRestart:(ThrioBoolCallback)result {
+    NSArray *allNvcs = self.navigationControllers.allObjects;
+    BOOL foundFlutterVC = NO;
+    for (UINavigationController *nvc in allNvcs) {
+        if (foundFlutterVC) {
+            if (nvc.tabBarController) {
+                [nvc popToRootViewControllerAnimated:NO];
+            } else {
+                [nvc dismissViewControllerAnimated:NO completion:nil];
+            }
+        } else {
+            NSArray *vcs = [nvc viewControllers];
+            for (UIViewController *vc in vcs) {
+                if ([vc isKindOfClass:NavigatorFlutterViewController.class]) {
+                    foundFlutterVC = YES;
+                    break;
+                }
+            }
+            if (foundFlutterVC) {
+                [nvc thrio_hotRestart:result];
+            }
+        }
+    }
+}
+
++ (NavigatorPageRoute *)_getLastRouteByEntrypoint:(NSString *)entrypoint {
+    NSEnumerator *allNvcs = self.navigationControllers.allObjects.reverseObjectEnumerator;
+    for (UINavigationController *nvc in allNvcs) {
+        NavigatorPageRoute *route = [nvc thrio_getLastRouteByEntrypoint:entrypoint];
+        if (route) {
+            return route;
+        }
+    }
+    return nil;
+}
+
+static BOOL multiEngineEnabled = NO;
+
++ (void)setMultiEngineEnabled:(BOOL)enabled {
+    multiEngineEnabled = enabled;
+}
+
++ (BOOL)isMultiEngineEnabled {
+    return multiEngineEnabled;
 }
 
 @end

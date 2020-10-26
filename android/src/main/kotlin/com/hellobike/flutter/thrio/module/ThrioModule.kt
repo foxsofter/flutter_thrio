@@ -25,6 +25,7 @@ package com.hellobike.flutter.thrio.module
 
 import android.app.Application
 import android.content.Context
+import com.hellobike.flutter.thrio.navigator.FlutterEngineFactory
 import com.hellobike.flutter.thrio.navigator.Log
 import com.hellobike.flutter.thrio.navigator.ThrioNavigator
 
@@ -69,5 +70,11 @@ open class ThrioModule {
         get() = Log.navigatorLogging
         set(enabled) {
             Log.navigatorLogging = enabled
+        }
+
+    protected open var multiEngineEnabled
+        get() = FlutterEngineFactory.isMultiEngineEnabled
+        set(enabled) {
+            FlutterEngineFactory.isMultiEngineEnabled = enabled
         }
 }

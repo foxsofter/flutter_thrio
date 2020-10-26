@@ -23,6 +23,7 @@ import 'package:flutter/widgets.dart';
 
 import '../navigator/navigator_page_observer.dart';
 import '../registry/registry_set.dart';
+import 'navigator_home.dart';
 import 'navigator_logger.dart';
 import 'navigator_page_route.dart';
 import 'navigator_route_observer.dart';
@@ -43,7 +44,11 @@ class NavigatorObserverManager extends NavigatorObserver {
 
   final _currentRemoveRoutes = <NavigatorPageRoute>[];
 
-  final pageRoutes = <NavigatorPageRoute>[];
+  final pageRoutes = <NavigatorPageRoute>[
+    NavigatorPageRoute(
+        builder: (settings) => const NavigatorHome(),
+        settings: const RouteSettings(name: '1 /'))
+  ];
 
   @override
   void didPush(Route<dynamic> route, Route<dynamic> previousRoute) {
@@ -86,8 +91,24 @@ class NavigatorObserverManager extends NavigatorObserver {
                 observer.didAppear(previousRoute.settings);
               }
             }
-            if (route.routeAction == NavigatorRouteAction.pop ||
-                route.routeAction == null) {
+            if (pageRoutes.last.routeAction == NavigatorRouteAction.popTo) {
+              verbose('didPopTo: url->${pageRoutes.last.settings.url} '
+                  'index->${pageRoutes.last.settings.index}');
+              final routeObservers = Set.from(_routeObservers);
+              for (final observer in routeObservers) {
+                observer.didPopTo(
+                  pageRoutes.last.settings,
+                  _currentPopRoutes.first.settings,
+                );
+              }
+              final pageObservers = Set.from(_pageObservers);
+              for (final observer in pageObservers) {
+                observer.didDisappear(_currentPopRoutes.first.settings);
+                observer.didAppear(pageRoutes.last.settings);
+              }
+              pageRoutes.last.routeAction = null;
+            }
+            if (route.routeAction == NavigatorRouteAction.pop) {
               verbose(
                 'didPop: url->${route.settings.url} '
                 'index->${route.settings.index} '
@@ -114,7 +135,7 @@ class NavigatorObserverManager extends NavigatorObserver {
               }
             }
           } else if (_currentPopRoutes.length > 1) {
-            verbose('didPopTo: url->${pageRoutes.last.settings.url}'
+            verbose('didPopTo: url->${pageRoutes.last.settings.url} '
                 'index->${pageRoutes.last.settings.index}');
             final routeObservers = Set.from(_routeObservers);
             for (final observer in routeObservers) {
@@ -146,11 +167,29 @@ class NavigatorObserverManager extends NavigatorObserver {
       if (_currentRemoveRoutes.length == 1) {
         Future(() {
           if (_currentRemoveRoutes.length == 1) {
-            verbose('didRemove: url->${route.settings.url} '
-                'index->${route.settings.index}');
-            final routeObservers = Set.from(_routeObservers);
-            for (final observer in routeObservers) {
-              observer.didRemove(route.settings, prevRoute?.settings);
+            if (pageRoutes.last.routeAction == NavigatorRouteAction.popTo) {
+              verbose('didPopTo: url->${pageRoutes.last.settings.url} '
+                  'index->${pageRoutes.last.settings.index}');
+              final routeObservers = Set.from(_routeObservers);
+              for (final observer in routeObservers) {
+                observer.didPopTo(
+                  pageRoutes.last.settings,
+                  _currentRemoveRoutes.first.settings,
+                );
+              }
+              final pageObservers = Set.from(_pageObservers);
+              for (final observer in pageObservers) {
+                observer.didDisappear(_currentRemoveRoutes.first.settings);
+                observer.didAppear(pageRoutes.last.settings);
+              }
+              pageRoutes.last.routeAction = null;
+            } else {
+              verbose('didRemove: url->${route.settings.url} '
+                  'index->${route.settings.index}');
+              final routeObservers = Set.from(_routeObservers);
+              for (final observer in routeObservers) {
+                observer.didRemove(route.settings, prevRoute?.settings);
+              }
             }
 
             if (isLast) {
@@ -159,7 +198,7 @@ class NavigatorObserverManager extends NavigatorObserver {
                 final pageObservers = Set.from(_pageObservers);
                 for (final observer in pageObservers) {
                   observer.didDisappear(route.settings);
-                  if (previousRoute != null) {
+                  if (prevRoute != null) {
                     observer.didAppear(prevRoute.settings);
                   }
                 }

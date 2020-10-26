@@ -29,6 +29,7 @@
 #import "ThrioNavigator+PageBuilders.h"
 #import "ThrioNavigator+Internal.h"
 #import "NavigatorFlutterEngineFactory.h"
+#import "NSPointerArray+Thrio.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -37,81 +38,81 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark - push methods
 
 + (void)pushUrl:(NSString *)url {
-    [self _pushUrl:url params:nil animated:YES result:nil poppedResult:nil];
+    [self _pushUrl:url params:nil animated:YES fromEntrypoint:nil result:nil poppedResult:nil];
 }
 
 + (void)pushUrl:(NSString *)url result:(ThrioNumberCallback)result {
-    [self _pushUrl:url params:nil animated:YES result:result poppedResult:nil];
+    [self _pushUrl:url params:nil animated:YES fromEntrypoint:nil result:result poppedResult:nil];
 }
 
 + (void)pushUrl:(NSString *)url poppedResult:(ThrioIdCallback)poppedResult {
-    [self _pushUrl:url params:nil animated:YES result:nil poppedResult:poppedResult];
+    [self _pushUrl:url params:nil animated:YES fromEntrypoint:nil result:nil poppedResult:poppedResult];
 }
 
 + (void)pushUrl:(NSString *)url params:(id)params {
-    [self _pushUrl:url params:params animated:YES result:nil poppedResult:nil];
+    [self _pushUrl:url params:params animated:YES fromEntrypoint:nil result:nil poppedResult:nil];
 }
 
 + (void)pushUrl:(NSString *)url
          params:(id)params
          result:(ThrioNumberCallback)result {
-    [self _pushUrl:url params:params animated:YES result:result poppedResult:nil];
+    [self _pushUrl:url params:params animated:YES fromEntrypoint:nil result:result poppedResult:nil];
 }
 
 + (void) pushUrl:(NSString *)url
           params:(id)params
     poppedResult:(ThrioIdCallback)poppedResult {
-    [self _pushUrl:url params:params animated:YES result:nil poppedResult:poppedResult];
+    [self _pushUrl:url params:params animated:YES fromEntrypoint:nil result:nil poppedResult:poppedResult];
 }
 
 + (void) pushUrl:(NSString *)url
           params:(id)params
           result:(ThrioNumberCallback)result
     poppedResult:(ThrioIdCallback)poppedResult {
-    [self _pushUrl:url params:params animated:YES result:result poppedResult:poppedResult];
+    [self _pushUrl:url params:params animated:YES fromEntrypoint:nil result:result poppedResult:poppedResult];
 }
 
 + (void)pushUrl:(NSString *)url animated:(BOOL)animated {
-    [self _pushUrl:url params:nil animated:animated result:nil poppedResult:nil];
+    [self _pushUrl:url params:nil animated:animated fromEntrypoint:nil result:nil poppedResult:nil];
 }
 
 + (void)pushUrl:(NSString *)url
        animated:(BOOL)animated
          result:(ThrioNumberCallback)result {
-    [self _pushUrl:url params:nil animated:animated result:result poppedResult:nil];
+    [self _pushUrl:url params:nil animated:animated fromEntrypoint:nil result:result poppedResult:nil];
 }
 
 + (void) pushUrl:(NSString *)url
         animated:(BOOL)animated
     poppedResult:(ThrioIdCallback)poppedResult {
-    [self _pushUrl:url params:nil animated:animated result:nil poppedResult:poppedResult];
+    [self _pushUrl:url params:nil animated:animated fromEntrypoint:nil result:nil poppedResult:poppedResult];
 }
 
 + (void) pushUrl:(NSString *)url
         animated:(BOOL)animated
           result:(ThrioNumberCallback)result
     poppedResult:(ThrioIdCallback)poppedResult {
-    [self _pushUrl:url params:nil animated:animated result:result poppedResult:poppedResult];
+    [self _pushUrl:url params:nil animated:animated fromEntrypoint:nil result:result poppedResult:poppedResult];
 }
 
 + (void)pushUrl:(NSString *)url
          params:(id)params
        animated:(BOOL)animated {
-    [self _pushUrl:url params:params animated:animated result:nil poppedResult:nil];
+    [self _pushUrl:url params:params animated:animated fromEntrypoint:nil result:nil poppedResult:nil];
 }
 
 + (void)pushUrl:(NSString *)url
          params:(id)params
        animated:(BOOL)animated
          result:(ThrioNumberCallback)result {
-    [self _pushUrl:url params:params animated:animated result:result poppedResult:nil];
+    [self _pushUrl:url params:params animated:animated fromEntrypoint:nil result:result poppedResult:nil];
 }
 
 + (void) pushUrl:(NSString *)url
           params:(id)params
         animated:(BOOL)animated
     poppedResult:(ThrioIdCallback)poppedResult {
-    [self _pushUrl:url params:params animated:animated result:nil poppedResult:poppedResult];
+    [self _pushUrl:url params:params animated:animated fromEntrypoint:nil result:nil poppedResult:poppedResult];
 }
 
 + (void) pushUrl:(NSString *)url
@@ -119,23 +120,7 @@ NS_ASSUME_NONNULL_BEGIN
         animated:(BOOL)animated
           result:(ThrioNumberCallback)result
     poppedResult:(ThrioIdCallback)poppedResult {
-    [self _pushUrl:url params:params animated:animated result:result poppedResult:poppedResult];
-}
-
-+ (void)_pushUrl:(NSString *)url
-          params:(id _Nullable)params
-        animated:(BOOL)animated
-          result:(ThrioNumberCallback _Nullable)result
-    poppedResult:(ThrioIdCallback _Nullable)poppedResult {
-    [self.navigationController thrio_pushUrl:url
-                                      params:params
-                                    animated:animated
-                              fromEntrypoint:nil
-                                      result:^(NSNumber *idx) {
-        if (result) {
-            result(idx);
-        }
-    } poppedResult:poppedResult];
+    [self _pushUrl:url params:params animated:animated fromEntrypoint:nil result:result poppedResult:poppedResult];
 }
 
 #pragma mark - notify methods
@@ -191,20 +176,6 @@ NS_ASSUME_NONNULL_BEGIN
     [self _notifyUrl:url index:index name:name params:params result:result];
 }
 
-+ (void)_notifyUrl:(NSString *)url
-             index:(NSNumber *_Nullable)index
-              name:(NSString *)name
-            params:(id _Nullable)params
-            result:(ThrioBoolCallback _Nullable)result {
-    BOOL canNotify = [self.navigationController thrio_notifyUrl:url
-                                                          index:index
-                                                           name:name
-                                                         params:params];
-    if (result) {
-        result(canNotify);
-    }
-}
-
 #pragma mark - pop methods
 
 + (void)pop {
@@ -235,14 +206,6 @@ NS_ASSUME_NONNULL_BEGIN
          animated:(BOOL)animated
            result:(ThrioBoolCallback)result {
     [self _popParams:params animated:animated result:result];
-}
-
-+ (void)_popParams:(id _Nullable)params
-          animated:(BOOL)animated
-            result:(ThrioBoolCallback _Nullable)result {
-    [self.navigationController thrio_popParams:params
-                                      animated:animated
-                                        result:result];
 }
 
 #pragma mark - popTo methods
@@ -291,16 +254,6 @@ NS_ASSUME_NONNULL_BEGIN
     [self _popToUrl:url index:index animated:animated result:result];
 }
 
-+ (void)_popToUrl:(NSString *)url
-            index:(NSNumber *_Nullable)index
-         animated:(BOOL)animated
-           result:(ThrioBoolCallback _Nullable)result {
-    [self.navigationController thrio_popToUrl:url
-                                        index:index
-                                     animated:animated
-                                       result:result];
-}
-
 #pragma mark - remove methods
 
 + (void)removeUrl:(NSString *)url {
@@ -347,54 +300,53 @@ NS_ASSUME_NONNULL_BEGIN
     [self _removeUrl:url index:index animated:animated result:result];
 }
 
-+ (void)_removeUrl:(NSString *)url
-             index:(NSNumber *_Nullable)index
-          animated:(BOOL)animated
-            result:(ThrioBoolCallback _Nullable)result {
-    [self.navigationController thrio_removeUrl:url
-                                         index:index
-                                      animated:animated
-                                        result:result];
-}
-
 #pragma mark - get index methods
 
 + (NSNumber *_Nullable)lastIndex {
-    return [self.navigationController thrio_lastIndex];
+    NSEnumerator *allNvcs = self.navigationControllers.allObjects.reverseObjectEnumerator;
+    for (UINavigationController *nvc in allNvcs) {
+        NSNumber *index = [nvc thrio_lastIndex];
+        if (index && ![index isEqualToNumber:@0]) {
+            return index;
+        }
+    }
+    return nil;
 }
 
 + (NSNumber *_Nullable)getLastIndexByUrl:(NSString *)url {
-    return [self.navigationController thrio_getLastIndexByUrl:url];
+    NSNumber *lastIndex = nil;
+    NSEnumerator *allNvcs = self.navigationControllers.allObjects.reverseObjectEnumerator;
+    for (UINavigationController *nvc in allNvcs) {
+        NSNumber *index = [nvc thrio_getLastIndexByUrl:url];
+        if (index && ![index isEqualToNumber:@0]) {
+            if (!lastIndex) {
+                lastIndex = index;
+            } else {
+                if (lastIndex.integerValue < index.integerValue) {
+                    lastIndex = index;
+                }
+            }
+        }
+    }
+    return lastIndex;
 }
 
 + (NSArray *)getAllIndexByUrl:(NSString *)url {
-    return [self.navigationController thrio_getAllIndexByUrl:url];
+    NSMutableArray *allIndexs = [NSMutableArray array];
+    NSEnumerator *allNvcs = self.navigationControllers.allObjects.reverseObjectEnumerator;
+    for (UINavigationController *nvc in allNvcs) {
+        NSArray *indexs = [nvc thrio_getAllIndexByUrl:url];
+        if (indexs.count > 0) {
+            [allIndexs addObjectsFromArray:indexs];
+        }
+    }
+    return allIndexs;
 }
 
 #pragma mark - engine methods
 
 + (FlutterEngine *)getEngineByEntrypoint:(NSString *)entrypoint {
     return [NavigatorFlutterEngineFactory.shared getEngineByEntrypoint:entrypoint];
-}
-
-static BOOL multiEngineEnabled = NO;
-
-+ (void)setMultiEngineEnabled:(BOOL)enabled {
-    multiEngineEnabled = enabled;
-}
-
-+ (BOOL)isMultiEngineEnabled {
-    return multiEngineEnabled;
-}
-
-static NSUInteger engineKeepAliveUrlCount = 10;
-
-+ (void)setMultiEngineKeepAliveUrlCount:(NSUInteger)count {
-    engineKeepAliveUrlCount = count;
-}
-
-+ (NSUInteger)multiEngineKeepAliveUrlCount {
-    return engineKeepAliveUrlCount;
 }
 
 @end

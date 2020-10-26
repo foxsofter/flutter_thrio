@@ -151,7 +151,7 @@ class _Page1State extends State<Page1> {
                     ),
                     InkWell(
                       onTap: () => ThrioNavigator.push(
-                        url: 'native1',
+                        url: '/biz1/native1',
                         params: {
                           '1': {'2': '3'}
                         },
@@ -169,7 +169,7 @@ class _Page1State extends State<Page1> {
                     ),
                     InkWell(
                       onTap: () => ThrioNavigator.notify(
-                        url: 'native1',
+                        url: '/biz1/native1',
                         name: 'aaa',
                         params: {
                           '1': {'2': '3'}
@@ -185,7 +185,7 @@ class _Page1State extends State<Page1> {
                           )),
                     ),
                     InkWell(
-                      onTap: () => ThrioNavigator.remove(url: 'native1'),
+                      onTap: () => ThrioNavigator.remove(url: '/biz1/native1'),
                       child: Container(
                           padding: const EdgeInsets.all(8),
                           margin: const EdgeInsets.all(8),

@@ -51,12 +51,12 @@ class NavigatorMaterialApp extends MaterialApp {
   }) : super(
             key: key,
             navigatorKey: navigatorKey,
-            home: const NavigatorHome(),
-            routes: const <String, WidgetBuilder>{},
             navigatorObservers: [], // ignore: prefer_const_literals_to_create_immutables
             builder: ThrioNavigator.builder(entrypoint: entrypoint),
             title: title,
             onGenerateTitle: onGenerateTitle,
+            initialRoute: '1 /',
+            routes: {'1 /': (_) => const NavigatorHome()},
             color: color,
             theme: theme,
             darkTheme: darkTheme,

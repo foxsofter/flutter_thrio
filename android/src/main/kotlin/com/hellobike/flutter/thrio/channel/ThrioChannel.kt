@@ -40,6 +40,8 @@ open class ThrioChannel constructor(val entrypoint: String, private val channelN
 
     private var eventChannel: EventChannel? = null
 
+    private var streamHandler: EventStreamHandler? = null
+
     private val methodHandlers = RegistryMap<String, MethodHandler>()
 
     private val eventHandlers = RegistrySetMap<String, EventHandler>()
@@ -91,20 +93,21 @@ open class ThrioChannel constructor(val entrypoint: String, private val channelN
     fun setupEventChannel(messenger: BinaryMessenger) {
         val eventChannelName = "_event_$channelName"
         eventChannel = EventChannel(messenger, eventChannelName)
-        eventChannel?.setStreamHandler(EventStreamHandler)
+        streamHandler = EventStreamHandler()
+        eventChannel?.setStreamHandler(streamHandler)
     }
 
     fun sendEvent(name: String, arguments: Map<String, Any?>?) {
         var args = arguments?.toMutableMap()?.also { it["__event_name__"] = name }
                 ?: mapOf<String, Any>("__event_name__" to name)
-        EventStreamHandler.sink?.success(args)
+        streamHandler?.sink?.success(args)
     }
 
     fun registryEvent(name: String, handler: EventHandler): VoidCallback {
         return eventHandlers.registry(name, handler)
     }
 
-    object EventStreamHandler : EventChannel.StreamHandler {
+    class EventStreamHandler : EventChannel.StreamHandler {
         var sink: EventChannel.EventSink? = null
 
         override fun onListen(arguments: Any?, events: EventChannel.EventSink?) {

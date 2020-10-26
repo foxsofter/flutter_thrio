@@ -12,6 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.Lifecycle
+import com.hellobike.flutter.thrio.navigator.getPageId
 import io.flutter.Log
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.embedding.engine.FlutterEngineCache
@@ -327,6 +328,7 @@ internal class ThrioFlutterPageDelegate(private var host: ThrioFlutterActivity) 
         // Configure the Dart entrypoint and execute it.
         val entrypoint = DartEntrypoint(
                 host.appBundlePath, host.dartEntrypointFunctionName)
+        Log.v(TAG, "executeDartEntrypoint: $entrypoint")
         flutterEngine!!.dartExecutor.executeDartEntrypoint(entrypoint)
     }
 
@@ -342,6 +344,7 @@ internal class ThrioFlutterPageDelegate(private var host: ThrioFlutterActivity) 
         ensureAlive()
         flutterEngine?.let { engine ->
             engine.lifecycleChannel.appIsResumed()
+            Log.v(TAG, "onResume: ${host.intent.getPageId()}")
             engine.activityControlSurface.attachToActivity(host.activity, host.lifecycle)
             if (host.shouldAttachEngineToActivity()) {
                 flutterView?.reattachToFlutterEngine()
@@ -500,7 +503,7 @@ internal class ThrioFlutterPageDelegate(private var host: ThrioFlutterActivity) 
         ensureAlive()
         if (flutterEngine != null) {
             Log.v(TAG, "Forwarding onBackPressed() to FlutterEngine.")
-            flutterEngine!!.navigationChannel.popRoute()
+            flutterEngine?.navigationChannel?.popRoute()
         } else {
             Log.w(TAG, "Invoked onBackPressed() before FlutterFragment was attached to an Activity.")
         }
@@ -770,7 +773,7 @@ internal class ThrioFlutterPageDelegate(private var host: ThrioFlutterActivity) 
     }
 
     companion object {
-        private const val TAG = "ThrioFlutterActivityAndFragmentDelegate"
+        private const val TAG = "ThrioFlutterPageDelegate"
     }
 
 }

@@ -54,11 +54,11 @@ internal fun Intent.getPageId(): Int {
 }
 
 internal fun Intent.getEntrypoint(): String {
-    return getStringExtra(NAVIGATION_ROUTE_ENTRYPOINT_KEY) ?: ""
+    return getStringExtra(NAVIGATION_ROUTE_ENTRYPOINT_KEY) ?: NAVIGATION_NATIVE_ENTRYPOINT
 }
 
 internal fun Intent.getFromEntrypoint(): String {
-    return getStringExtra(NAVIGATION_ROUTE_FROM_ENTRYPOINT_KEY) ?: ""
+    return getStringExtra(NAVIGATION_ROUTE_FROM_ENTRYPOINT_KEY) ?: NAVIGATION_NATIVE_ENTRYPOINT
 }
 
 internal fun Intent.getRouteSettings(): RouteSettings? {
