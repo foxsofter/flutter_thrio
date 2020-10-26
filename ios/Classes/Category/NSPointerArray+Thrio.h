@@ -33,6 +33,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)addObject:(id)object;
 
+- (BOOL)containsObject:(id)object;
+
 - (void)removeFirstObject:(id)object;
 
 - (void)removeLastObject:(id)object;

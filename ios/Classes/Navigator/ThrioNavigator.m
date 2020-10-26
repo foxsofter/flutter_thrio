@@ -349,26 +349,6 @@ NS_ASSUME_NONNULL_BEGIN
     return [NavigatorFlutterEngineFactory.shared getEngineByEntrypoint:entrypoint];
 }
 
-static BOOL multiEngineEnabled = NO;
-
-+ (void)setMultiEngineEnabled:(BOOL)enabled {
-    multiEngineEnabled = enabled;
-}
-
-+ (BOOL)isMultiEngineEnabled {
-    return multiEngineEnabled;
-}
-
-static NSUInteger engineKeepAliveUrlCount = 10;
-
-+ (void)setMultiEngineKeepAliveUrlCount:(NSUInteger)count {
-    engineKeepAliveUrlCount = count;
-}
-
-+ (NSUInteger)multiEngineKeepAliveUrlCount {
-    return engineKeepAliveUrlCount;
-}
-
 @end
 
 NS_ASSUME_NONNULL_END

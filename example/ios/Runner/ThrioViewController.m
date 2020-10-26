@@ -7,10 +7,10 @@
 //
 
 #import "ThrioViewController.h"
-#import <thrio/Thrio.h>
 #import <Flutter/Flutter.h>
+#import <thrio/Thrio.h>
 
-@interface ThrioViewController ()<NavigatorPageNotifyProtocol>
+@interface ThrioViewController () <NavigatorPageNotifyProtocol>
 
 @property (weak, nonatomic) IBOutlet UILabel *label;
 
@@ -35,21 +35,22 @@
 }
 
 - (IBAction)pushNativePage:(id)sender {
-    [ThrioNavigator pushUrl:@"native1"];
+    [ThrioNavigator pushUrl:@"/biz1/native1"];
 }
 
 - (IBAction)popNative1:(id)sender {
-    [ThrioNavigator removeUrl:@"native1"];
+    [ThrioNavigator removeUrl:@"/biz1/native1"];
 }
 
 - (IBAction)pushNative2:(id)sender {
-    [ThrioNavigator pushUrl:@"native2" poppedResult:^(id _Nullable params) {
-        ThrioLogV(@"native2 popped: %@", params);
+    [ThrioNavigator pushUrl:@"/biz1/native2"
+               poppedResult:^(id _Nullable params) {
+        ThrioLogV(@"/biz1/native2 popped: %@", params);
     }];
 }
 
 - (IBAction)popNative2:(id)sender {
-    [ThrioNavigator removeUrl:@"native2"];
+    [ThrioNavigator removeUrl:@"/biz1/native2"];
 }
 
 - (IBAction)pop:(id)sender {
@@ -61,40 +62,47 @@
     UIViewController *vc =
         [sb instantiateViewControllerWithIdentifier:@"ThrioViewController"];
 
-    UINavigationController *nvc = [[UINavigationController alloc] initWithRootViewController:vc];
-    
-    [self.navigationController presentViewController:nvc animated:YES completion:^{
-        
+    UINavigationController *nvc =
+        [[UINavigationController alloc] initWithRootViewController:vc];
+
+    [self.navigationController presentViewController:nvc
+                                            animated:YES
+                                          completion:^{
     }];
 }
+
 - (IBAction)dismiss:(id)sender {
-    [self.navigationController dismissViewControllerAnimated:YES completion:^{
-        
+    [self.navigationController dismissViewControllerAnimated:YES
+                                                  completion:^{
     }];
 }
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-
+    
     if (self.thrio_firstRoute.settings) {
-        NSString *txt = [NSString stringWithFormat:@"native page: %@ \n index: %@",
-                         self.thrio_firstRoute.settings.url,
-                         self.thrio_firstRoute.settings.index];
+        NSString *txt =
+            [NSString stringWithFormat:@"native page: %@ \n index: %@",
+             self.thrio_firstRoute.settings.url,
+             self.thrio_firstRoute.settings.index];
         [self.label setText:txt];
     } else {
         // 只是给根部的ViewController标记url和index，这样才能定位到这个页面
-//        [self thrio_pushUrl:@"native1"
-//                      index:@1
-//                     params:nil
-//                   animated:NO
-//             fromEntrypoint:nil
-//                     result:nil
-//               poppedResult:nil];
+        //        [self thrio_pushUrl:@"/biz1/native1"
+        //                      index:@1
+        //                     params:nil
+        //                   animated:NO
+        //             fromEntrypoint:nil
+        //                     result:nil
+        //               poppedResult:nil];
     }
 }
 
+- (void)dealloc {
+}
+
 - (void)onNotify:(NSString *)name params:(id)params {
-    ThrioLogV(@"native1 onNotify: %@, %@", name, params);
+    ThrioLogV(@"/biz1/native1 onNotify: %@, %@", name, params);
 }
 
 @end

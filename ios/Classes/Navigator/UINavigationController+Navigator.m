@@ -34,6 +34,7 @@
 #import "NavigatorLogger.h"
 #import "NavigatorFlutterEngineFactory.h"
 #import "ThrioNavigator.h"
+#import "ThrioNavigator+Internal.h"
 #import "ThrioNavigator+PageBuilders.h"
 #import "ThrioNavigator+RouteObservers.h"
 
@@ -77,7 +78,7 @@ NS_ASSUME_NONNULL_BEGIN
         } else {
             NSString *entrypoint = @"main";
             if (ThrioNavigator.isMultiEngineEnabled) {
-                entrypoint = [url componentsSeparatedByString:@"/"].firstObject;
+                entrypoint = [url componentsSeparatedByString:@"/"][1];
             }
 
             __weak typeof(self) weakself = self;
@@ -338,6 +339,23 @@ NS_ASSUME_NONNULL_BEGIN
     return indexs;
 }
 
+- (NavigatorPageRoute *)thrio_getLastRouteByEntrypoint:(NSString *)entrypoint {
+    NSEnumerator *vcs = [self.viewControllers reverseObjectEnumerator];
+    for (UIViewController *vc in vcs) {
+        if ([vc isKindOfClass:NavigatorFlutterViewController.class]) {
+            NavigatorFlutterViewController *fvc = (NavigatorFlutterViewController *)vc;
+            if ([fvc.entrypoint isEqualToString:entrypoint]) {
+                return fvc.thrio_lastRoute;
+            }
+        } else {
+            if (!entrypoint || entrypoint.length < 1) {
+                return vc.thrio_lastRoute;
+            }
+        }
+    }
+    return nil;
+}
+
 - (BOOL)thrio_containsUrl:(NSString *)url {
     return [self getViewControllerByUrl:url index:nil] != nil;
 }
@@ -369,8 +387,6 @@ NS_ASSUME_NONNULL_BEGIN
               newSelector:@selector(thrio_popViewControllerAnimated:)];
     [self instanceSwizzle:@selector(popToViewController:animated:)
               newSelector:@selector(thrio_popToViewController:animated:)];
-    [self instanceSwizzle:@selector(popToRootViewControllerAnimated:)
-              newSelector:@selector(thrio_popToRootViewControllerAnimated:)];
     [self instanceSwizzle:@selector(setViewControllers:)
               newSelector:@selector(thrio_setViewControllers:)];
 }
@@ -529,17 +545,6 @@ NS_ASSUME_NONNULL_BEGIN
         return vcs;
     }
     return [self thrio_popToViewController:viewController animated:animated];
-}
-
-- (nullable NSArray<__kindof UIViewController *> *)thrio_popToRootViewControllerAnimated:(BOOL)animated {
-    NSArray *nvcs = [self.viewControllers subarrayWithRange:NSMakeRange(1, self.viewControllers.count - 1)];
-    for (UIViewController *vc in nvcs) {
-        if ([vc isKindOfClass:NavigatorFlutterViewController.class]) {
-            
-        }
-    }
-    
-    return [self thrio_popToRootViewControllerAnimated:animated];
 }
 
 - (void)thrio_setViewControllers:(NSArray<UIViewController *> *)viewControllers {

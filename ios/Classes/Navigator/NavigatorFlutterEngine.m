@@ -22,7 +22,9 @@
 #import "NavigatorFlutterEngine.h"
 #import "NavigatorLogger.h"
 #import "ThrioNavigator.h"
+#import "ThrioNavigator+Internal.h"
 #import "NavigatorRouteObserverChannel.h"
+#import "NSPointerArray+Thrio.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -40,7 +42,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, strong, readwrite, nullable) NavigatorPageObserverChannel *pageObserverChannel;
 
-@property (nonatomic, strong) NSHashTable *flutterViewControllers;
+@property (nonatomic, strong) NSPointerArray *flutterViewControllers;
 
 @end
 
@@ -49,7 +51,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)startupWithEntrypoint:(NSString *)entrypoint
                    readyBlock:(ThrioIdCallback _Nullable)block {
     if (!_engine) {
-        _flutterViewControllers = [NSHashTable weakObjectsHashTable];
+        _flutterViewControllers = [NSPointerArray weakObjectsPointerArray];
         [self startupFlutterWithEntrypoint:entrypoint];
         [self registerPlugins];
         [self setupChannelWithEntrypoint:entrypoint readyBlock:block];
@@ -57,19 +59,14 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 - (void)pushViewController:(NavigatorFlutterViewController *)viewController {
+    if (![_flutterViewControllers containsObject:viewController]) {
+        [_flutterViewControllers addObject:viewController];
+    }
     NavigatorVerbose(@"NavigatorFlutterEngine: enter pushViewController");
     if (viewController != nil && (_engine.viewController == nil || _engine.viewController != viewController)) {
         NavigatorVerbose(@"NavigatorFlutterEngine: set new %@", viewController);
-        if (_engine.viewController) {
-            [_flutterViewControllers removeObject:_engine.viewController];
-        }
-
         _engine.viewController = viewController;
         [(NavigatorFlutterViewController *)_engine.viewController surfaceUpdated:YES];
-
-        if (![_flutterViewControllers containsObject:viewController]) {
-            [_flutterViewControllers addObject:viewController];
-        }
     }
 }
 
@@ -78,10 +75,19 @@ NS_ASSUME_NONNULL_BEGIN
     if (viewController != nil && _engine.viewController == viewController) {
         NavigatorVerbose(@"NavigatorFlutterEngine: unset %@", viewController);
         if (_engine.viewController) {
-            [_flutterViewControllers removeObject:_engine.viewController];
             [(NavigatorFlutterViewController *)_engine.viewController surfaceUpdated:NO];
         }
-        _engine.viewController = nil;
+        NavigatorFlutterViewController *vc = _flutterViewControllers.last;
+        if (viewController == vc) {
+            [_flutterViewControllers removeLastObject:vc];
+        }
+        vc = _flutterViewControllers.last;
+        if (viewController != vc) {
+            _engine.viewController = vc;
+            if (_engine.viewController) {
+                [(NavigatorFlutterViewController *)_engine.viewController surfaceUpdated:YES];
+            }
+        }
     }
     return _flutterViewControllers.count;
 }

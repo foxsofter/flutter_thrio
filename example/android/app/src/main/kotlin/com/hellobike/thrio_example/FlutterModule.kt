@@ -14,12 +14,12 @@ object FlutterModule : ThrioModule(), ModuleIntentBuilder {
     }
 
     override fun onPageRegister(context: Context) {
-        registerIntentBuilder("native1", object : IntentBuilder {
+        registerIntentBuilder("/biz1/native1", object : IntentBuilder {
             override fun getActivityClz(): Class<out Activity> {
                 return Native1Activity::class.java
             }
         })
-        registerIntentBuilder("native2", object : IntentBuilder {
+        registerIntentBuilder("/biz1/native2", object : IntentBuilder {
             override fun getActivityClz(): Class<out Activity> {
                 return Native2Activity::class.java
             }

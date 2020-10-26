@@ -174,12 +174,12 @@ class NavigatorObserverManager extends NavigatorObserver {
               for (final observer in routeObservers) {
                 observer.didPopTo(
                   pageRoutes.last.settings,
-                  _currentPopRoutes.first.settings,
+                  _currentRemoveRoutes.first.settings,
                 );
               }
               final pageObservers = Set.from(_pageObservers);
               for (final observer in pageObservers) {
-                observer.didDisappear(_currentPopRoutes.first.settings);
+                observer.didDisappear(_currentRemoveRoutes.first.settings);
                 observer.didAppear(pageRoutes.last.settings);
               }
               pageRoutes.last.routeAction = null;

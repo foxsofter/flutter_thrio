@@ -30,7 +30,7 @@
 
 - (id)first {
     [self compact];
-    if (self.count > 1) {
+    if (self.count > 0) {
         return (__bridge id)[self pointerAtIndex:0];
     }
     return nil;
@@ -38,7 +38,7 @@
 
 - (id)last {
     [self compact];
-    if (self.count > 1) {
+    if (self.count > 0) {
         return (__bridge id)[self pointerAtIndex:self.count - 1];
     }
     return nil;
@@ -49,10 +49,26 @@
     [self addPointer:(__bridge void *)object];
 }
 
-- (void)removeFirstObject:(id)object {
+- (BOOL)containsObject:(id)object {
     [self compact];
     NSInteger index = -1;
-    for (NSUInteger i = 0; i < self.count; i++) {
+    for (NSInteger i = 0; i < self.count; i++) {
+        NSObject *obj = (__bridge id)[self pointerAtIndex:i];
+        if (obj == object) {
+            index = i;
+            break;
+        }
+    }
+    return index != -1;
+}
+
+- (void)removeFirstObject:(id)object {
+    [self compact];
+    if (self.count < 1) {
+        return;
+    }
+    NSInteger index = -1;
+    for (NSInteger i = 0; i < self.count; i++) {
         NSObject *obj = (__bridge id)[self pointerAtIndex:i];
         if (obj == object) {
             index = i;
@@ -66,8 +82,11 @@
 
 - (void)removeLastObject:(id)object {
     [self compact];
+    if (self.count < 1) {
+        return;
+    }
     NSInteger index = -1;
-    for (NSUInteger i = self.count - 1; i >= 0; i--) {
+    for (NSInteger i = self.count - 1; i >= 0; i--) {
         id obj = (__bridge id)[self pointerAtIndex:i];
         if (obj == object) {
             index = i;
@@ -81,7 +100,7 @@
 
 - (void)addAndRemoveObject:(id)object {
     [self compact];
-    for (NSUInteger i = 0; i < self.count; i++) {
+    for (NSInteger i = 0; i < self.count; i++) {
         id obj = (__bridge id)[self pointerAtIndex:i];
         if (obj == object) {
             [self removePointerAtIndex:i];

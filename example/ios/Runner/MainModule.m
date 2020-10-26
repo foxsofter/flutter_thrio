@@ -16,7 +16,7 @@
 }
 
 - (void)onModuleRegister {
-  [self registerModule:[SampleModule new]];
+    [self registerModule:[SampleModule new]];
 }
 
 @end

@@ -62,6 +62,7 @@ NS_ASSUME_NONNULL_BEGIN
             _entrypoint = @"main";
         }
     }
+    self.hidesBottomBarWhenPushed = YES;
     return self;
 }
 
@@ -71,6 +72,8 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 - (void)viewWillAppear:(BOOL)animated {
+    [NavigatorFlutterEngineFactory.shared pushViewController:self];
+
     [super viewWillAppear:animated];
 
     if (![self isMovingToParentViewController]) {
@@ -87,6 +90,8 @@ NS_ASSUME_NONNULL_BEGIN
         [ThrioNavigator didAppear:self.thrio_lastRoute.settings];
         NavigatorPageObserverChannel *channel = [NavigatorFlutterEngineFactory.shared getPageObserverChannelByEntrypoint:self.entrypoint];
         [channel didAppear:self.thrio_lastRoute.settings];
+    } else {
+        [NavigatorFlutterEngineFactory.shared pushViewController:self];
     }
 }
 
@@ -113,7 +118,23 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 - (void)dealloc {
+    [NavigatorFlutterEngineFactory.shared popViewController:self];
     NavigatorVerbose(@"NavigatorFlutterViewController dealloc: %@", self);
+    NSString *entrypoint = self.entrypoint;
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(300)), dispatch_get_main_queue(), ^{
+        NavigatorRouteSendChannel *channel = [NavigatorFlutterEngineFactory.shared getSendChannelByEntrypoint:entrypoint];
+        if (!channel) {
+            return;
+        }
+        NavigatorRouteSettings *settings = [[ThrioNavigator _getLastRouteByEntrypoint:entrypoint] settings];
+        if (!settings) {
+            settings = [NavigatorRouteSettings settingsWithUrl:@"/shit" index:@0 nested:NO params:nil];
+        }
+        NSMutableDictionary *arguments =
+            [NSMutableDictionary dictionaryWithDictionary:[settings toArgumentsWithParams:nil]];
+        [arguments setObject:@NO forKey:@"animated"];
+        [channel onPopTo:arguments result:^(BOOL r) {}];
+    });
 }
 
 // override

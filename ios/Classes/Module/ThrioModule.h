@@ -33,6 +33,8 @@ NS_ASSUME_NONNULL_BEGIN
 ///
 + (void)init:(ThrioModule *)rootModule;
 
++ (void)init:(ThrioModule *)rootModule multiEngineEnabled:(BOOL)enabled;
+
 /// A function for registering a module.
 ///
 /// Should be called in `onModuleRegister`.

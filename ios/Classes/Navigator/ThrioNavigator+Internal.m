@@ -101,8 +101,9 @@
     if ([nvc thrio_containsUrl:url index:index]) {
         [nvc thrio_popToUrl:url index:index animated:animated result:result];
     } else {
-        [NSException raise:@"Can not popTo"
-                    format:@"Can not popTo when UINavigationController not on top"];
+        if (result) {
+            result(NO);
+        }
     }
 }
 
@@ -191,6 +192,27 @@
             }
         }
     }
+}
+
++ (NavigatorPageRoute *)_getLastRouteByEntrypoint:(NSString *)entrypoint {
+    NSEnumerator *allNvcs = self.navigationControllers.allObjects.reverseObjectEnumerator;
+    for (UINavigationController *nvc in allNvcs) {
+        NavigatorPageRoute *route = [nvc thrio_getLastRouteByEntrypoint:entrypoint];
+        if (route) {
+            return route;
+        }
+    }
+    return nil;
+}
+
+static BOOL multiEngineEnabled = NO;
+
++ (void)setMultiEngineEnabled:(BOOL)enabled {
+    multiEngineEnabled = enabled;
+}
+
++ (BOOL)isMultiEngineEnabled {
+    return multiEngineEnabled;
 }
 
 @end

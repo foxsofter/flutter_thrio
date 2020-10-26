@@ -158,7 +158,7 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
     bool animated = true,
   }) {
     final navigatorState = widget.child.tryStateOf<NavigatorState>();
-    if (navigatorState == null) {
+    if (navigatorState == null || history.length < 2) {
       return Future.value(false);
     }
 
@@ -181,13 +181,15 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
     if (animated) {
       navigatorState.popUntil((it) => it.settings.name == settings.name);
     } else {
-      for (var i = history.length - 2; i >= 0; i--) {
-        if (history[i].settings.name == settings.name) {
-          break;
+      if (history.last != route) {
+        for (var i = history.length - 2; i > index; i--) {
+          if (history[i].settings.name == route.settings.name) {
+            break;
+          }
+          navigatorState.removeRoute(history[i]);
         }
-        navigatorState.removeRoute(history[i]);
+        navigatorState.removeRoute(history.last);
       }
-      navigatorState.removeRoute(history.last);
     }
     return Future.value(true);
   }

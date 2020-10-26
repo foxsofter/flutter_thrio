@@ -20,6 +20,7 @@
 // IN THE SOFTWARE.
 
 #import "ThrioNavigator.h"
+#import "NavigatorPageRoute.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -70,6 +71,19 @@ NS_ASSUME_NONNULL_BEGIN
                   disabled:(BOOL)disabled;
 
 + (void)_hotRestart:(ThrioBoolCallback)result;
+
++ (NavigatorPageRoute *)_getLastRouteByEntrypoint:(NSString *)entrypoint;
+
+
+/// Set multi-engine mode to `enabled`, default is NO.
+///
+/// Should be called before the engine is initialized.
+///
++ (void)setMultiEngineEnabled:(BOOL)enabled;
+
+/// Get multi-engine mode enabled or not.
+///
++ (BOOL)isMultiEngineEnabled;
 
 @end
 

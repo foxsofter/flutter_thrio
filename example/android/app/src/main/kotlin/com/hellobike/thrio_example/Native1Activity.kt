@@ -20,7 +20,7 @@ class Native1Activity : AppCompatActivity(), PageNotifyListener {
                         Log.v("Thrio", "push result data $it")
                     },
                     poppedResult = {
-                        Log.v("Thrio", "native1 poppedResult call params $it")
+                        Log.v("Thrio", "/biz1/native1 poppedResult call params $it")
                     }
             )
         }
@@ -38,7 +38,7 @@ class Native1Activity : AppCompatActivity(), PageNotifyListener {
                         Log.v("Thrio", "push result data $it")
                     },
                     poppedResult = {
-                        Log.v("Thrio", "native1 poppedResult call params $it")
+                        Log.v("Thrio", "/biz1/native1 poppedResult call params $it")
                     }
             )
         }
@@ -50,37 +50,37 @@ class Native1Activity : AppCompatActivity(), PageNotifyListener {
         }
 
         btn_20.setOnClickListener {
-            ThrioNavigator.push("native1",
+            ThrioNavigator.push("/biz1/native1",
                     mapOf("k1" to 1),
                     true,
                     result = {
                         Log.v("Thrio", "push result data $it")
                     },
                     poppedResult = {
-                        Log.v("Thrio", "native1 poppedResult call params $it")
+                        Log.v("Thrio", "/biz1/native1 poppedResult call params $it")
                     }
             )
         }
 
         btn_21.setOnClickListener {
-            ThrioNavigator.remove("native1")
+            ThrioNavigator.remove("/biz1/native1")
         }
 
         btn_22.setOnClickListener {
-            ThrioNavigator.push("native2",
+            ThrioNavigator.push("/biz1/native2",
                     mapOf("k1" to 1),
                     true,
                     result = {
                         Log.v("Thrio", "push result data $it")
                     },
                     poppedResult = {
-                        Log.v("Thrio", "native1 poppedResult call params $it")
+                        Log.v("Thrio", "/biz1/native1 poppedResult call params $it")
                     }
             )
         }
 
         btn_23.setOnClickListener {
-            ThrioNavigator.remove("native2")
+            ThrioNavigator.remove("/biz1/native2")
         }
 
         btn_3.setOnClickListener {
@@ -96,13 +96,13 @@ class Native1Activity : AppCompatActivity(), PageNotifyListener {
         if (data != null) {
             @Suppress("UNCHECKED_CAST")
             RouteSettings.fromArguments(data as Map<String, Any?>)?.apply {
-                tv_native.text = "native1 index $index"
+                tv_native.text = "/biz1/native1 index $index"
             }
         }
     }
 
     override fun onNotify(name: String, params: Any?) {
-        Log.v("Thrio", "native1 onNotify name $name params $params")
+        Log.v("Thrio", "/biz1/native1 onNotify name $name params $params")
         // result with url
     }
 

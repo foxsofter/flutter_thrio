@@ -21,6 +21,7 @@
 
 #import <UIKit/UIKit.h>
 #import "ThrioTypes.h"
+#import "NavigatorPageRoute.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -65,6 +66,8 @@ NS_ASSUME_NONNULL_BEGIN
 - (NSNumber *_Nullable)thrio_getLastIndexByUrl:(NSString *)url;
 
 - (NSArray *)thrio_getAllIndexByUrl:(NSString *)url;
+
+- (NavigatorPageRoute *)thrio_getLastRouteByEntrypoint:(NSString *)entrypoint;
 
 - (BOOL)thrio_containsUrl:(NSString *)url;
 
