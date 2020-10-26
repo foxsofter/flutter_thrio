@@ -347,7 +347,7 @@ internal object NavigationController : Application.ActivityLifecycleCallbacks {
                             it.runOnUiThread {
                                 it.surfaceUpdated()
                             }
-                        }, 400)
+                        }, 600)
                     }
                 }
                 return
@@ -356,7 +356,6 @@ internal object NavigationController : Application.ActivityLifecycleCallbacks {
             if (!poppingToHolders.contains(holder)) {
                 poppedToHolders.removeAt(index)
                 poppingToHolders.add(holder)
-                Log.v("NavigationController", "finish->$pageId")
                 activity.finish()
             }
         }

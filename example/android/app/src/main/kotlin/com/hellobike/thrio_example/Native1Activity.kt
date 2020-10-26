@@ -107,7 +107,7 @@ class Native1Activity : AppCompatActivity(), PageNotifyListener {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        Log.v("FlutterView", "onCreate activity $this")
+        Log.v("Native1Activity", "onCreate activity $this")
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_native)
         initView()
