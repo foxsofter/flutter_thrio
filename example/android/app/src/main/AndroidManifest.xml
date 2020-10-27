@@ -37,7 +37,7 @@
             android:theme="@style/Theme.AppCompat.DayNight"
             android:windowSoftInputMode="adjustResize" />
 <!--        <activity-->
-<!--            android:name=".FlutterActivity"-->
+<!--            android:name=".ThrioFlutterActivity"-->
 <!--            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"-->
 <!--            android:hardwareAccelerated="true"-->
 <!--            android:launchMode="singleTop"-->

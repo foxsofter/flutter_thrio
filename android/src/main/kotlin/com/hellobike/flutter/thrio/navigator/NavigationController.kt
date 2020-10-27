@@ -345,9 +345,9 @@ internal object NavigationController : Application.ActivityLifecycleCallbacks {
                         // 需要延迟一小段时间，等待 FlutterEngine 切换完成
                         Timer().schedule(timerTask {
                             it.runOnUiThread {
-                                it.surfaceUpdated()
+                                it.resume()
                             }
-                        }, 400)
+                        }, 500)
                     }
                 }
                 return
@@ -356,7 +356,6 @@ internal object NavigationController : Application.ActivityLifecycleCallbacks {
             if (!poppingToHolders.contains(holder)) {
                 poppedToHolders.removeAt(index)
                 poppingToHolders.add(holder)
-                Log.v("NavigationController", "finish->$pageId")
                 activity.finish()
             }
         }

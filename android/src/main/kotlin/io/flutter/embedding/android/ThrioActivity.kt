@@ -24,6 +24,7 @@
 package io.flutter.embedding.android
 
 import android.content.Intent
+import androidx.lifecycle.Lifecycle
 import com.hellobike.flutter.thrio.BooleanCallback
 import com.hellobike.flutter.thrio.navigator.FlutterEngineFactory
 import com.hellobike.flutter.thrio.navigator.NavigationController
@@ -40,13 +41,6 @@ open class ThrioActivity : ThrioFlutterActivity() {
 
     override fun onFlutterSurfaceViewCreated(flutterSurfaceView: FlutterSurfaceView) {
         this.flutterSurfaceView = WeakReference(flutterSurfaceView)
-    }
-
-    // 开始渲染 Flutter 界面
-    fun surfaceUpdated() {
-        flutterSurfaceView?.get()?.holder?.surface?.apply {
-            flutterEngine?.renderer?.startRenderingToSurface(this)
-        }
     }
 
     override fun shouldAttachEngineToActivity(): Boolean {
