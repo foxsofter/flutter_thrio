@@ -99,3 +99,9 @@
 - feat: add android log disabled
 - fix: onRemove typepo
 - fix: flutter to flutter notify not working
+
+## 1.0.0
+
+- feat: supports multiple UINavigationController for iOS
+- feat: supports multiple flutter engine
+- feat: supports 1.22.x flutter SDK
