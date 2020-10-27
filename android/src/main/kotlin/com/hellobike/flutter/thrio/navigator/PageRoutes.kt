@@ -143,19 +143,19 @@ internal object PageRoutes : Application.ActivityLifecycleCallbacks {
 
 
     fun popTo(url: String, index: Int?, animated: Boolean, result: BooleanCallback) {
-        val holder = routeHolders.lastOrNull { it.lastRoute(url, index) != null }
-        if (holder == null || holder.activity?.get() == null) {
+        val routeHolder = routeHolders.lastOrNull { it.lastRoute(url, index) != null }
+        if (routeHolder == null || routeHolder.activity?.get() == null) {
             result(false)
             return
         }
 
-        holder.popTo(url, index, animated) { ret ->
+        routeHolder.popTo(url, index, animated) { ret ->
             if (ret) {
-                val poppedToIndex = routeHolders.lastIndexOf(holder)
+                val poppedToIndex = routeHolders.lastIndexOf(routeHolder)
                 val removedByPopToHolders = routeHolders.subList(poppedToIndex + 1, routeHolders.size).toMutableList()
                 val entrypoints = mutableSetOf<String>()
                 for (holder in removedByPopToHolders) {
-                    if (holder.entrypoint != holder.entrypoint && holder.entrypoint != NAVIGATION_NATIVE_ENTRYPOINT) {
+                    if (holder.entrypoint != routeHolder.entrypoint && holder.entrypoint != NAVIGATION_NATIVE_ENTRYPOINT) {
                         entrypoints.add(holder.entrypoint)
                     }
                 }
