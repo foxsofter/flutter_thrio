@@ -345,9 +345,9 @@ internal object NavigationController : Application.ActivityLifecycleCallbacks {
                         // 需要延迟一小段时间，等待 FlutterEngine 切换完成
                         Timer().schedule(timerTask {
                             it.runOnUiThread {
-                                it.surfaceUpdated()
+                                it.resume()
                             }
-                        }, 600)
+                        }, 500)
                     }
                 }
                 return

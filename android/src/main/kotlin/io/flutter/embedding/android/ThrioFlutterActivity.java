@@ -545,6 +545,11 @@ public class ThrioFlutterActivity extends Activity
         delegate.onResume();
     }
 
+    public void resume() {
+        lifecycle.handleLifecycleEvent(Lifecycle.Event.ON_RESUME);
+        delegate.onResume();
+    }
+
     @Override
     public void onPostResume() {
         super.onPostResume();
