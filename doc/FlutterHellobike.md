@@ -323,7 +323,7 @@ thrio 提供了三端一致的路由 API
 - dart 端打开页面
 
 ```dart
-ThrioNavigator.push(url: 'flutter1');
+ThrioNavigator.push(url: '/biz1/flutter1');
 // 传入参数
 ThrioNavigator.push(url: '/biz1/native1', params: { '1': {'2': '3'}});
 // 是否动画，目前在内嵌的dart页面中动画无法取消，原生iOS页面有效果
@@ -339,7 +339,7 @@ ThrioNavigator.push(
 - iOS 端打开页面
 
 ```objc
-[ThrioNavigator pushUrl:@"flutter1"];
+[ThrioNavigator pushUrl:@"/biz1/flutter1"];
 // 接收所打开页面的关闭回调
 [ThrioNavigator pushUrl:@"biz2/flutter2" poppedResult:^(id _Nonnull params) {
     ThrioLogV(@"biz2/flutter2 popped: %@", params);
@@ -375,7 +375,7 @@ ThrioNavigator.pop(params: 'popped flutter1'),
 - Android 端关闭顶层页面
 
 ```kotlin
-ThrioNavigator.pop(this, params, animated)
+ThrioNavigator.popParams(params, animated)
 ```
 
 ##### 页面的 popTo
@@ -383,19 +383,19 @@ ThrioNavigator.pop(this, params, animated)
 - dart 端关闭到页面
 
 ```dart
-ThrioNavigator.popTo(url: 'flutter1');
+ThrioNavigator.popTo(url: '/biz1/flutter1');
 ```
 
 - iOS 端关闭到页面
 
 ```objc
-[ThrioNavigator popToUrl:@"flutter1" animated:NO];
+[ThrioNavigator popToUrl:@"/biz1/flutter1" animated:NO];
 ```
 
 - Android 端关闭到页面
 
 ```kotlin
-ThrioNavigator.popTo(context, url, index)
+ThrioNavigator.popTo(url, index)
 ```
 
 ##### 页面的 remove
@@ -403,19 +403,19 @@ ThrioNavigator.popTo(context, url, index)
 - dart 端关闭特定页面
 
 ```dart
-ThrioNavigator.remove(url: 'flutter1', animated: true);
+ThrioNavigator.remove(url: '/biz1/flutter1', animated: true);
 ```
 
 - iOS 端关闭特定页面
 
 ```objc
-[ThrioNavigator removeUrl:@"flutter1" animated:NO];
+[ThrioNavigator removeUrl:@"/biz1/flutter1" animated:NO];
 ```
 
 - Android 端关闭特定页面
 
 ```kotlin
-ThrioNavigator.remove(context, url, index)
+ThrioNavigator.remove(url, index)
 ```
 
 #### thrio 的页面通知
@@ -427,13 +427,13 @@ ThrioNavigator.remove(context, url, index)
 - dart 端给特定页面发通知
 
 ```dart
-ThrioNavigator.notify(url: 'flutter1', name: 'reload');
+ThrioNavigator.notify(url: '/biz1/flutter1', name: 'reload');
 ```
 
 - iOS 端给特定页面发通知
 
 ```objc
-[ThrioNavigator notifyUrl:@"flutter1" name:@"reload"];
+[ThrioNavigator notifyUrl:@"/biz1/flutter1" name:@"reload"];
 ```
 
 - Android 端给特定页面发通知
@@ -468,10 +468,10 @@ NavigatorPageNotify(
 
 - Android 端接收页面通知
 
-`Activity`实现协议`OnNotifyListener`，通过 `onNotify` 来接收页面通知
+`Activity`实现协议`PageNotifyListener`，通过 `onNotify` 来接收页面通知
 
 ```kotlin
-class Activity : AppCompatActivity(), OnNotifyListener {
+class Activity : AppCompatActivity(), PageNotifyListener {
     override fun onNotify(name: String, params: Any?) {
     }
 }

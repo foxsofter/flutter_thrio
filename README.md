@@ -44,7 +44,7 @@ There is a pretty sweet example project in the `example` folder. Check it out. O
 ### `push` a page in dart
 
 ```dart
-ThrioNavigator.push(url: 'flutter1');
+ThrioNavigator.push(url: '/biz1/flutter1');
 
 ThrioNavigator.push(url: '/biz1/native1', params: { '1': {'2': '3'}});
 
@@ -60,7 +60,7 @@ ThrioNavigator.push(
 ### `push` a page in iOS
 
 ```objc
-[ThrioNavigator pushUrl:@"flutter1"];
+[ThrioNavigator pushUrl:@"/biz1/flutter1"];
 
 [ThrioNavigator pushUrl:@"/biz2/flutter2" poppedResult:^(id _Nonnull params) {
     ThrioLogV(@"/biz2/flutter2 popped: %@", params);
@@ -109,57 +109,57 @@ ThrioNavigator.pop(this, params, animated)
 
 ```dart
 
-ThrioNavigator.popTo(url: 'flutter1');
+ThrioNavigator.popTo(url: '/biz1/flutter1');
 
-ThrioNavigator.popTo(url: 'flutter1', animated: false);
+ThrioNavigator.popTo(url: '/biz1/flutter1', animated: false);
 ```
 
 ### `popTo` a page in iOS
 
 ```objc
-[ThrioNavigator popToUrl:@"flutter1"];
+[ThrioNavigator popToUrl:@"/biz1/flutter1"];
 
-[ThrioNavigator popToUrl:@"flutter1" animated:NO];
+[ThrioNavigator popToUrl:@"/biz1/flutter1" animated:NO];
 ```
 
 ### `popTo` a page in Android
 
 ```kotlin
-ThrioNavigator.popTo(context, url, index)
+ThrioNavigator.popTo(url, index)
 ```
 
 ### `remove` a page in dart
 
 ```dart
-ThrioNavigator.remove(url: 'flutter1');
+ThrioNavigator.remove(url: '/biz1/flutter1');
 
-ThrioNavigator.remove(url: 'flutter1', animated: true);
+ThrioNavigator.remove(url: '/biz1/flutter1', animated: true);
 ```
 
 ## `remove` a page in iOS
 
 ```objc
-[ThrioNavigator removeUrl:@"flutter1"];
+[ThrioNavigator removeUrl:@"/biz1/flutter1"];
 
-[ThrioNavigator removeUrl:@"flutter1" animated:NO];
+[ThrioNavigator removeUrl:@"/biz1/flutter1" animated:NO];
 ```
 
 ### `remove` a page in Android
 
 ```kotlin
-ThrioNavigator.remove(context, url, index)
+ThrioNavigator.remove(url, index)
 ```
 
 ### `notify` a page in dart
 
 ```dart
-ThrioNavigator.notify(url: 'flutter1', name: 'reload');
+ThrioNavigator.notify(url: '/biz1/flutter1', name: 'reload');
 ```
 
 ### `notify` a page in iOS
 
 ```objc
-[ThrioNavigator notifyUrl:@"flutter1" name:@"reload"];
+[ThrioNavigator notifyUrl:@"/biz1/flutter1" name:@"reload"];
 ```
 
 ### `notify` a page in Android
@@ -190,10 +190,10 @@ NavigatorPageNotify(
 
 ### receive page notifications in Android
 
-`Activity` implements the `OnNotifyListener` and receives page notifications via `onNotify`
+`Activity` implements the `PageNotifyListener` and receives page notifications via `onNotify`
 
 ```kotlin
-class Activity : AppCompatActivity(), OnNotifyListener {
+class Activity : AppCompatActivity(), PageNotifyListener {
     override fun onNotify(name: String, params: Any?) {
     }
 }
