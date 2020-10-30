@@ -40,6 +40,7 @@ class ThrioPlugin : FlutterPlugin {
 
     companion object {
         private const val TAG = "ThrioPlugin"
+
         // This static function is optional and equivalent to onAttachedToEngine. It supports the old
         // pre-Flutter-1.12 Android projects. You are encouraged to continue supporting
         // plugin registration via this function while apps migrate to use the new Android APIs

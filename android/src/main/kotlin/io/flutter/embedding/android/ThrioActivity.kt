@@ -24,7 +24,6 @@
 package io.flutter.embedding.android
 
 import android.content.Intent
-import androidx.lifecycle.Lifecycle
 import com.hellobike.flutter.thrio.BooleanCallback
 import com.hellobike.flutter.thrio.navigator.FlutterEngineFactory
 import com.hellobike.flutter.thrio.navigator.NavigationController
@@ -32,7 +31,7 @@ import java.lang.ref.WeakReference
 
 open class ThrioActivity : ThrioFlutterActivity() {
 
-    private var flutterSurfaceView : WeakReference<out FlutterSurfaceView>? = null
+    private var flutterSurfaceView: WeakReference<out FlutterSurfaceView>? = null
 
     override fun onNewIntent(intent: Intent) {
         super.onNewIntent(intent)
