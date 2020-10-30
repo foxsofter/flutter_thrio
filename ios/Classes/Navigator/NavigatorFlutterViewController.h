@@ -39,6 +39,10 @@ NS_ASSUME_NONNULL_BEGIN
 - (instancetype)initWithProject:(FlutterDartProject *_Nullable)project
                         nibName:(NSString *_Nullable)nibName
                          bundle:(NSBundle *_Nullable)nibBundle NS_UNAVAILABLE;
+- (instancetype)initWithProject:(nullable FlutterDartProject *)project
+                   initialRoute:(nullable NSString *)initialRoute
+                        nibName:(nullable NSString *)nibName
+                         bundle:(nullable NSBundle *)nibBundle NS_UNAVAILABLE;
 
 - (void)surfaceUpdated:(BOOL)appeared;
 

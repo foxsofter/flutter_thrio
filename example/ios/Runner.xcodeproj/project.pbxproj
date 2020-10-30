@@ -13,6 +13,7 @@
 		12AA0BF623B39045007F1FE8 /* ThrioRegistrySetTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 12AA0BF523B39045007F1FE8 /* ThrioRegistrySetTests.m */; };
 		12AA0BF923B397D2007F1FE8 /* ThrioViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 12AA0BF823B397D2007F1FE8 /* ThrioViewController.m */; };
 		12AA0BFE23B7339D007F1FE8 /* MainModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 12AA0BFD23B7339D007F1FE8 /* MainModule.m */; };
+		12F239B4254C332300C1370C /* SwiftModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12F239B3254C332300C1370C /* SwiftModule.swift */; };
 		1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */ = {isa = PBXBuildFile; fileRef = 1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */; };
 		3B3967161E833CAA004F5970 /* AppFrameworkInfo.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */; };
 		8E4A6A8A240227C9009DCF21 /* SampleModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 8E4A6A89240227C9009DCF21 /* SampleModule.m */; };
@@ -50,6 +51,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		125C4293254BFA3F005A5A10 /* Runner-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Runner-Bridging-Header.h"; sourceTree = "<group>"; };
 		12A48B9523E6D58E002B699E /* ThrioViewController2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ThrioViewController2.h; sourceTree = "<group>"; };
 		12A48B9623E6D58E002B699E /* ThrioViewController2.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ThrioViewController2.m; sourceTree = "<group>"; };
 		12AA0BE223B38470007F1FE8 /* thrio_exampleTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = thrio_exampleTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -61,6 +63,7 @@
 		12AA0BF823B397D2007F1FE8 /* ThrioViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ThrioViewController.m; sourceTree = "<group>"; };
 		12AA0BFC23B7339D007F1FE8 /* MainModule.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MainModule.h; sourceTree = "<group>"; };
 		12AA0BFD23B7339D007F1FE8 /* MainModule.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MainModule.m; sourceTree = "<group>"; };
+		12F239B3254C332300C1370C /* SwiftModule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftModule.swift; sourceTree = "<group>"; };
 		1498D2321E8E86230040F4C2 /* GeneratedPluginRegistrant.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GeneratedPluginRegistrant.h; sourceTree = "<group>"; };
 		1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GeneratedPluginRegistrant.m; sourceTree = "<group>"; };
 		3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = AppFrameworkInfo.plist; path = Flutter/AppFrameworkInfo.plist; sourceTree = "<group>"; };
@@ -164,6 +167,7 @@
 				8E4A6A86240225B9009DCF21 /* Module1 */,
 				8E4A6A88240227C9009DCF21 /* SampleModule.h */,
 				8E4A6A89240227C9009DCF21 /* SampleModule.m */,
+				12F239B3254C332300C1370C /* SwiftModule.swift */,
 			);
 			name = Sample;
 			sourceTree = "<group>";
@@ -237,6 +241,7 @@
 				12AA0BFD23B7339D007F1FE8 /* MainModule.m */,
 				8E4A6A85240225A9009DCF21 /* Sample */,
 				97C146F11CF9000F007C117D /* Supporting Files */,
+				125C4293254BFA3F005A5A10 /* Runner-Bridging-Header.h */,
 			);
 			path = Runner;
 			sourceTree = "<group>";
@@ -320,6 +325,7 @@
 					97C146ED1CF9000F007C117D = {
 						CreatedOnToolsVersion = 7.3.1;
 						DevelopmentTeam = 5DW223J2GA;
+						LastSwiftMigration = 1150;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -453,6 +459,7 @@
 				8E4A6A90240228D6009DCF21 /* Module1.m in Sources */,
 				12A48B9723E6D58E002B699E /* ThrioViewController2.m in Sources */,
 				8E4A6A8A240227C9009DCF21 /* SampleModule.m in Sources */,
+				12F239B4254C332300C1370C /* SwiftModule.swift in Sources */,
 				978B8F6F1D3862AE00F588F7 /* AppDelegate.m in Sources */,
 				12AA0BF923B397D2007F1FE8 /* ThrioViewController.m in Sources */,
 				8E4A6A8D2402289B009DCF21 /* Module2.m in Sources */,
@@ -495,6 +502,7 @@
 		12AA0BEA23B38470007F1FE8 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -519,6 +527,7 @@
 		12AA0BEB23B38470007F1FE8 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -542,6 +551,7 @@
 		12AA0BEC23B38470007F1FE8 /* Profile */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
@@ -617,6 +627,7 @@
 			baseConfigurationReference = 7AFA3C8E1D35360C0083082E /* Release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
@@ -635,6 +646,8 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.hellobike.thrioExample;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";
+				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Profile;
@@ -749,6 +762,7 @@
 			baseConfigurationReference = 9740EEB21CF90195004384FC /* Debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
@@ -772,6 +786,9 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.hellobike.thrioExample;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
@@ -781,6 +798,7 @@
 			baseConfigurationReference = 7AFA3C8E1D35360C0083082E /* Release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = "$(FLUTTER_BUILD_NUMBER)";
@@ -799,6 +817,8 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.hellobike.thrioExample;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_OBJC_BRIDGING_HEADER = "Runner/Runner-Bridging-Header.h";
+				SWIFT_VERSION = 5.0;
 				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;

@@ -26,6 +26,7 @@
 #import "ThrioPlugin.h"
 #import "ThrioTypes.h"
 #import "NSObject+ThrioSwizzling.h"
+#import "NSPointerArray+Thrio.h"
 #import "UIApplication+Thrio.h"
 #import "UIViewController+ThrioInjection.h"
 #import "ThrioChannel.h"
