@@ -25,7 +25,7 @@ package com.hellobike.flutter.thrio.navigator
 
 import com.hellobike.flutter.thrio.BooleanCallback
 import com.hellobike.flutter.thrio.channel.ThrioChannel
-import com.hellobike.flutter.thrio.navigator.Log
+
 internal class RouteSendChannel constructor(private val channel: ThrioChannel) {
 
     fun onPush(arguments: Map<String, Any?>?, result: BooleanCallback) {

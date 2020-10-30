@@ -24,7 +24,7 @@
 package com.hellobike.flutter.thrio.navigator
 
 import com.hellobike.flutter.thrio.registry.RegistrySet
-import com.hellobike.flutter.thrio.navigator.Log
+
 internal object RouteObservers : RouteObserver {
     private const val TAG = "RouteObservers"
 
