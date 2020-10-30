@@ -4,9 +4,11 @@
 
 [中文文档](./doc/Feature.md) [问题集](./doc/Questions.md) QQ 群号码：1014085473
 
+Flutter SDK 版本是 `1.22.x` 的，请用 `1.0.0` 及之后的版本。
+
 The `Navigator` for iOS, Android, Flutter.
 
-Version `0.2.2` requires Flutter `>= 1.12.0` and Dart `>= 2.6.0`.
+Version `0.5.1` requires Flutter `>= 1.12.1` and Dart `>= 2.6.0`.
 
 ## Features
 
@@ -17,6 +19,7 @@ Version `0.2.2` requires Flutter `>= 1.12.0` and Dart `>= 2.6.0`.
 - Register observers for the route actions of pages
 - Hide native navigation bar for flutter pages
 - Supports custom transition animation on the Flutter side
+- Supports running multiple entry points
 
 ## Getting started
 
@@ -24,7 +27,7 @@ You should ensure that you add `thrio` as a dependency in your flutter project.
 
 ```yaml
 dependencies:
-  thrio: '^0.5.0'
+  thrio: '^0.5.1'
 ```
 
 You can also reference the git repo directly if you want:
@@ -33,6 +36,7 @@ You can also reference the git repo directly if you want:
 dependencies:
   thrio:
     git: git@github.com:hellobike/thrio.git
+    ref: main
 ```
 
 You should then run `flutter pub upgrade` or update your packages in IntelliJ.

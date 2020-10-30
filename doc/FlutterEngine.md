@@ -16,7 +16,7 @@ FlutterEngine，dart entrypoint 默认为`main`，默认会提前启动引擎。
 ## 多引擎模式
 
 指的是在一个 App 中允许启动多个 FlutterEngine，每个引擎的 dart entrypoint 不同。
-entrypoint 根据路由 url 第一段解析得到，如：url `biz1/flutter1`的 entrypoint 为`biz1`.
+entrypoint 根据路由 url 第一段解析得到，如：url `/biz1/flutter1`的 entrypoint 为`biz1`.
 在 dart 代码中需要添加对应的 entrypoint：
 
 ```dart
@@ -36,7 +36,7 @@ Future<void> biz1() async {
 
 ### 适用的场景
 
-- 多业务线的代码隔离，比如 BOS App 上，各个业务线之间基本上是独立运行的，但是代码是在一块打包
+- 多业务线的代码隔离，可以做到在一个 App 上，各个业务线的代码之间基本上是独立运行的，但是代码是在一块打包
 - 类似小程序，用完即释放
 
 ### 实现方式

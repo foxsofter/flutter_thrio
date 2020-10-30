@@ -60,7 +60,7 @@ internal object NavigationController : Application.ActivityLifecycleCallbacks {
     override fun onActivityPaused(activity: Activity) {
     }
 
-    override fun onActivityStopped(activity: Activity?) {
+    override fun onActivityStopped(activity: Activity) {
     }
 
     override fun onActivityDestroyed(activity: Activity) {

@@ -76,7 +76,7 @@ internal object ActivityDelegate : Application.ActivityLifecycleCallbacks {
         Log.v(TAG, "onActivityPaused: ${activity.intent.getPageId()}")
     }
 
-    override fun onActivityStopped(activity: Activity?) {
+    override fun onActivityStopped(activity: Activity) {
         PageRoutes.onActivityStopped(activity)
 
         NavigationController.onActivityStopped(activity)
