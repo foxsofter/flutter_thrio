@@ -285,7 +285,7 @@ internal object PageRoutes : Application.ActivityLifecycleCallbacks {
         }
     }
 
-    override fun onActivityStopped(activity: Activity?) {
+    override fun onActivityStopped(activity: Activity) {
     }
 
     override fun onActivityDestroyed(activity: Activity) {
