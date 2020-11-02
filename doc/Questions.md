@@ -72,6 +72,6 @@ NavigatorPageNotify(
 
 默认路由日志都是关闭的，在 debug 下可以打开日志
 
-1. 在 iOS 中需要添加预编译宏 `NAVIGATOR_LOGGING=1`
+1. 在 iOS 中需要添加预编译宏 `NAVIGATOR_LOGGING=1`，要在 Pods 工程上加才有效果
 2. 在 dart 中设置全局变量 `navigatorLogging = true;`
 3. 在 Android 中设置 `navigatorLogEnabled = true`
