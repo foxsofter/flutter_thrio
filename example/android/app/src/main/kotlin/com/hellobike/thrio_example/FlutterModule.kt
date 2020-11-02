@@ -10,7 +10,7 @@ object FlutterModule : ThrioModule(), ModuleIntentBuilder {
 
     override fun onModuleInit(context: Context) {
         navigatorLogEnabled = true
-        multiEngineEnabled = true
+//        multiEngineEnabled = true
     }
 
     override fun onPageRegister(context: Context) {
