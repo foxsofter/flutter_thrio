@@ -9,6 +9,7 @@ import com.hellobike.flutter.thrio.navigator.IntentBuilder
 object FlutterModule : ThrioModule(), ModuleIntentBuilder {
 
     override fun onModuleInit(context: Context) {
+        setFlutterIntentBuilder(CustomFlutterIntentBuilder)
         navigatorLogEnabled = true
     }
 

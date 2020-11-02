@@ -548,7 +548,7 @@ public class ThrioFlutterActivity extends Activity
     private static Timer lastResumeTimer;
 
     @Override
-    protected void onResume() {
+    public void onResume() {
         super.onResume();
         // 设置一个桶，仅使 600ms 内最后调用的一次生效
         try {
