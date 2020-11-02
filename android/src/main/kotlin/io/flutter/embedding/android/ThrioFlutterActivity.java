@@ -27,6 +27,8 @@ import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LifecycleRegistry;
 
 import java.lang.reflect.Method;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import io.flutter.Log;
 import io.flutter.embedding.android.FlutterActivityLaunchConfigs.BackgroundMode;
@@ -543,16 +545,35 @@ public class ThrioFlutterActivity extends Activity
         delegate.onStart();
     }
 
+    private static Timer lastResumeTimer;
+
     @Override
-    protected void onResume() {
+    public void onResume() {
         super.onResume();
-        lifecycle.handleLifecycleEvent(Lifecycle.Event.ON_RESUME);
-        delegate.onResume();
+        // 设置一个桶，仅使 500ms 内最后调用的一次生效
+        try {
+            if (lastResumeTimer != null) {
+                lastResumeTimer.cancel();
+            }
+            lastResumeTimer = new Timer();
+            lastResumeTimer.schedule(new TimerTask() {
+                @Override
+                public void run() {
+                    resume();
+                }
+            }, 500);
+        } catch (IllegalStateException ignored) {
+        }
     }
 
-    public void resume() {
-        lifecycle.handleLifecycleEvent(Lifecycle.Event.ON_RESUME);
-        delegate.onResume();
+    private void resume() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                lifecycle.handleLifecycleEvent(Lifecycle.Event.ON_RESUME);
+                delegate.onResume();
+            }
+        });
     }
 
     @Override

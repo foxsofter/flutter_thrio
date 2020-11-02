@@ -33,7 +33,7 @@ import com.hellobike.flutter.thrio.NullableAnyCallback
 import com.hellobike.flutter.thrio.NullableIntCallback
 import io.flutter.embedding.android.ThrioActivity
 import java.util.*
-import kotlin.concurrent.timerTask
+import kotlin.concurrent.schedule
 
 internal object NavigationController : Application.ActivityLifecycleCallbacks {
 
@@ -343,11 +343,7 @@ internal object NavigationController : Application.ActivityLifecycleCallbacks {
                     poppedToHolder = null
                     if (it is ThrioActivity) {
                         // 需要延迟一小段时间，等待 FlutterEngine 切换完成
-                        Timer().schedule(timerTask {
-                            it.runOnUiThread {
-                                it.resume()
-                            }
-                        }, 500)
+                        it.onResume()
                     }
                 }
                 return
