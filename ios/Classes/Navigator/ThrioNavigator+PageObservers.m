@@ -43,7 +43,9 @@ NS_ASSUME_NONNULL_BEGIN
                      routeSettings.index);
     ThrioRegistrySet *pageObservers = [self.pageObservers copy];
     for (id<NavigatorPageObserverProtocol> observer in pageObservers) {
-        [observer onCreate:routeSettings];
+        if ([observer respondsToSelector:@selector(onCreate:)]) {
+            [observer onCreate:routeSettings];
+        }
     }
 }
 
@@ -54,7 +56,9 @@ NS_ASSUME_NONNULL_BEGIN
                      routeSettings.index);
     ThrioRegistrySet *pageObservers = [self.pageObservers copy];
     for (id<NavigatorPageObserverProtocol> observer in pageObservers) {
-        [observer willAppear:routeSettings];
+        if ([observer respondsToSelector:@selector(willAppear:)]) {
+            [observer willAppear:routeSettings];
+        }
     }
 }
 
@@ -65,7 +69,9 @@ NS_ASSUME_NONNULL_BEGIN
                      routeSettings.index);
     ThrioRegistrySet *pageObservers = [self.pageObservers copy];
     for (id<NavigatorPageObserverProtocol> observer in pageObservers) {
-        [observer didAppear:routeSettings];
+        if ([observer respondsToSelector:@selector(didAppear:)]) {
+            [observer didAppear:routeSettings];
+        }
     }
 }
 
@@ -76,7 +82,9 @@ NS_ASSUME_NONNULL_BEGIN
                      routeSettings.index);
     ThrioRegistrySet *pageObservers = [self.pageObservers copy];
     for (id<NavigatorPageObserverProtocol> observer in pageObservers) {
-        [observer willDisappear:routeSettings];
+        if ([observer respondsToSelector:@selector(willDisappear:)]) {
+            [observer willDisappear:routeSettings];
+        }
     }
 }
 
@@ -87,7 +95,9 @@ NS_ASSUME_NONNULL_BEGIN
                      routeSettings.index);
     ThrioRegistrySet *pageObservers = [self.pageObservers copy];
     for (id<NavigatorPageObserverProtocol> observer in pageObservers) {
-        [observer didDisappear:routeSettings];
+        if ([observer respondsToSelector:@selector(didDisappear:)]) {
+            [observer didDisappear:routeSettings];
+        }
     }
 }
 

@@ -44,7 +44,9 @@ NS_ASSUME_NONNULL_BEGIN
                      routeSettings.index);
     ThrioRegistrySet *routeObservers = [self.routeObservers copy];
     for (id<NavigatorRouteObserverProtocol> observer in routeObservers) {
-        [observer didPush:routeSettings previousRoute:previousRouteSettings];
+        if ([observer respondsToSelector:@selector(didPush:previousRoute:)]) {
+            [observer didPush:routeSettings previousRoute:previousRouteSettings];
+        }
     }
 }
 
@@ -56,7 +58,9 @@ NS_ASSUME_NONNULL_BEGIN
                      routeSettings.index);
     ThrioRegistrySet *routeObservers = [self.routeObservers copy];
     for (id<NavigatorRouteObserverProtocol> observer in routeObservers) {
-        [observer didPop:routeSettings previousRoute:previousRouteSettings];
+        if ([observer respondsToSelector:@selector(didPop:previousRoute:)]) {
+            [observer didPop:routeSettings previousRoute:previousRouteSettings];
+        }
     }
 }
 
@@ -68,7 +72,9 @@ NS_ASSUME_NONNULL_BEGIN
                      routeSettings.index);
     ThrioRegistrySet *routeObservers = [self.routeObservers copy];
     for (id<NavigatorRouteObserverProtocol> observer in routeObservers) {
-        [observer didPopTo:routeSettings previousRoute:previousRouteSettings];
+        if ([observer respondsToSelector:@selector(didPopTo:previousRoute:)]) {
+            [observer didPopTo:routeSettings previousRoute:previousRouteSettings];
+        }
     }
 }
 
@@ -80,7 +86,9 @@ NS_ASSUME_NONNULL_BEGIN
                      routeSettings.index);
     ThrioRegistrySet *routeObservers = [self.routeObservers copy];
     for (id<NavigatorRouteObserverProtocol> observer in routeObservers) {
-        [observer didRemove:routeSettings previousRoute:previousRouteSettings];
+        if ([observer respondsToSelector:@selector(didRemove:previousRoute:)]) {
+            [observer didRemove:routeSettings previousRoute:previousRouteSettings];
+        }
     }
 }
 
