@@ -36,7 +36,7 @@ static NSMutableDictionary *modules;
 }
 
 + (void)init:(ThrioModule *)rootModule multiEngineEnabled:(BOOL)enabled {
-    ThrioNavigator.multiEngineEnabled = YES;
+    ThrioNavigator.multiEngineEnabled = enabled;
     [rootModule registerModule:rootModule];
     [rootModule initModule];
 }
