@@ -14,6 +14,7 @@
 		12AA0BF923B397D2007F1FE8 /* ThrioViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 12AA0BF823B397D2007F1FE8 /* ThrioViewController.m */; };
 		12AA0BFE23B7339D007F1FE8 /* MainModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 12AA0BFD23B7339D007F1FE8 /* MainModule.m */; };
 		12F239B4254C332300C1370C /* SwiftModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12F239B3254C332300C1370C /* SwiftModule.swift */; };
+		12F239B7255015F400C1370C /* Page5View.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12F239B6255015F400C1370C /* Page5View.swift */; };
 		1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */ = {isa = PBXBuildFile; fileRef = 1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */; };
 		3B3967161E833CAA004F5970 /* AppFrameworkInfo.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */; };
 		8E4A6A8A240227C9009DCF21 /* SampleModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 8E4A6A89240227C9009DCF21 /* SampleModule.m */; };
@@ -64,6 +65,7 @@
 		12AA0BFC23B7339D007F1FE8 /* MainModule.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MainModule.h; sourceTree = "<group>"; };
 		12AA0BFD23B7339D007F1FE8 /* MainModule.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MainModule.m; sourceTree = "<group>"; };
 		12F239B3254C332300C1370C /* SwiftModule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftModule.swift; sourceTree = "<group>"; };
+		12F239B6255015F400C1370C /* Page5View.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Page5View.swift; sourceTree = "<group>"; };
 		1498D2321E8E86230040F4C2 /* GeneratedPluginRegistrant.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GeneratedPluginRegistrant.h; sourceTree = "<group>"; };
 		1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GeneratedPluginRegistrant.m; sourceTree = "<group>"; };
 		3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = AppFrameworkInfo.plist; path = Flutter/AppFrameworkInfo.plist; sourceTree = "<group>"; };
@@ -152,6 +154,15 @@
 			path = Registry;
 			sourceTree = "<group>";
 		};
+		12F239B5255013F900C1370C /* SwiftModule */ = {
+			isa = PBXGroup;
+			children = (
+				12F239B3254C332300C1370C /* SwiftModule.swift */,
+				12F239B6255015F400C1370C /* Page5View.swift */,
+			);
+			name = SwiftModule;
+			sourceTree = "<group>";
+		};
 		71186115DB6E4F62EB236168 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -163,11 +174,11 @@
 		8E4A6A85240225A9009DCF21 /* Sample */ = {
 			isa = PBXGroup;
 			children = (
+				12F239B5255013F900C1370C /* SwiftModule */,
 				8E4A6A87240225C3009DCF21 /* Module2 */,
 				8E4A6A86240225B9009DCF21 /* Module1 */,
 				8E4A6A88240227C9009DCF21 /* SampleModule.h */,
 				8E4A6A89240227C9009DCF21 /* SampleModule.m */,
-				12F239B3254C332300C1370C /* SwiftModule.swift */,
 			);
 			name = Sample;
 			sourceTree = "<group>";
@@ -461,6 +472,7 @@
 				8E4A6A8A240227C9009DCF21 /* SampleModule.m in Sources */,
 				12F239B4254C332300C1370C /* SwiftModule.swift in Sources */,
 				978B8F6F1D3862AE00F588F7 /* AppDelegate.m in Sources */,
+				12F239B7255015F400C1370C /* Page5View.swift in Sources */,
 				12AA0BF923B397D2007F1FE8 /* ThrioViewController.m in Sources */,
 				8E4A6A8D2402289B009DCF21 /* Module2.m in Sources */,
 				12AA0BFE23B7339D007F1FE8 /* MainModule.m in Sources */,

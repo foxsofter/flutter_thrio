@@ -2,7 +2,7 @@
 //  ThrioModulePageBuilder.m
 //  Pods-Runner
 //
-//  Created by Wei ZhongDan on 2020/10/2.
+//  Created by foxsofter on 2020/10/2.
 //
 
 #import "ThrioModulePageBuilder.h"

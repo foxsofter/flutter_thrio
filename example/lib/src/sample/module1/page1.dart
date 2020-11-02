@@ -195,6 +195,17 @@ class _Page1State extends State<Page1> {
                             style: TextStyle(fontSize: 22, color: Colors.black),
                           )),
                     ),
+                    InkWell(
+                      onTap: () => ThrioNavigator.push(url: '/biz1/swift1'),
+                      child: Container(
+                          padding: const EdgeInsets.all(8),
+                          margin: const EdgeInsets.all(8),
+                          color: Colors.grey,
+                          child: const Text(
+                            'push swift1',
+                            style: TextStyle(fontSize: 22, color: Colors.black),
+                          )),
+                    ),
                   ]),
             ),
           )));
