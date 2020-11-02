@@ -9,6 +9,7 @@
 @import thrio;
 #import "MainModule.h"
 #import "SampleModule.h"
+#import <Runner-Swift.h>
 
 @implementation MainModule
 
@@ -17,6 +18,7 @@
 
 - (void)onModuleRegister {
     [self registerModule:[SampleModule new]];
+    [self registerModule:[SwiftModule new]];
 }
 
 @end

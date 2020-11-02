@@ -41,6 +41,15 @@ open class ThrioModule {
             root.initModule(context)
             ThrioNavigator.init(context)
         }
+
+        @JvmStatic
+        fun init(context: Application, module: ThrioModule, multiEngineEnabled: Boolean) {
+            FlutterEngineFactory.isMultiEngineEnabled = multiEngineEnabled
+
+            root.registerModule(context, module)
+            root.initModule(context)
+            ThrioNavigator.init(context)
+        }
     }
 
     protected fun registerModule(context: Context, module: ThrioModule) {
@@ -70,11 +79,5 @@ open class ThrioModule {
         get() = Log.navigatorLogging
         set(enabled) {
             Log.navigatorLogging = enabled
-        }
-
-    protected open var multiEngineEnabled
-        get() = FlutterEngineFactory.isMultiEngineEnabled
-        set(enabled) {
-            FlutterEngineFactory.isMultiEngineEnabled = enabled
         }
 }

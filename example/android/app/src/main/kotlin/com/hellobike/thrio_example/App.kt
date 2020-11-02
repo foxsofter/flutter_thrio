@@ -8,6 +8,7 @@ class App : Application() {
         super.onCreate()
 
         ThrioModule.init(this, FlutterModule)
+//        ThrioModule.init(this, FlutterModule, true)
     }
 }
 
