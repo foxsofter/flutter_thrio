@@ -349,7 +349,7 @@ ThrioNavigator.push(
 - Android 端打开页面
 
 ```kotlin
-ThrioNavigator.push(this, "biz1/flutter1",
+ThrioNavigator.push("biz1/flutter1",
         mapOf("k1" to 1),
         false,
         poppedResult = {

@@ -68,7 +68,7 @@ ThrioNavigator.push(
 3. Android 端打开页面
 
 ```kotlin
-ThrioNavigator.push(this, "/biz1/flutter1",
+ThrioNavigator.push("/biz1/flutter1",
         mapOf("k1" to 1),
         false,
         poppedResult = {
@@ -113,7 +113,7 @@ ThrioNavigator.pop(params: 'popped flutter1'),
 3. Android 端关闭顶层页面
 
 ```kotlin
-ThrioNavigator.pop(this, params, animated)
+ThrioNavigator.pop(params, animated)
 ```
 
 ### 页面的 popTo
