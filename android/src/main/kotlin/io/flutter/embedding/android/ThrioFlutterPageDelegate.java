@@ -384,6 +384,8 @@ import static android.content.ComponentCallbacks2.TRIM_MEMORY_RUNNING_LOW;
         if (flutterEngine != null) {
             flutterEngine.getLifecycleChannel().appIsResumed();
             // 解决两个 FlutterActivity 中间存在一个原生的 Activity 的时候，pop 到第一个原生 Activity 键盘无法弹出的问题
+
+
             Activity activity = host.getActivity();
             if (activity != null) {
                 flutterEngine.getActivityControlSurface().attachToActivity(host.getActivity(), host.getLifecycle());
