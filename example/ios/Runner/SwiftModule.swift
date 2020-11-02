@@ -7,7 +7,7 @@
 //
 
 import Foundation
-import thrio.Swift
+import thrio
 
 class SwiftPageObserver: NSObject, NavigatorPageObserverProtocol {
 }
