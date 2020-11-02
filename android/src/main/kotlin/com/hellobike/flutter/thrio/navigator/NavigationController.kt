@@ -32,8 +32,6 @@ import com.hellobike.flutter.thrio.BooleanCallback
 import com.hellobike.flutter.thrio.NullableAnyCallback
 import com.hellobike.flutter.thrio.NullableIntCallback
 import io.flutter.embedding.android.ThrioActivity
-import java.util.*
-import kotlin.concurrent.schedule
 
 internal object NavigationController : Application.ActivityLifecycleCallbacks {
 
