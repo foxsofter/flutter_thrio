@@ -26,6 +26,7 @@ package com.hellobike.flutter.thrio.module
 import android.app.Application
 import android.content.Context
 import com.hellobike.flutter.thrio.navigator.FlutterEngineFactory
+import com.hellobike.flutter.thrio.navigator.IntentBuilders
 import com.hellobike.flutter.thrio.navigator.Log
 import com.hellobike.flutter.thrio.navigator.ThrioNavigator
 

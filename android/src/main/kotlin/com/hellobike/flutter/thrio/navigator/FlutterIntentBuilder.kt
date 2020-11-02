@@ -30,7 +30,7 @@ import io.flutter.embedding.android.ThrioActivity
 import io.flutter.embedding.android.ThrioFlutterActivity
 
 
-object FlutterIntentBuilder : IntentBuilder {
+open class FlutterIntentBuilder : IntentBuilder {
 
     override fun getActivityClz(): Class<out Activity> = ThrioActivity::class.java
 

@@ -29,7 +29,7 @@ internal object IntentBuilders {
 
     val intentBuilders by lazy { RegistryMap<String, IntentBuilder>() }
 
-    var flutterIntentBuilder = FlutterIntentBuilder
+    var flutterIntentBuilder = FlutterIntentBuilder()
 }
 
 
