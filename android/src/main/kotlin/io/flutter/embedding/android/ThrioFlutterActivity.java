@@ -550,7 +550,7 @@ public class ThrioFlutterActivity extends Activity
     @Override
     public void onResume() {
         super.onResume();
-        // 设置一个桶，仅使 500ms 内最后调用的一次生效
+        // 设置一个桶，仅使 300ms 内最后调用的一次生效
         try {
             if (lastResumeTimer != null) {
                 lastResumeTimer.cancel();
@@ -561,7 +561,7 @@ public class ThrioFlutterActivity extends Activity
                 public void run() {
                     resume();
                 }
-            }, 500);
+            }, 600);
         } catch (IllegalStateException ignored) {
         }
     }
