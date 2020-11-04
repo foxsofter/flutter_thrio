@@ -341,20 +341,20 @@ NS_ASSUME_NONNULL_BEGIN
     return nil;
 }
 
-- (NSNumber *_Nullable)thrio_getLastIndexByUrl:(NSString *)url {
+- (NavigatorPageRoute *_Nullable)thrio_getLastRouteByUrl:(NSString *)url {
     NavigatorPageRoute *route = [self thrio_getRouteByUrl:url index:nil];
-    return route.settings.index;
+    return route;
 }
 
-- (NSArray *)thrio_getAllIndexByUrl:(NSString *)url {
-    NSMutableArray *indexs = [NSMutableArray array];
+- (NSArray *)thrio_getAllRoutesByUrl:(NSString *)url {
+    NSMutableArray *routes = [NSMutableArray array];
     NavigatorPageRoute *first = self.thrio_firstRoute;
     do {
         if ([first.settings.url isEqualToString:url]) {
-            [indexs addObject:first.settings.index];
+            [routes addObject:first];
         }
     } while ((first = first.next));
-    return [indexs copy];
+    return [routes copy];
 }
 
 #pragma mark - method swizzling

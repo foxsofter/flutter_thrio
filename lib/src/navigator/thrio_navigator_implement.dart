@@ -198,11 +198,11 @@ class ThrioNavigatorImplement {
     return _default._sendChannel.lastIndex(url: url);
   }
 
-  static Future<List<int>> allIndex({@required String url}) {
+  static Future<List<int>> allIndexs({@required String url}) {
     if (_default == null) {
       throw ThrioException('Must call the `builder` method first');
     }
-    return _default._sendChannel.allIndex(url: url);
+    return _default._sendChannel.allIndexs(url: url);
   }
 
   static Future<bool> setPopDisabled({

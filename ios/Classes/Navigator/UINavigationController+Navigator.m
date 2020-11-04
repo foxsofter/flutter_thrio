@@ -87,7 +87,8 @@ NS_ASSUME_NONNULL_BEGIN
                 __strong typeof(weakself) strongSelf = weakself;
                 if ([strongSelf.topViewController isKindOfClass:NavigatorFlutterViewController.class] &&
                     [[(NavigatorFlutterViewController *)strongSelf.topViewController entrypoint] isEqualToString:entrypoint]) {
-                    NSNumber *index = @([ThrioNavigator getLastIndexByUrl:url].integerValue + 1);
+                    NavigatorPageRoute *lastRoute = [ThrioNavigator getLastRouteByUrl:url];
+                    NSNumber *index = @(lastRoute.settings.index.integerValue + 1);
                     [strongSelf.topViewController thrio_pushUrl:url
                                                           index:index
                                                          params:params
@@ -100,7 +101,7 @@ NS_ASSUME_NONNULL_BEGIN
                         if (result) {
                             result(idx);
                         }
-                    } poppedResult:poppedResult];
+                    }                              poppedResult:poppedResult];
                 } else {
                     UIViewController *viewController = [strongSelf thrio_createFlutterViewControllerWithEntrypoint:entrypoint];
                     [strongSelf thrio_pushViewController:viewController
@@ -321,22 +322,22 @@ NS_ASSUME_NONNULL_BEGIN
     }
 }
 
-- (NSNumber *_Nullable)thrio_lastIndex {
-    return self.topViewController.thrio_lastRoute.settings.index;
+- (NavigatorPageRoute *_Nullable)thrio_lastRoute {
+    return self.topViewController.thrio_lastRoute;
 }
 
-- (NSNumber *_Nullable)thrio_getLastIndexByUrl:(NSString *)url {
+- (NavigatorPageRoute *_Nullable)thrio_getLastRouteByUrl:(NSString *)url {
     UIViewController *vc = [self getViewControllerByUrl:url index:nil];
-    return [vc thrio_getLastIndexByUrl:url];
+    return [vc thrio_getLastRouteByUrl:url];
 }
 
-- (NSArray *)thrio_getAllIndexByUrl:(NSString *)url {
+- (NSArray *)thrio_getAllRoutesByUrl:(NSString *)url {
     NSArray *vcs = self.viewControllers;
-    NSMutableArray *indexs = [NSMutableArray array];
+    NSMutableArray *routes = [NSMutableArray array];
     for (UIViewController *vc in vcs) {
-        [indexs addObjectsFromArray:[vc thrio_getAllIndexByUrl:url]];
+        [routes addObjectsFromArray:[vc thrio_getAllRoutesByUrl:url]];
     }
-    return indexs;
+    return routes;
 }
 
 - (NavigatorPageRoute *)thrio_getLastRouteByEntrypoint:(NSString *)entrypoint {
@@ -621,7 +622,8 @@ NS_ASSUME_NONNULL_BEGIN
                           result:(ThrioNumberCallback _Nullable)result
                     poppedResult:(ThrioIdCallback _Nullable)poppedResult {
     if (viewController) {
-        NSNumber *index = @([self thrio_getLastIndexByUrl:url].integerValue + 1);
+        NavigatorPageRoute *lastRoute = [ThrioNavigator getLastRouteByUrl:url];
+        NSNumber *index = @(lastRoute.settings.index.integerValue + 1);
         __weak typeof(self) weakself = self;
         [viewController thrio_pushUrl:url
                                 index:index

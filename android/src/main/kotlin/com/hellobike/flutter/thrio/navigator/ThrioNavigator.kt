@@ -41,7 +41,6 @@ object ThrioNavigator {
                 NAVIGATION_NATIVE_ENTRYPOINT, poppedResult, result)
     }
 
-
     @JvmStatic
     @JvmOverloads
     fun pop(params: Any? = null,
@@ -79,12 +78,10 @@ object ThrioNavigator {
         NavigationController.Notify.notify(url, index, name, params, result)
     }
 
-    internal fun init(context: Application) {
-        if (!FlutterEngineFactory.isMultiEngineEnabled) {
-            FlutterEngineFactory.startup(context)
-        }
-        context.registerActivityLifecycleCallbacks(ActivityDelegate)
-    }
+    @JvmStatic
+    @JvmOverloads
+    fun lastRoute(url: String? = null): PageRoute? = PageRoutes.lastRoute(url)
+
+    @JvmStatic
+    fun allRoutes(url: String): List<PageRoute> = PageRoutes.allRoutes(url);
 }
-
-

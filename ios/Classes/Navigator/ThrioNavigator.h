@@ -23,6 +23,7 @@
 #import <Flutter/Flutter.h>
 #import "ThrioTypes.h"
 #import "ThrioChannel.h"
+#import "NavigatorPageRoute.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -364,22 +365,21 @@ NS_ASSUME_NONNULL_BEGIN
          animated:(BOOL)animated
            result:(ThrioBoolCallback)result;
 
-#pragma mark - get index methods
+#pragma mark - get route methods
 
-/// Returns the index of the page that was last pushed to the navigation
+/// Returns the route of the page that was last pushed to the navigation
 /// stack.
 ///
-+ (NSNumber *_Nullable)lastIndex;
++ (NavigatorPageRoute *_Nullable)lastRoute;
 
-/// Returns the index of the page that was last pushed to the navigation
+/// Returns the route of the page that was last pushed to the navigation
 /// stack.
 ///
-+ (NSNumber *_Nullable)getLastIndexByUrl:(NSString *)url;
++ (NavigatorPageRoute *_Nullable)getLastRouteByUrl:(NSString *)url;
 
-/// Returns all index of the page with `url` in the navigation stack.
+/// Returns all route of the page with `url` in the navigation stack.
 ///
-+ (NSArray *)getAllIndexByUrl:(NSString *)url;
-
++ (NSArray *)getAllRoutesByUrl:(NSString *)url;
 
 #pragma mark - engine methods
 
