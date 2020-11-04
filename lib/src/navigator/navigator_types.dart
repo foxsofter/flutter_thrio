@@ -25,3 +25,6 @@ typedef NavigatorPageBuilder = Widget Function(RouteSettings settings);
 
 // ignore: avoid_annotating_with_dynamic
 typedef NavigatorParamsCallback = void Function(dynamic params);
+
+// ignore: avoid_annotating_with_dynamic
+typedef NavigatorLifecycleCallback = void Function(RouteSettings settings);

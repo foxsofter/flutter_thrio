@@ -34,7 +34,7 @@ mixin NavigatorRouteObserver {
   void didPush(
     RouteSettings routeSettings,
     RouteSettings previousRouteSettings,
-  );
+  ) {}
 
   /// The [ThrioNavigator] popped `route`.
   ///
@@ -44,7 +44,7 @@ mixin NavigatorRouteObserver {
   void didPop(
     RouteSettings routeSettings,
     RouteSettings previousRouteSettings,
-  );
+  ) {}
 
   /// The [ThrioNavigator] popped to `route`.
   ///
@@ -53,7 +53,7 @@ mixin NavigatorRouteObserver {
   void didPopTo(
     RouteSettings routeSettings,
     RouteSettings previousRouteSettings,
-  );
+  ) {}
 
   /// The [ThrioNavigator] removed `route`.
   ///
@@ -62,5 +62,5 @@ mixin NavigatorRouteObserver {
   void didRemove(
     RouteSettings routeSettings,
     RouteSettings previousRouteSettings,
-  );
+  ) {}
 }

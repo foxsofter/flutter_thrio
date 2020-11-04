@@ -206,6 +206,28 @@ class _Page1State extends State<Page1> {
                             style: TextStyle(fontSize: 22, color: Colors.black),
                           )),
                     ),
+                    NavigatorPageLifecycle(
+                        willAppear: (settings) {
+                          ThrioLogger.v('lifecycle willAppear -> $settings');
+                        },
+                        didAppear: (settings) {
+                          ThrioLogger.v('lifecycle didAppear -> $settings');
+                        },
+                        willDisappear: (settings) {
+                          ThrioLogger.v('lifecycle willDisappear -> $settings');
+                        },
+                        didDisappear: (settings) {
+                          ThrioLogger.v('lifecycle didDisappear -> $settings');
+                        },
+                        child: Container(
+                            padding: const EdgeInsets.all(8),
+                            margin: const EdgeInsets.all(8),
+                            color: Colors.grey,
+                            child: const Text(
+                              '',
+                              style:
+                                  TextStyle(fontSize: 22, color: Colors.black),
+                            )))
                   ]),
             ),
           )));
