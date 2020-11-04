@@ -302,45 +302,45 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark - get index methods
 
-+ (NSNumber *_Nullable)lastIndex {
++ (NavigatorPageRoute *_Nullable)lastRoute {
     NSEnumerator *allNvcs = self.navigationControllers.allObjects.reverseObjectEnumerator;
     for (UINavigationController *nvc in allNvcs) {
-        NSNumber *index = [nvc thrio_lastIndex];
-        if (index && ![index isEqualToNumber:@0]) {
-            return index;
+        NavigatorPageRoute *route = [nvc thrio_lastRoute];
+        if (route && ![route.settings.index isEqualToNumber:@0]) {
+            return route;
         }
     }
     return nil;
 }
 
-+ (NSNumber *_Nullable)getLastIndexByUrl:(NSString *)url {
-    NSNumber *lastIndex = nil;
++ (NavigatorPageRoute *_Nullable)getLastRouteByUrl:(NSString *)url {
+    NavigatorPageRoute *lastRoute = nil;
     NSEnumerator *allNvcs = self.navigationControllers.allObjects.reverseObjectEnumerator;
     for (UINavigationController *nvc in allNvcs) {
-        NSNumber *index = [nvc thrio_getLastIndexByUrl:url];
-        if (index && ![index isEqualToNumber:@0]) {
-            if (!lastIndex) {
-                lastIndex = index;
+        NavigatorPageRoute *route = [nvc thrio_getLastRouteByUrl:url];
+        if (route && ![route.settings.index isEqualToNumber:@0]) {
+            if (!lastRoute) {
+                lastRoute = route;
             } else {
-                if (lastIndex.integerValue < index.integerValue) {
-                    lastIndex = index;
+                if (lastRoute.settings.index.integerValue < route.settings.index.integerValue) {
+                    lastRoute = route;
                 }
             }
         }
     }
-    return lastIndex;
+    return lastRoute;
 }
 
-+ (NSArray *)getAllIndexByUrl:(NSString *)url {
-    NSMutableArray *allIndexs = [NSMutableArray array];
++ (NSArray *)getAllRoutesByUrl:(NSString *)url {
+    NSMutableArray *allRoutes = [NSMutableArray array];
     NSEnumerator *allNvcs = self.navigationControllers.allObjects.reverseObjectEnumerator;
     for (UINavigationController *nvc in allNvcs) {
-        NSArray *indexs = [nvc thrio_getAllIndexByUrl:url];
-        if (indexs.count > 0) {
-            [allIndexs addObjectsFromArray:indexs];
+        NSArray *routes = [nvc thrio_getAllRoutesByUrl:url];
+        if (routes.count > 0) {
+            [allRoutes addObjectsFromArray:routes];
         }
     }
-    return allIndexs;
+    return allRoutes;
 }
 
 #pragma mark - engine methods

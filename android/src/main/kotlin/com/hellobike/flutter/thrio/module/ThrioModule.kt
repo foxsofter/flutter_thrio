@@ -25,10 +25,9 @@ package com.hellobike.flutter.thrio.module
 
 import android.app.Application
 import android.content.Context
+import com.hellobike.flutter.thrio.navigator.ActivityDelegate
 import com.hellobike.flutter.thrio.navigator.FlutterEngineFactory
-import com.hellobike.flutter.thrio.navigator.IntentBuilders
 import com.hellobike.flutter.thrio.navigator.Log
-import com.hellobike.flutter.thrio.navigator.ThrioNavigator
 
 open class ThrioModule {
     private val modules by lazy { mutableMapOf<Class<out ThrioModule>, ThrioModule>() }
@@ -38,18 +37,19 @@ open class ThrioModule {
 
         @JvmStatic
         fun init(context: Application, module: ThrioModule) {
+            context.registerActivityLifecycleCallbacks(ActivityDelegate)
+
             root.registerModule(context, module)
             root.initModule(context)
-            ThrioNavigator.init(context)
         }
 
         @JvmStatic
         fun init(context: Application, module: ThrioModule, multiEngineEnabled: Boolean) {
             FlutterEngineFactory.isMultiEngineEnabled = multiEngineEnabled
+            context.registerActivityLifecycleCallbacks(ActivityDelegate)
 
             root.registerModule(context, module)
             root.initModule(context)
-            ThrioNavigator.init(context)
         }
     }
 
@@ -68,6 +68,9 @@ open class ThrioModule {
         modules.values.forEach {
             it.onPageRegister(context)
         }
+        if (!FlutterEngineFactory.isMultiEngineEnabled) {
+            FlutterEngineFactory.startup(context)
+        }
     }
 
     protected open fun onModuleRegister(context: Context) {}
@@ -76,9 +79,15 @@ open class ThrioModule {
 
     protected open fun onModuleInit(context: Context) {}
 
-    protected open var navigatorLogEnabled
+    protected var navigatorLogEnabled
         get() = Log.navigatorLogging
         set(enabled) {
             Log.navigatorLogging = enabled
         }
+
+    protected fun startupFlutterEngine(context: Context, entrypoint: String) {
+        if (!FlutterEngineFactory.isMultiEngineEnabled) {
+            FlutterEngineFactory.startup(context, entrypoint)
+        }
+    }
 }

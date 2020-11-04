@@ -78,7 +78,7 @@ internal object PageRoutes : Application.ActivityLifecycleCallbacks {
         return holder?.lastRoute()
     }
 
-    fun allRoute(url: String): List<PageRoute> {
+    fun allRoutes(url: String): List<PageRoute> {
         val allRoutes = mutableListOf<PageRoute>()
         for (i in routeHolders.size - 1 downTo 0) {
             val holder = routeHolders[i]
