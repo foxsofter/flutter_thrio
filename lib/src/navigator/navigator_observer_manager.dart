@@ -108,7 +108,9 @@ class NavigatorObserverManager extends NavigatorObserver {
               }
               pageRoutes.last.routeAction = null;
             }
-            if (route.routeAction == NavigatorRouteAction.pop) {
+            // 这里需要判断 routeAction == null 的场景，处理滑动返回需要
+            if (route.routeAction == NavigatorRouteAction.pop ||
+                route.routeAction == null) {
               verbose(
                 'didPop: url->${route.settings.url} '
                 'index->${route.settings.index} '
