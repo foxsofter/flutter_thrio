@@ -15,6 +15,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Looper;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -205,6 +206,8 @@ import static io.flutter.embedding.android.FlutterActivityLaunchConfigs.SPLASH_S
 public class ThrioFlutterActivity extends Activity
         implements ThrioFlutterPageDelegate.Host, LifecycleOwner {
     private static final String TAG = "ThrioFlutterActivity";
+
+    private boolean resumeNeedDelay = false;
 
     /**
      * Creates an {@link Intent} that launches a {@code ThrioFlutterActivity}, which creates a {@link
@@ -555,6 +558,15 @@ public class ThrioFlutterActivity extends Activity
             if (lastResumeTimer != null) {
                 lastResumeTimer.cancel();
             }
+
+            //first init no need delay
+            if (!resumeNeedDelay) {
+                resume();
+                return;
+            }
+
+            resumeNeedDelay = true;
+
             lastResumeTimer = new Timer();
             lastResumeTimer.schedule(new TimerTask() {
                 @Override
@@ -567,13 +579,18 @@ public class ThrioFlutterActivity extends Activity
     }
 
     private void resume() {
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                lifecycle.handleLifecycleEvent(Lifecycle.Event.ON_RESUME);
-                delegate.onResume();
-            }
-        });
+        if (Looper.getMainLooper() == Looper.myLooper()) {
+            lifecycle.handleLifecycleEvent(Lifecycle.Event.ON_RESUME);
+            delegate.onResume();
+        } else {
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    lifecycle.handleLifecycleEvent(Lifecycle.Event.ON_RESUME);
+                    delegate.onResume();
+                }
+            });
+        }
     }
 
     @Override
