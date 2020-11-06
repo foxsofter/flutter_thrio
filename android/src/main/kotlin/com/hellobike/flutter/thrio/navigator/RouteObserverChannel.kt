@@ -26,8 +26,7 @@ package com.hellobike.flutter.thrio.navigator
 import com.hellobike.flutter.thrio.channel.ThrioChannel
 import io.flutter.plugin.common.BinaryMessenger
 
-class RouteObserverChannel constructor(private val entrypoint: String,
-                                       private val messenger: BinaryMessenger) {
+class RouteObserverChannel constructor(entrypoint: String, messenger: BinaryMessenger) {
 
     private val channel: ThrioChannel = ThrioChannel(entrypoint, "__thrio_route_channel__$entrypoint")
 
@@ -57,5 +56,4 @@ class RouteObserverChannel constructor(private val entrypoint: String,
             }
         }
     }
-
 }

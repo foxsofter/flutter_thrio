@@ -2,7 +2,7 @@
 //  Page5View.swift
 //  Runner
 //
-//  Created by Wei ZhongDan on 2020/11/2.
+//  Created by foxsofter on 2020/11/2.
 //  Copyright © 2020 The Chromium Authors. All rights reserved.
 //
 

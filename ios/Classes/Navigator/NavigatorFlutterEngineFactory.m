@@ -64,7 +64,7 @@ static NSString *const kDefaultEntrypoint = @"main";
 }
 
 - (void)startupWithEntrypoint:(NSString *)entrypoint readyBlock:(ThrioIdCallback _Nullable)block {
-    if (!ThrioNavigator.isMultiEngineEnabled) {
+    if (!NavigatorFlutterEngineFactory.shared.multiEngineEnabled) {
         entrypoint = kDefaultEntrypoint;
     }
 
@@ -79,7 +79,7 @@ static NSString *const kDefaultEntrypoint = @"main";
 }
 
 - (FlutterEngine *)getEngineByEntrypoint:(NSString *)entrypoint {
-    if (!ThrioNavigator.isMultiEngineEnabled) {
+    if (!NavigatorFlutterEngineFactory.shared.multiEngineEnabled) {
         entrypoint = kDefaultEntrypoint;
     }
     NavigatorFlutterEngine *flutterEngine = self.flutterEngines[entrypoint];
@@ -87,7 +87,7 @@ static NSString *const kDefaultEntrypoint = @"main";
 }
 
 - (NavigatorRouteSendChannel *)getSendChannelByEntrypoint:(NSString *)entrypoint {
-    if (!ThrioNavigator.isMultiEngineEnabled) {
+    if (!self.multiEngineEnabled) {
         entrypoint = kDefaultEntrypoint;
     }
     NavigatorFlutterEngine *flutterEngine = self.flutterEngines[entrypoint];
@@ -95,7 +95,7 @@ static NSString *const kDefaultEntrypoint = @"main";
 }
 
 - (NavigatorPageObserverChannel *)getPageObserverChannelByEntrypoint:(NSString *)entrypoint {
-    if (!ThrioNavigator.isMultiEngineEnabled) {
+    if (!self.multiEngineEnabled) {
         entrypoint = kDefaultEntrypoint;
     }
     NavigatorFlutterEngine *flutterEngine = self.flutterEngines[entrypoint];

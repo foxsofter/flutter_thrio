@@ -389,7 +389,6 @@ NS_ASSUME_NONNULL_BEGIN
 ///
 + (FlutterEngine *)getEngineByEntrypoint:(NSString *)entrypoint;
 
-
 @end
 
 NS_ASSUME_NONNULL_END

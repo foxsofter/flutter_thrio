@@ -26,8 +26,7 @@ package com.hellobike.flutter.thrio.navigator
 import com.hellobike.flutter.thrio.channel.ThrioChannel
 import io.flutter.plugin.common.BinaryMessenger
 
-class PageObserverChannel constructor(private val entrypoint: String,
-                                      private val messenger: BinaryMessenger) {
+class PageObserverChannel constructor(entrypoint: String, messenger: BinaryMessenger) {
 
     private val channel: ThrioChannel = ThrioChannel(entrypoint, "__thrio_page_channel__$entrypoint")
 

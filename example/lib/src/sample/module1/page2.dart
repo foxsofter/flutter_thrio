@@ -20,6 +20,16 @@ class Page2 extends StatefulWidget {
 }
 
 class _Page2State extends State<Page2> {
+  final _channel = ThrioChannel(channel: 'custom_thrio_channel');
+  @override
+  void initState() {
+    super.initState();
+    _channel.registryMethodCall('sayHello', ([arguments]) {
+      ThrioLogger.v('sayHello from native');
+      return null;
+    });
+  }
+
   @override
   Widget build(BuildContext context) => NavigatorPageNotify(
       name: 'page2Notify',

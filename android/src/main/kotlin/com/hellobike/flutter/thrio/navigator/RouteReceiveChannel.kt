@@ -25,8 +25,8 @@ package com.hellobike.flutter.thrio.navigator
 
 import com.hellobike.flutter.thrio.channel.ThrioChannel
 
-internal class RouteReceiveChannel(private val channel: ThrioChannel,
-                                   private var readyListener: EngineReadyListener? = null) {
+internal class RouteReceiveChannel(val channel: ThrioChannel,
+                                   var readyListener: EngineReadyListener? = null) {
     init {
         onReady()
         onPush()

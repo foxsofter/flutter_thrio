@@ -15,6 +15,7 @@
 		12AA0BFE23B7339D007F1FE8 /* MainModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 12AA0BFD23B7339D007F1FE8 /* MainModule.m */; };
 		12F239B4254C332300C1370C /* SwiftModule.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12F239B3254C332300C1370C /* SwiftModule.swift */; };
 		12F239B7255015F400C1370C /* Page5View.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12F239B6255015F400C1370C /* Page5View.swift */; };
+		12F239BA25548D9A00C1370C /* CustomFlutterViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 12F239B925548D9A00C1370C /* CustomFlutterViewController.m */; };
 		1498D2341E8E89220040F4C2 /* GeneratedPluginRegistrant.m in Sources */ = {isa = PBXBuildFile; fileRef = 1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */; };
 		3B3967161E833CAA004F5970 /* AppFrameworkInfo.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */; };
 		8E4A6A8A240227C9009DCF21 /* SampleModule.m in Sources */ = {isa = PBXBuildFile; fileRef = 8E4A6A89240227C9009DCF21 /* SampleModule.m */; };
@@ -66,6 +67,8 @@
 		12AA0BFD23B7339D007F1FE8 /* MainModule.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MainModule.m; sourceTree = "<group>"; };
 		12F239B3254C332300C1370C /* SwiftModule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwiftModule.swift; sourceTree = "<group>"; };
 		12F239B6255015F400C1370C /* Page5View.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Page5View.swift; sourceTree = "<group>"; };
+		12F239B825548D9A00C1370C /* CustomFlutterViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CustomFlutterViewController.h; sourceTree = "<group>"; };
+		12F239B925548D9A00C1370C /* CustomFlutterViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = CustomFlutterViewController.m; sourceTree = "<group>"; };
 		1498D2321E8E86230040F4C2 /* GeneratedPluginRegistrant.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = GeneratedPluginRegistrant.h; sourceTree = "<group>"; };
 		1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GeneratedPluginRegistrant.m; sourceTree = "<group>"; };
 		3B3967151E833CAA004F5970 /* AppFrameworkInfo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = AppFrameworkInfo.plist; path = Flutter/AppFrameworkInfo.plist; sourceTree = "<group>"; };
@@ -179,6 +182,8 @@
 				8E4A6A86240225B9009DCF21 /* Module1 */,
 				8E4A6A88240227C9009DCF21 /* SampleModule.h */,
 				8E4A6A89240227C9009DCF21 /* SampleModule.m */,
+				12F239B825548D9A00C1370C /* CustomFlutterViewController.h */,
+				12F239B925548D9A00C1370C /* CustomFlutterViewController.m */,
 			);
 			name = Sample;
 			sourceTree = "<group>";
@@ -467,6 +472,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				12F239BA25548D9A00C1370C /* CustomFlutterViewController.m in Sources */,
 				8E4A6A90240228D6009DCF21 /* Module1.m in Sources */,
 				12A48B9723E6D58E002B699E /* ThrioViewController2.m in Sources */,
 				8E4A6A8A240227C9009DCF21 /* SampleModule.m in Sources */,
