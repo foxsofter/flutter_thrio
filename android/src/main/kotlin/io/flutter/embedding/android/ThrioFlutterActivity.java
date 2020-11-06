@@ -557,6 +557,7 @@ public class ThrioFlutterActivity extends Activity
         try {
             if (lastResumeTimer != null) {
                 lastResumeTimer.cancel();
+                lastResumeTimer = null;
             }
 
             //first init no need delay
@@ -1004,11 +1005,8 @@ public class ThrioFlutterActivity extends Activity
         if (getIntent().hasExtra(EXTRA_ENABLE_STATE_RESTORATION)) {
             return getIntent().getBooleanExtra(EXTRA_ENABLE_STATE_RESTORATION, false);
         }
-        if (getCachedEngineId() != null) {
-            // Prevent overwriting the existing state in a cached engine with restoration state.
-            return false;
-        }
-        return true;
+        // Prevent overwriting the existing state in a cached engine with restoration state.
+        return getCachedEngineId() == null;
     }
 
     /**

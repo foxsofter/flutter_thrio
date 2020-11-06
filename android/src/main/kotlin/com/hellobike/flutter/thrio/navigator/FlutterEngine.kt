@@ -40,19 +40,19 @@ data class FlutterEngine(private val context: Context,
     private var pageObserverChannel: PageObserverChannel
 
     init {
-        val channel = ThrioChannel(this.entrypoint, "__thrio_app__${this.entrypoint}")
+        val channel = ThrioChannel(entrypoint, "__thrio_app__${entrypoint}")
         channel.setupMethodChannel(flutterEngine.dartExecutor)
         channel.setupEventChannel(flutterEngine.dartExecutor)
         sendChannel = RouteSendChannel(channel)
         receiveChannel = RouteReceiveChannel(channel, readyListener)
 
-        routeObserverChannel = RouteObserverChannel(this.entrypoint, flutterEngine.dartExecutor)
-        pageObserverChannel = PageObserverChannel(this.entrypoint, flutterEngine.dartExecutor)
+        routeObserverChannel = RouteObserverChannel(entrypoint, flutterEngine.dartExecutor)
+        pageObserverChannel = PageObserverChannel(entrypoint, flutterEngine.dartExecutor)
 
-        val dartEntrypoint = DartExecutor.DartEntrypoint(FlutterMain.findAppBundlePath(), this.entrypoint)
+        val dartEntrypoint = DartExecutor.DartEntrypoint(FlutterMain.findAppBundlePath(), entrypoint)
         flutterEngine.dartExecutor.executeDartEntrypoint(dartEntrypoint)
 
-        FlutterEngineCache.getInstance().put(this.entrypoint, flutterEngine)
+        FlutterEngineCache.getInstance().put(entrypoint, flutterEngine)
     }
 
     companion object {

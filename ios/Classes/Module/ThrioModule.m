@@ -36,11 +36,10 @@ static NSMutableDictionary *modules;
 }
 
 + (void)init:(ThrioModule *)rootModule multiEngineEnabled:(BOOL)enabled {
-    ThrioNavigator.multiEngineEnabled = enabled;
+    NavigatorFlutterEngineFactory.shared.multiEngineEnabled = enabled;
     [rootModule registerModule:rootModule];
     [rootModule initModule];
 }
-
 
 - (void)registerModule:(ThrioModule *)module {
     if (!modules) {
@@ -76,7 +75,7 @@ static NSMutableDictionary *modules;
         }
     });
     // 单引擎模式下，提前启动，默认 `entrypoint` 为 main
-    if (!ThrioNavigator.isMultiEngineEnabled) {
+    if (!NavigatorFlutterEngineFactory.shared.multiEngineEnabled) {
         [NavigatorFlutterEngineFactory.shared startupWithEntrypoint:@"main" readyBlock:nil];
     }
 }

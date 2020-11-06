@@ -74,17 +74,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (NavigatorPageRoute *)_getLastRouteByEntrypoint:(NSString *)entrypoint;
 
-
-/// Set multi-engine mode to `enabled`, default is NO.
-///
-/// Should be called before the engine is initialized.
-///
-+ (void)setMultiEngineEnabled:(BOOL)enabled;
-
-/// Get multi-engine mode enabled or not.
-///
-+ (BOOL)isMultiEngineEnabled;
-
 @end
 
 NS_ASSUME_NONNULL_END

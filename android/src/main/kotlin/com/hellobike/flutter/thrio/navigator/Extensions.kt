@@ -53,7 +53,7 @@ internal fun Intent.getPageId(): Int {
     return getIntExtra(NAVIGATION_PAGE_ID_KEY, NAVIGATION_PAGE_ID_NONE)
 }
 
-internal fun Intent.getEntrypoint(): String {
+fun Intent.getEntrypoint(): String {
     return getStringExtra(NAVIGATION_ROUTE_ENTRYPOINT_KEY) ?: NAVIGATION_NATIVE_ENTRYPOINT
 }
 
@@ -61,7 +61,7 @@ internal fun Intent.getFromEntrypoint(): String {
     return getStringExtra(NAVIGATION_ROUTE_FROM_ENTRYPOINT_KEY) ?: NAVIGATION_NATIVE_ENTRYPOINT
 }
 
-internal fun Intent.getRouteSettings(): RouteSettings? {
+fun Intent.getRouteSettings(): RouteSettings? {
     val data = getSerializableExtra(NAVIGATION_ROUTE_SETTINGS_KEY).let {
         checkNotNull(it) { "RouteSettings not found" }
         it as Map<String, Any?>

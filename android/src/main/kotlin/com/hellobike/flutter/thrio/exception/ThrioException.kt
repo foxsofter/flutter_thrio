@@ -21,13 +21,7 @@
  * IN THE SOFTWARE.
  */
 
-package com.hellobike.flutter.thrio.navigator
+package com.hellobike.flutter.thrio.exception
 
-internal enum class RouteAction {
-    NONE,
-    PUSH,
-    PUSHING,
-    POPPING,
-    POP_TO,
-    REMOVING
+class ThrioException constructor(message: String) : Exception(message) {
 }

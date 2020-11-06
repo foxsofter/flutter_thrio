@@ -77,7 +77,7 @@ NS_ASSUME_NONNULL_BEGIN
                               poppedResult:poppedResult];
         } else {
             NSString *entrypoint = @"main";
-            if (ThrioNavigator.isMultiEngineEnabled) {
+            if (NavigatorFlutterEngineFactory.shared.multiEngineEnabled) {
                 entrypoint = [url componentsSeparatedByString:@"/"][1];
             }
 
@@ -595,7 +595,7 @@ NS_ASSUME_NONNULL_BEGIN
     UIViewController *viewController;
     NavigatorFlutterPageBuilder flutterBuilder = [ThrioNavigator flutterPageBuilder];
     if (flutterBuilder) {
-        viewController = flutterBuilder();
+        viewController = flutterBuilder(entrypoint);
     } else {
         viewController = [[NavigatorFlutterViewController alloc] initWithEntrypoint:entrypoint];
     }

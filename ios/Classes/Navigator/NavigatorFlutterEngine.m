@@ -25,6 +25,7 @@
 #import "ThrioNavigator+Internal.h"
 #import "NavigatorRouteObserverChannel.h"
 #import "NSPointerArray+Thrio.h"
+#import "NavigatorFlutterEngineFactory.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -98,7 +99,7 @@ NS_ASSUME_NONNULL_BEGIN
     NSString *enginName = [NSString stringWithFormat:@"io.flutter.%lu", (unsigned long)self.hash];
     _engine = [[FlutterEngine alloc] initWithName:enginName project:nil allowHeadlessExecution:YES];
     BOOL result = NO;
-    if (ThrioNavigator.isMultiEngineEnabled) {
+    if (NavigatorFlutterEngineFactory.shared.multiEngineEnabled) {
         result = [_engine runWithEntrypoint:entrypoint];
     } else {
         result = [_engine run];
@@ -125,7 +126,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)setupChannelWithEntrypoint:(NSString *)entrypoint
                         readyBlock:(ThrioIdCallback _Nullable)block {
-    _channel = [ThrioChannel channelWithEntrypoint:entrypoint name:@"__thrio_app__"];
+    NSString *channelName = [NSString stringWithFormat:@"__thrio_app__%@", entrypoint];
+    _channel = [ThrioChannel channelWithEntrypoint:entrypoint
+                                              name:channelName];
 
     [_channel setupEventChannel:_engine.binaryMessenger];
     [_channel setupMethodChannel:_engine.binaryMessenger];
@@ -135,11 +138,13 @@ NS_ASSUME_NONNULL_BEGIN
 
     _sendChannel = [[NavigatorRouteSendChannel alloc] initWithChannel:_channel];
 
-    ThrioChannel *routeChannel = [ThrioChannel channelWithEntrypoint:entrypoint name:@"__thrio_route_channel__"];
+    channelName = [NSString stringWithFormat:@"__thrio_route_channel__%@", entrypoint];
+    ThrioChannel *routeChannel = [ThrioChannel channelWithEntrypoint:entrypoint name:channelName];
     [routeChannel setupMethodChannel:_engine.binaryMessenger];
     _routeObserverChannel = [[NavigatorRouteObserverChannel alloc] initWithChannel:routeChannel];
 
-    ThrioChannel *pageChannel = [ThrioChannel channelWithEntrypoint:entrypoint name:@"__thrio_page_channel__"];
+    channelName = [NSString stringWithFormat:@"__thrio_page_channel__%@", entrypoint];
+    ThrioChannel *pageChannel = [ThrioChannel channelWithEntrypoint:entrypoint name:channelName];
     [pageChannel setupMethodChannel:_engine.binaryMessenger];
     _pageObserverChannel = [[NavigatorPageObserverChannel alloc] initWithChannel:pageChannel];
 }

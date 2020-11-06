@@ -25,6 +25,7 @@
 #import "ThrioRegistryMap.h"
 #import "ThrioRegistrySetMap.h"
 #import "ThrioPlugin.h"
+#import "NavigatorFlutterEngineFactory.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -68,6 +69,11 @@ static NSString *const kEventNameKey = @"__event_name__";
 - (instancetype)initWithEntrypoint:(NSString *)entrypoint name:(NSString *)channelName {
     self = [super init];
     if (self) {
+        if (NavigatorFlutterEngineFactory.shared.multiEngineEnabled &&
+            [entrypoint isEqualToString:@"main"]) {
+            [NSException raise:@"ThrioException"
+                        format:@"multi-engine mode, entrypoint should not be main."];
+        }
         _entrypoint = entrypoint;
         _channelName = channelName;
     }
@@ -76,15 +82,22 @@ static NSString *const kEventNameKey = @"__event_name__";
 
 #pragma mark - method channel methods
 
-- (void)invokeMethod:(NSString *)method
-           arguments:(NSDictionary *_Nullable)arguments {
-    return [_methodChannel invokeMethod:method
-                              arguments:arguments];
+- (void)invokeMethod:(NSString *)method {
+    return [_methodChannel invokeMethod:method arguments:nil result:nil];
+}
+
+- (void)invokeMethod:(NSString *)method result:(ThrioIdCallback)callback {
+    return [_methodChannel invokeMethod:method arguments:nil result:callback];
 }
 
 - (void)invokeMethod:(NSString *)method
-           arguments:(NSDictionary *_Nullable)arguments
-              result:(ThrioIdCallback _Nullable)callback {
+           arguments:(NSDictionary *)arguments {
+    return [_methodChannel invokeMethod:method arguments:arguments];
+}
+
+- (void)invokeMethod:(NSString *)method
+           arguments:(NSDictionary *)arguments
+              result:(ThrioIdCallback)callback {
     return [_methodChannel invokeMethod:method
                               arguments:arguments
                                  result:callback];
@@ -98,7 +111,7 @@ static NSString *const kEventNameKey = @"__event_name__";
 - (void)setupMethodChannel:(NSObject<FlutterBinaryMessenger> *)messenger {
     _methodHandlers = [ThrioRegistryMap map];
 
-    NSString *methodChannelName = [NSString stringWithFormat:@"_method_%@%@", _channelName, _entrypoint];
+    NSString *methodChannelName = [NSString stringWithFormat:@"_method_%@", _channelName];
     _methodChannel = [FlutterMethodChannel methodChannelWithName:methodChannelName
                                                  binaryMessenger:messenger];
     __weak typeof(self) weakself = self;
@@ -137,7 +150,7 @@ static NSString *const kEventNameKey = @"__event_name__";
 - (void)setupEventChannel:(NSObject<FlutterBinaryMessenger> *)messenger {
     _eventHandlers = [ThrioRegistrySetMap map];
 
-    NSString *eventChannelName = [NSString stringWithFormat:@"_event_%@%@", _channelName, _entrypoint];
+    NSString *eventChannelName = [NSString stringWithFormat:@"_event_%@", _channelName];
     _eventChannel = [FlutterEventChannel eventChannelWithName:eventChannelName
                                               binaryMessenger:messenger];
     [_eventChannel setStreamHandler:self];

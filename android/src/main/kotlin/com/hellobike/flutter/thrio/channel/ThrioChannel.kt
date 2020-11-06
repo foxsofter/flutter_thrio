@@ -27,14 +27,24 @@ import com.hellobike.flutter.thrio.EventHandler
 import com.hellobike.flutter.thrio.MethodHandler
 import com.hellobike.flutter.thrio.NullableAnyCallback
 import com.hellobike.flutter.thrio.VoidCallback
+import com.hellobike.flutter.thrio.exception.ThrioException
+import com.hellobike.flutter.thrio.navigator.FlutterEngineFactory
 import com.hellobike.flutter.thrio.navigator.Log
+import com.hellobike.flutter.thrio.navigator.NAVIGATION_FLUTTER_ENTRYPOINT_DEFAULT
 import com.hellobike.flutter.thrio.registry.RegistryMap
 import com.hellobike.flutter.thrio.registry.RegistrySetMap
 import io.flutter.plugin.common.BinaryMessenger
 import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.MethodChannel
 
-open class ThrioChannel constructor(val entrypoint: String, private val channelName: String = "__thrio__") {
+open class ThrioChannel constructor(val entrypoint: String = NAVIGATION_FLUTTER_ENTRYPOINT_DEFAULT,
+                                    private val channelName: String = "__thrio__") {
+
+    init {
+        if (FlutterEngineFactory.isMultiEngineEnabled && entrypoint == NAVIGATION_FLUTTER_ENTRYPOINT_DEFAULT) {
+            throw ThrioException("multi-engine mode, entrypoint should not be main.")
+        }
+    }
 
     private var methodChannel: MethodChannel? = null
 
@@ -66,11 +76,8 @@ open class ThrioChannel constructor(val entrypoint: String, private val channelN
         }
     }
 
-    fun invokeMethod(method: String, arguments: Map<String, Any?>?) {
-        methodChannel?.invokeMethod(method, arguments)
-    }
-
-    fun invokeMethod(method: String, arguments: Map<String, Any?>?, callback: NullableAnyCallback?) {
+    @JvmOverloads
+    fun invokeMethod(method: String, arguments: Map<String, Any?>? = null, callback: NullableAnyCallback? = null) {
         methodChannel?.invokeMethod(method, arguments, object : MethodChannel.Result {
             override fun success(value: Any?) {
                 callback?.invoke(value)

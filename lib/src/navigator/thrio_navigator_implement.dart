@@ -74,7 +74,7 @@ class ThrioNavigatorImplement {
         pagePoppedResults: pagePoppedResults,
       );
       verbose('TransitionBuilder builder');
-      sendChannel.registerUrls(_pageBuilders.keys.toList());
+      // sendChannel.registerUrls(_pageBuilders.keys.toList());
     }
 
     return (context, child) {

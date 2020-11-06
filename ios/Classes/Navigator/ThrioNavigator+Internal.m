@@ -205,14 +205,4 @@
     return nil;
 }
 
-static BOOL multiEngineEnabled = NO;
-
-+ (void)setMultiEngineEnabled:(BOOL)enabled {
-    multiEngineEnabled = enabled;
-}
-
-+ (BOOL)isMultiEngineEnabled {
-    return multiEngineEnabled;
-}
-
 @end

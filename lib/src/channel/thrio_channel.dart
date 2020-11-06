@@ -105,9 +105,13 @@ class ThrioChannel {
       ..setMethodCallHandler((call) {
         final handler = _methodHandlers[call.method];
         final args = call.arguments;
-        if (handler != null && args is Map) {
-          final arguments = args.cast<String, dynamic>();
-          return handler(arguments);
+        if (handler != null) {
+          if (args is Map) {
+            final arguments = args.cast<String, dynamic>();
+            return handler(arguments);
+          } else {
+            return handler(null);
+          }
         }
         return Future.value();
       });

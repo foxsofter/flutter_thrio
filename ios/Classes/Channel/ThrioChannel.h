@@ -44,16 +44,24 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, copy, readonly) NSString *entrypoint;
 
+/// Invokes the specified Flutter method, expecting no results.
+///
+- (void)invokeMethod:(NSString *)method;
+
+/// Invokes the specified Flutter method, expecting an asynchronous result.
+///
+- (void)invokeMethod:(NSString *)method result:(ThrioIdCallback)callback;
+
 /// Invokes the specified Flutter method with the specified arguments, expecting
 /// no results.
-- (void)invokeMethod:(NSString *)method arguments:(id _Nullable)arguments;
+- (void)invokeMethod:(NSString *)method arguments:(NSDictionary *)arguments;
 
 /// Invokes the specified Flutter method with the specified arguments, expecting
 /// an asynchronous result.
 ///
 - (void)invokeMethod:(NSString *)method
-           arguments:(id _Nullable)arguments
-              result:(ThrioIdCallback _Nullable)callback;
+           arguments:(NSDictionary *)arguments
+              result:(ThrioIdCallback)callback;
 
 /// Register a handler for the specified Flutter method with the specified
 /// method.

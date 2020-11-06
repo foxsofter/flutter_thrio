@@ -30,6 +30,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface NavigatorFlutterEngineFactory : NSObject
 
+@property (nonatomic) BOOL multiEngineEnabled;
+
 + (instancetype)shared;
 
 - (void)startupWithEntrypoint:(NSString *)entrypoint readyBlock:(ThrioIdCallback _Nullable)block;

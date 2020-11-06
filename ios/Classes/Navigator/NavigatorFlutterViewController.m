@@ -56,7 +56,7 @@ NS_ASSUME_NONNULL_BEGIN
     self = [super initWithEngine:engine nibName:nil bundle:nil];
     if (self) {
         self.thrio_hidesNavigationBar_ = @YES;
-        if (ThrioNavigator.isMultiEngineEnabled) {
+        if (NavigatorFlutterEngineFactory.shared.multiEngineEnabled) {
             _entrypoint = entrypoint;
         } else {
             _entrypoint = @"main";
