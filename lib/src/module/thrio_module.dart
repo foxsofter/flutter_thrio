@@ -23,8 +23,9 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
-import '../navigator/navigator_logger.dart';
-import '../navigator/thrio_navigator_implement.dart';
+import 'package:thrio/src/navigator/navigator_logger.dart';
+import 'package:thrio/src/navigator/thrio_navigator_implement.dart';
+
 import 'module_page_builder.dart';
 import 'module_page_observer.dart';
 import 'module_route_observer.dart';

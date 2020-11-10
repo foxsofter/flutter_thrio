@@ -254,13 +254,13 @@ NS_ASSUME_NONNULL_BEGIN
                 if (animated && vc == vcs.lastObject) {
                     [CATransaction begin];
                     [CATransaction setCompletionBlock:^{
-                        [ThrioNavigator didRemove:routeSettings previousRoute:previousRouteSettings];
+                        [ThrioNavigator didRemove:routeSettings];
                     }];
                     [strongSelf setViewControllers:vcs animated:animated];
                     [CATransaction commit];
                 } else {
                     [strongSelf setViewControllers:vcs animated:animated];
-                    [ThrioNavigator didRemove:routeSettings previousRoute:previousRouteSettings];
+                    [ThrioNavigator didRemove:routeSettings];
                 }
             }
 
@@ -400,9 +400,8 @@ NS_ASSUME_NONNULL_BEGIN
     if (![viewController isKindOfClass:NavigatorFlutterViewController.class] && viewController.thrio_firstRoute) {
         [CATransaction begin];
         NavigatorRouteSettings *routeSettings = viewController.thrio_lastRoute.settings;
-        NavigatorRouteSettings *previousRouteSettings = self.topViewController.thrio_lastRoute.settings;
         [CATransaction setCompletionBlock:^{
-            [ThrioNavigator didPush:routeSettings previousRoute:previousRouteSettings];
+            [ThrioNavigator didPush:routeSettings];
         }];
         [self thrio_pushViewController:viewController animated:animated];
         [CATransaction commit];
@@ -442,11 +441,9 @@ NS_ASSUME_NONNULL_BEGIN
                 __strong typeof(weakself) strongSelf = weakself;
                 if (result) {
                     NSArray *vcs = strongSelf.viewControllers;
-                    NavigatorRouteSettings *previousRouteSettings;
                     UIViewController *previousVC;
                     if (vcs.count > 1) {
                         previousVC = vcs[vcs.count - 2];
-                        previousRouteSettings = previousVC.thrio_lastRoute.settings;
                     }
 
                     if (strongSelf.topViewController.thrio_firstRoute) {
@@ -454,13 +451,13 @@ NS_ASSUME_NONNULL_BEGIN
                         if (animated) {
                             [CATransaction begin];
                             [CATransaction setCompletionBlock:^{
-                                [ThrioNavigator didPop:routeSettings previousRoute:previousRouteSettings];
+                                [ThrioNavigator didPop:routeSettings];
                             }];
                             [strongSelf thrio_popViewControllerAnimated:animated];
                             [CATransaction commit];
                         } else {
                             [strongSelf thrio_popViewControllerAnimated:animated];
-                            [ThrioNavigator didPop:routeSettings previousRoute:previousRouteSettings];
+                            [ThrioNavigator didPop:routeSettings];
                         }
                     } else {
                         [strongSelf thrio_popViewControllerAnimated:animated];
@@ -486,11 +483,9 @@ NS_ASSUME_NONNULL_BEGIN
         NavigatorRouteSettings *routeSettings = self.topViewController.thrio_lastRoute.settings;
         NSArray *vcs = self.viewControllers;
 
-        NavigatorRouteSettings *previousRouteSettings;
         UIViewController *previousVC;
         if (vcs.count > 1) {
             previousVC = vcs[vcs.count - 2];
-            previousRouteSettings = previousVC.thrio_lastRoute.settings;
         }
         // 判断前一个页面如果是NavigatorFlutterViewController，直接将引擎切换到该页面
         if ([previousVC isKindOfClass:NavigatorFlutterViewController.class]) {
@@ -501,13 +496,13 @@ NS_ASSUME_NONNULL_BEGIN
         if (animated) {
             [CATransaction begin];
             [CATransaction setCompletionBlock:^{
-                [ThrioNavigator didPop:routeSettings previousRoute:previousRouteSettings];
+                [ThrioNavigator didPop:routeSettings];
             }];
             vc = [self thrio_popViewControllerAnimated:animated];
             [CATransaction commit];
         } else {
             vc = [self thrio_popViewControllerAnimated:animated];
-            [ThrioNavigator didPop:routeSettings previousRoute:previousRouteSettings];
+            [ThrioNavigator didPop:routeSettings];
         }
         if (previousVC) {
             // 判断前一个页面导航栏是否需要切换
@@ -531,18 +526,17 @@ NS_ASSUME_NONNULL_BEGIN
     if (viewController.thrio_firstRoute &&
         ![viewController isKindOfClass:NavigatorFlutterViewController.class]) {
         NavigatorRouteSettings *routeSettings = viewController.thrio_lastRoute.settings;
-        NavigatorRouteSettings *previousRouteSettings = self.topViewController.thrio_lastRoute.settings;
         if (animated) {
             [CATransaction begin];
             [CATransaction setCompletionBlock:^{
-                [ThrioNavigator didPopTo:routeSettings previousRoute:previousRouteSettings];
+                [ThrioNavigator didPopTo:routeSettings];
             }];
             NSArray *vcs = [self thrio_popToViewController:viewController animated:animated];
             [CATransaction commit];
             return vcs;
         }
         NSArray *vcs = [self thrio_popToViewController:viewController animated:animated];
-        [ThrioNavigator didPopTo:routeSettings previousRoute:previousRouteSettings];
+        [ThrioNavigator didPopTo:routeSettings];
         return vcs;
     }
     return [self thrio_popToViewController:viewController animated:animated];

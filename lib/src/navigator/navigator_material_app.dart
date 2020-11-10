@@ -22,7 +22,7 @@
 import 'package:flutter/material.dart';
 
 import 'navigator_home.dart';
-import 'thrio_navigator.dart';
+import 'thrio_navigator_implement.dart';
 
 class NavigatorMaterialApp extends MaterialApp {
   NavigatorMaterialApp({
@@ -30,6 +30,7 @@ class NavigatorMaterialApp extends MaterialApp {
     GlobalKey<NavigatorState> navigatorKey,
     String entrypoint = 'main',
     String title = '',
+    Widget home,
     GenerateAppTitle onGenerateTitle,
     Color color,
     ThemeData theme,
@@ -52,11 +53,11 @@ class NavigatorMaterialApp extends MaterialApp {
             key: key,
             navigatorKey: navigatorKey,
             navigatorObservers: [], // ignore: prefer_const_literals_to_create_immutables
-            builder: ThrioNavigator.builder(entrypoint: entrypoint),
+            builder: ThrioNavigatorImplement.builder(entrypoint: entrypoint),
             title: title,
             onGenerateTitle: onGenerateTitle,
             initialRoute: '1 /',
-            routes: {'1 /': (_) => const NavigatorHome()},
+            routes: {'1 /': (_) => home ?? const NavigatorHome()},
             color: color,
             theme: theme,
             darkTheme: darkTheme,

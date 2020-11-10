@@ -21,7 +21,7 @@
 
 import 'package:flutter/foundation.dart';
 
-import '../channel/thrio_channel.dart';
+import 'package:thrio/src/channel/thrio_channel.dart';
 
 class NavigatorRouteSendChannel {
   const NavigatorRouteSendChannel(ThrioChannel channel) : _channel = channel;

@@ -22,25 +22,22 @@
 #import "ThrioNavigator.h"
 #import "ThrioNavigator.h"
 #import "ThrioRegistrySet.h"
-#import "NavigatorRouteObserverProtocol.h"
+#import "NavigatorRouteObservers.h"
+#import "NavigatorRouteSettings.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 @interface ThrioNavigator (RouteObservers)
 
-+ (ThrioRegistrySet<id<NavigatorRouteObserverProtocol> > *)routeObservers;
++ (NavigatorRouteObservers *)routeObservers;
 
-+ (void)  didPush:(NavigatorRouteSettings *)routeSettings
-    previousRoute:(NavigatorRouteSettings *_Nullable)previousRouteSettings;
++ (void)didPush:(NavigatorRouteSettings *)routeSettings;
 
-+ (void)   didPop:(NavigatorRouteSettings *)routeSettings
-    previousRoute:(NavigatorRouteSettings *_Nullable)previousRouteSettings;
++ (void)didPop:(NavigatorRouteSettings *)routeSettings;
 
-+ (void) didPopTo:(NavigatorRouteSettings *)routeSettings
-    previousRoute:(NavigatorRouteSettings *_Nullable)previousRouteSettings;
++ (void)didPopTo:(NavigatorRouteSettings *)routeSettings;
 
-+ (void)didRemove:(NavigatorRouteSettings *)routeSettings
-    previousRoute:(NavigatorRouteSettings *_Nullable)previousRouteSettings;
++ (void)didRemove:(NavigatorRouteSettings *)routeSettings;
 
 @end
 

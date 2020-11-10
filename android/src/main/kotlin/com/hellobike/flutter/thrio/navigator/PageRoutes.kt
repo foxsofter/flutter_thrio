@@ -163,7 +163,7 @@ internal object PageRoutes : Application.ActivityLifecycleCallbacks {
                 // 清理其它引擎的页面
                 entrypoints.forEach { entrypoint ->
                     removedByPopToHolders.firstOrNull { holder -> holder.entrypoint == entrypoint }?.let {
-                        var poppedToSettings = RouteSettings("/shit", 1)
+                        var poppedToSettings = RouteSettings("/", 1)
                         for (i in poppedToIndex downTo 0) {
                             val poppedToRoute = routeHolders[i].lastRoute(entrypoint)
                             if (poppedToRoute != null) {

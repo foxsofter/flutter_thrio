@@ -22,23 +22,26 @@
 #import <Foundation/Foundation.h>
 #import "ThrioNavigator.h"
 #import "ThrioRegistrySet.h"
-#import "NavigatorPageObserverProtocol.h"
+#import "NavigatorPageObservers.h"
+#import "NavigatorRouteSettings.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 @interface ThrioNavigator (PageObservers)
 
-+ (ThrioRegistrySet<id<NavigatorPageObserverProtocol> > *)pageObservers;
++ (NavigatorPageObservers *)pageObservers;
 
-+ (void)onCreate:(NavigatorRouteSettings *)routeSettings;
++ (void)willAppear:(NavigatorRouteSettings *)routeSettings
+       routeAction:(NSString *)routeAction;
 
-+ (void)willAppear:(NavigatorRouteSettings *)routeSettings;
++ (void)didAppear:(NavigatorRouteSettings *)routeSettings
+      routeAction:(NSString *)routeAction;
 
-+ (void)didAppear:(NavigatorRouteSettings *)routeSettings;
++ (void)willDisappear:(NavigatorRouteSettings *)routeSettings
+          routeAction:(NSString *)routeAction;
 
-+ (void)willDisappear:(NavigatorRouteSettings *)routeSettings;
-
-+ (void)didDisappear:(NavigatorRouteSettings *)routeSettings;
++ (void)didDisappear:(NavigatorRouteSettings *)routeSettings
+         routeAction:(NSString *)routeAction;
 
 @end
 

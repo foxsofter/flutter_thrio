@@ -1,6 +1,6 @@
 // The MIT License (MIT)
 //
-// Copyright (c) 2019 Hellobike Group
+// Copyright (c) 2019 foxsofter
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
 // copy of this software and associated documentation files (the "Software"),
@@ -19,32 +19,17 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-import 'package:flutter/foundation.dart';
-import 'package:thrio/src/navigator/navigator_types.dart';
-import 'package:thrio/src/navigator/thrio_navigator_implement.dart';
+#import <Foundation/Foundation.h>
 
-import 'thrio_module.dart';
+#import "ThrioRegistrySet.h"
+#import "NavigatorPageObserverProtocol.h"
 
-mixin ModulePageBuilder on ThrioModule {
-  /// A function for register a page builder.
-  ///
-  void onPageBuilderRegister() {}
+NS_ASSUME_NONNULL_BEGIN
 
-  /// Register an page builder for the router.
-  ///
-  /// Unregistry by calling the return value `VoidCallback`.
-  ///
-  VoidCallback registerPageBuilder(
-    String url,
-    NavigatorPageBuilder builder,
-  ) =>
-      ThrioNavigatorImplement.pageBuilders.registry(url, builder);
+@interface NavigatorPageObservers : NSObject<NavigatorPageObserverProtocol>
 
-  /// Register page builders for the router.
-  ///
-  /// Unregistry by calling the return value `VoidCallback`.
-  ///
-  VoidCallback registerPageBuilders(
-          Map<String, NavigatorPageBuilder> builders) =>
-      ThrioNavigatorImplement.pageBuilders.registryAll(builders);
-}
+@property (nonatomic, readonly) ThrioRegistrySet<id<NavigatorPageObserverProtocol> > *observers;
+
+@end
+
+NS_ASSUME_NONNULL_END

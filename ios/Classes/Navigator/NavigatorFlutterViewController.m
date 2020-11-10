@@ -20,17 +20,17 @@
 // IN THE SOFTWARE.
 
 #import "NavigatorFlutterViewController.h"
-#import "UIViewController+Navigator.h"
-#import "UIViewController+Internal.h"
-#import "UIViewController+HidesNavigationBar.h"
-#import "UINavigationController+Navigator.h"
+#import "NavigatorFlutterEngine.h"
 #import "NavigatorFlutterEngineFactory.h"
-#import "ThrioNavigator.h"
+#import "NavigatorLogger.h"
+#import "ThrioChannel.h"
 #import "ThrioNavigator+Internal.h"
 #import "ThrioNavigator+PageObservers.h"
-#import "NavigatorFlutterEngine.h"
-#import "ThrioChannel.h"
-#import "NavigatorLogger.h"
+#import "ThrioNavigator.h"
+#import "UINavigationController+Navigator.h"
+#import "UIViewController+HidesNavigationBar.h"
+#import "UIViewController+Internal.h"
+#import "UIViewController+Navigator.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -45,10 +45,14 @@ NS_ASSUME_NONNULL_BEGIN
 @implementation NavigatorFlutterViewController
 
 - (instancetype)initWithEntrypoint:(NSString *)entrypoint {
-    FlutterEngine *engine = [NavigatorFlutterEngineFactory.shared getEngineByEntrypoint:entrypoint];
+    FlutterEngine *engine =
+        [NavigatorFlutterEngineFactory.shared getEngineByEntrypoint:entrypoint];
     if (engine.viewController) {
-        if ([engine.viewController isKindOfClass:NavigatorFlutterViewController.class]) {
-            [NavigatorFlutterEngineFactory.shared popViewController:(NavigatorFlutterViewController *)engine.viewController];
+        if ([engine.viewController
+             isKindOfClass:NavigatorFlutterViewController.class]) {
+            [NavigatorFlutterEngineFactory.shared
+             popViewController:(NavigatorFlutterViewController *)
+             engine.viewController];
         } else {
             engine.viewController = nil;
         }
@@ -72,25 +76,13 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 - (void)viewWillAppear:(BOOL)animated {
-    [NavigatorFlutterEngineFactory.shared pushViewController:self];
-
     [super viewWillAppear:animated];
-
-    if (![self isMovingToParentViewController]) {
-        [ThrioNavigator willAppear:self.thrio_lastRoute.settings];
-        NavigatorPageObserverChannel *channel = [NavigatorFlutterEngineFactory.shared getPageObserverChannelByEntrypoint:self.entrypoint];
-        [channel willAppear:self.thrio_lastRoute.settings];
-    }
 }
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
 
-    if (![self isMovingToParentViewController]) {
-        [ThrioNavigator didAppear:self.thrio_lastRoute.settings];
-        NavigatorPageObserverChannel *channel = [NavigatorFlutterEngineFactory.shared getPageObserverChannelByEntrypoint:self.entrypoint];
-        [channel didAppear:self.thrio_lastRoute.settings];
-    } else {
+    if ([self isMovingToParentViewController]) {
         [NavigatorFlutterEngineFactory.shared pushViewController:self];
     }
 }
@@ -98,42 +90,40 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
 
-    if (![self isMovingFromParentViewController]) {
-        [ThrioNavigator willDisappear:self.thrio_lastRoute.settings];
-        NavigatorPageObserverChannel *channel = [NavigatorFlutterEngineFactory.shared getPageObserverChannelByEntrypoint:self.entrypoint];
-        [channel willDisappear:self.thrio_lastRoute.settings];
-    }
-
     [[UIApplication sharedApplication].delegate.window endEditing:YES];
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
     [super viewDidDisappear:animated];
-
-    if (![self isMovingFromParentViewController]) {
-        [ThrioNavigator didDisappear:self.thrio_lastRoute.settings];
-        NavigatorPageObserverChannel *channel = [NavigatorFlutterEngineFactory.shared getPageObserverChannelByEntrypoint:self.entrypoint];
-        [channel didDisappear:self.thrio_lastRoute.settings];
-    }
 }
 
 - (void)dealloc {
     [NavigatorFlutterEngineFactory.shared popViewController:self];
     NavigatorVerbose(@"NavigatorFlutterViewController dealloc: %@", self);
     NSString *entrypoint = self.entrypoint;
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(300)), dispatch_get_main_queue(), ^{
-        NavigatorRouteSendChannel *channel = [NavigatorFlutterEngineFactory.shared getSendChannelByEntrypoint:entrypoint];
+    dispatch_after(
+        dispatch_time(DISPATCH_TIME_NOW, (int64_t)(300)),
+        dispatch_get_main_queue(), ^{
+        NavigatorRouteSendChannel *channel =
+            [NavigatorFlutterEngineFactory.shared
+             getSendChannelByEntrypoint:entrypoint];
         if (!channel) {
             return;
         }
-        NavigatorRouteSettings *settings = [[ThrioNavigator _getLastRouteByEntrypoint:entrypoint] settings];
+        NavigatorRouteSettings *settings =
+            [[ThrioNavigator _getLastRouteByEntrypoint:entrypoint] settings];
         if (!settings) {
-            settings = [NavigatorRouteSettings settingsWithUrl:@"/shit" index:@0 nested:NO params:nil];
+            settings = [NavigatorRouteSettings settingsWithUrl:@"/"
+                                                         index:@0
+                                                        nested:NO
+                                                        params:nil];
         }
-        NSMutableDictionary *arguments =
-            [NSMutableDictionary dictionaryWithDictionary:[settings toArgumentsWithParams:nil]];
+        NSMutableDictionary *arguments = [NSMutableDictionary
+                                          dictionaryWithDictionary:[settings toArgumentsWithParams:nil]];
         [arguments setObject:@NO forKey:@"animated"];
-        [channel onPopTo:arguments result:^(BOOL r) {}];
+        [channel onPopTo:arguments
+                  result:^(BOOL r) {
+        }];
     });
 }
 

@@ -119,45 +119,6 @@
     }
 }
 
-+ (void)_didPushUrl:(NSString *)url index:(NSNumber *)index {
-    NSEnumerator *allNvcs = self.navigationControllers.allObjects.reverseObjectEnumerator;
-    for (UINavigationController *nvc in allNvcs) {
-        if ([nvc thrio_containsUrl:url index:index]) {
-            [nvc thrio_didPushUrl:url index:index];
-            break;
-        }
-    }
-}
-
-+ (void)_didPopUrl:(NSString *)url index:(NSNumber *)index {
-    NSEnumerator *allNvcs = self.navigationControllers.allObjects.reverseObjectEnumerator;
-    for (UINavigationController *nvc in allNvcs) {
-        if ([nvc thrio_containsUrl:url index:index]) {
-            [nvc thrio_didPopUrl:url index:index];
-            break;
-        }
-    }
-}
-
-+ (void)_didPopToUrl:(NSString *)url index:(NSNumber *)index {
-    NSEnumerator *allNvcs = self.navigationControllers.allObjects.reverseObjectEnumerator;
-    for (UINavigationController *nvc in allNvcs) {
-        if ([nvc thrio_containsUrl:url index:index]) {
-            [nvc thrio_didPopToUrl:url index:index];
-            break;
-        }
-    }
-}
-
-+ (void)_didRemoveUrl:(NSString *)url index:(NSNumber *)index {
-    NSEnumerator *allNvcs = self.navigationControllers.allObjects.reverseObjectEnumerator;
-    for (UINavigationController *nvc in allNvcs) {
-        if ([nvc thrio_containsUrl:url index:index]) {
-            [nvc thrio_didRemoveUrl:url index:index];
-            break;
-        }
-    }
-}
 
 + (void)_setPopDisabledUrl:(NSString *)url index:(NSNumber *)index disabled:(BOOL)disabled {
     NSEnumerator *allNvcs = self.navigationControllers.allObjects.reverseObjectEnumerator;

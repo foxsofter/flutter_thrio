@@ -22,72 +22,94 @@
 #import <objc/runtime.h>
 #import "ThrioNavigator+RouteObservers.h"
 #import "NavigatorLogger.h"
+#import "ThrioNavigator+Internal.h"
+#import "UINavigationController+Navigator.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 @implementation ThrioNavigator (RouteObservers)
 
-+ (ThrioRegistrySet<id<NavigatorRouteObserverProtocol> > *)routeObservers {
-    id value = objc_getAssociatedObject(self, _cmd);
++ (NavigatorRouteObservers *)routeObservers {
+    NavigatorRouteObservers *value = objc_getAssociatedObject(self, _cmd);
     if (!value) {
-        value = [ThrioRegistrySet set];
+        value = [[NavigatorRouteObservers alloc] init];
         objc_setAssociatedObject(self, _cmd, value, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     }
     return value;
 }
 
-+ (void)  didPush:(NavigatorRouteSettings *)routeSettings
-    previousRoute:(NavigatorRouteSettings *_Nullable)previousRouteSettings {
++ (void)didPush:(NavigatorRouteSettings *)routeSettings {
     NavigatorVerbose(@"%@: url->%@ index->%@",
                      NSStringFromSelector(_cmd),
                      routeSettings.url,
                      routeSettings.index);
-    ThrioRegistrySet *routeObservers = [self.routeObservers copy];
-    for (id<NavigatorRouteObserverProtocol> observer in routeObservers) {
-        if ([observer respondsToSelector:@selector(didPush:previousRoute:)]) {
-            [observer didPush:routeSettings previousRoute:previousRouteSettings];
+    [self.routeObservers didPush:routeSettings];
+    [self didPushUrl:routeSettings.url index:routeSettings.index];
+}
+
++ (void)didPop:(NavigatorRouteSettings *)routeSettings {
+    NavigatorVerbose(@"%@: url->%@ index->%@",
+                     NSStringFromSelector(_cmd),
+                     routeSettings.url,
+                     routeSettings.index);
+    [self.routeObservers didPop:routeSettings];
+    [self didPopUrl:routeSettings.url index:routeSettings.index];
+}
+
++ (void)didPopTo:(NavigatorRouteSettings *)routeSettings {
+    NavigatorVerbose(@"%@: url->%@ index->%@",
+                     NSStringFromSelector(_cmd),
+                     routeSettings.url,
+                     routeSettings.index);
+    [self.routeObservers didPopTo:routeSettings];
+    [self didPopToUrl:routeSettings.url index:routeSettings.index];
+}
+
++ (void)didRemove:(NavigatorRouteSettings *)routeSettings {
+    NavigatorVerbose(@"%@: url->%@ index->%@",
+                     NSStringFromSelector(_cmd),
+                     routeSettings.url,
+                     routeSettings.index);
+    [self.routeObservers didRemove:routeSettings];
+    [self didRemoveUrl:routeSettings.url index:routeSettings.index];
+}
+
++ (void)didPushUrl:(NSString *)url index:(NSNumber *)index {
+    NSEnumerator *allNvcs = self.navigationControllers.allObjects.reverseObjectEnumerator;
+    for (UINavigationController *nvc in allNvcs) {
+        if ([nvc thrio_containsUrl:url index:index]) {
+            [nvc thrio_didPushUrl:url index:index];
+            break;
         }
     }
 }
 
-+ (void)   didPop:(NavigatorRouteSettings *)routeSettings
-    previousRoute:(NavigatorRouteSettings *_Nullable)previousRouteSettings {
-    NavigatorVerbose(@"%@: url->%@ index->%@",
-                     NSStringFromSelector(_cmd),
-                     routeSettings.url,
-                     routeSettings.index);
-    ThrioRegistrySet *routeObservers = [self.routeObservers copy];
-    for (id<NavigatorRouteObserverProtocol> observer in routeObservers) {
-        if ([observer respondsToSelector:@selector(didPop:previousRoute:)]) {
-            [observer didPop:routeSettings previousRoute:previousRouteSettings];
++ (void)didPopUrl:(NSString *)url index:(NSNumber *)index {
+    NSEnumerator *allNvcs = self.navigationControllers.allObjects.reverseObjectEnumerator;
+    for (UINavigationController *nvc in allNvcs) {
+        if ([nvc thrio_containsUrl:url index:index]) {
+            [nvc thrio_didPopUrl:url index:index];
+            break;
         }
     }
 }
 
-+ (void) didPopTo:(NavigatorRouteSettings *)routeSettings
-    previousRoute:(NavigatorRouteSettings *_Nullable)previousRouteSettings {
-    NavigatorVerbose(@"%@: url->%@ index->%@",
-                     NSStringFromSelector(_cmd),
-                     routeSettings.url,
-                     routeSettings.index);
-    ThrioRegistrySet *routeObservers = [self.routeObservers copy];
-    for (id<NavigatorRouteObserverProtocol> observer in routeObservers) {
-        if ([observer respondsToSelector:@selector(didPopTo:previousRoute:)]) {
-            [observer didPopTo:routeSettings previousRoute:previousRouteSettings];
++ (void)didPopToUrl:(NSString *)url index:(NSNumber *)index {
+    NSEnumerator *allNvcs = self.navigationControllers.allObjects.reverseObjectEnumerator;
+    for (UINavigationController *nvc in allNvcs) {
+        if ([nvc thrio_containsUrl:url index:index]) {
+            [nvc thrio_didPopToUrl:url index:index];
+            break;
         }
     }
 }
 
-+ (void)didRemove:(NavigatorRouteSettings *)routeSettings
-    previousRoute:(NavigatorRouteSettings *_Nullable)previousRouteSettings {
-    NavigatorVerbose(@"%@: url->%@ index->%@",
-                     NSStringFromSelector(_cmd),
-                     routeSettings.url,
-                     routeSettings.index);
-    ThrioRegistrySet *routeObservers = [self.routeObservers copy];
-    for (id<NavigatorRouteObserverProtocol> observer in routeObservers) {
-        if ([observer respondsToSelector:@selector(didRemove:previousRoute:)]) {
-            [observer didRemove:routeSettings previousRoute:previousRouteSettings];
++ (void)didRemoveUrl:(NSString *)url index:(NSNumber *)index {
+    NSEnumerator *allNvcs = self.navigationControllers.allObjects.reverseObjectEnumerator;
+    for (UINavigationController *nvc in allNvcs) {
+        if ([nvc thrio_containsUrl:url index:index]) {
+            [nvc thrio_didRemoveUrl:url index:index];
+            break;
         }
     }
 }

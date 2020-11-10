@@ -1,6 +1,6 @@
 // The MIT License (MIT)
 //
-// Copyright (c) 2019 Hellobike Group
+// Copyright (c) 2019 foxsofter
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
 // copy of this software and associated documentation files (the "Software"),
@@ -19,32 +19,34 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-import 'package:flutter/foundation.dart';
-import 'package:thrio/src/navigator/navigator_types.dart';
-import 'package:thrio/src/navigator/thrio_navigator_implement.dart';
+#import <UIKit/UIKit.h>
+#import "NavigatorRouteSettings.h"
+#import "NavigatorPageRoute.h"
 
-import 'thrio_module.dart';
+NS_ASSUME_NONNULL_BEGIN
 
-mixin ModulePageBuilder on ThrioModule {
-  /// A function for register a page builder.
-  ///
-  void onPageBuilderRegister() {}
+@interface UINavigationController (PageObservers)
 
-  /// Register an page builder for the router.
-  ///
-  /// Unregistry by calling the return value `VoidCallback`.
-  ///
-  VoidCallback registerPageBuilder(
-    String url,
-    NavigatorPageBuilder builder,
-  ) =>
-      ThrioNavigatorImplement.pageBuilders.registry(url, builder);
+/// 处理来自 FlutterEngine 的`willAppear`调用
+///
+- (void)thrio_willAppear:(NavigatorRouteSettings *)routeSettings
+             routeAction:(NavigatorRouteAction)routeAction;
 
-  /// Register page builders for the router.
-  ///
-  /// Unregistry by calling the return value `VoidCallback`.
-  ///
-  VoidCallback registerPageBuilders(
-          Map<String, NavigatorPageBuilder> builders) =>
-      ThrioNavigatorImplement.pageBuilders.registryAll(builders);
-}
+/// 处理来自 FlutterEngine 的`didAppear`调用
+///
+- (void)thrio_didAppear:(NavigatorRouteSettings *)routeSettings
+            routeAction:(NavigatorRouteAction)routeAction;
+
+/// 处理来自 FlutterEngine 的`willDisappear`调用
+///
+- (void)thrio_willDisappear:(NavigatorRouteSettings *)routeSettings
+                routeAction:(NavigatorRouteAction)routeAction;
+
+/// 处理来自 FlutterEngine 的`didDisappear`调用
+///
+- (void)thrio_didDisappear:(NavigatorRouteSettings *)routeSettings
+               routeAction:(NavigatorRouteAction)routeAction;
+
+@end
+
+NS_ASSUME_NONNULL_END

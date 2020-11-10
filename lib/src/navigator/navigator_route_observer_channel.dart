@@ -20,78 +20,63 @@
 // IN THE SOFTWARE.
 
 import 'package:flutter/widgets.dart';
+import 'package:thrio/src/channel/thrio_channel.dart';
 
-import '../channel/thrio_channel.dart';
 import 'navigator_route_observer.dart';
+import 'navigator_route_observers.dart';
 import 'navigator_route_settings.dart';
 
+typedef NavigatorRouteObserverCallback = void Function(
+  NavigatorRouteObserver observer,
+  RouteSettings settings,
+);
+
 class NavigatorRouteObserverChannel with NavigatorRouteObserver {
-  NavigatorRouteObserverChannel(String entrypoint)
-      : _channel = ThrioChannel(channel: '__thrio_route_channel__$entrypoint');
+  NavigatorRouteObserverChannel(this._observers, String entrypoint)
+      : _channel = ThrioChannel(channel: '__thrio_route_channel__$entrypoint') {
+    _on('didPush',
+        (observer, routeSettings) => observer.didPush(routeSettings));
+    _on('didPop', (observer, routeSettings) => observer.didPop(routeSettings));
+    _on('didPopTo',
+        (observer, routeSettings) => observer.didPopTo(routeSettings));
+    _on('didRemove',
+        (observer, routeSettings) => observer.didRemove(routeSettings));
+  }
+
   final ThrioChannel _channel;
+  final NavigatorRouteObservers _observers;
 
   @override
-  void didPush(
-    RouteSettings routeSettings,
-    RouteSettings previousRouteSettings,
-  ) =>
-      _channel.invokeMethod<bool>(
+  void didPush(RouteSettings routeSettings) => _channel.invokeMethod<bool>(
         'didPush',
-        _toArguments(routeSettings, previousRouteSettings),
+        routeSettings.toArguments(),
       );
 
   @override
-  void didPop(
-    RouteSettings routeSettings,
-    RouteSettings previousRouteSettings,
-  ) =>
-      _channel.invokeMethod<bool>(
+  void didPop(RouteSettings routeSettings) => _channel.invokeMethod<bool>(
         'didPop',
-        _toArguments(routeSettings, previousRouteSettings),
+        routeSettings.toArguments(),
       );
 
   @override
-  void didPopTo(
-    RouteSettings routeSettings,
-    RouteSettings previousRouteSettings,
-  ) =>
-      _channel.invokeMethod<bool>(
+  void didPopTo(RouteSettings routeSettings) => _channel.invokeMethod<bool>(
         'didPopTo',
-        _toArguments(routeSettings, previousRouteSettings),
+        routeSettings.toArguments(),
       );
 
   @override
-  void didRemove(
-    RouteSettings routeSettings,
-    RouteSettings previousRouteSettings,
-  ) =>
-      _channel.invokeMethod<bool>(
+  void didRemove(RouteSettings routeSettings) => _channel.invokeMethod<bool>(
         'didRemove',
-        _toArguments(routeSettings, previousRouteSettings),
+        routeSettings.toArguments(),
       );
 
-  Map<String, dynamic> _toArguments(
-    RouteSettings routeSettings,
-    RouteSettings previousRouteSettings,
-  ) =>
-      previousRouteSettings == null
-          ? <String, dynamic>{
-              'route': {
-                'url': routeSettings.url,
-                'index': routeSettings.index,
-                'params': routeSettings.params,
-              },
-            }
-          : <String, dynamic>{
-              'route': {
-                'url': routeSettings.url,
-                'index': routeSettings.index,
-                'params': routeSettings.params,
-              },
-              'previousRoute': {
-                'url': previousRouteSettings.url,
-                'index': previousRouteSettings.index,
-                'params': previousRouteSettings.params,
-              },
-            };
+  void _on(String method, NavigatorRouteObserverCallback callback) =>
+      _channel.registryMethodCall(method, ([arguments]) {
+        final routeSettings = NavigatorRouteSettings.fromArguments(arguments);
+        final observers = _observers.observers;
+        for (final observer in observers) {
+          callback(observer, routeSettings);
+        }
+        return Future.value();
+      });
 }

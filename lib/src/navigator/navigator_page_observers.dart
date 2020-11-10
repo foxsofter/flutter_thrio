@@ -19,17 +19,36 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-#import "ThrioModuleRouteObserver.h"
-#import "ThrioNavigator+RouteObservers.h"
+import 'package:flutter/widgets.dart';
+import 'package:thrio/src/registry/registry_set.dart';
 
-NS_ASSUME_NONNULL_BEGIN
+import 'navigator_page_observer.dart';
+import 'navigator_page_observer_channel.dart';
+import 'navigator_page_route.dart';
 
-@implementation ThrioModule (RouteObserver)
+class NavigatorPageObservers {
+  NavigatorPageObservers(this._entrypoint) {
+    _channel = NavigatorPageObserverChannel(this, _entrypoint);
+  }
 
-- (ThrioVoidCallback)registerRouteObserver:(id<NavigatorRouteObserverProtocol>)routeObserver {
-    return [ThrioNavigator.routeObservers.observers registry:routeObserver];
+  final observers = RegistrySet<NavigatorPageObserver>();
+
+  final String _entrypoint;
+  NavigatorPageObserverChannel _channel;
+
+  void willAppear(
+          RouteSettings routeSettings, NavigatorRouteAction routeAction) =>
+      _channel.willAppear(routeSettings, routeAction);
+
+  void didAppear(
+          RouteSettings routeSettings, NavigatorRouteAction routeAction) =>
+      _channel.didAppear(routeSettings, routeAction);
+
+  void willDisappear(
+          RouteSettings routeSettings, NavigatorRouteAction routeAction) =>
+      _channel.willDisappear(routeSettings, routeAction);
+
+  void didDisappear(
+          RouteSettings routeSettings, NavigatorRouteAction routeAction) =>
+      _channel.didDisappear(routeSettings, routeAction);
 }
-
-@end
-
-NS_ASSUME_NONNULL_END

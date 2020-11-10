@@ -26,20 +26,16 @@ NS_ASSUME_NONNULL_BEGIN
     [self registerRouteObserver:self];
 }
 
-- (void)   didPop:(NavigatorRouteSettings *)routeSettings
-    previousRoute:(NavigatorRouteSettings *_Nullable)previousRouteSettings {
+- (void)didPop:(NavigatorRouteSettings *)routeSettings {
 }
 
-- (void) didPopTo:(NavigatorRouteSettings *)routeSettings
-    previousRoute:(NavigatorRouteSettings *_Nullable)previousRouteSettings {
+- (void)didPopTo:(NavigatorRouteSettings *)routeSettings {
 }
 
-- (void)  didPush:(NavigatorRouteSettings *)routeSettings
-    previousRoute:(NavigatorRouteSettings *_Nullable)previousRouteSettings {
+- (void)didPush:(NavigatorRouteSettings *)routeSettings {
 }
 
-- (void)didRemove:(NavigatorRouteSettings *)routeSettings
-    previousRoute:(NavigatorRouteSettings *_Nullable)previousRouteSettings {
+- (void)didRemove:(NavigatorRouteSettings *)routeSettings {
 }
 
 @end

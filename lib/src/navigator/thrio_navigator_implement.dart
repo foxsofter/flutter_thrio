@@ -22,56 +22,47 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:thrio/src/channel/thrio_channel.dart';
+import 'package:thrio/src/exception/thrio_exception.dart';
+import 'package:thrio/src/registry/registry_map.dart';
 
-import '../channel/thrio_channel.dart';
-import '../exception/thrio_exception.dart';
-import '../navigator/navigator_page_observer.dart';
-import '../registry/registry_map.dart';
-import '../registry/registry_set.dart';
 import 'navigator_logger.dart';
 import 'navigator_observer_manager.dart';
-import 'navigator_page_observer_channel.dart';
-import 'navigator_route_observer.dart';
-import 'navigator_route_observer_channel.dart';
+import 'navigator_page_observers.dart';
+import 'navigator_route_observers.dart';
 import 'navigator_route_receive_channel.dart';
 import 'navigator_route_send_channel.dart';
 import 'navigator_types.dart';
 import 'navigator_widget.dart';
 
 class ThrioNavigatorImplement {
-  ThrioNavigatorImplement._({
-    ThrioChannel channel,
-    NavigatorRouteSendChannel sendChannel,
-    NavigatorRouteReceiveChannel receiveChannel,
-    NavigatorObserverManager observerManager,
-    Map<String, NavigatorParamsCallback> pagePoppedResults,
-  })  : _channel = channel,
-        _sendChannel = sendChannel,
-        _receiveChannel = receiveChannel,
-        _observerManager = observerManager,
-        _pagePoppedResults = pagePoppedResults;
+  ThrioNavigatorImplement._(
+    this._channel,
+    this._sendChannel,
+    this._receiveChannel,
+    this._observerManager,
+    this._pagePoppedResults,
+  );
 
   static ThrioNavigatorImplement _default;
 
   static TransitionBuilder builder({String entrypoint = 'main'}) {
     if (_default == null) {
+      _pageObservers = NavigatorPageObservers(entrypoint);
+      _routeObservers = NavigatorRouteObservers(entrypoint);
+
       final channel = ThrioChannel(channel: '__thrio_app__$entrypoint');
       final sendChannel = NavigatorRouteSendChannel(channel);
       final pagePoppedResults = <String, NavigatorParamsCallback>{};
       final receiveChannel =
           NavigatorRouteReceiveChannel(channel, pagePoppedResults);
-      _pageObservers.registry(NavigatorPageObserverChannel(entrypoint));
-      _routeObservers.registry(NavigatorRouteObserverChannel(entrypoint));
-      final observerManager = NavigatorObserverManager(
-        pageObservers: _pageObservers,
-        routeObservers: _routeObservers,
-      );
+      final observerManager = NavigatorObserverManager();
       _default = ThrioNavigatorImplement._(
-        channel: channel,
-        sendChannel: sendChannel,
-        receiveChannel: receiveChannel,
-        observerManager: observerManager,
-        pagePoppedResults: pagePoppedResults,
+        channel,
+        sendChannel,
+        receiveChannel,
+        observerManager,
+        pagePoppedResults,
       );
       verbose('TransitionBuilder builder');
       // sendChannel.registerUrls(_pageBuilders.keys.toList());
@@ -94,6 +85,15 @@ class ThrioNavigatorImplement {
 
   static NavigatorWidgetState get navigatorState => _stateKey?.currentState;
 
+  static NavigatorPageObservers _pageObservers;
+
+  static NavigatorRouteObservers _routeObservers;
+
+  static final _pageBuilders = RegistryMap<String, NavigatorPageBuilder>();
+
+  static final _routeTransitionsBuilders =
+      RegistryMap<RegExp, RouteTransitionsBuilder>();
+
   final ThrioChannel _channel;
 
   final NavigatorRouteSendChannel _sendChannel;
@@ -103,15 +103,6 @@ class ThrioNavigatorImplement {
   final NavigatorObserverManager _observerManager;
 
   final Map<String, NavigatorParamsCallback> _pagePoppedResults;
-
-  static final _pageObservers = RegistrySet<NavigatorPageObserver>();
-
-  static final _routeObservers = RegistrySet<NavigatorRouteObserver>();
-
-  static final _pageBuilders = RegistryMap<String, NavigatorPageBuilder>();
-
-  static final _routeTransitionsBuilders =
-      RegistryMap<RegExp, RouteTransitionsBuilder>();
 
   static void ready() => _default._channel?.invokeMethod<bool>('ready');
 
@@ -245,10 +236,9 @@ class ThrioNavigatorImplement {
   static RegistryMap<String, NavigatorPageBuilder> get pageBuilders =>
       _pageBuilders;
 
-  static RegistrySet<NavigatorPageObserver> get pageObservers => _pageObservers;
+  static NavigatorPageObservers get pageObservers => _pageObservers;
 
-  static RegistrySet<NavigatorRouteObserver> get routeObservers =>
-      _routeObservers;
+  static NavigatorRouteObservers get routeObservers => _routeObservers;
 
   static RegistryMap<RegExp, RouteTransitionsBuilder>
       get routeTransitionsBuilders => _routeTransitionsBuilders;

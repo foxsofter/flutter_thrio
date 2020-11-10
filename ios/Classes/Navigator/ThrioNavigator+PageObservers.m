@@ -22,83 +22,82 @@
 #import <objc/runtime.h>
 #import "ThrioNavigator+PageObservers.h"
 #import "NavigatorLogger.h"
+#import "ThrioNavigator+Internal.h"
+#import "UINavigationController+Navigator.h"
+#import "UINavigationController+PageObservers.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 @implementation ThrioNavigator (PageObservers)
 
-+ (ThrioRegistrySet<id<NavigatorPageObserverProtocol> > *)pageObservers {
++ (NavigatorPageObservers *)pageObservers {
     id value = objc_getAssociatedObject(self, _cmd);
     if (!value) {
-        value = [ThrioRegistrySet set];
+        value = [[NavigatorPageObservers alloc] init];
         objc_setAssociatedObject(self, _cmd, value, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
     }
     return value;
 }
 
-+ (void)onCreate:(NavigatorRouteSettings *)routeSettings {
-    NavigatorVerbose(@"%@: url->%@ index->%@",
-                     NSStringFromSelector(_cmd),
-                     routeSettings.url,
-                     routeSettings.index);
-    ThrioRegistrySet *pageObservers = [self.pageObservers copy];
-    for (id<NavigatorPageObserverProtocol> observer in pageObservers) {
-        if ([observer respondsToSelector:@selector(onCreate:)]) {
-            [observer onCreate:routeSettings];
++ (void)willAppear:(NavigatorRouteSettings *)routeSettings
+       routeAction:(NSString *)routeAction {
+    NSEnumerator *allNvcs = self.navigationControllers.allObjects.reverseObjectEnumerator;
+    for (UINavigationController *nvc in allNvcs) {
+        if ([nvc thrio_containsUrl:routeSettings.url index:routeSettings.index]) {
+            [nvc thrio_willAppear:routeSettings
+                      routeAction:[self routeActionFromString:routeAction]];
+            break;
         }
     }
 }
 
-+ (void)willAppear:(NavigatorRouteSettings *)routeSettings {
-    NavigatorVerbose(@"%@: url->%@ index->%@",
-                     NSStringFromSelector(_cmd),
-                     routeSettings.url,
-                     routeSettings.index);
-    ThrioRegistrySet *pageObservers = [self.pageObservers copy];
-    for (id<NavigatorPageObserverProtocol> observer in pageObservers) {
-        if ([observer respondsToSelector:@selector(willAppear:)]) {
-            [observer willAppear:routeSettings];
++ (void)didAppear:(NavigatorRouteSettings *)routeSettings
+      routeAction:(NSString *)routeAction {
+    NSEnumerator *allNvcs = self.navigationControllers.allObjects.reverseObjectEnumerator;
+    for (UINavigationController *nvc in allNvcs) {
+        if ([nvc thrio_containsUrl:routeSettings.url index:routeSettings.index]) {
+            [nvc thrio_didAppear:routeSettings
+                     routeAction:[self routeActionFromString:routeAction]];
+            break;
         }
     }
 }
 
-+ (void)didAppear:(NavigatorRouteSettings *)routeSettings {
-    NavigatorVerbose(@"%@: url->%@ index->%@",
-                     NSStringFromSelector(_cmd),
-                     routeSettings.url,
-                     routeSettings.index);
-    ThrioRegistrySet *pageObservers = [self.pageObservers copy];
-    for (id<NavigatorPageObserverProtocol> observer in pageObservers) {
-        if ([observer respondsToSelector:@selector(didAppear:)]) {
-            [observer didAppear:routeSettings];
++ (void)willDisappear:(NavigatorRouteSettings *)routeSettings
+          routeAction:(NSString *)routeAction {
+    NSEnumerator *allNvcs = self.navigationControllers.allObjects.reverseObjectEnumerator;
+    for (UINavigationController *nvc in allNvcs) {
+        if ([nvc thrio_containsUrl:routeSettings.url index:routeSettings.index]) {
+            [nvc thrio_willDisappear:routeSettings
+                         routeAction:[self routeActionFromString:routeAction]];
+            break;
         }
     }
 }
 
-+ (void)willDisappear:(NavigatorRouteSettings *)routeSettings {
-    NavigatorVerbose(@"%@: url->%@ index->%@",
-                     NSStringFromSelector(_cmd),
-                     routeSettings.url,
-                     routeSettings.index);
-    ThrioRegistrySet *pageObservers = [self.pageObservers copy];
-    for (id<NavigatorPageObserverProtocol> observer in pageObservers) {
-        if ([observer respondsToSelector:@selector(willDisappear:)]) {
-            [observer willDisappear:routeSettings];
++ (void)didDisappear:(NavigatorRouteSettings *)routeSettings
+         routeAction:(NSString *)routeAction {
+    NSEnumerator *allNvcs = self.navigationControllers.allObjects.reverseObjectEnumerator;
+    for (UINavigationController *nvc in allNvcs) {
+        if ([nvc thrio_containsUrl:routeSettings.url index:routeSettings.index]) {
+            [nvc thrio_didDisappear:routeSettings
+                        routeAction:[self routeActionFromString:routeAction]];
+            break;
         }
     }
 }
 
-+ (void)didDisappear:(NavigatorRouteSettings *)routeSettings {
-    NavigatorVerbose(@"%@: url->%@ index->%@",
-                     NSStringFromSelector(_cmd),
-                     routeSettings.url,
-                     routeSettings.index);
-    ThrioRegistrySet *pageObservers = [self.pageObservers copy];
-    for (id<NavigatorPageObserverProtocol> observer in pageObservers) {
-        if ([observer respondsToSelector:@selector(didDisappear:)]) {
-            [observer didDisappear:routeSettings];
-        }
++ (NavigatorRouteAction)routeActionFromString:(NSString *)routeActionString {
+    if ([routeActionString isEqualToString:@"push"]) {
+        return NavigatorRouteActionPush;
+    } else if ([routeActionString isEqualToString:@"pop"]) {
+        return NavigatorRouteActionPop;
+    } else if ([routeActionString isEqualToString:@"popTo"]) {
+        return NavigatorRouteActionPopTo;
+    } else if ([routeActionString isEqualToString:@"remove"]) {
+        return NavigatorRouteActionRemove;
     }
+    return NavigatorRouteActionNone;
 }
 
 @end

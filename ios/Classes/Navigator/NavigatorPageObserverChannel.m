@@ -37,19 +37,18 @@ NS_ASSUME_NONNULL_BEGIN
     self = [super init];
     if (self) {
         _channel = channel;
-        [self _on:@"onCreate"];
-        [self _on:@"willAppear"];
-        [self _on:@"didAppear"];
-        [self _on:@"willDisappear"];
-        [self _on:@"didDisappear"];
+        [self on:@"willAppear"];
+        [self on:@"didAppear"];
+        [self on:@"willDisappear"];
+        [self on:@"didDisappear"];
     }
     return self;
 }
 
-- (void)_on:(NSString *)method {
+- (void)on:(NSString *)method {
     [_channel registryMethod:method
-                         handler:^void (NSDictionary<NSString *, id> *arguments,
-                                        ThrioIdCallback _Nullable result) {
+                     handler:^void (NSDictionary<NSString *, id> *arguments,
+                                    ThrioIdCallback _Nullable result) {
         NavigatorRouteSettings *settings = [NavigatorRouteSettings settingsFromArguments:arguments];
     #pragma clang diagnostic push
     #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
@@ -59,29 +58,32 @@ NS_ASSUME_NONNULL_BEGIN
     }];
 }
 
-- (void)onCreate:(NavigatorRouteSettings *)routeSettings {
-    NSDictionary *arguments = [routeSettings toArguments];
-    [_channel invokeMethod:@"__onOnCreate__" arguments:arguments];
-}
-
+/// Send `willAppear` to all flutter engines.
+///
 - (void)willAppear:(NavigatorRouteSettings *)routeSettings {
     NSDictionary *arguments = [routeSettings toArguments];
-    [_channel invokeMethod:@"__onWillAppear__" arguments:arguments];
+    [_channel invokeMethod:@"willAppear" arguments:arguments];
 }
 
+/// Send `didAppear` to all flutter engines.
+///
 - (void)didAppear:(NavigatorRouteSettings *)routeSettings {
     NSDictionary *arguments = [routeSettings toArguments];
-    [_channel invokeMethod:@"__onDidAppear__" arguments:arguments];
+    [_channel invokeMethod:@"didAppear" arguments:arguments];
 }
 
+/// Send `willDisappear` to all flutter engines.
+///
 - (void)willDisappear:(NavigatorRouteSettings *)routeSettings {
     NSDictionary *arguments = [routeSettings toArguments];
-    [_channel invokeMethod:@"__onWillDisappear__" arguments:arguments];
+    [_channel invokeMethod:@"willDisappear" arguments:arguments];
 }
 
+/// Send `didDisappear` to all flutter engines.
+///
 - (void)didDisappear:(NavigatorRouteSettings *)routeSettings {
     NSDictionary *arguments = [routeSettings toArguments];
-    [_channel invokeMethod:@"__onDidDisappear__" arguments:arguments];
+    [_channel invokeMethod:@"didDisappear" arguments:arguments];
 }
 
 @end

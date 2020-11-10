@@ -1,6 +1,6 @@
 // The MIT License (MIT)
 //
-// Copyright (c) 2019 Hellobike Group
+// Copyright (c) 2019 foxsofter
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
 // copy of this software and associated documentation files (the "Software"),
@@ -19,32 +19,33 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-import 'package:flutter/foundation.dart';
-import 'package:thrio/src/navigator/navigator_types.dart';
-import 'package:thrio/src/navigator/thrio_navigator_implement.dart';
+import 'package:flutter/widgets.dart';
+import 'package:thrio/src/registry/registry_set.dart';
 
-import 'thrio_module.dart';
+import 'navigator_route_observer.dart';
+import 'navigator_route_observer_channel.dart';
 
-mixin ModulePageBuilder on ThrioModule {
-  /// A function for register a page builder.
-  ///
-  void onPageBuilderRegister() {}
+class NavigatorRouteObservers with NavigatorRouteObserver {
+  NavigatorRouteObservers(this._entrypoint) {
+    _channel = NavigatorRouteObserverChannel(this, _entrypoint);
+  }
 
-  /// Register an page builder for the router.
-  ///
-  /// Unregistry by calling the return value `VoidCallback`.
-  ///
-  VoidCallback registerPageBuilder(
-    String url,
-    NavigatorPageBuilder builder,
-  ) =>
-      ThrioNavigatorImplement.pageBuilders.registry(url, builder);
+  final observers = RegistrySet<NavigatorRouteObserver>();
 
-  /// Register page builders for the router.
-  ///
-  /// Unregistry by calling the return value `VoidCallback`.
-  ///
-  VoidCallback registerPageBuilders(
-          Map<String, NavigatorPageBuilder> builders) =>
-      ThrioNavigatorImplement.pageBuilders.registryAll(builders);
+  final String _entrypoint;
+  NavigatorRouteObserverChannel _channel;
+
+  @override
+  void didPush(RouteSettings routeSettings) => _channel.didPush(routeSettings);
+
+  @override
+  void didPop(RouteSettings routeSettings) => _channel.didPop(routeSettings);
+
+  @override
+  void didPopTo(RouteSettings routeSettings) =>
+      _channel.didPopTo(routeSettings);
+
+  @override
+  void didRemove(RouteSettings routeSettings) =>
+      _channel.didRemove(routeSettings);
 }

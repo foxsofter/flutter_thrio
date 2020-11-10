@@ -61,9 +61,6 @@ class Module
   }
 
   @override
-  void onCreate(RouteSettings routeSettings) {}
-
-  @override
   void didAppear(RouteSettings routeSettings) {}
 
   @override

@@ -28,39 +28,17 @@ import 'thrio_navigator.dart';
 mixin NavigatorRouteObserver {
   /// The [ThrioNavigator] pushed `route`.
   ///
-  /// The route immediately below that one, and thus the previously active
-  /// route, is `previousRoute`.
-  ///
-  void didPush(
-    RouteSettings routeSettings,
-    RouteSettings previousRouteSettings,
-  ) {}
+  void didPush(RouteSettings routeSettings) {}
 
   /// The [ThrioNavigator] popped `route`.
   ///
-  /// The route immediately below that one, and thus the newly active
-  /// route, is `previousRoute`.
-  ///
-  void didPop(
-    RouteSettings routeSettings,
-    RouteSettings previousRouteSettings,
-  ) {}
+  void didPop(RouteSettings routeSettings) {}
 
   /// The [ThrioNavigator] popped to `route`.
   ///
-  /// The previously active route, is `previousRoute`.
-  ///
-  void didPopTo(
-    RouteSettings routeSettings,
-    RouteSettings previousRouteSettings,
-  ) {}
+  void didPopTo(RouteSettings routeSettings) {}
 
   /// The [ThrioNavigator] removed `route`.
   ///
-  /// The route immediately below that one, if any, is `previousRoute`.
-  ///
-  void didRemove(
-    RouteSettings routeSettings,
-    RouteSettings previousRouteSettings,
-  ) {}
+  void didRemove(RouteSettings routeSettings) {}
 }

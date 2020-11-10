@@ -20,9 +20,9 @@
 // IN THE SOFTWARE.
 
 import 'package:flutter/foundation.dart';
+import 'package:thrio/src/navigator/navigator_page_observer.dart';
+import 'package:thrio/src/navigator/thrio_navigator_implement.dart';
 
-import '../navigator/navigator_page_observer.dart';
-import '../navigator/thrio_navigator_implement.dart';
 import 'thrio_module.dart';
 
 mixin ModulePageObserver on ThrioModule {
@@ -37,5 +37,5 @@ mixin ModulePageObserver on ThrioModule {
   /// Do not override this method.
   ///
   VoidCallback registerPageObserver(NavigatorPageObserver pageObserver) =>
-      ThrioNavigatorImplement.pageObservers.registry(pageObserver);
+      ThrioNavigatorImplement.pageObservers.observers.registry(pageObserver);
 }

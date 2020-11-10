@@ -22,8 +22,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:thrio/src/extension/thrio_stateful_widget.dart';
 
-import '../extension/thrio_stateful_widget.dart';
 import 'navigator_logger.dart';
 import 'navigator_observer_manager.dart';
 import 'navigator_page_route.dart';
@@ -65,11 +65,6 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
       return Future.value(false);
     }
 
-    final pageObservers = Set.from(ThrioNavigatorImplement.pageObservers);
-    for (final observer in pageObservers) {
-      observer.onCreate(settings);
-    }
-
     final pageBuilder = ThrioNavigatorImplement.pageBuilders[settings.url];
     if (pageBuilder == null) {
       return Future.value(false);
@@ -80,19 +75,16 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
       settings: settings,
     );
 
+    ThrioNavigatorImplement.pageObservers.willAppear(
+      route.settings,
+      NavigatorRouteAction.push,
+    );
+
     verbose(
       'push: url->${route.settings.url} '
       'index->${route.settings.index} '
       'params->${route.settings.params}',
     );
-
-    final previousRoute = history.isNotEmpty ? history.last : null;
-    for (final observer in pageObservers) {
-      if (previousRoute != null) {
-        observer.willDisappear(previousRoute.settings);
-      }
-      observer.willAppear(route.settings);
-    }
 
     // 设置一个空值，避免实际页面打开后不生效
     SystemChrome.setSystemUIOverlayStyle(_style);
@@ -135,15 +127,11 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
       return Future.value(false);
     }
 
-    final previousRoute =
-        history.length > 1 ? history[history.length - 2] : null;
-    final pageObservers = Set.from(ThrioNavigatorImplement.pageObservers);
-    for (final observer in pageObservers) {
-      if (previousRoute != null) {
-        observer.willAppear(previousRoute.settings);
-      }
-      observer.willDisappear(route.settings);
-    }
+    ThrioNavigatorImplement.pageObservers.willDisappear(
+      route.settings,
+      NavigatorRouteAction.pop,
+    );
+
     route.routeAction = NavigatorRouteAction.pop;
     if (animated) {
       navigatorState.pop();
@@ -166,17 +154,17 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
     if (index == -1 || index == history.length - 1) {
       return Future.value(false);
     }
-    final previousRoute = history.last;
+
     final route = history[index];
 
     verbose('popTo: url->${route.settings.url} '
         'index->${route.settings.index}');
 
-    final pageObservers = Set.from(ThrioNavigatorImplement.pageObservers);
-    for (final observer in pageObservers) {
-      observer.willAppear(route.settings);
-      observer.willDisappear(previousRoute.settings);
-    }
+    ThrioNavigatorImplement.pageObservers.willAppear(
+      route.settings,
+      NavigatorRouteAction.popTo,
+    );
+
     route.routeAction = NavigatorRouteAction.popTo;
     if (animated) {
       navigatorState.popUntil((it) => it.settings.name == settings.name);
@@ -212,15 +200,10 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
 
     if (settings.name == history.last.settings.name) {
       if (WidgetsBinding.instance.lifecycleState == AppLifecycleState.resumed) {
-        final previousRoute =
-            history.length > 1 ? history[history.length - 2] : null;
-        final pageObservers = Set.from(ThrioNavigatorImplement.pageObservers);
-        for (final observer in pageObservers) {
-          if (previousRoute != null) {
-            observer.willAppear(previousRoute.settings);
-          }
-          observer.willDisappear(route.settings);
-        }
+        ThrioNavigatorImplement.pageObservers.willDisappear(
+          route.settings,
+          NavigatorRouteAction.remove,
+        );
       }
       navigatorState.pop();
       return Future.value(true);

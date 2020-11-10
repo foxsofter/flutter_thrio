@@ -20,88 +20,96 @@
 // IN THE SOFTWARE.
 
 import 'package:flutter/widgets.dart';
+import 'package:thrio/src/channel/thrio_channel.dart';
 
-import '../channel/thrio_channel.dart';
-import '../navigator/thrio_navigator_implement.dart';
 import 'navigator_page_observer.dart';
+import 'navigator_page_observers.dart';
+import 'navigator_page_route.dart';
 import 'navigator_route_settings.dart';
 
 typedef NavigatorPageObserverCallback = void Function(
-  NavigatorPageObserver pageObserver,
+  NavigatorPageObserver observer,
   RouteSettings settings,
 );
 
-class NavigatorPageObserverChannel with NavigatorPageObserver {
-  NavigatorPageObserverChannel(String entrypoint)
+class NavigatorPageObserverChannel {
+  NavigatorPageObserverChannel(this._observers, String entrypoint)
       : _channel = ThrioChannel(channel: '__thrio_page_channel__$entrypoint') {
     _on(
-      'onCreate',
-      (pageObserver, routeSettings) => pageObserver.onCreate(routeSettings),
-    );
-    _on(
       'willAppear',
-      (pageObserver, routeSettings) => pageObserver.willAppear(routeSettings),
+      (observer, routeSettings) => observer.willAppear(routeSettings),
     );
     _on(
       'didAppear',
-      (pageObserver, routeSettings) => pageObserver.didAppear(routeSettings),
+      (observer, routeSettings) => observer.didAppear(routeSettings),
     );
     _on(
       'willDisappear',
-      (pageObserver, routeSettings) =>
-          pageObserver.willDisappear(routeSettings),
+      (observer, routeSettings) => observer.willDisappear(routeSettings),
     );
     _on(
       'didDisappear',
-      (pageObserver, routeSettings) => pageObserver.didDisappear(routeSettings),
+      (observer, routeSettings) => observer.didDisappear(routeSettings),
     );
   }
 
   final ThrioChannel _channel;
+  final NavigatorPageObservers _observers;
 
-  @override
-  void onCreate(RouteSettings routeSettings) {
+  void willAppear(
+    RouteSettings routeSettings,
+    NavigatorRouteAction routeAction,
+  ) {
+    final arguments = routeSettings.toArguments();
+    arguments['routeAction'] = routeAction.toString().split('.').last;
     _channel.invokeMethod(
-      'onCreate',
-      routeSettings.toArguments(),
+      'willAppear',
+      arguments,
     );
   }
 
-  @override
-  void willAppear(RouteSettings routeSettings) => _channel.invokeMethod(
-        'willAppear',
-        routeSettings.toArguments(),
-      );
+  void didAppear(
+    RouteSettings routeSettings,
+    NavigatorRouteAction routeAction,
+  ) {
+    final arguments = routeSettings.toArguments();
+    arguments['routeAction'] = routeAction.toString().split('.').last;
+    _channel.invokeMethod(
+      'didAppear',
+      arguments,
+    );
+  }
 
-  @override
-  void didAppear(RouteSettings routeSettings) => _channel.invokeMethod(
-        'didAppear',
-        routeSettings.toArguments(),
-      );
+  void willDisappear(
+    RouteSettings routeSettings,
+    NavigatorRouteAction routeAction,
+  ) {
+    final arguments = routeSettings.toArguments();
+    arguments['routeAction'] = routeAction.toString().split('.').last;
+    _channel.invokeMethod(
+      'willDisappear',
+      arguments,
+    );
+  }
 
-  @override
-  void didDisappear(RouteSettings routeSettings) => _channel.invokeMethod(
-        'didDisappear',
-        routeSettings.toArguments(),
-      );
-
-  @override
-  void willDisappear(RouteSettings routeSettings) => _channel.invokeMethod(
-        'willDisappear',
-        routeSettings.toArguments(),
-      );
+  void didDisappear(
+    RouteSettings routeSettings,
+    NavigatorRouteAction routeAction,
+  ) {
+    final arguments = routeSettings.toArguments();
+    arguments['routeAction'] = routeAction.toString().split('.').last;
+    _channel.invokeMethod(
+      'didDisappear',
+      arguments,
+    );
+  }
 
   void _on(String method, NavigatorPageObserverCallback callback) =>
-      _channel.registryMethodCall(
-          '__on${method[0].toUpperCase() + method.substring(1)}__', (
-              [arguments]) {
+      _channel.registryMethodCall(method, ([arguments]) {
         final routeSettings = NavigatorRouteSettings.fromArguments(arguments);
-        final pageObservers = ThrioNavigatorImplement.pageObservers;
-        for (final pageObserver in pageObservers) {
-          if (pageObserver is NavigatorPageObserverChannel) {
-            continue;
-          }
-          callback(pageObserver, routeSettings);
+        final observers = _observers.observers;
+        for (final observer in observers) {
+          callback(observer, routeSettings);
         }
         return Future.value();
       });

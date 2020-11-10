@@ -33,26 +33,14 @@ class Module
   }
 
   @override
-  void didPush(
-    RouteSettings routeSettings,
-    RouteSettings previousRouteSettings,
-  ) {}
+  void didPush(RouteSettings routeSettings) {}
 
   @override
-  void didPop(
-    RouteSettings routeSettings,
-    RouteSettings previousRouteSettings,
-  ) {}
+  void didPop(RouteSettings routeSettings) {}
 
   @override
-  void didPopTo(
-    RouteSettings routeSettings,
-    RouteSettings previousRouteSettings,
-  ) {}
+  void didPopTo(RouteSettings routeSettings) {}
 
   @override
-  void didRemove(
-    RouteSettings routeSettings,
-    RouteSettings previousRouteSettings,
-  ) {}
+  void didRemove(RouteSettings routeSettings) {}
 }

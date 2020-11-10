@@ -74,9 +74,6 @@ NS_ASSUME_NONNULL_BEGIN
                                                                          index:index
                                                                         nested:self.thrio_firstRoute != nil
                                                                         params:params];
-    if (![self isKindOfClass:NavigatorFlutterViewController.class]) { // 当前页面为原生页面
-        [ThrioNavigator onCreate:settings];
-    }
     NavigatorPageRoute *newRoute = [NavigatorPageRoute routeWithSettings:settings];
     newRoute.fromEntrypoint = entrypoint;
     newRoute.poppedResult = poppedResult;
@@ -215,7 +212,7 @@ NS_ASSUME_NONNULL_BEGIN
         [channel onPopTo:arguments result:^(BOOL r) {
             __strong typeof(weakself) strongSelf = weakself;
             if (r) {
-                route.next = nil; // TODO: 多引擎模式下，同步各个引擎的页面
+                route.next = nil;
                 [strongSelf thrio_onNotify:route];
             }
             if (result) {
@@ -373,8 +370,8 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)thrio_viewWillAppear:(BOOL)animated {
     [self thrio_viewWillAppear:animated];
 
-    if (self.thrio_firstRoute && ![self isKindOfClass:NavigatorFlutterViewController.class]) {
-        [ThrioNavigator willAppear:self.thrio_lastRoute.settings];
+    if (self.thrio_firstRoute) {
+        [ThrioNavigator.pageObservers willAppear:self.thrio_lastRoute.settings];
     }
 }
 
@@ -386,8 +383,8 @@ NS_ASSUME_NONNULL_BEGIN
         self.navigationController.thrio_popingViewController = nil;
     }
 
-    if (self.thrio_firstRoute && ![self isKindOfClass:NavigatorFlutterViewController.class]) {
-        [ThrioNavigator didAppear:self.thrio_lastRoute.settings];
+    if (self.thrio_firstRoute) {
+        [ThrioNavigator.pageObservers didAppear:self.thrio_lastRoute.settings];
     }
 
     if (self.thrio_firstRoute &&
@@ -426,8 +423,8 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)thrio_viewWillDisappear:(BOOL)animated {
     [self thrio_viewWillDisappear:animated];
 
-    if (self.thrio_firstRoute && ![self isKindOfClass:NavigatorFlutterViewController.class]) {
-        [ThrioNavigator willDisappear:self.thrio_lastRoute.settings];
+    if (self.thrio_firstRoute) {
+        [ThrioNavigator.pageObservers willDisappear:self.thrio_lastRoute.settings];
     }
 }
 
@@ -435,8 +432,8 @@ NS_ASSUME_NONNULL_BEGIN
     [self thrio_viewDidDisappear:animated];
     [self.navigationController thrio_removePopGesture];
 
-    if (self.thrio_firstRoute && ![self isKindOfClass:NavigatorFlutterViewController.class]) {
-        [ThrioNavigator didDisappear:self.thrio_lastRoute.settings];
+    if (self.thrio_firstRoute) {
+        [ThrioNavigator.pageObservers didDisappear:self.thrio_lastRoute.settings];
     }
 }
 

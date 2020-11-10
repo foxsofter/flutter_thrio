@@ -20,8 +20,8 @@
 // IN THE SOFTWARE.
 
 import 'package:flutter/widgets.dart';
+import 'package:thrio/src/extension/thrio_build_context.dart';
 
-import '../extension/thrio_build_context.dart';
 import 'navigator_page_observer.dart';
 import 'navigator_page_route.dart';
 import 'navigator_types.dart';
@@ -62,7 +62,7 @@ class _NavigatorPageLifecycleState extends State<NavigatorPageLifecycle> {
     super.initState();
     if (mounted) {
       if (shouldObserver) {
-        _pageObserverCallback = ThrioNavigatorImplement.pageObservers
+        _pageObserverCallback = ThrioNavigatorImplement.pageObservers.observers
             .registry(_PageLifecyclePageObserver(this));
       }
     }
@@ -79,7 +79,7 @@ class _NavigatorPageLifecycleState extends State<NavigatorPageLifecycle> {
       final route = state.history.last;
       if (route != null && route is NavigatorPageRoute) {
         _route = route;
-        _pageObserverCallback = ThrioNavigatorImplement.pageObservers
+        _pageObserverCallback = ThrioNavigatorImplement.pageObservers.observers
             .registry(_PageLifecyclePageObserver(this));
       }
     }
