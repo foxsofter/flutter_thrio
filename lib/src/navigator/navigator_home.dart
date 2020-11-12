@@ -40,9 +40,7 @@ class _NavigatorHomeState extends State<NavigatorHome> {
           child: SizedBox(
             width: 60,
             height: 60,
-            child: CircularProgressIndicator(
-              strokeWidth: 4,
-            ),
+            child: CircularProgressIndicator(),
           ),
         ),
       );

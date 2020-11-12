@@ -26,6 +26,7 @@ linter:
     - avoid_classes_with_only_static_members # 禁止类中只定义静态成员
     # - avoid_double_and_int_checks
     - avoid_empty_else # 禁止空 else 结构体
+    - avoid_equals_and_hash_code_on_mutable_classes
     - avoid_field_initializers_in_const_classes # 对于 const 使用 get 减少无用成员变量, !!! JS不能遵循
     - avoid_function_literals_in_foreach_calls # 不要使用 foreach 作为 function literal
     - avoid_implementing_value_types
@@ -33,7 +34,9 @@ linter:
     - avoid_js_rounded_ints
     - avoid_null_checks_in_equality_operators # 禁止重载 == 时进行 null 检查
     - avoid_positional_boolean_parameters # 禁止无名称 bool 参数
+    - avoid_print
     - avoid_private_typedef_functions
+    - avoid_redundant_argument_values
     - avoid_relative_lib_imports # 禁止相对路径导包
     - avoid_renaming_method_parameters # 禁止重写方法重命名参数名
     - avoid_return_types_on_setters # 禁止 set 方法有返回类型
@@ -48,8 +51,11 @@ linter:
     - avoid_types_as_parameter_names # 禁止将类型名作为参数名
     - avoid_types_on_closure_parameters # 禁止给函数表达式添加类型声明, 可自动类型推断
     - avoid_unused_constructor_parameters # 构造方法禁止定义不使用的参数
+    - avoid_unnecessary_containers
     - avoid_void_async # 禁止无返回值的 async 方法
+    - avoid_web_libraries_in_flutter
     - await_only_futures # await 必须使用 Future,保证向后兼容
+    - camel_case_extensions
     - camel_case_types # 类型驼峰命名
     - cancel_subscriptions # 必须取消 StreamSubscription
     - cascade_invocations # 必须使用级联进行连续调用
@@ -77,8 +83,10 @@ linter:
     - literal_only_boolean_expressions # 禁止条件判断编译时固定的 bool
     - no_adjacent_strings_in_list # 不要在list定义时使用相邻字符串,使用 +
     - no_duplicate_case_values # 不要使用多个相同的 case 值
+    - no_logic_in_create_state
     - non_constant_identifier_names # 使用小驼峰命名 变量
     - null_closures # 禁止使用 null 作为某些系统函数的参数传递
+    - missing_whitespace_between_adjacent_strings
     - omit_local_variable_types # 可推断的局部类型定义可以省略
     - one_member_abstracts # 使用 typedef 定义只有一个方法的抽象类(接口)
     - only_throw_errors # 只允许 throw Error 和 Exception
@@ -120,6 +128,7 @@ linter:
     - prefer_null_aware_operators # 推荐使用 ?. 空检查
     - prefer_single_quotes # 在不需要转义是使用单引号
     - prefer_spread_collections
+    - prefer_relative_imports
     - prefer_typing_uninitialized_variables # 为未初始化变量指定类型
     - prefer_void_to_null # 推荐使用 void 而不是 Null
     - provide_deprecation_message # 在 Deprecation 说明弃用内容

@@ -178,7 +178,7 @@ NS_ASSUME_NONNULL_BEGIN
             if (route.poppedResult) {
                 route.poppedResult(params);
             }
-            // 检查打开页面的源引擎是否和关闭页面的源引擎不同，不同则继续发送onPop
+            // 检查打开页面的源引擎是否来自Flutter引擎，是则发送onPon
             if (route.fromEntrypoint) {
                 NavigatorRouteSendChannel *channel = [NavigatorFlutterEngineFactory.shared getSendChannelByEntrypoint:route.fromEntrypoint];
                 [channel onPop:arguments result:nil];
