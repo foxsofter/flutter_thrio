@@ -22,10 +22,10 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:thrio/src/channel/thrio_channel.dart';
-import 'package:thrio/src/exception/thrio_exception.dart';
-import 'package:thrio/src/registry/registry_map.dart';
 
+import '../channel/thrio_channel.dart';
+import '../exception/thrio_exception.dart';
+import '../registry/registry_map.dart';
 import 'navigator_logger.dart';
 import 'navigator_observer_manager.dart';
 import 'navigator_page_observers.dart';

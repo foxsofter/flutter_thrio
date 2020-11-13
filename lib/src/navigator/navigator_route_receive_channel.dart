@@ -20,11 +20,11 @@
 // IN THE SOFTWARE.
 
 import 'package:flutter/foundation.dart';
-import 'package:thrio/src/channel/thrio_channel.dart';
-import 'package:thrio/src/navigator/navigator_types.dart';
 
+import '../channel/thrio_channel.dart';
 import 'navigator_logger.dart';
 import 'navigator_route_settings.dart';
+import 'navigator_types.dart';
 import 'thrio_navigator_implement.dart';
 
 class NavigatorRouteReceiveChannel {

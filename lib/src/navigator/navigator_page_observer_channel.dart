@@ -20,8 +20,8 @@
 // IN THE SOFTWARE.
 
 import 'package:flutter/widgets.dart';
-import 'package:thrio/src/channel/thrio_channel.dart';
 
+import '../channel/thrio_channel.dart';
 import 'navigator_page_observer.dart';
 import 'navigator_page_observers.dart';
 import 'navigator_page_route.dart';

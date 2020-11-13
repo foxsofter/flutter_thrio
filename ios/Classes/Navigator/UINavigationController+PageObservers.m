@@ -39,7 +39,7 @@
             return;
         }
 
-        // 触发所有 observer 的 `willAppear`
+        // 触发 `willAppear`
         [ThrioNavigator.pageObservers willAppear:routeSettings];
         // 如果存在前序的 route，触发其 `willDisappear`
         if (lastRoute.prev) {
@@ -72,11 +72,11 @@
             return;
         }
 
-        // 触发所有 observer 的 `willAppear`
-        [ThrioNavigator.pageObservers willAppear:routeSettings];
+        // 触发 `willAppear`
+        [ThrioNavigator.pageObservers didAppear:routeSettings];
         // 如果存在前序的 route，触发其 `willDisappear`
         if (lastRoute.prev) {
-            [ThrioNavigator.pageObservers willDisappear:lastRoute.prev.settings];
+            [ThrioNavigator.pageObservers didDisappear:lastRoute.prev.settings];
         }
     } else if (routeAction == NavigatorRouteActionPopTo) {
         NavigatorPageRoute *lastRoute = [self.topViewController thrio_lastRoute];

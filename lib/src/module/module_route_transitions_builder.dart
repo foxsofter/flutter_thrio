@@ -21,8 +21,8 @@
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
-import 'package:thrio/src/navigator/thrio_navigator_implement.dart';
 
+import '../navigator/thrio_navigator_implement.dart';
 import 'thrio_module.dart';
 
 mixin ModuleRouteTransitionsBuilder on ThrioModule {

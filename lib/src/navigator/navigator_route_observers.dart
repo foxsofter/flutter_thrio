@@ -20,8 +20,8 @@
 // IN THE SOFTWARE.
 
 import 'package:flutter/widgets.dart';
-import 'package:thrio/src/registry/registry_set.dart';
 
+import '../registry/registry_set.dart';
 import 'navigator_route_observer.dart';
 import 'navigator_route_observer_channel.dart';
 

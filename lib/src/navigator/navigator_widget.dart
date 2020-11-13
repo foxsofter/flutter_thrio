@@ -22,8 +22,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:thrio/src/extension/thrio_stateful_widget.dart';
 
+import '../extension/thrio_stateful_widget.dart';
 import 'navigator_logger.dart';
 import 'navigator_observer_manager.dart';
 import 'navigator_page_route.dart';

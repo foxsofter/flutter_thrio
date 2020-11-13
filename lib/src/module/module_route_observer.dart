@@ -20,9 +20,9 @@
 // IN THE SOFTWARE.
 
 import 'package:flutter/foundation.dart';
-import 'package:thrio/src/navigator/navigator_route_observer.dart';
-import 'package:thrio/src/navigator/thrio_navigator_implement.dart';
 
+import '../navigator/navigator_route_observer.dart';
+import '../navigator/thrio_navigator_implement.dart';
 import 'thrio_module.dart';
 
 mixin ModuleRouteObserver on ThrioModule {
