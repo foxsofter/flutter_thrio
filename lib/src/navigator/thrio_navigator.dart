@@ -32,7 +32,7 @@ abstract class ThrioNavigator {
   ///
   static Future<int> push({
     @required String url,
-    params,
+    dynamic params,
     bool animated = true,
     NavigatorParamsCallback poppedResult,
   }) =>
@@ -52,7 +52,7 @@ abstract class ThrioNavigator {
     @required String url,
     int index,
     @required String name,
-    params,
+    dynamic params,
   }) =>
       ThrioNavigatorImplement.notify(
         url: url,
@@ -63,7 +63,7 @@ abstract class ThrioNavigator {
 
   /// Pop a page from the navigation stack.
   ///
-  static Future<bool> pop({params, bool animated = true}) =>
+  static Future<bool> pop({dynamic params, bool animated = true}) =>
       ThrioNavigatorImplement.pop(params: params, animated: animated);
 
   /// Pop the page in the navigation stack until the page with `url`.

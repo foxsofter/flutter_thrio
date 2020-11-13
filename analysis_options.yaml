@@ -12,31 +12,29 @@ analyzer:
 # 完整Lint支持列表 https://dart-lang.github.io/linter/lints/
 linter:
   rules:
-    - always_declare_return_types # 声明方法总是返回类型
-    - always_put_control_body_on_new_line # 结构体总在新行
-    # - always_put_required_named_parameters_first # 必要参数总在最前
-    - always_require_non_null_named_parameters # 总是验证必要参数非null
+    - always_declare_return_types # prefer 声明方法总是返回类型
+    - always_put_control_body_on_new_line # prefer 结构体总在新行
+    - always_require_non_null_named_parameters # prefer 总是验证必要参数非null
     # - always_specify_types 建议注释掉，因为可能会跟 -avoid_annotating_with_dynamic 冲突
-    - annotate_overrides # 强制 override 注解
-    - avoid_annotating_with_dynamic
-    - avoid_as # 避免使用，更好的方式是通过is判断
-    - avoid_bool_literals_in_conditional_expressions # 避免在表达式使用 bool
-    - avoid_catches_without_on_clauses # 禁止无约束捕获异常
-    - avoid_catching_errors # 禁止捕获Error
-    - avoid_classes_with_only_static_members # 禁止类中只定义静态成员
+    - annotate_overrides # prefer 强制 override 注解
+    - avoid_as # avoid 避免使用，更好的方式是通过is判断
+    - avoid_bool_literals_in_conditional_expressions # avoid 避免在表达式使用 bool
+    - avoid_catches_without_on_clauses # avoid 禁止无约束捕获异常
+    - avoid_catching_errors # avoid 禁止捕获Error
+    - avoid_classes_with_only_static_members # avoid 禁止类中只定义静态成员
     # - avoid_double_and_int_checks
-    - avoid_empty_else # 禁止空 else 结构体
-    - avoid_equals_and_hash_code_on_mutable_classes
-    - avoid_field_initializers_in_const_classes # 对于 const 使用 get 减少无用成员变量, !!! JS不能遵循
-    - avoid_function_literals_in_foreach_calls # 不要使用 foreach 作为 function literal
-    - avoid_implementing_value_types
+    - avoid_empty_else # avoid 禁止空 else 结构体
+    - avoid_equals_and_hash_code_on_mutable_classes # avoid
+    - avoid_field_initializers_in_const_classes # avoid 对于 const 使用 get 减少无用成员变量, !!! JS不能遵循
+    - avoid_function_literals_in_foreach_calls # avoid 不要使用 foreach 作为 function literal
+    - avoid_implementing_value_types # avoid
     - avoid_init_to_null
-    - avoid_js_rounded_ints
-    - avoid_null_checks_in_equality_operators # 禁止重载 == 时进行 null 检查
-    - avoid_positional_boolean_parameters # 禁止无名称 bool 参数
-    - avoid_print
-    - avoid_private_typedef_functions
-    - avoid_redundant_argument_values
+    # - avoid_js_rounded_ints
+    - avoid_null_checks_in_equality_operators # avoid 禁止重载 == 时进行 null 检查
+    - avoid_positional_boolean_parameters # avoid 禁止无名称 bool 参数
+    - avoid_print # avoid
+    - avoid_private_typedef_functions # prefer
+    - avoid_redundant_argument_values # avoid
     - avoid_relative_lib_imports # 禁止相对路径导包
     - avoid_renaming_method_parameters # 禁止重写方法重命名参数名
     - avoid_return_types_on_setters # 禁止 set 方法有返回类型
@@ -56,11 +54,11 @@ linter:
     - avoid_web_libraries_in_flutter
     - await_only_futures # await 必须使用 Future,保证向后兼容
     - camel_case_extensions
-    - camel_case_types # 类型驼峰命名
+    - camel_case_types
     - cancel_subscriptions # 必须取消 StreamSubscription
     - cascade_invocations # 必须使用级联进行连续调用
     - close_sinks # 必须关闭 sinks
-    - comment_references # 保证文档链接有效
+    #- comment_references # Unused because https://github.com/dart-lang/sdk/issues/36974
     - constant_identifier_names # 小写常量名
     - control_flow_in_finally # 禁止在 finally 使用控制逻辑
     - curly_braces_in_flow_control_structures # 结构体必须使用 {}
@@ -83,7 +81,7 @@ linter:
     - literal_only_boolean_expressions # 禁止条件判断编译时固定的 bool
     - no_adjacent_strings_in_list # 不要在list定义时使用相邻字符串,使用 +
     - no_duplicate_case_values # 不要使用多个相同的 case 值
-    - no_logic_in_create_state
+    - no_logic_in_create_state # createState 方法不要包含逻辑
     - non_constant_identifier_names # 使用小驼峰命名 变量
     - null_closures # 禁止使用 null 作为某些系统函数的参数传递
     - missing_whitespace_between_adjacent_strings
@@ -128,7 +126,7 @@ linter:
     - prefer_null_aware_operators # 推荐使用 ?. 空检查
     - prefer_single_quotes # 在不需要转义是使用单引号
     - prefer_spread_collections
-    - prefer_relative_imports
+    - prefer_relative_imports # 同一个lib下使用相对路径import
     - prefer_typing_uninitialized_variables # 为未初始化变量指定类型
     - prefer_void_to_null # 推荐使用 void 而不是 Null
     - provide_deprecation_message # 在 Deprecation 说明弃用内容
@@ -141,7 +139,7 @@ linter:
     - sort_unnamed_constructors_first # 构造函数在所有函数之前
     - test_types_in_equals # 在 == 中 判断类型
     - throw_in_finally # 避免在 finally 中抛出异常
-    # - type_annotate_public_apis # 为公共API方法明确传入类型
+    - type_annotate_public_apis # 为公共API方法明确传入类型
     - type_init_formals # 如果构造方法存在初始化字段，不用声明参数类型
     - unawaited_futures # 使用 unawaited 忽略 Future 返回
     - unnecessary_await_in_return # 除非必要不要返回 await

@@ -108,7 +108,7 @@ class ThrioNavigatorImplement {
 
   static Future<int> push({
     @required String url,
-    params,
+    dynamic params,
     bool animated = true,
     NavigatorParamsCallback poppedResult,
   }) {
@@ -129,7 +129,7 @@ class ThrioNavigatorImplement {
     @required String url,
     int index,
     @required String name,
-    params,
+    dynamic params,
   }) {
     if (_default == null) {
       throw ThrioException('Must call the `builder` method first');
@@ -143,7 +143,7 @@ class ThrioNavigatorImplement {
   }
 
   static Future<bool> pop({
-    params,
+    dynamic params,
     bool animated = true,
   }) {
     if (_default == null) {
