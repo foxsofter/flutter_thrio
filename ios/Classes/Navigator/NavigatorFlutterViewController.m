@@ -121,7 +121,7 @@ NS_ASSUME_NONNULL_BEGIN
         NSMutableDictionary *arguments = [NSMutableDictionary
                                           dictionaryWithDictionary:[settings toArgumentsWithParams:nil]];
         [arguments setObject:@NO forKey:@"animated"];
-        [channel onPopTo:arguments
+        [channel popTo:arguments
                   result:^(BOOL r) {
         }];
     });

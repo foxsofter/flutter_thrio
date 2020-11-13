@@ -26,6 +26,7 @@ import 'package:flutter/widgets.dart';
 
 import '../navigator/navigator_logger.dart';
 import '../navigator/thrio_navigator_implement.dart';
+import 'module_context.dart';
 import 'module_page_builder.dart';
 import 'module_page_observer.dart';
 import 'module_route_observer.dart';
@@ -39,10 +40,10 @@ mixin ThrioModule {
   /// A function for registering a module, which will call
   /// the `onModuleRegister` function of the `module`.
   ///
-  void registerModule(ThrioModule module) {
+  void registerModule(ModuleContext moduleContext, ThrioModule module) {
     if (!_modules.containsKey(module.runtimeType)) {
       _modules[module.runtimeType] = module;
-      module.onModuleRegister();
+      module.onModuleRegister(moduleContext);
     }
   }
 
@@ -50,43 +51,45 @@ mixin ThrioModule {
   /// the `onPageRegister`, `onModuleInit` and `onModuleAsyncInit`
   /// methods of all modules.
   ///
-  void initModule() {
+  void initModule(ModuleContext moduleContext) {
+    ThrioNavigatorImplement.shared().init(moduleContext);
+
     final values = _modules.values;
     for (final module in values) {
-      if (module is ModulePageBuilder) {
-        module.onPageBuilderRegister();
-      }
-      if (module is ModulePageObserver) {
-        module.onPageObserverRegister();
-      }
-      if (module is ModuleRouteObserver) {
-        module.onRouteObserverRegister();
-      }
-      if (module is ModuleRouteTransitionsBuilder) {
-        module.onRouteTransitionsBuilderRegister();
-      }
+      module.onModuleInit(moduleContext);
     }
     for (final module in values) {
-      module.onModuleInit();
+      if (module is ModulePageBuilder) {
+        module.onPageBuilderRegister(moduleContext);
+      }
+      if (module is ModulePageObserver) {
+        module.onPageObserverRegister(moduleContext);
+      }
+      if (module is ModuleRouteObserver) {
+        module.onRouteObserverRegister(moduleContext);
+      }
+      if (module is ModuleRouteTransitionsBuilder) {
+        module.onRouteTransitionsBuilderRegister(moduleContext);
+      }
     }
     Future.microtask(() {
       for (final module in values) {
-        module.onModuleAsyncInit();
+        module.onModuleAsyncInit(moduleContext);
       }
     });
   }
 
   /// A function for registering submodules.
   ///
-  void onModuleRegister() {}
+  void onModuleRegister(ModuleContext moduleContext) {}
 
   /// A function for module initialization.
   ///
-  void onModuleInit() {}
+  void onModuleInit(ModuleContext moduleContext) {}
 
   /// A function for module asynchronous initialization.
   ///
-  void onModuleAsyncInit() {}
+  void onModuleAsyncInit(ModuleContext moduleContext) {}
 
   /// Sets up a broadcast stream for receiving page notify events.
   ///
@@ -97,7 +100,7 @@ mixin ThrioModule {
     @required String url,
     @required int index,
   }) =>
-      ThrioNavigatorImplement.onPageNotify(
+      ThrioNavigatorImplement.shared().onPageNotify(
         url: url,
         index: index,
         name: name,

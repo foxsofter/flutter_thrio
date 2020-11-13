@@ -67,7 +67,7 @@ NS_ASSUME_NONNULL_BEGIN
                 index:(NSNumber *)index
                params:(id _Nullable)params
              animated:(BOOL)animated
-       fromEntrypoint:(NSString *_Nullable)entrypoint
+       fromEntrypoint:(NSString *_Nullable)fromEntrypoint
                result:(ThrioNumberCallback _Nullable)result
          poppedResult:(ThrioIdCallback _Nullable)poppedResult {
     NavigatorRouteSettings *settings = [NavigatorRouteSettings settingsWithUrl:url
@@ -75,7 +75,7 @@ NS_ASSUME_NONNULL_BEGIN
                                                                         nested:self.thrio_firstRoute != nil
                                                                         params:params];
     NavigatorPageRoute *newRoute = [NavigatorPageRoute routeWithSettings:settings];
-    newRoute.fromEntrypoint = entrypoint;
+    newRoute.fromEntrypoint = fromEntrypoint;
     newRoute.poppedResult = poppedResult;
     if (self.thrio_firstRoute) {
         NavigatorPageRoute *lastRoute = self.thrio_lastRoute;
@@ -90,11 +90,11 @@ NS_ASSUME_NONNULL_BEGIN
         NSString *entrypoint = [(NavigatorFlutterViewController *)self entrypoint];
         NavigatorRouteSendChannel *channel = [NavigatorFlutterEngineFactory.shared getSendChannelByEntrypoint:entrypoint];
         if (result) {
-            [channel onPush:arguments result:^(BOOL r) {
+            [channel push:arguments result:^(BOOL r) {
                 result(r ? index : nil);
             }];
         } else {
-            [channel onPush:arguments result:nil];
+            [channel push:arguments result:nil];
         }
     } else if (result) {
         result(index);
@@ -142,7 +142,7 @@ NS_ASSUME_NONNULL_BEGIN
         NavigatorRouteSendChannel *channel = [NavigatorFlutterEngineFactory.shared getSendChannelByEntrypoint:entrypoint];
         __weak typeof(self) weakself = self;
         // 发送给需要关闭页面的引擎
-        [channel onPop:arguments result:^(BOOL r) {
+        [channel pop:arguments result:^(BOOL r) {
             __strong typeof(weakself) strongSelf = weakself;
             if (r) {
                 if (route != strongSelf.thrio_firstRoute) {
@@ -161,7 +161,7 @@ NS_ASSUME_NONNULL_BEGIN
                 // 检查打开页面的源引擎是否和关闭页面的源引擎不同，不同则继续发送onPop
                 if (route.fromEntrypoint && ![route.fromEntrypoint isEqualToString:entrypoint]) {
                     NavigatorRouteSendChannel *channel = [NavigatorFlutterEngineFactory.shared getSendChannelByEntrypoint:route.fromEntrypoint];
-                    [channel onPop:arguments result:nil];
+                    [channel pop:arguments result:nil];
                 }
             }
         }];
@@ -178,7 +178,7 @@ NS_ASSUME_NONNULL_BEGIN
             // 检查打开页面的源引擎是否来自Flutter引擎，是则发送onPon
             if (route.fromEntrypoint) {
                 NavigatorRouteSendChannel *channel = [NavigatorFlutterEngineFactory.shared getSendChannelByEntrypoint:route.fromEntrypoint];
-                [channel onPop:arguments result:nil];
+                [channel pop:arguments result:nil];
             }
         }
     }
@@ -209,7 +209,7 @@ NS_ASSUME_NONNULL_BEGIN
         __weak typeof(self) weakself = self;
         NSString *entrypoint = [(NavigatorFlutterViewController *)self entrypoint];
         NavigatorRouteSendChannel *channel = [NavigatorFlutterEngineFactory.shared getSendChannelByEntrypoint:entrypoint];
-        [channel onPopTo:arguments result:^(BOOL r) {
+        [channel popTo:arguments result:^(BOOL r) {
             __strong typeof(weakself) strongSelf = weakself;
             if (r) {
                 route.next = nil;
@@ -245,7 +245,7 @@ NS_ASSUME_NONNULL_BEGIN
         __weak typeof(self) weakself = self;
         NSString *entrypoint = [(NavigatorFlutterViewController *)self entrypoint];
         NavigatorRouteSendChannel *channel = [NavigatorFlutterEngineFactory.shared getSendChannelByEntrypoint:entrypoint];
-        [channel onRemove:arguments result:^(BOOL r) {
+        [channel remove:arguments result:^(BOOL r) {
             __strong typeof(weakself) strongSelf = weakself;
             if (r) {
                 if (route == strongSelf.thrio_firstRoute) {
@@ -454,7 +454,7 @@ NS_ASSUME_NONNULL_BEGIN
             };
             NSString *entrypoint = [(NavigatorFlutterViewController *)self entrypoint];
             NavigatorRouteSendChannel *channel = [NavigatorFlutterEngineFactory.shared getSendChannelByEntrypoint:entrypoint];
-            [channel onNotify:arguments result:nil];
+            [channel notify:arguments result:nil];
         } else {
             if ([self conformsToProtocol:@protocol(NavigatorPageNotifyProtocol)]) {
                 [(id<NavigatorPageNotifyProtocol>)self onNotify:name params:params];

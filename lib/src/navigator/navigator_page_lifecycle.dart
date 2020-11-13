@@ -62,7 +62,9 @@ class _NavigatorPageLifecycleState extends State<NavigatorPageLifecycle> {
     super.initState();
     if (mounted) {
       if (shouldObserver) {
-        _pageObserverCallback = ThrioNavigatorImplement.pageObservers.observers
+        _pageObserverCallback = ThrioNavigatorImplement.shared()
+            .pageObservers
+            .observers
             .registry(_PageLifecyclePageObserver(this));
       }
     }
@@ -79,7 +81,9 @@ class _NavigatorPageLifecycleState extends State<NavigatorPageLifecycle> {
       final route = state.history.last;
       if (route != null && route is NavigatorPageRoute) {
         _route = route;
-        _pageObserverCallback = ThrioNavigatorImplement.pageObservers.observers
+        _pageObserverCallback = ThrioNavigatorImplement.shared()
+            .pageObservers
+            .observers
             .registry(_PageLifecyclePageObserver(this));
       }
     }

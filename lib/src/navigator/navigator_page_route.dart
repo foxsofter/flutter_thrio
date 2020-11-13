@@ -72,7 +72,7 @@ class NavigatorPageRoute extends MaterialPageRoute<bool> {
         Future.delayed(const Duration(milliseconds: 300), () {
       _popDisabledFutures.remove(settings.name); // ignore: unawaited_futures
       final disabled = _popDisableds.remove(settings.name);
-      ThrioNavigatorImplement.setPopDisabled(
+      ThrioNavigatorImplement.shared().setPopDisabled(
         url: settings.url,
         index: settings.index,
         disabled: disabled,
@@ -88,11 +88,12 @@ class NavigatorPageRoute extends MaterialPageRoute<bool> {
     Widget child,
   ) {
     if (settings.isNested) {
-      final urlPatterns = ThrioNavigatorImplement.routeTransitionsBuilders.keys;
+      final urlPatterns =
+          ThrioNavigatorImplement.shared().routeTransitionsBuilders.keys;
       for (final urlPattern in urlPatterns) {
         if (urlPattern.hasMatch(settings.url)) {
-          final builder =
-              ThrioNavigatorImplement.routeTransitionsBuilders[urlPattern];
+          final builder = ThrioNavigatorImplement.shared()
+              .routeTransitionsBuilders[urlPattern];
           return builder(context, animation, secondaryAnimation, child);
         }
       }

@@ -23,12 +23,13 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import '../navigator/thrio_navigator_implement.dart';
+import 'module_context.dart';
 import 'thrio_module.dart';
 
 mixin ModuleRouteTransitionsBuilder on ThrioModule {
   /// A function for register a `RouteTransitionsBuilder` .
   ///
-  void onRouteTransitionsBuilderRegister() {}
+  void onRouteTransitionsBuilderRegister(ModuleContext moduleContext) {}
 
   /// Register the `transitionsBuilder` that matches the `urlPattern`.
   ///
@@ -40,6 +41,7 @@ mixin ModuleRouteTransitionsBuilder on ThrioModule {
     String urlPattern,
     RouteTransitionsBuilder transitionsBuilder,
   ) =>
-      ThrioNavigatorImplement.routeTransitionsBuilders
+      ThrioNavigatorImplement.shared()
+          .routeTransitionsBuilders
           .registry(RegExp(urlPattern), transitionsBuilder);
 }

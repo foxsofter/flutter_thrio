@@ -24,7 +24,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 import '../channel/thrio_channel.dart';
-import '../exception/thrio_exception.dart';
+import '../module/module_context.dart';
 import '../registry/registry_map.dart';
 import 'navigator_logger.dart';
 import 'navigator_observer_manager.dart';
@@ -36,210 +36,162 @@ import 'navigator_types.dart';
 import 'navigator_widget.dart';
 
 class ThrioNavigatorImplement {
-  ThrioNavigatorImplement._(
-    this._channel,
-    this._sendChannel,
-    this._receiveChannel,
-    this._observerManager,
-    this._pagePoppedResults,
-  );
+  factory ThrioNavigatorImplement.shared() =>
+      _default ??= ThrioNavigatorImplement._();
+
+  ThrioNavigatorImplement._();
 
   static ThrioNavigatorImplement _default;
 
-  static TransitionBuilder builder({String entrypoint = 'main'}) {
-    if (_default == null) {
-      _pageObservers = NavigatorPageObservers(entrypoint);
-      _routeObservers = NavigatorRouteObservers(entrypoint);
+  void init(ModuleContext moduleContext) {
+    _pageObservers = NavigatorPageObservers(moduleContext.entrypoint);
+    _routeObservers = NavigatorRouteObservers(moduleContext.entrypoint);
+    _channel =
+        ThrioChannel(channel: '__thrio_app__${moduleContext.entrypoint}');
+    _sendChannel = NavigatorRouteSendChannel(_channel);
+    _receiveChannel = NavigatorRouteReceiveChannel(
+      _channel,
+      _pagePoppedResults,
+    );
+    _observerManager = NavigatorObserverManager();
 
-      final channel = ThrioChannel(channel: '__thrio_app__$entrypoint');
-      final sendChannel = NavigatorRouteSendChannel(channel);
-      final pagePoppedResults = <String, NavigatorParamsCallback>{};
-      final receiveChannel =
-          NavigatorRouteReceiveChannel(channel, pagePoppedResults);
-      final observerManager = NavigatorObserverManager();
-      _default = ThrioNavigatorImplement._(
-        channel,
-        sendChannel,
-        receiveChannel,
-        observerManager,
-        pagePoppedResults,
-      );
-      verbose('TransitionBuilder builder');
-      // sendChannel.registerUrls(_pageBuilders.keys.toList());
-    }
-
-    return (context, child) {
-      final navigator = child is Navigator ? child : null;
-      if (!navigator.observers.contains(_default._observerManager)) {
-        navigator.observers.add(_default._observerManager);
-      }
-      return NavigatorWidget(
-        key: _stateKey ??= GlobalKey<NavigatorWidgetState>(),
-        observerManager: _default._observerManager,
-        child: navigator,
-      );
-    };
+    verbose('TransitionBuilder builder');
+    // sendChannel.registerUrls(_pageBuilders.keys.toList());
   }
 
-  static GlobalKey<NavigatorWidgetState> _stateKey;
+  TransitionBuilder get builder => (context, child) {
+        final navigator = child is Navigator ? child : null;
+        if (!navigator.observers.contains(_observerManager)) {
+          navigator.observers.add(_observerManager);
+        }
+        return NavigatorWidget(
+          key: _stateKey ??= GlobalKey<NavigatorWidgetState>(),
+          moduleContext: _moduleContext,
+          observerManager: _observerManager,
+          child: navigator,
+        );
+      };
 
-  static NavigatorWidgetState get navigatorState => _stateKey?.currentState;
+  ModuleContext _moduleContext;
 
-  static NavigatorPageObservers _pageObservers;
+  GlobalKey<NavigatorWidgetState> _stateKey;
 
-  static NavigatorRouteObservers _routeObservers;
+  NavigatorWidgetState get navigatorState => _stateKey?.currentState;
 
-  static final _pageBuilders = RegistryMap<String, NavigatorPageBuilder>();
+  NavigatorPageObservers _pageObservers;
 
-  static final _routeTransitionsBuilders =
+  NavigatorRouteObservers _routeObservers;
+
+  final _pageBuilders = RegistryMap<String, NavigatorPageBuilder>();
+
+  final _pagePoppedResults = <String, NavigatorParamsCallback>{};
+
+  final _routeTransitionsBuilders =
       RegistryMap<RegExp, RouteTransitionsBuilder>();
 
-  final ThrioChannel _channel;
+  ThrioChannel _channel;
 
-  final NavigatorRouteSendChannel _sendChannel;
+  NavigatorRouteSendChannel _sendChannel;
 
-  final NavigatorRouteReceiveChannel _receiveChannel;
+  NavigatorRouteReceiveChannel _receiveChannel;
 
-  final NavigatorObserverManager _observerManager;
+  NavigatorObserverManager _observerManager;
 
-  final Map<String, NavigatorParamsCallback> _pagePoppedResults;
+  void ready() => _channel?.invokeMethod<bool>('ready');
 
-  static void ready() => _default._channel?.invokeMethod<bool>('ready');
-
-  static Future<int> push({
+  Future<int> push({
     @required String url,
     dynamic params,
     bool animated = true,
     NavigatorParamsCallback poppedResult,
-  }) {
-    if (_default == null) {
-      throw ThrioException('Must call the `builder` method first');
-    }
-    return _default._sendChannel
-        .push(url: url, params: params, animated: animated)
-        .then<int>((index) {
-      if (poppedResult != null && index != null && index > 0) {
-        _default._pagePoppedResults['$index $url'] = poppedResult;
-      }
-      return index;
-    });
-  }
+  }) =>
+      _sendChannel
+          ?.push(url: url, params: params, animated: animated)
+          ?.then<int>((index) {
+        if (poppedResult != null && index != null && index > 0) {
+          _pagePoppedResults['$index $url'] = poppedResult;
+        }
+        return index;
+      });
 
-  static Future<bool> notify({
+  Future<bool> notify({
     @required String url,
     int index,
     @required String name,
     dynamic params,
-  }) {
-    if (_default == null) {
-      throw ThrioException('Must call the `builder` method first');
-    }
-    return _default._sendChannel.notify(
-      name: name,
-      url: url,
-      index: index,
-      params: params,
-    );
-  }
+  }) =>
+      _sendChannel?.notify(
+        name: name,
+        url: url,
+        index: index,
+        params: params,
+      );
 
-  static Future<bool> pop({
+  Future<bool> pop({
     dynamic params,
     bool animated = true,
-  }) {
-    if (_default == null) {
-      throw ThrioException('Must call the `builder` method first');
-    }
-    return _default._sendChannel.pop(params: params, animated: animated);
-  }
+  }) =>
+      _sendChannel?.pop(params: params, animated: animated);
 
-  static Future<bool> popTo({
+  Future<bool> popTo({
     @required String url,
     int index,
     bool animated = true,
-  }) {
-    if (_default == null) {
-      throw ThrioException('Must call the `builder` method first');
-    }
-    return _default._sendChannel.popTo(
-      url: url,
-      index: index,
-      animated: animated,
-    );
-  }
+  }) =>
+      _sendChannel?.popTo(
+        url: url,
+        index: index,
+        animated: animated,
+      );
 
-  static Future<bool> remove({
+  Future<bool> remove({
     @required String url,
     int index,
     bool animated = true,
-  }) {
-    if (_default == null) {
-      throw ThrioException('Must call the `builder` method first');
-    }
-    return _default._sendChannel.remove(
-      url: url,
-      index: index,
-      animated: animated,
-    );
-  }
+  }) =>
+      _sendChannel?.remove(
+        url: url,
+        index: index,
+        animated: animated,
+      );
 
-  static Future<int> lastIndex({String url}) {
-    if (_default == null) {
-      throw ThrioException('Must call the `builder` method first');
-    }
-    return _default._sendChannel.lastIndex(url: url);
-  }
+  Future<int> lastIndex({String url}) => _sendChannel?.lastIndex(url: url);
 
-  static Future<List<int>> allIndexs({@required String url}) {
-    if (_default == null) {
-      throw ThrioException('Must call the `builder` method first');
-    }
-    return _default._sendChannel.allIndexs(url: url);
-  }
+  Future<List<int>> allIndexs({@required String url}) =>
+      _sendChannel?.allIndexs(url: url);
 
-  static Future<bool> setPopDisabled({
+  Future<bool> setPopDisabled({
     @required String url,
     int index,
     bool disabled = true,
-  }) {
-    if (_default == null) {
-      throw ThrioException('Must call the `builder` method first');
-    }
-    return _default._sendChannel.setPopDisabled(
-      url: url,
-      index: index,
-      disabled: disabled,
-    );
-  }
+  }) =>
+      _sendChannel?.setPopDisabled(
+        url: url,
+        index: index,
+        disabled: disabled,
+      );
 
-  static Stream onPageNotify({
+  Stream onPageNotify({
     @required String url,
     @required int index,
     @required String name,
-  }) {
-    if (_default == null) {
-      throw ThrioException('Must call the `builder` method first');
-    }
-    return _default._receiveChannel.onPageNotify(
-      url: url,
-      index: index,
-      name: name,
-    );
+  }) =>
+      _receiveChannel?.onPageNotify(
+        url: url,
+        index: index,
+        name: name,
+      );
+
+  void hotRestart() {
+    _channel?.invokeMethod<bool>('hotRestart');
   }
 
-  static void hotRestart() {
-    if (_default == null) {
-      throw ThrioException('Must call the `builder` method first');
-    }
-    _default._channel.invokeMethod<bool>('hotRestart');
-  }
+  RegistryMap<String, NavigatorPageBuilder> get pageBuilders => _pageBuilders;
 
-  static RegistryMap<String, NavigatorPageBuilder> get pageBuilders =>
-      _pageBuilders;
+  NavigatorPageObservers get pageObservers => _pageObservers;
 
-  static NavigatorPageObservers get pageObservers => _pageObservers;
+  NavigatorRouteObservers get routeObservers => _routeObservers;
 
-  static NavigatorRouteObservers get routeObservers => _routeObservers;
-
-  static RegistryMap<RegExp, RouteTransitionsBuilder>
-      get routeTransitionsBuilders => _routeTransitionsBuilders;
+  RegistryMap<RegExp, RouteTransitionsBuilder> get routeTransitionsBuilders =>
+      _routeTransitionsBuilders;
 }

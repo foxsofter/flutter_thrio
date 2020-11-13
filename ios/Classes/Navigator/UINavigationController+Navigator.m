@@ -62,7 +62,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)thrio_pushUrl:(NSString *)url
                params:(id _Nullable)params
              animated:(BOOL)animated
-       fromEntrypoint:(NSString *_Nullable)entrypoint
+       fromEntrypoint:(NSString *_Nullable)fromEntrypoint
                result:(ThrioNumberCallback _Nullable)result
          poppedResult:(ThrioIdCallback _Nullable)poppedResult {
     @synchronized (self) {
@@ -72,7 +72,7 @@ NS_ASSUME_NONNULL_BEGIN
                                        url:url
                                     params:params
                                   animated:animated
-                            fromEntrypoint:entrypoint
+                            fromEntrypoint:fromEntrypoint
                                     result:result
                               poppedResult:poppedResult];
         } else {
@@ -88,12 +88,12 @@ NS_ASSUME_NONNULL_BEGIN
                 if ([strongSelf.topViewController isKindOfClass:NavigatorFlutterViewController.class] &&
                     [[(NavigatorFlutterViewController *)strongSelf.topViewController entrypoint] isEqualToString:entrypoint]) {
                     NavigatorPageRoute *lastRoute = [ThrioNavigator getLastRouteByUrl:url];
-                    NSNumber *index = @(lastRoute.settings.index.integerValue + 1);
+                    NSNumber *index = lastRoute ? @(lastRoute.settings.index.integerValue + 1) : @1;
                     [strongSelf.topViewController thrio_pushUrl:url
                                                           index:index
                                                          params:params
                                                        animated:animated
-                                                 fromEntrypoint:entrypoint
+                                                 fromEntrypoint:fromEntrypoint
                                                          result:^(NSNumber *idx) {
                         if (idx && [idx boolValue]) {
                             [strongSelf thrio_removePopGesture];
@@ -103,12 +103,12 @@ NS_ASSUME_NONNULL_BEGIN
                         }
                     }                              poppedResult:poppedResult];
                 } else {
-                    UIViewController *viewController = [strongSelf thrio_createFlutterViewControllerWithEntrypoint:entrypoint];
+                    NavigatorFlutterViewController *viewController = [strongSelf thrio_createFlutterViewControllerWithEntrypoint:entrypoint];
                     [strongSelf thrio_pushViewController:viewController
                                                      url:url
                                                   params:params
                                                 animated:animated
-                                          fromEntrypoint:entrypoint
+                                          fromEntrypoint:fromEntrypoint
                                                   result:result
                                             poppedResult:poppedResult];
                 }
@@ -585,8 +585,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark - private methods
 
-- (UIViewController *)thrio_createFlutterViewControllerWithEntrypoint:(NSString *)entrypoint {
-    UIViewController *viewController;
+- (NavigatorFlutterViewController *)thrio_createFlutterViewControllerWithEntrypoint:(NSString *)entrypoint {
+    NavigatorFlutterViewController *viewController;
     NavigatorFlutterPageBuilder flutterBuilder = [ThrioNavigator flutterPageBuilder];
     if (flutterBuilder) {
         viewController = flutterBuilder(entrypoint);
@@ -612,18 +612,18 @@ NS_ASSUME_NONNULL_BEGIN
                              url:(NSString *)url
                           params:(id _Nullable)params
                         animated:(BOOL)animated
-                  fromEntrypoint:(NSString *_Nullable)entrypoint
+                  fromEntrypoint:(NSString *_Nullable)fromEntrypoint
                           result:(ThrioNumberCallback _Nullable)result
                     poppedResult:(ThrioIdCallback _Nullable)poppedResult {
     if (viewController) {
         NavigatorPageRoute *lastRoute = [ThrioNavigator getLastRouteByUrl:url];
-        NSNumber *index = @(lastRoute.settings.index.integerValue + 1);
+        NSNumber *index = lastRoute ? @(lastRoute.settings.index.integerValue + 1) : @1;
         __weak typeof(self) weakself = self;
         [viewController thrio_pushUrl:url
                                 index:index
                                params:params
                              animated:animated
-                       fromEntrypoint:entrypoint
+                       fromEntrypoint:fromEntrypoint
                                result:^(NSNumber *idx) {
             if (idx && [idx boolValue]) {
                 __strong typeof(weakself) strongSelf = weakself;

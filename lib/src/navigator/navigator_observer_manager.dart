@@ -47,8 +47,9 @@ class NavigatorObserverManager extends NavigatorObserver {
         'params->${route.settings.params}',
       );
       pageRoutes.add(route);
-      ThrioNavigatorImplement.routeObservers.didPush(route.settings);
-      ThrioNavigatorImplement.pageObservers
+      ThrioNavigatorImplement.shared().routeObservers.didPush(route.settings);
+      ThrioNavigatorImplement.shared()
+          .pageObservers
           .didAppear(route.settings, NavigatorRouteAction.push);
     }
   }
@@ -64,9 +65,11 @@ class NavigatorObserverManager extends NavigatorObserver {
             if (pageRoutes.last.routeAction == NavigatorRouteAction.popTo) {
               verbose('didPopTo: url->${pageRoutes.last.settings.url} '
                   'index->${pageRoutes.last.settings.index}');
-              ThrioNavigatorImplement.routeObservers
+              ThrioNavigatorImplement.shared()
+                  .routeObservers
                   .didPopTo(pageRoutes.last.settings);
-              ThrioNavigatorImplement.pageObservers
+              ThrioNavigatorImplement.shared()
+                  .pageObservers
                   .didDisappear(route.settings, NavigatorRouteAction.popTo);
               pageRoutes.last.routeAction = null;
             }
@@ -78,8 +81,11 @@ class NavigatorObserverManager extends NavigatorObserver {
                 'index->${route.settings.index} '
                 'params:${route.settings.params}',
               );
-              ThrioNavigatorImplement.routeObservers.didPop(route.settings);
-              ThrioNavigatorImplement.pageObservers
+              ThrioNavigatorImplement.shared()
+                  .routeObservers
+                  .didPop(route.settings);
+              ThrioNavigatorImplement.shared()
+                  .pageObservers
                   .didDisappear(route.settings, NavigatorRouteAction.pop);
             }
             if (route.routeAction == NavigatorRouteAction.remove) {
@@ -90,18 +96,21 @@ class NavigatorObserverManager extends NavigatorObserver {
                   'index->${route.settings.index} '
                   'params->${route.settings.params}',
                 );
-                ThrioNavigatorImplement.routeObservers
+                ThrioNavigatorImplement.shared()
+                    .routeObservers
                     .didRemove(route.settings);
-                ThrioNavigatorImplement.pageObservers
+                ThrioNavigatorImplement.shared()
+                    .pageObservers
                     .didDisappear(route.settings, NavigatorRouteAction.remove);
               }
             }
           } else if (_currentPopRoutes.length > 1) {
             verbose('didPopTo: url->${pageRoutes.last.settings.url} '
                 'index->${pageRoutes.last.settings.index}');
-            ThrioNavigatorImplement.routeObservers
+            ThrioNavigatorImplement.shared()
+                .routeObservers
                 .didPopTo(pageRoutes.last.settings);
-            ThrioNavigatorImplement.pageObservers.didAppear(
+            ThrioNavigatorImplement.shared().pageObservers.didAppear(
                 pageRoutes.last.settings, NavigatorRouteAction.popTo);
           }
           _currentPopRoutes.clear();
@@ -121,25 +130,29 @@ class NavigatorObserverManager extends NavigatorObserver {
             if (pageRoutes.last.routeAction == NavigatorRouteAction.popTo) {
               verbose('didPopTo: url->${pageRoutes.last.settings.url} '
                   'index->${pageRoutes.last.settings.index}');
-              ThrioNavigatorImplement.routeObservers
+              ThrioNavigatorImplement.shared()
+                  .routeObservers
                   .didPopTo(pageRoutes.last.settings);
-              ThrioNavigatorImplement.pageObservers.didAppear(
+              ThrioNavigatorImplement.shared().pageObservers.didAppear(
                   pageRoutes.last.settings, NavigatorRouteAction.popTo);
               pageRoutes.last.routeAction = null;
             } else {
               verbose('didRemove: url->${route.settings.url} '
                   'index->${route.settings.index}');
-              ThrioNavigatorImplement.routeObservers.didRemove(route.settings);
-              ThrioNavigatorImplement.pageObservers.didDisappear(
+              ThrioNavigatorImplement.shared()
+                  .routeObservers
+                  .didRemove(route.settings);
+              ThrioNavigatorImplement.shared().pageObservers.didDisappear(
                   pageRoutes.last.settings, NavigatorRouteAction.remove);
             }
           } else if (_currentRemoveRoutes.length > 1) {
             verbose('didPopTo: url->${pageRoutes.last.settings.url} '
                 'index->${pageRoutes.last.settings.index}');
             // remove是最后一个route为之前的active route
-            ThrioNavigatorImplement.routeObservers
+            ThrioNavigatorImplement.shared()
+                .routeObservers
                 .didPopTo(pageRoutes.last.settings);
-            ThrioNavigatorImplement.pageObservers.didAppear(
+            ThrioNavigatorImplement.shared().pageObservers.didAppear(
                 pageRoutes.last.settings, NavigatorRouteAction.popTo);
           }
           _currentRemoveRoutes.clear();

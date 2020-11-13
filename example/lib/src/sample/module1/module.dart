@@ -12,7 +12,7 @@ class Module
         ModuleRouteTransitionsBuilder,
         NavigatorPageObserver {
   @override
-  void onPageBuilderRegister() {
+  void onPageBuilderRegister(ModuleContext moduleContext) {
     registerPageBuilder(
       '/biz1/flutter1',
       (settings) => Page1(
@@ -30,12 +30,12 @@ class Module
   }
 
   @override
-  void onPageObserverRegister() {
+  void onPageObserverRegister(ModuleContext moduleContext) {
     registerPageObserver(this);
   }
 
   @override
-  void onRouteTransitionsBuilderRegister() {
+  void onRouteTransitionsBuilderRegister(ModuleContext moduleContext) {
     // registerRouteTransitionsBuilder(
     //     '\/biz1\/flutter[0-9]*',
     //     (

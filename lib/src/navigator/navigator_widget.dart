@@ -24,6 +24,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../extension/thrio_stateful_widget.dart';
+import '../module/module_context.dart';
 import 'navigator_logger.dart';
 import 'navigator_observer_manager.dart';
 import 'navigator_page_route.dart';
@@ -36,12 +37,15 @@ import 'thrio_navigator_implement.dart';
 class NavigatorWidget extends StatefulWidget {
   const NavigatorWidget({
     Key key,
+    this.moduleContext,
     NavigatorObserverManager observerManager,
     this.child,
   })  : _observerManager = observerManager,
         super(key: key);
 
   final Navigator child;
+
+  final ModuleContext moduleContext;
 
   final NavigatorObserverManager _observerManager;
 
@@ -65,7 +69,8 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
       return Future.value(false);
     }
 
-    final pageBuilder = ThrioNavigatorImplement.pageBuilders[settings.url];
+    final pageBuilder =
+        ThrioNavigatorImplement.shared().pageBuilders[settings.url];
     if (pageBuilder == null) {
       return Future.value(false);
     }
@@ -75,10 +80,10 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
       settings: settings,
     );
 
-    ThrioNavigatorImplement.pageObservers.willAppear(
-      route.settings,
-      NavigatorRouteAction.push,
-    );
+    ThrioNavigatorImplement.shared().pageObservers.willAppear(
+          route.settings,
+          NavigatorRouteAction.push,
+        );
 
     verbose(
       'push: url->${route.settings.url} '
@@ -127,10 +132,10 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
       return Future.value(false);
     }
 
-    ThrioNavigatorImplement.pageObservers.willDisappear(
-      route.settings,
-      NavigatorRouteAction.pop,
-    );
+    ThrioNavigatorImplement.shared().pageObservers.willDisappear(
+          route.settings,
+          NavigatorRouteAction.pop,
+        );
 
     route.routeAction = NavigatorRouteAction.pop;
     if (animated) {
@@ -160,10 +165,10 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
     verbose('popTo: url->${route.settings.url} '
         'index->${route.settings.index}');
 
-    ThrioNavigatorImplement.pageObservers.willAppear(
-      route.settings,
-      NavigatorRouteAction.popTo,
-    );
+    ThrioNavigatorImplement.shared().pageObservers.willAppear(
+          route.settings,
+          NavigatorRouteAction.popTo,
+        );
 
     route.routeAction = NavigatorRouteAction.popTo;
     if (animated) {
@@ -200,10 +205,10 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
 
     if (settings.name == history.last.settings.name) {
       if (WidgetsBinding.instance.lifecycleState == AppLifecycleState.resumed) {
-        ThrioNavigatorImplement.pageObservers.willDisappear(
-          route.settings,
-          NavigatorRouteAction.remove,
-        );
+        ThrioNavigatorImplement.shared().pageObservers.willDisappear(
+              route.settings,
+              NavigatorRouteAction.remove,
+            );
       }
       navigatorState.pop();
       return Future.value(true);
@@ -218,7 +223,7 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
   void initState() {
     super.initState();
     if (mounted) {
-      ThrioNavigatorImplement.ready();
+      ThrioNavigatorImplement.shared().ready();
     }
   }
 

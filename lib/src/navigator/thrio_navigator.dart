@@ -36,7 +36,7 @@ abstract class ThrioNavigator {
     bool animated = true,
     NavigatorParamsCallback poppedResult,
   }) =>
-      ThrioNavigatorImplement.push(
+      ThrioNavigatorImplement.shared().push(
         url: url,
         params: params,
         animated: animated,
@@ -54,7 +54,7 @@ abstract class ThrioNavigator {
     @required String name,
     dynamic params,
   }) =>
-      ThrioNavigatorImplement.notify(
+      ThrioNavigatorImplement.shared().notify(
         url: url,
         index: index,
         name: name,
@@ -64,7 +64,7 @@ abstract class ThrioNavigator {
   /// Pop a page from the navigation stack.
   ///
   static Future<bool> pop({dynamic params, bool animated = true}) =>
-      ThrioNavigatorImplement.pop(params: params, animated: animated);
+      ThrioNavigatorImplement.shared().pop(params: params, animated: animated);
 
   /// Pop the page in the navigation stack until the page with `url`.
   ///
@@ -73,7 +73,7 @@ abstract class ThrioNavigator {
     int index,
     bool animated = true,
   }) =>
-      ThrioNavigatorImplement.popTo(
+      ThrioNavigatorImplement.shared().popTo(
         url: url,
         index: index,
         animated: animated,
@@ -86,7 +86,7 @@ abstract class ThrioNavigator {
     int index,
     bool animated = true,
   }) =>
-      ThrioNavigatorImplement.remove(
+      ThrioNavigatorImplement.shared().remove(
         url: url,
         index: index,
         animated: animated,
@@ -96,10 +96,10 @@ abstract class ThrioNavigator {
   /// stack.
   ///
   static Future<int> lastIndex({String url}) =>
-      ThrioNavigatorImplement.lastIndex(url: url);
+      ThrioNavigatorImplement.shared().lastIndex(url: url);
 
   /// Returns all index of the page with `url` in the navigation stack.
   ///
   static Future<List<int>> allIndexs({@required String url}) =>
-      ThrioNavigatorImplement.allIndexs(url: url);
+      ThrioNavigatorImplement.shared().allIndexs(url: url);
 }

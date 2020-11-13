@@ -53,7 +53,7 @@
         NavigatorRouteSettings *settings = viewController.thrio_firstRoute.settings;
         NavigatorRouteSendChannel *channel =
             [NavigatorFlutterEngineFactory.shared getSendChannelByEntrypoint:viewController.entrypoint];
-        [channel onPush:[settings toArguments] result:nil];
+        [channel push:[settings toArguments] result:nil];
     });
 }
 

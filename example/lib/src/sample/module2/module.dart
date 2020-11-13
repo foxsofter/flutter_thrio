@@ -10,7 +10,7 @@ class Module
         ModuleRouteObserver,
         NavigatorRouteObserver {
   @override
-  void onPageBuilderRegister() {
+  void onPageBuilderRegister(ModuleContext moduleContext) {
     registerPageBuilder(
       '/biz1/flutter3',
       (settings) => Page3(
@@ -28,7 +28,7 @@ class Module
   }
 
   @override
-  void onRouteObserverRegister() {
+  void onRouteObserverRegister(ModuleContext moduleContext) {
     registerRouteObserver(this);
   }
 

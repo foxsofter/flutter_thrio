@@ -78,7 +78,7 @@ class _NavigatorPageNotifyState extends State<NavigatorPageNotify> {
     final route = state.history.last;
     if (route != null && route is NavigatorPageRoute) {
       _route = route;
-      _notifyStream = ThrioNavigatorImplement.onPageNotify(
+      _notifyStream = ThrioNavigatorImplement.shared().onPageNotify(
         url: _route.settings.url,
         index: _route.settings.index,
         name: widget.name,

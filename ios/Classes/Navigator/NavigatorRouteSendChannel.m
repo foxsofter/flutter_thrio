@@ -37,8 +37,8 @@
     return self;
 }
 
-- (void)onPush:(id _Nullable)arguments result:(ThrioBoolCallback _Nullable)result {
-    [self _on:@"onPush" arguments:arguments result:^(id _Nullable value) {
+- (void)push:(id _Nullable)arguments result:(ThrioBoolCallback _Nullable)result {
+    [_channel invokeMethod:@"push" arguments:arguments result:^(id _Nullable value) {
         if (result) {
             if ([value isKindOfClass:NSNumber.class]) {
                 result([value boolValue]);
@@ -49,13 +49,13 @@
     }];
 }
 
-- (void)onNotify:(id _Nullable)arguments result:(ThrioBoolCallback _Nullable)result {
+- (void)notify:(id _Nullable)arguments result:(ThrioBoolCallback _Nullable)result {
     [_channel sendEvent:@"__onNotify__" arguments:arguments];
     result(YES);
 }
 
-- (void)onPop:(id _Nullable)arguments result:(ThrioBoolCallback _Nullable)result {
-    [self _on:@"onPop" arguments:arguments result:^(id _Nullable value) {
+- (void)pop:(id _Nullable)arguments result:(ThrioBoolCallback _Nullable)result {
+    [_channel invokeMethod:@"pop" arguments:arguments result:^(id _Nullable value) {
         if (result) {
             if ([value isKindOfClass:NSNumber.class]) {
                 result([value boolValue]);
@@ -66,8 +66,8 @@
     }];
 }
 
-- (void)onPopTo:(id _Nullable)arguments result:(ThrioBoolCallback _Nullable)result {
-    [self _on:@"onPopTo" arguments:arguments result:^(id _Nullable value) {
+- (void)popTo:(id _Nullable)arguments result:(ThrioBoolCallback _Nullable)result {
+    [_channel invokeMethod:@"popTo" arguments:arguments result:^(id _Nullable value) {
         if (result) {
             if ([value isKindOfClass:NSNumber.class]) {
                 result([value boolValue]);
@@ -78,8 +78,8 @@
     }];
 }
 
-- (void)onRemove:(id _Nullable)arguments result:(ThrioBoolCallback _Nullable)result {
-    [self _on:@"onRemove" arguments:arguments result:^(id _Nullable value) {
+- (void)remove:(id _Nullable)arguments result:(ThrioBoolCallback _Nullable)result {
+    [_channel invokeMethod:@"remove" arguments:arguments result:^(id _Nullable value) {
         if (result) {
             if ([value isKindOfClass:NSNumber.class]) {
                 result([value boolValue]);
@@ -88,15 +88,6 @@
             }
         }
     }];
-}
-
-- (void)  _on:(NSString *)method
-    arguments:(id _Nullable)arguments
-       result:(ThrioIdCallback _Nullable)result {
-    NSString *channelMethod = [NSString stringWithFormat:@"__%@__", method];
-    [_channel invokeMethod:channelMethod
-                 arguments:arguments
-                    result:result];
 }
 
 @end

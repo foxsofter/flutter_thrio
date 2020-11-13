@@ -42,6 +42,86 @@ class NavigatorRouteReceiveChannel {
 
   final Map<String, NavigatorParamsCallback> _pagePoppedResults;
 
+  void _onPush() => _channel.registryMethodCall('push', ([arguments]) {
+        final routeSettings = NavigatorRouteSettings.fromArguments(arguments);
+        verbose('push: url->${routeSettings.url} '
+            'index->${routeSettings.index}');
+        final animatedValue = arguments['animated'];
+        final animated =
+            (animatedValue != null && animatedValue is bool) && animatedValue;
+        return ThrioNavigatorImplement.shared()
+            .navigatorState
+            ?.push(routeSettings, animated: animated)
+            ?.then((it) {
+          _clearPagePoppedResults();
+          return it;
+        });
+      });
+
+  void _onPop() => _channel.registryMethodCall('pop', ([arguments]) {
+        final routeSettings = NavigatorRouteSettings.fromArguments(arguments);
+        final animatedValue = arguments['animated'];
+        final animated =
+            (animatedValue != null && animatedValue is bool) && animatedValue;
+        final poppedResult = _pagePoppedResults.remove(routeSettings.name);
+        if (poppedResult != null) {
+          poppedResult(routeSettings.params);
+        }
+        return ThrioNavigatorImplement.shared()
+            .navigatorState
+            ?.maybePop(routeSettings, animated: animated)
+            ?.then((it) {
+          _clearPagePoppedResults();
+          return it;
+        });
+      });
+
+  void _onPopTo() => _channel.registryMethodCall('popTo', ([arguments]) {
+        final routeSettings = NavigatorRouteSettings.fromArguments(arguments);
+        final animatedValue = arguments['animated'];
+        final animated =
+            (animatedValue != null && animatedValue is bool) && animatedValue;
+        return ThrioNavigatorImplement.shared()
+            .navigatorState
+            ?.popTo(routeSettings, animated: animated)
+            ?.then((it) {
+          _clearPagePoppedResults();
+          return it;
+        });
+      });
+
+  void _onRemove() => _channel.registryMethodCall('remove', ([arguments]) {
+        final routeSettings = NavigatorRouteSettings.fromArguments(arguments);
+        final animatedValue = arguments['animated'];
+        final animated =
+            (animatedValue != null && animatedValue is bool) && animatedValue;
+        return ThrioNavigatorImplement.shared()
+            .navigatorState
+            ?.remove(routeSettings, animated: animated)
+            ?.then((it) {
+          _clearPagePoppedResults();
+          return it;
+        });
+      });
+
+  void _clearPagePoppedResults() {
+    if (_pagePoppedResults.isEmpty) {
+      return;
+    }
+    final routeHistory =
+        ThrioNavigatorImplement.shared().navigatorState?.history;
+    if (routeHistory?.isNotEmpty ?? false) {
+      _pagePoppedResults.removeWhere((name, _) =>
+          routeHistory.lastWhere(
+            (it) => it.settings.name == name,
+            orElse: () => null,
+          ) !=
+          null);
+    } else {
+      _pagePoppedResults.clear();
+    }
+  }
+
   Stream onPageNotify({
     @required String url,
     @required int index,
@@ -54,80 +134,4 @@ class NavigatorRouteReceiveChannel {
               arguments.containsValue(name) &&
               (index == null || arguments.containsValue(index)))
           .map((arguments) => arguments['params']);
-
-  void _onPush() => _channel.registryMethodCall('__onPush__', ([arguments]) {
-        final routeSettings = NavigatorRouteSettings.fromArguments(arguments);
-        verbose('onPush: url->${routeSettings.url} '
-            'index->${routeSettings.index}');
-        final animatedValue = arguments['animated'];
-        final animated =
-            (animatedValue != null && animatedValue is bool) && animatedValue;
-        return ThrioNavigatorImplement.navigatorState
-            ?.push(routeSettings, animated: animated)
-            ?.then((it) {
-          _clearPagePoppedResults();
-          return it;
-        });
-      });
-
-  void _onPop() => _channel.registryMethodCall('__onPop__', ([arguments]) {
-        final routeSettings = NavigatorRouteSettings.fromArguments(arguments);
-        final animatedValue = arguments['animated'];
-        final animated =
-            (animatedValue != null && animatedValue is bool) && animatedValue;
-        final poppedResult = _pagePoppedResults.remove(routeSettings.name);
-        if (poppedResult != null) {
-          poppedResult(routeSettings.params);
-        }
-        return ThrioNavigatorImplement.navigatorState
-            ?.maybePop(routeSettings, animated: animated)
-            ?.then((it) {
-          _clearPagePoppedResults();
-          return it;
-        });
-      });
-
-  void _onPopTo() => _channel.registryMethodCall('__onPopTo__', ([arguments]) {
-        final routeSettings = NavigatorRouteSettings.fromArguments(arguments);
-        final animatedValue = arguments['animated'];
-        final animated =
-            (animatedValue != null && animatedValue is bool) && animatedValue;
-        return ThrioNavigatorImplement.navigatorState
-            ?.popTo(routeSettings, animated: animated)
-            ?.then((it) {
-          _clearPagePoppedResults();
-          return it;
-        });
-      });
-
-  void _onRemove() =>
-      _channel.registryMethodCall('__onRemove__', ([arguments]) {
-        final routeSettings = NavigatorRouteSettings.fromArguments(arguments);
-        final animatedValue = arguments['animated'];
-        final animated =
-            (animatedValue != null && animatedValue is bool) && animatedValue;
-        return ThrioNavigatorImplement.navigatorState
-            ?.remove(routeSettings, animated: animated)
-            ?.then((it) {
-          _clearPagePoppedResults();
-          return it;
-        });
-      });
-
-  void _clearPagePoppedResults() {
-    if (_pagePoppedResults.isEmpty) {
-      return;
-    }
-    final routeHistory = ThrioNavigatorImplement.navigatorState?.history;
-    if (routeHistory?.isNotEmpty ?? false) {
-      _pagePoppedResults.removeWhere((name, _) =>
-          routeHistory.lastWhere(
-            (it) => it.settings.name == name,
-            orElse: () => null,
-          ) !=
-          null);
-    } else {
-      _pagePoppedResults.clear();
-    }
-  }
 }

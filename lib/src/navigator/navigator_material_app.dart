@@ -28,7 +28,6 @@ class NavigatorMaterialApp extends MaterialApp {
   NavigatorMaterialApp({
     Key key,
     GlobalKey<NavigatorState> navigatorKey,
-    String entrypoint = 'main',
     String title = '',
     Widget home,
     GenerateAppTitle onGenerateTitle,
@@ -53,7 +52,7 @@ class NavigatorMaterialApp extends MaterialApp {
             key: key,
             navigatorKey: navigatorKey,
             navigatorObservers: [], // ignore: prefer_const_literals_to_create_immutables
-            builder: ThrioNavigatorImplement.builder(entrypoint: entrypoint),
+            builder: ThrioNavigatorImplement.shared().builder,
             title: title,
             onGenerateTitle: onGenerateTitle,
             initialRoute: '1 /',
