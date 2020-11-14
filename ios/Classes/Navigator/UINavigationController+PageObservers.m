@@ -72,11 +72,44 @@
             return;
         }
 
-        // 触发 `willAppear`
+        // 触发 `didAppear`
         [ThrioNavigator.pageObservers didAppear:routeSettings];
-        // 如果存在前序的 route，触发其 `willDisappear`
+        // 如果存在前序的 route，触发其 `didDisappear`
         if (lastRoute.prev) {
             [ThrioNavigator.pageObservers didDisappear:lastRoute.prev.settings];
+        }
+    } else if (routeAction == NavigatorRouteActionPopTo) {
+//        NavigatorPageRoute *lastRoute = [self.topViewController thrio_lastRoute];
+//        if (route == lastRoute) {
+//            return;
+//        }
+//        // 触发所有 observer 的 `willAppear`
+//        [ThrioNavigator.pageObservers willAppear:routeSettings];
+//        // 触发顶部 route 的 `willDisappear`
+//        if (lastRoute) {
+//            [ThrioNavigator.pageObservers willDisappear:lastRoute.settings];
+//        }
+    }
+}
+
+- (void)thrio_willDisappear:(NavigatorRouteSettings *)routeSettings
+                routeAction:(NavigatorRouteAction)routeAction {
+    NavigatorPageRoute *route = [self.topViewController thrio_getRouteByUrl:routeSettings.url
+                                                                      index:routeSettings.index];
+    if (!route) {
+        return;
+    }
+    if (routeAction == NavigatorRouteActionPop || routeAction == NavigatorRouteActionRemove) {
+        NavigatorPageRoute *lastRoute = [self.topViewController thrio_lastRoute];
+        if (route != lastRoute) {
+            return;
+        }
+
+        // 触发 `willDisappear`
+        [ThrioNavigator.pageObservers willDisappear:routeSettings];
+        // 如果存在前序的 route，触发其 `willAppear`
+        if (lastRoute.prev) {
+            [ThrioNavigator.pageObservers willAppear:lastRoute.prev.settings];
         }
     } else if (routeAction == NavigatorRouteActionPopTo) {
         NavigatorPageRoute *lastRoute = [self.topViewController thrio_lastRoute];
@@ -92,12 +125,37 @@
     }
 }
 
-- (void)thrio_willDisappear:(NavigatorRouteSettings *)routeSettings
-                routeAction:(NavigatorRouteAction)routeAction {
-}
-
 - (void)thrio_didDisappear:(NavigatorRouteSettings *)routeSettings
                routeAction:(NavigatorRouteAction)routeAction {
+    NavigatorPageRoute *route = [self.topViewController thrio_getRouteByUrl:routeSettings.url
+                                                                      index:routeSettings.index];
+    if (!route) {
+        return;
+    }
+    if (routeAction == NavigatorRouteActionPop || routeAction == NavigatorRouteActionRemove) {
+        NavigatorPageRoute *lastRoute = [self.topViewController thrio_lastRoute];
+        if (route != lastRoute) {
+            return;
+        }
+
+        // 触发 `willDisappear`
+        [ThrioNavigator.pageObservers willDisappear:routeSettings];
+        // 如果存在前序的 route，触发其 `willAppear`
+        if (lastRoute.prev) {
+            [ThrioNavigator.pageObservers willAppear:lastRoute.prev.settings];
+        }
+    } else if (routeAction == NavigatorRouteActionPopTo) {
+        NavigatorPageRoute *lastRoute = [self.topViewController thrio_lastRoute];
+        if (route == lastRoute) {
+            return;
+        }
+        // 触发所有 observer 的 `willAppear`
+        [ThrioNavigator.pageObservers willAppear:routeSettings];
+        // 触发顶部 route 的 `willDisappear`
+        if (lastRoute) {
+            [ThrioNavigator.pageObservers willDisappear:lastRoute.settings];
+        }
+    }
 }
 
 @end

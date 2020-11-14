@@ -41,12 +41,14 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (void)willAppear:(NavigatorRouteSettings *)routeSettings
        routeAction:(NSString *)routeAction {
-    NSEnumerator *allNvcs = self.navigationControllers.allObjects.reverseObjectEnumerator;
-    for (UINavigationController *nvc in allNvcs) {
-        if ([nvc thrio_containsUrl:routeSettings.url index:routeSettings.index]) {
-            [nvc thrio_willAppear:routeSettings
-                      routeAction:[self routeActionFromString:routeAction]];
-            break;
+    NavigatorRouteAction action = [self routeActionFromString:routeAction];
+    UINavigationController *nvc = self.navigationController;
+    if ([nvc thrio_containsUrl:routeSettings.url index:routeSettings.index]) {
+        [nvc thrio_willAppear:routeSettings
+                  routeAction:action];
+    } else {
+        if (action == NavigatorRouteActionPush) {
+            [ThrioNavigator.pageObservers willAppear:routeSettings];
         }
     }
 }
@@ -77,13 +79,15 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (void)didDisappear:(NavigatorRouteSettings *)routeSettings
          routeAction:(NSString *)routeAction {
-    NSEnumerator *allNvcs = self.navigationControllers.allObjects.reverseObjectEnumerator;
-    for (UINavigationController *nvc in allNvcs) {
-        if ([nvc thrio_containsUrl:routeSettings.url index:routeSettings.index]) {
-            [nvc thrio_didDisappear:routeSettings
-                        routeAction:[self routeActionFromString:routeAction]];
-            break;
-        }
+    NavigatorRouteAction action = [self routeActionFromString:routeAction];
+    UINavigationController *nvc = self.navigationController;
+    if ([nvc thrio_containsUrl:routeSettings.url index:routeSettings.index]) {
+        [nvc thrio_didDisappear:routeSettings routeAction:action];
+    } else if (action == NavigatorRouteActionPop) {
+        [ThrioNavigator.pageObservers didDisappear:routeSettings];
+    } else if (action == NavigatorRouteActionRemove) {
+        
+        [ThrioNavigator.pageObservers willAppear:routeSettings];
     }
 }
 

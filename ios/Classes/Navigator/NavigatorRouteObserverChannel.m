@@ -75,15 +75,9 @@
 
     #pragma clang diagnostic push
     #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
-        SEL navigationSelector = NSSelectorFromString([NSString stringWithFormat:@"_%@Url:index:", method]);
-        [ThrioNavigator performSelector:navigationSelector
-                             withObject:routeSettings.url
-                             withObject:routeSettings.index];
-
-        SEL observerSelector = NSSelectorFromString([NSString stringWithFormat:@"%@:", method]);
-
-        [ThrioNavigator performSelector:observerSelector withObject:routeSettings];
-
+        SEL selector = NSSelectorFromString([NSString stringWithFormat:@"%@:", method]);
+        [ThrioNavigator performSelector:selector withObject:routeSettings];
+        [ThrioNavigator.routeObservers performSelector:selector withObject:routeSettings];
     #pragma clang diagnostic pop
     }];
 }

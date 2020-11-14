@@ -55,16 +55,16 @@
       poppedResult:(ThrioIdCallback _Nullable)poppedResult
 {
     UINavigationController *nvc = self.navigationController;
+    [self.navigationControllers addAndRemoveObject:nvc];
     [nvc thrio_pushUrl:url
                 params:params
               animated:animated
         fromEntrypoint:fromEntrypoint
                 result:^(NSNumber *idx) {
-        [self.navigationControllers addAndRemoveObject:nvc];
-        if (result) {
-            result(idx);
-        }
-    } poppedResult:poppedResult];
+                    if (result) {
+                        result(idx);
+                    }
+                } poppedResult:poppedResult];
 }
 
 + (void)_notifyUrl:(NSString *)url
@@ -118,7 +118,6 @@
         }
     }
 }
-
 
 + (void)_setPopDisabledUrl:(NSString *)url index:(NSNumber *)index disabled:(BOOL)disabled {
     NSEnumerator *allNvcs = self.navigationControllers.allObjects.reverseObjectEnumerator;

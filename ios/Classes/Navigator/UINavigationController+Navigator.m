@@ -95,13 +95,13 @@ NS_ASSUME_NONNULL_BEGIN
                                                        animated:animated
                                                  fromEntrypoint:fromEntrypoint
                                                          result:^(NSNumber *idx) {
-                        if (idx && [idx boolValue]) {
-                            [strongSelf thrio_removePopGesture];
-                        }
-                        if (result) {
-                            result(idx);
-                        }
-                    }                              poppedResult:poppedResult];
+                                                             if (idx && [idx boolValue]) {
+                                                                 [strongSelf thrio_removePopGesture];
+                                                             }
+                                                             if (result) {
+                                                                 result(idx);
+                                                             }
+                                                         }                              poppedResult:poppedResult];
                 } else {
                     NavigatorFlutterViewController *viewController = [strongSelf thrio_createFlutterViewControllerWithEntrypoint:entrypoint];
                     [strongSelf thrio_pushViewController:viewController
@@ -174,7 +174,7 @@ NS_ASSUME_NONNULL_BEGIN
             // 只有FlutterViewController才能满足条件
             if (vc.thrio_lastRoute != vc.thrio_firstRoute) {
                 vc.thrio_lastRoute.prev.next = nil;
-            // 只剩一个route的时候，需要添加侧滑返回手势
+                // 只剩一个route的时候，需要添加侧滑返回手势
                 if (vc.thrio_firstRoute == vc.thrio_lastRoute) {
                     [strongSelf thrio_addPopGesture];
                 }
@@ -433,7 +433,7 @@ NS_ASSUME_NONNULL_BEGIN
             return [self thrio_popViewControllerAnimated:animated];
         }
 
-        // 原生页面设置了thrio_willPopBlock
+        // 经过 thrio 打开的原生页面，设置了thrio_willPopBlock
         if (self.topViewController.thrio_willPopBlock && !self.topViewController.thrio_willPopCalling) {
             self.topViewController.thrio_willPopCalling = YES;
             __weak typeof(self) weakself = self;
@@ -477,7 +477,7 @@ NS_ASSUME_NONNULL_BEGIN
         }
     }
 
-    // 默认处理逻辑，添加didPop
+    // 经过 thrio 打开的原生页面，默认处理逻辑，添加didPop
     if (![self.topViewController isKindOfClass:NavigatorFlutterViewController.class] &&
         self.topViewController.thrio_firstRoute) {
         NavigatorRouteSettings *routeSettings = self.topViewController.thrio_lastRoute.settings;
@@ -567,6 +567,8 @@ NS_ASSUME_NONNULL_BEGIN
             __weak typeof(self) weakself = self;
             [self.thrio_popingViewController thrio_popParams:nil animated:animated result:^(BOOL r) {
                 __strong typeof(weakself) strongSelf = weakself;
+                [strongSelf thrio_lastRoute].next = nil;
+
                 // 刚关掉的是NavigatorFlutterViewController，且当前要显示的页面不是
                 // NavigatorFlutterViewController，置空引擎的viewController
                 if ([strongSelf.thrio_popingViewController isKindOfClass:NavigatorFlutterViewController.class]) {
@@ -625,14 +627,14 @@ NS_ASSUME_NONNULL_BEGIN
                              animated:animated
                        fromEntrypoint:fromEntrypoint
                                result:^(NSNumber *idx) {
-            if (idx && [idx boolValue]) {
-                __strong typeof(weakself) strongSelf = weakself;
-                [strongSelf pushViewController:viewController animated:animated];
-            }
-            if (result) {
-                result(idx);
-            }
-        } poppedResult:poppedResult];
+                                   if (idx && [idx boolValue]) {
+                                       __strong typeof(weakself) strongSelf = weakself;
+                                       [strongSelf pushViewController:viewController animated:animated];
+                                   }
+                                   if (result) {
+                                       result(idx);
+                                   }
+                               } poppedResult:poppedResult];
     }
 }
 

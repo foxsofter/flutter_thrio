@@ -68,9 +68,10 @@ class NavigatorObserverManager extends NavigatorObserver {
               ThrioNavigatorImplement.shared()
                   .routeObservers
                   .didPopTo(pageRoutes.last.settings);
-              ThrioNavigatorImplement.shared()
-                  .pageObservers
-                  .didDisappear(route.settings, NavigatorRouteAction.popTo);
+              ThrioNavigatorImplement.shared().pageObservers.didAppear(
+                    pageRoutes.last.settings,
+                    NavigatorRouteAction.popTo,
+                  );
               pageRoutes.last.routeAction = null;
             }
             // 这里需要判断 routeAction == null 的场景，处理滑动返回需要
@@ -111,7 +112,9 @@ class NavigatorObserverManager extends NavigatorObserver {
                 .routeObservers
                 .didPopTo(pageRoutes.last.settings);
             ThrioNavigatorImplement.shared().pageObservers.didAppear(
-                pageRoutes.last.settings, NavigatorRouteAction.popTo);
+                  pageRoutes.last.settings,
+                  NavigatorRouteAction.popTo,
+                );
           }
           _currentPopRoutes.clear();
         });
@@ -134,7 +137,9 @@ class NavigatorObserverManager extends NavigatorObserver {
                   .routeObservers
                   .didPopTo(pageRoutes.last.settings);
               ThrioNavigatorImplement.shared().pageObservers.didAppear(
-                  pageRoutes.last.settings, NavigatorRouteAction.popTo);
+                    pageRoutes.last.settings,
+                    NavigatorRouteAction.popTo,
+                  );
               pageRoutes.last.routeAction = null;
             } else {
               verbose('didRemove: url->${route.settings.url} '
@@ -143,7 +148,9 @@ class NavigatorObserverManager extends NavigatorObserver {
                   .routeObservers
                   .didRemove(route.settings);
               ThrioNavigatorImplement.shared().pageObservers.didDisappear(
-                  pageRoutes.last.settings, NavigatorRouteAction.remove);
+                    pageRoutes.last.settings,
+                    NavigatorRouteAction.remove,
+                  );
             }
           } else if (_currentRemoveRoutes.length > 1) {
             verbose('didPopTo: url->${pageRoutes.last.settings.url} '
@@ -153,7 +160,9 @@ class NavigatorObserverManager extends NavigatorObserver {
                 .routeObservers
                 .didPopTo(pageRoutes.last.settings);
             ThrioNavigatorImplement.shared().pageObservers.didAppear(
-                pageRoutes.last.settings, NavigatorRouteAction.popTo);
+                  pageRoutes.last.settings,
+                  NavigatorRouteAction.popTo,
+                );
           }
           _currentRemoveRoutes.clear();
         });

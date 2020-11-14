@@ -30,6 +30,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, readonly) ThrioRegistrySet<id<NavigatorPageObserverProtocol> > *observers;
 
+@property (nonatomic, readonly) NavigatorPageRoute *lastPopRoute;
+@property (nonatomic, readonly) NavigatorPageRoute *lastRemoveRoute;
+@property (nonatomic, readonly) NavigatorPageRoute *lastPopToFromRoute;
+
 @end
 
 NS_ASSUME_NONNULL_END

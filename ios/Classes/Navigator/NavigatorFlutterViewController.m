@@ -77,6 +77,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+
+    if (![self isMovingToParentViewController]) {
+        [ThrioNavigator.pageObservers willAppear:self.thrio_lastRoute.settings];
+    }
 }
 
 - (void)viewDidAppear:(BOOL)animated {
@@ -89,6 +93,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
+
+    if (![self isMovingFromParentViewController]) {
+        [ThrioNavigator.pageObservers willDisappear:self.thrio_lastRoute.settings];
+    }
 
     [[UIApplication sharedApplication].delegate.window endEditing:YES];
 }
@@ -122,8 +130,8 @@ NS_ASSUME_NONNULL_BEGIN
                                           dictionaryWithDictionary:[settings toArgumentsWithParams:nil]];
         [arguments setObject:@NO forKey:@"animated"];
         [channel popTo:arguments
-                  result:^(BOOL r) {
-        }];
+                result:^(BOOL r) {
+         }];
     });
 }
 

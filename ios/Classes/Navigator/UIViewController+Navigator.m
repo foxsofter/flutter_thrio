@@ -370,7 +370,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)thrio_viewWillAppear:(BOOL)animated {
     [self thrio_viewWillAppear:animated];
 
-    if (self.thrio_firstRoute) {
+    if (self.thrio_firstRoute && ![self isKindOfClass:NavigatorFlutterViewController.class]) {
         [ThrioNavigator.pageObservers willAppear:self.thrio_lastRoute.settings];
     }
 }
@@ -397,13 +397,13 @@ NS_ASSUME_NONNULL_BEGIN
     if (self.thrio_hidesNavigationBar_.boolValue != self.navigationController.navigationBarHidden) {
         self.navigationController.navigationBarHidden = self.thrio_hidesNavigationBar_.boolValue;
     }
-    
+
     if (![self isKindOfClass:NavigatorFlutterViewController.class] && self.navigationController.navigationBarHidden) {
         [self.navigationController thrio_addPopGesture];
     } else {
         [self.navigationController thrio_removePopGesture];
     }
-    
+
     if (![self isKindOfClass:NavigatorFlutterViewController.class]) {
         if (self.thrio_hidesNavigationBar_ == nil) {
             self.thrio_hidesNavigationBar_ = @(self.navigationController.navigationBarHidden);
@@ -423,7 +423,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)thrio_viewWillDisappear:(BOOL)animated {
     [self thrio_viewWillDisappear:animated];
 
-    if (self.thrio_firstRoute) {
+    if (self.thrio_firstRoute && ![self isKindOfClass:NavigatorFlutterViewController.class]) {
         [ThrioNavigator.pageObservers willDisappear:self.thrio_lastRoute.settings];
     }
 }
@@ -443,14 +443,14 @@ NS_ASSUME_NONNULL_BEGIN
         id params = [route removeNotify:name];
         if ([self isKindOfClass:NavigatorFlutterViewController.class]) {
             NSDictionary *arguments = params ? @{
-                    @"url": route.settings.url,
-                    @"index": route.settings.index,
-                    @"name": name,
-                    @"params": params,
-                } : @{
-                    @"url": route.settings.url,
-                    @"index": route.settings.index,
-                    @"name": name,
+                @"url": route.settings.url,
+                @"index": route.settings.index,
+                @"name": name,
+                @"params": params,
+            } : @{
+                @"url": route.settings.url,
+                @"index": route.settings.index,
+                @"name": name,
             };
             NSString *entrypoint = [(NavigatorFlutterViewController *)self entrypoint];
             NavigatorRouteSendChannel *channel = [NavigatorFlutterEngineFactory.shared getSendChannelByEntrypoint:entrypoint];

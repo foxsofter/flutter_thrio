@@ -123,28 +123,28 @@ static NSString *const kDefaultEntrypoint = @"main";
 #pragma mark - NavigatorRouteObserverProtocol methods
 
 - (void)didPush:(NavigatorRouteSettings *)routeSettings {
-    NSArray *flutterEngines = [_flutterEngines copy];
+    NSArray *flutterEngines = [_flutterEngines.allValues copy];
     for (NavigatorFlutterEngine *flutterEngine in flutterEngines) {
         [flutterEngine.routeChannel didPush:routeSettings];
     }
 }
 
 - (void)didPop:(NavigatorRouteSettings *)routeSettings {
-    NSArray *flutterEngines = [_flutterEngines copy];
+    NSArray *flutterEngines = [_flutterEngines.allValues copy];
     for (NavigatorFlutterEngine *flutterEngine in flutterEngines) {
         [flutterEngine.routeChannel didPop:routeSettings];
     }
 }
 
 - (void)didPopTo:(NavigatorRouteSettings *)routeSettings {
-    NSArray *flutterEngines = [_flutterEngines copy];
+    NSArray *flutterEngines = [_flutterEngines.allValues copy];
     for (NavigatorFlutterEngine *flutterEngine in flutterEngines) {
         [flutterEngine.routeChannel didPopTo:routeSettings];
     }
 }
 
 - (void)didRemove:(NavigatorRouteSettings *)routeSettings {
-    NSArray *flutterEngines = [_flutterEngines copy];
+    NSArray *flutterEngines = [_flutterEngines.allValues copy];
     for (NavigatorFlutterEngine *flutterEngine in flutterEngines) {
         [flutterEngine.routeChannel didRemove:routeSettings];
     }
@@ -153,28 +153,28 @@ static NSString *const kDefaultEntrypoint = @"main";
 #pragma mark - NavigatorPageObserverProtocol methods
 
 - (void)willAppear:(NavigatorRouteSettings *)routeSettings {
-    NSArray *flutterEngines = [_flutterEngines copy];
+    NSArray *flutterEngines = [_flutterEngines.allValues copy];
     for (NavigatorFlutterEngine *flutterEngine in flutterEngines) {
         [flutterEngine.pageChannel willAppear:routeSettings];
     }
 }
 
 - (void)didAppear:(NavigatorRouteSettings *)routeSettings {
-    NSArray *flutterEngines = [_flutterEngines copy];
+    NSArray *flutterEngines = [_flutterEngines.allValues copy];
     for (NavigatorFlutterEngine *flutterEngine in flutterEngines) {
         [flutterEngine.pageChannel didAppear:routeSettings];
     }
 }
 
 - (void)willDisappear:(NavigatorRouteSettings *)routeSettings {
-    NSArray *flutterEngines = [_flutterEngines copy];
+    NSArray *flutterEngines = [_flutterEngines.allValues copy];
     for (NavigatorFlutterEngine *flutterEngine in flutterEngines) {
         [flutterEngine.pageChannel willDisappear:routeSettings];
     }
 }
 
 - (void)didDisappear:(NavigatorRouteSettings *)routeSettings {
-    NSArray *flutterEngines = [_flutterEngines copy];
+    NSArray *flutterEngines = [_flutterEngines.allValues copy];
     for (NavigatorFlutterEngine *flutterEngine in flutterEngines) {
         [flutterEngine.pageChannel didDisappear:routeSettings];
     }
