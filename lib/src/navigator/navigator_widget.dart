@@ -163,7 +163,7 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
     }
 
     final index = history.indexWhere((it) => it.settings.name == settings.name);
-    if (index == -1) {
+    if (index == -1 || index == history.length - 1) {
       return Future.value(false);
     }
     final previousRoute = history.last;
