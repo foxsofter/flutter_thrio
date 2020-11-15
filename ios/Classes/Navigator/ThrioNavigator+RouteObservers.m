@@ -20,9 +20,9 @@
 // IN THE SOFTWARE.
 
 #import <objc/runtime.h>
-#import "ThrioNavigator+RouteObservers.h"
 #import "NavigatorLogger.h"
 #import "ThrioNavigator+Internal.h"
+#import "ThrioNavigator+RouteObservers.h"
 #import "UINavigationController+Navigator.h"
 
 NS_ASSUME_NONNULL_BEGIN

@@ -21,17 +21,17 @@
 
 #import <Foundation/Foundation.h>
 #import <objc/runtime.h>
+#import "NSObject+ThrioSwizzling.h"
+#import "NavigatorFlutterEngineFactory.h"
+#import "NavigatorFlutterViewController.h"
+#import "NavigatorLogger.h"
+#import "ThrioNavigator+PageObservers.h"
 #import "UINavigationController+Navigator.h"
 #import "UINavigationController+PopGesture.h"
-#import "UIViewController+WillPopCallback.h"
-#import "UIViewController+Navigator.h"
-#import "UIViewController+Internal.h"
 #import "UIViewController+HidesNavigationBar.h"
-#import "NavigatorFlutterEngineFactory.h"
-#import "ThrioNavigator+PageObservers.h"
-#import "NavigatorLogger.h"
-#import "NavigatorFlutterViewController.h"
-#import "NSObject+ThrioSwizzling.h"
+#import "UIViewController+Internal.h"
+#import "UIViewController+Navigator.h"
+#import "UIViewController+WillPopCallback.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -77,26 +77,41 @@ NS_ASSUME_NONNULL_BEGIN
     NavigatorPageRoute *newRoute = [NavigatorPageRoute routeWithSettings:settings];
     newRoute.fromEntrypoint = fromEntrypoint;
     newRoute.poppedResult = poppedResult;
-    if (self.thrio_firstRoute) {
-        NavigatorPageRoute *lastRoute = self.thrio_lastRoute;
-        lastRoute.next = newRoute;
-        newRoute.prev = lastRoute;
-    } else {
-        self.thrio_firstRoute = newRoute;
-    }
+
     if ([self isKindOfClass:NavigatorFlutterViewController.class]) {
         NSMutableDictionary *arguments = [NSMutableDictionary dictionaryWithDictionary:[settings toArguments]];
         [arguments setObject:[NSNumber numberWithBool:animated] forKey:@"animated"];
         NSString *entrypoint = [(NavigatorFlutterViewController *)self entrypoint];
         NavigatorRouteSendChannel *channel = [NavigatorFlutterEngineFactory.shared getSendChannelByEntrypoint:entrypoint];
-        if (result) {
-            [channel push:arguments result:^(BOOL r) {
+        __weak typeof(self) weakSelf = self;
+        [channel push:arguments result:^(BOOL r) {
+            __strong typeof(weakSelf) strongSelf = weakSelf;
+            if (r) {
+                if (strongSelf.thrio_firstRoute) {
+                    NavigatorPageRoute *lastRoute = strongSelf.thrio_lastRoute;
+                    lastRoute.next = newRoute;
+                    newRoute.prev = lastRoute;
+                } else {
+                    strongSelf.thrio_firstRoute = newRoute;
+                }
+
+                ThrioNavigator.pageObservers.lastRoute = newRoute;
+            }
+            if (result) {
                 result(r ? index : nil);
-            }];
-        } else {
-            [channel push:arguments result:nil];
-        }
+            }
+        }];
     } else if (result) {
+        if (self.thrio_firstRoute) {
+            NavigatorPageRoute *lastRoute = self.thrio_lastRoute;
+            lastRoute.next = newRoute;
+            newRoute.prev = lastRoute;
+        } else {
+            self.thrio_firstRoute = newRoute;
+        }
+
+        ThrioNavigator.pageObservers.lastRoute = newRoute;
+
         result(index);
     }
 }
@@ -146,6 +161,7 @@ NS_ASSUME_NONNULL_BEGIN
             __strong typeof(weakself) strongSelf = weakself;
             if (r) {
                 if (route != strongSelf.thrio_firstRoute) {
+                    ThrioNavigator.pageObservers.lastRoute = route.prev;
                     [strongSelf thrio_onNotify:route.prev];
                 }
             }
@@ -213,6 +229,7 @@ NS_ASSUME_NONNULL_BEGIN
             __strong typeof(weakself) strongSelf = weakself;
             if (r) {
                 route.next = nil;
+                ThrioNavigator.pageObservers.lastRoute = route;
                 [strongSelf thrio_onNotify:route];
             }
             if (result) {
@@ -251,8 +268,10 @@ NS_ASSUME_NONNULL_BEGIN
                 if (route == strongSelf.thrio_firstRoute) {
                     strongSelf.thrio_firstRoute = route.next;
                     route.prev.next = nil;
+                    ThrioNavigator.pageObservers.lastRoute = route.prev;
                 } else if (route == strongSelf.thrio_lastRoute) {
                     route.prev.next = nil;
+                    ThrioNavigator.pageObservers.lastRoute = route.prev;
                     [strongSelf thrio_onNotify:route.prev];
                 } else {
                     route.prev.next = route.next;
@@ -293,6 +312,7 @@ NS_ASSUME_NONNULL_BEGIN
     NavigatorPageRoute *route = [self thrio_getRouteByUrl:url index:index];
     if (route) {
         route.prev.next = nil;
+        ThrioNavigator.pageObservers.lastRoute = route.prev;
         [self thrio_onNotify:route.prev];
     }
 }
@@ -302,6 +322,7 @@ NS_ASSUME_NONNULL_BEGIN
     NavigatorPageRoute *route = [self thrio_getRouteByUrl:url index:index];
     if (route) {
         route.next = nil;
+        ThrioNavigator.pageObservers.lastRoute = route;
         [self thrio_onNotify:route];
     }
 }
@@ -315,6 +336,7 @@ NS_ASSUME_NONNULL_BEGIN
             self.thrio_firstRoute.prev = nil;
         } else if (route == self.thrio_lastRoute) {
             route.prev.next = nil;
+            ThrioNavigator.pageObservers.lastRoute = route.prev;
             [self thrio_onNotify:route.prev];
         } else {
             route.prev.next = route.next;
@@ -383,7 +405,7 @@ NS_ASSUME_NONNULL_BEGIN
         self.navigationController.thrio_popingViewController = nil;
     }
 
-    if (self.thrio_firstRoute) {
+    if (self.thrio_firstRoute && ![self isKindOfClass:NavigatorFlutterViewController.class]) {
         [ThrioNavigator.pageObservers didAppear:self.thrio_lastRoute.settings];
     }
 
@@ -432,7 +454,7 @@ NS_ASSUME_NONNULL_BEGIN
     [self thrio_viewDidDisappear:animated];
     [self.navigationController thrio_removePopGesture];
 
-    if (self.thrio_firstRoute) {
+    if (self.thrio_firstRoute && ![self isKindOfClass:NavigatorFlutterViewController.class]) {
         [ThrioNavigator.pageObservers didDisappear:self.thrio_lastRoute.settings];
     }
 }

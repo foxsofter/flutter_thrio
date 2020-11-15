@@ -20,8 +20,8 @@
 // IN THE SOFTWARE.
 
 #import <objc/runtime.h>
-#import "UINavigationController+PopGesture.h"
 #import "NSObject+ThrioSwizzling.h"
+#import "UINavigationController+PopGesture.h"
 
 @implementation UINavigationController (PopGesture)
 

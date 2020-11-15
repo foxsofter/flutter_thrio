@@ -89,6 +89,10 @@ NS_ASSUME_NONNULL_BEGIN
     return [NSString stringWithFormat:@"settings: %@", [self toArguments]];
 }
 
+- (BOOL)isEqualToRouteSettings:(NavigatorRouteSettings *)other {
+    return [self.url isEqualToString:other.url] && [self.index isEqualToNumber:other.index];
+}
+
 @end
 
 NS_ASSUME_NONNULL_END

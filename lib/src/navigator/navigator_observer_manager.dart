@@ -88,6 +88,7 @@ class NavigatorObserverManager extends NavigatorObserver {
               ThrioNavigatorImplement.shared()
                   .pageObservers
                   .didDisappear(route.settings, NavigatorRouteAction.pop);
+              route.routeAction = null;
             }
             if (route.routeAction == NavigatorRouteAction.remove) {
               if (WidgetsBinding.instance.lifecycleState ==
@@ -104,6 +105,7 @@ class NavigatorObserverManager extends NavigatorObserver {
                     .pageObservers
                     .didDisappear(route.settings, NavigatorRouteAction.remove);
               }
+              route.routeAction = null;
             }
           } else if (_currentPopRoutes.length > 1) {
             verbose('didPopTo: url->${pageRoutes.last.settings.url} '
@@ -115,6 +117,7 @@ class NavigatorObserverManager extends NavigatorObserver {
                   pageRoutes.last.settings,
                   NavigatorRouteAction.popTo,
                 );
+            pageRoutes.last.routeAction = null;
           }
           _currentPopRoutes.clear();
         });

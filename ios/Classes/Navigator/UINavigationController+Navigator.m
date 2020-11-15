@@ -19,24 +19,26 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-#import <QuartzCore/QuartzCore.h>
 #import <objc/runtime.h>
-#import "UINavigationController+Navigator.h"
-#import "UINavigationController+PopGesture.h"
-#import "UIViewController+WillPopCallback.h"
-#import "UIViewController+Internal.h"
-#import "UIViewController+Navigator.h"
-#import "UIViewController+HidesNavigationBar.h"
-#import "NavigatorPageNotifyProtocol.h"
-#import "ThrioRegistryMap.h"
-#import "NavigatorRouteSettings.h"
+#import <QuartzCore/QuartzCore.h>
+
 #import "NSObject+ThrioSwizzling.h"
-#import "NavigatorLogger.h"
 #import "NavigatorFlutterEngineFactory.h"
-#import "ThrioNavigator.h"
+#import "NavigatorLogger.h"
+#import "NavigatorPageNotifyProtocol.h"
+#import "NavigatorRouteSettings.h"
 #import "ThrioNavigator+Internal.h"
 #import "ThrioNavigator+PageBuilders.h"
+#import "ThrioNavigator+PageObservers.h"
 #import "ThrioNavigator+RouteObservers.h"
+#import "ThrioNavigator.h"
+#import "ThrioRegistryMap.h"
+#import "UINavigationController+Navigator.h"
+#import "UINavigationController+PopGesture.h"
+#import "UIViewController+HidesNavigationBar.h"
+#import "UIViewController+Internal.h"
+#import "UIViewController+Navigator.h"
+#import "UIViewController+WillPopCallback.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -250,17 +252,22 @@ NS_ASSUME_NONNULL_BEGIN
         if (r) {
             if (!vc.thrio_firstRoute) {
                 NSMutableArray *vcs = [strongSelf.viewControllers mutableCopy];
-                [vcs removeObject:vc];
                 if (animated && vc == vcs.lastObject) {
+                    [vcs removeObject:vc];
                     [CATransaction begin];
                     [CATransaction setCompletionBlock:^{
-                        [ThrioNavigator didRemove:routeSettings];
+                        if (![vc isKindOfClass:NavigatorFlutterViewController.class]) {
+                            [ThrioNavigator didRemove:routeSettings];
+                        }
                     }];
                     [strongSelf setViewControllers:vcs animated:animated];
                     [CATransaction commit];
                 } else {
+                    [vcs removeObject:vc];
                     [strongSelf setViewControllers:vcs animated:animated];
-                    [ThrioNavigator didRemove:routeSettings];
+                    if (![vc isKindOfClass:NavigatorFlutterViewController.class]) {
+                        [ThrioNavigator didRemove:routeSettings];
+                    }
                 }
             }
 
@@ -290,11 +297,13 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)thrio_didPopUrl:(NSString *)url index:(NSNumber *)index {
     UIViewController *vc = [self getViewControllerByUrl:url index:index];
-    if (vc) {
-        [vc thrio_didPopUrl:url index:index];
-        if (vc.thrio_firstRoute == vc.thrio_lastRoute) {
-            [self thrio_addPopGesture];
-        }
+    if (!vc) {
+        return;
+    }
+
+    [vc thrio_didPopUrl:url index:index];
+    if (vc.thrio_firstRoute == vc.thrio_lastRoute) {
+        [self thrio_addPopGesture];
     }
 }
 
@@ -555,6 +564,9 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 - (void)thrio_didShowViewController:(UIViewController *)viewController animated:(BOOL)animated {
+    // 记录最后展示的 Route
+    ThrioNavigator.pageObservers.lastRoute = viewController.thrio_lastRoute;
+
     // 如果即将显示的页面为NavigatorFlutterViewController，需要将该页面切换到引擎上
     if ([viewController isKindOfClass:NavigatorFlutterViewController.class]) {
         [NavigatorFlutterEngineFactory.shared pushViewController:(NavigatorFlutterViewController *)viewController];

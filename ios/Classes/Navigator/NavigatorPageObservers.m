@@ -19,16 +19,18 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-#import "NavigatorPageObservers.h"
-#import "NavigatorPageObserverChannel.h"
 #import "NavigatorFlutterEngineFactory.h"
 #import "NavigatorLogger.h"
+#import "NavigatorPageObserverChannel.h"
+#import "NavigatorPageObservers.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 @interface NavigatorPageObservers ()
 
 @property (nonatomic, readwrite) ThrioRegistrySet<id<NavigatorPageObserverProtocol> > *observers;
+
+@property (nonatomic, readwrite) NavigatorPageRoute *prevLastRoute;
 
 @end
 
@@ -42,7 +44,19 @@ NS_ASSUME_NONNULL_BEGIN
     return self;
 }
 
+- (void)setLastRoute:(NavigatorPageRoute *)lastRoute {
+    if (_lastRoute != lastRoute) {
+        if (_lastRoute) {
+            _prevLastRoute = _lastRoute;
+        }
+        _lastRoute = lastRoute;
+    }
+}
+
 - (void)willAppear:(NavigatorRouteSettings *)routeSettings {
+    if (!routeSettings) {
+        return;
+    }
     NavigatorVerbose(@"%@: url->%@ index->%@",
                      NSStringFromSelector(_cmd),
                      routeSettings.url,
@@ -56,6 +70,9 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 - (void)didAppear:(NavigatorRouteSettings *)routeSettings {
+    if (!routeSettings) {
+        return;
+    }
     NavigatorVerbose(@"%@: url->%@ index->%@",
                      NSStringFromSelector(_cmd),
                      routeSettings.url,
@@ -69,6 +86,9 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 - (void)willDisappear:(NavigatorRouteSettings *)routeSettings {
+    if (!routeSettings) {
+        return;
+    }
     NavigatorVerbose(@"%@: url->%@ index->%@",
                      NSStringFromSelector(_cmd),
                      routeSettings.url,
@@ -82,6 +102,9 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 - (void)didDisappear:(NavigatorRouteSettings *)routeSettings {
+    if (!routeSettings) {
+        return;
+    }
     NavigatorVerbose(@"%@: url->%@ index->%@",
                      NSStringFromSelector(_cmd),
                      routeSettings.url,

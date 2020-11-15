@@ -19,9 +19,9 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-#import "NavigatorRouteObservers.h"
 #import "NavigatorFlutterEngineFactory.h"
 #import "NavigatorLogger.h"
+#import "NavigatorRouteObservers.h"
 
 @interface NavigatorRouteObservers ()
 
@@ -40,6 +40,9 @@
 }
 
 - (void)didPush:(NavigatorRouteSettings *)routeSettings {
+    if (!routeSettings) {
+        return;
+    }
     ThrioRegistrySet *routeObservers = [self.observers copy];
     for (id<NavigatorRouteObserverProtocol> observer in routeObservers) {
         if ([observer respondsToSelector:@selector(didPush:)]) {
@@ -49,6 +52,9 @@
 }
 
 - (void)didPop:(NavigatorRouteSettings *)routeSettings {
+    if (!routeSettings) {
+        return;
+    }
     ThrioRegistrySet *routeObservers = [self.observers copy];
     for (id<NavigatorRouteObserverProtocol> observer in routeObservers) {
         if ([observer respondsToSelector:@selector(didPop:)]) {
@@ -58,6 +64,9 @@
 }
 
 - (void)didPopTo:(NavigatorRouteSettings *)routeSettings {
+    if (!routeSettings) {
+        return;
+    }
     ThrioRegistrySet *routeObservers = [self.observers copy];
     for (id<NavigatorRouteObserverProtocol> observer in routeObservers) {
         if ([observer respondsToSelector:@selector(didPopTo:)]) {
@@ -67,6 +76,9 @@
 }
 
 - (void)didRemove:(NavigatorRouteSettings *)routeSettings {
+    if (!routeSettings) {
+        return;
+    }
     ThrioRegistrySet *routeObservers = [self.observers copy];
     for (id<NavigatorRouteObserverProtocol> observer in routeObservers) {
         if ([observer respondsToSelector:@selector(didRemove:)]) {

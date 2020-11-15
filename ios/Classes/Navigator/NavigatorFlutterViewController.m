@@ -19,9 +19,9 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-#import "NavigatorFlutterViewController.h"
 #import "NavigatorFlutterEngine.h"
 #import "NavigatorFlutterEngineFactory.h"
+#import "NavigatorFlutterViewController.h"
 #import "NavigatorLogger.h"
 #import "ThrioChannel.h"
 #import "ThrioNavigator+Internal.h"
@@ -88,6 +88,8 @@ NS_ASSUME_NONNULL_BEGIN
 
     if ([self isMovingToParentViewController]) {
         [NavigatorFlutterEngineFactory.shared pushViewController:self];
+    } else {
+        [ThrioNavigator.pageObservers didAppear:self.thrio_lastRoute.settings];
     }
 }
 
@@ -103,6 +105,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)viewDidDisappear:(BOOL)animated {
     [super viewDidDisappear:animated];
+    
+    if (![self isMovingFromParentViewController]) {
+        [ThrioNavigator.pageObservers didDisappear:self.thrio_lastRoute.settings];
+    }
 }
 
 - (void)dealloc {

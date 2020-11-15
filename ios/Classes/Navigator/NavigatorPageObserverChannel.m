@@ -47,16 +47,17 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)on:(NSString *)method {
     [_channel registryMethod:method
-                     handler:^void (NSDictionary<NSString *, id> *arguments,
-                                    ThrioIdCallback _Nullable result) {
-        NavigatorRouteSettings *settings = [NavigatorRouteSettings settingsFromArguments:arguments];
-        NSString *routeActionString = arguments[@"routeAction"];
+                     handler:
+     ^void (NSDictionary<NSString *, id> *arguments,
+            ThrioIdCallback _Nullable result) {
+                NavigatorRouteSettings *settings = [NavigatorRouteSettings settingsFromArguments:arguments];
+                NSString *routeActionString = arguments[@"routeAction"];
     #pragma clang diagnostic push
     #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
-        SEL selector = NSSelectorFromString([NSString stringWithFormat:@"%@:routeAction:", method]);
-        [ThrioNavigator performSelector:selector withObject:settings withObject:routeActionString];
+                SEL selector = NSSelectorFromString([NSString stringWithFormat:@"%@:routeAction:", method]);
+                [ThrioNavigator performSelector:selector withObject:settings withObject:routeActionString];
     #pragma clang diagnostic pop
-    }];
+            }];
 }
 
 /// Send `willAppear` to all flutter engines.

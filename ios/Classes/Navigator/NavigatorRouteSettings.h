@@ -49,6 +49,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, copy, readonly, nullable) id params;
 
+- (BOOL)isEqualToRouteSettings:(NavigatorRouteSettings *)other;
+
 @end
 
 NS_ASSUME_NONNULL_END

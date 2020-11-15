@@ -20,8 +20,8 @@
 // IN THE SOFTWARE.
 
 #import "NavigatorRouteObserverChannel.h"
-#import "ThrioNavigator+RouteObservers.h"
 #import "ThrioNavigator+Internal.h"
+#import "ThrioNavigator+RouteObservers.h"
 
 @interface NavigatorRouteObserverChannel ()
 
@@ -69,17 +69,18 @@
 
 - (void)on:(NSString *)method {
     [_channel registryMethod:method
-                     handler:^void (NSDictionary<NSString *, id> *arguments,
-                                    ThrioIdCallback _Nullable result) {
-        NavigatorRouteSettings *routeSettings = [NavigatorRouteSettings settingsFromArguments:arguments];
+                     handler:
+     ^void (NSDictionary<NSString *, id> *arguments,
+            ThrioIdCallback _Nullable result) {
+                NavigatorRouteSettings *routeSettings = [NavigatorRouteSettings settingsFromArguments:arguments];
 
     #pragma clang diagnostic push
     #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
-        SEL selector = NSSelectorFromString([NSString stringWithFormat:@"%@:", method]);
-        [ThrioNavigator performSelector:selector withObject:routeSettings];
-        [ThrioNavigator.routeObservers performSelector:selector withObject:routeSettings];
+                SEL selector = NSSelectorFromString([NSString stringWithFormat:@"%@:", method]);
+                [ThrioNavigator performSelector:selector withObject:routeSettings];
+                [ThrioNavigator.routeObservers performSelector:selector withObject:routeSettings];
     #pragma clang diagnostic pop
-    }];
+            }];
 }
 
 @end
