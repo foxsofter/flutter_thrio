@@ -100,6 +100,6 @@ abstract class ThrioNavigator {
 
   /// Returns all index of the page with `url` in the navigation stack.
   ///
-  static Future<List<int>> allIndexs({@required String url}) =>
-      ThrioNavigatorImplement.shared().allIndexs(url: url);
+  static Future<List<int>> allIndexes({@required String url}) =>
+      ThrioNavigatorImplement.shared().allIndexes(url: url);
 }

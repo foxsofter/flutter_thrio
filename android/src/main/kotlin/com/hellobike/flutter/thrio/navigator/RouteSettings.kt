@@ -37,6 +37,17 @@ data class RouteSettings(val url: String, val index: Int) {
             "params" to params
     )
 
+    override fun equals(other: Any?): Boolean {
+        return when (other) {
+            other is RouteSettings && url == other.url && index == other.index -> true
+            else -> false
+        }
+    }
+
+    override fun hashCode(): Int {
+        return url.hashCode() xor index.hashCode()
+    }
+
     companion object {
         @JvmStatic
         fun fromArguments(arguments: Map<String, Any?>): RouteSettings? {

@@ -157,8 +157,8 @@ class ThrioNavigatorImplement {
 
   Future<int> lastIndex({String url}) => _sendChannel?.lastIndex(url: url);
 
-  Future<List<int>> allIndexs({@required String url}) =>
-      _sendChannel?.allIndexs(url: url);
+  Future<List<int>> allIndexes({@required String url}) =>
+      _sendChannel?.allIndexes(url: url);
 
   Future<bool> setPopDisabled({
     @required String url,

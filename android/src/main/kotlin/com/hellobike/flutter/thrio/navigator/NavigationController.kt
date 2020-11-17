@@ -180,12 +180,6 @@ internal object NavigationController : Application.ActivityLifecycleCallbacks {
             route.poppedResult = poppedResult
             poppedResult = null
 
-            val previousRouteSettings = PageRoutes.lastRoute()?.settings
-
-            if (entrypoint == NAVIGATION_NATIVE_ENTRYPOINT) { // 只触发原生页面
-                PageObservers.onCreate(settings)
-            }
-
             PageRoutes.push(activity, route) { index ->
                 if (index == null) {
                     if (!PageRoutes.hasRoute(pageId)) {
@@ -197,7 +191,7 @@ internal object NavigationController : Application.ActivityLifecycleCallbacks {
                 routeAction = RouteAction.NONE
 
                 if (index != null && entrypoint == NAVIGATION_NATIVE_ENTRYPOINT) {  // 只触发原生页面
-                    RouteObservers.didPush(settings, previousRouteSettings)
+                    RouteObservers.didPush(settings)
                 }
             }
         }
@@ -243,7 +237,8 @@ internal object NavigationController : Application.ActivityLifecycleCallbacks {
                             "name" to it.key,
                             "params" to it.value!!
                     )
-                    Log.v("Thrio", "page ${route.settings.url} index ${route.settings.index} notify")
+                    Log.v("Thrio", "page ${route.settings.url} '" +
+                            "'index ${route.settings.index} notify")
                     activity.onNotify(arguments) {}
                 } else if (activity is PageNotifyListener) {
                     activity.onNotify(it.key, it.value)
@@ -292,7 +287,7 @@ internal object NavigationController : Application.ActivityLifecycleCallbacks {
                 routeAction = RouteAction.NONE
                 return
             }
-            routeAction = RouteAction.POP_TO
+            routeAction = RouteAction.POPPING_TO
 
             poppedToRoute.settings.animated = animated
             val poppedToHolder = PageRoutes.lastRouteHolder(url, index)
@@ -302,7 +297,7 @@ internal object NavigationController : Application.ActivityLifecycleCallbacks {
             PageRoutes.popTo(url, index, animated) { ret ->
                 if (ret) {
                     if (ret && poppedToRoute.entrypoint == NAVIGATION_NATIVE_ENTRYPOINT) {
-                        RouteObservers.didPopTo(poppedToRoute.settings, lastRoute?.settings)
+                        RouteObservers.didPopTo(poppedToRoute.settings)
                     }
                     // 顶上不存在其它的 Activity
                     if (poppedToHolders.isEmpty()) {
@@ -328,7 +323,7 @@ internal object NavigationController : Application.ActivityLifecycleCallbacks {
         }
 
         internal fun doPopTo(activity: Activity) {
-            if (routeAction != RouteAction.POP_TO) {
+            if (routeAction != RouteAction.POPPING_TO) {
                 return
             }
             val pageId = activity.intent.getPageId()
@@ -340,7 +335,6 @@ internal object NavigationController : Application.ActivityLifecycleCallbacks {
                 poppedToHolder?.activity?.get()?.let {
                     poppedToHolder = null
                     if (it is ThrioActivity) {
-                        // 需要延迟一小段时间，等待 FlutterEngine 切换完成
                         it.onResume()
                     }
                 }
@@ -355,7 +349,7 @@ internal object NavigationController : Application.ActivityLifecycleCallbacks {
         }
 
         internal fun didPopTo(activity: Activity) {
-            if (routeAction != RouteAction.POP_TO) {
+            if (routeAction != RouteAction.POPPING_TO) {
                 return
             }
             val pageId = activity.intent.getPageId()

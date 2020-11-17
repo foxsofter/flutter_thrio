@@ -29,7 +29,7 @@ import com.hellobike.flutter.thrio.channel.ThrioChannel
 internal class RouteSendChannel constructor(private val channel: ThrioChannel) {
 
     fun onPush(arguments: Map<String, Any?>?, result: BooleanCallback) {
-        channel.invokeMethod("__onPush__", arguments) {
+        channel.invokeMethod("push", arguments) {
             if (it is Boolean) {
                 result(it)
             } else {
@@ -45,7 +45,7 @@ internal class RouteSendChannel constructor(private val channel: ThrioChannel) {
     }
 
     fun onPop(arguments: Map<String, Any?>?, result: BooleanCallback) {
-        channel.invokeMethod("__onPop__", arguments) {
+        channel.invokeMethod("pop", arguments) {
             if (it is Boolean) {
                 result(it)
             } else {
@@ -55,7 +55,7 @@ internal class RouteSendChannel constructor(private val channel: ThrioChannel) {
     }
 
     fun onPopTo(arguments: Map<String, Any?>?, result: BooleanCallback) {
-        channel.invokeMethod("__onPopTo__", arguments) {
+        channel.invokeMethod("popTo", arguments) {
             if (it is Boolean) {
                 result(it)
             } else {
@@ -65,7 +65,7 @@ internal class RouteSendChannel constructor(private val channel: ThrioChannel) {
     }
 
     fun onRemove(arguments: Map<String, Any?>?, result: BooleanCallback) {
-        channel.invokeMethod("__onRemove__", arguments) {
+        channel.invokeMethod("remove", arguments) {
             if (it is Boolean) {
                 result(it)
             } else {

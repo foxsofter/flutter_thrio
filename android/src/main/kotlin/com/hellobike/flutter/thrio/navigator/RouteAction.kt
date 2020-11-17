@@ -23,11 +23,15 @@
 
 package com.hellobike.flutter.thrio.navigator
 
-internal enum class RouteAction {
-    NONE,
-    PUSH,
-    PUSHING,
-    POPPING,
-    POP_TO,
-    REMOVING
+internal enum class RouteAction(action: String) {
+    NONE(""),
+    PUSH("push"),
+    PUSHING("pushing"),
+    POP("pop"),
+    POPPING("popping"),
+    POP_TO("popTo"),
+    POPPING_TO("poppingTo"),
+    REMOVE("remove"),
+    REMOVING("removing"),
 }
+

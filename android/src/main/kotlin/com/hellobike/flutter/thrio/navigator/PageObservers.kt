@@ -27,15 +27,11 @@ import com.hellobike.flutter.thrio.registry.RegistrySet
 
 internal object PageObservers : PageObserver {
     private const val TAG = "PageObservers"
+
     val observers by lazy { RegistrySet<PageObserver>() }
 
-    override fun onCreate(routeSettings: RouteSettings) {
-        observers.forEach {
-            it.onCreate(routeSettings)
-        }
-        Log.v(TAG, "onCreate: url->${routeSettings.url} " +
-                "index->${routeSettings.index} " +
-                "params->${routeSettings.params?.toString()}")
+    init {
+        observers.registry(FlutterEngineFactory)
     }
 
     override fun willAppear(routeSettings: RouteSettings) {

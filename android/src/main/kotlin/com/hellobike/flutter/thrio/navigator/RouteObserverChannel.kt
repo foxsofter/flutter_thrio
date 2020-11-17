@@ -26,19 +26,35 @@ package com.hellobike.flutter.thrio.navigator
 import com.hellobike.flutter.thrio.channel.ThrioChannel
 import io.flutter.plugin.common.BinaryMessenger
 
-class RouteObserverChannel constructor(entrypoint: String, messenger: BinaryMessenger) {
+class RouteObserverChannel constructor(entrypoint: String, messenger: BinaryMessenger) : RouteObserver {
 
     private val channel: ThrioChannel = ThrioChannel(entrypoint, "__thrio_route_channel__$entrypoint")
 
     init {
         channel.setupMethodChannel(messenger)
-        did("didPush")
-        did("didPop")
-        did("didPopTo")
-        did("didRemove")
+        on("didPush")
+        on("didPop")
+        on("didPopTo")
+        on("didRemove")
     }
 
-    private fun did(method: String) {
+    override fun didPush(routeSettings: RouteSettings) {
+        channel.invokeMethod("didPush", routeSettings.toArguments())
+    }
+
+    override fun didPop(routeSettings: RouteSettings) {
+        channel.invokeMethod("didPop", routeSettings.toArguments())
+    }
+
+    override fun didPopTo(routeSettings: RouteSettings) {
+        channel.invokeMethod("didPopTo", routeSettings.toArguments())
+    }
+
+    override fun didRemove(routeSettings: RouteSettings) {
+        channel.invokeMethod("didRemove", routeSettings.toArguments())
+    }
+
+    private fun on(method: String) {
         channel.registryMethod(method) { arguments, _ ->
             if (arguments == null) return@registryMethod
             val routeArguments = arguments["route"] ?: return@registryMethod
@@ -49,10 +65,10 @@ class RouteObserverChannel constructor(entrypoint: String, messenger: BinaryMess
                 RouteSettings.fromArguments(previousRouteArguments as Map<String, Any?>)
             }
             when (method) {
-                "didPush" -> RouteObservers.didPush(routeSettings, previousRouteSettings)
-                "didPop" -> RouteObservers.didPop(routeSettings, previousRouteSettings)
-                "didPopTo" -> RouteObservers.didPopTo(routeSettings, previousRouteSettings)
-                "didRemove" -> RouteObservers.didRemove(routeSettings, previousRouteSettings)
+                "didPush" -> RouteObservers.didPush(routeSettings)
+                "didPop" -> RouteObservers.didPop(routeSettings)
+                "didPopTo" -> RouteObservers.didPopTo(routeSettings)
+                "didRemove" -> RouteObservers.didRemove(routeSettings)
             }
         }
     }

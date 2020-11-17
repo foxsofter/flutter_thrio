@@ -25,9 +25,9 @@ package com.hellobike.flutter.thrio.navigator
 
 import android.content.Context
 
-object FlutterEngineFactory {
+object FlutterEngineFactory : PageObserver, RouteObserver {
 
-    private val manager = mutableMapOf<String, FlutterEngine>()
+    private val engines = mutableMapOf<String, FlutterEngine>()
 
     internal var isMultiEngineEnabled = false
 
@@ -39,10 +39,10 @@ object FlutterEngineFactory {
         else
             entrypoint
 
-        if (manager.contains(ep)) {
+        if (engines.contains(ep)) {
             readyListener?.onReady(ep)
         } else {
-            manager[ep] = FlutterEngine(context, ep, readyListener)
+            engines[ep] = FlutterEngine(context, ep, readyListener)
         }
     }
 
@@ -51,6 +51,54 @@ object FlutterEngineFactory {
             NAVIGATION_FLUTTER_ENTRYPOINT_DEFAULT
         else
             entrypoint
-        return manager[ep]
+        return engines[ep]
+    }
+
+    override fun willAppear(routeSettings: RouteSettings) {
+        engines.values.forEach { engine ->
+            engine.pageChannel.willAppear(routeSettings)
+        }
+    }
+
+    override fun didAppear(routeSettings: RouteSettings) {
+        engines.values.forEach { engine ->
+            engine.pageChannel.didAppear(routeSettings)
+        }
+    }
+
+    override fun willDisappear(routeSettings: RouteSettings) {
+        engines.values.forEach { engine ->
+            engine.pageChannel.willDisappear(routeSettings)
+        }
+    }
+
+    override fun didDisappear(routeSettings: RouteSettings) {
+        engines.values.forEach { engine ->
+            engine.pageChannel.didDisappear(routeSettings)
+        }
+    }
+
+    override fun didPush(routeSettings: RouteSettings) {
+        engines.values.forEach { engine ->
+            engine.routeChannel.didPush(routeSettings)
+        }
+    }
+
+    override fun didPop(routeSettings: RouteSettings) {
+        engines.values.forEach { engine ->
+            engine.routeChannel.didPop(routeSettings)
+        }
+    }
+
+    override fun didPopTo(routeSettings: RouteSettings) {
+        engines.values.forEach { engine ->
+            engine.routeChannel.didPopTo(routeSettings)
+        }
+    }
+
+    override fun didRemove(routeSettings: RouteSettings) {
+        engines.values.forEach { engine ->
+            engine.routeChannel.didRemove(routeSettings)
+        }
     }
 }

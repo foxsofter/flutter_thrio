@@ -100,8 +100,8 @@ class NavigatorRouteSendChannel {
     return _channel.invokeMethod<int>('lastIndex', arguments);
   }
 
-  Future<List<int>> allIndexs({@required String url}) =>
-      _channel.invokeListMethod<int>('allIndexs', {'url': url});
+  Future<List<int>> allIndexes({@required String url}) =>
+      _channel.invokeListMethod<int>('allIndexes', {'url': url});
 
   Future<bool> setPopDisabled({
     @required String url,

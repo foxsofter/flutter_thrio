@@ -201,6 +201,38 @@ internal object PageRoutes : Application.ActivityLifecycleCallbacks {
         }
     }
 
+    fun willAppear(routeSettings: RouteSettings, routeAction: RouteAction) {
+        if (routeAction == RouteAction.PUSH) {
+            PageObservers.willAppear(routeSettings)
+            lastRoute()?.let { lastRoute ->
+                if (lastRoute.settings != routeSettings) {
+                    PageObservers.willDisappear(lastRoute.settings)
+                }
+            }
+        } else if (routeAction == RouteAction.POP_TO) {
+            val route = lastRoute(routeSettings.url, routeSettings.index)
+            val lastRoute = lastRoute()
+            if (route != lastRoute) {
+                PageObservers.willAppear(routeSettings)
+                if (lastRoute != null) {
+                    PageObservers.willDisappear(lastRoute.settings)
+                }
+            }
+        }
+    }
+
+    fun didAppear(routeSettings: RouteSettings, routeAction: RouteAction) {
+
+    }
+
+    fun willDisappear(routeSettings: RouteSettings, routeAction: RouteAction) {
+
+    }
+
+    fun didDisappear(routeSettings: RouteSettings, routeAction: RouteAction) {
+
+    }
+
     override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
         if (savedInstanceState == null) {
             var pageId = activity.intent.getPageId()

@@ -72,6 +72,8 @@ internal data class PageRouteHolder(val pageId: Int,
             } else {
                 routes.add(route)
                 result(route.settings.index)
+                // 原生页面触发didPush
+                RouteObservers.didPush(route.settings)
             }
         } else {
             result(null)
@@ -126,6 +128,7 @@ internal data class PageRouteHolder(val pageId: Int,
                     lastRoute.settings.animated = animated
                     FlutterEngineFactory.getEngine(lastRoute.fromEntrypoint)?.sendChannel?.onPop(lastRoute.settings.toArguments()) {}
                 }
+                RouteObservers.didPop(lastRoute.settings)
             }
         } else {
             result(false)
@@ -156,6 +159,7 @@ internal data class PageRouteHolder(val pageId: Int,
                 }
             } else {
                 result(true)
+                RouteObservers.didPopTo(route.settings)
             }
         } else {
             result(false)
@@ -183,9 +187,7 @@ internal data class PageRouteHolder(val pageId: Int,
             } else {
                 routes.remove(route)
                 result(true)
-                if (route.entrypoint == NAVIGATION_NATIVE_ENTRYPOINT) {
-                    RouteObservers.didRemove(route.settings, lastRoute()?.settings)
-                }
+                RouteObservers.didRemove(route.settings)
             }
         } else {
             result(false)

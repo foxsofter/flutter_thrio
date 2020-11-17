@@ -26,13 +26,12 @@ package com.hellobike.flutter.thrio.navigator
 import com.hellobike.flutter.thrio.channel.ThrioChannel
 import io.flutter.plugin.common.BinaryMessenger
 
-class PageObserverChannel constructor(entrypoint: String, messenger: BinaryMessenger) {
+class PageObserverChannel constructor(entrypoint: String, messenger: BinaryMessenger) : PageObserver {
 
     private val channel: ThrioChannel = ThrioChannel(entrypoint, "__thrio_page_channel__$entrypoint")
 
     init {
         channel.setupMethodChannel(messenger)
-        on("onCreate")
         on("willAppear")
         on("didAppear")
         on("willDisappear")
@@ -43,13 +42,30 @@ class PageObserverChannel constructor(entrypoint: String, messenger: BinaryMesse
         channel.registryMethod(method) { arguments, _ ->
             if (arguments == null) return@registryMethod
             val routeSettings = RouteSettings.fromArguments(arguments) ?: return@registryMethod
+            val routeActionString = arguments["routeAction"] as String
+
             when (method) {
-                "onCreate" -> PageObservers.onCreate(routeSettings)
-                "willAppear" -> PageObservers.willAppear(routeSettings)
-                "didAppear" -> PageObservers.didAppear(routeSettings)
-                "willDisappear" -> PageObservers.willDisappear(routeSettings)
-                "didDisappear" -> PageObservers.didDisappear(routeSettings)
+                "willAppear" -> PageRoutes.willAppear(routeSettings, RouteAction.valueOf(routeActionString))
+                "didAppear" -> PageRoutes.didAppear(routeSettings, RouteAction.valueOf(routeActionString))
+                "willDisappear" -> PageRoutes.willDisappear(routeSettings, RouteAction.valueOf(routeActionString))
+                "didDisappear" -> PageRoutes.didDisappear(routeSettings, RouteAction.valueOf(routeActionString))
             }
         }
+    }
+
+    override fun willAppear(routeSettings: RouteSettings) {
+        channel.invokeMethod("willAppear", routeSettings.toArguments())
+    }
+
+    override fun didAppear(routeSettings: RouteSettings) {
+        channel.invokeMethod("didAppear", routeSettings.toArguments())
+    }
+
+    override fun willDisappear(routeSettings: RouteSettings) {
+        channel.invokeMethod("willDisappear", routeSettings.toArguments())
+    }
+
+    override fun didDisappear(routeSettings: RouteSettings) {
+        channel.invokeMethod("didDisappear", routeSettings.toArguments())
     }
 }

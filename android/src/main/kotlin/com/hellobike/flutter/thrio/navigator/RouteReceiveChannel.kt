@@ -35,7 +35,7 @@ internal class RouteReceiveChannel(val channel: ThrioChannel,
         onPopTo()
         onRemove()
         onLastIndex()
-        onGetAllIndexs()
+        onGetAllIndexes()
         onSetPopDisabled()
         onHotRestart()
         onRegisterUrls()
@@ -103,8 +103,8 @@ internal class RouteReceiveChannel(val channel: ThrioChannel,
         channel.registryMethod("lastIndex") { _, _ -> }
     }
 
-    private fun onGetAllIndexs() {
-        channel.registryMethod("getAllIndexs") { _, _ -> }
+    private fun onGetAllIndexes() {
+        channel.registryMethod("allIndexes") { _, _ -> }
     }
 
     private fun onSetPopDisabled() {

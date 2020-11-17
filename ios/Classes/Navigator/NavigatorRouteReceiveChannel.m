@@ -51,7 +51,7 @@ NS_ASSUME_NONNULL_BEGIN
         [self _onPopTo];
         [self _onRemove];
         [self _onLastIndex];
-        [self _onGetAllIndexs];
+        [self _onGetAllIndexes];
         [self _onSetPopDisabled];
         [self _onHotRestart];
         [self _onRegisterUrls];
@@ -248,20 +248,20 @@ NS_ASSUME_NONNULL_BEGIN
             }];
 }
 
-- (void)_onGetAllIndexs {
-    [_channel registryMethod:@"allIndexs"
+- (void)_onGetAllIndexes {
+    [_channel registryMethod:@"allIndexes"
                      handler:
      ^void (NSDictionary<NSString *, id> *arguments,
             ThrioIdCallback _Nullable result) {
                 NSString *url = arguments[@"url"];
                 NSArray *allRoutes =
                     [ThrioNavigator getAllRoutesByUrl:url];
-                NSMutableArray *allIndexs = [NSMutableArray array];
+                NSMutableArray *allIndexes = [NSMutableArray array];
                 for (NavigatorPageRoute *route in allRoutes) {
-                    [allIndexs addObject:route.settings.index];
+                    [allIndexes addObject:route.settings.index];
                 }
                 if (result) {
-                    result(allIndexs);
+                    result(allIndexes);
                 }
             }];
 }
