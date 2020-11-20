@@ -122,6 +122,8 @@ internal data class PageRouteHolder(val pageId: Int,
                 lastRoute.poppedResult?.invoke(params)
                 lastRoute.poppedResult = null
                 if (lastRoute.fromEntrypoint != NAVIGATION_NATIVE_ENTRYPOINT) {
+                    lastRoute.settings.params = params
+                    lastRoute.settings.animated = animated
                     FlutterEngineFactory.getEngine(lastRoute.fromEntrypoint)?.sendChannel?.onPop(lastRoute.settings.toArguments()) {}
                 }
             }
