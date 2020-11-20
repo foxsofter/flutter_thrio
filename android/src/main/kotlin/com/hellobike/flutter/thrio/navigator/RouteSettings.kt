@@ -38,10 +38,7 @@ data class RouteSettings(val url: String, val index: Int) {
     )
 
     override fun equals(other: Any?): Boolean {
-        return when (other) {
-            other is RouteSettings && url == other.url && index == other.index -> true
-            else -> false
-        }
+        return other != null && other is RouteSettings && url == other.url && index == other.index
     }
 
     override fun hashCode(): Int {

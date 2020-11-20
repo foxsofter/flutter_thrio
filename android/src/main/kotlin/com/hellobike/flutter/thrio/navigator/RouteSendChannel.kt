@@ -39,7 +39,7 @@ internal class RouteSendChannel constructor(private val channel: ThrioChannel) {
     }
 
     fun onNotify(arguments: Map<String, Any?>?, result: BooleanCallback) {
-        Log.v("Thrio", "onNotify channel data $arguments")
+        Log.i("Thrio", "onNotify channel data $arguments")
         channel.sendEvent("__onNotify__", arguments)
         result(true)
     }

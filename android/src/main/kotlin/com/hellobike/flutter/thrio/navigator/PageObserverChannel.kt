@@ -45,10 +45,10 @@ class PageObserverChannel constructor(entrypoint: String, messenger: BinaryMesse
             val routeActionString = arguments["routeAction"] as String
 
             when (method) {
-                "willAppear" -> PageRoutes.willAppear(routeSettings, RouteAction.valueOf(routeActionString))
-                "didAppear" -> PageRoutes.didAppear(routeSettings, RouteAction.valueOf(routeActionString))
-                "willDisappear" -> PageRoutes.willDisappear(routeSettings, RouteAction.valueOf(routeActionString))
-                "didDisappear" -> PageRoutes.didDisappear(routeSettings, RouteAction.valueOf(routeActionString))
+                "willAppear" -> PageRoutes.willAppear(routeSettings, RouteAction.from(routeActionString))
+                "didAppear" -> PageRoutes.didAppear(routeSettings, RouteAction.from(routeActionString))
+                "willDisappear" -> PageRoutes.willDisappear(routeSettings, RouteAction.from(routeActionString))
+                "didDisappear" -> PageRoutes.didDisappear(routeSettings, RouteAction.from(routeActionString))
             }
         }
     }

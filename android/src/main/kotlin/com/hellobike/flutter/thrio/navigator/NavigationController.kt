@@ -39,13 +39,14 @@ internal object NavigationController : Application.ActivityLifecycleCallbacks {
         context = context ?: activity
 
         Remove.doRemove(activity)
-        Push.doPush(activity)
+        if (activity is ThrioActivity) {
+            Push.doPush(activity)
+        }
     }
 
     override fun onActivityStarted(activity: Activity) {
         PopTo.doPopTo(activity)
         Remove.doRemove(activity)
-        Push.doPush(activity)
     }
 
     override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {
@@ -53,6 +54,9 @@ internal object NavigationController : Application.ActivityLifecycleCallbacks {
 
     override fun onActivityResumed(activity: Activity) {
         Notify.doNotify(activity)
+        if (activity !is ThrioActivity) {
+            Push.doPush(activity)
+        }
     }
 
     override fun onActivityPaused(activity: Activity) {
@@ -133,7 +137,6 @@ internal object NavigationController : Application.ActivityLifecycleCallbacks {
                 putExtra(NAVIGATION_ROUTE_FROM_ENTRYPOINT_KEY, fromEntrypoint)
             }
 
-
             this.result = result
             this.poppedResult = poppedResult
 
@@ -189,10 +192,6 @@ internal object NavigationController : Application.ActivityLifecycleCallbacks {
                 result?.invoke(index)
                 result = null
                 routeAction = RouteAction.NONE
-
-                if (index != null && entrypoint == NAVIGATION_NATIVE_ENTRYPOINT) {  // 只触发原生页面
-                    RouteObservers.didPush(settings)
-                }
             }
         }
     }
@@ -237,7 +236,7 @@ internal object NavigationController : Application.ActivityLifecycleCallbacks {
                             "name" to it.key,
                             "params" to it.value!!
                     )
-                    Log.v("Thrio", "page ${route.settings.url} '" +
+                    Log.i("Thrio", "page ${route.settings.url} '" +
                             "'index ${route.settings.index} notify")
                     activity.onNotify(arguments) {}
                 } else if (activity is PageNotifyListener) {
@@ -256,7 +255,7 @@ internal object NavigationController : Application.ActivityLifecycleCallbacks {
                 return
             }
 
-            routeAction = RouteAction.POPPING
+            routeAction = RouteAction.POP
 
             PageRoutes.pop(params, animated) {
                 result?.invoke(it)
@@ -293,7 +292,6 @@ internal object NavigationController : Application.ActivityLifecycleCallbacks {
             val poppedToHolder = PageRoutes.lastRouteHolder(url, index)
             val poppedToHolders = PageRoutes.popToRouteHolders(url, index)
 
-            val lastRoute = PageRoutes.lastRoute()
             PageRoutes.popTo(url, index, animated) { ret ->
                 if (ret) {
                     if (ret && poppedToRoute.entrypoint == NAVIGATION_NATIVE_ENTRYPOINT) {
@@ -312,7 +310,7 @@ internal object NavigationController : Application.ActivityLifecycleCallbacks {
                         val holder = this.poppedToHolders.last()
                         poppingToHolders.add(holder)
                         this.poppedToHolders.remove(holder)
-                        Log.v("NavigationController", "finish->${holder.pageId}")
+                        Log.i("NavigationController", "finish->${holder.pageId}")
                         holder.activity?.get()?.finish()
                     }
                 } else {

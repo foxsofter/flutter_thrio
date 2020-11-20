@@ -28,9 +28,22 @@ import android.app.Application
 import android.os.Bundle
 import com.hellobike.flutter.thrio.BooleanCallback
 import com.hellobike.flutter.thrio.NullableIntCallback
+import io.flutter.embedding.android.ThrioActivity
 import java.lang.ref.WeakReference
 
 internal object PageRoutes : Application.ActivityLifecycleCallbacks {
+
+    private var prevLastRoute: PageRoute? = null
+
+    internal var lastRoute: PageRoute? = null
+        set(value) {
+            if (field != value) {
+                if (field != null) {
+                    prevLastRoute = field
+                }
+                field = value
+            }
+        }
 
     private val routeHolders by lazy { mutableListOf<PageRouteHolder>() }
 
@@ -66,6 +79,9 @@ internal object PageRoutes : Application.ActivityLifecycleCallbacks {
     }
 
     fun lastRoute(url: String? = null, index: Int? = null): PageRoute? {
+        if (url == null) {
+            return routeHolders.lastOrNull()?.lastRoute()
+        }
         for (i in routeHolders.size - 1 downTo 0) {
             val holder = routeHolders[i]
             return holder.lastRoute(url, index) ?: continue
@@ -204,33 +220,63 @@ internal object PageRoutes : Application.ActivityLifecycleCallbacks {
     fun willAppear(routeSettings: RouteSettings, routeAction: RouteAction) {
         if (routeAction == RouteAction.PUSH) {
             PageObservers.willAppear(routeSettings)
-            lastRoute()?.let { lastRoute ->
-                if (lastRoute.settings != routeSettings) {
-                    PageObservers.willDisappear(lastRoute.settings)
+            lastRoute?.let { route ->
+                if (route.settings != routeSettings) {
+                    PageObservers.willDisappear(route.settings)
                 }
             }
         } else if (routeAction == RouteAction.POP_TO) {
             val route = lastRoute(routeSettings.url, routeSettings.index)
-            val lastRoute = lastRoute()
-            if (route != lastRoute) {
+            if (route != null && route != lastRoute) {
                 PageObservers.willAppear(routeSettings)
-                if (lastRoute != null) {
-                    PageObservers.willDisappear(lastRoute.settings)
+                lastRoute?.let {
+                    PageObservers.willDisappear(it.settings)
                 }
             }
         }
     }
 
     fun didAppear(routeSettings: RouteSettings, routeAction: RouteAction) {
-
+        if (routeAction == RouteAction.PUSH) {
+            PageObservers.didAppear(routeSettings)
+            lastRoute?.let {
+                if (it.settings != routeSettings) {
+                    PageObservers.didDisappear(it.settings)
+                }
+            }
+        } else if (routeAction == RouteAction.POP_TO) {
+            val route = lastRoute(routeSettings.url, routeSettings.index)
+            if (route != null && route != prevLastRoute) {
+                PageObservers.didAppear(routeSettings)
+                prevLastRoute?.let {
+                    PageObservers.didDisappear(it.settings)
+                }
+            }
+        }
     }
 
     fun willDisappear(routeSettings: RouteSettings, routeAction: RouteAction) {
-
+        if (routeAction == RouteAction.POP || routeAction == RouteAction.REMOVE) {
+            if (lastRoute == null || lastRoute?.settings == routeSettings) {
+                PageObservers.willDisappear(routeSettings)
+                lastRouteHolder()?.let { holder ->
+                    if (holder.routes.count() > 1) {
+                        PageObservers.willAppear(holder.routes[holder.routes.count() - 2].settings)
+                    }
+                }
+            }
+        }
     }
 
     fun didDisappear(routeSettings: RouteSettings, routeAction: RouteAction) {
-
+        if (routeAction == RouteAction.POP || routeAction == RouteAction.REMOVE) {
+            if (lastRoute == null || prevLastRoute?.settings == routeSettings) {
+                PageObservers.didDisappear(routeSettings)
+                lastRoute?.let {
+                    PageObservers.didAppear(it.settings)
+                }
+            }
+        }
     }
 
     override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
@@ -266,9 +312,11 @@ internal object PageRoutes : Application.ActivityLifecycleCallbacks {
     override fun onActivityPreResumed(activity: Activity) {
         val pageId = activity.intent.getPageId()
         if (pageId != NAVIGATION_PAGE_ID_NONE) {
-            if (NavigationController.routeAction == RouteAction.NONE) {
-                routeHolders.lastOrNull { it.pageId == pageId }?.apply {
-                    willAppear()
+            if (NavigationController.routeAction == RouteAction.NONE || activity !is ThrioActivity) {
+                routeHolders.lastOrNull { it.pageId == pageId }?.let {
+                    activity.intent.getRouteSettings()?.let {
+                        PageObservers.willAppear(it)
+                    }
                 }
             }
         }
@@ -286,10 +334,13 @@ internal object PageRoutes : Application.ActivityLifecycleCallbacks {
         if (pageId != NAVIGATION_PAGE_ID_NONE) {
             val holder = routeHolders.lastOrNull { it.pageId == pageId }
             holder?.activity = WeakReference(activity)
+            lastRoute = holder?.lastRoute()
 
-            if (NavigationController.routeAction == RouteAction.NONE) {
-                routeHolders.lastOrNull { it.pageId == pageId }?.apply {
-                    didAppear()
+            if (NavigationController.routeAction == RouteAction.NONE || activity !is ThrioActivity) {
+                routeHolders.lastOrNull { it.pageId == pageId }?.let {
+                    activity.intent.getRouteSettings()?.let {
+                        PageObservers.didAppear(it)
+                    }
                 }
             }
         }
@@ -298,9 +349,10 @@ internal object PageRoutes : Application.ActivityLifecycleCallbacks {
     override fun onActivityPrePaused(activity: Activity) {
         val pageId = activity.intent.getIntExtra(NAVIGATION_PAGE_ID_KEY, NAVIGATION_PAGE_ID_NONE)
         if (pageId != NAVIGATION_PAGE_ID_NONE) {
-            if (NavigationController.routeAction == RouteAction.NONE) {
-                routeHolders.lastOrNull { it.pageId == pageId }?.apply {
-                    willDisappear()
+            if ((NavigationController.routeAction != RouteAction.NONE && activity is ThrioActivity) ||
+                    NavigationController.routeAction == RouteAction.NONE || activity !is ThrioActivity) {
+                activity.intent.getRouteSettings()?.let {
+                    PageObservers.willDisappear(it)
                 }
             }
         }
@@ -309,9 +361,10 @@ internal object PageRoutes : Application.ActivityLifecycleCallbacks {
     override fun onActivityPaused(activity: Activity) {
         val pageId = activity.intent.getIntExtra(NAVIGATION_PAGE_ID_KEY, NAVIGATION_PAGE_ID_NONE)
         if (pageId != NAVIGATION_PAGE_ID_NONE) {
-            if (NavigationController.routeAction == RouteAction.NONE) {
-                routeHolders.lastOrNull { it.pageId == pageId }?.apply {
-                    didDisappear()
+            if ((NavigationController.routeAction != RouteAction.NONE && activity is ThrioActivity) ||
+                    NavigationController.routeAction == RouteAction.NONE || activity !is ThrioActivity) {
+                activity.intent.getRouteSettings()?.let {
+                    PageObservers.didDisappear(it)
                 }
             }
         }

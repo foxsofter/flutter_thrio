@@ -23,17 +23,17 @@ class Native2Activity : AppCompatActivity() {
             ThrioNavigator.push("/biz2/flutter2",
                     params = mapOf("k1" to 1),
                     result = {
-                        Log.v("Thrio", "push result data $it")
+                        Log.i("Thrio", "push result data $it")
                     },
                     poppedResult = {
-                        Log.v("Thrio", "/biz1/native2 poppedResult call params $it")
+                        Log.i("Thrio", "/biz1/native2 poppedResult call params $it")
                     }
             )
         }
 
         btn_11.setOnClickListener {
             ThrioNavigator.remove("/biz2/flutter2") {
-                Log.v("Thrio", "push result data $it")
+                Log.i("Thrio", "push result data $it")
             }
         }
 
@@ -41,17 +41,17 @@ class Native2Activity : AppCompatActivity() {
             ThrioNavigator.push("/biz1/native1",
                     params = mapOf("k1" to 1),
                     result = {
-                        Log.v("Thrio", "push result data $it")
+                        Log.i("Thrio", "push result data $it")
                     },
                     poppedResult = {
-                        Log.v("Thrio", "/biz1/native2 poppedResult call params $it")
+                        Log.i("Thrio", "/biz1/native2 poppedResult call params $it")
                     }
             )
         }
 
         btn_13.setOnClickListener {
             ThrioNavigator.remove("/biz1/native1") {
-                Log.v("Thrio", "push result data $it")
+                Log.i("Thrio", "push result data $it")
             }
         }
 

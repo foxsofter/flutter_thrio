@@ -34,7 +34,7 @@ internal data class PageRouteHolder(val pageId: Int,
                                     val entrypoint: String = NAVIGATION_FLUTTER_ENTRYPOINT_DEFAULT) {
     var pushByThrio = false
 
-    private val routes by lazy { mutableListOf<PageRoute>() }
+    internal val routes by lazy { mutableListOf<PageRoute>() }
 
     var activity: WeakReference<out Activity>? = null
 
@@ -54,7 +54,6 @@ internal data class PageRouteHolder(val pageId: Int,
 
     fun lastRoute(entrypoint: String): PageRoute? = routes.lastOrNull { it.entrypoint == entrypoint }
 
-
     fun allRoute(url: String): List<PageRoute> = routes.takeWhile { it.settings.url == url }
 
     fun push(route: PageRoute, result: NullableIntCallback) {
@@ -68,12 +67,13 @@ internal data class PageRouteHolder(val pageId: Int,
                     } else {
                         result(null)
                     }
+                    PageRoutes.lastRoute = PageRoutes.lastRoute()
                 }
             } else {
                 routes.add(route)
                 result(route.settings.index)
-                // 原生页面触发didPush
                 RouteObservers.didPush(route.settings)
+                PageRoutes.lastRoute = route
             }
         } else {
             result(null)
@@ -117,6 +117,7 @@ internal data class PageRouteHolder(val pageId: Int,
                             FlutterEngineFactory.getEngine(lastRoute.fromEntrypoint)?.sendChannel?.onPop(lastRoute.settings.toArguments()) {}
                         }
                     }
+                    PageRoutes.lastRoute = PageRoutes.lastRoute()
                 }
             } else {
                 routes.remove(lastRoute)
@@ -129,6 +130,7 @@ internal data class PageRouteHolder(val pageId: Int,
                     FlutterEngineFactory.getEngine(lastRoute.fromEntrypoint)?.sendChannel?.onPop(lastRoute.settings.toArguments()) {}
                 }
                 RouteObservers.didPop(lastRoute.settings)
+                PageRoutes.lastRoute = PageRoutes.lastRoute()
             }
         } else {
             result(false)
@@ -156,10 +158,12 @@ internal data class PageRouteHolder(val pageId: Int,
                         }
                     }
                     result(it)
+                    PageRoutes.lastRoute = PageRoutes.lastRoute()
                 }
             } else {
                 result(true)
                 RouteObservers.didPopTo(route.settings)
+                PageRoutes.lastRoute = route;
             }
         } else {
             result(false)
@@ -183,23 +187,19 @@ internal data class PageRouteHolder(val pageId: Int,
                         routes.remove(route)
                     }
                     result(it)
+                    PageRoutes.lastRoute = PageRoutes.lastRoute()
                 }
             } else {
                 routes.remove(route)
                 result(true)
                 RouteObservers.didRemove(route.settings)
+                PageRoutes.lastRoute = PageRoutes.lastRoute()
             }
         } else {
             result(false)
         }
     }
 
-    fun willAppear() {
-        routes.lastOrNull()?.let {
-            PageObservers.willAppear(it.settings)
-        }
-
-    }
 
     fun didAppear() {
         routes.lastOrNull()?.let {

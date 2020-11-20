@@ -39,7 +39,6 @@ class _MainAppState extends State<MainApp> with ThrioModule {
   @override
   Widget build(BuildContext context) => ExcludeSemantics(
         child: NavigatorMaterialApp(
-          showPerformanceOverlay: true,
           theme: ThemeData(
             pageTransitionsTheme: const PageTransitionsTheme(builders: {
               TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),

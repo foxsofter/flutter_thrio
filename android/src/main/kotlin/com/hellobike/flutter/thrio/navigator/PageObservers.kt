@@ -38,7 +38,7 @@ internal object PageObservers : PageObserver {
         observers.forEach {
             it.willAppear(routeSettings)
         }
-        Log.v(TAG, "willAppear: url->${routeSettings.url} " +
+        Log.i(TAG, "willAppear: url->${routeSettings.url} " +
                 "index->${routeSettings.index} " +
                 "params->${routeSettings.params?.toString()}")
     }
@@ -47,7 +47,7 @@ internal object PageObservers : PageObserver {
         observers.forEach {
             it.didAppear(routeSettings)
         }
-        Log.v(TAG, "didAppear: url->${routeSettings.url} " +
+        Log.i(TAG, "didAppear: url->${routeSettings.url} " +
                 "index->${routeSettings.index} " +
                 "params->${routeSettings.params?.toString()}")
         PageRoutes.lastRouteHolder(routeSettings.url, routeSettings.index)?.activity?.get()?.apply {
@@ -59,7 +59,7 @@ internal object PageObservers : PageObserver {
         observers.forEach {
             it.willDisappear(routeSettings)
         }
-        Log.v(TAG, "willDisappear: url->${routeSettings.url} " +
+        Log.i(TAG, "willDisappear: url->${routeSettings.url} " +
                 "index->${routeSettings.index} " +
                 "params->${routeSettings.params?.toString()}")
     }
@@ -68,7 +68,7 @@ internal object PageObservers : PageObserver {
         observers.forEach {
             it.didDisappear(routeSettings)
         }
-        Log.v(TAG, "didDisappear: url->${routeSettings.url} " +
+        Log.i(TAG, "didDisappear: url->${routeSettings.url} " +
                 "index->${routeSettings.index} " +
                 "params->${routeSettings.params?.toString()}")
     }
