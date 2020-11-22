@@ -19,14 +19,14 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-#import "UINavigationController+HotRestart.h"
-#import "UIViewController+Navigator.h"
-#import "NavigatorLogger.h"
 #import "NavigatorFlutterEngineFactory.h"
 #import "NavigatorFlutterViewController.h"
+#import "NavigatorLogger.h"
 #import "NavigatorRouteSettings.h"
-#import "ThrioNavigator.h"
 #import "ThrioNavigator+Internal.h"
+#import "ThrioNavigator.h"
+#import "UINavigationController+HotRestart.h"
+#import "UIViewController+Navigator.h"
 
 @implementation UINavigationController (HotRestart)
 
@@ -53,7 +53,7 @@
         NavigatorRouteSettings *settings = viewController.thrio_firstRoute.settings;
         NavigatorRouteSendChannel *channel =
             [NavigatorFlutterEngineFactory.shared getSendChannelByEntrypoint:viewController.entrypoint];
-        [channel onPush:[settings toArguments] result:nil];
+        [channel push:[settings toArguments] result:nil];
     });
 }
 

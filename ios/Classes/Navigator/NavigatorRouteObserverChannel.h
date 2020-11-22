@@ -21,10 +21,11 @@
 
 #import <Foundation/Foundation.h>
 #import "ThrioChannel.h"
+#import "NavigatorRouteObserverProtocol.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface NavigatorRouteObserverChannel : NSObject
+@interface NavigatorRouteObserverChannel : NSObject<NavigatorRouteObserverProtocol>
 
 - (instancetype)initWithChannel:(ThrioChannel *)channel;
 

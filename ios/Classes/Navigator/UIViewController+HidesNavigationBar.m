@@ -30,6 +30,9 @@
 
 - (void)setThrio_hidesNavigationBar:(BOOL)hidesNavigationBar {
     [self setThrio_hidesNavigationBar_:@(hidesNavigationBar)];
+    if ([self.navigationController.viewControllers containsObject:self]) {
+        self.navigationController.navigationBarHidden = hidesNavigationBar;
+    }
 }
 
 @end

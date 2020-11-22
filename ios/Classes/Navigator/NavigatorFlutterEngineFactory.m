@@ -19,12 +19,12 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-#import "NavigatorFlutterEngineFactory.h"
 #import "NavigatorFlutterEngine.h"
-#import "ThrioNavigator.h"
-#import "ThrioNavigator+Internal.h"
+#import "NavigatorFlutterEngineFactory.h"
 #import "NavigatorLogger.h"
 #import "ThrioChannel.h"
+#import "ThrioNavigator+Internal.h"
+#import "ThrioNavigator.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -94,14 +94,6 @@ static NSString *const kDefaultEntrypoint = @"main";
     return flutterEngine.sendChannel;
 }
 
-- (NavigatorPageObserverChannel *)getPageObserverChannelByEntrypoint:(NSString *)entrypoint {
-    if (!self.multiEngineEnabled) {
-        entrypoint = kDefaultEntrypoint;
-    }
-    NavigatorFlutterEngine *flutterEngine = self.flutterEngines[entrypoint];
-    return flutterEngine.pageObserverChannel;
-}
-
 - (void)pushViewController:(NavigatorFlutterViewController *)viewController {
     NavigatorFlutterEngine *flutterEngine = self.flutterEngines[viewController.entrypoint];
     [flutterEngine pushViewController:viewController];
@@ -126,6 +118,66 @@ static NSString *const kDefaultEntrypoint = @"main";
 - (void)unregisterFlutterUrls:(NSArray *)urls {
     [self.flutterUrls minusSet:[NSSet setWithArray:urls]];
     [self recalculateUrlsCount];
+}
+
+#pragma mark - NavigatorRouteObserverProtocol methods
+
+- (void)didPush:(NavigatorRouteSettings *)routeSettings {
+    NSArray *flutterEngines = [_flutterEngines.allValues copy];
+    for (NavigatorFlutterEngine *flutterEngine in flutterEngines) {
+        [flutterEngine.routeChannel didPush:routeSettings];
+    }
+}
+
+- (void)didPop:(NavigatorRouteSettings *)routeSettings {
+    NSArray *flutterEngines = [_flutterEngines.allValues copy];
+    for (NavigatorFlutterEngine *flutterEngine in flutterEngines) {
+        [flutterEngine.routeChannel didPop:routeSettings];
+    }
+}
+
+- (void)didPopTo:(NavigatorRouteSettings *)routeSettings {
+    NSArray *flutterEngines = [_flutterEngines.allValues copy];
+    for (NavigatorFlutterEngine *flutterEngine in flutterEngines) {
+        [flutterEngine.routeChannel didPopTo:routeSettings];
+    }
+}
+
+- (void)didRemove:(NavigatorRouteSettings *)routeSettings {
+    NSArray *flutterEngines = [_flutterEngines.allValues copy];
+    for (NavigatorFlutterEngine *flutterEngine in flutterEngines) {
+        [flutterEngine.routeChannel didRemove:routeSettings];
+    }
+}
+
+#pragma mark - NavigatorPageObserverProtocol methods
+
+- (void)willAppear:(NavigatorRouteSettings *)routeSettings {
+    NSArray *flutterEngines = [_flutterEngines.allValues copy];
+    for (NavigatorFlutterEngine *flutterEngine in flutterEngines) {
+        [flutterEngine.pageChannel willAppear:routeSettings];
+    }
+}
+
+- (void)didAppear:(NavigatorRouteSettings *)routeSettings {
+    NSArray *flutterEngines = [_flutterEngines.allValues copy];
+    for (NavigatorFlutterEngine *flutterEngine in flutterEngines) {
+        [flutterEngine.pageChannel didAppear:routeSettings];
+    }
+}
+
+- (void)willDisappear:(NavigatorRouteSettings *)routeSettings {
+    NSArray *flutterEngines = [_flutterEngines.allValues copy];
+    for (NavigatorFlutterEngine *flutterEngine in flutterEngines) {
+        [flutterEngine.pageChannel willDisappear:routeSettings];
+    }
+}
+
+- (void)didDisappear:(NavigatorRouteSettings *)routeSettings {
+    NSArray *flutterEngines = [_flutterEngines.allValues copy];
+    for (NavigatorFlutterEngine *flutterEngine in flutterEngines) {
+        [flutterEngine.pageChannel didDisappear:routeSettings];
+    }
 }
 
 #pragma mark - private methods

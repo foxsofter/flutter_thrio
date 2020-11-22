@@ -21,15 +21,15 @@
 
 #import <UIKit/UIKit.h>
 
-#import "UIViewController+Navigator.h"
+#import "NSPointerArray+Thrio.h"
+#import "NavigatorFlutterEngineFactory.h"
+#import "ThrioNavigator+Internal.h"
+#import "ThrioNavigator+PageBuilders.h"
+#import "ThrioNavigator.h"
 #import "ThrioRegistrySet.h"
 #import "UINavigationController+Navigator.h"
 #import "UINavigationController+PopGesture.h"
-#import "ThrioNavigator.h"
-#import "ThrioNavigator+PageBuilders.h"
-#import "ThrioNavigator+Internal.h"
-#import "NavigatorFlutterEngineFactory.h"
-#import "NSPointerArray+Thrio.h"
+#import "UIViewController+Navigator.h"
 
 NS_ASSUME_NONNULL_BEGIN
 

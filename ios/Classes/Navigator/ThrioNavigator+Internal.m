@@ -19,18 +19,18 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-#import "ThrioNavigator+Internal.h"
-#import "UIApplication+Thrio.h"
-#import "ThrioRegistrySet.h"
-#import "UINavigationController+Navigator.h"
-#import "UINavigationController+PopGesture.h"
-#import "UINavigationController+PopDisabled.h"
-#import "UINavigationController+HotRestart.h"
-#import "ThrioNavigator.h"
-#import "ThrioNavigator+PageBuilders.h"
-#import "ThrioNavigator+Internal.h"
-#import "NavigatorFlutterEngineFactory.h"
 #import "NSPointerArray+Thrio.h"
+#import "NavigatorFlutterEngineFactory.h"
+#import "ThrioNavigator+Internal.h"
+#import "ThrioNavigator+Internal.h"
+#import "ThrioNavigator+PageBuilders.h"
+#import "ThrioNavigator.h"
+#import "ThrioRegistrySet.h"
+#import "UIApplication+Thrio.h"
+#import "UINavigationController+HotRestart.h"
+#import "UINavigationController+Navigator.h"
+#import "UINavigationController+PopDisabled.h"
+#import "UINavigationController+PopGesture.h"
 
 @implementation ThrioNavigator (Internal)
 
@@ -55,16 +55,16 @@
       poppedResult:(ThrioIdCallback _Nullable)poppedResult
 {
     UINavigationController *nvc = self.navigationController;
+    [self.navigationControllers addAndRemoveObject:nvc];
     [nvc thrio_pushUrl:url
                 params:params
               animated:animated
         fromEntrypoint:fromEntrypoint
                 result:^(NSNumber *idx) {
-        [self.navigationControllers addAndRemoveObject:nvc];
-        if (result) {
-            result(idx);
-        }
-    } poppedResult:poppedResult];
+                    if (result) {
+                        result(idx);
+                    }
+                } poppedResult:poppedResult];
 }
 
 + (void)_notifyUrl:(NSString *)url
@@ -115,46 +115,6 @@
     for (UINavigationController *nvc in allNvcs) {
         if ([nvc thrio_containsUrl:url index:index]) {
             [nvc thrio_removeUrl:url index:index animated:animated result:result];
-        }
-    }
-}
-
-+ (void)_didPushUrl:(NSString *)url index:(NSNumber *)index {
-    NSEnumerator *allNvcs = self.navigationControllers.allObjects.reverseObjectEnumerator;
-    for (UINavigationController *nvc in allNvcs) {
-        if ([nvc thrio_containsUrl:url index:index]) {
-            [nvc thrio_didPushUrl:url index:index];
-            break;
-        }
-    }
-}
-
-+ (void)_didPopUrl:(NSString *)url index:(NSNumber *)index {
-    NSEnumerator *allNvcs = self.navigationControllers.allObjects.reverseObjectEnumerator;
-    for (UINavigationController *nvc in allNvcs) {
-        if ([nvc thrio_containsUrl:url index:index]) {
-            [nvc thrio_didPopUrl:url index:index];
-            break;
-        }
-    }
-}
-
-+ (void)_didPopToUrl:(NSString *)url index:(NSNumber *)index {
-    NSEnumerator *allNvcs = self.navigationControllers.allObjects.reverseObjectEnumerator;
-    for (UINavigationController *nvc in allNvcs) {
-        if ([nvc thrio_containsUrl:url index:index]) {
-            [nvc thrio_didPopToUrl:url index:index];
-            break;
-        }
-    }
-}
-
-+ (void)_didRemoveUrl:(NSString *)url index:(NSNumber *)index {
-    NSEnumerator *allNvcs = self.navigationControllers.allObjects.reverseObjectEnumerator;
-    for (UINavigationController *nvc in allNvcs) {
-        if ([nvc thrio_containsUrl:url index:index]) {
-            [nvc thrio_didRemoveUrl:url index:index];
-            break;
         }
     }
 }

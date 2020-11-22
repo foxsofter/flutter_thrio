@@ -21,11 +21,11 @@
 
 #import <Flutter/Flutter.h>
 
+#import "NavigatorFlutterEngineFactory.h"
 #import "ThrioChannel.h"
+#import "ThrioPlugin.h"
 #import "ThrioRegistryMap.h"
 #import "ThrioRegistrySetMap.h"
-#import "ThrioPlugin.h"
-#import "NavigatorFlutterEngineFactory.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -115,21 +115,22 @@ static NSString *const kEventNameKey = @"__event_name__";
     _methodChannel = [FlutterMethodChannel methodChannelWithName:methodChannelName
                                                  binaryMessenger:messenger];
     __weak typeof(self) weakself = self;
-    [_methodChannel setMethodCallHandler:^(FlutterMethodCall *_Nonnull call,
-                                           FlutterResult _Nonnull result) {
-        __strong typeof(weakself) strongSelf = weakself;
-        ThrioMethodHandler handler = strongSelf.methodHandlers[call.method];
-        if (handler) {
-            @try {
-                handler(call.arguments, ^(id r) {
-                            result(r);
-                        });
-            } @catch (NSException *exception) {
-                [FlutterError errorWithCode:exception.name message:exception.reason details:exception.userInfo];
-                result(result);
-            }
-        }
-    }];
+    [_methodChannel setMethodCallHandler:
+     ^(FlutterMethodCall *_Nonnull call,
+       FlutterResult _Nonnull result) {
+           __strong typeof(weakself) strongSelf = weakself;
+           ThrioMethodHandler handler = strongSelf.methodHandlers[call.method];
+           if (handler) {
+               @try {
+                   handler(call.arguments, ^(id r) {
+                               result(r);
+                           });
+               } @catch (NSException *exception) {
+                   [FlutterError errorWithCode:exception.name message:exception.reason details:exception.userInfo];
+                   result(result);
+               }
+           }
+       }];
 }
 
 #pragma mark - event channel methods

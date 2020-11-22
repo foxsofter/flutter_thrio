@@ -23,10 +23,10 @@
 #import <Flutter/Flutter.h>
 #import "ThrioTypes.h"
 #import "NavigatorFlutterViewController.h"
-#import "ThrioChannel.h"
 #import "NavigatorRouteReceiveChannel.h"
 #import "NavigatorRouteSendChannel.h"
 #import "NavigatorPageObserverChannel.h"
+#import "NavigatorRouteObserverChannel.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -37,13 +37,15 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, assign) NSUInteger registerUrlCount;
 
-@property (nonatomic, strong, readonly, nullable) FlutterEngine *engine;
+@property (nonatomic, readonly, nullable) FlutterEngine *engine;
 
-@property (nonatomic, strong, readonly, nullable) NavigatorRouteReceiveChannel *receiveChannel;
+@property (nonatomic, readonly, nullable) NavigatorRouteReceiveChannel *receiveChannel;
 
-@property (nonatomic, strong, readonly, nullable) NavigatorRouteSendChannel *sendChannel;
+@property (nonatomic, readonly, nullable) NavigatorRouteSendChannel *sendChannel;
 
-@property (nonatomic, strong, readonly, nullable) NavigatorPageObserverChannel *pageObserverChannel;
+@property (nonatomic, readonly, nullable) NavigatorPageObserverChannel *pageChannel;
+
+@property (nonatomic, readonly, nullable) NavigatorRouteObserverChannel *routeChannel;
 
 - (void)pushViewController:(NavigatorFlutterViewController *)viewController;
 

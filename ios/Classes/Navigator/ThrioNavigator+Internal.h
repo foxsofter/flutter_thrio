@@ -21,6 +21,8 @@
 
 #import "ThrioNavigator.h"
 #import "NavigatorPageRoute.h"
+#import "NavigatorPageObservers.h"
+#import "NavigatorRouteObservers.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -56,15 +58,6 @@ NS_ASSUME_NONNULL_BEGIN
              index:(NSNumber *_Nullable)index
           animated:(BOOL)animated
             result:(ThrioBoolCallback _Nullable)result;
-
-+ (void)_didPushUrl:(NSString *)url index:(NSNumber *)index;
-
-+ (void)_didPopUrl:(NSString *)url index:(NSNumber *)index;
-
-+ (void)_didPopToUrl:(NSString *)url index:(NSNumber *)index;
-
-+ (void)_didRemoveUrl:(NSString *)url index:(NSNumber *)index;
-
 
 + (void)_setPopDisabledUrl:(NSString *)url
                      index:(NSNumber *)index

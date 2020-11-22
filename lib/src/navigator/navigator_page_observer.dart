@@ -26,10 +26,6 @@ import 'thrio_navigator.dart';
 /// An interface for observing the page lifecycle of a [ThrioNavigator].
 ///
 mixin NavigatorPageObserver {
-  /// The [ThrioNavigator] created `route`.
-  ///
-  void onCreate(RouteSettings routeSettings) {}
-
   /// The `route` is about to be activated.
   ///
   void willAppear(RouteSettings routeSettings) {}
