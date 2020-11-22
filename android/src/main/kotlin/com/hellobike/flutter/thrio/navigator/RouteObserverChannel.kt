@@ -66,7 +66,10 @@ class RouteObserverChannel constructor(entrypoint: String, messenger: BinaryMess
             }
             when (method) {
                 "didPush" -> RouteObservers.didPush(routeSettings)
-                "didPop" -> RouteObservers.didPop(routeSettings)
+                "didPop" -> {
+                    RouteObservers.didPop(routeSettings)
+                    PageRoutes.didPop(routeSettings)
+                }
                 "didPopTo" -> RouteObservers.didPopTo(routeSettings)
                 "didRemove" -> RouteObservers.didRemove(routeSettings)
             }

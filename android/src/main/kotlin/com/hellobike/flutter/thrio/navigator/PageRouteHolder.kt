@@ -200,22 +200,12 @@ internal data class PageRouteHolder(val pageId: Int,
         }
     }
 
-
-    fun didAppear() {
+    fun didPop(routeSettings: RouteSettings) {
         routes.lastOrNull()?.let {
-            PageObservers.didAppear(it.settings)
-        }
-    }
-
-    fun willDisappear() {
-        routes.lastOrNull()?.let {
-            PageObservers.willDisappear(it.settings)
-        }
-    }
-
-    fun didDisappear() {
-        routes.lastOrNull()?.let {
-            PageObservers.didDisappear(it.settings)
+            if (it.settings == routeSettings) {
+                routes.remove(it)
+                PageRoutes.lastRoute = PageRoutes.lastRoute()
+            }
         }
     }
 
