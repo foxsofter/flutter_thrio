@@ -1,6 +1,6 @@
 // The MIT License (MIT)
 //
-// Copyright (c) 2019 Hellobike Group
+// Copyright (c) 2019 foxsofter
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
 // copy of this software and associated documentation files (the "Software"),
@@ -19,29 +19,36 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
-import '../navigator/thrio_navigator_implement.dart';
-import 'module_context.dart';
-import 'thrio_module.dart';
+import '../registry/registry_set.dart';
+import 'navigator_page_observer.dart';
+import 'navigator_page_observer_channel.dart';
+import 'navigator_page_route.dart';
 
-mixin ModuleRouteTransitionsBuilder on ThrioModule {
-  /// A function for register a `RouteTransitionsBuilder` .
-  ///
-  void onRouteTransitionsBuilderRegister(ModuleContext moduleContext) {}
+class NavigatorPageObservers {
+  NavigatorPageObservers(this._entrypoint) {
+    _channel = NavigatorPageObserverChannel(this, _entrypoint);
+  }
 
-  /// Register the `transitionsBuilder` that matches the `urlPattern`.
-  ///
-  /// Unregistry by calling the return value `VoidCallback`.
-  ///
-  /// Do not override this method.
-  ///
-  VoidCallback registerRouteTransitionsBuilder(
-    String urlPattern,
-    RouteTransitionsBuilder transitionsBuilder,
-  ) =>
-      ThrioNavigatorImplement.shared()
-          .routeTransitionsBuilders
-          .registry(RegExp(urlPattern), transitionsBuilder);
+  final observers = RegistrySet<NavigatorPageObserver>();
+
+  final String _entrypoint;
+  NavigatorPageObserverChannel _channel;
+
+  void willAppear(
+          RouteSettings routeSettings, NavigatorRouteAction routeAction) =>
+      _channel.willAppear(routeSettings, routeAction);
+
+  void didAppear(
+          RouteSettings routeSettings, NavigatorRouteAction routeAction) =>
+      _channel.didAppear(routeSettings, routeAction);
+
+  void willDisappear(
+          RouteSettings routeSettings, NavigatorRouteAction routeAction) =>
+      _channel.willDisappear(routeSettings, routeAction);
+
+  void didDisappear(
+          RouteSettings routeSettings, NavigatorRouteAction routeAction) =>
+      _channel.didDisappear(routeSettings, routeAction);
 }

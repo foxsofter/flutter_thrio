@@ -1,6 +1,6 @@
 // The MIT License (MIT)
 //
-// Copyright (c) 2019 Hellobike Group
+// Copyright (c) 2019 foxsofter
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
 // copy of this software and associated documentation files (the "Software"),
@@ -19,25 +19,33 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-#import <Foundation/Foundation.h>
-#import <Flutter/Flutter.h>
-#import "ThrioChannel.h"
+#import <UIKit/UIKit.h>
+#import "NavigatorRouteSettings.h"
+#import "NavigatorPageRoute.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface NavigatorRouteSendChannel : NSObject
+@interface UINavigationController (PageObservers)
 
-- (instancetype)initWithChannel:(ThrioChannel *)channel;
+/// 处理来自 FlutterEngine 的`willAppear`调用
+///
+- (void)thrio_willAppear:(NavigatorRouteSettings *)routeSettings
+             routeAction:(NavigatorRouteAction)routeAction;
 
-- (void)push:(id _Nullable)arguments result:(ThrioBoolCallback _Nullable)result;
+/// 处理来自 FlutterEngine 的`didAppear`调用
+///
+- (void)thrio_didAppear:(NavigatorRouteSettings *)routeSettings
+            routeAction:(NavigatorRouteAction)routeAction;
 
-- (void)notify:(id _Nullable)arguments result:(ThrioBoolCallback _Nullable)result;
+/// 处理来自 FlutterEngine 的`willDisappear`调用
+///
+- (void)thrio_willDisappear:(NavigatorRouteSettings *)routeSettings
+                routeAction:(NavigatorRouteAction)routeAction;
 
-- (void)pop:(id _Nullable)arguments result:(ThrioBoolCallback _Nullable)result;
-
-- (void)popTo:(id _Nullable)arguments result:(ThrioBoolCallback _Nullable)result;
-
-- (void)remove:(id _Nullable)arguments result:(ThrioBoolCallback _Nullable)result;
+/// 处理来自 FlutterEngine 的`didDisappear`调用
+///
+- (void)thrio_didDisappear:(NavigatorRouteSettings *)routeSettings
+               routeAction:(NavigatorRouteAction)routeAction;
 
 @end
 

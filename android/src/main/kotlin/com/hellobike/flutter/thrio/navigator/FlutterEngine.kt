@@ -36,8 +36,8 @@ data class FlutterEngine(private val context: Context,
     val flutterEngine = FlutterEngine(context)
     internal var sendChannel: RouteSendChannel private set
     private var receiveChannel: RouteReceiveChannel
-    private var routeObserverChannel: RouteObserverChannel
-    private var pageObserverChannel: PageObserverChannel
+    internal var routeChannel: RouteObserverChannel
+    internal var pageChannel: PageObserverChannel
 
     init {
         val channel = ThrioChannel(entrypoint, "__thrio_app__${entrypoint}")
@@ -46,8 +46,8 @@ data class FlutterEngine(private val context: Context,
         sendChannel = RouteSendChannel(channel)
         receiveChannel = RouteReceiveChannel(channel, readyListener)
 
-        routeObserverChannel = RouteObserverChannel(entrypoint, flutterEngine.dartExecutor)
-        pageObserverChannel = PageObserverChannel(entrypoint, flutterEngine.dartExecutor)
+        routeChannel = RouteObserverChannel(entrypoint, flutterEngine.dartExecutor)
+        pageChannel = PageObserverChannel(entrypoint, flutterEngine.dartExecutor)
 
         val dartEntrypoint = DartExecutor.DartEntrypoint(FlutterMain.findAppBundlePath(), entrypoint)
         flutterEngine.dartExecutor.executeDartEntrypoint(dartEntrypoint)

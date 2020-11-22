@@ -19,13 +19,13 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-#import "NavigatorFlutterEngine.h"
-#import "NavigatorLogger.h"
-#import "ThrioNavigator.h"
-#import "ThrioNavigator+Internal.h"
-#import "NavigatorRouteObserverChannel.h"
 #import "NSPointerArray+Thrio.h"
+#import "NavigatorFlutterEngine.h"
 #import "NavigatorFlutterEngineFactory.h"
+#import "NavigatorLogger.h"
+#import "NavigatorRouteObserverChannel.h"
+#import "ThrioNavigator+Internal.h"
+#import "ThrioNavigator.h"
 
 NS_ASSUME_NONNULL_BEGIN
 

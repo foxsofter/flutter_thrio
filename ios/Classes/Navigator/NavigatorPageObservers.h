@@ -1,6 +1,6 @@
 // The MIT License (MIT)
 //
-// Copyright (c) 2019 Hellobike Group
+// Copyright (c) 2019 foxsofter
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
 // copy of this software and associated documentation files (the "Software"),
@@ -20,24 +20,20 @@
 // IN THE SOFTWARE.
 
 #import <Foundation/Foundation.h>
-#import <Flutter/Flutter.h>
-#import "ThrioChannel.h"
+
+#import "ThrioRegistrySet.h"
+#import "NavigatorPageObserverProtocol.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface NavigatorRouteSendChannel : NSObject
+@interface NavigatorPageObservers : NSObject<NavigatorPageObserverProtocol>
 
-- (instancetype)initWithChannel:(ThrioChannel *)channel;
+@property (nonatomic, readonly) ThrioRegistrySet<id<NavigatorPageObserverProtocol> > *observers;
 
-- (void)push:(id _Nullable)arguments result:(ThrioBoolCallback _Nullable)result;
+@property (nonatomic) NavigatorPageRoute *lastRoute;
 
-- (void)notify:(id _Nullable)arguments result:(ThrioBoolCallback _Nullable)result;
+@property (nonatomic, readonly) NavigatorPageRoute *prevLastRoute;
 
-- (void)pop:(id _Nullable)arguments result:(ThrioBoolCallback _Nullable)result;
-
-- (void)popTo:(id _Nullable)arguments result:(ThrioBoolCallback _Nullable)result;
-
-- (void)remove:(id _Nullable)arguments result:(ThrioBoolCallback _Nullable)result;
 
 @end
 

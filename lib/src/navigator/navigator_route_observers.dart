@@ -1,6 +1,6 @@
 // The MIT License (MIT)
 //
-// Copyright (c) 2019 Hellobike Group
+// Copyright (c) 2019 foxsofter
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
 // copy of this software and associated documentation files (the "Software"),
@@ -19,26 +19,33 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-#import <Foundation/Foundation.h>
-#import <Flutter/Flutter.h>
-#import "ThrioChannel.h"
+import 'package:flutter/widgets.dart';
 
-NS_ASSUME_NONNULL_BEGIN
+import '../registry/registry_set.dart';
+import 'navigator_route_observer.dart';
+import 'navigator_route_observer_channel.dart';
 
-@interface NavigatorRouteSendChannel : NSObject
+class NavigatorRouteObservers with NavigatorRouteObserver {
+  NavigatorRouteObservers(this._entrypoint) {
+    _channel = NavigatorRouteObserverChannel(this, _entrypoint);
+  }
 
-- (instancetype)initWithChannel:(ThrioChannel *)channel;
+  final observers = RegistrySet<NavigatorRouteObserver>();
 
-- (void)push:(id _Nullable)arguments result:(ThrioBoolCallback _Nullable)result;
+  final String _entrypoint;
+  NavigatorRouteObserverChannel _channel;
 
-- (void)notify:(id _Nullable)arguments result:(ThrioBoolCallback _Nullable)result;
+  @override
+  void didPush(RouteSettings routeSettings) => _channel.didPush(routeSettings);
 
-- (void)pop:(id _Nullable)arguments result:(ThrioBoolCallback _Nullable)result;
+  @override
+  void didPop(RouteSettings routeSettings) => _channel.didPop(routeSettings);
 
-- (void)popTo:(id _Nullable)arguments result:(ThrioBoolCallback _Nullable)result;
+  @override
+  void didPopTo(RouteSettings routeSettings) =>
+      _channel.didPopTo(routeSettings);
 
-- (void)remove:(id _Nullable)arguments result:(ThrioBoolCallback _Nullable)result;
-
-@end
-
-NS_ASSUME_NONNULL_END
+  @override
+  void didRemove(RouteSettings routeSettings) =>
+      _channel.didRemove(routeSettings);
+}

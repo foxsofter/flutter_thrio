@@ -31,7 +31,7 @@ interface RouteObserver {
      * The route immediately below that one, and thus the previously active
      * route, is `previousRoute`.
      */
-    fun didPush(routeSettings: RouteSettings, previousRouteSettings: RouteSettings?) {}
+    fun didPush(routeSettings: RouteSettings) {}
 
     /**
      * The [ThrioNavigator] popped `route`.
@@ -39,20 +39,20 @@ interface RouteObserver {
      * The route immediately below that one, and thus the newly active
      * route, is `previousRoute`.
      */
-    fun didPop(routeSettings: RouteSettings, previousRouteSettings: RouteSettings?) {}
+    fun didPop(routeSettings: RouteSettings) {}
 
     /**
      * The [ThrioNavigator] popped to `route`.
      *
      * The previously active route, is `previousRoute`.
      */
-    fun didPopTo(routeSettings: RouteSettings, previousRouteSettings: RouteSettings?) {}
+    fun didPopTo(routeSettings: RouteSettings) {}
 
     /**
      * The [ThrioNavigator] removed `route`.
      *
      * The route immediately below that one, if any, is `previousRoute`.
      */
-    fun didRemove(routeSettings: RouteSettings, previousRouteSettings: RouteSettings?) {}
+    fun didRemove(routeSettings: RouteSettings) {}
 
 }

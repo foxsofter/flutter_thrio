@@ -62,11 +62,11 @@ internal fun Intent.getFromEntrypoint(): String {
 }
 
 fun Intent.getRouteSettings(): RouteSettings? {
-    val data = getSerializableExtra(NAVIGATION_ROUTE_SETTINGS_KEY).let {
-        checkNotNull(it) { "RouteSettings not found" }
-        it as Map<String, Any?>
+    val data = getSerializableExtra(NAVIGATION_ROUTE_SETTINGS_KEY)
+    if (data != null && data is Map<*, *>) {
+        return RouteSettings.fromArguments(data as Map<String, Any?>)
     }
-    return RouteSettings.fromArguments(data)
+    return null
 }
 
 internal fun String.getEntrypoint(): String {

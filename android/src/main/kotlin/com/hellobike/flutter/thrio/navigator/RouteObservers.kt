@@ -30,39 +30,43 @@ internal object RouteObservers : RouteObserver {
 
     val observers by lazy { RegistrySet<RouteObserver>() }
 
-    override fun didPush(routeSettings: RouteSettings, previousRouteSettings: RouteSettings?) {
-        observers.forEach {
-            it.didPush(routeSettings, previousRouteSettings)
-        }
-        Log.v(TAG, "didPush: url->${routeSettings.url} " +
-                "index->${routeSettings.index} " +
-                "params->${routeSettings.params?.toString()}")
+    init {
+        observers.registry(FlutterEngineFactory)
     }
 
-    override fun didPop(routeSettings: RouteSettings, previousRouteSettings: RouteSettings?) {
-        observers.forEach {
-            it.didPop(routeSettings, previousRouteSettings)
-        }
-        Log.v(TAG, "didPop: url->${routeSettings.url} " +
+    override fun didPush(routeSettings: RouteSettings) {
+        Log.i(TAG, "didPush: url->${routeSettings.url} " +
                 "index->${routeSettings.index} " +
                 "params->${routeSettings.params?.toString()}")
+        observers.forEach {
+            it.didPush(routeSettings)
+        }
     }
 
-    override fun didPopTo(routeSettings: RouteSettings, previousRouteSettings: RouteSettings?) {
-        observers.forEach {
-            it.didPopTo(routeSettings, previousRouteSettings)
-        }
-        Log.v(TAG, "didPopTo: url->${routeSettings.url} " +
+    override fun didPop(routeSettings: RouteSettings) {
+        Log.i(TAG, "didPop: url->${routeSettings.url} " +
                 "index->${routeSettings.index} " +
                 "params->${routeSettings.params?.toString()}")
+        observers.forEach {
+            it.didPop(routeSettings)
+        }
     }
 
-    override fun didRemove(routeSettings: RouteSettings, previousRouteSettings: RouteSettings?) {
-        observers.forEach {
-            it.didRemove(routeSettings, previousRouteSettings)
-        }
-        Log.v(TAG, "didRemove: url->${routeSettings.url} " +
+    override fun didPopTo(routeSettings: RouteSettings) {
+        Log.i(TAG, "didPopTo: url->${routeSettings.url} " +
                 "index->${routeSettings.index} " +
                 "params->${routeSettings.params?.toString()}")
+        observers.forEach {
+            it.didPopTo(routeSettings)
+        }
+    }
+
+    override fun didRemove(routeSettings: RouteSettings) {
+        Log.i(TAG, "didRemove: url->${routeSettings.url} " +
+                "index->${routeSettings.index} " +
+                "params->${routeSettings.params?.toString()}")
+        observers.forEach {
+            it.didRemove(routeSettings)
+        }
     }
 }

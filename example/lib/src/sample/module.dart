@@ -5,8 +5,8 @@ import 'module2/module.dart' as module2;
 
 class Module with ThrioModule {
   @override
-  void onModuleRegister() {
-    registerModule(module1.Module());
-    registerModule(module2.Module());
+  void onModuleRegister(ModuleContext moduleContext) {
+    registerModule(moduleContext, module1.Module());
+    registerModule(moduleContext, module2.Module());
   }
 }

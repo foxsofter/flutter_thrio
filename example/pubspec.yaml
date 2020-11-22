@@ -1,10 +1,10 @@
 name: thrio_example
 description: Demonstrates how to use the thrio plugin.
 version: 0.5.0
-publish_to: 'none'
+publish_to: "none"
 
 environment:
-  sdk: '>=2.6.0 <3.0.0'
+  sdk: ">=2.6.0 <3.0.0"
 
 dependencies:
   flutter:

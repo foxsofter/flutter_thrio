@@ -21,9 +21,9 @@
 
 import '../logger/thrio_logger.dart';
 
-var navigatorLogging = false;
+bool navigatorLogging = false;
 
-void verbose(message) {
+void verbose(dynamic message) {
   assert(() {
     if (navigatorLogging) {
       ThrioLogger.v(message);

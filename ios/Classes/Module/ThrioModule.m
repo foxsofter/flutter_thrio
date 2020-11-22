@@ -19,12 +19,12 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
+#import "NavigatorFlutterEngineFactory.h"
 #import "ThrioModule.h"
 #import "ThrioNavigator+Internal.h"
 #import "ThrioNavigator+PageBuilders.h"
 #import "ThrioNavigator+PageObservers.h"
 #import "ThrioNavigator+RouteObservers.h"
-#import "NavigatorFlutterEngineFactory.h"
 
 @implementation ThrioModule
 

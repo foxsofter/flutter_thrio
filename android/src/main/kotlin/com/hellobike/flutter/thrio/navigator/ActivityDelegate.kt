@@ -37,7 +37,7 @@ internal object ActivityDelegate : Application.ActivityLifecycleCallbacks {
 
         NavigationController.onActivityCreated(activity, savedInstanceState)
 
-        Log.v(TAG, "onActivityCreated: ${activity.intent.getPageId()}")
+        Log.i(TAG, "onActivityCreated: ${activity.intent.getPageId()}")
     }
 
     override fun onActivityStarted(activity: Activity) {
@@ -45,13 +45,13 @@ internal object ActivityDelegate : Application.ActivityLifecycleCallbacks {
 
         NavigationController.onActivityStarted(activity)
 
-        Log.v(TAG, "onActivityStarted: ${activity.intent.getPageId()}")
+        Log.i(TAG, "onActivityStarted: ${activity.intent.getPageId()}")
     }
 
     override fun onActivityPreResumed(activity: Activity) {
         PageRoutes.onActivityPreResumed(activity)
 
-        Log.v(TAG, "onActivityPreResumed: ${activity.intent.getPageId()}")
+        Log.i(TAG, "onActivityPreResumed: ${activity.intent.getPageId()}")
     }
 
     override fun onActivityResumed(activity: Activity) {
@@ -59,13 +59,13 @@ internal object ActivityDelegate : Application.ActivityLifecycleCallbacks {
 
         NavigationController.onActivityResumed(activity)
 
-        Log.v(TAG, "onActivityResumed: ${activity.intent.getPageId()}")
+        Log.i(TAG, "onActivityResumed: ${activity.intent.getPageId()}")
     }
 
     override fun onActivityPrePaused(activity: Activity) {
         PageRoutes.onActivityPrePaused(activity)
 
-        Log.v(TAG, "onActivityPrePaused: ${activity.intent.getPageId()}")
+        Log.i(TAG, "onActivityPrePaused: ${activity.intent.getPageId()}")
     }
 
     override fun onActivityPaused(activity: Activity) {
@@ -73,7 +73,7 @@ internal object ActivityDelegate : Application.ActivityLifecycleCallbacks {
 
         NavigationController.onActivityPaused(activity)
 
-        Log.v(TAG, "onActivityPaused: ${activity.intent.getPageId()}")
+        Log.i(TAG, "onActivityPaused: ${activity.intent.getPageId()}")
     }
 
     override fun onActivityStopped(activity: Activity) {
@@ -81,7 +81,7 @@ internal object ActivityDelegate : Application.ActivityLifecycleCallbacks {
 
         NavigationController.onActivityStopped(activity)
 
-        Log.v(TAG, "onActivityStopped: ${activity?.intent?.getPageId()}")
+        Log.i(TAG, "onActivityStopped: ${activity?.intent?.getPageId()}")
     }
 
     override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {
@@ -89,7 +89,7 @@ internal object ActivityDelegate : Application.ActivityLifecycleCallbacks {
 
         NavigationController.onActivitySaveInstanceState(activity, outState)
 
-        Log.v(TAG, "onActivitySaveInstanceState: ${activity.intent.getPageId()}")
+        Log.i(TAG, "onActivitySaveInstanceState: ${activity.intent.getPageId()}")
     }
 
     override fun onActivityDestroyed(activity: Activity) {
@@ -97,6 +97,6 @@ internal object ActivityDelegate : Application.ActivityLifecycleCallbacks {
 
         NavigationController.onActivityDestroyed(activity)
 
-        Log.v(TAG, "onActivityDestroyed: ${activity.intent.getPageId()}")
+        Log.i(TAG, "onActivityDestroyed: ${activity.intent.getPageId()}")
     }
 }

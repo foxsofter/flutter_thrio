@@ -24,10 +24,6 @@
 package com.hellobike.flutter.thrio.navigator
 
 interface PageObserver {
-    /**
-     * The [ThrioNavigator] created `route`.
-     */
-    fun onCreate(routeSettings: RouteSettings) {}
 
     /**
      * The `route` is about to be activated.

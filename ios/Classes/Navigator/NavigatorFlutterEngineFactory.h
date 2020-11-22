@@ -24,11 +24,14 @@
 #import "NavigatorFlutterViewController.h"
 #import "ThrioTypes.h"
 #import "NavigatorRouteSendChannel.h"
-#import "NavigatorPageObserverChannel.h"
+#import "NavigatorPageObserverProtocol.h"
+#import "NavigatorRouteObserverProtocol.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface NavigatorFlutterEngineFactory : NSObject
+@interface NavigatorFlutterEngineFactory : NSObject<
+        NavigatorPageObserverProtocol,
+        NavigatorRouteObserverProtocol>
 
 @property (nonatomic) BOOL multiEngineEnabled;
 
@@ -39,8 +42,6 @@ NS_ASSUME_NONNULL_BEGIN
 - (FlutterEngine *)getEngineByEntrypoint:(NSString *)entrypoint;
 
 - (NavigatorRouteSendChannel *)getSendChannelByEntrypoint:(NSString *)entrypoint;
-
-- (NavigatorPageObserverChannel *)getPageObserverChannelByEntrypoint:(NSString *)entrypoint;
 
 - (void)pushViewController:(NavigatorFlutterViewController *)viewController;
 

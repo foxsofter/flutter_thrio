@@ -28,6 +28,7 @@ import android.content.Context
 import com.hellobike.flutter.thrio.navigator.ActivityDelegate
 import com.hellobike.flutter.thrio.navigator.FlutterEngineFactory
 import com.hellobike.flutter.thrio.navigator.Log
+import com.hellobike.flutter.thrio.navigator.NAVIGATION_FLUTTER_ENTRYPOINT_DEFAULT
 
 open class ThrioModule {
     private val modules by lazy { mutableMapOf<Class<out ThrioModule>, ThrioModule>() }
@@ -68,9 +69,7 @@ open class ThrioModule {
         modules.values.forEach {
             it.onPageRegister(context)
         }
-        if (!FlutterEngineFactory.isMultiEngineEnabled) {
-            FlutterEngineFactory.startup(context)
-        }
+        startupFlutterEngine(context)
     }
 
     protected open fun onModuleRegister(context: Context) {}
@@ -85,7 +84,9 @@ open class ThrioModule {
             Log.navigatorLogging = enabled
         }
 
-    protected fun startupFlutterEngine(context: Context, entrypoint: String) {
+    @JvmOverloads
+    protected fun startupFlutterEngine(context: Context,
+                                       entrypoint: String = NAVIGATION_FLUTTER_ENTRYPOINT_DEFAULT) {
         if (!FlutterEngineFactory.isMultiEngineEnabled) {
             FlutterEngineFactory.startup(context, entrypoint)
         }

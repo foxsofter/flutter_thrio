@@ -19,11 +19,11 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-#import "UINavigationController+PopDisabled.h"
-#import "UINavigationController+Navigator.h"
-#import "UIViewController+WillPopCallback.h"
-#import "UIViewController+Navigator.h"
 #import "NavigatorRouteSettings.h"
+#import "UINavigationController+Navigator.h"
+#import "UINavigationController+PopDisabled.h"
+#import "UIViewController+Navigator.h"
+#import "UIViewController+WillPopCallback.h"
 
 @implementation UINavigationController (PopDisabled)
 

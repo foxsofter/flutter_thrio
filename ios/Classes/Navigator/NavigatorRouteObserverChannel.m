@@ -20,8 +20,8 @@
 // IN THE SOFTWARE.
 
 #import "NavigatorRouteObserverChannel.h"
-#import "ThrioNavigator+RouteObservers.h"
 #import "ThrioNavigator+Internal.h"
+#import "ThrioNavigator+RouteObservers.h"
 
 @interface NavigatorRouteObserverChannel ()
 
@@ -35,37 +35,52 @@
     self = [super init];
     if (self) {
         _channel = channel;
-        [self _on:@"didPush"];
-        [self _on:@"didPop"];
-        [self _on:@"didPopTo"];
-        [self _on:@"didRemove"];
+        [self on:@"didPush"];
+        [self on:@"didPop"];
+        [self on:@"didPopTo"];
+        [self on:@"didRemove"];
     }
     return self;
 }
 
-- (void)_on:(NSString *)method {
+/// Send `didPush` to all flutter engines.
+///
+- (void)didPush:(NavigatorRouteSettings *)routeSettings {
+    [_channel invokeMethod:@"didPush" arguments:[routeSettings toArguments]];
+}
+
+/// Send `didPop` to all flutter engines.
+///
+- (void)didPop:(NavigatorRouteSettings *)routeSettings {
+    [_channel invokeMethod:@"didPop" arguments:[routeSettings toArguments]];
+}
+
+/// Send `didPopTo` to all flutter engines.
+///
+- (void)didPopTo:(NavigatorRouteSettings *)routeSettings {
+    [_channel invokeMethod:@"didPopTo" arguments:[routeSettings toArguments]];
+}
+
+/// Send `didRemove` to all flutter engines.
+///
+- (void)didRemove:(NavigatorRouteSettings *)routeSettings {
+    [_channel invokeMethod:@"didRemove" arguments:[routeSettings toArguments]];
+}
+
+- (void)on:(NSString *)method {
     [_channel registryMethod:method
-                     handler:^void (NSDictionary<NSString *, id> *arguments,
-                                    ThrioIdCallback _Nullable result) {
-        NavigatorRouteSettings *routeSettings = [NavigatorRouteSettings settingsFromArguments:arguments[@"route"]];
-        NavigatorRouteSettings *previousRouteSettings;
-        if (arguments[@"previousRoute"]) {
-            previousRouteSettings = [NavigatorRouteSettings settingsFromArguments:arguments[@"previousRoute"]];
-        }
+                     handler:
+     ^void (NSDictionary<NSString *, id> *arguments,
+            ThrioIdCallback _Nullable result) {
+                NavigatorRouteSettings *routeSettings = [NavigatorRouteSettings settingsFromArguments:arguments];
 
     #pragma clang diagnostic push
     #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
-        SEL navigationSelector = NSSelectorFromString([NSString stringWithFormat:@"_%@Url:index:", method]);
-        [ThrioNavigator performSelector:navigationSelector
-                             withObject:routeSettings.url
-                             withObject:routeSettings.index];
-
-        SEL observerSelector = NSSelectorFromString([NSString stringWithFormat:@"%@:previousRoute:", method]);
-
-        [ThrioNavigator performSelector:observerSelector withObject:routeSettings withObject:previousRouteSettings];
-
+                SEL selector = NSSelectorFromString([NSString stringWithFormat:@"%@:", method]);
+                [ThrioNavigator performSelector:selector withObject:routeSettings];
+                [ThrioNavigator.routeObservers performSelector:selector withObject:routeSettings];
     #pragma clang diagnostic pop
-    }];
+            }];
 }
 
 @end

@@ -1,6 +1,6 @@
 // The MIT License (MIT)
 //
-// Copyright (c) 2019 Hellobike Group
+// Copyright (c) 2019 foxsofter
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
 // copy of this software and associated documentation files (the "Software"),
@@ -19,26 +19,8 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-#import <Foundation/Foundation.h>
-#import <Flutter/Flutter.h>
-#import "ThrioChannel.h"
+class ModuleContext {
+  const ModuleContext({this.entrypoint});
 
-NS_ASSUME_NONNULL_BEGIN
-
-@interface NavigatorRouteSendChannel : NSObject
-
-- (instancetype)initWithChannel:(ThrioChannel *)channel;
-
-- (void)push:(id _Nullable)arguments result:(ThrioBoolCallback _Nullable)result;
-
-- (void)notify:(id _Nullable)arguments result:(ThrioBoolCallback _Nullable)result;
-
-- (void)pop:(id _Nullable)arguments result:(ThrioBoolCallback _Nullable)result;
-
-- (void)popTo:(id _Nullable)arguments result:(ThrioBoolCallback _Nullable)result;
-
-- (void)remove:(id _Nullable)arguments result:(ThrioBoolCallback _Nullable)result;
-
-@end
-
-NS_ASSUME_NONNULL_END
+  final String entrypoint;
+}

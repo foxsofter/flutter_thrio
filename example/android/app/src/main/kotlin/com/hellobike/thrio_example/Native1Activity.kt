@@ -17,17 +17,17 @@ class Native1Activity : AppCompatActivity(), PageNotifyListener {
             ThrioNavigator.push("/biz1/flutter1",
                     params = mapOf("k1" to 1),
                     result = {
-                        Log.v("Thrio", "push result data $it")
+                        Log.i("Thrio", "push result data $it")
                     },
                     poppedResult = {
-                        Log.v("Thrio", "/biz1/native1 poppedResult call params $it")
+                        Log.i("Thrio", "/biz1/native1 poppedResult call params $it")
                     }
             )
         }
 
         btn_11.setOnClickListener {
             ThrioNavigator.remove("/biz1/flutter1") {
-                Log.v("Thrio", "push result data $it")
+                Log.i("Thrio", "push result data $it")
             }
         }
 
@@ -35,17 +35,17 @@ class Native1Activity : AppCompatActivity(), PageNotifyListener {
             ThrioNavigator.push("/biz2/flutter2",
                     params = mapOf("k1" to 1),
                     result = {
-                        Log.v("Thrio", "push result data $it")
+                        Log.i("Thrio", "push result data $it")
                     },
                     poppedResult = {
-                        Log.v("Thrio", "/biz1/native1 poppedResult call params $it")
+                        Log.i("Thrio", "/biz1/native1 poppedResult call params $it")
                     }
             )
         }
 
         btn_13.setOnClickListener {
             ThrioNavigator.remove("/biz2/flutter2") {
-                Log.v("Thrio", "push result data $it")
+                Log.i("Thrio", "push result data $it")
             }
         }
 
@@ -54,10 +54,10 @@ class Native1Activity : AppCompatActivity(), PageNotifyListener {
                     mapOf("k1" to 1),
                     true,
                     result = {
-                        Log.v("Thrio", "push result data $it")
+                        Log.i("Thrio", "push result data $it")
                     },
                     poppedResult = {
-                        Log.v("Thrio", "/biz1/native1 poppedResult call params $it")
+                        Log.i("Thrio", "/biz1/native1 poppedResult call params $it")
                     }
             )
         }
@@ -71,10 +71,10 @@ class Native1Activity : AppCompatActivity(), PageNotifyListener {
                     mapOf("k1" to 1),
                     true,
                     result = {
-                        Log.v("Thrio", "push result data $it")
+                        Log.i("Thrio", "push result data $it")
                     },
                     poppedResult = {
-                        Log.v("Thrio", "/biz1/native1 poppedResult call params $it")
+                        Log.i("Thrio", "/biz1/native1 poppedResult call params $it")
                     }
             )
         }
@@ -102,12 +102,12 @@ class Native1Activity : AppCompatActivity(), PageNotifyListener {
     }
 
     override fun onNotify(name: String, params: Any?) {
-        Log.v("Thrio", "/biz1/native1 onNotify name $name params $params")
+        Log.i("Thrio", "/biz1/native1 onNotify name $name params $params")
         // result with url
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        Log.v("Native1Activity", "onCreate activity $this")
+        Log.i("Native1Activity", "onCreate activity $this")
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_native)
         initView()

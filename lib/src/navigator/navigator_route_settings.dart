@@ -57,7 +57,7 @@ extension NavigatorRouteSettings on RouteSettings {
     String url,
     int index,
     bool isNested,
-    params,
+    dynamic params,
   }) =>
       RouteSettings(
         name: '$index $url',

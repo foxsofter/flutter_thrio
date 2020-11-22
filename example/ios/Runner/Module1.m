@@ -24,9 +24,6 @@
     [self registerPageObserver:self];
 }
 
-- (void)onCreate:(NavigatorRouteSettings *)routeSettings {
-}
-
 - (void)willAppear:(NavigatorRouteSettings *)routeSettings {
 }
 
