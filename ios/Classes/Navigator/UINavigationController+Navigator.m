@@ -402,7 +402,7 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 - (void)thrio_pushViewController:(UIViewController *)viewController animated:(BOOL)animated {
-    if (![viewController.thrio_hidesNavigationBar_ isEqualToNumber:self.topViewController.thrio_hidesNavigationBar_]) {
+    if (!self.topViewController || ![viewController.thrio_hidesNavigationBar_ isEqualToNumber:self.topViewController.thrio_hidesNavigationBar_]) {
         [self setNavigationBarHidden:viewController.thrio_hidesNavigationBar_.boolValue];
     }
 

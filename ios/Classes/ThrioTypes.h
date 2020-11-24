@@ -57,11 +57,11 @@ typedef void (^ThrioEventHandler)(NSDictionary<NSString *, id> *arguments, Thrio
 /// Signature of a block that creates a NavigatorFlutterViewController.
 ///
 @class NavigatorFlutterViewController;
-typedef NavigatorFlutterViewController *_Nullable (^NavigatorFlutterPageBuilder)(NSString *);
+typedef NavigatorFlutterViewController *_Nullable (^NavigatorFlutterPageBuilder)(NSString *entrypoint);
 
 /// Signature for a block that creates a native UIViewController.
 ///
-typedef UIViewController *_Nullable (^NavigatorPageBuilder)(NSDictionary<NSString *, id> *params);
+typedef UIViewController *_Nullable (^NavigatorPageBuilder)(id _Nullable params);
 
 NS_ASSUME_NONNULL_END
 
