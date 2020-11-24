@@ -19,18 +19,19 @@ A flutter plugin which enables hybrid integration of flutter for existing ios or
                            'Classes/Channel/*.h',
                            'Classes/Logger/*.h',
                            'Classes/Module/*.h',
-                           'Classes/Registry/*.h',
-                           'Classes/Navigator/NavigatorRouteSettings.h',
-                           'Classes/Navigator/NavigatorPageRoute.h',
+                           'Classes/Navigator/NavigatorFlutterViewController.h',
+                           'Classes/Navigator/NavigatorNavigationController.h',
                            'Classes/Navigator/NavigatorPageNotifyProtocol.h',
                            'Classes/Navigator/NavigatorPageObserverProtocol.h',
+                           'Classes/Navigator/NavigatorPageRoute.h',
                            'Classes/Navigator/NavigatorRouteObserverProtocol.h',
-                           'Classes/Navigator/NavigatorFlutterViewController.h',
+                           'Classes/Navigator/NavigatorRouteSettings.h',
                            'Classes/Navigator/ThrioNavigator.h',
                            'Classes/Navigator/UINavigationController+Navigator.h',
+                           'Classes/Navigator/UIViewController+HidesNavigationBar.h',
                            'Classes/Navigator/UIViewController+Navigator.h',
                            'Classes/Navigator/UIViewController+WillPopCallback.h',
-                           'Classes/Navigator/UIViewController+HidesNavigationBar.h',]
+                           'Classes/Registry/*.h',]
   s.dependency 'Flutter'
   s.platform = :ios, '8.0'
 

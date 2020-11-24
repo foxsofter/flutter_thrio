@@ -23,7 +23,7 @@ import 'package:flutter/widgets.dart';
 
 extension ThrioStatefulWidget on StatefulWidget {
   /// Get widget state from the global key.
-  /// 
+  ///
   /// Throw `Exception` if the key is not a GlobalKey<T>.
   ///
   T stateOf<T extends State<StatefulWidget>>() {
