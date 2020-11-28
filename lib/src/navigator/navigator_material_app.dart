@@ -28,6 +28,8 @@ class NavigatorMaterialApp extends MaterialApp {
   NavigatorMaterialApp({
     Key key,
     GlobalKey<NavigatorState> navigatorKey,
+    List<NavigatorObserver> navigatorObservers = const <NavigatorObserver>[],
+    TransitionBuilder builder,
     String title = '',
     Widget home,
     GenerateAppTitle onGenerateTitle,
@@ -51,8 +53,9 @@ class NavigatorMaterialApp extends MaterialApp {
   }) : super(
             key: key,
             navigatorKey: navigatorKey,
-            navigatorObservers: [], // ignore: prefer_const_literals_to_create_immutables
-            builder: ThrioNavigatorImplement.shared().builder,
+            navigatorObservers: [...navigatorObservers],
+            builder: (context, child) => ThrioNavigatorImplement.shared()
+                .builder(context, builder(context, child)),
             title: title,
             onGenerateTitle: onGenerateTitle,
             initialRoute: '1 /',
