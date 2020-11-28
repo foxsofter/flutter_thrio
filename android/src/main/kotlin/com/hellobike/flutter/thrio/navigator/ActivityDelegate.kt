@@ -81,7 +81,7 @@ internal object ActivityDelegate : Application.ActivityLifecycleCallbacks {
 
         NavigationController.onActivityStopped(activity)
 
-        Log.i(TAG, "onActivityStopped: ${activity?.intent?.getPageId()}")
+        Log.i(TAG, "onActivityStopped: ${activity.intent?.getPageId()}")
     }
 
     override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {

@@ -65,6 +65,7 @@ open class ThrioChannel constructor(val entrypoint: String = NAVIGATION_FLUTTER_
                 result.notImplemented()
             } else {
                 try {
+                    @Suppress("UNCHECKED_CAST")
                     val args = if (call.arguments == null) null else call.arguments as Map<String, Any?>
                     methodHandler.invoke(args) {
                         result.success(it)

@@ -57,7 +57,7 @@ class RouteObserverChannel constructor(entrypoint: String, messenger: BinaryMess
     private fun on(method: String) {
         channel.registryMethod(method) { arguments, _ ->
             if (arguments == null) return@registryMethod
-            val routeSettings = RouteSettings.fromArguments(arguments as Map<String, Any?>)
+            val routeSettings = RouteSettings.fromArguments(arguments)
                     ?: return@registryMethod
             when (method) {
                 "didPush" -> RouteObservers.didPush(routeSettings)

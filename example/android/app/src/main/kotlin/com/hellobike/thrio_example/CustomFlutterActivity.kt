@@ -2,8 +2,11 @@ package com.hellobike.thrio_example
 
 import com.hellobike.flutter.thrio.channel.ThrioChannel
 import com.hellobike.flutter.thrio.navigator.FlutterEngineFactory
+import com.hellobike.flutter.thrio.navigator.ThrioNavigator
 import com.hellobike.flutter.thrio.navigator.getEntrypoint
+import io.flutter.embedding.android.FlutterSurfaceView
 import io.flutter.embedding.android.ThrioActivity
+import io.flutter.embedding.android.TransparencyMode
 import io.flutter.embedding.engine.FlutterEngine
 import java.util.*
 import kotlin.concurrent.timerTask
@@ -14,18 +17,19 @@ class CustomFlutterActivity : ThrioActivity() {
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
-        FlutterEngineFactory.getEngine(intent.getEntrypoint())?.let {
-            channel = ThrioChannel(intent.getEntrypoint(), "custom_thrio_channel")
-            channel?.setupMethodChannel(it.flutterEngine.dartExecutor)
-        }
+        channel = ThrioChannel(intent.getEntrypoint(), "custom_thrio_channel")
+        channel?.setupMethodChannel(flutterEngine.dartExecutor)
     }
 
-    override fun onResume() {
-        super.onResume()
-        Timer().schedule(timerTask {
-            runOnUiThread {
-                channel?.invokeMethod("sayHello")
-            }
-        }, 500)
+    override fun onFlutterUiDisplayed() {
+        super.onFlutterUiDisplayed()
+
+        channel?.invokeMethod("sayHello")
+    }
+
+    // 当在根部时，重写以拦截是否需要再次点击返回键退出
+    //
+    override fun shouldMoveToBack(): Boolean {
+        return true
     }
 }
