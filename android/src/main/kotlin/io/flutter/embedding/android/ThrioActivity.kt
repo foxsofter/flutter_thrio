@@ -48,18 +48,24 @@ open class ThrioActivity : ThrioFlutterActivity() {
     override fun onBackPressed() {
         val lastRoute = PageRoutes.lastRoute()
         if (lastRoute == null) {
-            super.onBackPressed()
+            if (shouldMoveToBack()) {
+                moveTaskToBack(true)
+            }
         } else {
-            val routeHolders = PageRoutes.routeHolders;
             PageRoutes.firstRouteHolder?.apply {
                 if (pageId == intent.getPageId() && routes.count() < 2) {
-                    super.onBackPressed()
-                    return;
+                    if (shouldMoveToBack()) {
+                        moveTaskToBack(true)
+                    }
+                    return
                 }
             }
             NavigationController.Pop.pop()
         }
     }
+
+    // 重写这个方法，拦截是否隐藏到后台
+    protected open fun shouldMoveToBack(): Boolean = true
 
     fun onPush(arguments: Map<String, Any?>?, result: BooleanCallback) {
         val id = cachedEngineId ?: throw IllegalStateException("cachedEngineId must not be null")

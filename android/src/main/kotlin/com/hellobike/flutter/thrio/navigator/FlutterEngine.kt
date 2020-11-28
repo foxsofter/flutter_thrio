@@ -45,7 +45,6 @@ data class FlutterEngine(private val context: Context,
         channel.setupEventChannel(flutterEngine.dartExecutor)
         sendChannel = RouteSendChannel(channel)
         receiveChannel = RouteReceiveChannel(channel, readyListener)
-
         routeChannel = RouteObserverChannel(entrypoint, flutterEngine.dartExecutor)
         pageChannel = PageObserverChannel(entrypoint, flutterEngine.dartExecutor)
 
