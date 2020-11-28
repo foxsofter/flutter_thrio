@@ -23,7 +23,7 @@
 
 package com.hellobike.flutter.thrio.navigator
 
-internal enum class RouteAction(value: String) {
+internal enum class RouteAction(val value: String) {
     NONE(""),
     PUSH("push"),
     PUSHING("pushing"),

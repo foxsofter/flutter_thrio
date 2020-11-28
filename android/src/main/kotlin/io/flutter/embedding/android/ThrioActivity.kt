@@ -27,6 +27,8 @@ import android.content.Intent
 import com.hellobike.flutter.thrio.BooleanCallback
 import com.hellobike.flutter.thrio.navigator.FlutterEngineFactory
 import com.hellobike.flutter.thrio.navigator.NavigationController
+import com.hellobike.flutter.thrio.navigator.PageRoutes
+import com.hellobike.flutter.thrio.navigator.getPageId
 
 open class ThrioActivity : ThrioFlutterActivity() {
 
@@ -44,8 +46,26 @@ open class ThrioActivity : ThrioFlutterActivity() {
     }
 
     override fun onBackPressed() {
-        NavigationController.Pop.pop()
+        val lastRoute = PageRoutes.lastRoute()
+        if (lastRoute == null) {
+            if (shouldMoveToBack()) {
+                moveTaskToBack(true)
+            }
+        } else {
+            PageRoutes.firstRouteHolder?.apply {
+                if (pageId == intent.getPageId() && routes.count() < 2) {
+                    if (shouldMoveToBack()) {
+                        moveTaskToBack(true)
+                    }
+                    return
+                }
+            }
+            NavigationController.Pop.pop()
+        }
     }
+
+    // 重写这个方法，拦截是否隐藏到后台
+    protected open fun shouldMoveToBack(): Boolean = true
 
     fun onPush(arguments: Map<String, Any?>?, result: BooleanCallback) {
         val id = cachedEngineId ?: throw IllegalStateException("cachedEngineId must not be null")

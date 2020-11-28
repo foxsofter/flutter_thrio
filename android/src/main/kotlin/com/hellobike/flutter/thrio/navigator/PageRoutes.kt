@@ -45,7 +45,8 @@ internal object PageRoutes : Application.ActivityLifecycleCallbacks {
             }
         }
 
-    private val routeHolders by lazy { mutableListOf<PageRouteHolder>() }
+    val routeHolders by lazy { mutableListOf<PageRouteHolder>() }
+    val firstRouteHolder: PageRouteHolder? get() = routeHolders.firstOrNull()
 
     private val removedRouteHolders by lazy { mutableListOf<PageRouteHolder>() }
 
@@ -284,9 +285,9 @@ internal object PageRoutes : Application.ActivityLifecycleCallbacks {
                     return
                 }
                 PageObservers.willDisappear(routeSettings)
-                lastRouteHolder()?.let { holder ->
-                    if (holder.routes.count() > 1) {
-                        PageObservers.willAppear(holder.routes[holder.routes.count() - 2].settings)
+                lastRouteHolder()?.let {
+                    if (it.routes.count() > 1) {
+                        PageObservers.willAppear(it.routes[it.routes.count() - 2].settings)
                     }
                 }
             }

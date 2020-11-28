@@ -164,9 +164,10 @@ internal object NavigationController : Application.ActivityLifecycleCallbacks {
             if (routeAction != RouteAction.PUSH) {
                 return
             }
+            val settings = activity.intent.getRouteSettings() ?: return
+
             routeAction = RouteAction.PUSHING
 
-            val settings = activity.intent.getRouteSettings() ?: return
             val entrypoint = activity.intent.getEntrypoint()
             val fromEntryPoint = activity.intent.getFromEntrypoint()
 
