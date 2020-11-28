@@ -64,6 +64,7 @@ internal fun Intent.getFromEntrypoint(): String {
 fun Intent.getRouteSettings(): RouteSettings? {
     val data = getSerializableExtra(NAVIGATION_ROUTE_SETTINGS_KEY)
     if (data != null && data is Map<*, *>) {
+        @Suppress("UNCHECKED_CAST")
         return RouteSettings.fromArguments(data as Map<String, Any?>)
     }
     return null

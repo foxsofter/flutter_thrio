@@ -27,6 +27,8 @@ import android.content.Intent
 import com.hellobike.flutter.thrio.BooleanCallback
 import com.hellobike.flutter.thrio.navigator.FlutterEngineFactory
 import com.hellobike.flutter.thrio.navigator.NavigationController
+import com.hellobike.flutter.thrio.navigator.PageRoutes
+import com.hellobike.flutter.thrio.navigator.getPageId
 
 open class ThrioActivity : ThrioFlutterActivity() {
 
@@ -44,7 +46,19 @@ open class ThrioActivity : ThrioFlutterActivity() {
     }
 
     override fun onBackPressed() {
-        NavigationController.Pop.pop()
+        val lastRoute = PageRoutes.lastRoute()
+        if (lastRoute == null) {
+            super.onBackPressed()
+        } else {
+            val routeHolders = PageRoutes.routeHolders;
+            PageRoutes.firstRouteHolder?.apply {
+                if (pageId == intent.getPageId() && routes.count() < 2) {
+                    super.onBackPressed()
+                    return;
+                }
+            }
+            NavigationController.Pop.pop()
+        }
     }
 
     fun onPush(arguments: Map<String, Any?>?, result: BooleanCallback) {
