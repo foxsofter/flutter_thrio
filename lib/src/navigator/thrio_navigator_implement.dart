@@ -86,6 +86,10 @@ class ThrioNavigatorImplement {
 
   final _pagePoppedResults = <String, NavigatorParamsCallback>{};
 
+  final _jsonDeparsers = RegistryMap<Type, JsonDeparser>();
+
+  final _jsonParsers = RegistryMap<Type, JsonParser>();
+
   final _routeTransitionsBuilders =
       RegistryMap<RegExp, RouteTransitionsBuilder>();
 
@@ -191,6 +195,10 @@ class ThrioNavigatorImplement {
   NavigatorPageObservers get pageObservers => _pageObservers;
 
   NavigatorRouteObservers get routeObservers => _routeObservers;
+
+  RegistryMap<Type, JsonDeparser> get jsonDeparsers => _jsonDeparsers;
+
+  RegistryMap<Type, JsonParser> get jsonParsers => _jsonParsers;
 
   RegistryMap<RegExp, RouteTransitionsBuilder> get routeTransitionsBuilders =>
       _routeTransitionsBuilders;

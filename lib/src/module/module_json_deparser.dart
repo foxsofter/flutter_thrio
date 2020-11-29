@@ -19,8 +19,22 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-class ModuleContext {
-  const ModuleContext({this.entrypoint});
+import 'package:flutter/foundation.dart';
+import '../navigator/navigator_types.dart';
+import '../navigator/thrio_navigator_implement.dart';
 
-  final String entrypoint;
+import 'module_context.dart';
+import 'thrio_module.dart';
+
+mixin ModuleJsonDeparser on ThrioModule {
+  /// A function for register a json deparser.
+  ///
+  void onJsonDeparserRegister(ModuleContext moduleContext) {}
+
+  /// Register a json deparser for the module.
+  ///
+  /// Unregistry by calling the return value `VoidCallback`.
+  ///
+  VoidCallback registerJsonDeparser<T>(JsonDeparser deparser) =>
+      ThrioNavigatorImplement.shared().jsonDeparsers.registry(T, deparser);
 }
