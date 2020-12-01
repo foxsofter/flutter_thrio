@@ -29,15 +29,15 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (instancetype)initWithChannel:(ThrioChannel *)channel;
 
-- (void)push:(id _Nullable)arguments result:(ThrioBoolCallback _Nullable)result;
+- (void)push:(id)arguments result:(ThrioBoolCallback _Nullable)result;
 
-- (void)notify:(id _Nullable)arguments result:(ThrioBoolCallback _Nullable)result;
+- (void)notify:(id)arguments;
 
-- (void)pop:(id _Nullable)arguments result:(ThrioBoolCallback _Nullable)result;
+- (void)pop:(id)arguments result:(ThrioBoolCallback _Nullable)result;
 
-- (void)popTo:(id _Nullable)arguments result:(ThrioBoolCallback _Nullable)result;
+- (void)popTo:(id)arguments result:(ThrioBoolCallback _Nullable)result;
 
-- (void)remove:(id _Nullable)arguments result:(ThrioBoolCallback _Nullable)result;
+- (void)remove:(id)arguments result:(ThrioBoolCallback _Nullable)result;
 
 @end
 
