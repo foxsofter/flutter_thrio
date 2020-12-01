@@ -102,9 +102,15 @@
 
 ## 1.0.0
 
-* feat: supports multiple UINavigationController for iOS
-* feat: supports multiple flutter engine
-* feat: supports 1.22.x flutter SDK
+* feat: support multiple UINavigationController for iOS
+* feat: support multiple flutter engine
+* feat: support 1.22.x flutter SDK
 * feat: refactor page observer
 * feat: add more linter rules
 * fix: #106 #107 #108 #109
+
+## 1.0.1
+
+* feat: support root FlutterViewController and ThrioActivity
+* feat: add interface for builder and navigatorObservers
+* fix: #118

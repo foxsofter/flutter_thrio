@@ -476,7 +476,7 @@ NS_ASSUME_NONNULL_BEGIN
             };
             NSString *entrypoint = [(NavigatorFlutterViewController *)self entrypoint];
             NavigatorRouteSendChannel *channel = [NavigatorFlutterEngineFactory.shared getSendChannelByEntrypoint:entrypoint];
-            [channel notify:arguments result:nil];
+            [channel notify:arguments];
         } else {
             if ([self conformsToProtocol:@protocol(NavigatorPageNotifyProtocol)]) {
                 [(id<NavigatorPageNotifyProtocol>)self onNotify:name params:params];

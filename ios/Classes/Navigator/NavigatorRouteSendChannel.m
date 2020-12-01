@@ -37,7 +37,7 @@
     return self;
 }
 
-- (void)push:(id _Nullable)arguments result:(ThrioBoolCallback _Nullable)result {
+- (void)push:(id)arguments result:(ThrioBoolCallback _Nullable)result {
     [_channel invokeMethod:@"push" arguments:arguments result:^(id _Nullable value) {
         if (result) {
             if ([value isKindOfClass:NSNumber.class]) {
@@ -49,12 +49,11 @@
     }];
 }
 
-- (void)notify:(id _Nullable)arguments result:(ThrioBoolCallback _Nullable)result {
+- (void)notify:(id)arguments {
     [_channel sendEvent:@"__onNotify__" arguments:arguments];
-    result(YES);
 }
 
-- (void)pop:(id _Nullable)arguments result:(ThrioBoolCallback _Nullable)result {
+- (void)pop:(id)arguments result:(ThrioBoolCallback _Nullable)result {
     [_channel invokeMethod:@"pop" arguments:arguments result:^(id _Nullable value) {
         if (result) {
             if ([value isKindOfClass:NSNumber.class]) {
@@ -66,7 +65,7 @@
     }];
 }
 
-- (void)popTo:(id _Nullable)arguments result:(ThrioBoolCallback _Nullable)result {
+- (void)popTo:(id)arguments result:(ThrioBoolCallback _Nullable)result {
     [_channel invokeMethod:@"popTo" arguments:arguments result:^(id _Nullable value) {
         if (result) {
             if ([value isKindOfClass:NSNumber.class]) {
@@ -78,7 +77,7 @@
     }];
 }
 
-- (void)remove:(id _Nullable)arguments result:(ThrioBoolCallback _Nullable)result {
+- (void)remove:(id)arguments result:(ThrioBoolCallback _Nullable)result {
     [_channel invokeMethod:@"remove" arguments:arguments result:^(id _Nullable value) {
         if (result) {
             if ([value isKindOfClass:NSNumber.class]) {
