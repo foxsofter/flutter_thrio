@@ -1,12 +1,15 @@
 import 'package:flutter/widgets.dart';
 import 'package:thrio/thrio.dart';
 
+import 'model.dart';
 import 'page1.dart';
 import 'page2.dart';
 
 class Module
     with
         ThrioModule,
+        ModuleJsonParser,
+        ModuleJsonDeparser,
         ModulePageBuilder,
         ModulePageObserver,
         ModuleRouteTransitionsBuilder,
@@ -27,6 +30,16 @@ class Module
         params: settings.params,
       ),
     );
+  }
+
+  @override
+  void onJsonParserRegister(ModuleContext moduleContext) {
+    registerJsonParser<People>((instance) => instance<People>().toJson());
+  }
+
+  @override
+  void onJsonDeparserRegister(ModuleContext moduleContext) {
+    registerJsonDeparser((arguments) => People.fromJson(arguments));
   }
 
   @override

@@ -28,7 +28,7 @@ import '../navigator/navigator_logger.dart';
 import '../navigator/thrio_navigator_implement.dart';
 import 'module_context.dart';
 import 'module_json_deparser.dart';
-import 'module_json_Parser.dart';
+import 'module_json_parser.dart';
 import 'module_page_builder.dart';
 import 'module_page_observer.dart';
 import 'module_route_observer.dart';
@@ -103,6 +103,7 @@ mixin ThrioModule {
   ///
   /// return value is `params`.
   ///
+  @Deprecated('')
   Stream onPageNotify({
     @required String name,
     @required String url,

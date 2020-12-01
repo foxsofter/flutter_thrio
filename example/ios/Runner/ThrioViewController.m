@@ -19,7 +19,7 @@
 @implementation ThrioViewController
 
 - (IBAction)pushFlutterPage:(id)sender {
-    [ThrioNavigator pushUrl:@"/biz1/flutter1"];
+    [ThrioNavigator pushUrl:@"/biz1/flutter1" params:@1];
 }
 
 - (IBAction)popFlutter1:(id)sender {

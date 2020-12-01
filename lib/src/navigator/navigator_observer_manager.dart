@@ -43,8 +43,7 @@ class NavigatorObserverManager extends NavigatorObserver {
     if (route is NavigatorPageRoute) {
       verbose(
         'didPush: url->${route.settings.url} '
-        'index->${route.settings.index} '
-        'params->${route.settings.params}',
+        'index->${route.settings.index} ',
       );
       pageRoutes.add(route);
       ThrioNavigatorImplement.shared().routeObservers.didPush(route.settings);
@@ -78,11 +77,8 @@ class NavigatorObserverManager extends NavigatorObserver {
             } else if (route.routeAction == NavigatorRouteAction.pop ||
                 route.routeAction == null) {
               // 这里需要判断 routeAction == null 的场景，处理滑动返回需要
-              verbose(
-                'didPop: url->${route.settings.url} '
-                'index->${route.settings.index} '
-                'params:${route.settings.params}',
-              );
+              verbose('didPop: url->${route.settings.url} '
+                  'index->${route.settings.index} ');
               ThrioNavigatorImplement.shared()
                   .routeObservers
                   .didPop(route.settings);

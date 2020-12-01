@@ -34,13 +34,18 @@ typedef NavigatorRouteObserverCallback = void Function(
 class NavigatorRouteObserverChannel with NavigatorRouteObserver {
   NavigatorRouteObserverChannel(this._observers, String entrypoint)
       : _channel = ThrioChannel(channel: '__thrio_route_channel__$entrypoint') {
-    _on('didPush',
-        (observer, routeSettings) => observer.didPush(routeSettings));
-    _on('didPop', (observer, routeSettings) => observer.didPop(routeSettings));
-    _on('didPopTo',
-        (observer, routeSettings) => observer.didPopTo(routeSettings));
-    _on('didRemove',
-        (observer, routeSettings) => observer.didRemove(routeSettings));
+    _on('didPush', (observer, routeSettings) {
+      observer.didPush(routeSettings);
+    });
+    _on('didPop', (observer, routeSettings) {
+      observer.didPop(routeSettings);
+    });
+    _on('didPopTo', (observer, routeSettings) {
+      observer.didPopTo(routeSettings);
+    });
+    _on('didRemove', (observer, routeSettings) {
+      observer.didRemove(routeSettings);
+    });
   }
 
   final ThrioChannel _channel;
@@ -49,25 +54,25 @@ class NavigatorRouteObserverChannel with NavigatorRouteObserver {
   @override
   void didPush(RouteSettings routeSettings) => _channel.invokeMethod<bool>(
         'didPush',
-        routeSettings.toArguments(),
+        routeSettings.toArguments()..remove('params'),
       );
 
   @override
   void didPop(RouteSettings routeSettings) => _channel.invokeMethod<bool>(
         'didPop',
-        routeSettings.toArguments(),
+        routeSettings.toArguments()..remove('params'),
       );
 
   @override
   void didPopTo(RouteSettings routeSettings) => _channel.invokeMethod<bool>(
         'didPopTo',
-        routeSettings.toArguments(),
+        routeSettings.toArguments()..remove('params'),
       );
 
   @override
   void didRemove(RouteSettings routeSettings) => _channel.invokeMethod<bool>(
         'didRemove',
-        routeSettings.toArguments(),
+        routeSettings.toArguments()..remove('params'),
       );
 
   void _on(String method, NavigatorRouteObserverCallback callback) =>

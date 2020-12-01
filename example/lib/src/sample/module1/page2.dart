@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:thrio/thrio.dart';
 
+import 'model.dart';
+
 class Page2 extends StatefulWidget {
   const Page2({
     Key key,
@@ -88,8 +90,8 @@ class _Page2State extends State<Page2> {
                       )),
                 ),
                 InkWell(
-                  onTap: () =>
-                      ThrioNavigator.pop(params: 'popResult /biz2/flutter2'),
+                  onTap: () => ThrioNavigator.pop<People>(
+                      params: People(name: '大宝剑', age: 0, sex: 'x')),
                   child: Container(
                       padding: const EdgeInsets.all(8),
                       margin: const EdgeInsets.all(8),

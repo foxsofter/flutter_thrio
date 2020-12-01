@@ -23,14 +23,16 @@ import 'dart:async';
 
 import 'package:flutter/widgets.dart';
 
+import '../exception/thrio_exception.dart';
 import '../extension/thrio_build_context.dart';
+import '../extension/thrio_object.dart';
 import 'navigator_page_route.dart';
 import 'navigator_route_settings.dart';
 import 'navigator_types.dart';
 import 'navigator_widget.dart';
 import 'thrio_navigator_implement.dart';
 
-class NavigatorPageNotify extends StatefulWidget {
+class NavigatorPageNotify<T> extends StatefulWidget {
   const NavigatorPageNotify({
     Key key,
     @required this.name,
@@ -44,15 +46,15 @@ class NavigatorPageNotify extends StatefulWidget {
 
   final NavigatorParamsCallback onPageNotify;
 
-  final dynamic initialParams;
+  final T initialParams;
 
   final Widget child;
 
   @override
-  _NavigatorPageNotifyState createState() => _NavigatorPageNotifyState();
+  _NavigatorPageNotifyState<T> createState() => _NavigatorPageNotifyState<T>();
 }
 
-class _NavigatorPageNotifyState extends State<NavigatorPageNotify> {
+class _NavigatorPageNotifyState<T> extends State<NavigatorPageNotify<T>> {
   NavigatorPageRoute _route;
 
   Stream _notifyStream;
@@ -64,7 +66,8 @@ class _NavigatorPageNotifyState extends State<NavigatorPageNotify> {
     super.initState();
     if (mounted) {
       if (widget.initialParams != null) {
-        widget.onPageNotify(widget.initialParams);
+        // ignore: avoid_as
+        widget.onPageNotify(<T>() => widget.initialParams as T);
       }
     }
   }
@@ -83,7 +86,29 @@ class _NavigatorPageNotifyState extends State<NavigatorPageNotify> {
         index: _route.settings.index,
         name: widget.name,
       );
-      _notifySubscription = _notifyStream.listen(widget.onPageNotify);
+      _notifySubscription = _notifyStream.listen((params) {
+        if (params != null) {
+          if (params is Map<String, dynamic>) {
+            if (T.isComplexType && T != dynamic) {
+              final paramsData = ThrioNavigatorImplement.shared()
+                  .jsonDeparsers[T.toString()]
+                  ?.call(params);
+              if (paramsData != null) {
+                // ignore: avoid_as
+                widget.onPageNotify(<T>() => paramsData as T);
+                return;
+              }
+            }
+          } else {
+            // ignore: unused_local_variable
+            final type = params.runtimeType;
+            // ignore: avoid_as
+            widget.onPageNotify(<type>() => params as type);
+          }
+        } else {
+          widget.onPageNotify(null);
+        }
+      });
     }
     super.didChangeDependencies();
   }

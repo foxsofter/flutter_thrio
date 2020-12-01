@@ -24,6 +24,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 import '../channel/thrio_channel.dart';
+import '../extension/thrio_object.dart';
 import '../module/module_context.dart';
 import '../registry/registry_map.dart';
 import 'navigator_logger.dart';
@@ -49,10 +50,7 @@ class ThrioNavigatorImplement {
     _channel =
         ThrioChannel(channel: '__thrio_app__${moduleContext.entrypoint}');
     _sendChannel = NavigatorRouteSendChannel(_channel);
-    _receiveChannel = NavigatorRouteReceiveChannel(
-      _channel,
-      _pagePoppedResults,
-    );
+    _receiveChannel = NavigatorRouteReceiveChannel(_channel);
     _observerManager = NavigatorObserverManager();
 
     verbose('TransitionBuilder builder');
@@ -82,13 +80,13 @@ class ThrioNavigatorImplement {
 
   NavigatorRouteObservers _routeObservers;
 
-  final _pageBuilders = RegistryMap<String, NavigatorPageBuilder>();
+  final pageBuilders = RegistryMap<String, NavigatorPageBuilder>();
 
-  final _pagePoppedResults = <String, NavigatorParamsCallback>{};
+  final pagePoppedResults = <String, NavigatorParamsCallback>{};
+  final pagePoppedResultTypes = <String, Type>{};
 
-  final _jsonDeparsers = RegistryMap<Type, JsonDeparser>();
-
-  final _jsonParsers = RegistryMap<Type, JsonParser>();
+  final jsonDeparsers = RegistryMap<String, JsonDeparser>();
+  final jsonParsers = RegistryMap<String, JsonParser>();
 
   final _routeTransitionsBuilders =
       RegistryMap<RegExp, RouteTransitionsBuilder>();
@@ -103,39 +101,49 @@ class ThrioNavigatorImplement {
 
   void ready() => _channel?.invokeMethod<bool>('ready');
 
-  Future<int> push({
+  Future<int> push<TParams, TCallbackParams>({
     @required String url,
-    dynamic params,
+    TParams params,
     bool animated = true,
     NavigatorParamsCallback poppedResult,
   }) =>
       _sendChannel
-          ?.push(url: url, params: params, animated: animated)
+          ?.push(
+              url: url,
+              params: _parseParams<TParams>(params),
+              animated: animated)
           ?.then<int>((index) {
         if (poppedResult != null && index != null && index > 0) {
-          _pagePoppedResults['$index $url'] = poppedResult;
+          final routeName = '$index $url';
+          pagePoppedResults[routeName] = poppedResult;
+          if (TCallbackParams.isComplexType && TCallbackParams != dynamic) {
+            pagePoppedResultTypes[routeName] = TCallbackParams;
+          }
         }
         return index;
       });
 
-  Future<bool> notify({
+  Future<bool> notify<TParams>({
     @required String url,
     int index,
     @required String name,
-    dynamic params,
+    TParams params,
   }) =>
       _sendChannel?.notify(
         name: name,
         url: url,
         index: index,
-        params: params,
+        params: _parseParams<TParams>(params),
       );
 
-  Future<bool> pop({
-    dynamic params,
+  Future<bool> pop<TParams>({
+    TParams params,
     bool animated = true,
   }) =>
-      _sendChannel?.pop(params: params, animated: animated);
+      _sendChannel?.pop(
+        params: _parseParams<TParams>(params),
+        animated: animated,
+      );
 
   Future<bool> popTo({
     @required String url,
@@ -190,16 +198,22 @@ class ThrioNavigatorImplement {
     _channel?.invokeMethod<bool>('hotRestart');
   }
 
-  RegistryMap<String, NavigatorPageBuilder> get pageBuilders => _pageBuilders;
-
   NavigatorPageObservers get pageObservers => _pageObservers;
 
   NavigatorRouteObservers get routeObservers => _routeObservers;
 
-  RegistryMap<Type, JsonDeparser> get jsonDeparsers => _jsonDeparsers;
-
-  RegistryMap<Type, JsonParser> get jsonParsers => _jsonParsers;
-
   RegistryMap<RegExp, RouteTransitionsBuilder> get routeTransitionsBuilders =>
       _routeTransitionsBuilders;
+
+  dynamic _parseParams<TParams>(params) {
+    if (TParams.isComplexType && TParams != dynamic) {
+      final parseParams = jsonParsers[TParams.toString()]
+          ?.call(<TParams>() => params as TParams); // ignore: avoid_as
+      if (parseParams != null) {
+        parseParams['__thrio_TParams__'] = TParams.toString();
+        return parseParams;
+      }
+    }
+    return params;
+  }
 }
