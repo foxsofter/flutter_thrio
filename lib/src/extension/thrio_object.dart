@@ -21,7 +21,7 @@
 
 import 'dart:core';
 
-extension ThrioObject on Object {
+extension ThrioObject on dynamic {
   /// Determine whether the current instance is a bool.
   ///
   /// Can be called in the following ways,

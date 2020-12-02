@@ -30,13 +30,13 @@ abstract class ThrioNavigator {
   /// If a native page builder exists for the `url`, open the native page,
   /// otherwise open the flutter page.
   ///
-  static Future<int> push<TParams, TCallbackParams>({
+  static Future<int> push<TParams>({
     @required String url,
     TParams params,
     bool animated = true,
     NavigatorParamsCallback poppedResult,
   }) =>
-      ThrioNavigatorImplement.shared().push<TParams, TCallbackParams>(
+      ThrioNavigatorImplement.shared().push<TParams>(
         url: url,
         params: params,
         animated: animated,

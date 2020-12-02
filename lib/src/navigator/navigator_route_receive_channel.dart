@@ -23,7 +23,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import '../channel/thrio_channel.dart';
-import '../extension/thrio_object.dart';
 import 'navigator_logger.dart';
 import 'navigator_route_settings.dart';
 import 'thrio_navigator_implement.dart';
@@ -50,11 +49,7 @@ class NavigatorRouteReceiveChannel {
             (animatedValue != null && animatedValue is bool) && animatedValue;
         return ThrioNavigatorImplement.shared()
             .navigatorState
-            ?.push(routeSettings, animated: animated)
-            ?.then((it) {
-          _clearPagePoppedResults();
-          return it;
-        });
+            ?.push(routeSettings, animated: animated);
       });
 
   void _onPop() => _channel.registryMethodCall('pop', ([arguments]) {
@@ -64,40 +59,7 @@ class NavigatorRouteReceiveChannel {
             (animatedValue != null && animatedValue is bool) && animatedValue;
         return ThrioNavigatorImplement.shared()
             .navigatorState
-            ?.maybePop(routeSettings, animated: animated)
-            ?.then((it) {
-          if (it) {
-            final poppedResult = ThrioNavigatorImplement.shared()
-                .pagePoppedResults
-                .remove(routeSettings.name);
-            final params = routeSettings.params;
-            if (poppedResult != null) {
-              if (params == null) {
-                poppedResult(null);
-              } else {
-                final type = ThrioNavigatorImplement.shared()
-                    .pagePoppedResultTypes
-                    .remove(routeSettings.name);
-                if (type != null && params is Map) {
-                  final paramsData = ThrioNavigatorImplement.shared()
-                      .jsonDeparsers[type.toString()]
-                      ?.call(params.cast<String, dynamic>());
-                  if (paramsData != null) {
-                    // ignore: avoid_as
-                    poppedResult(<type>() => paramsData as type);
-                    return it;
-                  }
-                }
-                // ignore: unused_local_variable
-                final paramsType = params.runtimeType;
-                // ignore: avoid_as
-                poppedResult(<paramsType>() => params as paramsType);
-              }
-            }
-            _clearPagePoppedResults(name: routeSettings.name);
-          }
-          return it;
-        });
+            ?.maybePop(routeSettings, animated: animated);
       });
 
   void _onPopTo() => _channel.registryMethodCall('popTo', ([arguments]) {
@@ -107,11 +69,7 @@ class NavigatorRouteReceiveChannel {
             (animatedValue != null && animatedValue is bool) && animatedValue;
         return ThrioNavigatorImplement.shared()
             .navigatorState
-            ?.popTo(routeSettings, animated: animated)
-            ?.then((it) {
-          _clearPagePoppedResults();
-          return it;
-        });
+            ?.popTo(routeSettings, animated: animated);
       });
 
   void _onRemove() => _channel.registryMethodCall('remove', ([arguments]) {
@@ -121,31 +79,8 @@ class NavigatorRouteReceiveChannel {
             (animatedValue != null && animatedValue is bool) && animatedValue;
         return ThrioNavigatorImplement.shared()
             .navigatorState
-            ?.remove(routeSettings, animated: animated)
-            ?.then((it) {
-          _clearPagePoppedResults();
-          return it;
-        });
+            ?.remove(routeSettings, animated: animated);
       });
-
-  void _clearPagePoppedResults({String name}) {
-    if (ThrioNavigatorImplement.shared().pagePoppedResults.isEmpty) {
-      return;
-    }
-    final routeHistory =
-        ThrioNavigatorImplement.shared().navigatorState?.history;
-    if (routeHistory?.isNotEmpty ?? false) {
-      ThrioNavigatorImplement.shared()
-          .pagePoppedResults
-          .removeWhere((key, _) => key == name);
-      ThrioNavigatorImplement.shared()
-          .pagePoppedResultTypes
-          .removeWhere((key, _) => key == name);
-    } else {
-      ThrioNavigatorImplement.shared().pagePoppedResults.clear();
-      ThrioNavigatorImplement.shared().pagePoppedResultTypes.clear();
-    }
-  }
 
   Stream onPageNotify({
     @required String url,
@@ -162,8 +97,12 @@ class NavigatorRouteReceiveChannel {
 
   dynamic _deparseParams(dynamic params) {
     if (params != null && params is Map) {
-      final type = params['__thrio_TParams__'] as String; // ignore: avoid_as
-      if (type != null) {
+      final typeString =
+          params['__thrio_TParams__'] as String; // ignore: avoid_as
+      if (typeString != null) {
+        final jsonDeparsers = ThrioNavigatorImplement.shared().jsonDeparsers;
+        final type =
+            jsonDeparsers.keys.lastWhere((it) => it.toString() == typeString);
         final paramsInstance = ThrioNavigatorImplement.shared()
             .jsonDeparsers[type]
             ?.call(params.cast<String, dynamic>());

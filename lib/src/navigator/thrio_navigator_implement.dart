@@ -53,7 +53,7 @@ class ThrioNavigatorImplement {
     _receiveChannel = NavigatorRouteReceiveChannel(_channel);
     _observerManager = NavigatorObserverManager();
 
-    verbose('TransitionBuilder builder');
+    verbose('TransitionBuilder init');
     // sendChannel.registerUrls(_pageBuilders.keys.toList());
   }
 
@@ -82,11 +82,8 @@ class ThrioNavigatorImplement {
 
   final pageBuilders = RegistryMap<String, NavigatorPageBuilder>();
 
-  final pagePoppedResults = <String, NavigatorParamsCallback>{};
-  final pagePoppedResultTypes = <String, Type>{};
-
-  final jsonDeparsers = RegistryMap<String, JsonDeparser>();
-  final jsonParsers = RegistryMap<String, JsonParser>();
+  final jsonDeparsers = RegistryMap<Type, JsonDeparser>();
+  final jsonParsers = RegistryMap<Type, JsonParser>();
 
   final _routeTransitionsBuilders =
       RegistryMap<RegExp, RouteTransitionsBuilder>();
@@ -101,7 +98,7 @@ class ThrioNavigatorImplement {
 
   void ready() => _channel?.invokeMethod<bool>('ready');
 
-  Future<int> push<TParams, TCallbackParams>({
+  Future<int> push<TParams>({
     @required String url,
     TParams params,
     bool animated = true,
@@ -115,9 +112,13 @@ class ThrioNavigatorImplement {
           ?.then<int>((index) {
         if (poppedResult != null && index != null && index > 0) {
           final routeName = '$index $url';
-          pagePoppedResults[routeName] = poppedResult;
-          if (TCallbackParams.isComplexType && TCallbackParams != dynamic) {
-            pagePoppedResultTypes[routeName] = TCallbackParams;
+          final routeHistory =
+              ThrioNavigatorImplement.shared().navigatorState?.history;
+          final route = routeHistory.lastWhere(
+              (it) => it.settings.name == routeName,
+              orElse: () => null);
+          if (route != null) {
+            route.poppedResultCallback = poppedResult;
           }
         }
         return index;
@@ -205,12 +206,16 @@ class ThrioNavigatorImplement {
   RegistryMap<RegExp, RouteTransitionsBuilder> get routeTransitionsBuilders =>
       _routeTransitionsBuilders;
 
-  dynamic _parseParams<TParams>(params) {
-    if (TParams.isComplexType && TParams != dynamic) {
-      final parseParams = jsonParsers[TParams.toString()]
-          ?.call(<TParams>() => params as TParams); // ignore: avoid_as
+  dynamic _parseParams<TParams>(TParams params) {
+    if (params == null) {
+      return null;
+    }
+    final type = params.runtimeType;
+    if (type != dynamic && params.isComplexType) {
+      final parseParams = jsonParsers[type]
+          ?.call(<type>() => params as type); // ignore: avoid_as
       if (parseParams != null) {
-        parseParams['__thrio_TParams__'] = TParams.toString();
+        parseParams['__thrio_TParams__'] = type.toString();
         return parseParams;
       }
     }

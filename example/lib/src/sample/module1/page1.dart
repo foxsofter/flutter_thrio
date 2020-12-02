@@ -85,7 +85,7 @@ class _Page1State extends State<Page1> {
                         ),
                         onChanged: print)),
                 InkWell(
-                  onTap: () => ThrioNavigator.push<People, People>(
+                  onTap: () => ThrioNavigator.push(
                     url: '/biz1/flutter1',
                     params: People(name: 'foxsofter', age: 100, sex: '男性'),
                     poppedResult: (params) =>
@@ -112,11 +112,11 @@ class _Page1State extends State<Page1> {
                       )),
                 ),
                 InkWell(
-                  onTap: () => ThrioNavigator.push<People, People>(
+                  onTap: () => ThrioNavigator.push(
                     url: '/biz2/flutter2',
                     params: People(name: '大宝剑', age: 0, sex: 'x'),
                     poppedResult: (params) => ThrioLogger.v(
-                        '/biz1/flutter1 poppedResult call popped:$params'),
+                        '/biz1/flutter1 poppedResult call popped:${params()}'),
                   ),
                   child: Container(
                       padding: const EdgeInsets.all(8),
@@ -128,7 +128,7 @@ class _Page1State extends State<Page1> {
                       )),
                 ),
                 InkWell(
-                  onTap: () => ThrioNavigator.pop<People>(
+                  onTap: () => ThrioNavigator.pop(
                       params: People(name: '大宝剑', age: 0, sex: 'x')),
                   child: Container(
                       padding: const EdgeInsets.all(8),
@@ -146,7 +146,7 @@ class _Page1State extends State<Page1> {
                       '1': {'2': '3'}
                     },
                     poppedResult: (params) => ThrioLogger.v(
-                        '/biz1/flutter1 poppedResult call params:$params'),
+                        '/biz1/native1 poppedResult call params:$params'),
                   ),
                   child: Container(
                       padding: const EdgeInsets.all(8),

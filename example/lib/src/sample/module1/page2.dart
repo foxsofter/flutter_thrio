@@ -36,7 +36,7 @@ class _Page2State extends State<Page2> {
   Widget build(BuildContext context) => NavigatorPageNotify(
       name: 'page2Notify',
       onPageNotify: (params) =>
-          ThrioLogger.v('flutter2 receive notify:$params'),
+          ThrioLogger.v('flutter2 receive notify:${params()}'),
       child: Scaffold(
           appBar: AppBar(
             brightness: Brightness.light,
@@ -90,7 +90,7 @@ class _Page2State extends State<Page2> {
                       )),
                 ),
                 InkWell(
-                  onTap: () => ThrioNavigator.pop<People>(
+                  onTap: () => ThrioNavigator.pop(
                       params: People(name: '大宝剑', age: 0, sex: 'x')),
                   child: Container(
                       padding: const EdgeInsets.all(8),
@@ -132,7 +132,9 @@ class _Page2State extends State<Page2> {
                 InkWell(
                   onTap: () {
                     ThrioNavigator.notify(
-                        url: '/biz1/flutter1', name: 'page1Notify', params: 2);
+                        url: '/biz1/flutter1',
+                        name: 'page1Notify',
+                        params: People(name: '大宝剑', age: 1, sex: 'x'));
                   },
                   child: Container(
                       padding: const EdgeInsets.all(8),
@@ -146,7 +148,9 @@ class _Page2State extends State<Page2> {
                 InkWell(
                   onTap: () {
                     ThrioNavigator.notify(
-                        url: '/biz2/flutter2', name: 'page2Notify');
+                        url: '/biz2/flutter2',
+                        name: 'page2Notify',
+                        params: People(name: '大宝剑', age: 2, sex: 'x'));
                   },
                   child: Container(
                       padding: const EdgeInsets.all(8),

@@ -23,7 +23,6 @@ import 'dart:async';
 
 import 'package:flutter/widgets.dart';
 
-import '../exception/thrio_exception.dart';
 import '../extension/thrio_build_context.dart';
 import '../extension/thrio_object.dart';
 import 'navigator_page_route.dart';
@@ -90,12 +89,12 @@ class _NavigatorPageNotifyState<T> extends State<NavigatorPageNotify<T>> {
         if (params != null) {
           if (params is Map<String, dynamic>) {
             if (T.isComplexType && T != dynamic) {
-              final paramsData = ThrioNavigatorImplement.shared()
-                  .jsonDeparsers[T.toString()]
+              final paramsInstance = ThrioNavigatorImplement.shared()
+                  .jsonDeparsers[T]
                   ?.call(params);
-              if (paramsData != null) {
+              if (paramsInstance != null) {
                 // ignore: avoid_as
-                widget.onPageNotify(<T>() => paramsData as T);
+                widget.onPageNotify(<T>() => paramsInstance as T);
                 return;
               }
             }

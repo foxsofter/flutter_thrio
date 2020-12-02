@@ -42,7 +42,7 @@ typedef void (^ThrioNumberCallback)(NSNumber *_Nullable);
 ///
 typedef void (^ThrioIdCallback)(id _Nullable);
 
-/// Signature for a callback that verifies that it's OK to call `pop`.
+/// Signature for a callback that verifies that it's true or false.
 ///
 typedef void (^ThrioWillPopCallback)(ThrioBoolCallback);
 

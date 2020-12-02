@@ -36,7 +36,5 @@ mixin ModuleJsonDeparser on ThrioModule {
   /// Unregistry by calling the return value `VoidCallback`.
   ///
   VoidCallback registerJsonDeparser<T>(JsonDeparser<T> deparser) =>
-      ThrioNavigatorImplement.shared()
-          .jsonDeparsers
-          .registry(T.toString(), deparser);
+      ThrioNavigatorImplement.shared().jsonDeparsers.registry(T, deparser);
 }

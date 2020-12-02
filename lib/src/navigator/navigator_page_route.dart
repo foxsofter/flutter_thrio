@@ -34,7 +34,7 @@ enum NavigatorRouteAction {
 
 /// A route managed by the `ThrioNavigatorImplement`.
 ///
-class NavigatorPageRoute extends MaterialPageRoute<bool> {
+class NavigatorPageRoute<TCallbackParams> extends MaterialPageRoute<bool> {
   NavigatorPageRoute({
     @required NavigatorPageBuilder builder,
     RouteSettings settings,
@@ -47,6 +47,8 @@ class NavigatorPageRoute extends MaterialPageRoute<bool> {
             fullscreenDialog: fullscreenDialog);
 
   NavigatorRouteAction routeAction;
+
+  NavigatorParamsCallback poppedResultCallback;
 
   final _popDisableds = <String, bool>{};
 
