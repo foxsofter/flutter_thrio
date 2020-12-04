@@ -69,12 +69,12 @@ class ThrioChannel {
     return _methodHandlers.registry(method, handler);
   }
 
-  void sendEvent(String name, [Map arguments]) {
+  void sendEvent(String name, [Map<String, dynamic> arguments]) {
     _setupEventChannelIfNeeded();
     final controllers = _eventControllers[name];
     if (controllers?.isNotEmpty ?? false) {
       for (final controller in controllers) {
-        controller.add({...arguments, _kEventNameKey: name});
+        controller.add(<String, dynamic>{...arguments, _kEventNameKey: name});
       }
     }
   }

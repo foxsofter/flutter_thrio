@@ -21,10 +21,22 @@
 
 import 'package:flutter/widgets.dart';
 
+/// Signature of page builder with RouteSettings.
+///
 typedef NavigatorPageBuilder = Widget Function(RouteSettings settings);
 
-// ignore: avoid_annotating_with_dynamic
-typedef NavigatorParamsCallback = void Function(dynamic params);
+/// Signature of callbacks with generic parameters with type `T`.
+///
+typedef NavigatorParamsCallback = void Function(T Function<T>() factory);
 
-// ignore: avoid_annotating_with_dynamic
-typedef NavigatorLifecycleCallback = void Function(RouteSettings settings);
+/// Signature of callbacks with RouteSettings.
+///
+typedef NavigatorRouteSettingsCallback = void Function(RouteSettings settings);
+
+/// Signature of callbacks for json deparser.
+///
+typedef JsonDeparser<T> = T Function(Map<String, dynamic> params);
+
+/// Signature of callbacks for json parser.
+///
+typedef JsonParser = Map<String, dynamic> Function(T Function<T>() factory);

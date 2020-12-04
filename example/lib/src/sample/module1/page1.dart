@@ -3,6 +3,7 @@ import 'dart:io' show Platform;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:thrio/thrio.dart';
+import 'model.dart';
 
 class Page1 extends StatefulWidget {
   const Page1({
@@ -39,8 +40,6 @@ class _Page1State extends State<Page1> {
   @override
   Widget build(BuildContext context) => NavigatorPageNotify(
       name: 'page1Notify',
-      initialParams:
-          widget.params == null ? null : widget.params['page1Notify'],
       onPageNotify: (params) =>
           ThrioLogger.v('flutter1 receive notify:$params'),
       child: Scaffold(
@@ -88,9 +87,7 @@ class _Page1State extends State<Page1> {
                 InkWell(
                   onTap: () => ThrioNavigator.push(
                     url: '/biz1/flutter1',
-                    params: {
-                      '1': {'2': '3'}
-                    },
+                    params: People(name: 'foxsofter', age: 100, sex: '男性'),
                     poppedResult: (params) =>
                         ThrioLogger.v('/biz1/flutter1 popped:$params'),
                   ),
@@ -117,11 +114,9 @@ class _Page1State extends State<Page1> {
                 InkWell(
                   onTap: () => ThrioNavigator.push(
                     url: '/biz2/flutter2',
-                    params: {
-                      '1': {'2': '3'}
-                    },
+                    params: People(name: '大宝剑', age: 0, sex: 'x'),
                     poppedResult: (params) => ThrioLogger.v(
-                        '/biz1/flutter1 poppedResult call popped:$params'),
+                        '/biz1/flutter1 poppedResult call popped:${params()}'),
                   ),
                   child: Container(
                       padding: const EdgeInsets.all(8),
@@ -133,7 +128,8 @@ class _Page1State extends State<Page1> {
                       )),
                 ),
                 InkWell(
-                  onTap: () => ThrioNavigator.pop(params: 'popped flutter1'),
+                  onTap: () => ThrioNavigator.pop(
+                      params: People(name: '大宝剑', age: 0, sex: 'x')),
                   child: Container(
                       padding: const EdgeInsets.all(8),
                       margin: const EdgeInsets.all(8),
@@ -150,7 +146,7 @@ class _Page1State extends State<Page1> {
                       '1': {'2': '3'}
                     },
                     poppedResult: (params) => ThrioLogger.v(
-                        '/biz1/flutter1 poppedResult call params:$params'),
+                        '/biz1/native1 poppedResult call params:$params'),
                   ),
                   child: Container(
                       padding: const EdgeInsets.all(8),

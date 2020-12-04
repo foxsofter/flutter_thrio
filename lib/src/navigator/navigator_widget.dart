@@ -59,11 +59,7 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
   List<NavigatorPageRoute> get history => widget._observerManager.pageRoutes;
 
   /// 还无法实现animated=false
-  Future<bool> push(
-    RouteSettings settings, {
-    bool animated = true,
-    NavigatorParamsCallback poppedResult,
-  }) {
+  Future<bool> push(RouteSettings settings, {bool animated = true}) {
     final navigatorState = widget.child.tryStateOf<NavigatorState>();
     if (navigatorState == null) {
       return Future.value(false);
@@ -91,7 +87,7 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
       'params->${route.settings.params}',
     );
 
-    // 设置一个空值，避免实际页面打开后不生效
+    // 设置一个空值，避免页面打开后不生效
     SystemChrome.setSystemUIOverlayStyle(_style);
 
     navigatorState.push(route);
@@ -123,8 +119,10 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
       return Future.value(false);
     }
 
-    verbose('pop: url->${history.last.settings.url} '
-        'index->${history.last.settings.index}');
+    verbose(
+      'pop: url->${history.last.settings.url} '
+      'index->${history.last.settings.index}',
+    );
 
     final route = history.last;
     // The route has been closed.
@@ -143,7 +141,11 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
     } else {
       navigatorState.removeRoute(route);
     }
-    return Future.value(true);
+
+    return Future.value(true).then((value) async {
+      _poppedResultCallback(route.poppedResultCallback, route.settings.params);
+      return value;
+    });
   }
 
   Future<bool> popTo(
@@ -162,8 +164,10 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
 
     final route = history[index];
 
-    verbose('popTo: url->${route.settings.url} '
-        'index->${route.settings.index}');
+    verbose(
+      'popTo: url->${route.settings.url} '
+      'index->${route.settings.index}',
+    );
 
     ThrioNavigatorImplement.shared().pageObservers.willAppear(
           route.settings,
@@ -198,8 +202,10 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
       return Future.value(false);
     }
 
-    verbose('remove: url->${route.settings.url} '
-        'index->${route.settings.index}');
+    verbose(
+      'remove: url->${route.settings.url} '
+      'index->${route.settings.index}',
+    );
 
     route.routeAction = NavigatorRouteAction.remove;
 
@@ -229,4 +235,45 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
 
   @override
   Widget build(BuildContext context) => widget.child;
+
+  void _poppedResultCallback(
+    NavigatorParamsCallback poppedResultCallback,
+    dynamic params,
+  ) {
+    if (poppedResultCallback != null) {
+      if (params == null) {
+        poppedResultCallback(null);
+      } else {
+        final type = params.runtimeType;
+        if (type != null && params is Map) {
+          // ignore: avoid_as
+          final typeString = params['__thrio_TParams__'] as String;
+          if (type != null) {
+            final jsonDeparsers =
+                ThrioNavigatorImplement.shared().jsonDeparsers;
+            final type = jsonDeparsers.keys.lastWhere(
+                (it) => it.toString() == typeString,
+                orElse: () => null);
+            if (type != null) {
+              // ignore: avoid_as
+              poppedResultCallback(<type>() {
+                final paramsInstance = ThrioNavigatorImplement.shared()
+                    .jsonDeparsers[type]
+                    ?.call(params.cast<String, dynamic>());
+                if (paramsInstance != null && paramsInstance is type) {
+                  return paramsInstance;
+                }
+                return null;
+              });
+            }
+          }
+        } else {
+          // ignore: unused_local_variable
+          final paramsType = params.runtimeType;
+          // ignore: avoid_as
+          poppedResultCallback(<paramsType>() => params as paramsType);
+        }
+      }
+    }
+  }
 }

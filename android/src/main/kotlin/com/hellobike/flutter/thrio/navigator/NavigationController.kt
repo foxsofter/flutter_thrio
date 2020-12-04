@@ -199,12 +199,12 @@ internal object NavigationController : Application.ActivityLifecycleCallbacks {
 
     object Notify {
 
-        fun notify(url: String,
+        fun notify(url: String? = null,
                    index: Int? = null,
                    name: String,
                    params: Any? = null,
                    result: BooleanCallback? = null) {
-            if ((index != null && index < 0) || !PageRoutes.hasRoute(url)) {
+            if ((url != null && index != null && index < 0) || !PageRoutes.hasRoute(url)) {
                 result?.invoke(false)
                 return
             }

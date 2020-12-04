@@ -24,6 +24,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 import '../channel/thrio_channel.dart';
+import '../extension/thrio_object.dart';
 import '../module/module_context.dart';
 import '../registry/registry_map.dart';
 import 'navigator_logger.dart';
@@ -49,13 +50,10 @@ class ThrioNavigatorImplement {
     _channel =
         ThrioChannel(channel: '__thrio_app__${moduleContext.entrypoint}');
     _sendChannel = NavigatorRouteSendChannel(_channel);
-    _receiveChannel = NavigatorRouteReceiveChannel(
-      _channel,
-      _pagePoppedResults,
-    );
+    _receiveChannel = NavigatorRouteReceiveChannel(_channel);
     _observerManager = NavigatorObserverManager();
 
-    verbose('TransitionBuilder builder');
+    verbose('TransitionBuilder init');
     // sendChannel.registerUrls(_pageBuilders.keys.toList());
   }
 
@@ -82,9 +80,10 @@ class ThrioNavigatorImplement {
 
   NavigatorRouteObservers _routeObservers;
 
-  final _pageBuilders = RegistryMap<String, NavigatorPageBuilder>();
+  final pageBuilders = RegistryMap<String, NavigatorPageBuilder>();
 
-  final _pagePoppedResults = <String, NavigatorParamsCallback>{};
+  final jsonDeparsers = RegistryMap<Type, JsonDeparser>();
+  final jsonParsers = RegistryMap<Type, JsonParser>();
 
   final _routeTransitionsBuilders =
       RegistryMap<RegExp, RouteTransitionsBuilder>();
@@ -99,39 +98,53 @@ class ThrioNavigatorImplement {
 
   void ready() => _channel?.invokeMethod<bool>('ready');
 
-  Future<int> push({
+  Future<int> push<TParams>({
     @required String url,
-    dynamic params,
+    TParams params,
     bool animated = true,
     NavigatorParamsCallback poppedResult,
   }) =>
       _sendChannel
-          ?.push(url: url, params: params, animated: animated)
+          ?.push(
+              url: url,
+              params: _parseParams<TParams>(params),
+              animated: animated)
           ?.then<int>((index) {
         if (poppedResult != null && index != null && index > 0) {
-          _pagePoppedResults['$index $url'] = poppedResult;
+          final routeName = '$index $url';
+          final routeHistory =
+              ThrioNavigatorImplement.shared().navigatorState?.history;
+          final route = routeHistory.lastWhere(
+              (it) => it.settings.name == routeName,
+              orElse: () => null);
+          if (route != null) {
+            route.poppedResultCallback = poppedResult;
+          }
         }
         return index;
       });
 
-  Future<bool> notify({
-    @required String url,
+  Future<bool> notify<TParams>({
+    String url,
     int index,
     @required String name,
-    dynamic params,
+    TParams params,
   }) =>
       _sendChannel?.notify(
         name: name,
         url: url,
         index: index,
-        params: params,
+        params: _parseParams<TParams>(params),
       );
 
-  Future<bool> pop({
-    dynamic params,
+  Future<bool> pop<TParams>({
+    TParams params,
     bool animated = true,
   }) =>
-      _sendChannel?.pop(params: params, animated: animated);
+      _sendChannel?.pop(
+        params: _parseParams<TParams>(params),
+        animated: animated,
+      );
 
   Future<bool> popTo({
     @required String url,
@@ -186,12 +199,26 @@ class ThrioNavigatorImplement {
     _channel?.invokeMethod<bool>('hotRestart');
   }
 
-  RegistryMap<String, NavigatorPageBuilder> get pageBuilders => _pageBuilders;
-
   NavigatorPageObservers get pageObservers => _pageObservers;
 
   NavigatorRouteObservers get routeObservers => _routeObservers;
 
   RegistryMap<RegExp, RouteTransitionsBuilder> get routeTransitionsBuilders =>
       _routeTransitionsBuilders;
+
+  dynamic _parseParams<TParams>(TParams params) {
+    if (params == null) {
+      return null;
+    }
+    final type = params.runtimeType;
+    if (type != dynamic && params.isComplexType) {
+      final parseParams = jsonParsers[type]
+          ?.call(<type>() => params as type); // ignore: avoid_as
+      if (parseParams != null) {
+        parseParams['__thrio_TParams__'] = type.toString();
+        return parseParams;
+      }
+    }
+    return params;
+  }
 }

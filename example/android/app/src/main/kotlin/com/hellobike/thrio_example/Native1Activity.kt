@@ -67,7 +67,7 @@ class Native1Activity : AppCompatActivity(), PageNotifyListener {
         }
 
         btn_22.setOnClickListener {
-            ThrioNavigator.push("/biz1/native2",
+            ThrioNavigator.push("/biz2/native2",
                     mapOf("k1" to 1),
                     true,
                     result = {
@@ -80,7 +80,7 @@ class Native1Activity : AppCompatActivity(), PageNotifyListener {
         }
 
         btn_23.setOnClickListener {
-            ThrioNavigator.remove("/biz1/native2")
+            ThrioNavigator.remove("/biz2/native2")
         }
 
         btn_3.setOnClickListener {

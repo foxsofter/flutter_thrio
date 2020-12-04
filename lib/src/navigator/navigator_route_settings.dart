@@ -86,4 +86,11 @@ extension NavigatorRouteSettings on RouteSettings {
     }
     return null;
   }
+
+  set params(dynamic value) {
+    if (arguments != null && arguments is Map<String, dynamic>) {
+      // ignore: avoid_as
+      (arguments as Map<String, dynamic>)['params'] = value;
+    }
+  }
 }

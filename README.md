@@ -1,4 +1,6 @@
-# ![thrio logo](./doc/imgs/thrio.png)
+# 
+
+![thrio logo](./doc/imgs/thrio.png)
 
 [![Gitter Channel][]][gitter badge] [![pub package](https://img.shields.io/pub/v/thrio.svg)](https://pub.dartlang.org/packages/thrio) [![license](https://img.shields.io/github/license/hellobike/thrio.svg?maxAge=2592000)](https://github.com/hellobike/thrio/LICENSE)
 
@@ -8,31 +10,31 @@ Flutter SDK 版本是 `1.22.x` 的，请用 `1.0.0` 及之后的版本。
 
 The `Navigator` for iOS, Android, Flutter.
 
-Version `0.5.1` requires Flutter `>= 1.12.1` and Dart `>= 2.6.0`.
+Version `0.5.1` requires Flutter `>= 1.12.1` and Dart `>= 2.6.0` .
 
 ## Features
 
-- `push`,`pop`,`popTo`,`remove` native pages or flutter pages from anywhere
-- Get the callback parameters when the `push` page is `popped`
-- Send and receive page notifications
-- Register observers for the life cycle of pages
-- Register observers for the route actions of pages
-- Hide native navigation bar for flutter pages
-- Supports custom transition animation on the Flutter side
-- Supports running multiple entry points
+* `push`,  `pop`,  `popTo`,  `remove` native pages or flutter pages from anywhere
+* Get the callback parameters when the `push` page is `popped`
+* Send and receive page notifications
+* Register observers for the life cycle of pages
+* Register observers for the route actions of pages
+* Hide native navigation bar for flutter pages
+* Supports custom transition animation on the Flutter side
+* Supports running multiple entry points
 
 ## Getting started
 
 You should ensure that you add `thrio` as a dependency in your flutter project.
 
-```yaml
+``` yaml
 dependencies:
-  thrio: '^0.5.1'
+  thrio: ^1.0.1
 ```
 
 You can also reference the git repo directly if you want:
 
-```yaml
+``` yaml
 dependencies:
   thrio:
     git: git@github.com:hellobike/thrio.git
@@ -47,7 +49,7 @@ There is a pretty sweet example project in the `example` folder. Check it out. O
 
 ### `push` a page in dart
 
-```dart
+``` dart
 ThrioNavigator.push(url: '/biz1/flutter1');
 
 ThrioNavigator.push(url: '/biz1/native1', params: { '1': {'2': '3'}});
@@ -63,7 +65,7 @@ ThrioNavigator.push(
 
 ### `push` a page in iOS
 
-```objc
+``` objc
 [ThrioNavigator pushUrl:@"/biz1/flutter1"];
 
 [ThrioNavigator pushUrl:@"/biz2/flutter2" poppedResult:^(id _Nonnull params) {
@@ -73,7 +75,7 @@ ThrioNavigator.push(
 
 ### `push` a page in Android
 
-```kotlin
+``` kotlin
 ThrioNavigator.push("/biz1/flutter1",
         mapOf("k1" to 1),
         false,
@@ -85,7 +87,7 @@ ThrioNavigator.push("/biz1/flutter1",
 
 ### `pop` a page in dart
 
-```dart
+``` dart
 ThrioNavigator.pop();
 // Pop the page without animation
 ThrioNavigator.pop(animated: false);
@@ -95,7 +97,7 @@ ThrioNavigator.pop(params: 'popped flutter1'),
 
 ### `pop` a page in iOS
 
-```objc
+``` objc
 [ThrioNavigator pop];
 // Pop a page without animation
 [ThrioNavigator popAnimated:NO];
@@ -105,13 +107,13 @@ ThrioNavigator.pop(params: 'popped flutter1'),
 
 ### `pop` a page in Android
 
-```kotlin
+``` kotlin
 ThrioNavigator.pop(params, animated)
 ```
 
 ### `popTo` a page in dart
 
-```dart
+``` dart
 
 ThrioNavigator.popTo(url: '/biz1/flutter1');
 
@@ -120,7 +122,7 @@ ThrioNavigator.popTo(url: '/biz1/flutter1', animated: false);
 
 ### `popTo` a page in iOS
 
-```objc
+``` objc
 [ThrioNavigator popToUrl:@"/biz1/flutter1"];
 
 [ThrioNavigator popToUrl:@"/biz1/flutter1" animated:NO];
@@ -128,13 +130,13 @@ ThrioNavigator.popTo(url: '/biz1/flutter1', animated: false);
 
 ### `popTo` a page in Android
 
-```kotlin
+``` kotlin
 ThrioNavigator.popTo(url, index)
 ```
 
 ### `remove` a page in dart
 
-```dart
+``` dart
 ThrioNavigator.remove(url: '/biz1/flutter1');
 
 ThrioNavigator.remove(url: '/biz1/flutter1', animated: true);
@@ -142,7 +144,7 @@ ThrioNavigator.remove(url: '/biz1/flutter1', animated: true);
 
 ## `remove` a page in iOS
 
-```objc
+``` objc
 [ThrioNavigator removeUrl:@"/biz1/flutter1"];
 
 [ThrioNavigator removeUrl:@"/biz1/flutter1" animated:NO];
@@ -150,31 +152,31 @@ ThrioNavigator.remove(url: '/biz1/flutter1', animated: true);
 
 ### `remove` a page in Android
 
-```kotlin
+``` kotlin
 ThrioNavigator.remove(url, index)
 ```
 
 ### `notify` a page in dart
 
-```dart
+``` dart
 ThrioNavigator.notify(url: '/biz1/flutter1', name: 'reload');
 ```
 
 ### `notify` a page in iOS
 
-```objc
+``` objc
 [ThrioNavigator notifyUrl:@"/biz1/flutter1" name:@"reload"];
 ```
 
 ### `notify` a page in Android
 
-```kotlin
+``` kotlin
 ThrioNavigator.notify(url, index, params)
 ```
 
 ### receive page notifications in dart
 
-```dart
+``` dart
 NavigatorPageNotify(
       name: 'page1Notify',
       onPageNotify: (params) =>
@@ -186,8 +188,10 @@ NavigatorPageNotify(
 
 `UIViewController` implements the `NavigatorPageNotifyProtocol` and receives page notifications via `onNotify`
 
-```objc
-- (void)onNotify:(NSString *)name params:(id)params {
+``` objc
+
+* (void)onNotify:(NSString *)name params:(id)params {
+
   ThrioLogV(@"/biz1/native1 onNotify: %@, %@", name, params);
 }
 ```
@@ -196,7 +200,7 @@ NavigatorPageNotify(
 
 `Activity` implements the `PageNotifyListener` and receives page notifications via `onNotify`
 
-```kotlin
+``` kotlin
 class Activity : AppCompatActivity(), PageNotifyListener {
     override fun onNotify(name: String, params: Any?) {
     }

@@ -166,6 +166,38 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark - notify methods
 
+/// Send a notification to all page.
+///
+/// Notifications will be triggered when the page enters the foreground.
+/// Notifications with the same name will be overwritten.
+///
++ (void)notifyWithName:(NSString *)name;
+
+/// Send a notification to all page.
+///
+/// Notifications will be triggered when the page enters the foreground.
+/// Notifications with the same name will be overwritten.
+///
++ (void)notifyWithName:(NSString *)name
+                result:(ThrioBoolCallback)result;
+
+/// Send a notification to all page.
+///
+/// Notifications will be triggered when the page enters the foreground.
+/// Notifications with the same name will be overwritten.
+///
++ (void)notifyWithName:(NSString *)name
+                params:(id)params;
+
+/// Send a notification to all page.
+///
+/// Notifications will be triggered when the page enters the foreground.
+/// Notifications with the same name will be overwritten.
+///
++ (void)notifyWithName:(NSString *)name
+                params:(id)params
+                result:(ThrioBoolCallback)result;
+
 /// Send a notification to the page.
 ///
 /// Notifications will be triggered when the page enters the foreground.
