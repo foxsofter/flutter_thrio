@@ -60,7 +60,7 @@ class NavigatorPageObserverChannel {
     RouteSettings routeSettings,
     NavigatorRouteAction routeAction,
   ) {
-    final arguments = routeSettings.toArguments();
+    final arguments = routeSettings.toArguments()..remove('params');
     arguments['routeAction'] = routeAction.toString().split('.').last;
     _channel.invokeMethod(
       'willAppear',
@@ -72,7 +72,7 @@ class NavigatorPageObserverChannel {
     RouteSettings routeSettings,
     NavigatorRouteAction routeAction,
   ) {
-    final arguments = routeSettings.toArguments();
+    final arguments = routeSettings.toArguments()..remove('params');
     arguments['routeAction'] = routeAction.toString().split('.').last;
     _channel.invokeMethod(
       'didAppear',
@@ -84,7 +84,7 @@ class NavigatorPageObserverChannel {
     RouteSettings routeSettings,
     NavigatorRouteAction routeAction,
   ) {
-    final arguments = routeSettings.toArguments();
+    final arguments = routeSettings.toArguments()..remove('params');
     arguments['routeAction'] = routeAction.toString().split('.').last;
     _channel.invokeMethod(
       'willDisappear',
@@ -96,7 +96,7 @@ class NavigatorPageObserverChannel {
     RouteSettings routeSettings,
     NavigatorRouteAction routeAction,
   ) {
-    final arguments = routeSettings.toArguments();
+    final arguments = routeSettings.toArguments()..remove('params');
     arguments['routeAction'] = routeAction.toString().split('.').last;
     _channel.invokeMethod(
       'didDisappear',

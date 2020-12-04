@@ -27,6 +27,8 @@ import 'package:flutter/widgets.dart';
 import '../navigator/navigator_logger.dart';
 import '../navigator/thrio_navigator_implement.dart';
 import 'module_context.dart';
+import 'module_json_deparser.dart';
+import 'module_json_parser.dart';
 import 'module_page_builder.dart';
 import 'module_page_observer.dart';
 import 'module_route_observer.dart';
@@ -71,6 +73,12 @@ mixin ThrioModule {
       if (module is ModuleRouteTransitionsBuilder) {
         module.onRouteTransitionsBuilderRegister(moduleContext);
       }
+      if (module is ModuleJsonParser) {
+        module.onJsonParserRegister(moduleContext);
+      }
+      if (module is ModuleJsonDeparser) {
+        module.onJsonDeparserRegister(moduleContext);
+      }
     }
     Future.microtask(() {
       for (final module in values) {
@@ -95,6 +103,7 @@ mixin ThrioModule {
   ///
   /// return value is `params`.
   ///
+  @Deprecated('')
   Stream onPageNotify({
     @required String name,
     @required String url,
@@ -107,5 +116,6 @@ mixin ThrioModule {
       );
 
   bool get navigatorLogEnabled => navigatorLogging;
+
   set navigatorLogEnabled(bool enabled) => navigatorLogging = enabled;
 }

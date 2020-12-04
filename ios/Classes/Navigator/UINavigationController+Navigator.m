@@ -121,7 +121,7 @@ NS_ASSUME_NONNULL_BEGIN
     }
 }
 
-- (BOOL)thrio_notifyUrl:(NSString *)url
+- (BOOL)thrio_notifyUrl:(NSString *_Nullable)url
                   index:(NSNumber *_Nullable)index
                    name:(NSString *)name
                  params:(id _Nullable)params {
@@ -129,7 +129,7 @@ NS_ASSUME_NONNULL_BEGIN
 
     NSArray *vcs = self.viewControllers;
     for (UIViewController *vc in vcs) {
-        NavigatorPageRoute *last = [vc thrio_getRouteByUrl:url index:index];
+        NavigatorPageRoute *last = url ? [vc thrio_getRouteByUrl:url index:index] : [vc thrio_lastRoute];
         if (last) {
             [vc thrio_notifyUrl:url index:index name:name params:params];
             isMatch = YES;

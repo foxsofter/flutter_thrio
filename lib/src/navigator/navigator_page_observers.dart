@@ -37,18 +37,26 @@ class NavigatorPageObservers {
   NavigatorPageObserverChannel _channel;
 
   void willAppear(
-          RouteSettings routeSettings, NavigatorRouteAction routeAction) =>
+    RouteSettings routeSettings,
+    NavigatorRouteAction routeAction,
+  ) =>
       _channel.willAppear(routeSettings, routeAction);
 
   void didAppear(
-          RouteSettings routeSettings, NavigatorRouteAction routeAction) =>
+    RouteSettings routeSettings,
+    NavigatorRouteAction routeAction,
+  ) =>
       _channel.didAppear(routeSettings, routeAction);
 
   void willDisappear(
-          RouteSettings routeSettings, NavigatorRouteAction routeAction) =>
+    RouteSettings routeSettings,
+    NavigatorRouteAction routeAction,
+  ) =>
       _channel.willDisappear(routeSettings, routeAction);
 
   void didDisappear(
-          RouteSettings routeSettings, NavigatorRouteAction routeAction) =>
+    RouteSettings routeSettings,
+    NavigatorRouteAction routeAction,
+  ) =>
       _channel.didDisappear(routeSettings, routeAction);
 }

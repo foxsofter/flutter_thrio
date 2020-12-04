@@ -125,6 +125,25 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark - notify methods
 
++ (void)notifyWithName:(NSString *)name {
+    [self _notifyUrl:nil index:nil name:name params:nil result:nil];
+}
+
++ (void)notifyWithName:(NSString *)name
+                result:(ThrioBoolCallback)result {
+    [self _notifyUrl:nil index:nil name:name params:nil result:result];
+}
+
++ (void)notifyWithName:(NSString *)name params:(id)params {
+    [self _notifyUrl:nil index:nil name:name params:params result:nil];
+}
+
++ (void)notifyWithName:(NSString *)name
+                params:(id)params
+                result:(ThrioBoolCallback)result {
+    [self _notifyUrl:nil index:nil name:name params:params result:result];
+}
+
 + (void)notifyUrl:(NSString *)url name:(NSString *)name {
     [self _notifyUrl:url index:nil name:name params:nil result:nil];
 }

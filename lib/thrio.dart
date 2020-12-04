@@ -23,9 +23,12 @@ library thrio;
 
 export 'src/channel/thrio_channel.dart';
 export 'src/extension/thrio_build_context.dart';
+export 'src/extension/thrio_object.dart';
 export 'src/extension/thrio_stateful_widget.dart';
 export 'src/logger/thrio_logger.dart';
 export 'src/module/module_context.dart';
+export 'src/module/module_json_deparser.dart';
+export 'src/module/module_json_parser.dart';
 export 'src/module/module_page_builder.dart';
 export 'src/module/module_page_observer.dart';
 export 'src/module/module_route_observer.dart';

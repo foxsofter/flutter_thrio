@@ -114,3 +114,7 @@
 * feat: support root FlutterViewController and ThrioActivity
 * feat: add interface for builder and navigatorObservers
 * fix: #118
+
+## 1.1.0
+
+* feat: Support for passing complex types between flutter pages

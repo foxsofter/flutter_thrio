@@ -9,7 +9,7 @@
 #import "ThrioViewController2.h"
 #import <thrio/Thrio.h>
 
-@interface ThrioViewController2 ()
+@interface ThrioViewController2 ()<NavigatorPageNotifyProtocol>
 
 @property (weak, nonatomic) IBOutlet UILabel *label;
 
@@ -94,6 +94,10 @@
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
 //    self.thrio_hidesNavigationBar = YES;
+}
+
+- (void)onNotify:(NSString *)name params:(id)params {
+    ThrioLogV(@"/biz2/native2 onNotify: %@, %@", name, params);
 }
 
 @end

@@ -67,7 +67,7 @@
                 } poppedResult:poppedResult];
 }
 
-+ (void)_notifyUrl:(NSString *)url
++ (void)_notifyUrl:(NSString *_Nullable)url
              index:(NSNumber *_Nullable)index
               name:(NSString *)name
             params:(id _Nullable)params

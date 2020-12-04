@@ -38,10 +38,10 @@ class NavigatorPageLifecycle extends StatefulWidget {
     @required this.child,
   }) : super(key: key);
 
-  final NavigatorLifecycleCallback willAppear;
-  final NavigatorLifecycleCallback didAppear;
-  final NavigatorLifecycleCallback willDisappear;
-  final NavigatorLifecycleCallback didDisappear;
+  final NavigatorRouteSettingsCallback willAppear;
+  final NavigatorRouteSettingsCallback didAppear;
+  final NavigatorRouteSettingsCallback willDisappear;
+  final NavigatorRouteSettingsCallback didDisappear;
   final Widget child;
 
   @override

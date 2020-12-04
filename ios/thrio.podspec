@@ -4,7 +4,7 @@
 #
 Pod::Spec.new do |s|
   s.name             = 'thrio'
-  s.version          = '1.0.1'
+  s.version          = '1.1.0'
   s.summary          = 'Thrio makes it easy and fast to add flutter to existing mobile applications, and provide a simple and consistent navigator API.'
   s.description      = <<-DESC
 A flutter plugin which enables hybrid integration of flutter for existing ios or android apps.
@@ -33,7 +33,7 @@ A flutter plugin which enables hybrid integration of flutter for existing ios or
                            'Classes/Navigator/UIViewController+WillPopCallback.h',
                            'Classes/Registry/*.h',]
   s.dependency 'Flutter'
-  s.platform = :ios, '8.0'
+  s.platform = :ios, '9.0'
 
   # Flutter.framework does not contain a i386 slice. Only x86_64 simulators are supported.
   s.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES', 'VALID_ARCHS[sdk=iphonesimulator*]' => 'x86_64' }

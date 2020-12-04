@@ -19,7 +19,7 @@
 @implementation ThrioViewController
 
 - (IBAction)pushFlutterPage:(id)sender {
-    [ThrioNavigator pushUrl:@"/biz1/flutter1"];
+    [ThrioNavigator pushUrl:@"/biz1/flutter1" params:@1];
 }
 
 - (IBAction)popFlutter1:(id)sender {
@@ -43,18 +43,22 @@
 }
 
 - (IBAction)pushNative2:(id)sender {
-    [ThrioNavigator pushUrl:@"/biz1/native2"
+    [ThrioNavigator pushUrl:@"/biz2/native2"
                poppedResult:^(id _Nullable params) {
-        ThrioLogV(@"/biz1/native2 popped: %@", params);
+        ThrioLogV(@"/biz2/native2 popped: %@", params);
     }];
 }
 
 - (IBAction)popNative2:(id)sender {
-    [ThrioNavigator removeUrl:@"/biz1/native2"];
+    [ThrioNavigator removeUrl:@"/biz2/native2"];
 }
 
 - (IBAction)pop:(id)sender {
     [ThrioNavigator pop];
+}
+
+- (IBAction)notifyAll:(id)sender {
+    [ThrioNavigator notifyWithName:@"all_page_notify"];
 }
 
 - (IBAction)pushNative1WithNvc:(id)sender {

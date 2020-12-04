@@ -3,12 +3,14 @@ package com.hellobike.thrio_example
 import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import com.hellobike.flutter.thrio.navigator.PageNotifyListener
 import com.hellobike.flutter.thrio.navigator.RouteSettings
 import com.hellobike.flutter.thrio.navigator.ThrioNavigator
 import io.flutter.Log
-import kotlinx.android.synthetic.main.activity_native.*
+import kotlinx.android.synthetic.main.activity_native2.tv_native
+import kotlinx.android.synthetic.main.activity_native2.*
 
-class Native2Activity : AppCompatActivity() {
+class Native2Activity : AppCompatActivity(), PageNotifyListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -26,7 +28,7 @@ class Native2Activity : AppCompatActivity() {
                         Log.i("Thrio", "push result data $it")
                     },
                     poppedResult = {
-                        Log.i("Thrio", "/biz1/native2 poppedResult call params $it")
+                        Log.i("Thrio", "/biz2/native2 poppedResult call params $it")
                     }
             )
         }
@@ -44,7 +46,7 @@ class Native2Activity : AppCompatActivity() {
                         Log.i("Thrio", "push result data $it")
                     },
                     poppedResult = {
-                        Log.i("Thrio", "/biz1/native2 poppedResult call params $it")
+                        Log.i("Thrio", "/biz2/native2 poppedResult call params $it")
                     }
             )
         }
@@ -67,6 +69,10 @@ class Native2Activity : AppCompatActivity() {
         btn_3.setOnClickListener {
             ThrioNavigator.pop("native 2 popResult")
         }
+
+        btn_notify_all.setOnClickListener {
+            ThrioNavigator.notify(name = "notify_all_page")
+        }
     }
 
     override fun onResume() {
@@ -77,8 +83,13 @@ class Native2Activity : AppCompatActivity() {
         if (data != null) {
             @Suppress("UNCHECKED_CAST")
             RouteSettings.fromArguments(data as Map<String, Any?>)?.apply {
-                tv_native.text = "/biz1/native2 index $index"
+                tv_native.text = "/biz2/native2 index $index"
             }
         }
+    }
+
+    override fun onNotify(name: String, params: Any?) {
+        Log.i("Thrio", "/biz2/native2 onNotify name $name params $params")
+        // result with url
     }
 }

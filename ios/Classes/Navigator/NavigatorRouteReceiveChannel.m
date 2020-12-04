@@ -125,21 +125,9 @@ NS_ASSUME_NONNULL_BEGIN
                     }
                     return;
                 }
-                NSString *url = arguments[@"url"];
-                if (url.length < 1) {
-                    if (result) {
-                        result(@NO);
-                    }
-                    return;
-                }
-                NSNumber *index =
-                    [arguments[@"index"] isKindOfClass:NSNull.class]
-            ? nil
-            : arguments[@"index"];
-                id params =
-                    [arguments[@"params"] isKindOfClass:NSNull.class]
-            ? nil
-            : arguments[@"params"];
+                NSString *url = [arguments[@"url"] isKindOfClass:NSNull.class] ? nil : arguments[@"url"];
+                NSNumber *index = [arguments[@"index"] isKindOfClass:NSNull.class] ? nil : arguments[@"index"];
+                id params = [arguments[@"params"] isKindOfClass:NSNull.class] ? nil : arguments[@"params"];
                 [ThrioNavigator _notifyUrl:url
                                      index:index
                                       name:name
@@ -157,12 +145,8 @@ NS_ASSUME_NONNULL_BEGIN
                      handler:
      ^void (NSDictionary<NSString *, id> *arguments,
             ThrioIdCallback _Nullable result) {
-                id params =
-                    [arguments[@"params"] isKindOfClass:NSNull.class]
-            ? nil
-            : arguments[@"params"];
+                id params = [arguments[@"params"] isKindOfClass:NSNull.class] ? nil : arguments[@"params"];
                 BOOL animated = [arguments[@"animated"] boolValue];
-
                 NavigatorVerbose(@"on pop");
                 [ThrioNavigator _popParams:params
                                   animated:animated
