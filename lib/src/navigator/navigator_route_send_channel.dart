@@ -42,7 +42,7 @@ class NavigatorRouteSendChannel {
   }
 
   Future<bool> notify({
-    @required String url,
+    String url,
     int index,
     @required String name,
     dynamic params,

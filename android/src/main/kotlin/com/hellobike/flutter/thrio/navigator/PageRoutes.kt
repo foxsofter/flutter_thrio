@@ -118,7 +118,11 @@ internal object PageRoutes : Application.ActivityLifecycleCallbacks {
         holder.push(route, result)
     }
 
-    fun notify(url: String, index: Int? = null, name: String, params: Any?, result: BooleanCallback) {
+    fun notify(url: String?,
+               index: Int?,
+               name: String,
+               params: Any?,
+               result: BooleanCallback) {
         if (!hasRoute(url, index)) {
             result(false)
             return
@@ -133,7 +137,7 @@ internal object PageRoutes : Application.ActivityLifecycleCallbacks {
         result(isMatch)
     }
 
-    fun pop(params: Any? = null, animated: Boolean, result: BooleanCallback) {
+    fun pop(params: Any?, animated: Boolean, result: BooleanCallback) {
         val holder = routeHolders.lastOrNull()
         if (holder == null) {
             result(false)

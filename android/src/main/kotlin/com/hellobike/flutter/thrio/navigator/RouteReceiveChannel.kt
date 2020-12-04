@@ -62,7 +62,7 @@ internal class RouteReceiveChannel(val channel: ThrioChannel,
     private fun onNotify() {
         channel.registryMethod("notify") { arguments, result ->
             if (arguments == null) return@registryMethod
-            val url = arguments["url"] as String
+            val url = if (arguments["url"] != null) arguments["url"] as String else null
             val index = if (arguments["index"] != null) arguments["index"] as Int else 0
             val name = arguments["name"] as String
             val params = arguments["params"]

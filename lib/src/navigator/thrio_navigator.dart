@@ -49,7 +49,7 @@ abstract class ThrioNavigator {
   /// Notifications with the same `name` will be overwritten.
   ///
   static Future<bool> notify<TParams>({
-    @required String url,
+    String url,
     int index,
     @required String name,
     TParams params,

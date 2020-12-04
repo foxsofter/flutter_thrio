@@ -80,10 +80,10 @@ internal data class PageRouteHolder(val pageId: Int,
         }
     }
 
-    fun notify(url: String, index: Int?, name: String, params: Any?, result: BooleanCallback) {
+    fun notify(url: String?, index: Int?, name: String, params: Any?, result: BooleanCallback) {
         var isMatch = false
         routes.forEach {
-            if (it.settings.url == url
+            if ((url == null || it.settings.url == url)
                     && (index == null || index == 0 || it.settings.index == index)) {
                 isMatch = true
                 it.addNotify(name, params)

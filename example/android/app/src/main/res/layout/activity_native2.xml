@@ -16,43 +16,57 @@
         android:id="@+id/btn_10"
         android:layout_width="180dp"
         android:layout_height="60dp"
-        android:text="@string/push_flutter_2" />
+        android:text="@string/push_flutter_2"
+        android:textAllCaps="false" />
 
     <Button
         android:id="@+id/btn_11"
         android:layout_width="180dp"
         android:layout_height="60dp"
-        android:text="@string/remove_flutter_2" />
+        android:text="@string/remove_flutter_2"
+        android:textAllCaps="false" />
 
     <Button
         android:id="@+id/btn_12"
         android:layout_width="180dp"
         android:layout_height="60dp"
-        android:text="@string/push_native_1" />
+        android:text="@string/push_native_1"
+        android:textAllCaps="false" />
 
     <Button
         android:id="@+id/btn_13"
         android:layout_width="180dp"
         android:layout_height="60dp"
-        android:text="@string/remove_native_1" />
+        android:text="@string/remove_native_1"
+        android:textAllCaps="false" />
 
     <Button
         android:id="@+id/btn_20"
         android:layout_width="180dp"
         android:layout_height="60dp"
-        android:text="popTo native1" />
+        android:text="@string/popto_native1"
+        android:textAllCaps="false" />
 
     <Button
         android:id="@+id/btn_21"
         android:layout_width="250dp"
         android:layout_height="60dp"
-        android:text="push native1 without thrio" />
+        android:text="@string/push_native1_without_thrio"
+        android:textAllCaps="false" />
 
     <Button
         android:id="@+id/btn_3"
         android:layout_width="180dp"
         android:layout_height="60dp"
-        android:text="@string/pop" />
+        android:text="@string/pop"
+        android:textAllCaps="false" />
+
+    <Button
+        android:id="@+id/btn_notify_all"
+        android:layout_width="180dp"
+        android:layout_height="60dp"
+        android:text="@string/notify_all"
+        android:textAllCaps="false" />
 
     <!--    <Button-->
     <!--        android:id="@+id/btn_flutter"-->

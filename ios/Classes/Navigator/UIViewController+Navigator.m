@@ -116,7 +116,7 @@ NS_ASSUME_NONNULL_BEGIN
     }
 }
 
-- (BOOL)thrio_notifyUrl:(NSString *)url
+- (BOOL)thrio_notifyUrl:(NSString *_Nullable)url
                   index:(NSNumber *_Nullable)index
                    name:(NSString *)name
                  params:(id _Nullable)params {
@@ -124,7 +124,7 @@ NS_ASSUME_NONNULL_BEGIN
 
     NavigatorPageRoute *last = self.thrio_lastRoute;
     do {
-        if ([last.settings.url isEqualToString:url] &&
+        if ((url == nil || [last.settings.url isEqualToString:url]) &&
             (index == nil || [last.settings.index isEqualToNumber:index])) {
             [last addNotify:name params:params];
             if (self == self.navigationController.topViewController &&
@@ -416,7 +416,7 @@ NS_ASSUME_NONNULL_BEGIN
         [self thrio_onNotify:self.thrio_lastRoute];
     }
 
-    if (self.thrio_hidesNavigationBar_.boolValue != self.navigationController.navigationBarHidden) {
+    if (self.thrio_hidesNavigationBar_ && self.thrio_hidesNavigationBar_.boolValue != self.navigationController.navigationBarHidden) {
         self.navigationController.navigationBarHidden = self.thrio_hidesNavigationBar_.boolValue;
     }
 

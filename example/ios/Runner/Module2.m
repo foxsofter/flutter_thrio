@@ -21,7 +21,7 @@ NS_ASSUME_NONNULL_BEGIN
         return [sb
                 instantiateViewControllerWithIdentifier:@"ThrioViewController2"];
     }
-                  forUrl:@"/biz1/native2"];
+                  forUrl:@"/biz2/native2"];
 
     [self registerRouteObserver:self];
 }

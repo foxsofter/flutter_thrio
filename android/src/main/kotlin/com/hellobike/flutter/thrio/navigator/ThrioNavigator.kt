@@ -43,6 +43,16 @@ object ThrioNavigator {
 
     @JvmStatic
     @JvmOverloads
+    fun notify(url: String? = null,
+               index: Int = 0,
+               name: String,
+               params: Any? = null,
+               result: BooleanCallback = {}) {
+        NavigationController.Notify.notify(url, index, name, params, result)
+    }
+
+    @JvmStatic
+    @JvmOverloads
     fun pop(params: Any? = null,
             animated: Boolean = true,
             result: BooleanCallback = {}) {
@@ -66,16 +76,6 @@ object ThrioNavigator {
               result: BooleanCallback = {}
     ) {
         NavigationController.PopTo.popTo(url, index, animated, result)
-    }
-
-    @JvmStatic
-    @JvmOverloads
-    fun notify(url: String,
-               index: Int = 0,
-               name: String,
-               params: Any?,
-               result: BooleanCallback = {}) {
-        NavigationController.Notify.notify(url, index, name, params, result)
     }
 
     @JvmStatic

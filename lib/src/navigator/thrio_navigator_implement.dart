@@ -125,7 +125,7 @@ class ThrioNavigatorImplement {
       });
 
   Future<bool> notify<TParams>({
-    @required String url,
+    String url,
     int index,
     @required String name,
     TParams params,

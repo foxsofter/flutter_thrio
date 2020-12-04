@@ -103,7 +103,7 @@ class _Page2State extends State<Page2> {
                 ),
                 InkWell(
                   onTap: () => ThrioNavigator.push(
-                      url: '/biz1/native2',
+                      url: '/biz2/native2',
                       params: {
                         '1': {'2': '3'}
                       },
@@ -158,6 +158,21 @@ class _Page2State extends State<Page2> {
                       color: Colors.grey,
                       child: const Text(
                         'notify flutter2',
+                        style: TextStyle(fontSize: 22, color: Colors.black),
+                      )),
+                ),
+                InkWell(
+                  onTap: () {
+                    ThrioNavigator.notify(
+                        name: 'all_page_notify_from_flutter2',
+                        params: People(name: '大宝剑', age: 2, sex: 'x'));
+                  },
+                  child: Container(
+                      padding: const EdgeInsets.all(8),
+                      margin: const EdgeInsets.all(8),
+                      color: Colors.grey,
+                      child: const Text(
+                        'notify all',
                         style: TextStyle(fontSize: 22, color: Colors.black),
                       )),
                 ),
