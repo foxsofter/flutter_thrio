@@ -117,4 +117,5 @@
 
 ## 1.1.0
 
-* feat: Support for passing complex types between flutter pages
+* feat: support for passing complex types between flutter pages
+* feat: support notify all page
