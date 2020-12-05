@@ -2,13 +2,14 @@
 
 ![thrio logo](./doc/imgs/thrio.png)
 
+[![pub package](https://img.shields.io/pub/v/thrio.svg)](https://pub.dartlang.org/packages/thrio)
 [![license](https://img.shields.io/github/license/hellobike/thrio.svg?maxAge=2592000)](https://github.com/hellobike/thrio/LICENSE)
 
 [中文文档](./doc/Feature.md) [英文文档](./doc/Feature_EN.md) [问题集](./doc/Questions.md) QQ 群号码：1014085473
 
 ## 优势
 
-01. 支持 `FlutterEngine` 的复用，还支持 `FlutterViewController` 和 `Activity` 的复用，这保证了 `Flutter` 混合栈框架在内存占用上是最优解
+01. 支持 `FlutterEngine` 的复用，还支持 `FlutterViewController` 和 `FlutterActivity` 的复用，这保证了 `Flutter` 混合栈框架在内存占用上是最优解
 02. 在 1 情形下，支持 **跨栈路由** 的能力，这是目前唯一能做到的 Flutter混合栈开源框架
 03. 在 1 情形下，除了提供 `push` 和 `pop`，也提供了 `remove` 和 `popTo` 的能力，目前唯一能做到的 Flutter混合栈开源框架
 04. 在 1 情形下，提供页面通知的能力，组合 `push` 和 `pop` 的路由传参能力，可以让状态参数在页面间传递，省去很多 channel 通讯的必要
