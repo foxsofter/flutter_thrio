@@ -90,7 +90,7 @@ class _NavigatorPageNotifyState<T> extends State<NavigatorPageNotify<T>> {
           if (params is Map<String, dynamic>) {
             if (T.isComplexType && T != dynamic) {
               final paramsInstance = ThrioNavigatorImplement.shared()
-                  .jsonDeparsers[T]
+                  .jsonDeserializers[T]
                   ?.call(params);
               if (paramsInstance != null) {
                 // ignore: avoid_as

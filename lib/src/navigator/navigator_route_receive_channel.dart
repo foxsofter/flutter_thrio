@@ -43,7 +43,7 @@ class NavigatorRouteReceiveChannel {
           'push: url->${routeSettings.url} '
           'index->${routeSettings.index}',
         );
-        routeSettings.params = _deparseParams(routeSettings.params);
+        routeSettings.params = _deserializeParams(routeSettings.params);
         final animatedValue = arguments['animated'];
         final animated =
             (animatedValue != null && animatedValue is bool) && animatedValue;
@@ -95,16 +95,17 @@ class NavigatorRouteReceiveChannel {
               (index == null || arguments.containsValue(index)))
           .map((arguments) => arguments['params']);
 
-  dynamic _deparseParams(dynamic params) {
+  dynamic _deserializeParams(dynamic params) {
     if (params != null && params is Map) {
       final typeString =
           params['__thrio_TParams__'] as String; // ignore: avoid_as
       if (typeString != null) {
-        final jsonDeparsers = ThrioNavigatorImplement.shared().jsonDeparsers;
-        final type =
-            jsonDeparsers.keys.lastWhere((it) => it.toString() == typeString);
+        final jsonDeserializers =
+            ThrioNavigatorImplement.shared().jsonDeserializers;
+        final type = jsonDeserializers.keys
+            .lastWhere((it) => it.toString() == typeString);
         final paramsInstance = ThrioNavigatorImplement.shared()
-            .jsonDeparsers[type]
+            .jsonDeserializers[type]
             ?.call(params.cast<String, dynamic>());
         if (paramsInstance != null) {
           return paramsInstance;

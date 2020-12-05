@@ -82,8 +82,8 @@ class ThrioNavigatorImplement {
 
   final pageBuilders = RegistryMap<String, NavigatorPageBuilder>();
 
-  final jsonDeparsers = RegistryMap<Type, JsonDeparser>();
-  final jsonParsers = RegistryMap<Type, JsonParser>();
+  final jsonDeserializers = RegistryMap<Type, JsonDeserializer>();
+  final jsonSerializers = RegistryMap<Type, JsonSerializer>();
 
   final _routeTransitionsBuilders =
       RegistryMap<RegExp, RouteTransitionsBuilder>();
@@ -107,7 +107,7 @@ class ThrioNavigatorImplement {
       _sendChannel
           ?.push(
               url: url,
-              params: _parseParams<TParams>(params),
+              params: _serializeParams<TParams>(params),
               animated: animated)
           ?.then<int>((index) {
         if (poppedResult != null && index != null && index > 0) {
@@ -134,7 +134,7 @@ class ThrioNavigatorImplement {
         name: name,
         url: url,
         index: index,
-        params: _parseParams<TParams>(params),
+        params: _serializeParams<TParams>(params),
       );
 
   Future<bool> pop<TParams>({
@@ -142,7 +142,7 @@ class ThrioNavigatorImplement {
     bool animated = true,
   }) =>
       _sendChannel?.pop(
-        params: _parseParams<TParams>(params),
+        params: _serializeParams<TParams>(params),
         animated: animated,
       );
 
@@ -206,17 +206,17 @@ class ThrioNavigatorImplement {
   RegistryMap<RegExp, RouteTransitionsBuilder> get routeTransitionsBuilders =>
       _routeTransitionsBuilders;
 
-  dynamic _parseParams<TParams>(TParams params) {
+  dynamic _serializeParams<TParams>(TParams params) {
     if (params == null) {
       return null;
     }
     final type = params.runtimeType;
     if (type != dynamic && params.isComplexType) {
-      final parseParams = jsonParsers[type]
+      final serializeParams = jsonSerializers[type]
           ?.call(<type>() => params as type); // ignore: avoid_as
-      if (parseParams != null) {
-        parseParams['__thrio_TParams__'] = type.toString();
-        return parseParams;
+      if (serializeParams != null) {
+        serializeParams['__thrio_TParams__'] = type.toString();
+        return serializeParams;
       }
     }
     return params;

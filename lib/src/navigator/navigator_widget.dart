@@ -249,16 +249,16 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
           // ignore: avoid_as
           final typeString = params['__thrio_TParams__'] as String;
           if (type != null) {
-            final jsonDeparsers =
-                ThrioNavigatorImplement.shared().jsonDeparsers;
-            final type = jsonDeparsers.keys.lastWhere(
+            final jsonDeserializers =
+                ThrioNavigatorImplement.shared().jsonDeserializers;
+            final type = jsonDeserializers.keys.lastWhere(
                 (it) => it.toString() == typeString,
                 orElse: () => null);
             if (type != null) {
               // ignore: avoid_as
               poppedResultCallback(<type>() {
                 final paramsInstance = ThrioNavigatorImplement.shared()
-                    .jsonDeparsers[type]
+                    .jsonDeserializers[type]
                     ?.call(params.cast<String, dynamic>());
                 if (paramsInstance != null && paramsInstance is type) {
                   return paramsInstance;

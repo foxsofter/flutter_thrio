@@ -8,8 +8,8 @@ import 'page2.dart';
 class Module
     with
         ThrioModule,
-        ModuleJsonParser,
-        ModuleJsonDeparser,
+        ModuleJsonSerializer,
+        ModuleJsonDeserializer,
         ModulePageBuilder,
         ModulePageObserver,
         ModuleRouteTransitionsBuilder,
@@ -33,13 +33,13 @@ class Module
   }
 
   @override
-  void onJsonParserRegister(ModuleContext moduleContext) {
-    registerJsonParser<People>((instance) => instance<People>().toJson());
+  void onJsonSerializerRegister(ModuleContext moduleContext) {
+    registerJsonSerializer<People>((instance) => instance<People>().toJson());
   }
 
   @override
-  void onJsonDeparserRegister(ModuleContext moduleContext) {
-    registerJsonDeparser((arguments) => People.fromJson(arguments));
+  void onJsonDeserializerRegister(ModuleContext moduleContext) {
+    registerJsonDeserializer((arguments) => People.fromJson(arguments));
   }
 
   @override

@@ -26,15 +26,15 @@ import '../navigator/thrio_navigator_implement.dart';
 import 'module_context.dart';
 import 'thrio_module.dart';
 
-mixin ModuleJsonDeparser on ThrioModule {
-  /// A function for register a json deparser.
+mixin ModuleJsonSerializer on ThrioModule {
+  /// A function for register a json serializer.
   ///
-  void onJsonDeparserRegister(ModuleContext moduleContext) {}
+  void onJsonSerializerRegister(ModuleContext moduleContext) {}
 
-  /// Register a json deparser for the module.
+  /// Register a json serializer for the module.
   ///
   /// Unregistry by calling the return value `VoidCallback`.
   ///
-  VoidCallback registerJsonDeparser<T>(JsonDeparser<T> deparser) =>
-      ThrioNavigatorImplement.shared().jsonDeparsers.registry(T, deparser);
+  VoidCallback registerJsonSerializer<T>(JsonSerializer serializer) =>
+      ThrioNavigatorImplement.shared().jsonSerializers.registry(T, serializer);
 }
