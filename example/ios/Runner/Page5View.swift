@@ -3,7 +3,7 @@
 //  Runner
 //
 //  Created by foxsofter on 2020/11/2.
-//  Copyright © 2020 The Chromium Authors. All rights reserved.
+//  Copyright © 2020 foxsofter. All rights reserved.
 //
 
 import SwiftUI

@@ -3,7 +3,7 @@
 //  Runner
 //
 //  Created by foxsofter on 2020/2/23.
-//  Copyright © 2020 The Chromium Authors. All rights reserved.
+//  Copyright © 2020 foxsofter. All rights reserved.
 //
 
 #import "Module1.h"
@@ -11,16 +11,15 @@
 
 @implementation Module1
 
-- (void)onPageRegister {
-    [self
-     registerPageBuilder:^UIViewController *_Nullable (
-         NSDictionary<NSString *, id> *_Nonnull params) {
+- (void)onPageBuilderRegister {
+    [self registerPageBuilder:^UIViewController *_Nullable (id params) {
+        ThrioLogI(@"/biz1/native1 pushed params: %@", params);
         UIStoryboard *sb = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
-        return
-        [sb instantiateViewControllerWithIdentifier:@"ThrioViewController"];
-    }
-                  forUrl:@"/biz1/native1"];
+        return [sb instantiateViewControllerWithIdentifier:@"ThrioViewController"];
+    } forUrl:@"/biz1/native1"];
+}
 
+- (void)onPageObserverRegister {
     [self registerPageObserver:self];
 }
 

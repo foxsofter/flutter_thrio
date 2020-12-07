@@ -95,10 +95,7 @@ NS_ASSUME_NONNULL_BEGIN
                     }
                     return;
                 }
-                id params =
-                    [arguments[@"params"] isKindOfClass:NSNull.class]
-            ? nil
-            : arguments[@"params"];
+                id params = [arguments[@"params"] isKindOfClass:NSNull.class] ? nil : arguments[@"params"];
                 BOOL animated = [arguments[@"animated"] boolValue];
                 NavigatorVerbose(@"on push: %@", url);
                 __strong typeof(weakself) strongSelf = weakself;

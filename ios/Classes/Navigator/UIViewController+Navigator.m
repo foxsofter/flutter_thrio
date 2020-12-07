@@ -25,6 +25,8 @@
 #import "NavigatorFlutterEngineFactory.h"
 #import "NavigatorFlutterViewController.h"
 #import "NavigatorLogger.h"
+#import "ThrioNavigator+JsonDeserializers.h"
+#import "ThrioNavigator+JsonSerializers.h"
 #import "ThrioNavigator+PageObservers.h"
 #import "UINavigationController+Navigator.h"
 #import "UINavigationController+PopGesture.h"
@@ -79,7 +81,8 @@ NS_ASSUME_NONNULL_BEGIN
     newRoute.poppedResult = poppedResult;
 
     if ([self isKindOfClass:NavigatorFlutterViewController.class]) {
-        NSMutableDictionary *arguments = [NSMutableDictionary dictionaryWithDictionary:[settings toArguments]];
+        id serializeParams = [ThrioNavigator serializeParams:params];
+        NSMutableDictionary *arguments = [NSMutableDictionary dictionaryWithDictionary:[settings toArgumentsWithParams:serializeParams]];
         [arguments setObject:[NSNumber numberWithBool:animated] forKey:@"animated"];
         NSString *entrypoint = [(NavigatorFlutterViewController *)self entrypoint];
         NavigatorRouteSendChannel *channel = [NavigatorFlutterEngineFactory.shared getSendChannelByEntrypoint:entrypoint];
@@ -148,8 +151,10 @@ NS_ASSUME_NONNULL_BEGIN
         }
         return;
     }
+    id serializeParams = [ThrioNavigator serializeParams:params];
     NSMutableDictionary *arguments =
-        [NSMutableDictionary dictionaryWithDictionary:[route.settings toArgumentsWithParams:params]];
+        [NSMutableDictionary dictionaryWithDictionary:[route.settings
+                                                       toArgumentsWithParams:serializeParams]];
     [arguments setObject:[NSNumber numberWithBool:animated] forKey:@"animated"];
 
     if ([self isKindOfClass:NavigatorFlutterViewController.class]) {
@@ -172,7 +177,8 @@ NS_ASSUME_NONNULL_BEGIN
             // 关闭成功,处理页面回传参数
             if (r) {
                 if (route.poppedResult) {
-                    route.poppedResult(params);
+                    id deserializeParams = [ThrioNavigator deserializeParams:params];
+                    route.poppedResult(deserializeParams);
                 }
                 // 检查打开页面的源引擎是否和关闭页面的源引擎不同，不同则继续发送onPop
                 if (route.fromEntrypoint && ![route.fromEntrypoint isEqualToString:entrypoint]) {
@@ -189,7 +195,8 @@ NS_ASSUME_NONNULL_BEGIN
         if (route == self.thrio_firstRoute) {
             // 关闭成功,处理页面回传参数
             if (route.poppedResult) {
-                route.poppedResult(params);
+                id deserializeParams = [ThrioNavigator deserializeParams:params];
+                route.poppedResult(deserializeParams);
             }
             // 检查打开页面的源引擎是否来自Flutter引擎，是则发送onPon
             if (route.fromEntrypoint) {
@@ -464,11 +471,12 @@ NS_ASSUME_NONNULL_BEGIN
     for (NSString *name in keys) {
         id params = [route removeNotify:name];
         if ([self isKindOfClass:NavigatorFlutterViewController.class]) {
-            NSDictionary *arguments = params ? @{
+            id serializeParams = [ThrioNavigator serializeParams:params];
+            NSDictionary *arguments = serializeParams ? @{
                 @"url": route.settings.url,
                 @"index": route.settings.index,
                 @"name": name,
-                @"params": params,
+                @"params": serializeParams,
             } : @{
                 @"url": route.settings.url,
                 @"index": route.settings.index,
@@ -478,8 +486,9 @@ NS_ASSUME_NONNULL_BEGIN
             NavigatorRouteSendChannel *channel = [NavigatorFlutterEngineFactory.shared getSendChannelByEntrypoint:entrypoint];
             [channel notify:arguments];
         } else {
+            id deserializeParams = [ThrioNavigator deserializeParams:params];
             if ([self conformsToProtocol:@protocol(NavigatorPageNotifyProtocol)]) {
-                [(id<NavigatorPageNotifyProtocol>)self onNotify:name params:params];
+                [(id<NavigatorPageNotifyProtocol>)self onNotify:name params:deserializeParams];
             }
         }
     }

@@ -28,6 +28,7 @@
 #import "NavigatorPageNotifyProtocol.h"
 #import "NavigatorRouteSettings.h"
 #import "ThrioNavigator+Internal.h"
+#import "ThrioNavigator+JsonDeserializers.h"
 #import "ThrioNavigator+PageBuilders.h"
 #import "ThrioNavigator+PageObservers.h"
 #import "ThrioNavigator+RouteObservers.h"
@@ -610,11 +611,13 @@ NS_ASSUME_NONNULL_BEGIN
     return viewController;
 }
 
-- (UIViewController *_Nullable)thrio_createNativeViewControllerWithUrl:(NSString *)url params:(NSDictionary *)params {
+- (UIViewController *_Nullable)thrio_createNativeViewControllerWithUrl:(NSString *)url
+                                                                params:(NSDictionary *)params {
     UIViewController *viewController;
     NavigatorPageBuilder builder = [ThrioNavigator pageBuilders][url];
     if (builder) {
-        viewController = builder(params);
+        id deserializeParams = [ThrioNavigator deserializeParams:params];
+        viewController = builder(deserializeParams);
         if (viewController.thrio_hidesNavigationBar_ == nil) {
             viewController.thrio_hidesNavigationBar_ = @NO;
         }

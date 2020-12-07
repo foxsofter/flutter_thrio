@@ -1,6 +1,6 @@
 // The MIT License (MIT)
 //
-// Copyright (c) 2019 Hellobike Group
+// Copyright (c) 2020 foxsofter
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
 // copy of this software and associated documentation files (the "Software"),
@@ -20,50 +20,16 @@
 // IN THE SOFTWARE.
 
 #import <Foundation/Foundation.h>
-#import "ThrioTypes.h"
+#import "ThrioNavigator.h"
+#import "ThrioRegistryMap.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface ThrioModule : NSObject
+@interface ThrioNavigator (JsonSerializers)
 
-/// Module entrypoint method.
-///
-+ (void)init:(ThrioModule *)rootModule;
++ (ThrioRegistryMap *)jsonSerializers;
 
-+ (void)init:(ThrioModule *)rootModule multiEngineEnabled:(BOOL)enabled;
-
-/// A function for registering a module.
-///
-/// Should be called in `onModuleRegister`.
-///
-- (void)registerModule:(ThrioModule *)module;
-
-/// A function for module initialization that will call  the `onPageRegister`, `onModuleInit` and `onModuleAsyncInit`
-/// methods of all modules.
-///
-/// Should only be called once when the app startups.
-///
-- (void)initModule;
-
-/// A function for registering submodules.
-///
-- (void)onModuleRegister;
-
-/// A function for module initialization.
-///
-- (void)onModuleInit;
-
-/// A function for module asynchronous initialization.
-///
-- (void)onModuleAsyncInit;
-
-/// Startup the flutter engine with `entrypoint`.
-///
-/// Should be called in `onModuleAsyncInit`. Subsequent calls will return immediately if the entrypoint is the same.
-///
-/// Do not override this method.
-///
-- (void)startupFlutterEngineWithEntrypoint:(NSString *)entrypoint;
++ (NSDictionary *_Nullable)serializeParams:(id _Nullable)params;
 
 @end
 

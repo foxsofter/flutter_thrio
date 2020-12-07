@@ -3,7 +3,7 @@
 //  Runner
 //
 //  Created by foxsofter on 2019/12/25.
-//  Copyright © 2019 The Chromium Authors. All rights reserved.
+//  Copyright © 2019 foxsofter. All rights reserved.
 //
 
 #import "ThrioViewController2.h"

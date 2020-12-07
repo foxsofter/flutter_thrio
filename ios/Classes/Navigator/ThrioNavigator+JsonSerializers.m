@@ -1,6 +1,6 @@
 // The MIT License (MIT)
 //
-// Copyright (c) 2019 foxsofter
+// Copyright (c) 2020 foxsofter
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
 // copy of this software and associated documentation files (the "Software"),
@@ -19,17 +19,37 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-#import "ThrioModule.h"
-#import "ThrioModulePageObserver.h"
-#import "ThrioNavigator+PageObservers.h"
+#import <objc/runtime.h>
+#import "ThrioNavigator+JsonSerializers.h"
 
-@implementation ThrioModule (PageObserver)
+@implementation ThrioNavigator (JsonSerializers)
 
-- (ThrioVoidCallback)registerPageObserver:(id<NavigatorPageObserverProtocol>)pageObserver {
-    return [ThrioNavigator.pageObservers.observers registry:pageObserver];
++ (ThrioRegistryMap *)jsonSerializers {
+    id serializers = objc_getAssociatedObject(self, _cmd);
+    if (!serializers) {
+        serializers = [ThrioRegistryMap map];
+        objc_setAssociatedObject(self, _cmd, serializers, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+    }
+    return serializers;
 }
 
-- (void)onPageObserverRegister {
++ (NSDictionary *_Nullable)serializeParams:(id _Nullable)params {
+    if (!params) {
+        return nil;
+    }
+    // 已经序列化过了
+    if ([params isKindOfClass:NSDictionary.class] &&
+        [params containsObject:@"__thrio_TParams__"]) {
+        return params;
+    }
+    NSString *type = NSStringFromClass([params class]);
+    ThrioJsonSerializer serializer = [ThrioNavigator jsonSerializers][type];
+    if (!serializer) {
+        return params;
+    }
+    NSMutableDictionary *serializeParams = [@{ @"__thrio_TParams__": type } mutableCopy];
+    [serializeParams addEntriesFromDictionary:serializer(params)];
+    return serializeParams;
 }
 
 @end

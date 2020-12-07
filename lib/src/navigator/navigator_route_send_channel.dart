@@ -22,46 +22,48 @@
 import 'package:flutter/foundation.dart';
 
 import '../channel/thrio_channel.dart';
+import '../extension/thrio_object.dart';
+import 'thrio_navigator_implement.dart';
 
 class NavigatorRouteSendChannel {
   const NavigatorRouteSendChannel(ThrioChannel channel) : _channel = channel;
 
   final ThrioChannel _channel;
 
-  Future<int> push({
+  Future<int> push<TParams>({
     @required String url,
-    dynamic params,
+    TParams params,
     bool animated = true,
   }) {
     final arguments = <String, dynamic>{
       'url': url,
       'animated': animated,
-      'params': params,
+      'params': _serializeParams<TParams>(params),
     };
     return _channel.invokeMethod<int>('push', arguments);
   }
 
-  Future<bool> notify({
+  Future<bool> notify<TParams>({
     String url,
     int index,
     @required String name,
-    dynamic params,
+    TParams params,
   }) {
     final arguments = <String, dynamic>{
       'url': url,
       'index': index,
       'name': name,
-      'params': params,
+      'params': _serializeParams<TParams>(params),
     };
     return _channel.invokeMethod<bool>('notify', arguments);
   }
 
-  Future<bool> pop({
-    dynamic params,
+  Future<bool> pop<TParams>({
+    TParams params,
     bool animated = true,
   }) {
     final arguments = <String, dynamic>{
-      'params': params,
+      'params': _serializeParams<TParams>(params),
       'animated': animated,
     };
     return _channel.invokeMethod<bool>('pop', arguments);
@@ -121,4 +123,21 @@ class NavigatorRouteSendChannel {
 
   Future unregisterUrls(List<String> urls) =>
       _channel.invokeMethod('unregisterUrls', {'urls': urls});
+
+  dynamic _serializeParams<TParams>(TParams params) {
+    if (params == null) {
+      return null;
+    }
+    final type = params.runtimeType;
+    if (type != dynamic && params.isComplexType) {
+      final serializeParams = ThrioNavigatorImplement.shared()
+          .jsonSerializers[type]
+          ?.call(<type>() => params as type); // ignore: avoid_as
+      if (serializeParams != null) {
+        serializeParams['__thrio_TParams__'] = type.toString();
+        return serializeParams;
+      }
+    }
+    return params;
+  }
 }

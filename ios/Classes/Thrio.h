@@ -32,6 +32,8 @@
 #import "ThrioChannel.h"
 #import "ThrioLogger.h"
 #import "ThrioModule.h"
+#import "ThrioModuleJsonDeserializer.h"
+#import "ThrioModuleJsonSerializer.h"
 #import "ThrioModulePageBuilder.h"
 #import "ThrioModulePageObserver.h"
 #import "ThrioModuleRouteObserver.h"

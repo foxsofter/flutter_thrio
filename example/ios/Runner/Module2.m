@@ -3,7 +3,7 @@
 //  Runner
 //
 //  Created by foxsofter on 2020/2/23.
-//  Copyright © 2020 The Chromium Authors. All rights reserved.
+//  Copyright © 2020 foxsofter. All rights reserved.
 //
 
 #import "Module2.h"
@@ -13,16 +13,14 @@ NS_ASSUME_NONNULL_BEGIN
 
 @implementation Module2
 
-- (void)onPageRegister {
-    [self
-     registerPageBuilder:^UIViewController *_Nullable (
-         NSDictionary<NSString *, id> *_params) {
+- (void)onPageBuilderRegister {
+    [self registerPageBuilder:^UIViewController *_Nullable (id params) {
         UIStoryboard *sb = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
-        return [sb
-                instantiateViewControllerWithIdentifier:@"ThrioViewController2"];
-    }
-                  forUrl:@"/biz2/native2"];
+        return [sb instantiateViewControllerWithIdentifier:@"ThrioViewController2"];
+    } forUrl:@"/biz2/native2"];
+}
 
+- (void)onRouteObserverRegister {
     [self registerRouteObserver:self];
 }
 

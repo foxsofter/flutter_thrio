@@ -29,7 +29,13 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
-@interface ThrioModulePageBuilder : NSObject<ThrioModulePageBuilder>
+@class ThrioModule;
+
+@interface ThrioModule (PageBuilder) <ThrioModulePageBuilder>
+
+/// A function for register a `PageBuilder` .
+///
+- (void)onPageBuilderRegister;
 
 @end
 
