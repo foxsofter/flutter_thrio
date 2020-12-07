@@ -372,11 +372,11 @@ NS_ASSUME_NONNULL_BEGIN
     return route;
 }
 
-- (NSArray *)thrio_getAllRoutesByUrl:(NSString *)url {
+- (NSArray *)thrio_getAllRoutesByUrl:(NSString *_Nullable)url {
     NSMutableArray *routes = [NSMutableArray array];
     NavigatorPageRoute *first = self.thrio_firstRoute;
     do {
-        if ([first.settings.url isEqualToString:url]) {
+        if (!url || url.length < 1 || [first.settings.url isEqualToString:url]) {
             [routes addObject:first];
         }
     } while ((first = first.next));

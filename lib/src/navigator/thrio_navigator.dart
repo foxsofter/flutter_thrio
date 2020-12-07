@@ -101,11 +101,24 @@ abstract class ThrioNavigator {
   /// Returns the index of the page that was last pushed to the navigation
   /// stack.
   ///
+  @Deprecated('will be remove at version 1.3.0')
   static Future<int> lastIndex({String url}) =>
       ThrioNavigatorImplement.shared().lastIndex(url: url);
 
   /// Returns all index of the page with `url` in the navigation stack.
   ///
+  @Deprecated('will be remove at version 1.3.0')
   static Future<List<int>> allIndexes({@required String url}) =>
       ThrioNavigatorImplement.shared().allIndexes(url: url);
+
+  /// Returns the route of the page that was last pushed to the navigation
+  /// stack.
+  ///
+  static Future<RouteSettings> lastRoute({String url}) =>
+      ThrioNavigatorImplement.shared().lastRoute(url: url);
+
+  /// Returns all route of the page with `url` in the navigation stack.
+  ///
+  static Future<List<RouteSettings>> allRoutes({String url}) =>
+      ThrioNavigatorImplement.shared().allRoutes(url: url);
 }

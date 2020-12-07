@@ -45,6 +45,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, strong, readonly) NSNumber *index;
 
+@property (nonatomic, copy, readonly) NSString *name;
+
 @property (nonatomic, assign, readonly) BOOL nested;
 
 @property (nonatomic, copy, readonly, nullable) id params;

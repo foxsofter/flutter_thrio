@@ -20,6 +20,7 @@
 // IN THE SOFTWARE.
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 
 import '../channel/thrio_channel.dart';
 import '../extension/thrio_object.dart';
@@ -104,6 +105,26 @@ class NavigatorRouteSendChannel {
 
   Future<List<int>> allIndexes({@required String url}) =>
       _channel.invokeListMethod<int>('allIndexes', {'url': url});
+
+  Future<RouteSettings> lastRoute({String url}) {
+    final arguments = (url?.isEmpty ?? true)
+        ? <String, dynamic>{}
+        : <String, dynamic>{'url': url};
+    return _channel
+        .invokeMethod<String>('lastRoute', arguments)
+        .then<RouteSettings>((value) => RouteSettings(name: value));
+  }
+
+  Future<List<RouteSettings>> allRoutes({String url}) {
+    final arguments = (url?.isEmpty ?? true)
+        ? <String, dynamic>{}
+        : <String, dynamic>{'url': url};
+    return _channel
+        .invokeListMethod<String>('allRoutes', arguments)
+        .then<List<RouteSettings>>((values) => values
+            .map<RouteSettings>((value) => RouteSettings(name: value))
+            .toList());
+  }
 
   Future<bool> setPopDisabled({
     @required String url,

@@ -341,7 +341,7 @@ NS_ASSUME_NONNULL_BEGIN
     return [vc thrio_getLastRouteByUrl:url];
 }
 
-- (NSArray *)thrio_getAllRoutesByUrl:(NSString *)url {
+- (NSArray *)thrio_getAllRoutesByUrl:(NSString *_Nullable)url {
     NSArray *vcs = self.viewControllers;
     NSMutableArray *routes = [NSMutableArray array];
     for (UIViewController *vc in vcs) {

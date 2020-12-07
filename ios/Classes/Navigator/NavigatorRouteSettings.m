@@ -85,6 +85,10 @@ NS_ASSUME_NONNULL_BEGIN
     };
 }
 
+- (NSString *)name {
+    return [NSString stringWithFormat:@"%@ %@", !_index ? @0 : _index, _url];
+}
+
 - (NSString *)description {
     return [NSString stringWithFormat:@"settings: %@", [self toArguments]];
 }
