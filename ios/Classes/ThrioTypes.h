@@ -46,6 +46,14 @@ typedef void (^ThrioIdCallback)(id _Nullable);
 ///
 typedef void (^ThrioWillPopCallback)(ThrioBoolCallback);
 
+/// Signature for a block that deserialize json map to object.
+///
+typedef id _Nullable (^ThrioJsonDeserializer)(NSDictionary *params);
+
+/// Signature for a block that serializer json object to map.
+///
+typedef NSDictionary *_Nullable (^ThrioJsonSerializer)(id);
+
 /// Signature for a block that handlers channel method invocation.
 ///
 typedef void (^ThrioMethodHandler)(NSDictionary<NSString *, id> *arguments, ThrioIdCallback _Nullable result);

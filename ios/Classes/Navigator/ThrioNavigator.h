@@ -409,6 +409,10 @@ NS_ASSUME_NONNULL_BEGIN
 ///
 + (NavigatorPageRoute *_Nullable)getLastRouteByUrl:(NSString *)url;
 
+/// Returns all route of the page in the navigation stack.
+///
++ (NSArray *)allRoutes;
+
 /// Returns all route of the page with `url` in the navigation stack.
 ///
 + (NSArray *)getAllRoutesByUrl:(NSString *)url;

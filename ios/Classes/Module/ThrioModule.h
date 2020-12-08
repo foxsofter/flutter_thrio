@@ -21,13 +21,10 @@
 
 #import <Foundation/Foundation.h>
 #import "ThrioTypes.h"
-#import "ThrioModulePageBuilder.h"
-#import "NavigatorPageObserverProtocol.h"
-#import "NavigatorRouteObserverProtocol.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface ThrioModule : ThrioModulePageBuilder
+@interface ThrioModule : NSObject
 
 /// Module entrypoint method.
 ///
@@ -59,10 +56,6 @@ NS_ASSUME_NONNULL_BEGIN
 /// A function for module asynchronous initialization.
 ///
 - (void)onModuleAsyncInit;
-
-/// A function for register a `PageBuilder`, `PageObserver` and `RouteObserver` .
-///
-- (void)onPageRegister;
 
 /// Startup the flutter engine with `entrypoint`.
 ///

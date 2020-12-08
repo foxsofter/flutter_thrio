@@ -27,6 +27,7 @@
 		97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FD1CF9000F007C117D /* Assets.xcassets */; };
 		97C147011CF9000F007C117D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FF1CF9000F007C117D /* LaunchScreen.storyboard */; };
 		BBF2756AA90F3981ABC78E75 /* libPods-Runner.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 80FC86B336259FEEC5E93BBC /* libPods-Runner.a */; };
+		DC78D64F257D34E600174064 /* THRPeople.m in Sources */ = {isa = PBXBuildFile; fileRef = DC78D64E257D34E600174064 /* THRPeople.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -93,6 +94,8 @@
 		97C146FD1CF9000F007C117D /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		97C147001CF9000F007C117D /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		97C147021CF9000F007C117D /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		DC78D64D257D34E600174064 /* THRPeople.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = THRPeople.h; sourceTree = "<group>"; };
+		DC78D64E257D34E600174064 /* THRPeople.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = THRPeople.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -184,6 +187,8 @@
 				8E4A6A89240227C9009DCF21 /* SampleModule.m */,
 				12F239B825548D9A00C1370C /* CustomFlutterViewController.h */,
 				12F239B925548D9A00C1370C /* CustomFlutterViewController.m */,
+				DC78D64D257D34E600174064 /* THRPeople.h */,
+				DC78D64E257D34E600174064 /* THRPeople.m */,
 			);
 			name = Sample;
 			sourceTree = "<group>";
@@ -472,6 +477,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DC78D64F257D34E600174064 /* THRPeople.m in Sources */,
 				12F239BA25548D9A00C1370C /* CustomFlutterViewController.m in Sources */,
 				8E4A6A90240228D6009DCF21 /* Module1.m in Sources */,
 				12A48B9723E6D58E002B699E /* ThrioViewController2.m in Sources */,

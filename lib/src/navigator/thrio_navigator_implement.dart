@@ -24,7 +24,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 import '../channel/thrio_channel.dart';
-import '../extension/thrio_object.dart';
 import '../module/module_context.dart';
 import '../registry/registry_map.dart';
 import 'navigator_logger.dart';
@@ -107,10 +106,7 @@ class ThrioNavigatorImplement {
     NavigatorParamsCallback poppedResult,
   }) =>
       _sendChannel
-          ?.push(
-              url: url,
-              params: _serializeParams<TParams>(params),
-              animated: animated)
+          ?.push<TParams>(url: url, params: params, animated: animated)
           ?.then<int>((index) {
         if (poppedResult != null && index != null && index > 0) {
           final routeName = '$index $url';
@@ -135,19 +131,19 @@ class ThrioNavigatorImplement {
     @required String name,
     TParams params,
   }) =>
-      _sendChannel?.notify(
+      _sendChannel?.notify<TParams>(
         name: name,
         url: url,
         index: index,
-        params: _serializeParams<TParams>(params),
+        params: params,
       );
 
   Future<bool> pop<TParams>({
     TParams params,
     bool animated = true,
   }) =>
-      _sendChannel?.pop(
-        params: _serializeParams<TParams>(params),
+      _sendChannel?.pop<TParams>(
+        params: params,
         animated: animated,
       );
 
@@ -178,6 +174,12 @@ class ThrioNavigatorImplement {
   Future<List<int>> allIndexes({@required String url}) =>
       _sendChannel?.allIndexes(url: url);
 
+  Future<RouteSettings> lastRoute({String url}) =>
+      _sendChannel?.lastRoute(url: url);
+
+  Future<List<RouteSettings>> allRoutes({String url}) =>
+      _sendChannel?.allRoutes(url: url);
+
   Future<bool> setPopDisabled({
     @required String url,
     int index,
@@ -190,14 +192,14 @@ class ThrioNavigatorImplement {
       );
 
   Stream onPageNotify({
-    @required String url,
-    @required int index,
     @required String name,
+    String url,
+    int index,
   }) =>
       _receiveChannel?.onPageNotify(
+        name: name,
         url: url,
         index: index,
-        name: name,
       );
 
   void hotRestart() {
@@ -210,20 +212,4 @@ class ThrioNavigatorImplement {
 
   RegistryMap<RegExp, RouteTransitionsBuilder> get routeTransitionsBuilders =>
       _routeTransitionsBuilders;
-
-  dynamic _serializeParams<TParams>(TParams params) {
-    if (params == null) {
-      return null;
-    }
-    final type = params.runtimeType;
-    if (type != dynamic && params.isComplexType) {
-      final serializeParams = jsonSerializers[type]
-          ?.call(<type>() => params as type); // ignore: avoid_as
-      if (serializeParams != null) {
-        serializeParams['__thrio_TParams__'] = type.toString();
-        return serializeParams;
-      }
-    }
-    return params;
-  }
 }

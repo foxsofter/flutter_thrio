@@ -19,6 +19,7 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
+#import "ThrioModule.h"
 #import "ThrioModulePageObserver.h"
 #import "ThrioNavigator+PageObservers.h"
 
@@ -26,6 +27,9 @@
 
 - (ThrioVoidCallback)registerPageObserver:(id<NavigatorPageObserverProtocol>)pageObserver {
     return [ThrioNavigator.pageObservers.observers registry:pageObserver];
+}
+
+- (void)onPageObserverRegister {
 }
 
 @end

@@ -23,11 +23,16 @@
 
 package com.hellobike.flutter.thrio.module
 
+import android.content.Context
 import com.hellobike.flutter.thrio.VoidCallback
 import com.hellobike.flutter.thrio.navigator.RouteObserver
 import com.hellobike.flutter.thrio.navigator.RouteObservers
 
 interface ModuleRouteObserver {
+
+    fun onRouteObserverRegister(context: Context) {
+
+    }
 
     fun registerRouteObserver(observer: RouteObserver): VoidCallback {
         return RouteObservers.observers.registry(observer)

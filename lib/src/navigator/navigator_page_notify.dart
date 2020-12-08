@@ -24,14 +24,13 @@ import 'dart:async';
 import 'package:flutter/widgets.dart';
 
 import '../extension/thrio_build_context.dart';
-import '../extension/thrio_object.dart';
 import 'navigator_page_route.dart';
 import 'navigator_route_settings.dart';
 import 'navigator_types.dart';
 import 'navigator_widget.dart';
 import 'thrio_navigator_implement.dart';
 
-class NavigatorPageNotify<T> extends StatefulWidget {
+class NavigatorPageNotify extends StatefulWidget {
   const NavigatorPageNotify({
     Key key,
     @required this.name,
@@ -45,19 +44,18 @@ class NavigatorPageNotify<T> extends StatefulWidget {
 
   final NavigatorParamsCallback onPageNotify;
 
-  final T initialParams;
+  final dynamic initialParams;
 
   final Widget child;
 
   @override
-  _NavigatorPageNotifyState<T> createState() => _NavigatorPageNotifyState<T>();
+  _NavigatorPageNotifyState createState() => _NavigatorPageNotifyState();
 }
 
-class _NavigatorPageNotifyState<T> extends State<NavigatorPageNotify<T>> {
+class _NavigatorPageNotifyState extends State<NavigatorPageNotify> {
   NavigatorPageRoute _route;
 
   Stream _notifyStream;
-
   StreamSubscription _notifySubscription;
 
   @override
@@ -66,7 +64,7 @@ class _NavigatorPageNotifyState<T> extends State<NavigatorPageNotify<T>> {
     if (mounted) {
       if (widget.initialParams != null) {
         // ignore: avoid_as
-        widget.onPageNotify(<T>() => widget.initialParams as T);
+        widget.onPageNotify(widget.initialParams);
       }
     }
   }
@@ -85,31 +83,36 @@ class _NavigatorPageNotifyState<T> extends State<NavigatorPageNotify<T>> {
         index: _route.settings.index,
         name: widget.name,
       );
-      _notifySubscription = _notifyStream.listen((params) {
-        if (params != null) {
-          if (params is Map<String, dynamic>) {
-            if (T.isComplexType && T != dynamic) {
-              final paramsInstance = ThrioNavigatorImplement.shared()
-                  .jsonDeserializers[T]
-                  ?.call(params);
-              if (paramsInstance != null) {
-                // ignore: avoid_as
-                widget.onPageNotify(<T>() => paramsInstance as T);
-                return;
-              }
-            }
-          } else {
-            // ignore: unused_local_variable
-            final type = params.runtimeType;
-            // ignore: avoid_as
-            widget.onPageNotify(<type>() => params as type);
-          }
-        } else {
-          widget.onPageNotify(null);
-        }
-      });
+      _notifySubscription = _notifyStream.listen(_listen);
     }
+
     super.didChangeDependencies();
+  }
+
+  void _listen(params) {
+    if (params != null) {
+      if (params is Map) {
+        final typeString =
+            params['__thrio_TParams__'] as String; // ignore: avoid_as
+        if (typeString != null) {
+          final jsonDeserializers =
+              ThrioNavigatorImplement.shared().jsonDeserializers;
+          final type = jsonDeserializers.keys.lastWhere((it) =>
+              it.toString() == typeString ||
+              typeString.endsWith(it.toString()));
+          final paramsInstance = ThrioNavigatorImplement.shared()
+              .jsonDeserializers[type]
+              ?.call(params.cast<String, dynamic>());
+          if (paramsInstance != null) {
+            widget.onPageNotify(paramsInstance);
+            return;
+          }
+        }
+      }
+      widget.onPageNotify(params);
+    } else {
+      widget.onPageNotify(null);
+    }
   }
 
   // @override

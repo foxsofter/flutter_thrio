@@ -50,8 +50,10 @@ NS_ASSUME_NONNULL_BEGIN
         [self _onPop];
         [self _onPopTo];
         [self _onRemove];
-        [self _onLastIndex];
-        [self _onGetAllIndexes];
+
+        [self _onLastRoute];
+        [self _onGetAllRoutes];
+
         [self _onSetPopDisabled];
         [self _onHotRestart];
         [self _onRegisterUrls];
@@ -95,10 +97,7 @@ NS_ASSUME_NONNULL_BEGIN
                     }
                     return;
                 }
-                id params =
-                    [arguments[@"params"] isKindOfClass:NSNull.class]
-            ? nil
-            : arguments[@"params"];
+                id params = [arguments[@"params"] isKindOfClass:NSNull.class] ? nil : arguments[@"params"];
                 BOOL animated = [arguments[@"animated"] boolValue];
                 NavigatorVerbose(@"on push: %@", url);
                 __strong typeof(weakself) strongSelf = weakself;
@@ -214,38 +213,42 @@ NS_ASSUME_NONNULL_BEGIN
             }];
 }
 
-- (void)_onLastIndex {
+- (void)_onLastRoute {
     [_channel registryMethod:@"lastRoute"
                      handler:
      ^void (NSDictionary<NSString *, id> *arguments,
             ThrioIdCallback _Nullable result) {
                 if (result) {
-                    NSString *url = arguments[@"url"];
+                    NSString *url = [arguments[@"url"] isKindOfClass:NSNull.class] ? nil : arguments[@"url"];
                     NavigatorPageRoute *lastRoute = nil;
-                    if (url.length < 1) {
+                    if (!url || url.length < 1) {
                         lastRoute = [ThrioNavigator lastRoute];
                     } else {
                         lastRoute = [ThrioNavigator getLastRouteByUrl:url];
                     }
-                    result(lastRoute.settings.index);
+                    result(lastRoute.settings.name);
                 }
             }];
 }
 
-- (void)_onGetAllIndexes {
-    [_channel registryMethod:@"allIndexes"
+- (void)_onGetAllRoutes {
+    [_channel registryMethod:@"allRoutes"
                      handler:
      ^void (NSDictionary<NSString *, id> *arguments,
             ThrioIdCallback _Nullable result) {
-                NSString *url = arguments[@"url"];
-                NSArray *allRoutes =
-                    [ThrioNavigator getAllRoutesByUrl:url];
-                NSMutableArray *allIndexes = [NSMutableArray array];
+                NSString *url = [arguments[@"url"] isKindOfClass:NSNull.class] ? nil : arguments[@"url"];
+                NSArray *allRoutes;
+                if (!url || url.length < 1) {
+                    allRoutes = [ThrioNavigator allRoutes];
+                } else {
+                    allRoutes = [ThrioNavigator getAllRoutesByUrl:url];
+                }
+                NSMutableArray *allNames = [NSMutableArray array];
                 for (NavigatorPageRoute *route in allRoutes) {
-                    [allIndexes addObject:route.settings.index];
+                    [allNames addObject:route.settings.name];
                 }
                 if (result) {
-                    result(allIndexes);
+                    result(allNames);
                 }
             }];
 }

@@ -3,12 +3,13 @@
 //  Runner
 //
 //  Created by foxsofter on 2019/12/25.
-//  Copyright © 2019 The Chromium Authors. All rights reserved.
+//  Copyright © 2019 foxsofter. All rights reserved.
 //
 
 #import "ThrioViewController.h"
 #import <Flutter/Flutter.h>
 #import <thrio/Thrio.h>
+#import "THRPeople.h"
 
 @interface ThrioViewController () <NavigatorPageNotifyProtocol>
 
@@ -19,7 +20,14 @@
 @implementation ThrioViewController
 
 - (IBAction)pushFlutterPage:(id)sender {
-    [ThrioNavigator pushUrl:@"/biz1/flutter1" params:@1];
+    THRPeople *people = [THRPeople fromJson:@{
+        @"name": @"foxsofter",
+        @"age": @100,
+        @"sex": @"x"
+    }];
+    [ThrioNavigator pushUrl:@"/biz1/flutter1" params:people poppedResult:^(id _Nullable params) {
+        ThrioLogV(@"/biz1/flutter1 popped: %@", params);
+    }];
 }
 
 - (IBAction)popFlutter1:(id)sender {
@@ -54,11 +62,23 @@
 }
 
 - (IBAction)pop:(id)sender {
-    [ThrioNavigator pop];
+    THRPeople *people = [THRPeople fromJson:@{
+        @"name": @"foxsofter",
+        @"age": @100,
+        @"sex": @"x"
+    }];
+
+    [ThrioNavigator popParams:people];
 }
 
 - (IBAction)notifyAll:(id)sender {
-    [ThrioNavigator notifyWithName:@"all_page_notify"];
+    THRPeople *people = [THRPeople fromJson:@{
+        @"name": @"notify",
+        @"age": @100,
+        @"sex": @"x"
+    }];
+
+    [ThrioNavigator notifyWithName:@"all_page_notify" params:people];
 }
 
 - (IBAction)pushNative1WithNvc:(id)sender {

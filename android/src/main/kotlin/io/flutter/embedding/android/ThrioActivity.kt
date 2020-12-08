@@ -25,7 +25,7 @@ package io.flutter.embedding.android
 
 import android.content.Intent
 import com.hellobike.flutter.thrio.BooleanCallback
-import com.hellobike.flutter.thrio.navigator.FlutterEngineFactory
+import com.hellobike.flutter.thrio.navigator.*
 import com.hellobike.flutter.thrio.navigator.NavigationController
 import com.hellobike.flutter.thrio.navigator.PageRoutes
 import com.hellobike.flutter.thrio.navigator.getPageId
@@ -60,7 +60,7 @@ open class ThrioActivity : ThrioFlutterActivity() {
                     return
                 }
             }
-            NavigationController.Pop.pop()
+            ThrioNavigator.pop()
         }
     }
 

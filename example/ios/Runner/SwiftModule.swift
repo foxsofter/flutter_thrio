@@ -3,7 +3,7 @@
 //  Runner
 //
 //  Created by foxsofter on 2020/10/30.
-//  Copyright © 2020 The Chromium Authors. All rights reserved.
+//  Copyright © 2020 foxsofter. All rights reserved.
 //
 
 import Foundation
@@ -20,15 +20,29 @@ class SwiftModule: ThrioModule {
     override func onModuleInit() {
     }
 
-    override func onPageRegister() {
-        _ = register(SwiftPageObserver())
-        _ = register(SwiftRouteObserver())
-        _ = register({ (params) -> UIViewController? in
+    override func onPageBuilderRegister() {
+        _ = register({ (_) -> UIViewController? in
             if #available(iOS 13.0, *) {
                 return UIHostingController(rootView: Page5View())
             } else {
                 return UIViewController()
             }
         }, forUrl: "/biz1/swift1")
+    }
+
+    override func onPageObserverRegister() {
+        _ = register(SwiftPageObserver())
+    }
+
+    override func onRouteObserverRegister() {
+        _ = register(SwiftRouteObserver())
+    }
+    
+    override func onJsonSerializerRegister() {
+        
+    }
+    
+    override func onJsonDeserializerRegister() {
+        
     }
 }

@@ -5,10 +5,11 @@
 //  Created by foxsofter on 2020/10/2.
 //
 
+#import "ThrioModule.h"
 #import "ThrioModulePageBuilder.h"
 #import "ThrioNavigator+PageBuilders.h"
 
-@implementation ThrioModulePageBuilder
+@implementation ThrioModule (PageBuilder)
 
 - (ThrioVoidCallback)registerPageBuilder:(NavigatorPageBuilder)builder
                                   forUrl:(NSString *)url {
@@ -17,6 +18,9 @@
 
 - (void)setFlutterPageBuilder:(NavigatorFlutterPageBuilder)builder {
     ThrioNavigator.flutterPageBuilder = builder;
+}
+
+- (void)onPageBuilderRegister {
 }
 
 @end

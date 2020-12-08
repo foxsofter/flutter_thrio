@@ -35,7 +35,7 @@ data class PageRoute(val settings: RouteSettings, val clazz: Class<out Activity>
 
     var poppedResult: NullableAnyCallback? = null
 
-    fun addNotify(name: String, params: Any?) {
+    fun <T> addNotify(name: String, params: T?) {
         notifications[name] = params
     }
 

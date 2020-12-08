@@ -350,7 +350,15 @@ NS_ASSUME_NONNULL_BEGIN
     return lastRoute;
 }
 
++ (NSArray *)allRoutes {
+    return [self _getAllRoutesByUrl:nil];
+}
+
 + (NSArray *)getAllRoutesByUrl:(NSString *)url {
+    return [self _getAllRoutesByUrl:url];
+}
+
++ (NSArray *)_getAllRoutesByUrl:(NSString *_Nullable)url {
     NSMutableArray *allRoutes = [NSMutableArray array];
     NSEnumerator *allNvcs = self.navigationControllers.allObjects.reverseObjectEnumerator;
     for (UINavigationController *nvc in allNvcs) {

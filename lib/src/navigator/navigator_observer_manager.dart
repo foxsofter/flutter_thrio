@@ -91,8 +91,7 @@ class NavigatorObserverManager extends NavigatorObserver {
                   AppLifecycleState.resumed) {
                 verbose(
                   'didRemove: url->${route.settings.url} '
-                  'index->${route.settings.index} '
-                  'params->${route.settings.params}',
+                  'index->${route.settings.index} ',
                 );
                 ThrioNavigatorImplement.shared()
                     .routeObservers
@@ -120,11 +119,11 @@ class NavigatorObserverManager extends NavigatorObserver {
           _currentPopRoutes.clear();
         });
       }
-      // 清空 poppedResult
-      ThrioNavigatorImplement.shared()
-          .poppedResultCallbacks
-          .remove(route.settings.name);
     }
+    // 清空 poppedResult
+    ThrioNavigatorImplement.shared()
+        .poppedResultCallbacks
+        .remove(route.settings.name);
   }
 
   @override

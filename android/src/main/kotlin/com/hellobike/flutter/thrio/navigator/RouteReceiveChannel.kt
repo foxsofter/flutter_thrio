@@ -34,8 +34,10 @@ internal class RouteReceiveChannel(val channel: ThrioChannel,
         onPop()
         onPopTo()
         onRemove()
-        onLastIndex()
-        onGetAllIndexes()
+
+        onLastRoute()
+        onGetAllRoutes()
+
         onSetPopDisabled()
         onHotRestart()
         onRegisterUrls()
@@ -66,7 +68,9 @@ internal class RouteReceiveChannel(val channel: ThrioChannel,
             val index = if (arguments["index"] != null) arguments["index"] as Int else 0
             val name = arguments["name"] as String
             val params = arguments["params"]
-            NavigationController.Notify.notify(url, index, name, params, result)
+            NavigationController.Notify.notify(url, index, name, params){
+                result(it)
+            }
         }
     }
 
@@ -99,12 +103,23 @@ internal class RouteReceiveChannel(val channel: ThrioChannel,
         }
     }
 
-    private fun onLastIndex() {
-        channel.registryMethod("lastIndex") { _, _ -> }
+    private fun onLastRoute() {
+        channel.registryMethod("lastRoute") { arguments, result ->
+            if (arguments == null) return@registryMethod
+            val url = if (arguments["url"] != null) arguments["url"] as String else null
+            val route = ThrioNavigator.lastRoute(url)
+            result(route?.settings?.name)
+        }
     }
 
-    private fun onGetAllIndexes() {
-        channel.registryMethod("allIndexes") { _, _ -> }
+    private fun onGetAllRoutes() {
+        channel.registryMethod("allRoutes") { arguments, result ->
+            if (arguments == null) return@registryMethod
+            val url = if (arguments["url"] != null) arguments["url"] as String else null
+            val routes = ThrioNavigator.allRoutes(url)
+            val routeNames = routes.map { it.settings.name }
+            result(routeNames)
+        }
     }
 
     private fun onSetPopDisabled() {

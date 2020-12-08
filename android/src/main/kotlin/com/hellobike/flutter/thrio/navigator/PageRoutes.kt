@@ -95,7 +95,7 @@ internal object PageRoutes : Application.ActivityLifecycleCallbacks {
         return holder?.lastRoute()
     }
 
-    fun allRoutes(url: String): List<PageRoute> {
+    fun allRoutes(url: String? = null): List<PageRoute> {
         val allRoutes = mutableListOf<PageRoute>()
         for (i in routeHolders.size - 1 downTo 0) {
             val holder = routeHolders[i]
@@ -118,10 +118,10 @@ internal object PageRoutes : Application.ActivityLifecycleCallbacks {
         holder.push(route, result)
     }
 
-    fun notify(url: String?,
+    fun <T> notify(url: String?,
                index: Int?,
                name: String,
-               params: Any?,
+               params: T?,
                result: BooleanCallback) {
         if (!hasRoute(url, index)) {
             result(false)
@@ -130,14 +130,14 @@ internal object PageRoutes : Application.ActivityLifecycleCallbacks {
 
         var isMatch = false
         routeHolders.forEach { holder ->
-            holder.notify(url, index, name, params) {
+            holder.notify<T>(url, index, name, params) {
                 if (it) isMatch = true
             }
         }
         result(isMatch)
     }
 
-    fun pop(params: Any?, animated: Boolean, result: BooleanCallback) {
+    fun <T> pop(params: T?, animated: Boolean, result: BooleanCallback) {
         val holder = routeHolders.lastOrNull()
         if (holder == null) {
             result(false)
@@ -148,7 +148,7 @@ internal object PageRoutes : Application.ActivityLifecycleCallbacks {
             holder.activity?.get()?.finish()
             result(true)
         } else {
-            holder.pop(params, animated) { it ->
+            holder.pop<T>(params, animated) { it ->
                 if (it) {
                     if (!holder.hasRoute()) {
                         holder.activity?.get()?.let {

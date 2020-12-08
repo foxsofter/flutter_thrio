@@ -251,34 +251,27 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
       if (params == null) {
         poppedResultCallback(null);
       } else {
-        final type = params.runtimeType;
-        if (type != null && params is Map) {
+        if (params is Map && params.containsKey('__thrio_TParams__')) {
           // ignore: avoid_as
           final typeString = params['__thrio_TParams__'] as String;
-          if (type != null) {
-            final jsonDeserializers =
-                ThrioNavigatorImplement.shared().jsonDeserializers;
-            final type = jsonDeserializers.keys.lastWhere(
-                (it) => it.toString() == typeString,
-                orElse: () => null);
+          if (typeString != null) {
+            final type = ThrioNavigatorImplement.shared()
+                .jsonDeserializers
+                .keys
+                .lastWhere(
+                    (it) =>
+                        it.toString() == typeString ||
+                        typeString.endsWith(it.toString()),
+                    orElse: () => null);
             if (type != null) {
-              // ignore: avoid_as
-              poppedResultCallback(<type>() {
-                final paramsInstance = ThrioNavigatorImplement.shared()
-                    .jsonDeserializers[type]
-                    ?.call(params.cast<String, dynamic>());
-                if (paramsInstance != null && paramsInstance is type) {
-                  return paramsInstance;
-                }
-                return null;
-              });
+              final paramsInstance = ThrioNavigatorImplement.shared()
+                  .jsonDeserializers[type]
+                  ?.call(params.cast<String, dynamic>());
+              poppedResultCallback(paramsInstance);
+              return;
             }
           }
-        } else {
-          // ignore: unused_local_variable
-          final paramsType = params.runtimeType;
-          // ignore: avoid_as
-          poppedResultCallback(<paramsType>() => params as paramsType);
+          poppedResultCallback(params);
         }
       }
     }

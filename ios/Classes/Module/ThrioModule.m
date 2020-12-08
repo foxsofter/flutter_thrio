@@ -20,11 +20,18 @@
 // IN THE SOFTWARE.
 
 #import "NavigatorFlutterEngineFactory.h"
+#import "NavigatorPageObserverProtocol.h"
+#import "NavigatorRouteObserverProtocol.h"
 #import "ThrioModule.h"
 #import "ThrioNavigator+Internal.h"
 #import "ThrioNavigator+PageBuilders.h"
 #import "ThrioNavigator+PageObservers.h"
 #import "ThrioNavigator+RouteObservers.h"
+#import "ThrioModuleJsonDeserializer.h"
+#import "ThrioModuleJsonSerializer.h"
+#import "ThrioModulePageBuilder.h"
+#import "ThrioModulePageObserver.h"
+#import "ThrioModuleRouteObserver.h"
 
 @implementation ThrioModule
 
@@ -57,12 +64,6 @@ static NSMutableDictionary *modules;
 - (void)initModule {
     NSArray *values = modules.allValues;
     for (ThrioModule *module in values) {
-        if ([module respondsToSelector:@selector(onPageRegister)]) {
-            [module onPageRegister];
-        }
-    }
-
-    for (ThrioModule *module in values) {
         if ([module respondsToSelector:@selector(onModuleInit)]) {
             [module onModuleInit];
         }
@@ -74,6 +75,28 @@ static NSMutableDictionary *modules;
             }
         }
     });
+    for (ThrioModule *module in values) {
+        if ([module respondsToSelector:@selector(onPageBuilderRegister)]) {
+            [module onPageBuilderRegister];
+        }
+    }
+    for (ThrioModule *module in values) {
+        if ([module respondsToSelector:@selector(onPageObserverRegister)]) {
+            [module onPageObserverRegister];
+        }
+        if ([module respondsToSelector:@selector(onRouteObserverRegister)]) {
+            [module onRouteObserverRegister];
+        }
+    }
+    for (ThrioModule *module in values) {
+        if ([module respondsToSelector:@selector(onJsonSerializerRegister)]) {
+            [module onJsonSerializerRegister];
+        }
+        if ([module respondsToSelector:@selector(onJsonDeserializerRegister)]) {
+            [module onJsonDeserializerRegister];
+        }
+    }
+
     // 单引擎模式下，提前启动，默认 `entrypoint` 为 main
     if (!NavigatorFlutterEngineFactory.shared.multiEngineEnabled) {
         [NavigatorFlutterEngineFactory.shared startupWithEntrypoint:@"main" readyBlock:nil];
@@ -81,9 +104,6 @@ static NSMutableDictionary *modules;
 }
 
 - (void)onModuleRegister {
-}
-
-- (void)onPageRegister {
 }
 
 - (void)onModuleInit {

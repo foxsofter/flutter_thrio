@@ -19,6 +19,7 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
+#import "ThrioModule.h"
 #import "ThrioModuleRouteObserver.h"
 #import "ThrioNavigator+RouteObservers.h"
 
@@ -28,6 +29,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (ThrioVoidCallback)registerRouteObserver:(id<NavigatorRouteObserverProtocol>)routeObserver {
     return [ThrioNavigator.routeObservers.observers registry:routeObserver];
+}
+
+- (void)onRouteObserverRegister {
+    
 }
 
 @end

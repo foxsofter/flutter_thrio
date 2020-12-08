@@ -83,15 +83,15 @@ class NavigatorRouteReceiveChannel {
       });
 
   Stream onPageNotify({
-    @required String url,
-    @required int index,
     @required String name,
+    String url,
+    int index,
   }) =>
       _channel
           .onEventStream('__onNotify__')
           .where((arguments) =>
-              arguments.containsValue(url) &&
               arguments.containsValue(name) &&
+              (url == null || arguments.containsValue(url)) &&
               (index == null || arguments.containsValue(index)))
           .map((arguments) => arguments['params']);
 
@@ -102,8 +102,8 @@ class NavigatorRouteReceiveChannel {
       if (typeString != null) {
         final jsonDeserializers =
             ThrioNavigatorImplement.shared().jsonDeserializers;
-        final type = jsonDeserializers.keys
-            .lastWhere((it) => it.toString() == typeString);
+        final type = jsonDeserializers.keys.lastWhere((it) =>
+            it.toString() == typeString || typeString.endsWith(it.toString()));
         final paramsInstance = ThrioNavigatorImplement.shared()
             .jsonDeserializers[type]
             ?.call(params.cast<String, dynamic>());

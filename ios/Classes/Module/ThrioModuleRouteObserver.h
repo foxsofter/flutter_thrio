@@ -21,7 +21,6 @@
 
 #import <Foundation/Foundation.h>
 #import "ThrioTypes.h"
-#import "ThrioModule.h"
 #import "NavigatorRouteObserverProtocol.h"
 
 NS_ASSUME_NONNULL_BEGIN
@@ -39,6 +38,8 @@ NS_ASSUME_NONNULL_BEGIN
 @class ThrioModule;
 
 @interface ThrioModule (RouteObserver) <ThrioModuleRouteObserver>
+
+- (void)onRouteObserverRegister;
 
 @end
 
