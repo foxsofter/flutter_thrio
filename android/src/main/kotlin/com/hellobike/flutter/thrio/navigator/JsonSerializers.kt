@@ -1,7 +1,7 @@
 /**
  * The MIT License (MIT)
  *
- * Copyright (c) 2019 Hellobike Group
+ * Copyright (c) 2020 foxsofter
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -23,25 +23,32 @@
 
 package com.hellobike.flutter.thrio.navigator
 
-import android.app.Activity
-import com.hellobike.flutter.thrio.NullableAnyCallback
+import com.hellobike.flutter.thrio.JsonDeserializer
+import com.hellobike.flutter.thrio.JsonSerializer
+import com.hellobike.flutter.thrio.registry.RegistryMap
 
-data class PageRoute(val settings: RouteSettings, val clazz: Class<out Activity>) {
+internal object JsonSerializers {
+    private const val TAG = "JsonSerializers"
 
-    private val notifications: MutableMap<String, Any?> = mutableMapOf()
+    val serializers by lazy { RegistryMap<String, JsonSerializer<*>>() }
 
-    var entrypoint: String = NAVIGATION_FLUTTER_ENTRYPOINT_DEFAULT
-    var fromEntrypoint: String = NAVIGATION_NATIVE_ENTRYPOINT
+    fun <T> serializeParams(params: T?): Any? {
+        if (params == null) {
+            return null
+        }
+        // 已经序列化过了
+        if (params is Map<*, *> && params.containsKey("__thrio_TParams__")) {
+            @Suppress("UNCHECKED_CAST")
+            return params as Map<String, Any>
+        }
+        val type = params.javaClass.toString()
+        val value = serializers[type] ?: return params
 
-    var poppedResult: NullableAnyCallback<*>? = null
-
-    fun <T> addNotify(name: String, params: T?) {
-        notifications[name] = params
-    }
-
-    fun removeNotify(): Map<String, Any?> {
-        val result = notifications.toMap()
-        notifications.clear()
-        return result
+        @Suppress("UNCHECKED_CAST")
+        val serializer = value as JsonSerializer<T>
+        val serializeParams: Map<String, Any?>? = serializer(params) ?: return params
+        return mutableMapOf<String, Any?>(
+                "__thrio_TParams__" to type
+        ).apply { if (serializeParams != null) putAll(serializeParams) }
     }
 }

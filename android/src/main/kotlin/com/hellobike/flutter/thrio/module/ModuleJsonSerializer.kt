@@ -1,7 +1,7 @@
 /**
  * The MIT License (MIT)
  *
- * Copyright (c) 2019 Hellobike Group
+ * Copyright (c) 2020 foxsofter
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -24,21 +24,16 @@
 package com.hellobike.flutter.thrio.module
 
 import android.content.Context
+import com.hellobike.flutter.thrio.JsonSerializer
 import com.hellobike.flutter.thrio.VoidCallback
-import com.hellobike.flutter.thrio.navigator.RouteObserver
-import com.hellobike.flutter.thrio.navigator.RouteObservers
+import com.hellobike.flutter.thrio.navigator.JsonSerializers
 
-interface ModuleRouteObserver {
-
-    fun onRouteObserverRegister(context: Context) {
+interface ModuleJsonSerializer {
+    fun onJsonSerializerRegister(context: Context) {
 
     }
 
-    fun registerRouteObserver(observer: RouteObserver): VoidCallback {
-        return RouteObservers.observers.registry(observer)
-    }
-
-    fun registerRouteObservers(observers: List<RouteObserver>): VoidCallback {
-        return RouteObservers.observers.registryAll(observers.toSet())
+    fun <T> registerJsonSerializer(serializer: JsonSerializer<T>, clazz: Class<T>): VoidCallback {
+        return JsonSerializers.serializers.registry(clazz.toString(), serializer)
     }
 }

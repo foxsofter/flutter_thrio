@@ -50,9 +50,7 @@ NS_ASSUME_NONNULL_BEGIN
         [self _onPop];
         [self _onPopTo];
         [self _onRemove];
-        
-        [self _onLastIndex];
-        [self _onGetAllIndexes];
+
         [self _onLastRoute];
         [self _onGetAllRoutes];
 
@@ -212,46 +210,6 @@ NS_ASSUME_NONNULL_BEGIN
                                             result(@(r));
                                         }
                                     }];
-            }];
-}
-
-- (void)_onLastIndex {
-    [_channel registryMethod:@"lastIndex"
-                     handler:
-     ^void (NSDictionary<NSString *, id> *arguments,
-            ThrioIdCallback _Nullable result) {
-                if (result) {
-                    NSString *url = [arguments[@"url"] isKindOfClass:NSNull.class] ? nil : arguments[@"url"];
-                    NavigatorPageRoute *lastRoute = nil;
-                    if (!url || url.length < 1) {
-                        lastRoute = [ThrioNavigator lastRoute];
-                    } else {
-                        lastRoute = [ThrioNavigator getLastRouteByUrl:url];
-                    }
-                    result(lastRoute.settings.index);
-                }
-            }];
-}
-
-- (void)_onGetAllIndexes {
-    [_channel registryMethod:@"allIndexes"
-                     handler:
-     ^void (NSDictionary<NSString *, id> *arguments,
-            ThrioIdCallback _Nullable result) {
-                NSString *url = [arguments[@"url"] isKindOfClass:NSNull.class] ? nil : arguments[@"url"];
-                NSArray *allRoutes;
-                if (!url || url.length < 1) {
-                    allRoutes = [ThrioNavigator allRoutes];
-                } else {
-                    allRoutes = [ThrioNavigator getAllRoutesByUrl:url];
-                }
-                NSMutableArray *allIndexes = [NSMutableArray array];
-                for (NavigatorPageRoute *route in allRoutes) {
-                    [allIndexes addObject:route.settings.index];
-                }
-                if (result) {
-                    result(allIndexes);
-                }
             }];
 }
 

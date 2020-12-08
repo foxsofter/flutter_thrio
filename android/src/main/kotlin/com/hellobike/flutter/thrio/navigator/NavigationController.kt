@@ -78,13 +78,13 @@ internal object NavigationController : Application.ActivityLifecycleCallbacks {
     object Push {
 
         private var result: NullableIntCallback? = null
-        private var poppedResult: NullableAnyCallback? = null
+        private var poppedResult: NullableAnyCallback<*>? = null
 
-        fun push(url: String,
-                 params: Any? = null,
+        fun <T> push(url: String,
+                 params: T? = null,
                  animated: Boolean,
                  fromEntrypoint: String = "",
-                 poppedResult: NullableAnyCallback? = null,
+                 poppedResult: NullableAnyCallback<*>? = null,
                  result: NullableIntCallback?) {
             if (routeAction != RouteAction.NONE) {
                 result?.invoke(null)
@@ -97,7 +97,7 @@ internal object NavigationController : Application.ActivityLifecycleCallbacks {
             val index = (lastRoute?.settings?.index?.plus(1)) ?: 1
 
             val settings = RouteSettings(url, index).also {
-                it.params = params
+                it.params = JsonSerializers.serializeParams(params)
                 it.animated = animated
             }
 
@@ -199,17 +199,17 @@ internal object NavigationController : Application.ActivityLifecycleCallbacks {
 
     object Notify {
 
-        fun notify(url: String? = null,
+        fun <T> notify(url: String? = null,
                    index: Int? = null,
                    name: String,
-                   params: Any? = null,
+                   params: T? = null,
                    result: BooleanCallback? = null) {
             if ((url != null && index != null && index < 0) || !PageRoutes.hasRoute(url)) {
                 result?.invoke(false)
                 return
             }
 
-            PageRoutes.notify(url, index, name, params) {
+            PageRoutes.notify<T>(url, index, name, params) {
                 result?.invoke(it)
             }
 
@@ -235,7 +235,7 @@ internal object NavigationController : Application.ActivityLifecycleCallbacks {
                             "url" to route.settings.url,
                             "index" to route.settings.index,
                             "name" to it.key,
-                            "params" to it.value!!
+                            "params" to JsonSerializers.serializeParams(it.value)
                     )
                     Log.i("Thrio", "page ${route.settings.url} '" +
                             "'index ${route.settings.index} notify")
@@ -248,7 +248,7 @@ internal object NavigationController : Application.ActivityLifecycleCallbacks {
     }
 
     object Pop {
-        fun pop(params: Any? = null,
+        fun <T> pop(params: T? = null,
                 animated: Boolean = true,
                 result: BooleanCallback? = null) {
             if (routeAction != RouteAction.NONE) {
@@ -258,7 +258,7 @@ internal object NavigationController : Application.ActivityLifecycleCallbacks {
 
             routeAction = RouteAction.POP
 
-            PageRoutes.pop(params, animated) {
+            PageRoutes.pop<T>(params, animated) {
                 result?.invoke(it)
                 routeAction = RouteAction.NONE
             }

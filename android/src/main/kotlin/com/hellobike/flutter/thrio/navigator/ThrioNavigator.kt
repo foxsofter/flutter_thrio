@@ -32,31 +32,31 @@ object ThrioNavigator {
 
     @JvmStatic
     @JvmOverloads
-    fun push(url: String,
-             params: Any? = null,
+    fun <T> push(url: String,
+             params: T? = null,
              animated: Boolean = true,
-             poppedResult: NullableAnyCallback? = null,
+             poppedResult: NullableAnyCallback<*>? = null,
              result: NullableIntCallback = {}) {
-        NavigationController.Push.push(url, params, animated,
+        NavigationController.Push.push<T>(url, params, animated,
                 NAVIGATION_NATIVE_ENTRYPOINT, poppedResult, result)
     }
 
     @JvmStatic
     @JvmOverloads
-    fun notify(url: String? = null,
+    fun <T> notify(url: String? = null,
                index: Int = 0,
                name: String,
-               params: Any? = null,
+               params: T? = null,
                result: BooleanCallback = {}) {
-        NavigationController.Notify.notify(url, index, name, params, result)
+        NavigationController.Notify.notify<T>(url, index, name, params, result)
     }
 
     @JvmStatic
     @JvmOverloads
-    fun pop(params: Any? = null,
+    fun <T> pop(params: T? = null,
             animated: Boolean = true,
             result: BooleanCallback = {}) {
-        NavigationController.Pop.pop(params, animated, result)
+        NavigationController.Pop.pop<T>(params, animated, result)
     }
 
     @JvmStatic
@@ -83,5 +83,6 @@ object ThrioNavigator {
     fun lastRoute(url: String? = null): PageRoute? = PageRoutes.lastRoute(url)
 
     @JvmStatic
-    fun allRoutes(url: String): List<PageRoute> = PageRoutes.allRoutes(url);
+    @JvmOverloads
+    fun allRoutes(url: String? = null): List<PageRoute> = PageRoutes.allRoutes(url);
 }

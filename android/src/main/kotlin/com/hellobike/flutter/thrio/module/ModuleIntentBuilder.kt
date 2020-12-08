@@ -23,12 +23,17 @@
 
 package com.hellobike.flutter.thrio.module
 
+import android.content.Context
 import com.hellobike.flutter.thrio.VoidCallback
 import com.hellobike.flutter.thrio.navigator.FlutterIntentBuilder
 import com.hellobike.flutter.thrio.navigator.IntentBuilder
 import com.hellobike.flutter.thrio.navigator.IntentBuilders
 
 interface ModuleIntentBuilder {
+
+    fun onIntentBuilderRegister(context: Context) {
+
+    }
 
     fun registerIntentBuilder(url: String, builder: IntentBuilder): VoidCallback {
         return IntentBuilders.intentBuilders.registry(url, builder)

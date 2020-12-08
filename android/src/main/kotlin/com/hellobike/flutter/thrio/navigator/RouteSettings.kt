@@ -29,6 +29,8 @@ data class RouteSettings(val url: String, val index: Int) {
     var animated: Boolean = true
     var isNested: Boolean = false
 
+    val name get() = "$index $url"
+
     fun toArguments(): Map<String, Any?> = mapOf(
             "url" to url,
             "index" to index,
@@ -53,7 +55,7 @@ data class RouteSettings(val url: String, val index: Int) {
             }
             val url = arguments["url"] as String
             val index = if (arguments["index"] != null) arguments["index"] as Int else 0
-            val params = arguments["params"]
+            val params = JsonDeserializers.deserializeParams(arguments["params"])
             val animated = if (arguments["animated"] != null) arguments["animated"] as Boolean else false
             return RouteSettings(url, index).also {
                 it.params = params

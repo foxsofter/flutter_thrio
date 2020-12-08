@@ -33,10 +33,11 @@
     return serializers;
 }
 
-+ (NSDictionary *_Nullable)serializeParams:(id _Nullable)params {
++ (id _Nullable)serializeParams:(id _Nullable)params {
     if (!params) {
         return nil;
     }
+
     // 已经序列化过了
     if ([params isKindOfClass:NSDictionary.class] &&
         [params containsObject:@"__thrio_TParams__"]) {

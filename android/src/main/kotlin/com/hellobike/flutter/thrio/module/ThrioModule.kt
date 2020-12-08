@@ -67,14 +67,31 @@ open class ThrioModule {
             it.initModule(context)
         }
         modules.values.forEach {
-            it.onPageRegister(context)
+            if (it is ModuleIntentBuilder) {
+                it.onIntentBuilderRegister(context)
+            }
+        }
+        modules.values.forEach {
+            if (it is ModulePageObserver) {
+                it.onPageObserverRegister(context)
+            }
+            if (it is ModuleRouteObserver) {
+                it.onRouteObserverRegister(context)
+            }
+        }
+        modules.values.forEach {
+            if (it is ModuleJsonSerializer) {
+                it.onJsonSerializerRegister(context)
+            }
+            if (it is ModuleJsonDeserializer) {
+                it.onJsonDeserializerRegister(context)
+            }
         }
         startupFlutterEngine(context)
     }
 
     protected open fun onModuleRegister(context: Context) {}
 
-    protected open fun onPageRegister(context: Context) {}
 
     protected open fun onModuleInit(context: Context) {}
 

@@ -25,6 +25,7 @@ package com.hellobike.flutter.thrio.navigator
 
 import android.app.Activity
 import com.hellobike.flutter.thrio.BooleanCallback
+import com.hellobike.flutter.thrio.NullableAnyCallback
 import com.hellobike.flutter.thrio.NullableIntCallback
 import io.flutter.embedding.android.ThrioActivity
 import java.lang.ref.WeakReference
@@ -54,12 +55,16 @@ internal data class PageRouteHolder(val pageId: Int,
 
     fun lastRoute(entrypoint: String): PageRoute? = routes.lastOrNull { it.entrypoint == entrypoint }
 
-    fun allRoute(url: String): List<PageRoute> = routes.takeWhile { it.settings.url == url }
+    fun allRoute(url: String? = null): List<PageRoute> = when (url) {
+        null -> routes
+        else -> routes.takeWhile { it.settings.url == url }
+    }
 
     fun push(route: PageRoute, result: NullableIntCallback) {
         val activity = activity?.get()
         if (activity != null) {
             if (activity is ThrioActivity) {
+                route.settings.params = JsonSerializers.serializeParams(route.settings.params)
                 activity.onPush(route.settings.toArguments()) {
                     if (it) {
                         routes.add(route)
@@ -80,20 +85,21 @@ internal data class PageRouteHolder(val pageId: Int,
         }
     }
 
-    fun notify(url: String?, index: Int?, name: String, params: Any?, result: BooleanCallback) {
+
+    fun <T> notify(url: String?, index: Int?, name: String, params: T?, result: BooleanCallback) {
         var isMatch = false
         routes.forEach {
             if ((url == null || it.settings.url == url)
                     && (index == null || index == 0 || it.settings.index == index)) {
                 isMatch = true
-                it.addNotify(name, params)
+                it.addNotify<T>(name, params)
             }
         }
         result(isMatch)
     }
 
 
-    fun pop(params: Any?, animated: Boolean, result: BooleanCallback) {
+    fun <T> pop(params: T?, animated: Boolean, result: BooleanCallback) {
         val lastRoute = lastRoute()
         if (lastRoute == null) {
             result(false)
@@ -102,7 +108,7 @@ internal data class PageRouteHolder(val pageId: Int,
         val activity = activity?.get()
         if (activity != null && !activity.isDestroyed) {
             if (activity is ThrioActivity) {
-                lastRoute.settings.params = params
+                lastRoute.settings.params = JsonSerializers.serializeParams(params)
                 lastRoute.settings.animated = animated
                 activity.onPop(lastRoute.settings.toArguments()) { it ->
                     if (it) {
@@ -110,7 +116,10 @@ internal data class PageRouteHolder(val pageId: Int,
                     }
                     result(it)
                     if (it) {
-                        lastRoute.poppedResult?.invoke(params)
+                        lastRoute.poppedResult?.let {
+                            @Suppress("UNCHECKED_CAST")
+                            (it as NullableAnyCallback<T>)(params)
+                        }
                         lastRoute.poppedResult = null
                         if (lastRoute.fromEntrypoint != NAVIGATION_NATIVE_ENTRYPOINT
                                 && lastRoute.entrypoint != lastRoute.fromEntrypoint) {
@@ -122,10 +131,13 @@ internal data class PageRouteHolder(val pageId: Int,
             } else {
                 routes.remove(lastRoute)
                 result(true)
-                lastRoute.poppedResult?.invoke(params)
+                lastRoute.poppedResult?.let {
+                    @Suppress("UNCHECKED_CAST")
+                    (it as NullableAnyCallback<T>)(params)
+                }
                 lastRoute.poppedResult = null
                 if (lastRoute.fromEntrypoint != NAVIGATION_NATIVE_ENTRYPOINT) {
-                    lastRoute.settings.params = params
+                    lastRoute.settings.params = JsonSerializers.serializeParams(params)
                     lastRoute.settings.animated = animated
                     FlutterEngineFactory.getEngine(lastRoute.fromEntrypoint)?.sendChannel?.onPop(lastRoute.settings.toArguments()) {}
                 }

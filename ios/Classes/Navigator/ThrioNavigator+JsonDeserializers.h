@@ -29,7 +29,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (ThrioRegistryMap *)jsonDeserializers;
 
-+ (id _Nullable)deserializeParams:(NSDictionary *_Nullable)params;
++ (id _Nullable)deserializeParams:(id _Nullable)params;
 
 @end
 

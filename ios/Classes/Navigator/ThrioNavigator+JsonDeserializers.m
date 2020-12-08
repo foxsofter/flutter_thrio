@@ -34,13 +34,11 @@
     return deserializers;
 }
 
-+ (id _Nullable)deserializeParams:(NSDictionary *_Nullable)params {
-    if (!params) {
-        return nil;
-    }
-    if (![params isKindOfClass:NSDictionary.class]) {
++ (id _Nullable)deserializeParams:(id _Nullable)params {
+    if (!params || ![params isKindOfClass:NSDictionary.class]) {
         return params;
     }
+
     NSString *type = params[@"__thrio_TParams__"];
     if (!type) {
         return params;

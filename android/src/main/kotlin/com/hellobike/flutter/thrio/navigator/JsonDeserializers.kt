@@ -1,7 +1,7 @@
 /**
  * The MIT License (MIT)
  *
- * Copyright (c) 2019 Hellobike Group
+ * Copyright (c) 2020 foxsofter
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -21,24 +21,35 @@
  * IN THE SOFTWARE.
  */
 
-package com.hellobike.flutter.thrio.module
+package com.hellobike.flutter.thrio.navigator
 
-import android.content.Context
-import com.hellobike.flutter.thrio.VoidCallback
-import com.hellobike.flutter.thrio.navigator.RouteObserver
-import com.hellobike.flutter.thrio.navigator.RouteObservers
+import com.hellobike.flutter.thrio.JsonDeserializer
+import com.hellobike.flutter.thrio.registry.RegistryMap
 
-interface ModuleRouteObserver {
+internal object JsonDeserializers {
+    private const val TAG = "JsonDeserializers"
 
-    fun onRouteObserverRegister(context: Context) {
+    val deserializers by lazy { RegistryMap<String, JsonDeserializer<*>>() }
 
-    }
+    fun deserializeParams(params: Any?): Any? {
+        if (params == null || params !is Map<*, *>) {
+            return params
+        }
 
-    fun registerRouteObserver(observer: RouteObserver): VoidCallback {
-        return RouteObservers.observers.registry(observer)
-    }
+        // 已经序列化过了
+        if (!params.containsKey("__thrio_TParams__")) {
+            return params
+        }
+        val type = params["__thrio_TParams__"] as String
+        var deserializer = deserializers[type]
+        if (deserializer == null) {
+            deserializer = deserializers.lastOrNull { it.key == type || it.key.endsWith(type) }?.value
+        }
+        if (deserializer == null) {
+            return params
+        }
 
-    fun registerRouteObservers(observers: List<RouteObserver>): VoidCallback {
-        return RouteObservers.observers.registryAll(observers.toSet())
+        @Suppress("UNCHECKED_CAST")
+        return deserializer(params as Map<String, Any>) ?: params
     }
 }

@@ -41,14 +41,24 @@ typealias NullableIntCallback = (Int?) -> Unit
 /**
  * Signature of callbacks with any parameters.
  */
-typealias NullableAnyCallback = (Any?) -> Unit
+typealias NullableAnyCallback<T> = (T?) -> Unit
+
+/**
+ * Signature for a block that serializer json object to map.
+ */
+typealias JsonSerializer<T> = (T) -> Map<String, Any?>?
+
+/**
+ * Signature for a block that deserialize json map to object.
+ */
+typealias JsonDeserializer<T> = (Map<String, Any?>) -> T?
 
 /**
  * Signature for a callbacks that handlers channel method invocation.
  */
-typealias MethodHandler = (Map<String, Any?>?, NullableAnyCallback) -> Unit
+typealias MethodHandler = (Map<String, Any?>?, NullableAnyCallback<*>) -> Unit
 
 /**
  * Signature for a callbacks that handlers channel event handling.
  */
-typealias EventHandler = (Map<String, Any?>?, NullableAnyCallback) -> Unit
+typealias EventHandler = (Map<String, Any?>?, NullableAnyCallback<*>) -> Unit
