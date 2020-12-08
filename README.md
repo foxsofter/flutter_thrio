@@ -44,7 +44,7 @@
 
 04. 如果所开发的是一个全新的 App，以后也不会涉及到老的代码的复用，或者不会涉及到 Flutter 支持不够良好的一些技术上的坑，确实可以考虑纯 Flutter。
 
-05. 但以上的情形极少，所以大部分的 Flutter 在引入的时候，都应该考虑以 Flutter 混合栈的方式进行，坑不是用来踩的，而是绕道而过。
+05. 但4的情形极少，所以大部分的 Flutter 在引入的时候，都应该考虑以 Flutter 混合栈的方式进行，坑不是用来踩的，而是绕道而过。
 
 [gitter channel]: https://badges.gitter.im/flutter_thrio/flutter_thrio.svg
 [gitter badge]: https://gitter.im/flutter_thrio/flutter_thrio?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge
