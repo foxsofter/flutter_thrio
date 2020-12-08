@@ -33,7 +33,7 @@ data class PageRoute(val settings: RouteSettings, val clazz: Class<out Activity>
     var entrypoint: String = NAVIGATION_FLUTTER_ENTRYPOINT_DEFAULT
     var fromEntrypoint: String = NAVIGATION_NATIVE_ENTRYPOINT
 
-    var poppedResult: NullableAnyCallback<*>? = null
+    var poppedResult: NullableAnyCallback? = null
 
     fun <T> addNotify(name: String, params: T?) {
         notifications[name] = params

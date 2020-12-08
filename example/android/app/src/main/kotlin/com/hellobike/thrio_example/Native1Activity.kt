@@ -15,7 +15,10 @@ class Native1Activity : AppCompatActivity(), PageNotifyListener {
 
         btn_10.setOnClickListener {
             ThrioNavigator.push("/biz1/flutter1",
-                    params = mapOf("k1" to 1),
+                    params = People(mapOf(
+                            "name" to "foxsofter",
+                            "age" to 100,
+                            "sex" to "x")),
                     result = {
                         Log.i("Thrio", "push result data $it")
                     },
@@ -84,7 +87,10 @@ class Native1Activity : AppCompatActivity(), PageNotifyListener {
         }
 
         btn_3.setOnClickListener {
-            ThrioNavigator.pop("native 1 popResult")
+            ThrioNavigator.pop( People(mapOf(
+                    "name" to "foxsofter",
+                    "age" to 100,
+                    "sex" to "from pop")))
         }
     }
 

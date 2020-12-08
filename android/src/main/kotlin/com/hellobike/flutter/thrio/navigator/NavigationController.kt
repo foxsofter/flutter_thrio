@@ -36,7 +36,7 @@ import io.flutter.embedding.android.ThrioActivity
 internal object NavigationController : Application.ActivityLifecycleCallbacks {
 
     override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
-        context = context ?: activity
+        context = activity
 
         Remove.doRemove(activity)
         if (activity is ThrioActivity) {
@@ -78,14 +78,14 @@ internal object NavigationController : Application.ActivityLifecycleCallbacks {
     object Push {
 
         private var result: NullableIntCallback? = null
-        private var poppedResult: NullableAnyCallback<*>? = null
+        private var poppedResult: NullableAnyCallback? = null
 
         fun <T> push(url: String,
-                 params: T? = null,
-                 animated: Boolean,
-                 fromEntrypoint: String = "",
-                 poppedResult: NullableAnyCallback<*>? = null,
-                 result: NullableIntCallback?) {
+                     params: T? = null,
+                     animated: Boolean,
+                     fromEntrypoint: String = "",
+                     poppedResult: NullableAnyCallback? = null,
+                     result: NullableIntCallback?) {
             if (routeAction != RouteAction.NONE) {
                 result?.invoke(null)
                 return
@@ -200,10 +200,10 @@ internal object NavigationController : Application.ActivityLifecycleCallbacks {
     object Notify {
 
         fun <T> notify(url: String? = null,
-                   index: Int? = null,
-                   name: String,
-                   params: T? = null,
-                   result: BooleanCallback? = null) {
+                       index: Int? = null,
+                       name: String,
+                       params: T? = null,
+                       result: BooleanCallback? = null) {
             if ((url != null && index != null && index < 0) || !PageRoutes.hasRoute(url)) {
                 result?.invoke(false)
                 return
@@ -237,8 +237,7 @@ internal object NavigationController : Application.ActivityLifecycleCallbacks {
                             "name" to it.key,
                             "params" to JsonSerializers.serializeParams(it.value)
                     )
-                    Log.i("Thrio", "page ${route.settings.url} '" +
-                            "'index ${route.settings.index} notify")
+                    Log.i("Thrio", "url-> ${route.settings.url} index-> ${route.settings.index} notify")
                     activity.onNotify(arguments) {}
                 } else if (activity is PageNotifyListener) {
                     activity.onNotify(it.key, it.value)
@@ -249,8 +248,8 @@ internal object NavigationController : Application.ActivityLifecycleCallbacks {
 
     object Pop {
         fun <T> pop(params: T? = null,
-                animated: Boolean = true,
-                result: BooleanCallback? = null) {
+                    animated: Boolean = true,
+                    result: BooleanCallback? = null) {
             if (routeAction != RouteAction.NONE) {
                 result?.invoke(false)
                 return

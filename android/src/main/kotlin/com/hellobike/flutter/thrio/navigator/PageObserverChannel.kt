@@ -54,18 +54,22 @@ class PageObserverChannel constructor(entrypoint: String, messenger: BinaryMesse
     }
 
     override fun willAppear(routeSettings: RouteSettings) {
-        channel.invokeMethod("willAppear", routeSettings.toArguments())
+        val arguments = routeSettings.toArgumentsWithParams(null);
+        channel.invokeMethod("willAppear", arguments)
     }
 
     override fun didAppear(routeSettings: RouteSettings) {
-        channel.invokeMethod("didAppear", routeSettings.toArguments())
+        val arguments = routeSettings.toArgumentsWithParams(null);
+        channel.invokeMethod("didAppear", arguments)
     }
 
     override fun willDisappear(routeSettings: RouteSettings) {
-        channel.invokeMethod("willDisappear", routeSettings.toArguments())
+        val arguments = routeSettings.toArgumentsWithParams(null);
+        channel.invokeMethod("willDisappear", arguments)
     }
 
     override fun didDisappear(routeSettings: RouteSettings) {
-        channel.invokeMethod("didDisappear", routeSettings.toArguments())
+        val arguments = routeSettings.toArgumentsWithParams(null);
+        channel.invokeMethod("didDisappear", arguments)
     }
 }

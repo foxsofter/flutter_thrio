@@ -39,8 +39,7 @@ internal object PageObservers : PageObserver {
             it.willAppear(routeSettings)
         }
         Log.i(TAG, "willAppear: url->${routeSettings.url} " +
-                "index->${routeSettings.index} " +
-                "params->${routeSettings.params?.toString()}")
+                "index->${routeSettings.index} ")
     }
 
     override fun didAppear(routeSettings: RouteSettings) {
@@ -48,8 +47,7 @@ internal object PageObservers : PageObserver {
             it.didAppear(routeSettings)
         }
         Log.i(TAG, "didAppear: url->${routeSettings.url} " +
-                "index->${routeSettings.index} " +
-                "params->${routeSettings.params?.toString()}")
+                "index->${routeSettings.index} ")
         PageRoutes.lastRouteHolder(routeSettings.url, routeSettings.index)?.activity?.get()?.apply {
             NavigationController.Notify.doNotify(this)
         }
@@ -60,8 +58,7 @@ internal object PageObservers : PageObserver {
             it.willDisappear(routeSettings)
         }
         Log.i(TAG, "willDisappear: url->${routeSettings.url} " +
-                "index->${routeSettings.index} " +
-                "params->${routeSettings.params?.toString()}")
+                "index->${routeSettings.index} ")
     }
 
     override fun didDisappear(routeSettings: RouteSettings) {
@@ -69,7 +66,6 @@ internal object PageObservers : PageObserver {
             it.didDisappear(routeSettings)
         }
         Log.i(TAG, "didDisappear: url->${routeSettings.url} " +
-                "index->${routeSettings.index} " +
-                "params->${routeSettings.params?.toString()}")
+                "index->${routeSettings.index} ")
     }
 }

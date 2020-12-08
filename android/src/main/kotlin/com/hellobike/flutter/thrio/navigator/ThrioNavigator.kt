@@ -23,7 +23,6 @@
 
 package com.hellobike.flutter.thrio.navigator
 
-import android.app.Application
 import com.hellobike.flutter.thrio.BooleanCallback
 import com.hellobike.flutter.thrio.NullableAnyCallback
 import com.hellobike.flutter.thrio.NullableIntCallback
@@ -33,30 +32,52 @@ object ThrioNavigator {
     @JvmStatic
     @JvmOverloads
     fun <T> push(url: String,
-             params: T? = null,
-             animated: Boolean = true,
-             poppedResult: NullableAnyCallback<*>? = null,
-             result: NullableIntCallback = {}) {
+                       params: T? = null,
+                       animated: Boolean = true,
+                       poppedResult: NullableAnyCallback? = null,
+                       result: NullableIntCallback = {}) {
         NavigationController.Push.push<T>(url, params, animated,
+                NAVIGATION_NATIVE_ENTRYPOINT, poppedResult, result)
+    }
+
+    @JvmStatic
+    fun push(url: String,
+             animated: Boolean = true,
+             poppedResult: NullableAnyCallback? = null,
+             result: NullableIntCallback = {}) {
+        NavigationController.Push.push(url, null, animated,
                 NAVIGATION_NATIVE_ENTRYPOINT, poppedResult, result)
     }
 
     @JvmStatic
     @JvmOverloads
     fun <T> notify(url: String? = null,
+                   index: Int = 0,
+                   name: String,
+                   params: T? = null,
+                   result: BooleanCallback = {}) {
+        NavigationController.Notify.notify<T>(url, index, name, params, result)
+    }
+
+    @JvmStatic
+    fun notify(url: String? = null,
                index: Int = 0,
                name: String,
-               params: T? = null,
                result: BooleanCallback = {}) {
-        NavigationController.Notify.notify<T>(url, index, name, params, result)
+        NavigationController.Notify.notify(url, index, name, null, result)
     }
 
     @JvmStatic
     @JvmOverloads
     fun <T> pop(params: T? = null,
-            animated: Boolean = true,
-            result: BooleanCallback = {}) {
+                animated: Boolean = true,
+                result: BooleanCallback = {}) {
         NavigationController.Pop.pop<T>(params, animated, result)
+    }
+
+    @JvmStatic
+    fun pop(animated: Boolean = true, result: BooleanCallback = {}) {
+        NavigationController.Pop.pop(null, animated, result)
     }
 
     @JvmStatic

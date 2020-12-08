@@ -41,11 +41,11 @@ class _Page1State extends State<Page1> {
   Widget build(BuildContext context) => NavigatorPageNotify(
       name: 'all_page_notify',
       onPageNotify: (params) =>
-          ThrioLogger.v('flutter1 receive all page notify:${params()}'),
+          ThrioLogger.v('flutter1 receive all page notify:$params'),
       child: NavigatorPageNotify(
           name: 'page1Notify',
           onPageNotify: (params) =>
-              ThrioLogger.v('flutter1 receive notify:${params()}'),
+              ThrioLogger.v('flutter1 receive notify:$params'),
           child: Scaffold(
               appBar: PreferredSize(
                   preferredSize: Platform.isIOS
@@ -121,7 +121,7 @@ class _Page1State extends State<Page1> {
                         url: '/biz2/flutter2',
                         params: People(name: '大宝剑', age: 0, sex: 'x'),
                         poppedResult: (params) => ThrioLogger.v(
-                            '/biz1/flutter1 poppedResult call popped:${params()}'),
+                            '/biz1/flutter1 poppedResult call popped:$params'),
                       ),
                       child: Container(
                           padding: const EdgeInsets.all(8),
@@ -149,7 +149,7 @@ class _Page1State extends State<Page1> {
                         url: '/biz1/native1',
                         params: People(name: '大宝剑', age: 10, sex: 'x'),
                         poppedResult: (params) => ThrioLogger.v(
-                            '/biz1/native1 poppedResult call params:${params()}'),
+                            '/biz1/native1 poppedResult call params:$params'),
                       ),
                       child: Container(
                           padding: const EdgeInsets.all(8),

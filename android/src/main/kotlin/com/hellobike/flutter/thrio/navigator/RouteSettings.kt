@@ -39,6 +39,20 @@ data class RouteSettings(val url: String, val index: Int) {
             "params" to params
     )
 
+    fun toArgumentsWithParams(params: Any?): Map<String, Any?> = when (params) {
+        null -> mapOf(
+                "url" to url,
+                "index" to index,
+                "animated" to animated,
+                "isNested" to isNested)
+        else -> mapOf(
+                "url" to url,
+                "index" to index,
+                "animated" to animated,
+                "isNested" to isNested,
+                "params" to params)
+    }
+
     override fun equals(other: Any?): Boolean {
         return other != null && other is RouteSettings && url == other.url && index == other.index
     }

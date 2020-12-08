@@ -25,8 +25,8 @@ package com.hellobike.flutter.thrio.navigator
 
 import android.app.Activity
 import com.hellobike.flutter.thrio.BooleanCallback
-import com.hellobike.flutter.thrio.NullableAnyCallback
 import com.hellobike.flutter.thrio.NullableIntCallback
+import com.hellobike.flutter.thrio.NullableAnyCallback
 import io.flutter.embedding.android.ThrioActivity
 import java.lang.ref.WeakReference
 
@@ -118,7 +118,7 @@ internal data class PageRouteHolder(val pageId: Int,
                     if (it) {
                         lastRoute.poppedResult?.let {
                             @Suppress("UNCHECKED_CAST")
-                            (it as NullableAnyCallback<T>)(params)
+                            it(JsonDeserializers.deserializeParams(params))
                         }
                         lastRoute.poppedResult = null
                         if (lastRoute.fromEntrypoint != NAVIGATION_NATIVE_ENTRYPOINT
@@ -133,7 +133,7 @@ internal data class PageRouteHolder(val pageId: Int,
                 result(true)
                 lastRoute.poppedResult?.let {
                     @Suppress("UNCHECKED_CAST")
-                    (it as NullableAnyCallback<T>)(params)
+                    it(JsonDeserializers.deserializeParams(params))
                 }
                 lastRoute.poppedResult = null
                 if (lastRoute.fromEntrypoint != NAVIGATION_NATIVE_ENTRYPOINT) {

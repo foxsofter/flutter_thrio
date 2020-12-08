@@ -91,8 +91,7 @@ class NavigatorObserverManager extends NavigatorObserver {
                   AppLifecycleState.resumed) {
                 verbose(
                   'didRemove: url->${route.settings.url} '
-                  'index->${route.settings.index} '
-                  'params->${route.settings.params}',
+                  'index->${route.settings.index} ',
                 );
                 ThrioNavigatorImplement.shared()
                     .routeObservers

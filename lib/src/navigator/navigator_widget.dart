@@ -267,16 +267,11 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
               final paramsInstance = ThrioNavigatorImplement.shared()
                   .jsonDeserializers[type]
                   ?.call(params.cast<String, dynamic>());
-              // ignore: avoid_as
-              poppedResultCallback(<type>() => paramsInstance as type);
+              poppedResultCallback(paramsInstance);
               return;
             }
           }
-
-          // ignore: unused_local_variable
-          final paramsType = params.runtimeType;
-          // ignore: avoid_as
-          poppedResultCallback(<paramsType>() => params as paramsType);
+          poppedResultCallback(params);
         }
       }
     }

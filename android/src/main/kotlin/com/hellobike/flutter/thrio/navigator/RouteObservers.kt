@@ -36,8 +36,7 @@ internal object RouteObservers : RouteObserver {
 
     override fun didPush(routeSettings: RouteSettings) {
         Log.i(TAG, "didPush: url->${routeSettings.url} " +
-                "index->${routeSettings.index} " +
-                "params->${routeSettings.params?.toString()}")
+                "index->${routeSettings.index} ")
         observers.forEach {
             it.didPush(routeSettings)
         }
@@ -45,8 +44,7 @@ internal object RouteObservers : RouteObserver {
 
     override fun didPop(routeSettings: RouteSettings) {
         Log.i(TAG, "didPop: url->${routeSettings.url} " +
-                "index->${routeSettings.index} " +
-                "params->${routeSettings.params?.toString()}")
+                "index->${routeSettings.index} ")
         observers.forEach {
             it.didPop(routeSettings)
         }
@@ -54,8 +52,7 @@ internal object RouteObservers : RouteObserver {
 
     override fun didPopTo(routeSettings: RouteSettings) {
         Log.i(TAG, "didPopTo: url->${routeSettings.url} " +
-                "index->${routeSettings.index} " +
-                "params->${routeSettings.params?.toString()}")
+                "index->${routeSettings.index} ")
         observers.forEach {
             it.didPopTo(routeSettings)
         }
@@ -63,8 +60,7 @@ internal object RouteObservers : RouteObserver {
 
     override fun didRemove(routeSettings: RouteSettings) {
         Log.i(TAG, "didRemove: url->${routeSettings.url} " +
-                "index->${routeSettings.index} " +
-                "params->${routeSettings.params?.toString()}")
+                "index->${routeSettings.index} ")
         observers.forEach {
             it.didRemove(routeSettings)
         }

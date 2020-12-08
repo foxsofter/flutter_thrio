@@ -30,7 +30,7 @@ import 'navigator_types.dart';
 import 'navigator_widget.dart';
 import 'thrio_navigator_implement.dart';
 
-class NavigatorPageNotify<T> extends StatefulWidget {
+class NavigatorPageNotify extends StatefulWidget {
   const NavigatorPageNotify({
     Key key,
     @required this.name,
@@ -44,15 +44,15 @@ class NavigatorPageNotify<T> extends StatefulWidget {
 
   final NavigatorParamsCallback onPageNotify;
 
-  final T initialParams;
+  final dynamic initialParams;
 
   final Widget child;
 
   @override
-  _NavigatorPageNotifyState<T> createState() => _NavigatorPageNotifyState<T>();
+  _NavigatorPageNotifyState createState() => _NavigatorPageNotifyState();
 }
 
-class _NavigatorPageNotifyState<T> extends State<NavigatorPageNotify<T>> {
+class _NavigatorPageNotifyState extends State<NavigatorPageNotify> {
   NavigatorPageRoute _route;
 
   Stream _notifyStream;
@@ -64,7 +64,7 @@ class _NavigatorPageNotifyState<T> extends State<NavigatorPageNotify<T>> {
     if (mounted) {
       if (widget.initialParams != null) {
         // ignore: avoid_as
-        widget.onPageNotify(<T>() => widget.initialParams as T);
+        widget.onPageNotify(widget.initialParams);
       }
     }
   }
@@ -104,16 +104,12 @@ class _NavigatorPageNotifyState<T> extends State<NavigatorPageNotify<T>> {
               .jsonDeserializers[type]
               ?.call(params.cast<String, dynamic>());
           if (paramsInstance != null) {
-            // ignore: avoid_as
-            widget.onPageNotify(<type>() => paramsInstance as type);
+            widget.onPageNotify(paramsInstance);
             return;
           }
         }
       }
-      // ignore: unused_local_variable
-      final type = params.runtimeType;
-      // ignore: avoid_as
-      widget.onPageNotify(<type>() => params as type);
+      widget.onPageNotify(params);
     } else {
       widget.onPageNotify(null);
     }

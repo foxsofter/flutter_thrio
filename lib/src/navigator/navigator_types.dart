@@ -27,7 +27,7 @@ typedef NavigatorPageBuilder = Widget Function(RouteSettings settings);
 
 /// Signature of callbacks with generic parameters with type `T`.
 ///
-typedef NavigatorParamsCallback = void Function(T Function<T>() factory);
+typedef NavigatorParamsCallback = void Function(dynamic params);
 
 /// Signature of callbacks with RouteSettings.
 ///

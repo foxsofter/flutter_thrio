@@ -39,19 +39,23 @@ class RouteObserverChannel constructor(entrypoint: String, messenger: BinaryMess
     }
 
     override fun didPush(routeSettings: RouteSettings) {
-        channel.invokeMethod("didPush", routeSettings.toArguments())
+        val arguments = routeSettings.toArgumentsWithParams(null);
+        channel.invokeMethod("didPush", arguments)
     }
 
     override fun didPop(routeSettings: RouteSettings) {
-        channel.invokeMethod("didPop", routeSettings.toArguments())
+        val arguments = routeSettings.toArgumentsWithParams(null);
+        channel.invokeMethod("didPop", arguments)
     }
 
     override fun didPopTo(routeSettings: RouteSettings) {
-        channel.invokeMethod("didPopTo", routeSettings.toArguments())
+        val arguments = routeSettings.toArgumentsWithParams(null);
+        channel.invokeMethod("didPopTo", arguments)
     }
 
     override fun didRemove(routeSettings: RouteSettings) {
-        channel.invokeMethod("didRemove", routeSettings.toArguments())
+        val arguments = routeSettings.toArgumentsWithParams(null);
+        channel.invokeMethod("didRemove", arguments)
     }
 
     private fun on(method: String) {

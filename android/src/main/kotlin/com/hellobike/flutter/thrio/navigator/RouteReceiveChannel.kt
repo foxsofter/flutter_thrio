@@ -68,7 +68,9 @@ internal class RouteReceiveChannel(val channel: ThrioChannel,
             val index = if (arguments["index"] != null) arguments["index"] as Int else 0
             val name = arguments["name"] as String
             val params = arguments["params"]
-            NavigationController.Notify.notify(url, index, name, params, result)
+            NavigationController.Notify.notify(url, index, name, params){
+                result(it)
+            }
         }
     }
 
