@@ -120,6 +120,9 @@
 * feat: support for passing complex types between flutter pages
 * feat: support notify all page
 
-## 1.1.1
+## 1.2.0
 
-* fix: issue #123
+* fix: issue #123，解决`1.1.0`版本中存在的 pop native 到原生 poppedResult 不调用的问题
+* feat: 支持在所有页面间传递Json对象，为相关 API 添加泛型支持
+* feat: Flutter端添加 `lastRoute`,     `allRoutes` 两个新的 API
+* feat: 删除 `lastIndex`，`allIndexes` 这两个 API

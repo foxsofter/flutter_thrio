@@ -119,10 +119,6 @@ class NavigatorObserverManager extends NavigatorObserver {
           _currentPopRoutes.clear();
         });
       }
-      // 清空 poppedResult
-      ThrioNavigatorImplement.shared()
-          .poppedResultCallbacks
-          .remove(route.settings.name);
     }
     // 清空 poppedResult
     ThrioNavigatorImplement.shared()
