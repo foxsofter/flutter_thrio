@@ -101,6 +101,13 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
       return false;
     }
     if (history.isEmpty || settings.name != history.last.settings.name) {
+      // 不匹配的时候，调用 poppedResult 回调
+      final poppedResult = ThrioNavigatorImplement.shared()
+          .poppedResultCallbacks
+          .remove(settings.name);
+      if (poppedResult != null) {
+        _poppedResultCallback(poppedResult, settings.params);
+      }
       return false;
     }
     if (await history.last.willPop() != RoutePopDisposition.pop) {

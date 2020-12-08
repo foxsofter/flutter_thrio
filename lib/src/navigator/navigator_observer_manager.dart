@@ -120,6 +120,10 @@ class NavigatorObserverManager extends NavigatorObserver {
           _currentPopRoutes.clear();
         });
       }
+      // 清空 poppedResult
+      ThrioNavigatorImplement.shared()
+          .poppedResultCallbacks
+          .remove(route.settings.name);
     }
   }
 
@@ -174,5 +178,9 @@ class NavigatorObserverManager extends NavigatorObserver {
         });
       }
     }
+    // 清空 poppedResult
+    ThrioNavigatorImplement.shared()
+        .poppedResultCallbacks
+        .remove(route.settings.name);
   }
 }

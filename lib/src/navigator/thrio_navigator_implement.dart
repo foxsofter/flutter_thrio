@@ -85,6 +85,8 @@ class ThrioNavigatorImplement {
   final jsonDeserializers = RegistryMap<Type, JsonDeserializer>();
   final jsonSerializers = RegistryMap<Type, JsonSerializer>();
 
+  final poppedResultCallbacks = <String, NavigatorParamsCallback>{};
+
   final _routeTransitionsBuilders =
       RegistryMap<RegExp, RouteTransitionsBuilder>();
 
@@ -119,6 +121,9 @@ class ThrioNavigatorImplement {
               orElse: () => null);
           if (route != null) {
             route.poppedResultCallback = poppedResult;
+          } else {
+            // 不在当前页面栈上，则通过name来缓存
+            poppedResultCallbacks[routeName] = poppedResult;
           }
         }
         return index;

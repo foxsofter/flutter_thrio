@@ -119,3 +119,7 @@
 
 * feat: support for passing complex types between flutter pages
 * feat: support notify all page
+
+## 1.1.1
+
+* fix: issue #123
