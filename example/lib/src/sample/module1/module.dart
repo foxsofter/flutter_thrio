@@ -18,14 +18,14 @@ class Module
   void onPageBuilderRegister(ModuleContext moduleContext) {
     registerPageBuilder(
       '/biz1/flutter1',
-      (settings) => Page1(
+      (settings, moduleContext) => Page1(
         index: settings.index,
         params: settings.params,
       ),
     );
     registerPageBuilder(
       '/biz2/flutter2',
-      (settings) => Page2(
+      (settings, moduleContext) => Page2(
         index: settings.index,
         params: settings.params,
       ),
@@ -49,28 +49,28 @@ class Module
 
   @override
   void onRouteTransitionsBuilderRegister(ModuleContext moduleContext) {
-    // registerRouteTransitionsBuilder(
-    //     '\/biz1\/flutter[0-9]*',
-    //     (
-    //       context,
-    //       animation,
-    //       secondaryAnimation,
-    //       child,
-    //     ) =>
-    //         SlideTransition(
-    //           transformHitTests: false,
-    //           position: Tween<Offset>(
-    //             begin: const Offset(0, -1),
-    //             end: Offset.zero,
-    //           ).animate(animation),
-    //           child: SlideTransition(
-    //             position: Tween<Offset>(
-    //               begin: Offset.zero,
-    //               end: const Offset(0, 1),
-    //             ).animate(secondaryAnimation),
-    //             child: child,
-    //           ),
-    //         ));
+    registerRouteTransitionsBuilder(
+        '\/biz1\/flutter[0-9]*',
+        (
+          context,
+          animation,
+          secondaryAnimation,
+          child,
+        ) =>
+            SlideTransition(
+              transformHitTests: false,
+              position: Tween<Offset>(
+                begin: const Offset(0, -1),
+                end: Offset.zero,
+              ).animate(animation),
+              child: SlideTransition(
+                position: Tween<Offset>(
+                  begin: Offset.zero,
+                  end: const Offset(0, 1),
+                ).animate(secondaryAnimation),
+                child: child,
+              ),
+            ));
   }
 
   @override

@@ -142,14 +142,14 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 // override
-- (void)installSplashScreenViewIfNecessary {
-    // Do nothing.
-}
+//- (void)installSplashScreenViewIfNecessary {
+//    // Do nothing.
+//}
 
 // override
-- (BOOL)loadDefaultSplashScreenView {
-    return NO;
-}
+//- (BOOL)loadDefaultSplashScreenView {
+//    return NO;
+//}
 
 @end
 #pragma clang diagnostic pop

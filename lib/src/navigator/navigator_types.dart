@@ -21,9 +21,14 @@
 
 import 'package:flutter/widgets.dart';
 
+import '../module/module_context.dart';
+
 /// Signature of page builder with RouteSettings.
 ///
-typedef NavigatorPageBuilder = Widget Function(RouteSettings settings);
+typedef NavigatorPageBuilder = Widget Function(
+  RouteSettings settings,
+  ModuleContext context,
+);
 
 /// Signature of callbacks with generic parameters with type `T`.
 ///

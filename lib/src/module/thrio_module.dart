@@ -64,15 +64,21 @@ mixin ThrioModule {
       if (module is ModulePageBuilder) {
         module.onPageBuilderRegister(moduleContext);
       }
+    }
+    for (final module in values) {
+      if (module is ModuleRouteTransitionsBuilder) {
+        module.onRouteTransitionsBuilderRegister(moduleContext);
+      }
+    }
+    for (final module in values) {
       if (module is ModulePageObserver) {
         module.onPageObserverRegister(moduleContext);
       }
       if (module is ModuleRouteObserver) {
         module.onRouteObserverRegister(moduleContext);
       }
-      if (module is ModuleRouteTransitionsBuilder) {
-        module.onRouteTransitionsBuilderRegister(moduleContext);
-      }
+    }
+    for (final module in values) {
       if (module is ModuleJsonSerializer) {
         module.onJsonSerializerRegister(moduleContext);
       }
