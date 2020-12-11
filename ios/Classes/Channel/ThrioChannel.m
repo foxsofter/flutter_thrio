@@ -127,7 +127,7 @@ static NSString *const kEventNameKey = @"__event_name__";
                            });
                } @catch (NSException *exception) {
                    [FlutterError errorWithCode:exception.name message:exception.reason details:exception.userInfo];
-                   result(result);
+                   result(nil);
                }
            }
        }];

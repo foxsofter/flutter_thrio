@@ -49,7 +49,11 @@ class NavigatorRouteReceiveChannel {
             (animatedValue != null && animatedValue is bool) && animatedValue;
         return ThrioNavigatorImplement.shared()
             .navigatorState
-            ?.push(routeSettings, animated: animated);
+            ?.push(routeSettings, animated: animated)
+            ?.then((value) {
+          _syncPagePoppedResults();
+          return value;
+        });
       });
 
   void _onPop() => _channel.registryMethodCall('pop', ([arguments]) {
@@ -59,7 +63,11 @@ class NavigatorRouteReceiveChannel {
             (animatedValue != null && animatedValue is bool) && animatedValue;
         return ThrioNavigatorImplement.shared()
             .navigatorState
-            ?.maybePop(routeSettings, animated: animated);
+            ?.maybePop(routeSettings, animated: animated)
+            ?.then((value) {
+          _syncPagePoppedResults();
+          return value;
+        });
       });
 
   void _onPopTo() => _channel.registryMethodCall('popTo', ([arguments]) {
@@ -69,7 +77,11 @@ class NavigatorRouteReceiveChannel {
             (animatedValue != null && animatedValue is bool) && animatedValue;
         return ThrioNavigatorImplement.shared()
             .navigatorState
-            ?.popTo(routeSettings, animated: animated);
+            ?.popTo(routeSettings, animated: animated)
+            ?.then((value) {
+          _syncPagePoppedResults();
+          return value;
+        });
       });
 
   void _onRemove() => _channel.registryMethodCall('remove', ([arguments]) {
@@ -79,7 +91,11 @@ class NavigatorRouteReceiveChannel {
             (animatedValue != null && animatedValue is bool) && animatedValue;
         return ThrioNavigatorImplement.shared()
             .navigatorState
-            ?.remove(routeSettings, animated: animated);
+            ?.remove(routeSettings, animated: animated)
+            ?.then((value) {
+          _syncPagePoppedResults();
+          return value;
+        });
       });
 
   Stream onPageNotify({
@@ -113,5 +129,18 @@ class NavigatorRouteReceiveChannel {
       }
     }
     return params;
+  }
+
+  Future<void> _syncPagePoppedResults() async {
+    if (ThrioNavigatorImplement.shared().poppedResultCallbacks.isEmpty) {
+      return;
+    }
+    final routes = await ThrioNavigatorImplement.shared().allRoutes();
+    if (routes?.isEmpty ?? true) {
+      ThrioNavigatorImplement.shared().poppedResultCallbacks.clear();
+    }
+    ThrioNavigatorImplement.shared()
+        .poppedResultCallbacks
+        .removeWhere((name, _) => !routes.any((it) => it.name == name));
   }
 }

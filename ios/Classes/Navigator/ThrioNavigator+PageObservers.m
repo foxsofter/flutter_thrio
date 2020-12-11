@@ -46,7 +46,8 @@ NS_ASSUME_NONNULL_BEGIN
     if (action == NavigatorRouteActionPush) {
         [ThrioNavigator.pageObservers willAppear:routeSettings];
         NavigatorPageRoute *lastRoute = nvc.thrio_lastRoute;
-        if (![lastRoute.settings isEqualToRouteSettings:routeSettings]) {
+        if ([[nvc thrio_getAllRoutesByUrl:nil] count] > 1 &&
+            ![lastRoute.settings isEqualToRouteSettings:routeSettings]) {
             [ThrioNavigator.pageObservers willDisappear:lastRoute.settings];
         }
     } else if ([nvc thrio_containsUrl:routeSettings.url index:routeSettings.index]) {
@@ -60,8 +61,10 @@ NS_ASSUME_NONNULL_BEGIN
     UINavigationController *nvc = self.navigationController;
     if (action == NavigatorRouteActionPush) {
         [ThrioNavigator.pageObservers didAppear:routeSettings];
-        NavigatorPageRoute *lastRoute = nvc.thrio_lastRoute;
-        [ThrioNavigator.pageObservers didDisappear:lastRoute.settings];
+        if ([[nvc thrio_getAllRoutesByUrl:nil] count] > 1) {
+            NavigatorPageRoute *lastRoute = nvc.thrio_lastRoute;
+            [ThrioNavigator.pageObservers didDisappear:lastRoute.settings];
+        }
     } else if ([nvc thrio_containsUrl:routeSettings.url index:routeSettings.index]) {
         [nvc thrio_didAppear:routeSettings routeAction:action];
     }

@@ -104,7 +104,7 @@ NS_ASSUME_NONNULL_BEGIN
                 result(r ? index : nil);
             }
         }];
-    } else if (result) {
+    } else {
         if (self.thrio_firstRoute) {
             NavigatorPageRoute *lastRoute = self.thrio_lastRoute;
             lastRoute.next = newRoute;
@@ -114,8 +114,9 @@ NS_ASSUME_NONNULL_BEGIN
         }
 
         ThrioNavigator.pageObservers.lastRoute = newRoute;
-
-        result(index);
+        if (result) {
+            result(index);
+        }
     }
 }
 
@@ -376,7 +377,8 @@ NS_ASSUME_NONNULL_BEGIN
     NSMutableArray *routes = [NSMutableArray array];
     NavigatorPageRoute *first = self.thrio_firstRoute;
     do {
-        if (!url || url.length < 1 || [first.settings.url isEqualToString:url]) {
+        if (first && (!url || url.length < 1 ||
+                      [first.settings.url isEqualToString:url])) {
             [routes addObject:first];
         }
     } while ((first = first.next));

@@ -189,7 +189,8 @@ class _Page1State extends State<Page1> {
                           )),
                     ),
                     InkWell(
-                      onTap: () => ThrioNavigator.push(url: '/biz1/swift1'),
+                      onTap: () => ThrioNavigator.push(
+                          url: '/biz1/swift1', params: '11221131'),
                       child: Container(
                           padding: const EdgeInsets.all(8),
                           margin: const EdgeInsets.all(8),

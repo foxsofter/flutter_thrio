@@ -12,6 +12,7 @@
 #import "ThrioTypes.h"
 #import "UIViewController+Internal.h"
 #import "UIViewController+Navigator.h"
+#import "UIViewController+ThrioInjection.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -60,6 +61,18 @@ NS_ASSUME_NONNULL_BEGIN
                                                  result:nil
                                            poppedResult:nil];
         }];
+    } else {
+        __weak typeof(self) weakSelf = self;
+        [viewController registerInjectionBlock:^(UIViewController *vc, BOOL animated) {
+            __strong typeof(weakSelf) strongSelf = weakSelf;
+            [vc  thrio_pushUrl:strongSelf.initialUrl
+                         index:@1
+                        params:strongSelf.initialParams
+                      animated:NO
+                fromEntrypoint:nil
+                        result:nil
+                  poppedResult:nil];
+        } afterLifecycle:ThrioViewControllerLifecycleViewDidAppear];
     }
     return [super initWithRootViewController:viewController];
 }

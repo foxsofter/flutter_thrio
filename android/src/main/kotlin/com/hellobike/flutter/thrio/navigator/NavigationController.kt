@@ -39,9 +39,7 @@ internal object NavigationController : Application.ActivityLifecycleCallbacks {
         context = activity
 
         Remove.doRemove(activity)
-        if (activity is ThrioActivity) {
-            Push.doPush(activity)
-        }
+        Push.doPush(activity)
     }
 
     override fun onActivityStarted(activity: Activity) {
@@ -54,9 +52,7 @@ internal object NavigationController : Application.ActivityLifecycleCallbacks {
 
     override fun onActivityResumed(activity: Activity) {
         Notify.doNotify(activity)
-        if (activity !is ThrioActivity) {
-            Push.doPush(activity)
-        }
+        Push.doPush(activity)
     }
 
     override fun onActivityPaused(activity: Activity) {

@@ -32,11 +32,6 @@ import com.hellobike.flutter.thrio.navigator.getPageId
 
 open class ThrioActivity : ThrioFlutterActivity() {
 
-    override fun onNewIntent(intent: Intent) {
-        super.onNewIntent(intent)
-        intent.extras?.let { this.intent.putExtras(it) }
-    }
-
     override fun shouldAttachEngineToActivity(): Boolean {
         return true
     }

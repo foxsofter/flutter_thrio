@@ -272,8 +272,8 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
               return;
             }
           }
-          poppedResultCallback(params);
         }
+        poppedResultCallback(params);
       }
     }
   }
