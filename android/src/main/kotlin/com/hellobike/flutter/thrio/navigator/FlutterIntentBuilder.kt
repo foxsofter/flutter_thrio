@@ -26,6 +26,7 @@ package com.hellobike.flutter.thrio.navigator
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import io.flutter.embedding.android.FlutterActivityLaunchConfigs
 import io.flutter.embedding.android.ThrioActivity
 import io.flutter.embedding.android.ThrioFlutterActivity
 
@@ -37,6 +38,7 @@ open class FlutterIntentBuilder : IntentBuilder {
     override fun build(context: Context, entrypoint: String): Intent {
         return ThrioFlutterActivity
                 .withCachedEngine(entrypoint)
+                .backgroundMode(FlutterActivityLaunchConfigs.BackgroundMode.transparent)
                 .destroyEngineWithActivity(false)
                 .build(context).apply {
                     setClass(context, getActivityClz())
