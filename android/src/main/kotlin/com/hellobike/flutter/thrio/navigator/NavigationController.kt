@@ -102,8 +102,14 @@ internal object NavigationController : Application.ActivityLifecycleCallbacks {
             var entrypoint = NAVIGATION_NATIVE_ENTRYPOINT
 
             val lastHolder = PageRoutes.lastRouteHolder()
-            val lastActivity = lastHolder?.activity?.get()
-            val lastEntrypoint = lastHolder?.entrypoint
+            val lastActivity = lastHolder?.activity?.get() ?: if (context is ThrioActivity) {
+                context
+            } else null
+
+            val lastEntrypoint = lastHolder?.entrypoint ?: if (context is ThrioActivity) {
+                (context as ThrioActivity).cachedEngineId
+            } else null
+
 
             if (builder is FlutterIntentBuilder) {
                 entrypoint = if (FlutterEngineFactory.isMultiEngineEnabled) {
@@ -253,9 +259,15 @@ internal object NavigationController : Application.ActivityLifecycleCallbacks {
 
             routeAction = RouteAction.POP
 
-            PageRoutes.pop<T>(params, animated) {
-                result?.invoke(it)
+            if (PageRoutes.routeHolders.count() == 1
+                    && PageRoutes.firstRouteHolder!!.allRoute().count() < 2) {
+                PageRoutes.firstRouteHolder?.activity?.get()?.onBackPressed()
                 routeAction = RouteAction.NONE
+            } else {
+                PageRoutes.pop<T>(params, animated) {
+                    result?.invoke(it)
+                    routeAction = RouteAction.NONE
+                }
             }
         }
     }

@@ -11,18 +11,31 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         tools:ignore="GoogleAppIndexingWarning">
+        <!--        <activity-->
+        <!--            android:name=".Native3Activity"-->
+        <!--            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"-->
+        <!--            android:hardwareAccelerated="true"-->
+        <!--            android:theme="@style/Theme.AppCompat.DayNight"-->
+        <!--            android:windowSoftInputMode="adjustResize">-->
         <activity
-            android:name=".Native1Activity"
+            android:name="io.flutter.embedding.android.ThrioActivity"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
             android:hardwareAccelerated="true"
-            android:theme="@style/Theme.AppCompat.DayNight"
+            android:launchMode="standard"
+            android:screenOrientation="sensor"
+            android:theme="@style/Theme.Thrio.Default"
             android:windowSoftInputMode="adjustResize">
             <meta-data
                 android:name="io.flutter.embedding.android.SplashScreenDrawable"
                 android:resource="@drawable/launch_background" />
+            <meta-data
+                android:name="io.flutter.InitialUrl"
+                android:value="/biz1/flutter1" />
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -33,19 +46,19 @@
             android:theme="@style/Theme.AppCompat.DayNight"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".Native3Activity"
+            android:name=".Native1Activity"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
             android:hardwareAccelerated="true"
             android:theme="@style/Theme.AppCompat.DayNight"
             android:windowSoftInputMode="adjustResize" />
-        <activity
-            android:name=".CustomFlutterActivity"
-            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
-            android:screenOrientation="sensor"
-            android:hardwareAccelerated="true"
-            android:launchMode="standard"
-            android:theme="@style/Theme.Thrio.Default"
-            android:windowSoftInputMode="adjustResize" />
+        <!--        <activity-->
+        <!--            android:name=".CustomFlutterActivity"-->
+        <!--            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"-->
+        <!--            android:screenOrientation="sensor"-->
+        <!--            android:hardwareAccelerated="true"-->
+        <!--            android:launchMode="standard"-->
+        <!--            android:theme="@style/Theme.Thrio.Default"-->
+        <!--            android:windowSoftInputMode="adjustResize" />-->
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
         <meta-data

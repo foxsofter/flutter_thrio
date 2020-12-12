@@ -32,10 +32,10 @@ object ThrioNavigator {
     @JvmStatic
     @JvmOverloads
     fun <T> push(url: String,
-                       params: T? = null,
-                       animated: Boolean = true,
-                       poppedResult: NullableAnyCallback? = null,
-                       result: NullableIntCallback = {}) {
+                 params: T? = null,
+                 animated: Boolean = true,
+                 poppedResult: NullableAnyCallback? = null,
+                 result: NullableIntCallback = {}) {
         NavigationController.Push.push<T>(url, params, animated,
                 NAVIGATION_NATIVE_ENTRYPOINT, poppedResult, result)
     }

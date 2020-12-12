@@ -1,5 +1,6 @@
 package com.hellobike.thrio_example
 
+import android.os.Bundle
 import com.hellobike.flutter.thrio.channel.ThrioChannel
 import com.hellobike.flutter.thrio.navigator.FlutterEngineFactory
 import com.hellobike.flutter.thrio.navigator.ThrioNavigator
@@ -20,6 +21,7 @@ class CustomFlutterActivity : ThrioActivity() {
         channel = ThrioChannel(intent.getEntrypoint(), "custom_thrio_channel")
         channel?.setupMethodChannel(flutterEngine.dartExecutor)
     }
+
 
     override fun onFlutterUiDisplayed() {
         super.onFlutterUiDisplayed()

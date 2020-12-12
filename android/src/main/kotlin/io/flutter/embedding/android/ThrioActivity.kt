@@ -23,14 +23,52 @@
 
 package io.flutter.embedding.android
 
-import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Bundle
 import com.hellobike.flutter.thrio.BooleanCallback
 import com.hellobike.flutter.thrio.navigator.*
-import com.hellobike.flutter.thrio.navigator.NavigationController
-import com.hellobike.flutter.thrio.navigator.PageRoutes
-import com.hellobike.flutter.thrio.navigator.getPageId
 
 open class ThrioActivity : ThrioFlutterActivity() {
+    companion object {
+        var isPushed = false
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        intent.putExtra(NAVIGATION_ROUTE_ENTRYPOINT_KEY, cachedEngineId)
+
+        super.onCreate(savedInstanceState)
+    }
+
+    private var _initialEntrypoint: String? = null
+
+    override fun getCachedEngineId(): String? {
+        if (_initialEntrypoint == null) {
+            _initialEntrypoint = if (!FlutterEngineFactory.isMultiEngineEnabled) {
+                NAVIGATION_FLUTTER_ENTRYPOINT_DEFAULT
+            } else {
+                initialUrl?.getEntrypoint()
+            }
+        }
+        return _initialEntrypoint
+    }
+
+    private var _initialUrl: String? = null
+
+    protected val initialUrl: String?
+        get() {
+            if (_initialUrl == null) {
+                readInitialUrl()
+            }
+            return _initialUrl!!
+        }
+
+    override fun onFlutterUiDisplayed() {
+        if (!isPushed && initialUrl?.isNotEmpty() == true) {
+            isPushed = true
+            NavigationController.Push.push(initialUrl!!, null, false) {}
+        }
+        super.onFlutterUiDisplayed()
+    }
 
     override fun shouldAttachEngineToActivity(): Boolean {
         return true
@@ -97,4 +135,10 @@ open class ThrioActivity : ThrioFlutterActivity() {
         engine.sendChannel.onRemove(arguments, result)
     }
 
+    private fun readInitialUrl() {
+        val activityInfo = packageManager.getActivityInfo(componentName, PackageManager.GET_META_DATA)
+        if (activityInfo.metaData != null) {
+            _initialUrl = activityInfo.metaData.getString("io.flutter.InitialUrl", "")
+        }
+    }
 }

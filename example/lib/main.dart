@@ -1,9 +1,11 @@
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
+import 'package:thrio/thrio.dart';
 import 'src/app.dart' as app;
 
 Future<void> main() async {
+  ThrioLogger.v('main');
   FlutterError.onError = (details) async {
     Zone.current.handleUncaughtError(details.exception, details.stack);
   };

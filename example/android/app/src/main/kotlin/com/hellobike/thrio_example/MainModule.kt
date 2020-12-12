@@ -12,9 +12,9 @@ import com.hellobike.flutter.thrio.navigator.IntentBuilder
 object MainModule : ThrioModule(), ModuleIntentBuilder, ModuleJsonSerializer, ModuleJsonDeserializer {
 
     override fun onModuleInit(context: Context) {
-        setFlutterIntentBuilder(object : FlutterIntentBuilder() {
-            override fun getActivityClz(): Class<out Activity> = CustomFlutterActivity::class.java
-        })
+//        setFlutterIntentBuilder(object : FlutterIntentBuilder() {
+//            override fun getActivityClz(): Class<out Activity> = CustomFlutterActivity::class.java
+//        })
         navigatorLogEnabled = true
     }
 
