@@ -260,10 +260,6 @@ mixin ThrioModule {
     ///
     void onModuleRegister() {}
 
-    /// A function for registering a page builder.
-    ///
-    void onPageRegister() {}
-
     /// A function for module initialization.
     ///
     void onModuleInit() {}
@@ -305,7 +301,7 @@ mixin ThrioModule {
 ```dart
 class Module with ThrioModule, NavigatorPageObserver {
   @override
-  void onPageRegister() {
+  void onPageObserverRegister() {
     registerPageObserver(this);
   }
 
@@ -367,28 +363,16 @@ class Module with ThrioModule, NavigatorRouteObserver {
   }
 
   @override
-  void didPop(
-    RouteSettings routeSettings,
-    RouteSettings previousRouteSettings,
-  ) {}
+  void didPop(RouteSettings routeSettings) {}
 
   @override
-  void didPopTo(
-    RouteSettings routeSettings,
-    RouteSettings previousRouteSettings,
-  ) {}
+  void didPopTo(RouteSettings routeSettings) {}
 
   @override
-  void didPush(
-    RouteSettings routeSettings,
-    RouteSettings previousRouteSettings,
-  ) {}
+  void didPush(RouteSettings routeSettings) {}
 
   @override
-  void didRemove(
-    RouteSettings routeSettings,
-    RouteSettings previousRouteSettings,
-  ) {}
+  void didRemove(RouteSettings routeSettings) {}
 }
 ```
 
