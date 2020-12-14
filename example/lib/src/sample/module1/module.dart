@@ -18,14 +18,14 @@ class Module
   void onPageBuilderRegister(ModuleContext moduleContext) {
     registerPageBuilder(
       '/biz1/flutter1',
-      (settings, moduleContext) => Page1(
+      (settings) => Page1(
         index: settings.index,
         params: settings.params,
       ),
     );
     registerPageBuilder(
       '/biz2/flutter2',
-      (settings, moduleContext) => Page2(
+      (settings) => Page2(
         index: settings.index,
         params: settings.params,
       ),

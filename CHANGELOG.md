@@ -124,7 +124,7 @@
 
 * fix: issue #123，解决`1.1.0`版本中存在的 pop native 到原生 poppedResult 不调用的问题
 * feat: 支持在所有页面间传递Json对象，为相关 API 添加泛型支持
-* feat: Flutter端添加 `lastRoute`,         `allRoutes` 两个新的 API
+* feat: Flutter端添加 `lastRoute`,          `allRoutes` 两个新的 API
 * feat: 删除 `lastIndex`，`allIndexes` 这两个 API
 
 ## 1.2.1
@@ -138,3 +138,7 @@
 ## 1.3.1
 
 * fix: poppedResult return pushed params 
+
+## 1.3.2
+
+* fix: remove moduleContext from NavigatorPageBuilder

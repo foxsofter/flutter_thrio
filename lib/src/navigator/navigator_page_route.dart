@@ -21,7 +21,6 @@
 
 import 'package:flutter/material.dart';
 
-import '../module/module_context.dart';
 import 'navigator_route_settings.dart';
 import 'navigator_types.dart';
 import 'thrio_navigator_implement.dart';
@@ -39,11 +38,10 @@ class NavigatorPageRoute<TCallbackParams> extends MaterialPageRoute<bool> {
   NavigatorPageRoute({
     @required NavigatorPageBuilder builder,
     @required RouteSettings settings,
-    ModuleContext moduleContext,
     bool maintainState = true,
     bool fullscreenDialog = false,
   }) : super(
-            builder: (_) => builder(settings, moduleContext),
+            builder: (_) => builder(settings),
             settings: settings,
             maintainState: maintainState,
             fullscreenDialog: fullscreenDialog);

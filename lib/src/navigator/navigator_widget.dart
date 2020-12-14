@@ -74,7 +74,6 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
     final route = NavigatorPageRoute(
       builder: pageBuilder,
       settings: settings,
-      moduleContext: widget.moduleContext,
     );
 
     ThrioNavigatorImplement.shared().pageObservers.willAppear(
