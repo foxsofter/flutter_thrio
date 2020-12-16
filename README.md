@@ -5,7 +5,9 @@
 [![pub package](https://img.shields.io/pub/v/thrio.svg)](https://pub.dartlang.org/packages/thrio)
 [![license](https://img.shields.io/github/license/hellobike/thrio.svg?maxAge=2592000)](https://github.com/hellobike/thrio/LICENSE)
 
-[中文文档](./doc/Feature.md) [英文文档](./doc/Feature_EN.md) [问题集](./doc/Questions.md) QQ 群号码：1014085473
+[中文文档](./doc/Feature.md) [英文文档](./doc/Feature_EN.md) [问题集](./doc/Questions.md) 
+
+最近版本更新会很快，主要是增加新特性，涉及到混合栈的稳定性的问题应该不多，可放心升级，发现问题加 QQ 群号码：1014085473，我会尽快解决。
 
 ## 优势
 
