@@ -142,3 +142,7 @@
 ## 1.3.2
 
 * fix: remove moduleContext from NavigatorPageBuilder
+
+## 1.3.3
+
+* fix: issue #135, 原生页面第二次跳转 Flutter 页面失败

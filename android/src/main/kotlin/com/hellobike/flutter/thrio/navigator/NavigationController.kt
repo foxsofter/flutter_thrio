@@ -36,7 +36,7 @@ import io.flutter.embedding.android.ThrioActivity
 internal object NavigationController : Application.ActivityLifecycleCallbacks {
 
     override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
-        context = activity
+        context = context ?: activity
 
         Remove.doRemove(activity)
         Push.doPush(activity)
@@ -102,14 +102,8 @@ internal object NavigationController : Application.ActivityLifecycleCallbacks {
             var entrypoint = NAVIGATION_NATIVE_ENTRYPOINT
 
             val lastHolder = PageRoutes.lastRouteHolder()
-            val lastActivity = lastHolder?.activity?.get() ?: if (context is ThrioActivity) {
-                context
-            } else null
-
-            val lastEntrypoint = lastHolder?.entrypoint ?: if (context is ThrioActivity) {
-                (context as ThrioActivity).cachedEngineId
-            } else null
-
+            val lastActivity = lastHolder?.activity?.get()
+            val lastEntrypoint = lastHolder?.entrypoint
 
             if (builder is FlutterIntentBuilder) {
                 entrypoint = if (FlutterEngineFactory.isMultiEngineEnabled) {
