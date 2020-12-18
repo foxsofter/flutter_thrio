@@ -40,7 +40,7 @@
 
     // 已经序列化过了
     if ([params isKindOfClass:NSDictionary.class] &&
-        [params containsObject:@"__thrio_TParams__"]) {
+        [[params allKeys] containsObject:@"__thrio_TParams__"]) {
         return params;
     }
     NSString *type = NSStringFromClass([params class]);
