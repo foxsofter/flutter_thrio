@@ -22,8 +22,8 @@
 import 'package:flutter/widgets.dart';
 
 import '../channel/thrio_channel.dart';
+import '../module/thrio_module.dart';
 import 'navigator_page_observer.dart';
-import 'navigator_page_observers.dart';
 import 'navigator_page_route.dart';
 import 'navigator_route_settings.dart';
 
@@ -33,7 +33,7 @@ typedef NavigatorPageObserverCallback = void Function(
 );
 
 class NavigatorPageObserverChannel {
-  NavigatorPageObserverChannel(this._observers, String entrypoint)
+  NavigatorPageObserverChannel(String entrypoint)
       : _channel = ThrioChannel(channel: '__thrio_page_channel__$entrypoint') {
     _on(
       'willAppear',
@@ -54,7 +54,6 @@ class NavigatorPageObserverChannel {
   }
 
   final ThrioChannel _channel;
-  final NavigatorPageObservers _observers;
 
   void willAppear(
     RouteSettings routeSettings,
@@ -107,7 +106,8 @@ class NavigatorPageObserverChannel {
   void _on(String method, NavigatorPageObserverCallback callback) =>
       _channel.registryMethodCall(method, ([arguments]) {
         final routeSettings = NavigatorRouteSettings.fromArguments(arguments);
-        final observers = _observers.observers;
+        final observers =
+            ThrioModule.gets<NavigatorPageObserver>(url: routeSettings.url);
         for (final observer in observers) {
           callback(observer, routeSettings);
         }

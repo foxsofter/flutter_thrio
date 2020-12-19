@@ -20,6 +20,8 @@
 // IN THE SOFTWARE.
 
 #import <Foundation/Foundation.h>
+
+#import "ThrioModuleTypes.h"
 #import "ThrioTypes.h"
 
 NS_ASSUME_NONNULL_BEGIN

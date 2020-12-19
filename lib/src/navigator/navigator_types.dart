@@ -32,11 +32,3 @@ typedef NavigatorParamsCallback = void Function(dynamic params);
 /// Signature of callbacks with RouteSettings.
 ///
 typedef NavigatorRouteSettingsCallback = void Function(RouteSettings settings);
-
-/// Signature of callbacks for json deserializer.
-///
-typedef JsonDeserializer<T> = T Function(Map<String, dynamic> params);
-
-/// Signature of callbacks for json serializer.
-///
-typedef JsonSerializer = Map<String, dynamic> Function(T Function<T>() factory);

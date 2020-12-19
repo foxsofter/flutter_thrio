@@ -154,7 +154,7 @@
     }
 }
 
-+ (NavigatorPageRoute *)_getLastRouteByEntrypoint:(NSString *)entrypoint {
++ (NavigatorPageRoute *_Nullable)_getLastRouteByEntrypoint:(NSString *)entrypoint {
     NSEnumerator *allNvcs = self.navigationControllers.allObjects.reverseObjectEnumerator;
     for (UINavigationController *nvc in allNvcs) {
         NavigatorPageRoute *route = [nvc thrio_getLastRouteByEntrypoint:entrypoint];

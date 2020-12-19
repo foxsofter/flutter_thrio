@@ -22,11 +22,12 @@
 import 'package:flutter/widgets.dart';
 
 import '../extension/thrio_build_context.dart';
+import '../module/module_anchor.dart';
 import 'navigator_page_observer.dart';
 import 'navigator_page_route.dart';
+import 'navigator_route_settings.dart';
 import 'navigator_types.dart';
 import 'navigator_widget.dart';
-import 'thrio_navigator_implement.dart';
 
 class NavigatorPageLifecycle extends StatefulWidget {
   const NavigatorPageLifecycle({
@@ -50,25 +51,14 @@ class NavigatorPageLifecycle extends StatefulWidget {
 
 class _NavigatorPageLifecycleState extends State<NavigatorPageLifecycle> {
   NavigatorPageRoute _route;
+
   VoidCallback _pageObserverCallback;
+
   bool get shouldObserver =>
       widget.willAppear != null ||
       widget.didAppear != null ||
       widget.willDisappear != null ||
       widget.didDisappear != null;
-
-  @override
-  void initState() {
-    super.initState();
-    if (mounted) {
-      if (shouldObserver) {
-        _pageObserverCallback = ThrioNavigatorImplement.shared()
-            .pageObservers
-            .observers
-            .registry(_PageLifecyclePageObserver(this));
-      }
-    }
-  }
 
   @override
   void didChangeDependencies() {
@@ -81,10 +71,11 @@ class _NavigatorPageLifecycleState extends State<NavigatorPageLifecycle> {
       final route = state.history.last;
       if (route != null && route is NavigatorPageRoute) {
         _route = route;
-        _pageObserverCallback = ThrioNavigatorImplement.shared()
-            .pageObservers
-            .observers
-            .registry(_PageLifecyclePageObserver(this));
+
+        _pageObserverCallback = anchor.pageLifecycleObservers.registry(
+          _route.settings.url,
+          _PageLifecyclePageObserver(this),
+        );
       }
     }
 

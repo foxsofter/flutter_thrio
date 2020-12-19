@@ -24,7 +24,8 @@ import 'package:flutter/material.dart';
 
 import '../channel/thrio_channel.dart';
 import '../extension/thrio_object.dart';
-import 'thrio_navigator_implement.dart';
+import '../module/module_types.dart';
+import '../module/thrio_module.dart';
 
 class NavigatorRouteSendChannel {
   const NavigatorRouteSendChannel(ThrioChannel channel) : _channel = channel;
@@ -39,7 +40,7 @@ class NavigatorRouteSendChannel {
     final arguments = <String, dynamic>{
       'url': url,
       'animated': animated,
-      'params': _serializeParams<TParams>(params),
+      'params': _serializeParams<TParams>(url: url, params: params),
     };
     return _channel.invokeMethod<int>('push', arguments);
   }
@@ -54,7 +55,7 @@ class NavigatorRouteSendChannel {
       'url': url,
       'index': index,
       'name': name,
-      'params': _serializeParams<TParams>(params),
+      'params': _serializeParams<TParams>(params: params),
     };
     return _channel.invokeMethod<bool>('notify', arguments);
   }
@@ -64,7 +65,7 @@ class NavigatorRouteSendChannel {
     bool animated = true,
   }) {
     final arguments = <String, dynamic>{
-      'params': _serializeParams<TParams>(params),
+      'params': _serializeParams<TParams>(params: params),
       'animated': animated,
     };
     return _channel.invokeMethod<bool>('pop', arguments);
@@ -145,15 +146,15 @@ class NavigatorRouteSendChannel {
   Future unregisterUrls(List<String> urls) =>
       _channel.invokeMethod('unregisterUrls', {'urls': urls});
 
-  dynamic _serializeParams<TParams>(TParams params) {
+  dynamic _serializeParams<TParams>({String url, TParams params}) {
     if (params == null) {
       return null;
     }
     final type = params.runtimeType;
     if (type != dynamic && params.isComplexType) {
-      final serializeParams = ThrioNavigatorImplement.shared()
-          .jsonSerializers[type]
-          ?.call(<type>() => params as type); // ignore: avoid_as
+      final serializeParams =
+          ThrioModule.get<JsonSerializer>(url: url, key: type.toString())
+              ?.call(<type>() => params as type); // ignore: avoid_as
       if (serializeParams != null) {
         serializeParams['__thrio_TParams__'] = type.toString();
         return serializeParams;

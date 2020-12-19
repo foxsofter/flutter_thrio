@@ -20,6 +20,7 @@
 // IN THE SOFTWARE.
 
 #import <objc/runtime.h>
+#import "ThrioModuleTypes.h"
 #import "ThrioNavigator+JsonSerializers.h"
 
 @implementation ThrioNavigator (JsonSerializers)

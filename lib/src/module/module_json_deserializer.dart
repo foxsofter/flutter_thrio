@@ -20,23 +20,40 @@
 // IN THE SOFTWARE.
 
 import 'package:flutter/foundation.dart';
-import '../navigator/navigator_types.dart';
-import '../navigator/thrio_navigator_implement.dart';
 
+import '../registry/registry_map.dart';
 import 'module_context.dart';
+import 'module_types.dart';
 import 'thrio_module.dart';
 
 mixin ModuleJsonDeserializer on ThrioModule {
+  /// Json deserializer registered in the current Module
+  ///
+  final _jsonDeserializers = RegistryMap<Type, JsonDeserializer>();
+
+  /// Get json deserializer by type string.
+  ///
+  @protected
+  JsonDeserializer getJsonDeserializer(String typeString) {
+    final type = _jsonDeserializers.keys.lastWhere(
+      (it) => it.toString() == typeString || typeString.endsWith(it.toString()),
+      orElse: () => null,
+    );
+    return _jsonDeserializers[type];
+  }
+
   /// A function for register a json deserializer.
   ///
+  @protected
   void onJsonDeserializerRegister(ModuleContext moduleContext) {}
 
   /// Register a json deserializer for the module.
   ///
   /// Unregistry by calling the return value `VoidCallback`.
   ///
-  VoidCallback registerJsonDeserializer<T>(JsonDeserializer<T> deserializer) =>
-      ThrioNavigatorImplement.shared()
-          .jsonDeserializers
-          .registry(T, deserializer);
+  @protected
+  VoidCallback registerJsonDeserializer<T>(
+    JsonDeserializer<T> deserializer,
+  ) =>
+      _jsonDeserializers.registry(T, deserializer);
 }

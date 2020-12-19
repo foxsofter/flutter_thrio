@@ -65,7 +65,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (void)_hotRestart:(ThrioBoolCallback)result;
 
-+ (NavigatorPageRoute *)_getLastRouteByEntrypoint:(NSString *)entrypoint;
++ (NavigatorPageRoute *_Nullable)_getLastRouteByEntrypoint:(NSString *)entrypoint;
 
 @end
 

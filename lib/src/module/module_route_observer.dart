@@ -22,24 +22,29 @@
 import 'package:flutter/foundation.dart';
 
 import '../navigator/navigator_route_observer.dart';
-import '../navigator/thrio_navigator_implement.dart';
+import '../registry/registry_set.dart';
 import 'module_context.dart';
 import 'thrio_module.dart';
 
 mixin ModuleRouteObserver on ThrioModule {
+  @protected
+  final routeObservers = RegistrySet<NavigatorRouteObserver>();
+
   /// A function for register a route observer.
   ///
+  @protected
   void onRouteObserverRegister(ModuleContext moduleContext) {}
 
-  /// Register observers for route action of Dart pages.
+  /// Register observers for route action of Dart pages under
+  /// the current module and submodules.
   ///
   /// Unregistry by calling the return value `VoidCallback`.
   ///
   /// Do not override this method.
   ///
-  VoidCallback registerRouteObserver(NavigatorRouteObserver routeObserver) =>
-      ThrioNavigatorImplement.shared()
-          .routeObservers
-          .observers
-          .registry(routeObserver);
+  @protected
+  VoidCallback registerRouteObserver(
+    NavigatorRouteObserver routeObserver,
+  ) =>
+      routeObservers.registry(routeObserver);
 }

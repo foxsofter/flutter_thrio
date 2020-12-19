@@ -28,7 +28,7 @@
     return self.count == 0;
 }
 
-- (id)first {
+- (id _Nullable)first {
     [self compact];
     if (self.count > 0) {
         return (__bridge id)[self pointerAtIndex:0];
@@ -36,7 +36,7 @@
     return nil;
 }
 
-- (id)last {
+- (id _Nullable)last {
     [self compact];
     if (self.count > 0) {
         return (__bridge id)[self pointerAtIndex:self.count - 1];

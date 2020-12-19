@@ -169,6 +169,8 @@ NS_ASSUME_NONNULL_BEGIN
                 if (route != strongSelf.thrio_firstRoute) {
                     ThrioNavigator.pageObservers.lastRoute = route.prev;
                     [strongSelf thrio_onNotify:route.prev];
+                } else {
+                    [strongSelf.navigationController popViewControllerAnimated:animated];
                 }
             }
             if (result) {
@@ -195,14 +197,16 @@ NS_ASSUME_NONNULL_BEGIN
         }
         if (route == self.thrio_firstRoute) {
             // 关闭成功,处理页面回传参数
-            if (route.poppedResult) {
-                id deserializeParams = [ThrioNavigator deserializeParams:params];
-                route.poppedResult(deserializeParams);
-            }
-            // 检查打开页面的源引擎是否来自Flutter引擎，是则发送onPon
-            if (route.fromEntrypoint) {
-                NavigatorRouteSendChannel *channel = [NavigatorFlutterEngineFactory.shared getSendChannelByEntrypoint:route.fromEntrypoint];
-                [channel pop:arguments result:nil];
+            if ([self.navigationController popViewControllerAnimated:animated]) {
+                if (route.poppedResult) {
+                    id deserializeParams = [ThrioNavigator deserializeParams:params];
+                    route.poppedResult(deserializeParams);
+                }
+                // 检查打开页面的源引擎是否来自Flutter引擎，是则发送onPon
+                if (route.fromEntrypoint) {
+                    NavigatorRouteSendChannel *channel = [NavigatorFlutterEngineFactory.shared getSendChannelByEntrypoint:route.fromEntrypoint];
+                    [channel pop:arguments result:nil];
+                }
             }
         }
     }

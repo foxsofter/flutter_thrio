@@ -26,12 +26,12 @@ NS_ASSUME_NONNULL_BEGIN
 @interface NavigatorRouteSettings : NSObject
 
 + (instancetype)settingsWithUrl:(NSString *)url
-                          index:(NSNumber *)index
+                          index:(NSNumber *_Nullable)index
                          nested:(BOOL)nested
                          params:(id _Nullable)params;
 
 - (instancetype)initWithUrl:(NSString *)url
-                      index:(NSNumber *)index
+                      index:(NSNumber *_Nullable)index
                      nested:(BOOL)nested
                      params:(id _Nullable)params;
 
@@ -43,7 +43,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, copy, readonly) NSString *url;
 
-@property (nonatomic, strong, readonly) NSNumber *index;
+@property (nonatomic, strong, readonly, nullable) NSNumber *index;
 
 @property (nonatomic, copy, readonly) NSString *name;
 

@@ -52,7 +52,7 @@ open class ThrioActivity : ThrioFlutterActivity() {
 
     private var _initialUrl: String? = null
 
-    protected val initialUrl: String
+    protected open val initialUrl: String?
         get() {
             if (_initialUrl == null) {
                 readInitialUrl()

@@ -19,44 +19,21 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-import 'package:flutter/widgets.dart';
+#import <Foundation/Foundation.h>
 
-import '../registry/registry_set.dart';
-import 'navigator_page_observer.dart';
-import 'navigator_page_observer_channel.dart';
-import 'navigator_page_route.dart';
+#ifndef ThrioModuleTypes_h
+#define ThrioModuleTypes_h
 
-class NavigatorPageObservers {
-  NavigatorPageObservers(this._entrypoint) {
-    _channel = NavigatorPageObserverChannel(this, _entrypoint);
-  }
+NS_ASSUME_NONNULL_BEGIN
 
-  final observers = RegistrySet<NavigatorPageObserver>();
+/// Signature for a block that deserialize json map to object.
+///
+typedef id _Nullable (^ThrioJsonDeserializer)(NSDictionary *params);
 
-  final String _entrypoint;
-  NavigatorPageObserverChannel _channel;
+/// Signature for a block that serializer json object to map.
+///
+typedef NSDictionary *_Nullable (^ThrioJsonSerializer)(id);
 
-  void willAppear(
-    RouteSettings routeSettings,
-    NavigatorRouteAction routeAction,
-  ) =>
-      _channel.willAppear(routeSettings, routeAction);
+NS_ASSUME_NONNULL_END
 
-  void didAppear(
-    RouteSettings routeSettings,
-    NavigatorRouteAction routeAction,
-  ) =>
-      _channel.didAppear(routeSettings, routeAction);
-
-  void willDisappear(
-    RouteSettings routeSettings,
-    NavigatorRouteAction routeAction,
-  ) =>
-      _channel.willDisappear(routeSettings, routeAction);
-
-  void didDisappear(
-    RouteSettings routeSettings,
-    NavigatorRouteAction routeAction,
-  ) =>
-      _channel.didDisappear(routeSettings, routeAction);
-}
+#endif /* ThrioModuleTypes_h */

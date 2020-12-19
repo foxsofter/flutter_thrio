@@ -22,8 +22,8 @@
 import 'package:flutter/widgets.dart';
 
 import '../channel/thrio_channel.dart';
+import '../module/thrio_module.dart';
 import 'navigator_route_observer.dart';
-import 'navigator_route_observers.dart';
 import 'navigator_route_settings.dart';
 
 typedef NavigatorRouteObserverCallback = void Function(
@@ -32,7 +32,7 @@ typedef NavigatorRouteObserverCallback = void Function(
 );
 
 class NavigatorRouteObserverChannel with NavigatorRouteObserver {
-  NavigatorRouteObserverChannel(this._observers, String entrypoint)
+  NavigatorRouteObserverChannel(String entrypoint)
       : _channel = ThrioChannel(channel: '__thrio_route_channel__$entrypoint') {
     _on('didPush', (observer, routeSettings) {
       observer.didPush(routeSettings);
@@ -49,7 +49,6 @@ class NavigatorRouteObserverChannel with NavigatorRouteObserver {
   }
 
   final ThrioChannel _channel;
-  final NavigatorRouteObservers _observers;
 
   @override
   void didPush(RouteSettings routeSettings) => _channel.invokeMethod<bool>(
@@ -78,7 +77,8 @@ class NavigatorRouteObserverChannel with NavigatorRouteObserver {
   void _on(String method, NavigatorRouteObserverCallback callback) =>
       _channel.registryMethodCall(method, ([arguments]) {
         final routeSettings = NavigatorRouteSettings.fromArguments(arguments);
-        final observers = _observers.observers;
+        final observers =
+            ThrioModule.gets<NavigatorRouteObserver>(url: routeSettings.url);
         for (final observer in observers) {
           callback(observer, routeSettings);
         }

@@ -20,40 +20,38 @@
 // IN THE SOFTWARE.
 
 import 'package:flutter/foundation.dart';
-
 import '../registry/registry_map.dart';
+
 import 'module_context.dart';
 import 'module_types.dart';
 import 'thrio_module.dart';
 
-mixin ModuleJsonSerializer on ThrioModule {
-  /// Json serializer registered in the current Module
-  ///
-  final _jsonSerializers = RegistryMap<Type, JsonSerializer>();
+mixin ModuleProtobufDeserializer on ThrioModule {
+  final _protobufDeserializers = RegistryMap<Type, ProtobufDeserializer>();
 
-  /// Get json serializer by type string.
+  /// Get protobuf deserializer by type string.
   ///
   @protected
-  JsonSerializer getJsonSerializer(String typeString) {
-    final type = _jsonSerializers.keys.lastWhere(
+  ProtobufDeserializer getProtobufDeserializer(String typeString) {
+    final type = _protobufDeserializers.keys.lastWhere(
       (it) => it.toString() == typeString || typeString.endsWith(it.toString()),
       orElse: () => null,
     );
-    return _jsonSerializers[type];
+    return _protobufDeserializers[type];
   }
 
-  /// A function for register a json serializer.
+  /// A function for register a protobuf deserializer.
   ///
   @protected
-  void onJsonSerializerRegister(ModuleContext moduleContext) {}
+  void onProtobufDeserializerRegister(ModuleContext moduleContext) {}
 
-  /// Register a json serializer for the module.
+  /// Register a protobuf deserializer for the module.
   ///
   /// Unregistry by calling the return value `VoidCallback`.
   ///
   @protected
-  VoidCallback registerJsonSerializer<T>(
-    JsonSerializer serializer,
+  VoidCallback registerProtobufDeserializer<T>(
+    ProtobufDeserializer<T> deserializer,
   ) =>
-      _jsonSerializers.registry(T, serializer);
+      _protobufDeserializers.registry(T, deserializer);
 }

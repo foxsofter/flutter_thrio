@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:thrio/thrio.dart';
 
-import 'model.dart';
+import '../../models/people.dart';
 
-class Page2 extends StatefulWidget {
-  const Page2({
+class Flutter2 extends StatefulWidget {
+  const Flutter2({
     Key key,
     this.url,
     this.index,
@@ -18,10 +18,10 @@ class Page2 extends StatefulWidget {
   final dynamic params;
 
   @override
-  _Page2State createState() => _Page2State();
+  _Flutter2State createState() => _Flutter2State();
 }
 
-class _Page2State extends State<Page2> {
+class _Flutter2State extends State<Flutter2> {
   final _channel = ThrioChannel(channel: 'custom_thrio_channel');
   @override
   void initState() {

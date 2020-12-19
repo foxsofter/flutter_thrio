@@ -24,6 +24,8 @@ import 'dart:async';
 import 'package:flutter/widgets.dart';
 
 import '../extension/thrio_build_context.dart';
+import '../module/module_types.dart';
+import '../module/thrio_module.dart';
 import 'navigator_page_route.dart';
 import 'navigator_route_settings.dart';
 import 'navigator_types.dart';
@@ -92,19 +94,13 @@ class _NavigatorPageNotifyState extends State<NavigatorPageNotify> {
   void _listen(params) {
     if (params != null) {
       if (params is Map) {
-        final typeString =
-            params['__thrio_TParams__'] as String; // ignore: avoid_as
+        // ignore: avoid_as
+        final typeString = params['__thrio_TParams__'] as String;
         if (typeString != null) {
-          final jsonDeserializers =
-              ThrioNavigatorImplement.shared().jsonDeserializers;
-          final type = jsonDeserializers.keys.lastWhere((it) =>
-              it.toString() == typeString ||
-              typeString.endsWith(it.toString()));
-          final paramsInstance = ThrioNavigatorImplement.shared()
-              .jsonDeserializers[type]
+          final paramsObj = ThrioModule.get<JsonDeserializer>(key: typeString)
               ?.call(params.cast<String, dynamic>());
-          if (paramsInstance != null) {
-            widget.onPageNotify(paramsInstance);
+          if (paramsObj != null) {
+            widget.onPageNotify(paramsObj);
             return;
           }
         }

@@ -67,7 +67,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (NSArray *)thrio_getAllRoutesByUrl:(NSString *_Nullable)url;
 
-- (NavigatorPageRoute *)thrio_getLastRouteByEntrypoint:(NSString *)entrypoint;
+- (NavigatorPageRoute *_Nullable)thrio_getLastRouteByEntrypoint:(NSString *)entrypoint;
 
 - (BOOL)thrio_containsUrl:(NSString *)url;
 

@@ -25,6 +25,8 @@ import 'package:flutter/services.dart';
 
 import '../extension/thrio_stateful_widget.dart';
 import '../module/module_context.dart';
+import '../module/module_types.dart';
+import '../module/thrio_module.dart';
 import 'navigator_logger.dart';
 import 'navigator_observer_manager.dart';
 import 'navigator_page_route.dart';
@@ -66,7 +68,7 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
     }
 
     final pageBuilder =
-        ThrioNavigatorImplement.shared().pageBuilders[settings.url];
+        ThrioModule.get<NavigatorPageBuilder>(url: settings.url);
     if (pageBuilder == null) {
       return Future.value(false);
     }
@@ -76,7 +78,7 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
       settings: settings,
     );
 
-    ThrioNavigatorImplement.shared().pageObservers.willAppear(
+    ThrioNavigatorImplement.shared().pageChannel.willAppear(
           route.settings,
           NavigatorRouteAction.push,
         );
@@ -102,11 +104,10 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
     }
     if (history.isEmpty || settings.name != history.last.settings.name) {
       // 不匹配的时候，调用 poppedResult 回调
-      final poppedResult = ThrioNavigatorImplement.shared()
-          .poppedResultCallbacks
-          .remove(settings.name);
+      final poppedResult =
+          ThrioNavigatorImplement.shared().poppedResults.remove(settings.name);
       if (poppedResult != null) {
-        _poppedResultCallback(poppedResult, settings.params);
+        _poppedResultCallback(poppedResult, settings.url, settings.params);
       }
       return false;
     }
@@ -137,7 +138,7 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
       return Future.value(false);
     }
 
-    ThrioNavigatorImplement.shared().pageObservers.willDisappear(
+    ThrioNavigatorImplement.shared().pageChannel.willDisappear(
           route.settings,
           NavigatorRouteAction.pop,
         );
@@ -150,7 +151,11 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
     }
 
     return Future.value(true).then((value) async {
-      _poppedResultCallback(route.poppedResultCallback, settings.params);
+      _poppedResultCallback(
+        route.poppedResult,
+        route.settings.url,
+        settings.params,
+      );
       return value;
     });
   }
@@ -176,7 +181,7 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
       'index->${route.settings.index}',
     );
 
-    ThrioNavigatorImplement.shared().pageObservers.willAppear(
+    ThrioNavigatorImplement.shared().pageChannel.willAppear(
           route.settings,
           NavigatorRouteAction.popTo,
         );
@@ -218,7 +223,7 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
 
     if (settings.name == history.last.settings.name) {
       if (WidgetsBinding.instance.lifecycleState == AppLifecycleState.resumed) {
-        ThrioNavigatorImplement.shared().pageObservers.willDisappear(
+        ThrioNavigatorImplement.shared().pageChannel.willDisappear(
               route.settings,
               NavigatorRouteAction.remove,
             );
@@ -245,35 +250,27 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
 
   void _poppedResultCallback(
     NavigatorParamsCallback poppedResultCallback,
+    String url,
     dynamic params,
   ) {
-    if (poppedResultCallback != null) {
-      if (params == null) {
-        poppedResultCallback(null);
-      } else {
-        if (params is Map && params.containsKey('__thrio_TParams__')) {
-          // ignore: avoid_as
-          final typeString = params['__thrio_TParams__'] as String;
-          if (typeString != null) {
-            final type = ThrioNavigatorImplement.shared()
-                .jsonDeserializers
-                .keys
-                .lastWhere(
-                    (it) =>
-                        it.toString() == typeString ||
-                        typeString.endsWith(it.toString()),
-                    orElse: () => null);
-            if (type != null) {
-              final paramsInstance = ThrioNavigatorImplement.shared()
-                  .jsonDeserializers[type]
+    if (poppedResultCallback == null) {
+      return;
+    }
+    if (url?.isEmpty ?? true && params == null) {
+      poppedResultCallback(null);
+    } else {
+      if (params is Map && params.containsKey('__thrio_TParams__')) {
+        // ignore: avoid_as
+        final typeString = params['__thrio_TParams__'] as String;
+        if (typeString != null) {
+          final paramsInstance =
+              ThrioModule.get<JsonDeserializer>(url: url, key: typeString)
                   ?.call(params.cast<String, dynamic>());
-              poppedResultCallback(paramsInstance);
-              return;
-            }
-          }
+          poppedResultCallback(paramsInstance);
+          return;
         }
-        poppedResultCallback(params);
       }
+      poppedResultCallback(params);
     }
   }
 }

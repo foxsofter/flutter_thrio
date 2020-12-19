@@ -22,30 +22,14 @@
 import 'package:flutter/foundation.dart';
 
 import '../navigator/navigator_types.dart';
-import '../navigator/thrio_navigator_implement.dart';
 import 'module_context.dart';
 import 'thrio_module.dart';
 
 mixin ModulePageBuilder on ThrioModule {
-  /// A function for register a page builder.
-  ///
-  void onPageBuilderRegister(ModuleContext moduleContext) {}
+  NavigatorPageBuilder pageBuilder;
 
-  /// Register an page builder for the router.
+  /// A function for setting a `NavigatorPageBuilder`.
   ///
-  /// Unregistry by calling the return value `VoidCallback`.
-  ///
-  VoidCallback registerPageBuilder(
-    String url,
-    NavigatorPageBuilder builder,
-  ) =>
-      ThrioNavigatorImplement.shared().pageBuilders.registry(url, builder);
-
-  /// Register page builders for the router.
-  ///
-  /// Unregistry by calling the return value `VoidCallback`.
-  ///
-  VoidCallback registerPageBuilders(
-          Map<String, NavigatorPageBuilder> builders) =>
-      ThrioNavigatorImplement.shared().pageBuilders.registryAll(builders);
+  @protected
+  void onPageBuilderSetting(ModuleContext moduleContext) {}
 }

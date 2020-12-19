@@ -46,9 +46,9 @@ class NavigatorObserverManager extends NavigatorObserver {
         'index->${route.settings.index} ',
       );
       pageRoutes.add(route);
-      ThrioNavigatorImplement.shared().routeObservers.didPush(route.settings);
+      ThrioNavigatorImplement.shared().routeChannel.didPush(route.settings);
       ThrioNavigatorImplement.shared()
-          .pageObservers
+          .pageChannel
           .didAppear(route.settings, NavigatorRouteAction.push);
     }
   }
@@ -66,9 +66,9 @@ class NavigatorObserverManager extends NavigatorObserver {
                 verbose('didPopTo: url->${pageRoutes.last.settings.url} '
                     'index->${pageRoutes.last.settings.index}');
                 ThrioNavigatorImplement.shared()
-                    .routeObservers
+                    .routeChannel
                     .didPopTo(pageRoutes.last.settings);
-                ThrioNavigatorImplement.shared().pageObservers.didAppear(
+                ThrioNavigatorImplement.shared().pageChannel.didAppear(
                       pageRoutes.last.settings,
                       NavigatorRouteAction.popTo,
                     );
@@ -80,10 +80,10 @@ class NavigatorObserverManager extends NavigatorObserver {
               verbose('didPop: url->${route.settings.url} '
                   'index->${route.settings.index} ');
               ThrioNavigatorImplement.shared()
-                  .routeObservers
+                  .routeChannel
                   .didPop(route.settings);
               ThrioNavigatorImplement.shared()
-                  .pageObservers
+                  .pageChannel
                   .didDisappear(route.settings, NavigatorRouteAction.pop);
               route.routeAction = null;
             } else if (route.routeAction == NavigatorRouteAction.remove) {
@@ -94,10 +94,10 @@ class NavigatorObserverManager extends NavigatorObserver {
                   'index->${route.settings.index} ',
                 );
                 ThrioNavigatorImplement.shared()
-                    .routeObservers
+                    .routeChannel
                     .didRemove(route.settings);
                 ThrioNavigatorImplement.shared()
-                    .pageObservers
+                    .pageChannel
                     .didDisappear(route.settings, NavigatorRouteAction.remove);
               }
               route.routeAction = null;
@@ -107,9 +107,9 @@ class NavigatorObserverManager extends NavigatorObserver {
               verbose('didPopTo: url->${pageRoutes.last.settings.url} '
                   'index->${pageRoutes.last.settings.index}');
               ThrioNavigatorImplement.shared()
-                  .routeObservers
+                  .routeChannel
                   .didPopTo(pageRoutes.last.settings);
-              ThrioNavigatorImplement.shared().pageObservers.didAppear(
+              ThrioNavigatorImplement.shared().pageChannel.didAppear(
                     pageRoutes.last.settings,
                     NavigatorRouteAction.popTo,
                   );
@@ -135,9 +135,9 @@ class NavigatorObserverManager extends NavigatorObserver {
                 verbose('didPopTo: url->${pageRoutes.last.settings.url} '
                     'index->${pageRoutes.last.settings.index}');
                 ThrioNavigatorImplement.shared()
-                    .routeObservers
+                    .routeChannel
                     .didPopTo(pageRoutes.last.settings);
-                ThrioNavigatorImplement.shared().pageObservers.didAppear(
+                ThrioNavigatorImplement.shared().pageChannel.didAppear(
                       pageRoutes.last.settings,
                       NavigatorRouteAction.popTo,
                     );
@@ -147,9 +147,9 @@ class NavigatorObserverManager extends NavigatorObserver {
               verbose('didRemove: url->${route.settings.url} '
                   'index->${route.settings.index}');
               ThrioNavigatorImplement.shared()
-                  .routeObservers
+                  .routeChannel
                   .didRemove(route.settings);
-              ThrioNavigatorImplement.shared().pageObservers.didDisappear(
+              ThrioNavigatorImplement.shared().pageChannel.didDisappear(
                     pageRoutes.last.settings,
                     NavigatorRouteAction.remove,
                   );
@@ -160,9 +160,9 @@ class NavigatorObserverManager extends NavigatorObserver {
                   'index->${pageRoutes.last.settings.index}');
               // remove是最后一个route为之前的active route
               ThrioNavigatorImplement.shared()
-                  .routeObservers
+                  .routeChannel
                   .didPopTo(pageRoutes.last.settings);
-              ThrioNavigatorImplement.shared().pageObservers.didAppear(
+              ThrioNavigatorImplement.shared().pageChannel.didAppear(
                     pageRoutes.last.settings,
                     NavigatorRouteAction.popTo,
                   );

@@ -90,8 +90,7 @@ static NSString *const kEventNameKey = @"__event_name__";
     return [_methodChannel invokeMethod:method arguments:nil result:callback];
 }
 
-- (void)invokeMethod:(NSString *)method
-           arguments:(NSDictionary *)arguments {
+- (void)invokeMethod:(NSString *)method arguments:(NSDictionary *)arguments {
     return [_methodChannel invokeMethod:method arguments:arguments];
 }
 

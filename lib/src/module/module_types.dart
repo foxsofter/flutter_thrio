@@ -1,6 +1,6 @@
 // The MIT License (MIT)
 //
-// Copyright (c) 2019 foxsofter
+// Copyright (c) 2020 foxsofter
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
 // copy of this software and associated documentation files (the "Software"),
@@ -19,33 +19,18 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-import 'package:flutter/widgets.dart';
+/// Signature of callbacks for json serializer.
+///
+typedef JsonSerializer = Map<String, dynamic> Function(T Function<T>() factory);
 
-import '../registry/registry_set.dart';
-import 'navigator_route_observer.dart';
-import 'navigator_route_observer_channel.dart';
+/// Signature of callbacks for json deserializer.
+///
+typedef JsonDeserializer<T> = T Function(Map<String, dynamic> params);
 
-class NavigatorRouteObservers with NavigatorRouteObserver {
-  NavigatorRouteObservers(this._entrypoint) {
-    _channel = NavigatorRouteObserverChannel(this, _entrypoint);
-  }
+/// Signature of callbacks for protobuf serializer.
+///
+typedef ProtobufSerializer = List<int> Function(T Function<T>() factory);
 
-  final observers = RegistrySet<NavigatorRouteObserver>();
-
-  final String _entrypoint;
-  NavigatorRouteObserverChannel _channel;
-
-  @override
-  void didPush(RouteSettings routeSettings) => _channel.didPush(routeSettings);
-
-  @override
-  void didPop(RouteSettings routeSettings) => _channel.didPop(routeSettings);
-
-  @override
-  void didPopTo(RouteSettings routeSettings) =>
-      _channel.didPopTo(routeSettings);
-
-  @override
-  void didRemove(RouteSettings routeSettings) =>
-      _channel.didRemove(routeSettings);
-}
+/// Signature of callbacks for protobuf deserializer.
+///
+typedef ProtobufDeserializer<T> = T Function(List<int> params);

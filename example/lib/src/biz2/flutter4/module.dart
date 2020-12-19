@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:thrio/thrio.dart';
-import 'page3.dart';
-import 'page4.dart';
+
+import 'flutter4.dart';
 
 class Module
     with
@@ -10,21 +10,14 @@ class Module
         ModuleRouteObserver,
         NavigatorRouteObserver {
   @override
-  void onPageBuilderRegister(ModuleContext moduleContext) {
-    registerPageBuilder(
-      '/biz1/flutter3',
-      (settings) => Page3(
-        index: settings.index,
-        params: settings.params,
-      ),
-    );
-    registerPageBuilder(
-      '/biz2/flutter4',
-      (settings) => Page4(
-        index: settings.index,
-        params: settings.params,
-      ),
-    );
+  String get key => 'flutter4';
+
+  @override
+  void onPageBuilderSetting(ModuleContext moduleContext) {
+    pageBuilder = (settings) => Flutter4(
+          index: settings.index,
+          params: settings.params,
+        );
   }
 
   @override

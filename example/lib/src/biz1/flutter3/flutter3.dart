@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:thrio/thrio.dart';
 
-class Page3 extends StatefulWidget {
-  const Page3({
+class Flutter3 extends StatefulWidget {
+  const Flutter3({
     Key key,
     this.index,
     this.params,
@@ -13,10 +13,10 @@ class Page3 extends StatefulWidget {
   final dynamic params;
 
   @override
-  _Page3State createState() => _Page3State();
+  _Flutter3State createState() => _Flutter3State();
 }
 
-class _Page3State extends State<Page3> {
+class _Flutter3State extends State<Flutter3> {
   @override
   Widget build(BuildContext context) => WillPopScope(
       onWillPop: () async {

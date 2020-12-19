@@ -46,25 +46,29 @@
 /// Send `didPush` to all flutter engines.
 ///
 - (void)didPush:(NavigatorRouteSettings *)routeSettings {
-    [_channel invokeMethod:@"didPush" arguments:[routeSettings toArguments]];
+    NSDictionary *arguments = [routeSettings toArgumentsWithParams:nil];
+    [_channel invokeMethod:@"didPush" arguments:arguments];
 }
 
 /// Send `didPop` to all flutter engines.
 ///
 - (void)didPop:(NavigatorRouteSettings *)routeSettings {
-    [_channel invokeMethod:@"didPop" arguments:[routeSettings toArguments]];
+    NSDictionary *arguments = [routeSettings toArgumentsWithParams:nil];
+    [_channel invokeMethod:@"didPop" arguments:arguments];
 }
 
 /// Send `didPopTo` to all flutter engines.
 ///
 - (void)didPopTo:(NavigatorRouteSettings *)routeSettings {
-    [_channel invokeMethod:@"didPopTo" arguments:[routeSettings toArguments]];
+    NSDictionary *arguments = [routeSettings toArgumentsWithParams:nil];
+    [_channel invokeMethod:@"didPopTo" arguments:arguments];
 }
 
 /// Send `didRemove` to all flutter engines.
 ///
 - (void)didRemove:(NavigatorRouteSettings *)routeSettings {
-    [_channel invokeMethod:@"didRemove" arguments:[routeSettings toArguments]];
+    NSDictionary *arguments = [routeSettings toArgumentsWithParams:nil];
+    [_channel invokeMethod:@"didRemove" arguments:arguments];
 }
 
 - (void)on:(NSString *)method {

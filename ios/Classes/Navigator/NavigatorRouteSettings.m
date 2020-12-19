@@ -27,7 +27,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, copy, readwrite) NSString *url;
 
-@property (nonatomic, strong, readwrite) NSNumber *index;
+@property (nonatomic, strong, readwrite, nullable) NSNumber *index;
 
 @property (nonatomic, assign, readwrite) BOOL nested;
 
@@ -38,14 +38,14 @@ NS_ASSUME_NONNULL_BEGIN
 @implementation NavigatorRouteSettings
 
 + (instancetype)settingsWithUrl:(NSString *)url
-                          index:(NSNumber *)index
+                          index:(NSNumber *_Nullable)index
                          nested:(BOOL)nested
                          params:(id _Nullable)params {
     return [[self alloc] initWithUrl:url index:index nested:nested params:params];
 }
 
 - (instancetype)initWithUrl:(NSString *)url
-                      index:(NSNumber *)index
+                      index:(NSNumber *_Nullable)index
                      nested:(BOOL)nested
                      params:(id _Nullable)params {
     NSAssert(url && url.length > 0, @"url must not be null or empty.");
@@ -86,7 +86,7 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 - (NSString *)name {
-    return [NSString stringWithFormat:@"%@ %@", !_index ? @0 : _index, _url];
+    return [NSString stringWithFormat:@"%@ %@", _index == nil ? @0 : _index, _url];
 }
 
 - (NSString *)description {

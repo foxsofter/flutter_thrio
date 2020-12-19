@@ -22,6 +22,7 @@
 #import <Foundation/Foundation.h>
 #import <objc/runtime.h>
 #import "ThrioNavigator+JsonDeserializers.h"
+#import "ThrioModuleTypes.h"
 
 @implementation ThrioNavigator (JsonDeserializers)
 

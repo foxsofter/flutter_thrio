@@ -20,6 +20,7 @@
 // IN THE SOFTWARE.
 
 import 'package:flutter/material.dart';
+import '../module/thrio_module.dart';
 
 import 'navigator_route_settings.dart';
 import 'navigator_types.dart';
@@ -48,7 +49,7 @@ class NavigatorPageRoute<TCallbackParams> extends MaterialPageRoute<bool> {
 
   NavigatorRouteAction routeAction;
 
-  NavigatorParamsCallback poppedResultCallback;
+  NavigatorParamsCallback poppedResult;
 
   final _popDisableds = <String, bool>{};
 
@@ -90,14 +91,10 @@ class NavigatorPageRoute<TCallbackParams> extends MaterialPageRoute<bool> {
     Widget child,
   ) {
     if (settings.isNested) {
-      final urlPatterns =
-          ThrioNavigatorImplement.shared().routeTransitionsBuilders.keys;
-      for (final urlPattern in urlPatterns) {
-        if (urlPattern.hasMatch(settings.url)) {
-          final builder = ThrioNavigatorImplement.shared()
-              .routeTransitionsBuilders[urlPattern];
-          return builder(context, animation, secondaryAnimation, child);
-        }
+      final builder =
+          ThrioModule.get<RouteTransitionsBuilder>(url: settings.url);
+      if (builder != null) {
+        return builder(context, animation, secondaryAnimation, child);
       }
       return super.buildTransitions(
         context,

@@ -3,10 +3,11 @@ import 'dart:io' show Platform;
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:thrio/thrio.dart';
-import 'model.dart';
 
-class Page1 extends StatefulWidget {
-  const Page1({
+import '../../models/people.dart';
+
+class Flutter1 extends StatefulWidget {
+  const Flutter1({
     Key key,
     this.index,
     this.params,
@@ -17,10 +18,10 @@ class Page1 extends StatefulWidget {
   final dynamic params;
 
   @override
-  _Page1State createState() => _Page1State();
+  _Flutter1State createState() => _Flutter1State();
 }
 
-class _Page1State extends State<Page1> {
+class _Flutter1State extends State<Flutter1> {
   TextEditingController _inputController;
   @override
   void initState() {

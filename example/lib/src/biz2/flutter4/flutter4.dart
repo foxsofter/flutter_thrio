@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:thrio/thrio.dart';
 
-class Page4 extends StatefulWidget {
-  const Page4({
+class Flutter4 extends StatefulWidget {
+  const Flutter4({
     Key key,
     this.index,
     this.params,
@@ -13,10 +13,10 @@ class Page4 extends StatefulWidget {
   final dynamic params;
 
   @override
-  _Page4State createState() => _Page4State();
+  _Flutter4State createState() => _Flutter4State();
 }
 
-class _Page4State extends State<Page4> {
+class _Flutter4State extends State<Flutter4> {
   @override
   void initState() {
     super.initState();

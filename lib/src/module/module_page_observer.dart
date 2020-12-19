@@ -22,24 +22,29 @@
 import 'package:flutter/foundation.dart';
 
 import '../navigator/navigator_page_observer.dart';
-import '../navigator/thrio_navigator_implement.dart';
+import '../registry/registry_set.dart';
 import 'module_context.dart';
 import 'thrio_module.dart';
 
 mixin ModulePageObserver on ThrioModule {
+  @protected
+  final pageObservers = RegistrySet<NavigatorPageObserver>();
+
   /// A function for register a page observer.
   ///
+  @protected
   void onPageObserverRegister(ModuleContext moduleContext) {}
 
-  /// Register observers for the life cycle of Dart pages.
+  /// Register observers for the life cycle of all pages under
+  /// the current module and submodules.
   ///
   /// Unregistry by calling the return value `VoidCallback`.
   ///
   /// Do not override this method.
   ///
-  VoidCallback registerPageObserver(NavigatorPageObserver pageObserver) =>
-      ThrioNavigatorImplement.shared()
-          .pageObservers
-          .observers
-          .registry(pageObserver);
+  @protected
+  VoidCallback registerPageObserver(
+    NavigatorPageObserver pageObserver,
+  ) =>
+      pageObservers.registry(pageObserver);
 }

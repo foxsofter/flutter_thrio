@@ -27,9 +27,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, readonly) BOOL empty;
 
-@property (nonatomic, readonly) id first;
+@property (nonatomic, readonly, nullable) id first;
 
-@property (nonatomic, readonly) id last;
+@property (nonatomic, readonly, nullable) id last;
 
 - (void)addObject:(id)object;
 

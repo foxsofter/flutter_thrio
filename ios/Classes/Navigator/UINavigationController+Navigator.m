@@ -181,8 +181,6 @@ NS_ASSUME_NONNULL_BEGIN
                 if (vc.thrio_firstRoute == vc.thrio_lastRoute) {
                     [strongSelf thrio_addPopGesture];
                 }
-            } else {
-                [strongSelf popViewControllerAnimated:animated];
             }
         }
         // 原生页面返回YES不代表已经pop掉页面
@@ -240,13 +238,6 @@ NS_ASSUME_NONNULL_BEGIN
     }
 
     NavigatorRouteSettings *routeSettings = [vc thrio_getRouteByUrl:url index:index].settings;
-    NSArray *vcs = self.viewControllers;
-    NSUInteger idx = [vcs indexOfObject:vc];
-    NavigatorRouteSettings *previousRouteSettings;
-    if (idx > 0) {
-        UIViewController *previousVC = vcs[idx - 1];
-        previousRouteSettings = previousVC.thrio_lastRoute.settings;
-    }
     __weak typeof(self) weakself = self;
     [vc thrio_removeUrl:url index:index animated:animated result:^(BOOL r) {
         __strong typeof(weakself) strongSelf = weakself;
@@ -350,7 +341,7 @@ NS_ASSUME_NONNULL_BEGIN
     return routes;
 }
 
-- (NavigatorPageRoute *)thrio_getLastRouteByEntrypoint:(NSString *)entrypoint {
+- (NavigatorPageRoute *_Nullable)thrio_getLastRouteByEntrypoint:(NSString *)entrypoint {
     NSEnumerator *vcs = [self.viewControllers reverseObjectEnumerator];
     for (UIViewController *vc in vcs) {
         if ([vc isKindOfClass:NavigatorFlutterViewController.class]) {
@@ -447,6 +438,7 @@ NS_ASSUME_NONNULL_BEGIN
         if (self.topViewController.thrio_willPopBlock && !self.topViewController.thrio_willPopCalling) {
             self.topViewController.thrio_willPopCalling = YES;
             __weak typeof(self) weakself = self;
+            __block UIViewController *poppedVC;
             self.topViewController.thrio_willPopBlock(^(BOOL result) {
                 __strong typeof(weakself) strongSelf = weakself;
                 if (result) {
@@ -463,14 +455,14 @@ NS_ASSUME_NONNULL_BEGIN
                             [CATransaction setCompletionBlock:^{
                                 [ThrioNavigator didPop:routeSettings];
                             }];
-                            [strongSelf thrio_popViewControllerAnimated:animated];
+                            poppedVC = [strongSelf thrio_popViewControllerAnimated:animated];
                             [CATransaction commit];
                         } else {
-                            [strongSelf thrio_popViewControllerAnimated:animated];
+                            poppedVC = [strongSelf thrio_popViewControllerAnimated:animated];
                             [ThrioNavigator didPop:routeSettings];
                         }
                     } else {
-                        [strongSelf thrio_popViewControllerAnimated:animated];
+                        poppedVC = [strongSelf thrio_popViewControllerAnimated:animated];
                     }
                     // 判断前一个页面导航栏是否需要切换
                     if (previousVC && strongSelf.navigationBarHidden != previousVC.thrio_hidesNavigationBar_.boolValue) {
@@ -483,7 +475,7 @@ NS_ASSUME_NONNULL_BEGIN
                 // 是否调用willPop的标记位恢复NO
                 strongSelf.topViewController.thrio_willPopCalling = NO;
             });
-            return nil;
+            return poppedVC;
         }
     }
 

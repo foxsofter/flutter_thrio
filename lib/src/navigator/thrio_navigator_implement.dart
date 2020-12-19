@@ -25,11 +25,10 @@ import 'package:flutter/widgets.dart';
 
 import '../channel/thrio_channel.dart';
 import '../module/module_context.dart';
-import '../registry/registry_map.dart';
 import 'navigator_logger.dart';
 import 'navigator_observer_manager.dart';
-import 'navigator_page_observers.dart';
-import 'navigator_route_observers.dart';
+import 'navigator_page_observer_channel.dart';
+import 'navigator_route_observer_channel.dart';
 import 'navigator_route_receive_channel.dart';
 import 'navigator_route_send_channel.dart';
 import 'navigator_types.dart';
@@ -44,12 +43,12 @@ class ThrioNavigatorImplement {
   static ThrioNavigatorImplement _default;
 
   void init(ModuleContext moduleContext) {
-    _pageObservers = NavigatorPageObservers(moduleContext.entrypoint);
-    _routeObservers = NavigatorRouteObservers(moduleContext.entrypoint);
     _channel =
         ThrioChannel(channel: '__thrio_app__${moduleContext.entrypoint}');
     _sendChannel = NavigatorRouteSendChannel(_channel);
     _receiveChannel = NavigatorRouteReceiveChannel(_channel);
+    _pageChannel = NavigatorPageObserverChannel(moduleContext.entrypoint);
+    _routeChannel = NavigatorRouteObserverChannel(moduleContext.entrypoint);
     _observerManager = NavigatorObserverManager();
 
     verbose('TransitionBuilder init');
@@ -75,25 +74,19 @@ class ThrioNavigatorImplement {
 
   NavigatorWidgetState get navigatorState => _stateKey?.currentState;
 
-  NavigatorPageObservers _pageObservers;
-
-  NavigatorRouteObservers _routeObservers;
-
-  final pageBuilders = RegistryMap<String, NavigatorPageBuilder>();
-
-  final jsonDeserializers = RegistryMap<Type, JsonDeserializer>();
-  final jsonSerializers = RegistryMap<Type, JsonSerializer>();
-
-  final poppedResultCallbacks = <String, NavigatorParamsCallback>{};
-
-  final _routeTransitionsBuilders =
-      RegistryMap<RegExp, RouteTransitionsBuilder>();
+  final poppedResults = <String, NavigatorParamsCallback>{};
 
   ThrioChannel _channel;
 
   NavigatorRouteSendChannel _sendChannel;
 
   NavigatorRouteReceiveChannel _receiveChannel;
+
+  NavigatorRouteObserverChannel _routeChannel;
+  NavigatorRouteObserverChannel get routeChannel => _routeChannel;
+
+  NavigatorPageObserverChannel _pageChannel;
+  NavigatorPageObserverChannel get pageChannel => _pageChannel;
 
   NavigatorObserverManager _observerManager;
 
@@ -106,7 +99,11 @@ class ThrioNavigatorImplement {
     NavigatorParamsCallback poppedResult,
   }) =>
       _sendChannel
-          ?.push<TParams>(url: url, params: params, animated: animated)
+          ?.push<TParams>(
+        url: url,
+        params: params,
+        animated: animated,
+      )
           ?.then<int>((index) {
         if (poppedResult != null && index != null && index > 0) {
           final routeName = '$index $url';
@@ -116,10 +113,10 @@ class ThrioNavigatorImplement {
               (it) => it.settings.name == routeName,
               orElse: () => null);
           if (route != null) {
-            route.poppedResultCallback = poppedResult;
+            route.poppedResult = poppedResult;
           } else {
             // 不在当前页面栈上，则通过name来缓存
-            poppedResultCallbacks[routeName] = poppedResult;
+            poppedResults[routeName] = poppedResult;
           }
         }
         return index;
@@ -205,11 +202,4 @@ class ThrioNavigatorImplement {
   void hotRestart() {
     _channel?.invokeMethod<bool>('hotRestart');
   }
-
-  NavigatorPageObservers get pageObservers => _pageObservers;
-
-  NavigatorRouteObservers get routeObservers => _routeObservers;
-
-  RegistryMap<RegExp, RouteTransitionsBuilder> get routeTransitionsBuilders =>
-      _routeTransitionsBuilders;
 }

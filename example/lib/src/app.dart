@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:thrio/thrio.dart';
-
-import 'sample/module.dart' as sample;
+import 'module.dart';
 
 void main() => runApp(MainApp());
 void biz1() => runApp(MainApp(entrypoint: 'biz1'));
@@ -18,22 +17,14 @@ class MainApp extends StatefulWidget {
   _MainAppState createState() => _MainAppState();
 }
 
-class _MainAppState extends State<MainApp> with ThrioModule {
+class _MainAppState extends State<MainApp> {
   @override
   void initState() {
     super.initState();
-    registerModule(widget._moduleContext, this);
-    initModule(widget._moduleContext);
-  }
-
-  @override
-  void onModuleRegister(ModuleContext context) {
-    registerModule(context, sample.Module());
-  }
-
-  @override
-  void onModuleInit(ModuleContext context) {
-    navigatorLogEnabled = true;
+    ThrioModule.init(
+      rootModule: Module(),
+      moduleContext: widget._moduleContext,
+    );
   }
 
   @override
