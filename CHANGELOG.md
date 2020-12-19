@@ -150,3 +150,7 @@
 ## 1.3.4
 
 * fix: issue #138，serializerParams 失败
+
+## 1.3.5
+
+* fix: pageChannel and routeChannel not match the readwrite property

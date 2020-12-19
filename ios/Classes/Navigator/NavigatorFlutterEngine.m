@@ -39,9 +39,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, strong, readwrite, nullable) NavigatorRouteSendChannel *sendChannel;
 
-@property (nonatomic, strong) NavigatorRouteObserverChannel *routeObserverChannel;
+@property (nonatomic, strong) NavigatorRouteObserverChannel *routeChannel;
 
-@property (nonatomic, strong, readwrite, nullable) NavigatorPageObserverChannel *pageObserverChannel;
+@property (nonatomic, strong, readwrite, nullable) NavigatorPageObserverChannel *pageChannel;
 
 @property (nonatomic, strong) NSPointerArray *flutterViewControllers;
 
@@ -141,12 +141,12 @@ NS_ASSUME_NONNULL_BEGIN
     channelName = [NSString stringWithFormat:@"__thrio_route_channel__%@", entrypoint];
     ThrioChannel *routeChannel = [ThrioChannel channelWithEntrypoint:entrypoint name:channelName];
     [routeChannel setupMethodChannel:_engine.binaryMessenger];
-    _routeObserverChannel = [[NavigatorRouteObserverChannel alloc] initWithChannel:routeChannel];
+    _routeChannel = [[NavigatorRouteObserverChannel alloc] initWithChannel:routeChannel];
 
     channelName = [NSString stringWithFormat:@"__thrio_page_channel__%@", entrypoint];
     ThrioChannel *pageChannel = [ThrioChannel channelWithEntrypoint:entrypoint name:channelName];
     [pageChannel setupMethodChannel:_engine.binaryMessenger];
-    _pageObserverChannel = [[NavigatorPageObserverChannel alloc] initWithChannel:pageChannel];
+    _pageChannel = [[NavigatorPageObserverChannel alloc] initWithChannel:pageChannel];
 }
 
 - (void)dealloc {
