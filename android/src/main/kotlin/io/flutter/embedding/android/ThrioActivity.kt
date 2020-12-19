@@ -44,8 +44,8 @@ open class ThrioActivity : ThrioFlutterActivity() {
     override fun getCachedEngineId(): String? {
         if (_initialEntrypoint == null) {
             _initialEntrypoint = if (!FlutterEngineFactory.isMultiEngineEnabled) NAVIGATION_FLUTTER_ENTRYPOINT_DEFAULT
-            else if (initialUrl.isEmpty()) ""
-            else initialUrl.getEntrypoint()
+            else if (initialUrl?.isEmpty() == true) ""
+            else initialUrl?.getEntrypoint()
         }
         return if(_initialEntrypoint?.isNotEmpty() == true) _initialEntrypoint else super.getCachedEngineId()
     }
@@ -61,7 +61,7 @@ open class ThrioActivity : ThrioFlutterActivity() {
         }
 
     override fun onFlutterUiDisplayed() {
-        if (!isPushed && initialUrl.isNotEmpty()) {
+        if (!isPushed && initialUrl?.isNotEmpty() == true) {
             isPushed = true
             NavigationController.Push.push(initialUrl!!, null, false) {}
         }

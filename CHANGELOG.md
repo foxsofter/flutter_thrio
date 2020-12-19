@@ -154,3 +154,8 @@
 ## 1.3.5
 
 * fix: pageChannel and routeChannel not match the readwrite property
+
+## 1.4.0
+
+* feat: add resource modular
+* fix: 修复已知的bug
