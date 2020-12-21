@@ -63,28 +63,28 @@ NS_ASSUME_NONNULL_BEGIN
 /// Send `willAppear` to all flutter engines.
 ///
 - (void)willAppear:(NavigatorRouteSettings *)routeSettings {
-    NSDictionary *arguments = [routeSettings toArguments];
+    NSDictionary *arguments = [routeSettings toArgumentsWithParams:nil];
     [_channel invokeMethod:@"willAppear" arguments:arguments];
 }
 
 /// Send `didAppear` to all flutter engines.
 ///
 - (void)didAppear:(NavigatorRouteSettings *)routeSettings {
-    NSDictionary *arguments = [routeSettings toArguments];
+    NSDictionary *arguments = [routeSettings toArgumentsWithParams:nil];
     [_channel invokeMethod:@"didAppear" arguments:arguments];
 }
 
 /// Send `willDisappear` to all flutter engines.
 ///
 - (void)willDisappear:(NavigatorRouteSettings *)routeSettings {
-    NSDictionary *arguments = [routeSettings toArguments];
+    NSDictionary *arguments = [routeSettings toArgumentsWithParams:nil];
     [_channel invokeMethod:@"willDisappear" arguments:arguments];
 }
 
 /// Send `didDisappear` to all flutter engines.
 ///
 - (void)didDisappear:(NavigatorRouteSettings *)routeSettings {
-    NSDictionary *arguments = [routeSettings toArguments];
+    NSDictionary *arguments = [routeSettings toArgumentsWithParams:nil];
     [_channel invokeMethod:@"didDisappear" arguments:arguments];
 }
 
