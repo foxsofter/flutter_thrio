@@ -74,7 +74,7 @@
             result:(ThrioBoolCallback _Nullable)result {
     // 给所有的 UINavigationController 发通知
     BOOL canNotify = NO;
-    NSEnumerator *allNvcs = self.navigationControllers.allObjects.reverseObjectEnumerator;
+    NSArray *allNvcs = [self.navigationControllers.allObjects.reverseObjectEnumerator allObjects];
     for (UINavigationController *nvc in allNvcs) {
         if ([nvc thrio_notifyUrl:url index:index name:name params:params]) {
             canNotify = YES;
@@ -111,7 +111,7 @@
              index:(NSNumber *_Nullable)index
           animated:(BOOL)animated
             result:(ThrioBoolCallback _Nullable)result {
-    NSEnumerator *allNvcs = self.navigationControllers.allObjects.reverseObjectEnumerator;
+    NSArray *allNvcs = [self.navigationControllers.allObjects.reverseObjectEnumerator allObjects];
     for (UINavigationController *nvc in allNvcs) {
         if ([nvc thrio_containsUrl:url index:index]) {
             [nvc thrio_removeUrl:url index:index animated:animated result:result];
@@ -120,7 +120,7 @@
 }
 
 + (void)_setPopDisabledUrl:(NSString *)url index:(NSNumber *)index disabled:(BOOL)disabled {
-    NSEnumerator *allNvcs = self.navigationControllers.allObjects.reverseObjectEnumerator;
+    NSArray *allNvcs = [self.navigationControllers.allObjects.reverseObjectEnumerator allObjects];
     for (UINavigationController *nvc in allNvcs) {
         if ([nvc thrio_containsUrl:url index:index]) {
             [nvc thrio_setPopDisabledUrl:url index:index disabled:disabled];
@@ -155,7 +155,7 @@
 }
 
 + (NavigatorPageRoute *_Nullable)_getLastRouteByEntrypoint:(NSString *)entrypoint {
-    NSEnumerator *allNvcs = self.navigationControllers.allObjects.reverseObjectEnumerator;
+    NSArray *allNvcs = [self.navigationControllers.allObjects.reverseObjectEnumerator allObjects];
     for (UINavigationController *nvc in allNvcs) {
         NavigatorPageRoute *route = [nvc thrio_getLastRouteByEntrypoint:entrypoint];
         if (route) {

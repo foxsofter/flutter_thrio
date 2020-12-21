@@ -43,23 +43,19 @@ mixin ThrioModule {
   /// Modular initialization function, needs to be called
   /// once during App initialization.
   ///
-  static void init({
-    ThrioModule rootModule,
-    ModuleContext moduleContext,
-  }) {
-    if (anchor.modules.length == 1) {
+  static void init(ThrioModule rootModule, [String entrypoint]) {
+    if (_anchor.modules.length == 1) {
       throw ThrioException('init method can only be called once.');
     } else {
-      anchor
+      final moduleContext = ModuleContext(entrypoint: entrypoint);
+      moduleContext.moduleOf[moduleContext] = _anchor;
+      _anchor
+        .._moduleContext = moduleContext
         ..registerModule(rootModule, moduleContext)
         ..onModuleInit(moduleContext)
-        ..initModule(moduleContext);
+        ..initModule();
     }
   }
-
-  /// A [Key] is an identifier for a module.
-  ///
-  String get key => '';
 
   /// Get instance by `T`, `url` and `key`.
   ///
@@ -80,7 +76,7 @@ mixin ThrioModule {
     String url,
     String key,
   }) =>
-      anchor.get<T>(url: url, key: key);
+      _anchor.get<T>(url: url, key: key);
 
   /// Get instances by `T` and `url`.
   ///
@@ -93,10 +89,26 @@ mixin ThrioModule {
   /// If `T` is `NavigatorRouteObserver`, returns all route observers
   /// matched by `url`.
   ///
-  static Iterable<T> gets<T>({@required String url}) => anchor.gets<T>(url);
+  static Iterable<T> gets<T>({@required String url}) => _anchor.gets<T>(url);
+
+  static ModuleAnchor get anchor => _anchor;
 
   @protected
   final modules = <String, ThrioModule>{};
+
+  /// A [Key] is an identifier for a module.
+  ///
+  String get key => '';
+
+  /// Associate parent module to current module.
+  ///
+  /// Get parent module of `module` by `parentOf[module]`.
+  ///
+  final parentOf = Expando<ThrioModule>();
+
+  /// `ModuleContext` of current module.
+  ///
+  ModuleContext _moduleContext;
 
   /// A function for registering a module, which will call
   /// the `onModuleRegister` function of the `module`.
@@ -109,8 +121,14 @@ mixin ThrioModule {
     if (modules.containsKey(module.key)) {
       throw ThrioException('A module with the same key $key already exists');
     } else {
+      final submoduleContext =
+          ModuleContext(entrypoint: moduleContext.entrypoint);
+      submoduleContext.moduleOf[submoduleContext] = module;
       modules[module.key] = module;
-      module.onModuleRegister(moduleContext);
+      module
+        ..parentOf[module] = this
+        .._moduleContext = submoduleContext
+        ..onModuleRegister(submoduleContext);
     }
   }
 
@@ -123,48 +141,48 @@ mixin ThrioModule {
   /// methods of all modules.
   ///
   @protected
-  void initModule(ModuleContext moduleContext) {
+  void initModule() {
     final values = modules.values;
     for (final module in values) {
       module
-        ..onModuleInit(moduleContext)
-        ..initModule(moduleContext);
+        ..onModuleInit(module._moduleContext)
+        ..initModule();
     }
     for (final module in values) {
       if (module is ModulePageBuilder) {
-        module.onPageBuilderSetting(moduleContext);
+        module.onPageBuilderSetting(module._moduleContext);
       }
       if (module is ModuleRouteTransitionsBuilder) {
-        module.onRouteTransitionsBuilderSetting(moduleContext);
+        module.onRouteTransitionsBuilderSetting(module._moduleContext);
       }
     }
     for (final module in values) {
       if (module is ModulePageObserver) {
-        module.onPageObserverRegister(moduleContext);
+        module.onPageObserverRegister(module._moduleContext);
       }
       if (module is ModuleRouteObserver) {
-        module.onRouteObserverRegister(moduleContext);
+        module.onRouteObserverRegister(module._moduleContext);
       }
     }
     for (final module in values) {
       if (module is ModuleJsonSerializer) {
-        module.onJsonSerializerRegister(moduleContext);
+        module.onJsonSerializerRegister(module._moduleContext);
       }
       if (module is ModuleJsonDeserializer) {
-        module.onJsonDeserializerRegister(moduleContext);
+        module.onJsonDeserializerRegister(module._moduleContext);
       }
     }
     for (final module in values) {
       if (module is ModuleProtobufSerializer) {
-        module.onProtobufSerializerRegister(moduleContext);
+        module.onProtobufSerializerRegister(module._moduleContext);
       }
       if (module is ModuleProtobufDeserializer) {
-        module.onProtobufDeserializerRegister(moduleContext);
+        module.onProtobufDeserializerRegister(module._moduleContext);
       }
     }
     for (final module in values) {
       Future.microtask(() {
-        module.onModuleAsyncInit(moduleContext);
+        module.onModuleAsyncInit(module._moduleContext);
       });
     }
   }
@@ -172,17 +190,25 @@ mixin ThrioModule {
   /// A function for registering submodules.
   ///
   @protected
-  void onModuleRegister(ModuleContext moduleContext) {}
+  void onModuleRegister(ModuleContext moduleContext) {
+    debugPrint(
+        'onModuleRegister: ${moduleContext.moduleOf[moduleContext].key}');
+  }
 
   /// A function for module initialization.
   ///
   @protected
-  void onModuleInit(ModuleContext moduleContext) {}
+  void onModuleInit(ModuleContext moduleContext) {
+    debugPrint('onModuleInit: ${moduleContext.moduleOf[moduleContext].key}');
+  }
 
   /// A function for module asynchronous initialization.
   ///
   @protected
-  void onModuleAsyncInit(ModuleContext moduleContext) {}
+  void onModuleAsyncInit(ModuleContext moduleContext) {
+    debugPrint(
+        'onModuleAsyncInit: ${moduleContext.moduleOf[moduleContext].key}');
+  }
 
   @protected
   bool get navigatorLogEnabled => navigatorLogging;
@@ -193,3 +219,5 @@ mixin ThrioModule {
   @override
   String toString() => '$key: ${modules.keys.toString()}';
 }
+
+final _anchor = ModuleAnchor();

@@ -166,11 +166,6 @@ class ThrioNavigatorImplement {
         animated: animated,
       );
 
-  Future<int> lastIndex({String url}) => _sendChannel?.lastIndex(url: url);
-
-  Future<List<int>> allIndexes({@required String url}) =>
-      _sendChannel?.allIndexes(url: url);
-
   Future<RouteSettings> lastRoute({String url}) =>
       _sendChannel?.lastRoute(url: url);
 

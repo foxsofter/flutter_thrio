@@ -22,7 +22,7 @@
 import 'package:flutter/widgets.dart';
 
 import '../extension/thrio_build_context.dart';
-import '../module/module_anchor.dart';
+import '../module/thrio_module.dart';
 import 'navigator_page_observer.dart';
 import 'navigator_page_route.dart';
 import 'navigator_route_settings.dart';
@@ -72,7 +72,8 @@ class _NavigatorPageLifecycleState extends State<NavigatorPageLifecycle> {
       if (route != null && route is NavigatorPageRoute) {
         _route = route;
 
-        _pageObserverCallback = anchor.pageLifecycleObservers.registry(
+        _pageObserverCallback =
+            ThrioModule.anchor.pageLifecycleObservers.registry(
           _route.settings.url,
           _PageLifecyclePageObserver(this),
         );

@@ -65,7 +65,6 @@ class _NavigatorPageNotifyState extends State<NavigatorPageNotify> {
     super.initState();
     if (mounted) {
       if (widget.initialParams != null) {
-        // ignore: avoid_as
         widget.onPageNotify(widget.initialParams);
       }
     }

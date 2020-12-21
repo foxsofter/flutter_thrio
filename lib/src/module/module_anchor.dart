@@ -40,10 +40,6 @@ import 'module_route_transitions_builder.dart';
 import 'module_types.dart';
 import 'thrio_module.dart';
 
-/// Anonymous anchor module, used as an anchor module.
-///
-final anchor = ModuleAnchor();
-
 class ModuleAnchor
     with
         ThrioModule,
@@ -109,6 +105,7 @@ class ModuleAnchor
             observers.addAll(module.pageObservers);
           }
         }
+        observers.addAll(pageLifecycleObservers[url]);
         return observers.toList().cast<T>();
       case NavigatorRouteObserver:
         final observers = <NavigatorRouteObserver>{};

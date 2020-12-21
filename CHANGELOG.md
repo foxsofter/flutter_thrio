@@ -159,3 +159,8 @@
 
 * feat: add resource modular
 * fix: 修复已知的bug
+
+## 1.4.1
+
+* fix: page observer widget not working
+* feat: 拆解 ModuleContext

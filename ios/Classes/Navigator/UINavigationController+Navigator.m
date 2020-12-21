@@ -342,7 +342,7 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 - (NavigatorPageRoute *_Nullable)thrio_getLastRouteByEntrypoint:(NSString *)entrypoint {
-    NSEnumerator *vcs = [self.viewControllers reverseObjectEnumerator];
+    NSArray *vcs = [[self.viewControllers reverseObjectEnumerator] allObjects];
     for (UIViewController *vc in vcs) {
         if ([vc isKindOfClass:NavigatorFlutterViewController.class]) {
             NavigatorFlutterViewController *fvc = (NavigatorFlutterViewController *)vc;
@@ -371,7 +371,7 @@ NS_ASSUME_NONNULL_BEGIN
     if (url.length < 1) {
         return self.topViewController;
     }
-    NSEnumerator *vcs = [self.viewControllers reverseObjectEnumerator];
+    NSArray *vcs = [[self.viewControllers reverseObjectEnumerator] allObjects];
     for (UIViewController *vc in vcs) {
         if ([vc thrio_getRouteByUrl:url index:index]) {
             return vc;

@@ -19,8 +19,21 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
+import 'thrio_module.dart';
+
 class ModuleContext {
-  const ModuleContext({this.entrypoint});
+  ModuleContext({this.entrypoint = 'main'});
 
   final String entrypoint;
+
+  /// Associate parent module to `ModuleContext`.
+  ///
+  /// Get module of `ModuleContext` by `moduleOf[this]`.
+  ///
+  final moduleOf = Expando<ThrioModule>();
+
+  ThrioModule get module => moduleOf[this];
+
+  @override
+  String toString() => 'Context of module ${moduleOf[this].key}';
 }

@@ -61,5 +61,5 @@ class RegistrySetMap<K, V> {
 
   void clear() => _maps.clear();
 
-  Set<V> operator [](K key) => _maps[key];
+  Set<V> operator [](K key) => _maps[key] ?? <V>{};
 }

@@ -322,7 +322,7 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark - get index methods
 
 + (NavigatorPageRoute *_Nullable)lastRoute {
-    NSEnumerator *allNvcs = self.navigationControllers.allObjects.reverseObjectEnumerator;
+    NSArray *allNvcs = [self.navigationControllers.allObjects.reverseObjectEnumerator allObjects];
     for (UINavigationController *nvc in allNvcs) {
         NavigatorPageRoute *route = [nvc thrio_lastRoute];
         if (route && ![route.settings.index isEqualToNumber:@0]) {
@@ -334,7 +334,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (NavigatorPageRoute *_Nullable)getLastRouteByUrl:(NSString *)url {
     NavigatorPageRoute *lastRoute = nil;
-    NSEnumerator *allNvcs = self.navigationControllers.allObjects.reverseObjectEnumerator;
+    NSArray *allNvcs = [self.navigationControllers.allObjects.reverseObjectEnumerator allObjects];
     for (UINavigationController *nvc in allNvcs) {
         NavigatorPageRoute *route = [nvc thrio_getLastRouteByUrl:url];
         if (route && ![route.settings.index isEqualToNumber:@0]) {
@@ -360,7 +360,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (NSArray *)_getAllRoutesByUrl:(NSString *_Nullable)url {
     NSMutableArray *allRoutes = [NSMutableArray array];
-    NSEnumerator *allNvcs = self.navigationControllers.allObjects.reverseObjectEnumerator;
+    NSArray *allNvcs = [self.navigationControllers.allObjects.reverseObjectEnumerator allObjects];
     for (UINavigationController *nvc in allNvcs) {
         NSArray *routes = [nvc thrio_getAllRoutesByUrl:url];
         if (routes.count > 0) {

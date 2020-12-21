@@ -75,7 +75,7 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 + (void)didPushUrl:(NSString *)url index:(NSNumber *)index {
-    NSEnumerator *allNvcs = self.navigationControllers.allObjects.reverseObjectEnumerator;
+    NSArray *allNvcs = [self.navigationControllers.allObjects.reverseObjectEnumerator allObjects];
     for (UINavigationController *nvc in allNvcs) {
         if ([nvc thrio_containsUrl:url index:index]) {
             [nvc thrio_didPushUrl:url index:index];
@@ -85,7 +85,7 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 + (void)didPopUrl:(NSString *)url index:(NSNumber *)index {
-    NSEnumerator *allNvcs = self.navigationControllers.allObjects.reverseObjectEnumerator;
+    NSArray *allNvcs = [self.navigationControllers.allObjects.reverseObjectEnumerator allObjects];
     for (UINavigationController *nvc in allNvcs) {
         if ([nvc thrio_containsUrl:url index:index]) {
             [nvc thrio_didPopUrl:url index:index];
@@ -95,7 +95,7 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 + (void)didPopToUrl:(NSString *)url index:(NSNumber *)index {
-    NSEnumerator *allNvcs = self.navigationControllers.allObjects.reverseObjectEnumerator;
+    NSArray *allNvcs = [self.navigationControllers.allObjects.reverseObjectEnumerator allObjects];
     for (UINavigationController *nvc in allNvcs) {
         if ([nvc thrio_containsUrl:url index:index]) {
             [nvc thrio_didPopToUrl:url index:index];
@@ -105,7 +105,7 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 + (void)didRemoveUrl:(NSString *)url index:(NSNumber *)index {
-    NSEnumerator *allNvcs = self.navigationControllers.allObjects.reverseObjectEnumerator;
+    NSArray *allNvcs = [self.navigationControllers.allObjects.reverseObjectEnumerator allObjects];
     for (UINavigationController *nvc in allNvcs) {
         if ([nvc thrio_containsUrl:url index:index]) {
             [nvc thrio_didRemoveUrl:url index:index];

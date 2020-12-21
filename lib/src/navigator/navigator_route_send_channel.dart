@@ -97,16 +97,6 @@ class NavigatorRouteSendChannel {
     return _channel.invokeMethod<bool>('remove', arguments);
   }
 
-  Future<int> lastIndex({String url}) {
-    final arguments = (url?.isEmpty ?? true)
-        ? <String, dynamic>{}
-        : <String, dynamic>{'url': url};
-    return _channel.invokeMethod<int>('lastIndex', arguments);
-  }
-
-  Future<List<int>> allIndexes({@required String url}) =>
-      _channel.invokeListMethod<int>('allIndexes', {'url': url});
-
   Future<RouteSettings> lastRoute({String url}) {
     final arguments = (url?.isEmpty ?? true)
         ? <String, dynamic>{}

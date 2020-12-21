@@ -132,7 +132,6 @@ NS_ASSUME_NONNULL_BEGIN
 
     [_channel setupEventChannel:_engine.binaryMessenger];
     [_channel setupMethodChannel:_engine.binaryMessenger];
-
     _receiveChannel = [[NavigatorRouteReceiveChannel alloc] initWithChannel:_channel];
     [_receiveChannel setReadyBlock:block];
 
