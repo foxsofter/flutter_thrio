@@ -154,3 +154,7 @@
 ## 1.3.5
 
 * fix: pageChannel and routeChannel not match the readwrite property
+
+## 1.3.6
+
+* fix: json object not support on didXXX
