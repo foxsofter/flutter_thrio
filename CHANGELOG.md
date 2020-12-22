@@ -155,12 +155,31 @@
 
 * fix: pageChannel and routeChannel not match the readwrite property
 
+## 1.3.6
+
+* fix: json object not support on didXXX
+
+## 1.3.7
+
+* fix: issue #140 remove rootViewController 可能失效的bug
+
 ## 1.4.0
 
-* feat: add resource modular
-* fix: 修复已知的bug
+* feat: Module 与 `url` 必须一一对应
+* feat: `PageObserver` 和 `RouteObserver` 只能收到本 Module 和 子Module 下面的页面的周期
+* feat: `JsonSerializer` 和  `JsonDeserializer` 会优先查找对应 url 的 叶Module，并依次往 父 Module 查找
+* feat: `PageBuilder` 注册不在需要传入 `url`，只有在叶Module设置才生效
+* feat: `TransitionsBuilder` 注册不在需要传入正则字符串，可以在任意 Module 设置，本Module 和 子Module 下的页面都会生效，优先级是 子Module 的 `TransitionsBuilder` 高
+* feat: 增加 `ProtobufSerializer` 和 `ProtobufDeserializer` ，会优先查找对应 url 的 叶Module，并依次往 父 Module 查找，但暂时不会在 页面传参中生效
+* fix: 修复已知的bug，iOS下设置 willPop = NO 后 poppedResult 依然调用的bug，iOS下页面生命周期未传给Flutter的bug
 
 ## 1.4.1
 
 * fix: page observer widget not working
 * feat: 拆解 ModuleContext
+
+## 1.4.2
+
+* feat: `ModuleContext` 提供 `get` 和 `set` 参数的接口
+* feat: `ModuleContext` 提供的参数的作用范围由 `Module` 决定，一个 `Module` 下面的参数可以由任何一个子 `Module` 的 `ModuleContext` `get` 和 `set`
+* fix: issue #140 remove rootViewController 可能失效的bug
