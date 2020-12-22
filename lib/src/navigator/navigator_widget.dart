@@ -24,7 +24,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../extension/thrio_stateful_widget.dart';
-import '../module/module_context.dart';
 import '../module/module_types.dart';
 import '../module/thrio_module.dart';
 import 'navigator_logger.dart';

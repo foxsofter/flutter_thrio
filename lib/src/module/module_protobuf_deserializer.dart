@@ -20,9 +20,8 @@
 // IN THE SOFTWARE.
 
 import 'package:flutter/foundation.dart';
-import '../registry/registry_map.dart';
 
-import 'module_context.dart';
+import '../registry/registry_map.dart';
 import 'module_types.dart';
 import 'thrio_module.dart';
 

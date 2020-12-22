@@ -19,21 +19,48 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-import 'thrio_module.dart';
+// ignore_for_file: invalid_use_of_protected_member, avoid_as
+
+part of 'thrio_module.dart';
 
 class ModuleContext {
   ModuleContext({this.entrypoint = 'main'});
 
+  /// Entrypoint of current app.
+  ///
   final String entrypoint;
 
-  /// Associate parent module to `ModuleContext`.
+  /// Module of module context.
   ///
-  /// Get module of `ModuleContext` by `moduleOf[this]`.
-  ///
-  final moduleOf = Expando<ThrioModule>();
-
   ThrioModule get module => moduleOf[this];
 
+  /// Get param `value` of `key`.
+  ///
+  /// If not exist, get from parent module's `ModuleContext`.
+  ///
+  T get<T>(String key) {
+    if (module is ModuleParamScheme) {
+      final value = (module as ModuleParamScheme).getParam<T>(key);
+      if (value != null) {
+        return value;
+      }
+    }
+    return module.parent?._moduleContext?.get<T>(key);
+  }
+
+  /// Set param `value` with `key`.
+  ///
+  /// Return `false` if param scheme is not registered.
+  ///
+  bool set<T>(String key, T value) {
+    if (module is ModuleParamScheme) {
+      if ((module as ModuleParamScheme).setParam<T>(key, value)) {
+        return true;
+      }
+    }
+    return module.parent?._moduleContext?.set<T>(key, value) ?? false;
+  }
+
   @override
-  String toString() => 'Context of module ${moduleOf[this].key}';
+  String toString() => 'Context of module ${module.key}';
 }

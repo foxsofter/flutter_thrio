@@ -9,11 +9,14 @@ import '../../models/people.dart';
 class Flutter1 extends StatefulWidget {
   const Flutter1({
     Key key,
+    this.moduleContext,
     this.index,
     this.params,
   }) : super(key: key);
 
   final int index;
+
+  final ModuleContext moduleContext;
 
   final dynamic params;
 
@@ -90,6 +93,37 @@ class _Flutter1State extends State<Flutter1> {
                               border: InputBorder.none,
                             ),
                             onChanged: print)),
+                    InkWell(
+                      onTap: () {
+                        if (widget.moduleContext
+                            .set('double_key_biz1_flutter1', 2.0)) {
+                          final value = widget.moduleContext
+                              .get('double_key_biz1_flutter1');
+                          ThrioLogger.v(
+                              'double_key_biz1_flutter1 value is $value');
+                        }
+                        if (widget.moduleContext
+                            .set('string_key_biz1', 'fewfwew23 fwwljls')) {
+                          final value =
+                              widget.moduleContext.get('string_key_biz1');
+                          ThrioLogger.v('string_key_biz1 value is $value');
+                        }
+                        if (widget.moduleContext
+                            .set('int_key_root_module', 10000)) {
+                          final value =
+                              widget.moduleContext.get('int_key_root_module');
+                          ThrioLogger.v('int_key_root_module value is $value');
+                        }
+                      },
+                      child: Container(
+                          padding: const EdgeInsets.all(8),
+                          margin: const EdgeInsets.all(8),
+                          color: Colors.yellow,
+                          child: const Text(
+                            'set module context',
+                            style: TextStyle(fontSize: 22, color: Colors.black),
+                          )),
+                    ),
                     InkWell(
                       onTap: () => ThrioNavigator.push(
                         url: '/biz1/flutter1',

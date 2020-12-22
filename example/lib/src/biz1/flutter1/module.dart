@@ -9,6 +9,7 @@ class Module
         ThrioModule,
         ModuleJsonSerializer,
         ModuleJsonDeserializer,
+        ModuleParamScheme,
         ModulePageBuilder,
         ModulePageObserver,
         ModuleRouteTransitionsBuilder,
@@ -17,8 +18,14 @@ class Module
   String get key => 'flutter1';
 
   @override
+  void onParamSchemeRegister(ModuleContext moduleContext) {
+    registerParamScheme<double>('double_key_biz1_flutter1');
+  }
+
+  @override
   void onPageBuilderSetting(ModuleContext moduleContext) {
     pageBuilder = (settings) => Flutter1(
+          moduleContext: moduleContext,
           index: settings.index,
           params: settings.params,
         );

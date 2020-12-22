@@ -8,6 +8,7 @@ class Module
     with
         ThrioModule,
         ModulePageObserver,
+        ModuleParamScheme,
         ModuleRouteTransitionsBuilder,
         NavigatorPageObserver {
   @override
@@ -17,6 +18,11 @@ class Module
   void onModuleRegister(ModuleContext moduleContext) {
     registerModule(flutter1.Module(), moduleContext);
     registerModule(flutter3.Module(), moduleContext);
+  }
+
+  @override
+  void onParamSchemeRegister(ModuleContext moduleContext) {
+    registerParamScheme<String>('string_key_biz1');
   }
 
   @override

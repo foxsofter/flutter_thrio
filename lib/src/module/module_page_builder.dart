@@ -22,7 +22,6 @@
 import 'package:flutter/foundation.dart';
 
 import '../navigator/navigator_types.dart';
-import 'module_context.dart';
 import 'thrio_module.dart';
 
 mixin ModulePageBuilder on ThrioModule {

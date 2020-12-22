@@ -28,7 +28,6 @@ import '../navigator/navigator_route_observer.dart';
 import '../navigator/navigator_types.dart';
 import '../navigator/thrio_navigator_implement.dart';
 import '../registry/registry_set_map.dart';
-import 'module_context.dart';
 import 'module_json_deserializer.dart';
 import 'module_json_serializer.dart';
 import 'module_page_builder.dart';
@@ -39,6 +38,8 @@ import 'module_route_observer.dart';
 import 'module_route_transitions_builder.dart';
 import 'module_types.dart';
 import 'thrio_module.dart';
+
+final anchor = ModuleAnchor();
 
 class ModuleAnchor
     with

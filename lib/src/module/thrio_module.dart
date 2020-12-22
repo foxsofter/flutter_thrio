@@ -29,27 +29,30 @@ import 'package:flutter/widgets.dart';
 import '../exception/thrio_exception.dart';
 import '../navigator/navigator_logger.dart';
 import 'module_anchor.dart';
-import 'module_context.dart';
+import 'module_expando.dart';
 import 'module_json_deserializer.dart';
 import 'module_json_serializer.dart';
 import 'module_page_builder.dart';
 import 'module_page_observer.dart';
+import 'module_param_scheme.dart';
 import 'module_protobuf_deserializer.dart';
 import 'module_protobuf_serializer.dart';
 import 'module_route_observer.dart';
 import 'module_route_transitions_builder.dart';
+
+part 'module_context.dart';
 
 mixin ThrioModule {
   /// Modular initialization function, needs to be called
   /// once during App initialization.
   ///
   static void init(ThrioModule rootModule, [String entrypoint]) {
-    if (_anchor.modules.length == 1) {
+    if (anchor.modules.length == 1) {
       throw ThrioException('init method can only be called once.');
     } else {
       final moduleContext = ModuleContext(entrypoint: entrypoint);
-      moduleContext.moduleOf[moduleContext] = _anchor;
-      _anchor
+      moduleOf[moduleContext] = anchor;
+      anchor
         .._moduleContext = moduleContext
         ..registerModule(rootModule, moduleContext)
         ..onModuleInit(moduleContext)
@@ -76,7 +79,7 @@ mixin ThrioModule {
     String url,
     String key,
   }) =>
-      _anchor.get<T>(url: url, key: key);
+      anchor.get<T>(url: url, key: key);
 
   /// Get instances by `T` and `url`.
   ///
@@ -89,9 +92,7 @@ mixin ThrioModule {
   /// If `T` is `NavigatorRouteObserver`, returns all route observers
   /// matched by `url`.
   ///
-  static Iterable<T> gets<T>({@required String url}) => _anchor.gets<T>(url);
-
-  static ModuleAnchor get anchor => _anchor;
+  static Iterable<T> gets<T>({@required String url}) => anchor.gets<T>(url);
 
   @protected
   final modules = <String, ThrioModule>{};
@@ -100,11 +101,9 @@ mixin ThrioModule {
   ///
   String get key => '';
 
-  /// Associate parent module to current module.
+  /// Get parent module.
   ///
-  /// Get parent module of `module` by `parentOf[module]`.
-  ///
-  final parentOf = Expando<ThrioModule>();
+  ThrioModule get parent => parentOf[this];
 
   /// `ModuleContext` of current module.
   ///
@@ -123,10 +122,10 @@ mixin ThrioModule {
     } else {
       final submoduleContext =
           ModuleContext(entrypoint: moduleContext.entrypoint);
-      submoduleContext.moduleOf[submoduleContext] = module;
+      moduleOf[submoduleContext] = module;
       modules[module.key] = module;
+      parentOf[module] = this;
       module
-        ..parentOf[module] = this
         .._moduleContext = submoduleContext
         ..onModuleRegister(submoduleContext);
     }
@@ -147,6 +146,11 @@ mixin ThrioModule {
       module
         ..onModuleInit(module._moduleContext)
         ..initModule();
+    }
+    for (final module in values) {
+      if (module is ModuleParamScheme) {
+        module.onParamSchemeRegister(module._moduleContext);
+      }
     }
     for (final module in values) {
       if (module is ModulePageBuilder) {
@@ -190,25 +194,17 @@ mixin ThrioModule {
   /// A function for registering submodules.
   ///
   @protected
-  void onModuleRegister(ModuleContext moduleContext) {
-    debugPrint(
-        'onModuleRegister: ${moduleContext.moduleOf[moduleContext].key}');
-  }
+  void onModuleRegister(ModuleContext moduleContext) {}
 
   /// A function for module initialization.
   ///
   @protected
-  void onModuleInit(ModuleContext moduleContext) {
-    debugPrint('onModuleInit: ${moduleContext.moduleOf[moduleContext].key}');
-  }
+  void onModuleInit(ModuleContext moduleContext) {}
 
   /// A function for module asynchronous initialization.
   ///
   @protected
-  void onModuleAsyncInit(ModuleContext moduleContext) {
-    debugPrint(
-        'onModuleAsyncInit: ${moduleContext.moduleOf[moduleContext].key}');
-  }
+  void onModuleAsyncInit(ModuleContext moduleContext) {}
 
   @protected
   bool get navigatorLogEnabled => navigatorLogging;
@@ -219,5 +215,3 @@ mixin ThrioModule {
   @override
   String toString() => '$key: ${modules.keys.toString()}';
 }
-
-final _anchor = ModuleAnchor();

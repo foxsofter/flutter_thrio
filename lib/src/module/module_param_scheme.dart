@@ -21,38 +21,60 @@
 
 import 'package:flutter/foundation.dart';
 
+import '../exception/thrio_exception.dart';
 import '../registry/registry_map.dart';
-import 'module_types.dart';
 import 'thrio_module.dart';
 
-mixin ModuleJsonSerializer on ThrioModule {
-  /// Json serializer registered in the current Module
+mixin ModuleParamScheme on ThrioModule {
+  /// Param schemes registered in the current Module
   ///
-  final _jsonSerializers = RegistryMap<Type, JsonSerializer>();
+  final _paramSchemes = RegistryMap<String, Type>();
 
-  /// Get json serializer by type string.
+  final _params = <String, dynamic>{};
+
+  /// Sets param with `key` & `value`.
+  ///
+  /// Return `false` if param scheme is not registered.
   ///
   @protected
-  JsonSerializer getJsonSerializer(String typeString) {
-    final type = _jsonSerializers.keys.lastWhere(
-      (it) => it.toString() == typeString || typeString.endsWith(it.toString()),
-      orElse: () => null,
-    );
-    return _jsonSerializers[type];
+  bool setParam<T>(String key, T value) {
+    if (!_paramSchemes.keys.contains(key) ||
+        _paramSchemes[key] != value.runtimeType) {
+      return false;
+    }
+    _params[key] = value;
+    return true;
   }
 
-  /// A function for register a json serializer.
+  /// Gets param by `key` & `T`.
+  ///
+  /// Throw `ThrioException` if `T` is not matched param scheme.
+  ///
+  T getParam<T>(String key) {
+    if (T != dynamic &&
+        _paramSchemes.keys.contains(key) &&
+        _paramSchemes[key] != T) {
+      throw ThrioException(
+        '$T does not match the param scheme type: ${_paramSchemes[key]}',
+      );
+    }
+    return _params[key] as T; // ignore: avoid_as
+  }
+
+  /// A function for register a param scheme.
   ///
   @protected
-  void onJsonSerializerRegister(ModuleContext moduleContext) {}
+  void onParamSchemeRegister(ModuleContext moduleContext) {}
 
-  /// Register a json serializer for the module.
+  /// Register a param scheme for the module.
   ///
   /// Unregistry by calling the return value `VoidCallback`.
   ///
   @protected
-  VoidCallback registerJsonSerializer<T>(
-    JsonSerializer serializer,
-  ) =>
-      _jsonSerializers.registry(T, serializer);
+  VoidCallback registerParamScheme<T>(String key) {
+    if (_paramSchemes.keys.contains(key)) {
+      return null;
+    }
+    return _paramSchemes.registry(key, T);
+  }
 }
