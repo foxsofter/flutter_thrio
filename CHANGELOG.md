@@ -158,3 +158,7 @@
 ## 1.3.6
 
 * fix: json object not support on didXXX
+
+## 1.3.7
+
+* fix: issue #140 remove rootViewController 可能失效的bug
