@@ -118,7 +118,9 @@ mixin ThrioModule {
     ModuleContext moduleContext,
   ) {
     if (modules.containsKey(module.key)) {
-      throw ThrioException('A module with the same key $key already exists');
+      throw ThrioException(
+        'A module with the same key ${module.key} already exists',
+      );
     } else {
       final submoduleContext =
           ModuleContext(entrypoint: moduleContext.entrypoint);
