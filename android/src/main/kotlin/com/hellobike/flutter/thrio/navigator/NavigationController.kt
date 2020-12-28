@@ -137,7 +137,9 @@ internal object NavigationController : Application.ActivityLifecycleCallbacks {
             this.poppedResult = poppedResult
 
             if (builder is FlutterIntentBuilder) {
-                if (lastActivity != null
+                if (PageRoutes.lastRoute == null && context != null && context is ThrioActivity) {
+                    doPush(context as ThrioActivity, routeSettings = settings)
+                } else if (lastActivity != null
                         && lastActivity is ThrioActivity
                         && lastEntrypoint == entrypoint) {
                     doPush(lastActivity)
@@ -156,11 +158,11 @@ internal object NavigationController : Application.ActivityLifecycleCallbacks {
             }
         }
 
-        internal fun doPush(activity: Activity) {
+        internal fun doPush(activity: Activity, routeSettings: RouteSettings? = null) {
             if (routeAction != RouteAction.PUSH) {
                 return
             }
-            val settings = activity.intent.getRouteSettings() ?: return
+            val settings = routeSettings ?: activity.intent.getRouteSettings() ?: return
 
             routeAction = RouteAction.PUSHING
 

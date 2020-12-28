@@ -183,3 +183,7 @@
 * feat: `ModuleContext` 提供 `get` 和 `set` 参数的接口
 * feat: `ModuleContext` 提供的参数的作用范围由 `Module` 决定，一个 `Module` 下面的参数可以由任何一个子 `Module` 的 `ModuleContext` `get` 和 `set`
 * fix: issue #140 remove rootViewController 可能失效的bug
+
+## 1.4.3
+
+* fix: issue #141，修复Android下首页为FlutterActivity引起光标不可见
