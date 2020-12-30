@@ -27,6 +27,7 @@ class _MainAppState extends State<MainApp> {
   @override
   Widget build(BuildContext context) => ExcludeSemantics(
         child: NavigatorMaterialApp(
+          home: const NavigatorHome(showRestartButton: true),
           theme: ThemeData(
             pageTransitionsTheme: const PageTransitionsTheme(builders: {
               TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),

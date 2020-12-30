@@ -1,42 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:thrio/thrio.dart';
 
-import '../../models/people.dart';
-
-class Flutter2 extends StatefulWidget {
-  const Flutter2({
+class Page extends StatefulWidget {
+  const Page({
     Key key,
-    this.url,
     this.index,
     this.params,
   }) : super(key: key);
-
-  final String url;
 
   final int index;
 
   final dynamic params;
 
   @override
-  _Flutter2State createState() => _Flutter2State();
+  _PageState createState() => _PageState();
 }
 
-class _Flutter2State extends State<Flutter2> {
-  final _channel = ThrioChannel(channel: 'custom_thrio_channel');
+class _PageState extends State<Page> {
   @override
-  void initState() {
-    super.initState();
-    _channel.registryMethodCall('sayHello', ([arguments]) {
-      ThrioLogger.v('sayHello from native');
-      return null;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) => NavigatorPageNotify(
-      name: 'page2Notify',
-      onPageNotify: (params) =>
-          ThrioLogger.v('flutter2 receive notify:$params'),
+  Widget build(BuildContext context) => WillPopScope(
+      onWillPop: () async {
+        ThrioLogger.i('page3 WillPopScope');
+        return false;
+      },
       child: Scaffold(
           appBar: AppBar(
             brightness: Brightness.light,
@@ -58,13 +44,13 @@ class _Flutter2State extends State<Flutter2> {
                   margin: const EdgeInsets.only(top: 10, bottom: 20),
                   alignment: AlignmentDirectional.center,
                   child: Text(
-                    'flutter2: index is ${widget.index}',
+                    'flutter3: index is ${widget.index}',
                     style: const TextStyle(fontSize: 28, color: Colors.blue),
                   ),
                 ),
                 InkWell(
                   onTap: () => ThrioNavigator.push(
-                    url: '/biz1/flutter3',
+                    url: '/biz2/flutter4',
                     params: {
                       '1': {'2': '3'}
                     },
@@ -74,7 +60,7 @@ class _Flutter2State extends State<Flutter2> {
                       margin: const EdgeInsets.all(8),
                       color: Colors.yellow,
                       child: const Text(
-                        'push flutter3',
+                        'push flutter4',
                         style: TextStyle(fontSize: 22, color: Colors.black),
                       )),
                 ),
@@ -90,8 +76,7 @@ class _Flutter2State extends State<Flutter2> {
                       )),
                 ),
                 InkWell(
-                  onTap: () => ThrioNavigator.pop(
-                      params: People(name: '大宝剑', age: 0, sex: 'x')),
+                  onTap: ThrioNavigator.pop,
                   child: Container(
                       padding: const EdgeInsets.all(8),
                       margin: const EdgeInsets.all(8),
@@ -102,19 +87,43 @@ class _Flutter2State extends State<Flutter2> {
                       )),
                 ),
                 InkWell(
+                  onTap: () => ThrioNavigator.popTo(url: '/biz1/flutter1'),
+                  child: Container(
+                      padding: const EdgeInsets.all(8),
+                      margin: const EdgeInsets.all(8),
+                      color: Colors.yellow,
+                      child: const Text(
+                        'popTo flutter1',
+                        style: TextStyle(fontSize: 22, color: Colors.black),
+                      )),
+                ),
+                InkWell(
+                  onTap: () => ThrioNavigator.popTo(
+                    url: '/biz1/native1',
+                    index: 1,
+                  ),
+                  child: Container(
+                      padding: const EdgeInsets.all(8),
+                      margin: const EdgeInsets.all(8),
+                      color: Colors.yellow,
+                      child: const Text(
+                        'popTo native1',
+                        style: TextStyle(fontSize: 22, color: Colors.black),
+                      )),
+                ),
+                InkWell(
                   onTap: () => ThrioNavigator.push(
-                      url: '/biz2/native2',
-                      params: {
-                        '1': {'2': '3'}
-                      },
-                      poppedResult: (params) =>
-                          ThrioLogger.v('/biz1/native1 popped:$params')),
+                    url: '/biz1/native1',
+                    params: {
+                      '1': {'2': '3'}
+                    },
+                  ),
                   child: Container(
                       padding: const EdgeInsets.all(8),
                       margin: const EdgeInsets.all(8),
                       color: Colors.grey,
                       child: const Text(
-                        'push native2',
+                        'push native1',
                         style: TextStyle(fontSize: 22, color: Colors.black),
                       )),
                 ),
@@ -132,9 +141,10 @@ class _Flutter2State extends State<Flutter2> {
                 InkWell(
                   onTap: () {
                     ThrioNavigator.notify(
-                        url: '/biz1/flutter1',
-                        name: 'page1Notify',
-                        params: People(name: '大宝剑', age: 1, sex: 'x'));
+                      url: '/biz1/flutter1',
+                      name: 'page1Notify',
+                      params: {'ss': 11},
+                    );
                   },
                   child: Container(
                       padding: const EdgeInsets.all(8),
@@ -142,37 +152,6 @@ class _Flutter2State extends State<Flutter2> {
                       color: Colors.grey,
                       child: const Text(
                         'notify flutter1',
-                        style: TextStyle(fontSize: 22, color: Colors.black),
-                      )),
-                ),
-                InkWell(
-                  onTap: () {
-                    ThrioNavigator.notify(
-                        url: '/biz2/flutter2',
-                        name: 'page2Notify',
-                        params: People(name: '大宝剑', age: 2, sex: 'x'));
-                  },
-                  child: Container(
-                      padding: const EdgeInsets.all(8),
-                      margin: const EdgeInsets.all(8),
-                      color: Colors.grey,
-                      child: const Text(
-                        'notify flutter2',
-                        style: TextStyle(fontSize: 22, color: Colors.black),
-                      )),
-                ),
-                InkWell(
-                  onTap: () {
-                    ThrioNavigator.notify(
-                        name: 'all_page_notify_from_flutter2',
-                        params: People(name: '大宝剑', age: 2, sex: 'x'));
-                  },
-                  child: Container(
-                      padding: const EdgeInsets.all(8),
-                      margin: const EdgeInsets.all(8),
-                      color: Colors.grey,
-                      child: const Text(
-                        'notify all',
                         style: TextStyle(fontSize: 22, color: Colors.black),
                       )),
                 ),

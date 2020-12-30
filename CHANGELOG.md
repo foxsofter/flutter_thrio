@@ -187,3 +187,7 @@
 ## 1.4.3
 
 * fix: issue #141，修复Android下首页为FlutterActivity引起光标不可见
+
+## 1.4.4
+
+* feat: update demo, add hot restart for ios

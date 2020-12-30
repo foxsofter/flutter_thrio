@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:thrio/thrio.dart';
 
-import 'flutter3.dart';
+import 'page.dart' as flutter3;
 
 class Module
     with
@@ -14,7 +14,7 @@ class Module
 
   @override
   void onPageBuilderSetting(ModuleContext moduleContext) {
-    pageBuilder = (settings) => Flutter3(
+    pageBuilder = (settings) => flutter3.Page(
           index: settings.index,
           params: settings.params,
         );

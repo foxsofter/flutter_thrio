@@ -6,8 +6,8 @@ import 'package:thrio/thrio.dart';
 
 import '../../models/people.dart';
 
-class Flutter1 extends StatefulWidget {
-  const Flutter1({
+class Page extends StatefulWidget {
+  const Page({
     Key key,
     this.moduleContext,
     this.index,
@@ -21,10 +21,10 @@ class Flutter1 extends StatefulWidget {
   final dynamic params;
 
   @override
-  _Flutter1State createState() => _Flutter1State();
+  _PageState createState() => _PageState();
 }
 
-class _Flutter1State extends State<Flutter1> {
+class _PageState extends State<Page> {
   TextEditingController _inputController;
   @override
   void initState() {

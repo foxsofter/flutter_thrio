@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:thrio/thrio.dart';
 
-import 'flutter2.dart';
+import 'page.dart' as flutter2;
 
 class Module
     with ThrioModule, ModulePageBuilder, ModuleRouteTransitionsBuilder {
@@ -10,7 +10,7 @@ class Module
 
   @override
   void onPageBuilderSetting(ModuleContext moduleContext) {
-    pageBuilder = (settings) => Flutter2(
+    pageBuilder = (settings) => flutter2.Page(
           index: settings.index,
           params: settings.params,
         );
