@@ -39,18 +39,12 @@ class Module
       child,
     ) =>
         SlideTransition(
-          transformHitTests: false,
-          position: Tween<Offset>(
-            begin: const Offset(0, -1),
-            end: Offset.zero,
-          ).animate(animation),
-          child: SlideTransition(
-            position: Tween<Offset>(
-              begin: Offset.zero,
-              end: const Offset(0, 1),
-            ).animate(secondaryAnimation),
-            child: child,
-          ),
+          position: Tween(begin: const Offset(0.0, 1.0), end: Offset.zero)
+              .animate(CurvedAnimation(
+            parent: animation,
+            curve: Curves.ease,
+          )),
+          child: child,
         );
   }
 

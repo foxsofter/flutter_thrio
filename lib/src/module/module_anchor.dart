@@ -147,6 +147,11 @@ class ModuleAnchor
     if (allModules.length != length + 1) {
       return null;
     }
+
+    if (!url.endsWith('home') && allModules.last.modules.containsKey('home')) {
+      allModules.add(allModules.last.modules['home']);
+    }
+
     return allModules;
   }
 

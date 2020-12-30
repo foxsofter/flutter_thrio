@@ -4,7 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:thrio/thrio.dart';
 
-import '../../models/people.dart';
+import '../../../models/people.dart';
 
 class Page extends StatefulWidget {
   const Page({

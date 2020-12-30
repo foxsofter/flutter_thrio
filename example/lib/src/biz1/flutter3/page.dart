@@ -21,7 +21,7 @@ class _PageState extends State<Page> {
   Widget build(BuildContext context) => WillPopScope(
       onWillPop: () async {
         ThrioLogger.i('page3 WillPopScope');
-        return false;
+        return true;
       },
       child: Scaffold(
           appBar: AppBar(
