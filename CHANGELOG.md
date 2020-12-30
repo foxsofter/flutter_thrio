@@ -191,3 +191,7 @@
 ## 1.4.4
 
 * feat: update demo, add hot restart for ios
+
+## 1.4.5
+
+* feat: url automatically matches home
