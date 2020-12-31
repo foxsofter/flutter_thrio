@@ -80,7 +80,11 @@ class ModuleAnchor
         }
         for (final it in modules.reversed) {
           if (it is ModuleRouteTransitionsBuilder) {
-            if (it.routeTransitionsBuilder != null) {
+            if (it.routeTransitionsDisabled) {
+              return null;
+            }
+            if (!it.routeTransitionsDisabled &&
+                it.routeTransitionsBuilder != null) {
               return it.routeTransitionsBuilder as T;
             }
           }

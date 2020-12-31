@@ -195,3 +195,7 @@
 ## 1.4.5
 
 * feat: url automatically matches home
+
+## 1.4.6
+
+* feat: 允许 页 Module 反向忽略掉 父 Module 设置的转场动画 

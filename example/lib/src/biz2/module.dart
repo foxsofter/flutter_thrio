@@ -5,11 +5,7 @@ import 'flutter2/module.dart' as flutter2;
 import 'flutter4/module.dart' as flutter4;
 
 class Module
-    with
-        ThrioModule,
-        ModulePageBuilder,
-        ModuleRouteObserver,
-        NavigatorRouteObserver {
+    with ThrioModule, ModulePageBuilder, ModuleRouteTransitionsBuilder {
   @override
   String get key => 'biz2';
 
@@ -20,19 +16,26 @@ class Module
   }
 
   @override
-  void onRouteObserverRegister(ModuleContext moduleContext) {
-    registerRouteObserver(this);
+  void onRouteTransitionsBuilderSetting(ModuleContext moduleContext) {
+    routeTransitionsBuilder = (
+      context,
+      animation,
+      secondaryAnimation,
+      child,
+    ) =>
+        SlideTransition(
+          transformHitTests: false,
+          position: Tween<Offset>(
+            begin: const Offset(0, 1),
+            end: Offset.zero,
+          ).animate(animation),
+          child: SlideTransition(
+            position: Tween<Offset>(
+              begin: Offset.zero,
+              end: const Offset(0, -1),
+            ).animate(secondaryAnimation),
+            child: child,
+          ),
+        );
   }
-
-  @override
-  void didPush(RouteSettings routeSettings) {}
-
-  @override
-  void didPop(RouteSettings routeSettings) {}
-
-  @override
-  void didPopTo(RouteSettings routeSettings) {}
-
-  @override
-  void didRemove(RouteSettings routeSettings) {}
 }
