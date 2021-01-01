@@ -24,6 +24,7 @@
 package com.hellobike.flutter.thrio.navigator
 
 import com.hellobike.flutter.thrio.BooleanCallback
+import com.hellobike.flutter.thrio.NullableBooleanCallback
 import com.hellobike.flutter.thrio.channel.ThrioChannel
 
 internal class RouteSendChannel constructor(private val channel: ThrioChannel) {
@@ -44,12 +45,12 @@ internal class RouteSendChannel constructor(private val channel: ThrioChannel) {
         result(true)
     }
 
-    fun onPop(arguments: Map<String, Any?>?, result: BooleanCallback) {
+    fun onPop(arguments: Map<String, Any?>?, result: NullableBooleanCallback) {
         channel.invokeMethod("pop", arguments) {
             if (it is Boolean) {
                 result(it)
             } else {
-                result(false)
+                result(null)
             }
         }
     }

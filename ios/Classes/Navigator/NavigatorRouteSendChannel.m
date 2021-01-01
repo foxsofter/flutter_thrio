@@ -53,13 +53,13 @@
     [_channel sendEvent:@"__onNotify__" arguments:arguments];
 }
 
-- (void)pop:(id)arguments result:(ThrioBoolCallback _Nullable)result {
-    [_channel invokeMethod:@"pop" arguments:arguments result:^(id _Nullable value) {
+- (void)pop:(id)arguments result:(ThrioNumberCallback _Nullable)result {
+    [_channel invokeMethod:@"pop" arguments:arguments result:^(id _Nullable r) {
         if (result) {
-            if ([value isKindOfClass:NSNumber.class]) {
-                result([value boolValue]);
+            if (r && [r isKindOfClass:NSNumber.class]) {
+                result(r);
             } else {
-                result(NO);
+                result(nil);
             }
         }
     }];

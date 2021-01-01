@@ -27,6 +27,7 @@ import android.app.Activity
 import android.app.Application
 import android.os.Bundle
 import com.hellobike.flutter.thrio.BooleanCallback
+import com.hellobike.flutter.thrio.NullableBooleanCallback
 import com.hellobike.flutter.thrio.NullableIntCallback
 import io.flutter.embedding.android.ThrioActivity
 import java.lang.ref.WeakReference
@@ -114,7 +115,6 @@ internal object PageRoutes : Application.ActivityLifecycleCallbacks {
             }
             routeHolders.add(holder)
         }
-        holder.pushByThrio = true
         holder.push(route, result)
     }
 
@@ -137,19 +137,19 @@ internal object PageRoutes : Application.ActivityLifecycleCallbacks {
         result(isMatch)
     }
 
-    fun <T> pop(params: T?, animated: Boolean, result: BooleanCallback) {
+    fun <T> pop(params: T?, animated: Boolean, inRoot: Boolean = false, result: NullableBooleanCallback) {
         val holder = routeHolders.lastOrNull()
         if (holder == null) {
             result(false)
             return
         }
 
-        if (!holder.pushByThrio) {
+        if (holder.routes.isEmpty()) {
             holder.activity?.get()?.finish()
             result(true)
         } else {
-            holder.pop<T>(params, animated) { it ->
-                if (it) {
+            holder.pop<T>(params, animated, inRoot) { it ->
+                if (it == true) {
                     if (!holder.hasRoute()) {
                         holder.activity?.get()?.let {
                             routeHolders.remove(holder)

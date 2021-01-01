@@ -32,7 +32,7 @@ class NavigatorObserverManager extends NavigatorObserver {
 
   final _currentRemoveRoutes = <NavigatorPageRoute>[];
 
-  final pageRoutes = <NavigatorPageRoute>[
+  final pageRoutes = <Route>[
     NavigatorPageRoute(
         builder: (settings) => const NavigatorHome(),
         settings: const RouteSettings(name: '1 /'))
@@ -46,10 +46,13 @@ class NavigatorObserverManager extends NavigatorObserver {
         'index->${route.settings.index} ',
       );
       pageRoutes.add(route);
-      ThrioNavigatorImplement.shared().routeChannel.didPush(route.settings);
       ThrioNavigatorImplement.shared()
-          .pageChannel
-          .didAppear(route.settings, NavigatorRouteAction.push);
+        ..routeChannel.didPush(route.settings)
+        ..pageChannel.didAppear(route.settings, NavigatorRouteAction.push);
+    } else {
+      if (!route.isFirst) {
+        pageRoutes.add(route);
+      }
     }
   }
 
@@ -61,30 +64,31 @@ class NavigatorObserverManager extends NavigatorObserver {
       if (_currentPopRoutes.length == 1) {
         Future(() {
           if (_currentPopRoutes.length == 1) {
-            if (pageRoutes.last.routeAction == NavigatorRouteAction.popTo) {
+            // ignore: avoid_as
+            final lastRoute = pageRoutes.last as NavigatorPageRoute;
+            if (lastRoute.routeAction == NavigatorRouteAction.popTo) {
               if (pageRoutes.last.settings.url != '/') {
                 verbose('didPopTo: url->${pageRoutes.last.settings.url} '
                     'index->${pageRoutes.last.settings.index}');
                 ThrioNavigatorImplement.shared()
-                    .routeChannel
-                    .didPopTo(pageRoutes.last.settings);
-                ThrioNavigatorImplement.shared().pageChannel.didAppear(
-                      pageRoutes.last.settings,
-                      NavigatorRouteAction.popTo,
-                    );
+                  ..routeChannel.didPopTo(pageRoutes.last.settings)
+                  ..pageChannel.didAppear(
+                    pageRoutes.last.settings,
+                    NavigatorRouteAction.popTo,
+                  );
               }
-              pageRoutes.last.routeAction = null;
+              lastRoute.routeAction = null;
             } else if (route.routeAction == NavigatorRouteAction.pop ||
                 route.routeAction == null) {
               // 这里需要判断 routeAction == null 的场景，处理滑动返回需要
               verbose('didPop: url->${route.settings.url} '
                   'index->${route.settings.index} ');
               ThrioNavigatorImplement.shared()
-                  .routeChannel
-                  .didPop(route.settings);
-              ThrioNavigatorImplement.shared()
-                  .pageChannel
-                  .didDisappear(route.settings, NavigatorRouteAction.pop);
+                ..routeChannel.didPop(route.settings)
+                ..pageChannel.didDisappear(
+                  route.settings,
+                  NavigatorRouteAction.pop,
+                );
               route.routeAction = null;
             } else if (route.routeAction == NavigatorRouteAction.remove) {
               if (WidgetsBinding.instance.lifecycleState ==
@@ -94,11 +98,11 @@ class NavigatorObserverManager extends NavigatorObserver {
                   'index->${route.settings.index} ',
                 );
                 ThrioNavigatorImplement.shared()
-                    .routeChannel
-                    .didRemove(route.settings);
-                ThrioNavigatorImplement.shared()
-                    .pageChannel
-                    .didDisappear(route.settings, NavigatorRouteAction.remove);
+                  ..routeChannel.didRemove(route.settings)
+                  ..pageChannel.didDisappear(
+                    route.settings,
+                    NavigatorRouteAction.remove,
+                  );
               }
               route.routeAction = null;
             }
@@ -107,18 +111,20 @@ class NavigatorObserverManager extends NavigatorObserver {
               verbose('didPopTo: url->${pageRoutes.last.settings.url} '
                   'index->${pageRoutes.last.settings.index}');
               ThrioNavigatorImplement.shared()
-                  .routeChannel
-                  .didPopTo(pageRoutes.last.settings);
-              ThrioNavigatorImplement.shared().pageChannel.didAppear(
-                    pageRoutes.last.settings,
-                    NavigatorRouteAction.popTo,
-                  );
+                ..routeChannel.didPopTo(pageRoutes.last.settings)
+                ..pageChannel.didAppear(
+                  pageRoutes.last.settings,
+                  NavigatorRouteAction.popTo,
+                );
             }
-            pageRoutes.last.routeAction = null;
+            // ignore: avoid_as
+            (pageRoutes.last as NavigatorPageRoute).routeAction = null;
           }
           _currentPopRoutes.clear();
         });
       }
+    } else {
+      pageRoutes.remove(route);
     }
   }
 
@@ -130,29 +136,29 @@ class NavigatorObserverManager extends NavigatorObserver {
       if (_currentRemoveRoutes.length == 1) {
         Future(() {
           if (_currentRemoveRoutes.length == 1) {
-            if (pageRoutes.last.routeAction == NavigatorRouteAction.popTo) {
+            // ignore: avoid_as
+            final lastRoute = pageRoutes.last as NavigatorPageRoute;
+            if (lastRoute.routeAction == NavigatorRouteAction.popTo) {
               if (pageRoutes.last.settings.url != '/') {
                 verbose('didPopTo: url->${pageRoutes.last.settings.url} '
                     'index->${pageRoutes.last.settings.index}');
                 ThrioNavigatorImplement.shared()
-                    .routeChannel
-                    .didPopTo(pageRoutes.last.settings);
-                ThrioNavigatorImplement.shared().pageChannel.didAppear(
-                      pageRoutes.last.settings,
-                      NavigatorRouteAction.popTo,
-                    );
+                  ..routeChannel.didPopTo(pageRoutes.last.settings)
+                  ..pageChannel.didAppear(
+                    pageRoutes.last.settings,
+                    NavigatorRouteAction.popTo,
+                  );
               }
-              pageRoutes.last.routeAction = null;
+              lastRoute.routeAction = null;
             } else {
               verbose('didRemove: url->${route.settings.url} '
                   'index->${route.settings.index}');
               ThrioNavigatorImplement.shared()
-                  .routeChannel
-                  .didRemove(route.settings);
-              ThrioNavigatorImplement.shared().pageChannel.didDisappear(
-                    pageRoutes.last.settings,
-                    NavigatorRouteAction.remove,
-                  );
+                ..routeChannel.didRemove(route.settings)
+                ..pageChannel.didDisappear(
+                  pageRoutes.last.settings,
+                  NavigatorRouteAction.remove,
+                );
             }
           } else if (_currentRemoveRoutes.length > 1) {
             if (pageRoutes.last.settings.url != '/') {
@@ -160,14 +166,14 @@ class NavigatorObserverManager extends NavigatorObserver {
                   'index->${pageRoutes.last.settings.index}');
               // remove是最后一个route为之前的active route
               ThrioNavigatorImplement.shared()
-                  .routeChannel
-                  .didPopTo(pageRoutes.last.settings);
-              ThrioNavigatorImplement.shared().pageChannel.didAppear(
-                    pageRoutes.last.settings,
-                    NavigatorRouteAction.popTo,
-                  );
+                ..routeChannel.didPopTo(pageRoutes.last.settings)
+                ..pageChannel.didAppear(
+                  pageRoutes.last.settings,
+                  NavigatorRouteAction.popTo,
+                );
             }
-            pageRoutes.last.routeAction = null;
+            // ignore: avoid_as
+            (pageRoutes.last as NavigatorPageRoute).routeAction = null;
           }
           _currentRemoveRoutes.clear();
         });

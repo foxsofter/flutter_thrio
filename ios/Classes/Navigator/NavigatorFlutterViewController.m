@@ -96,9 +96,6 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
 
-//    if (![self isMovingFromParentViewController]) {
-//        [ThrioNavigator.pageObservers willDisappear:self.thrio_lastRoute.settings];
-//    }
     [ThrioNavigator.pageObservers willDisappear:self.thrio_lastRoute.settings];
 
     [[UIApplication sharedApplication].delegate.window endEditing:YES];
@@ -107,9 +104,6 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)viewDidDisappear:(BOOL)animated {
     [super viewDidDisappear:animated];
 
-//    if (![self isMovingFromParentViewController]) {
-//        [ThrioNavigator.pageObservers didDisappear:self.thrio_lastRoute.settings];
-//    }
     if ([self.navigationController thrio_getAllRoutesByUrl:nil].count > 1) {
         [ThrioNavigator.pageObservers didDisappear:self.thrio_lastRoute.settings];
     }
@@ -144,16 +138,6 @@ NS_ASSUME_NONNULL_BEGIN
          }];
     });
 }
-
-// override
-//- (void)installSplashScreenViewIfNecessary {
-//    // Do nothing.
-//}
-
-// override
-//- (BOOL)loadDefaultSplashScreenView {
-//    return NO;
-//}
 
 @end
 #pragma clang diagnostic pop

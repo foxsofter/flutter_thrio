@@ -1,4 +1,3 @@
-import 'package:flutter/widgets.dart';
 import 'package:thrio/thrio.dart';
 
 import 'page.dart' as flutter2;

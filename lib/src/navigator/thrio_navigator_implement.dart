@@ -28,6 +28,7 @@ import '../module/thrio_module.dart';
 import 'navigator_logger.dart';
 import 'navigator_observer_manager.dart';
 import 'navigator_page_observer_channel.dart';
+import 'navigator_page_route.dart';
 import 'navigator_route_observer_channel.dart';
 import 'navigator_route_receive_channel.dart';
 import 'navigator_route_send_channel.dart';
@@ -112,7 +113,7 @@ class ThrioNavigatorImplement {
           final route = routeHistory.lastWhere(
               (it) => it.settings.name == routeName,
               orElse: () => null);
-          if (route != null) {
+          if (route != null && route is NavigatorPageRoute) {
             route.poppedResult = poppedResult;
           } else {
             // 不在当前页面栈上，则通过name来缓存

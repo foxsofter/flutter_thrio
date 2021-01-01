@@ -22,6 +22,7 @@
 #import <Foundation/Foundation.h>
 #import <Flutter/Flutter.h>
 #import "ThrioChannel.h"
+#import "ThrioTypes.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -33,7 +34,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)notify:(id)arguments;
 
-- (void)pop:(id)arguments result:(ThrioBoolCallback _Nullable)result;
+- (void)pop:(id)arguments result:(ThrioNumberCallback _Nullable)result;
 
 - (void)popTo:(id)arguments result:(ThrioBoolCallback _Nullable)result;
 

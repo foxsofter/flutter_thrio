@@ -199,3 +199,7 @@
 ## 1.4.6
 
 * feat: 允许 页 Module 反向忽略掉 父 Module 设置的转场动画 
+
+## 1.5.0
+
+* feat: 增加 Flutter 测对 Navigator 的 push 和 pop 的支持

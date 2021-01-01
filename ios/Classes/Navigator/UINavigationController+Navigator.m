@@ -163,17 +163,37 @@ NS_ASSUME_NONNULL_BEGIN
         }
         return;
     }
-    // 仅剩最后一个页面，不允许pop
+    // 仅剩最后一个页面，如果不是 FlutterViewController，则不允许继续pop
     if (vc.thrio_firstRoute == vc.thrio_lastRoute && self.viewControllers.count < 2) {
-        if (result) {
-            result(NO);
+        if ([vc isKindOfClass:NavigatorFlutterViewController.class]) {
+            __weak typeof(self) weakself = self;
+            [vc thrio_popParams:params animated:animated inRoot:YES result:^(NSNumber *r) {
+                __strong typeof(weakself) strongSelf = weakself;
+                if (r && r.boolValue) {
+                    // 只有FlutterViewController才能满足条件
+                    if (vc.thrio_lastRoute != vc.thrio_firstRoute) {
+                        vc.thrio_lastRoute.prev.next = nil;
+                        // 只剩一个route的时候，需要添加侧滑返回手势
+                        if (vc.thrio_firstRoute == vc.thrio_lastRoute) {
+                            [strongSelf thrio_addPopGesture];
+                        }
+                    }
+                }
+                if (result) {
+                    result(r && r.boolValue);
+                }
+            }];
+        } else {
+            if (result) {
+                result(NO);
+            }
         }
         return;
     }
     __weak typeof(self) weakself = self;
-    [vc thrio_popParams:params animated:animated result:^(BOOL r) {
+    [vc thrio_popParams:params animated:animated inRoot:NO result:^(NSNumber *r) {
         __strong typeof(weakself) strongSelf = weakself;
-        if (r) {
+        if (r && r.boolValue) {
             // 只有FlutterViewController才能满足条件
             if (vc.thrio_lastRoute != vc.thrio_firstRoute) {
                 vc.thrio_lastRoute.prev.next = nil;
@@ -186,7 +206,7 @@ NS_ASSUME_NONNULL_BEGIN
         // 原生页面返回YES不代表已经pop掉页面
         // 如果存在willPop拦截的情况的，视用户决策决定页面是否关闭
         if (result) {
-            result(r);
+            result(r && r.boolValue);
         }
     }];
 }
@@ -570,7 +590,7 @@ NS_ASSUME_NONNULL_BEGIN
             self.thrio_popingViewController = nil;
         } else {
             __weak typeof(self) weakself = self;
-            [self.thrio_popingViewController thrio_popParams:nil animated:animated result:^(BOOL r) {
+            [self.thrio_popingViewController thrio_popParams:nil animated:animated inRoot:NO result:^(NSNumber *r) {
                 __strong typeof(weakself) strongSelf = weakself;
                 [strongSelf thrio_lastRoute].next = nil;
 

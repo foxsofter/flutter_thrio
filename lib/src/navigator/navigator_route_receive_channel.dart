@@ -66,9 +66,12 @@ class NavigatorRouteReceiveChannel {
         final animatedValue = arguments['animated'];
         final animated =
             (animatedValue != null && animatedValue is bool) && animatedValue;
+        final inRootValue = arguments['inRoot'];
+        final inRoot =
+            (inRootValue != null && inRootValue is bool) && inRootValue;
         return ThrioNavigatorImplement.shared()
             .navigatorState
-            ?.maybePop(routeSettings, animated: animated)
+            ?.maybePop(routeSettings, animated: animated, inRoot: inRoot)
             ?.then((value) {
           _syncPagePoppedResults();
           return value;

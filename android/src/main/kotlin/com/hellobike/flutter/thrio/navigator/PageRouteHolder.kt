@@ -26,15 +26,13 @@ package com.hellobike.flutter.thrio.navigator
 import android.app.Activity
 import com.hellobike.flutter.thrio.BooleanCallback
 import com.hellobike.flutter.thrio.NullableIntCallback
-import com.hellobike.flutter.thrio.NullableAnyCallback
+import com.hellobike.flutter.thrio.NullableBooleanCallback
 import io.flutter.embedding.android.ThrioActivity
 import java.lang.ref.WeakReference
 
 internal data class PageRouteHolder(val pageId: Int,
                                     val clazz: Class<out Activity>,
-                                    val entrypoint: String = NAVIGATION_FLUTTER_ENTRYPOINT_DEFAULT) {
-    var pushByThrio = false
-
+                                    val entrypoint: String = NAVIGATION_NATIVE_ENTRYPOINT) {
     internal val routes by lazy { mutableListOf<PageRoute>() }
 
     var activity: WeakReference<out Activity>? = null
@@ -99,7 +97,7 @@ internal data class PageRouteHolder(val pageId: Int,
     }
 
 
-    fun <T> pop(params: T?, animated: Boolean, result: BooleanCallback) {
+    fun <T> pop(params: T?, animated: Boolean, inRoot: Boolean = false, result: NullableBooleanCallback) {
         val lastRoute = lastRoute()
         if (lastRoute == null) {
             result(false)
@@ -110,12 +108,17 @@ internal data class PageRouteHolder(val pageId: Int,
             if (activity is ThrioActivity) {
                 lastRoute.settings.params = JsonSerializers.serializeParams(params)
                 lastRoute.settings.animated = animated
-                activity.onPop(lastRoute.settings.toArguments()) { it ->
-                    if (it) {
+                var arguments = lastRoute.settings.toArguments();
+                arguments = mutableMapOf<String, Any?>().also {
+                    it.putAll(arguments)
+                    it["inRoot"] = inRoot
+                }
+                activity.onPop(arguments) { it ->
+                    if (it == true) {
                         routes.remove(lastRoute)
                     }
                     result(it)
-                    if (it) {
+                    if (it == true) {
                         lastRoute.poppedResult?.let {
                             @Suppress("UNCHECKED_CAST")
                             it(JsonDeserializers.deserializeParams(params))
@@ -138,7 +141,7 @@ internal data class PageRouteHolder(val pageId: Int,
                 lastRoute.poppedResult = null
                 if (lastRoute.fromEntrypoint != NAVIGATION_NATIVE_ENTRYPOINT) {
                     lastRoute.settings.params = JsonSerializers.serializeParams(params)
-                    lastRoute.settings.animated = animated
+                    lastRoute.settings.animated = false
                     FlutterEngineFactory.getEngine(lastRoute.fromEntrypoint)?.sendChannel?.onPop(lastRoute.settings.toArguments()) {}
                 }
                 RouteObservers.didPop(lastRoute.settings)

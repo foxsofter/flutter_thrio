@@ -26,6 +26,7 @@ package io.flutter.embedding.android
 import android.content.pm.PackageManager
 import android.os.Bundle
 import com.hellobike.flutter.thrio.BooleanCallback
+import com.hellobike.flutter.thrio.NullableBooleanCallback
 import com.hellobike.flutter.thrio.navigator.*
 
 open class ThrioActivity : ThrioFlutterActivity() {
@@ -47,7 +48,7 @@ open class ThrioActivity : ThrioFlutterActivity() {
             else if (initialUrl?.isEmpty() == true) ""
             else initialUrl?.getEntrypoint()
         }
-        return if(_initialEntrypoint?.isNotEmpty() == true) _initialEntrypoint else super.getCachedEngineId()
+        return if (_initialEntrypoint?.isNotEmpty() == true) _initialEntrypoint else super.getCachedEngineId()
     }
 
     private var _initialUrl: String? = null
@@ -68,35 +69,17 @@ open class ThrioActivity : ThrioFlutterActivity() {
         super.onFlutterUiDisplayed()
     }
 
-    override fun shouldAttachEngineToActivity(): Boolean {
-        return true
-    }
+    override fun shouldAttachEngineToActivity(): Boolean = true
 
-    override fun shouldDestroyEngineWithHost(): Boolean {
-        return false
-    }
 
-    override fun onBackPressed() {
-        val lastRoute = PageRoutes.lastRoute()
-        if (lastRoute == null) {
-            if (shouldMoveToBack()) {
-                moveTaskToBack(true)
-            }
-        } else {
-            PageRoutes.firstRouteHolder?.apply {
-                if (pageId == intent.getPageId() && routes.count() < 2) {
-                    if (shouldMoveToBack()) {
-                        moveTaskToBack(true)
-                    }
-                    return
-                }
-            }
-            ThrioNavigator.pop()
-        }
-    }
+    override fun shouldDestroyEngineWithHost(): Boolean = false
+
+
+    override fun onBackPressed() = ThrioNavigator.pop()
+
 
     // 重写这个方法，拦截是否隐藏到后台
-    protected open fun shouldMoveToBack(): Boolean = true
+    open fun shouldMoveToBack(): Boolean = true
 
     fun onPush(arguments: Map<String, Any?>?, result: BooleanCallback) {
         val id = cachedEngineId ?: throw IllegalStateException("cachedEngineId must not be null")
@@ -112,7 +95,7 @@ open class ThrioActivity : ThrioFlutterActivity() {
         engine.sendChannel.onNotify(arguments, result)
     }
 
-    fun onPop(arguments: Map<String, Any?>?, result: BooleanCallback) {
+    fun onPop(arguments: Map<String, Any?>?, result: NullableBooleanCallback) {
         val id = cachedEngineId ?: throw IllegalStateException("cachedEngineId must not be null")
         val engine = FlutterEngineFactory.getEngine(id)
                 ?: throw IllegalStateException("engine must not be null")

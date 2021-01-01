@@ -34,6 +34,11 @@ typealias VoidCallback = () -> Unit
 typealias BooleanCallback = (Boolean) -> Unit
 
 /**
+ * Signature of callbacks with nullable boolean parameters.
+ */
+typealias NullableBooleanCallback = (Boolean?) -> Unit
+
+/**
  * Signature of callbacks with Int? parameters.
  */
 typealias NullableIntCallback = (Int?) -> Unit

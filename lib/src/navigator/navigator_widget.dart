@@ -57,7 +57,7 @@ class NavigatorWidget extends StatefulWidget {
 class NavigatorWidgetState extends State<NavigatorWidget> {
   final _style = const SystemUiOverlayStyle();
 
-  List<NavigatorPageRoute> get history => widget._observerManager.pageRoutes;
+  List<Route> get history => widget._observerManager.pageRoutes;
 
   /// 还无法实现animated=false
   Future<bool> push(RouteSettings settings, {bool animated = true}) {
@@ -96,33 +96,50 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
     return Future.value(true);
   }
 
-  Future<bool> maybePop(RouteSettings settings, {bool animated = true}) async {
+  Future<bool> maybePop(
+    RouteSettings settings, {
+    bool animated = true,
+    bool inRoot = false,
+  }) async {
     final navigatorState = widget.child.tryStateOf<NavigatorState>();
     if (navigatorState == null) {
       return false;
     }
-    if (history.isEmpty || settings.name != history.last.settings.name) {
-      // 不匹配的时候，调用 poppedResult 回调
-      final poppedResult =
-          ThrioNavigatorImplement.shared().poppedResults.remove(settings.name);
-      if (poppedResult != null) {
-        _poppedResultCallback(poppedResult, settings.url, settings.params);
+    if (settings.name != history.last.settings.name) {
+      final poppedResults = ThrioNavigatorImplement.shared().poppedResults;
+      if (poppedResults.containsKey(settings.name)) {
+        // 不匹配的时候，调用 poppedResult 回调
+        final poppedResult = poppedResults.remove(settings.name);
+        if (poppedResult != null) {
+          _poppedResultCallback(poppedResult, settings.url, settings.params);
+        }
+        return false;
       }
-      return false;
     }
     if (await history.last.willPop() != RoutePopDisposition.pop) {
       return false;
     }
-
-    return pop(settings, animated: animated);
+    return pop(settings, animated: animated, inRoot: inRoot);
   }
 
-  Future<bool> pop(RouteSettings settings, {bool animated = true}) {
+  Future<bool> pop(
+    RouteSettings settings, {
+    bool animated = true,
+    bool inRoot = false,
+  }) {
     final navigatorState = widget.child.tryStateOf<NavigatorState>();
-    if (navigatorState == null) {
+    if (navigatorState == null || history.isEmpty) {
       return Future.value(false);
     }
-    if (history.isEmpty || settings.name != history.last.settings.name) {
+
+    /// 处理经过 `Navigator` 入栈的 `Route`，return null
+    if (settings.name != history.last.settings.name) {
+      return history.last is NavigatorPageRoute
+          ? Future.value(false)
+          : navigatorState.maybePop().then((value) => null);
+    }
+
+    if (inRoot && history.whereType<NavigatorPageRoute>().length < 3) {
       return Future.value(false);
     }
 
@@ -131,7 +148,8 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
       'index->${history.last.settings.index}',
     );
 
-    final route = history.last;
+    // ignore: avoid_as
+    final route = history.last as NavigatorPageRoute;
     // The route has been closed.
     if (route.routeAction == NavigatorRouteAction.pop) {
       return Future.value(false);
@@ -185,7 +203,8 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
           NavigatorRouteAction.popTo,
         );
 
-    route.routeAction = NavigatorRouteAction.popTo;
+    // ignore: avoid_as
+    (route as NavigatorPageRoute).routeAction = NavigatorRouteAction.popTo;
     if (animated) {
       navigatorState.popUntil((it) => it.settings.name == settings.name);
     } else {
@@ -218,7 +237,8 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
       'index->${route.settings.index}',
     );
 
-    route.routeAction = NavigatorRouteAction.remove;
+    // ignore: avoid_as
+    (route as NavigatorPageRoute).routeAction = NavigatorRouteAction.remove;
 
     if (settings.name == history.last.settings.name) {
       if (WidgetsBinding.instance.lifecycleState == AppLifecycleState.resumed) {
@@ -232,7 +252,6 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
     }
 
     navigatorState.removeRoute(route);
-
     return Future.value(true);
   }
 

@@ -155,7 +155,67 @@ class _PageState extends State<Page> {
                         style: TextStyle(fontSize: 22, color: Colors.black),
                       )),
                 ),
+                InkWell(
+                  onTap: () => Navigator.push(context,
+                      MaterialPageRoute(builder: (context) => TestPage())),
+                  child: Container(
+                      padding: const EdgeInsets.all(8),
+                      margin: const EdgeInsets.all(8),
+                      color: Colors.yellow,
+                      child: const Text(
+                        'Navigator push',
+                        style: TextStyle(fontSize: 22, color: Colors.black),
+                      )),
+                ),
               ]),
             ),
           )));
+}
+
+class TestPage extends StatefulWidget {
+  @override
+  _TestPageState createState() => _TestPageState();
+}
+
+class _TestPageState extends State<TestPage> {
+  @override
+  Widget build(BuildContext context) => Scaffold(
+        appBar: AppBar(
+          title: const Text('test page'),
+          leading: const IconButton(
+            color: Colors.black,
+            tooltip: 'back',
+            icon: Icon(Icons.arrow_back_ios),
+            onPressed: ThrioNavigator.pop,
+          ),
+        ),
+        body: Form(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextFormField(
+                  initialValue: '',
+                  onSaved: (val) => val,
+                  validator: (val) => val == '' ? val : null,
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: RaisedButton(
+                  color: Colors.indigo,
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text(
+                    'Navigator pop',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+              )
+            ],
+          ),
+        ),
+      );
 }

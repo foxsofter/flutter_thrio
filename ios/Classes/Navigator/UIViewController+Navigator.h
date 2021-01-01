@@ -47,7 +47,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)thrio_popParams:(id _Nullable)params
                animated:(BOOL)animated
-                 result:(ThrioBoolCallback _Nullable)result;
+                 inRoot:(BOOL)inRoot
+                 result:(ThrioNumberCallback _Nullable)result;
 
 - (void)thrio_popToUrl:(NSString *)url
                  index:(NSNumber *_Nullable)index

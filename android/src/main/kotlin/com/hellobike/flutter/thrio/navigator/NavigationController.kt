@@ -255,13 +255,28 @@ internal object NavigationController : Application.ActivityLifecycleCallbacks {
 
             routeAction = RouteAction.POP
 
-            if (PageRoutes.routeHolders.count() == 1
-                    && PageRoutes.firstRouteHolder!!.allRoute().count() < 2) {
-                PageRoutes.firstRouteHolder?.activity?.get()?.onBackPressed()
+            val firstHolder = PageRoutes.firstRouteHolder!!
+            if (PageRoutes.routeHolders.count() == 1 && firstHolder.allRoute().count() < 2) {
+                val activity = firstHolder.activity?.get() ?: return
+                if (activity is ThrioActivity) {
+                    PageRoutes.pop<T>(params, animated, true) {
+                        if (it == false) {
+                            firstHolder.activity?.get()?.apply {
+                                if (this is ThrioActivity && this.shouldMoveToBack()) {
+                                    moveTaskToBack(true)
+                                }
+                            }
+                        } else {
+                            result?.invoke(it == true)
+                        }
+                    }
+                } else {
+                    activity.onBackPressed()
+                }
                 routeAction = RouteAction.NONE
             } else {
                 PageRoutes.pop<T>(params, animated) {
-                    result?.invoke(it)
+                    result?.invoke(it == true)
                     routeAction = RouteAction.NONE
                 }
             }

@@ -144,11 +144,12 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)thrio_popParams:(id _Nullable)params
                animated:(BOOL)animated
-                 result:(ThrioBoolCallback _Nullable)result {
+                 inRoot:(BOOL)inRoot
+                 result:(ThrioNumberCallback _Nullable)result {
     NavigatorPageRoute *route = self.thrio_lastRoute;
     if (!route) {
         if (result) {
-            result(NO);
+            result(@NO);
         }
         return;
     }
@@ -157,15 +158,16 @@ NS_ASSUME_NONNULL_BEGIN
         [NSMutableDictionary dictionaryWithDictionary:[route.settings
                                                        toArgumentsWithParams:serializeParams]];
     [arguments setObject:[NSNumber numberWithBool:animated] forKey:@"animated"];
+    [arguments setObject:[NSNumber numberWithBool:inRoot] forKey:@"inRoot"];
 
     if ([self isKindOfClass:NavigatorFlutterViewController.class]) {
         NSString *entrypoint = [(NavigatorFlutterViewController *)self entrypoint];
         NavigatorRouteSendChannel *channel = [NavigatorFlutterEngineFactory.shared getSendChannelByEntrypoint:entrypoint];
         __weak typeof(self) weakself = self;
         // 发送给需要关闭页面的引擎
-        [channel pop:arguments result:^(BOOL r) {
+        [channel pop:arguments result:^(NSNumber *r) {
             __strong typeof(weakself) strongSelf = weakself;
-            if (r) {
+            if (r && r.boolValue) {
                 if (route != strongSelf.thrio_firstRoute) {
                     ThrioNavigator.pageObservers.lastRoute = route.prev;
                     [strongSelf thrio_onNotify:route.prev];
@@ -178,7 +180,7 @@ NS_ASSUME_NONNULL_BEGIN
             }
 
             // 关闭成功,处理页面回传参数
-            if (r) {
+            if (r && r.boolValue) {
                 if (route.poppedResult) {
                     id deserializeParams = [ThrioNavigator deserializeParams:params];
                     route.poppedResult(deserializeParams);
@@ -193,7 +195,7 @@ NS_ASSUME_NONNULL_BEGIN
     } else {
         if (result) {
             // 原生页面一定只有一个route
-            result(route == self.thrio_firstRoute);
+            result(@(route == self.thrio_firstRoute));
         }
         if (route == self.thrio_firstRoute) {
             // 关闭成功,处理页面回传参数
