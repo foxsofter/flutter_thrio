@@ -6,6 +6,7 @@ analyzer:
     implicit-dynamic: true
   exclude:
     - lib/src/**.g.dart
+
   enable-experiment:
     - extension-methods
 

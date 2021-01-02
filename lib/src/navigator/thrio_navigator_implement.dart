@@ -32,6 +32,7 @@ import 'navigator_page_route.dart';
 import 'navigator_route_observer_channel.dart';
 import 'navigator_route_receive_channel.dart';
 import 'navigator_route_send_channel.dart';
+import 'navigator_route_settings.dart';
 import 'navigator_types.dart';
 import 'navigator_widget.dart';
 
@@ -144,6 +145,15 @@ class ThrioNavigatorImplement {
         params: params,
         animated: animated,
       );
+
+  Future<bool> canPop(String url, int index) =>
+      allRoutes().then<bool>((routes) {
+        if (routes.isEmpty ||
+            (routes.first.url == url && routes.first.index == index)) {
+          return false;
+        }
+        return true;
+      });
 
   Future<bool> popTo({
     @required String url,

@@ -30,12 +30,12 @@ class _PageState extends State<Page> {
         backgroundColor: Colors.white,
         title:
             const Text('thrio_example', style: TextStyle(color: Colors.black)),
-        leading: const IconButton(
+        leading: context.canPop(const IconButton(
           color: Colors.black,
           tooltip: 'back',
           icon: Icon(Icons.arrow_back_ios),
           onPressed: ThrioNavigator.pop,
-        ),
+        )),
       ),
       body: SingleChildScrollView(
         child: Container(

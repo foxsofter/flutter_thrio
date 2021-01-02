@@ -21,6 +21,11 @@
 
 import 'package:flutter/widgets.dart';
 
+import '../navigator/navigator_page_route.dart';
+import '../navigator/navigator_route_settings.dart';
+import '../navigator/navigator_widget.dart';
+import '../navigator/thrio_navigator_implement.dart';
+
 extension ThrioBuildContext on BuildContext {
   /// Get widget state by ancestorStateOfType method.
   ///
@@ -42,5 +47,43 @@ extension ThrioBuildContext on BuildContext {
       return state;
     }
     return null;
+  }
+
+  /// Use canPop to determine whether to display the back arrow.
+  ///
+  /// ```dart
+  /// AppBar(
+  ///   brightness: Brightness.light,
+  ///   backgroundColor: Colors.blue,
+  ///   title: const Text(
+  ///     'thrio_example',
+  ///     style: TextStyle(color: Colors.black)),
+  ///   leading: context.canPop(const IconButton(
+  ///     color: Colors.black,
+  ///     tooltip: 'back',
+  ///     icon: Icon(Icons.arrow_back_ios),
+  ///     onPressed: ThrioNavigator.pop,
+  ///   )),
+  /// ))
+  /// ```
+  ///
+  Widget canPop(Widget trueWidget, [Widget falseWidget = const SizedBox()]) =>
+      FutureBuilder<bool>(
+          future: _canPop(),
+          builder: (context, snapshot) {
+            if (snapshot.data == true) {
+              return trueWidget;
+            } else {
+              return falseWidget;
+            }
+          });
+
+  Future<bool> _canPop() {
+    final state = stateOf<NavigatorWidgetState>();
+    final route = state.history.last;
+    return route is NavigatorPageRoute
+        ? ThrioNavigatorImplement.shared()
+            .canPop(route.settings.url, route.settings.index)
+        : Future<bool>.value(true);
   }
 }
