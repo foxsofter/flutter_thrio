@@ -202,4 +202,8 @@
 
 ## 1.5.0
 
-* feat: 增加 Flutter 测对 Navigator 的 push 和 pop 的支持
+* feat: 增加 Flutter 侧对 Navigator 的 push 和 pop 的支持
+
+## 1.5.1
+
+* feat: 增加 Flutter 侧对 Navigator 的 canPop 的支持，可用于隐藏返回箭头
