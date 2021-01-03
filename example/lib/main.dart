@@ -1,7 +1,9 @@
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
 import 'package:thrio/thrio.dart';
+
 import 'src/app.dart' as app;
 
 Future<void> main() async {

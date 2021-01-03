@@ -21,8 +21,10 @@
 
 import 'package:flutter/widgets.dart';
 
+import '../module/thrio_module.dart';
 import 'navigator_home.dart';
 import 'navigator_logger.dart';
+import 'navigator_page_observer.dart';
 import 'navigator_page_route.dart';
 import 'navigator_route_settings.dart';
 import 'thrio_navigator_implement.dart';
@@ -51,7 +53,15 @@ class NavigatorObserverManager extends NavigatorObserver {
         ..pageChannel.didAppear(route.settings, NavigatorRouteAction.push);
     } else {
       if (!route.isFirst) {
+        final lastRoute = pageRoutes.last;
         pageRoutes.add(route);
+        if (lastRoute is NavigatorPageRoute) {
+          final observers = ThrioModule.gets<NavigatorPageObserver>(
+              url: lastRoute.settings.url);
+          for (final observer in observers) {
+            observer.didDisappear(lastRoute.settings);
+          }
+        }
       }
     }
   }
@@ -125,6 +135,13 @@ class NavigatorObserverManager extends NavigatorObserver {
       }
     } else {
       pageRoutes.remove(route);
+      if (pageRoutes.last is NavigatorPageRoute) {
+        final observers = ThrioModule.gets<NavigatorPageObserver>(
+            url: pageRoutes.last.settings.url);
+        for (final observer in observers) {
+          observer.didAppear(pageRoutes.last.settings);
+        }
+      }
     }
   }
 

@@ -61,6 +61,20 @@ class _NavigatorPageLifecycleState extends State<NavigatorPageLifecycle> {
       widget.didDisappear != null;
 
   @override
+  void initState() {
+    super.initState();
+
+    if (mounted) {
+      final state = context.tryStateOf<NavigatorWidgetState>();
+      final route = state?.history?.last;
+      if (route != null && route is NavigatorPageRoute) {
+        widget.willAppear?.call(route.settings);
+        widget.didAppear?.call(route.settings);
+      }
+    }
+  }
+
+  @override
   void didChangeDependencies() {
     if (_pageObserverCallback != null) {
       _pageObserverCallback();

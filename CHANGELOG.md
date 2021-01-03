@@ -207,3 +207,8 @@
 ## 1.5.1
 
 * feat: 增加 Flutter 侧对 Navigator 的 canPop 的支持，可用于隐藏返回箭头
+
+## 1.5.2
+
+* feat: 增加对Flutter页面强制横屏的支持
+* fix: Flutter页面生命周期在Flutter为首页的情况下存在的bug

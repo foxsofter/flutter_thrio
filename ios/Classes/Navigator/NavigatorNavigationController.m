@@ -79,6 +79,18 @@ NS_ASSUME_NONNULL_BEGIN
     return [super initWithRootViewController:viewController];
 }
 
+- (BOOL)shouldAutorotate {
+    return YES;
+}
+
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations {
+    return [self.viewControllers.lastObject supportedInterfaceOrientations];
+}
+
+- (UIInterfaceOrientation)preferredInterfaceOrientationForPresentation {
+    return [self.viewControllers.lastObject preferredInterfaceOrientationForPresentation];
+}
+
 @end
 
 NS_ASSUME_NONNULL_END

@@ -46,7 +46,7 @@ NS_ASSUME_NONNULL_BEGIN
     if (action == NavigatorRouteActionPush) {
         [ThrioNavigator.pageObservers willAppear:routeSettings];
         NavigatorPageRoute *lastRoute = nvc.thrio_lastRoute;
-        if ([[nvc thrio_getAllRoutesByUrl:nil] count] > 1 &&
+        if ([[nvc thrio_getAllRoutesByUrl:nil] count] > 0 &&
             ![lastRoute.settings isEqualToRouteSettings:routeSettings]) {
             [ThrioNavigator.pageObservers willDisappear:lastRoute.settings];
         }
@@ -61,7 +61,7 @@ NS_ASSUME_NONNULL_BEGIN
     UINavigationController *nvc = self.navigationController;
     if (action == NavigatorRouteActionPush) {
         [ThrioNavigator.pageObservers didAppear:routeSettings];
-        if ([[nvc thrio_getAllRoutesByUrl:nil] count] > 1) {
+        if ([[nvc thrio_getAllRoutesByUrl:nil] count] > 0) {
             NavigatorPageRoute *lastRoute = nvc.thrio_lastRoute;
             [ThrioNavigator.pageObservers didDisappear:lastRoute.settings];
         }
