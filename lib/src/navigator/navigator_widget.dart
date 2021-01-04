@@ -24,6 +24,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import '../extension/thrio_stateful_widget.dart';
+import '../module/module_anchor.dart';
 import '../module/module_types.dart';
 import '../module/thrio_module.dart';
 import 'navigator_logger.dart';
@@ -71,6 +72,9 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
     if (pageBuilder == null) {
       return Future.value(false);
     }
+
+    // 加载模块
+    anchor.loading(settings.url);
 
     final route = NavigatorPageRoute(
       builder: pageBuilder,

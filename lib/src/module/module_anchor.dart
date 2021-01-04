@@ -24,7 +24,9 @@
 import 'package:flutter/widgets.dart';
 
 import '../navigator/navigator_page_observer.dart';
+import '../navigator/navigator_page_route.dart';
 import '../navigator/navigator_route_observer.dart';
+import '../navigator/navigator_route_settings.dart';
 import '../navigator/navigator_types.dart';
 import '../navigator/thrio_navigator_implement.dart';
 import '../registry/registry_set_map.dart';
@@ -56,9 +58,73 @@ class ModuleAnchor
   final pageLifecycleObservers =
       RegistrySetMap<String, NavigatorPageObserver>();
 
+  /// All registered urls.
+  ///
+  final allUrls = <String>[];
+
   @override
   void onModuleInit(ModuleContext moduleContext) {
     ThrioNavigatorImplement.shared().init(moduleContext);
+  }
+
+  void loading(String url) {
+    final modules = getModules(url: url);
+    if (modules == null) {
+      return;
+    }
+
+    for (final module in modules) {
+      if (!module.isLoaded) {
+        module
+          ..isLoaded = true
+          ..onModuleLoading(module.moduleContext);
+      }
+    }
+  }
+
+  Future unloading(Iterable<NavigatorPageRoute> allRoutes) async {
+    final urls = allRoutes.map<String>((it) => it.settings.url).toSet();
+    final notPushedUrls = allUrls.where((it) => !urls.contains(it)).toList();
+    // 需要过滤掉不带 home 的 url
+    for (var i = notPushedUrls.length - 1; i >= 0; i--) {
+      final url = notPushedUrls[i];
+      if (url.endsWith('/home')) {
+        final shortUrl = url.replaceRange(url.length - 5, url.length, '');
+        if (!notPushedUrls.remove(shortUrl)) {
+          if (allUrls.contains(shortUrl)) {
+            notPushedUrls.remove(url);
+          }
+        }
+      }
+    }
+    final modules = <ThrioModule>{};
+    for (final url in notPushedUrls) {
+      modules.addAll(getModules(url: url));
+    }
+    final notPushedModules = modules
+        .where(
+          (it) => it is ModulePageBuilder && it.pageBuilder != null,
+        )
+        .toSet();
+    for (final module in notPushedModules) {
+      // 页 Module onModuleUnloading
+      if (module.isLoaded) {
+        module.isLoaded = false;
+        await module.onModuleUnloading(module.moduleContext);
+      }
+      // 页 Module 的 父 Module onModuleUnloading
+      var parentModule = module.parent;
+      do {
+        final leafModules = _getAllLeafModules(parentModule);
+        if (notPushedModules.containsAll(leafModules)) {
+          if (parentModule.isLoaded) {
+            parentModule.isLoaded = false;
+            await parentModule.onModuleUnloading(parentModule.moduleContext);
+          }
+        }
+        parentModule = parentModule.parent;
+      } while (parentModule != null);
+    }
   }
 
   T get<T>({String url, String key}) {
@@ -129,7 +195,7 @@ class ModuleAnchor
     final allModules = [module];
 
     if (url?.isEmpty ?? true) {
-      return allModules..addAll(getAllModules(module));
+      return allModules..addAll(_getAllModules(module));
     }
 
     final components = url?.isEmpty ?? true
@@ -159,13 +225,28 @@ class ModuleAnchor
     return allModules;
   }
 
-  Iterable<ThrioModule> getAllModules(ThrioModule module) {
+  Iterable<ThrioModule> _getAllModules(ThrioModule module) {
     final subModules = module.modules.values;
     final allModules = [...subModules];
     for (final it in subModules) {
-      allModules.addAll(getAllModules(it));
+      allModules.addAll(_getAllModules(it));
     }
     return allModules;
+  }
+
+  Iterable<ThrioModule> _getAllLeafModules(ThrioModule module) {
+    final subModules = module.modules.values;
+    final allLeafModules = <ThrioModule>[];
+    for (final module in subModules) {
+      if (module is ModulePageBuilder) {
+        if (module.pageBuilder != null) {
+          allLeafModules.add(module);
+        }
+      } else {
+        allLeafModules.addAll(_getAllLeafModules(module));
+      }
+    }
+    return allLeafModules;
   }
 
   T _get<T>(List<ThrioModule> modules, String key) {

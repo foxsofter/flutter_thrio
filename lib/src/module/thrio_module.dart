@@ -107,6 +107,8 @@ mixin ThrioModule {
 
   /// `ModuleContext` of current module.
   ///
+  @protected
+  ModuleContext get moduleContext => _moduleContext;
   ModuleContext _moduleContext;
 
   /// A function for registering a module, which will call
@@ -202,6 +204,25 @@ mixin ThrioModule {
   ///
   @protected
   void onModuleInit(ModuleContext moduleContext) {}
+
+  /// Returns whether the module is loaded.
+  ///
+  @protected
+  bool isLoaded = false;
+
+  /// Called when the first page in the module is about to be pushed.
+  ///
+  @protected
+  void onModuleLoading(ModuleContext moduleContext) {
+    verbose('onModuleLoading: $key');
+  }
+
+  /// Called when the last page in the module is closed.
+  ///
+  @protected
+  Future onModuleUnloading(ModuleContext moduleContext) async {
+    verbose('onModuleUnloading: $key');
+  }
 
   /// A function for module asynchronous initialization.
   ///

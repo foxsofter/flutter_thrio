@@ -212,3 +212,7 @@
 
 * feat: 增加对Flutter页面强制横屏的支持
 * fix: Flutter页面生命周期在Flutter为首页的情况下存在的bug
+
+## 1.6.0
+
+* feat: supports `Module` auto loading and unloading

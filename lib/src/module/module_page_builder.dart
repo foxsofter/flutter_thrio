@@ -22,10 +22,35 @@
 import 'package:flutter/foundation.dart';
 
 import '../navigator/navigator_types.dart';
+import 'module_anchor.dart';
 import 'thrio_module.dart';
 
 mixin ModulePageBuilder on ThrioModule {
-  NavigatorPageBuilder pageBuilder;
+  NavigatorPageBuilder _pageBuilder;
+
+  NavigatorPageBuilder get pageBuilder => _pageBuilder;
+
+  /// If there is a ModulePageBuilder in a module, there can be no submodules.
+  ///
+  set pageBuilder(NavigatorPageBuilder builder) {
+    _pageBuilder = builder;
+
+    final urlComponents = <String>['/$key'];
+    var parentModule = parent;
+    do {
+      urlComponents.insert(0, '/${parentModule.key}');
+      parentModule = parentModule.parent;
+    } while (parentModule != null && parentModule.key.isNotEmpty);
+
+    anchor.allUrls.add((StringBuffer()..writeAll(urlComponents)).toString());
+    if (key == 'home') {
+      anchor.allUrls.add((StringBuffer()
+            ..writeAll(
+              urlComponents..removeLast(),
+            ))
+          .toString());
+    }
+  }
 
   /// A function for setting a `NavigatorPageBuilder`.
   ///
