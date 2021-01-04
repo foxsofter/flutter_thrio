@@ -32,11 +32,14 @@ import com.hellobike.flutter.thrio.BooleanCallback
 import com.hellobike.flutter.thrio.NullableAnyCallback
 import com.hellobike.flutter.thrio.NullableIntCallback
 import io.flutter.embedding.android.ThrioActivity
+import java.lang.ref.WeakReference
 
 internal object NavigationController : Application.ActivityLifecycleCallbacks {
 
     override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
-        context = context ?: activity
+        if (context == null || context?.get() == null) {
+            context = WeakReference(activity)
+        }
 
         Remove.doRemove(activity)
         Push.doPush(activity)
@@ -67,7 +70,7 @@ internal object NavigationController : Application.ActivityLifecycleCallbacks {
         }
     }
 
-    private var context: Context? = null
+    private var context: WeakReference<out Activity>? = null
 
     var routeAction = RouteAction.NONE
 
@@ -122,7 +125,7 @@ internal object NavigationController : Application.ActivityLifecycleCallbacks {
                     && lastEntrypoint == entrypoint) {
                 lastActivity.intent
             } else {
-                builder.build(context!!, entrypoint).apply {
+                builder.build(context?.get()!!, entrypoint).apply {
                     if (!animated) {
                         addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
                     }
@@ -137,24 +140,24 @@ internal object NavigationController : Application.ActivityLifecycleCallbacks {
             this.poppedResult = poppedResult
 
             if (builder is FlutterIntentBuilder) {
-                if (PageRoutes.lastRoute == null && context != null && context is ThrioActivity) {
-                    doPush(context as ThrioActivity, routeSettings = settings)
+                if (PageRoutes.lastRoute == null && context?.get() != null && context?.get() is ThrioActivity) {
+                    doPush(context?.get() as ThrioActivity, routeSettings = settings)
                 } else if (lastActivity != null
                         && lastActivity is ThrioActivity
                         && lastEntrypoint == entrypoint) {
                     doPush(lastActivity)
                 } else {
-                    FlutterEngineFactory.startup(context!!, entrypoint, object : EngineReadyListener {
+                    FlutterEngineFactory.startup(context?.get()!!, entrypoint, object : EngineReadyListener {
                         override fun onReady(params: Any?) {
                             if (params !is String || params != entrypoint) {
                                 throw IllegalStateException("entrypoint must match.")
                             }
-                            context!!.startActivity(intent)
+                            context?.get()!!.startActivity(intent)
                         }
                     })
                 }
             } else {
-                context!!.startActivity(intent)
+                context?.get()!!.startActivity(intent)
             }
         }
 

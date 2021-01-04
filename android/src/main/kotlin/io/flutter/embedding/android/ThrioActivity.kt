@@ -71,12 +71,9 @@ open class ThrioActivity : ThrioFlutterActivity() {
 
     override fun shouldAttachEngineToActivity(): Boolean = true
 
-
     override fun shouldDestroyEngineWithHost(): Boolean = false
 
-
     override fun onBackPressed() = ThrioNavigator.pop()
-
 
     // 重写这个方法，拦截是否隐藏到后台
     open fun shouldMoveToBack(): Boolean = true

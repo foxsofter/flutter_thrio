@@ -216,3 +216,7 @@
 ## 1.6.0
 
 * feat: supports `Module` auto loading and unloading
+
+## 1.6.1
+
+* fix: Android `NavigationController.context` 改成弱引用
