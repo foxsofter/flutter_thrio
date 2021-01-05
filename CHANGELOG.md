@@ -220,3 +220,7 @@
 ## 1.6.1
 
 * fix: Android `NavigationController.context` 改成弱引用
+
+## 1.6.2
+
+* fix: Android crash at context.get()!!
