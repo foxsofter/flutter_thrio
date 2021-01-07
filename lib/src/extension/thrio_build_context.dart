@@ -67,10 +67,15 @@ extension ThrioBuildContext on BuildContext {
   /// ))
   /// ```
   ///
-  Widget canPop(Widget trueWidget, [Widget falseWidget = const SizedBox()]) =>
+  Widget canPop(
+    Widget trueWidget, {
+    Widget falseWidget = const SizedBox(),
+    void Function(bool) canPopResult,
+  }) =>
       FutureBuilder<bool>(
           future: _canPop(),
           builder: (context, snapshot) {
+            canPopResult?.call(snapshot.data == true);
             if (snapshot.data == true) {
               return trueWidget;
             } else {
