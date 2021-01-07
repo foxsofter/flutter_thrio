@@ -37,7 +37,9 @@ import java.lang.ref.WeakReference
 internal object NavigationController : Application.ActivityLifecycleCallbacks {
 
     override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
-        context = WeakReference(activity)
+        if (context == null || context?.get() == null) {
+            context = WeakReference(activity)
+        }
 
         Remove.doRemove(activity)
         Push.doPush(activity)

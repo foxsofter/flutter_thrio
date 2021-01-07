@@ -11,20 +11,20 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         tools:ignore="GoogleAppIndexingWarning">
-        <!--        <activity-->
-        <!--            android:name=".Native1Activity"-->
-        <!--            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"-->
-        <!--            android:hardwareAccelerated="true"-->
-        <!--            android:theme="@style/Theme.AppCompat.DayNight"-->
-        <!--            android:windowSoftInputMode="adjustResize">-->
         <activity
-            android:name="io.flutter.embedding.android.ThrioActivity"
+            android:name=".Native1Activity"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
             android:hardwareAccelerated="true"
-            android:launchMode="standard"
-            android:screenOrientation="sensor"
-            android:theme="@style/Theme.Thrio.Default"
+            android:theme="@style/Theme.AppCompat.DayNight"
             android:windowSoftInputMode="adjustResize">
+            <!--        <activity-->
+            <!--            android:name="io.flutter.embedding.android.ThrioActivity"-->
+            <!--            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"-->
+            <!--            android:hardwareAccelerated="true"-->
+            <!--            android:launchMode="standard"-->
+            <!--            android:screenOrientation="sensor"-->
+            <!--            android:theme="@style/Theme.Thrio.Default"-->
+            <!--            android:windowSoftInputMode="adjustResize">-->
             <meta-data
                 android:name="io.flutter.embedding.android.SplashScreenDrawable"
                 android:resource="@drawable/launch_background" />
@@ -46,19 +46,19 @@
             android:theme="@style/Theme.AppCompat.DayNight"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".Native1Activity"
+            android:name=".Native3Activity"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
             android:hardwareAccelerated="true"
             android:theme="@style/Theme.AppCompat.DayNight"
             android:windowSoftInputMode="adjustResize" />
-        <!--        <activity-->
-        <!--            android:name="io.flutter.embedding.android.ThrioActivity"-->
-        <!--            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"-->
-        <!--            android:hardwareAccelerated="true"-->
-        <!--            android:launchMode="standard"-->
-        <!--            android:screenOrientation="sensor"-->
-        <!--            android:theme="@style/Theme.Thrio.Default"-->
-        <!--            android:windowSoftInputMode="adjustResize" />-->
+        <activity
+            android:name="io.flutter.embedding.android.ThrioActivity"
+            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
+            android:hardwareAccelerated="true"
+            android:launchMode="standard"
+            android:screenOrientation="sensor"
+            android:theme="@style/Theme.Thrio.Default"
+            android:windowSoftInputMode="adjustResize" />
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
         <meta-data

@@ -234,3 +234,7 @@
 ## 1.7.1
 
 * feat: add canPopResult
+
+## 1.7.2
+
+* fix: Android pop一个原生页面后无法再 push Flutter 页面
