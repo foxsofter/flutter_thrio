@@ -45,7 +45,10 @@ class ModuleContext {
         return value;
       }
     }
-    return module.parent?._moduleContext?.get<T>(key);
+    // Anchor module caches the data of the framework
+    return module.parent == anchor || module.parent == null
+        ? null
+        : module.parent._moduleContext?.get<T>(key);
   }
 
   /// Set param `value` with `key`.
@@ -58,7 +61,27 @@ class ModuleContext {
         return true;
       }
     }
-    return module.parent?._moduleContext?.set<T>(key, value) ?? false;
+    // Anchor module caches the data of the framework
+    return module.parent != anchor &&
+        module.parent != null &&
+        (module.parent._moduleContext?.set<T>(key, value) ?? false);
+  }
+
+  /// Remove param with `key`.
+  ///
+  /// Return `value` if param not exists.
+  ///
+  T remove<T>(String key) {
+    if (module is ModuleParamScheme) {
+      final value = (module as ModuleParamScheme).removeParam<T>(key);
+      if (value != null) {
+        return value;
+      }
+    }
+    // Anchor module caches the data of the framework
+    return module.parent == anchor || module.parent == null
+        ? null
+        : module.parent._moduleContext?.remove<T>(key);
   }
 
   @override

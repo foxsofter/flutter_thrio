@@ -15,7 +15,7 @@ class Module
         ModuleRouteTransitionsBuilder,
         NavigatorPageObserver {
   @override
-  String get key => 'home';
+  String get key => kNavigatorPageDefaultUrl;
 
   @override
   void onParamSchemeRegister(ModuleContext moduleContext) {

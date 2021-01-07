@@ -23,34 +23,26 @@ import 'package:flutter/foundation.dart';
 
 import '../exception/thrio_exception.dart';
 import '../registry/registry_map.dart';
+import 'module_anchor.dart';
 import 'thrio_module.dart';
 
 mixin ModuleParamScheme on ThrioModule {
   /// Param schemes registered in the current Module
   ///
-  final _paramSchemes = RegistryMap<String, Type>();
+  final _paramSchemes = RegistryMap<Comparable, Type>();
 
-  final _params = <String, dynamic>{};
-
-  /// Sets param with `key` & `value`.
-  ///
-  /// Return `false` if param scheme is not registered.
-  ///
-  @protected
-  bool setParam<T>(String key, T value) {
-    if (!_paramSchemes.keys.contains(key) ||
-        _paramSchemes[key] != value.runtimeType) {
-      return false;
-    }
-    _params[key] = value;
-    return true;
-  }
+  final _params = <Comparable, dynamic>{};
 
   /// Gets param by `key` & `T`.
   ///
   /// Throw `ThrioException` if `T` is not matched param scheme.
   ///
-  T getParam<T>(String key) {
+  @protected
+  T getParam<T>(Comparable key) {
+    // Anchor module does not need to get param scheme.
+    if (this == anchor) {
+      return _params[key] as T; // ignore: avoid_as
+    }
     if (T != dynamic &&
         _paramSchemes.keys.contains(key) &&
         _paramSchemes[key] != T) {
@@ -59,6 +51,45 @@ mixin ModuleParamScheme on ThrioModule {
       );
     }
     return _params[key] as T; // ignore: avoid_as
+  }
+
+  /// Sets param with `key` & `value`.
+  ///
+  /// Return `false` if param scheme is not registered.
+  ///
+  @protected
+  bool setParam<T>(Comparable key, T value) {
+    // Anchor module does not need to set param scheme.
+    if (this == anchor) {
+      _params[key] = value;
+      return true;
+    }
+
+    if (!_paramSchemes.keys.contains(key) ||
+        _paramSchemes[key] != value.runtimeType) {
+      return false;
+    }
+    _params[key] = value;
+    return true;
+  }
+
+  /// Remove param by `key` & `T`, if exists, return the `value`.
+  ///
+  /// Throw `ThrioException` if `T` is not matched param scheme.
+  ///
+  T removeParam<T>(Comparable key) {
+    // Anchor module does not need to get param scheme.
+    if (this == anchor) {
+      return _params.remove(key) as T; // ignore: avoid_as
+    }
+    if (T != dynamic &&
+        _paramSchemes.keys.contains(key) &&
+        _paramSchemes[key] != T) {
+      throw ThrioException(
+        '$T does not match the param scheme type: ${_paramSchemes[key]}',
+      );
+    }
+    return _params.remove(key) as T; // ignore: avoid_as
   }
 
   /// A function for register a param scheme.

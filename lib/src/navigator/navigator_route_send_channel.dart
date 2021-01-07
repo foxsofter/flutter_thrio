@@ -24,6 +24,7 @@ import 'package:flutter/material.dart';
 
 import '../channel/thrio_channel.dart';
 import '../extension/thrio_object.dart';
+import '../module/module_anchor.dart';
 import '../module/module_types.dart';
 import '../module/thrio_module.dart';
 
@@ -147,7 +148,21 @@ class NavigatorRouteSendChannel {
               ?.call(<type>() => params as type); // ignore: avoid_as
       if (serializeParams != null) {
         serializeParams['__thrio_TParams__'] = type.toString();
+        // 判断 url 是否是当前引擎下的，如果是则直接缓存参数并传递 hashCode
+        if (ThrioModule.contains(url) != null) {
+          final hashCode = params.hashCode;
+          // ignore: invalid_use_of_protected_member
+          anchor.setParam(hashCode, params);
+          serializeParams['__thrio_Params_HashCode__'] = hashCode;
+        }
         return serializeParams;
+      }
+      // 判断 url 是否是当前引擎下的，如果是则直接缓存参数并传递 hashCode
+      if (ThrioModule.contains(url) != null) {
+        final hashCode = params.hashCode;
+        // ignore: invalid_use_of_protected_member
+        anchor.setParam(hashCode, params);
+        return {'__thrio_Params_HashCode__': hashCode};
       }
     }
     return params;

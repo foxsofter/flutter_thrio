@@ -28,6 +28,7 @@ import 'package:flutter/widgets.dart';
 
 import '../exception/thrio_exception.dart';
 import '../navigator/navigator_logger.dart';
+import '../navigator/navigator_types.dart';
 import 'module_anchor.dart';
 import 'module_expando.dart';
 import 'module_json_deserializer.dart';
@@ -81,6 +82,11 @@ mixin ThrioModule {
   }) =>
       anchor.get<T>(url: url, key: key);
 
+  /// Returns true if the `url` has been registered.
+  ///
+  static bool contains(String url) =>
+      anchor.get<NavigatorPageBuilder>(url: url) != null;
+
   /// Get instances by `T` and `url`.
   ///
   /// `T` can not be optional. Can be `NavigatorPageObserver`,
@@ -99,10 +105,12 @@ mixin ThrioModule {
 
   /// A [Key] is an identifier for a module.
   ///
+  @protected
   String get key => '';
 
   /// Get parent module.
   ///
+  @protected
   ThrioModule get parent => parentOf[this];
 
   /// `ModuleContext` of current module.

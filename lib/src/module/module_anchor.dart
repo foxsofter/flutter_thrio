@@ -34,6 +34,7 @@ import 'module_json_deserializer.dart';
 import 'module_json_serializer.dart';
 import 'module_page_builder.dart';
 import 'module_page_observer.dart';
+import 'module_param_scheme.dart';
 import 'module_protobuf_deserializer.dart';
 import 'module_protobuf_serializer.dart';
 import 'module_route_observer.dart';
@@ -50,6 +51,7 @@ class ModuleAnchor
         ModuleJsonDeserializer,
         ModuleProtobufSerializer,
         ModuleProtobufDeserializer,
+        ModuleParamScheme,
         ModuleJsonSerializer,
         ModuleRouteObserver,
         ModuleRouteTransitionsBuilder {
@@ -218,8 +220,9 @@ class ModuleAnchor
       return null;
     }
 
-    if (!url.endsWith('home') && allModules.last.modules.containsKey('home')) {
-      allModules.add(allModules.last.modules['home']);
+    if (!url.endsWith(kNavigatorPageDefaultUrl) &&
+        allModules.last.modules.containsKey(kNavigatorPageDefaultUrl)) {
+      allModules.add(allModules.last.modules[kNavigatorPageDefaultUrl]);
     }
 
     return allModules;

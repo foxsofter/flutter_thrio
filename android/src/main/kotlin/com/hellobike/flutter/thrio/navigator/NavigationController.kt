@@ -103,7 +103,7 @@ internal object NavigationController : Application.ActivityLifecycleCallbacks {
             var entrypoint = NAVIGATION_NATIVE_ENTRYPOINT
 
             val lastHolder = PageRoutes.lastRouteHolder()
-            val lastActivity = lastHolder?.activity?.get()
+            val lastActivity = lastHolder?.activity?.get() ?: context?.get() ?: return
             val lastEntrypoint = lastHolder?.entrypoint
 
             if (builder is FlutterIntentBuilder) {
@@ -118,12 +118,10 @@ internal object NavigationController : Application.ActivityLifecycleCallbacks {
                 it.putAll(settings.toArguments())
             }
 
-            val intent = if (lastActivity != null
-                    && lastActivity is ThrioActivity
-                    && lastEntrypoint == entrypoint) {
+            val intent = if (lastActivity is ThrioActivity && lastEntrypoint == entrypoint) {
                 lastActivity.intent
             } else {
-                builder.build(context?.get()!!, entrypoint).apply {
+                builder.build(lastActivity, entrypoint).apply {
                     if (!animated) {
                         addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
                     }
@@ -138,24 +136,22 @@ internal object NavigationController : Application.ActivityLifecycleCallbacks {
             this.poppedResult = poppedResult
 
             if (builder is FlutterIntentBuilder) {
-                if (PageRoutes.lastRoute == null && context?.get() != null && context?.get() is ThrioActivity) {
-                    doPush(context?.get() as ThrioActivity, routeSettings = settings)
-                } else if (lastActivity != null
-                        && lastActivity is ThrioActivity
-                        && lastEntrypoint == entrypoint) {
+                if (PageRoutes.lastRoute == null && lastActivity is ThrioActivity) {
+                    doPush(lastActivity, routeSettings = settings)
+                } else if (lastActivity is ThrioActivity && lastEntrypoint == entrypoint) {
                     doPush(lastActivity)
                 } else {
-                    FlutterEngineFactory.startup(context?.get()!!, entrypoint, object : EngineReadyListener {
+                    FlutterEngineFactory.startup(lastActivity, entrypoint, object : EngineReadyListener {
                         override fun onReady(params: Any?) {
                             if (params !is String || params != entrypoint) {
                                 throw IllegalStateException("entrypoint must match.")
                             }
-                            context?.get()!!.startActivity(intent)
+                            lastActivity.startActivity(intent)
                         }
                     })
                 }
             } else {
-                context?.get()!!.startActivity(intent)
+                lastActivity.startActivity(intent)
             }
         }
 

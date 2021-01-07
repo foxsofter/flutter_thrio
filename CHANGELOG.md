@@ -224,3 +224,9 @@
 ## 1.6.2
 
 * fix: Android crash at context.get()!!
+
+## 1.7.0
+
+* feat: 支持单引擎下 Flutter 页面之间直接传递复杂类型，无需设置序列化器和反序列化器
+* fix: `ModuleContext` 增加 `remove` 方法
+* fix: Android 下在 Acitivity 释放掉引起的崩溃

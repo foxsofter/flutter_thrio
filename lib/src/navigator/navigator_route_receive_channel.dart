@@ -23,6 +23,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import '../channel/thrio_channel.dart';
+import '../module/module_anchor.dart';
 import '../module/module_types.dart';
 import '../module/thrio_module.dart';
 import 'navigator_logger.dart';
@@ -120,10 +121,19 @@ class NavigatorRouteReceiveChannel {
           .map((arguments) => arguments['params']);
 
   dynamic _deserializeParams(String url, dynamic params) {
-    if (params != null && params is Map) {
+    if (params == null) {
+      return null;
+    }
+
+    if (params is Map) {
+      if (params.containsKey('__thrio_Params_HashCode__')) {
+        // ignore: avoid_as
+        return anchor.removeParam(params['__thrio_Params_HashCode__'] as int);
+      }
+
       // ignore: avoid_as
       final typeString = params['__thrio_TParams__'] as String;
-      if (typeString != null) {
+      if (typeString?.isNotEmpty ?? false) {
         final paramsInstance =
             ThrioModule.get<JsonDeserializer>(url: url, key: typeString)
                 ?.call(params.cast<String, dynamic>());
@@ -132,6 +142,7 @@ class NavigatorRouteReceiveChannel {
         }
       }
     }
+
     return params;
   }
 

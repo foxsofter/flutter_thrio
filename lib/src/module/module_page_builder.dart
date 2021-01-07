@@ -25,6 +25,8 @@ import '../navigator/navigator_types.dart';
 import 'module_anchor.dart';
 import 'thrio_module.dart';
 
+const String kNavigatorPageDefaultUrl = 'home';
+
 mixin ModulePageBuilder on ThrioModule {
   NavigatorPageBuilder _pageBuilder;
 
@@ -43,7 +45,7 @@ mixin ModulePageBuilder on ThrioModule {
     } while (parentModule != null && parentModule.key.isNotEmpty);
 
     anchor.allUrls.add((StringBuffer()..writeAll(urlComponents)).toString());
-    if (key == 'home') {
+    if (key == kNavigatorPageDefaultUrl) {
       anchor.allUrls.add((StringBuffer()
             ..writeAll(
               urlComponents..removeLast(),
