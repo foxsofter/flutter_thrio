@@ -238,3 +238,7 @@
 ## 1.7.2
 
 * fix: Android pop一个原生页面后无法再 push Flutter 页面
+
+## 1.7.3
+
+* fix: change `onModuleLoading` to async method.

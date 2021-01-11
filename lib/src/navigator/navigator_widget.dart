@@ -61,20 +61,20 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
   List<Route> get history => widget._observerManager.pageRoutes;
 
   /// 还无法实现animated=false
-  Future<bool> push(RouteSettings settings, {bool animated = true}) {
+  Future<bool> push(RouteSettings settings, {bool animated = true}) async {
     final navigatorState = widget.child.tryStateOf<NavigatorState>();
     if (navigatorState == null) {
-      return Future.value(false);
+      return false;
     }
 
     final pageBuilder =
         ThrioModule.get<NavigatorPageBuilder>(url: settings.url);
     if (pageBuilder == null) {
-      return Future.value(false);
+      return false;
     }
 
     // 加载模块
-    anchor.loading(settings.url);
+    await anchor.loading(settings.url);
 
     final route = NavigatorPageRoute(
       builder: pageBuilder,
@@ -95,9 +95,10 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
     // 设置一个空值，避免页面打开后不生效
     SystemChrome.setSystemUIOverlayStyle(_style);
 
+    // ignore: unawaited_futures
     navigatorState.push(route);
 
-    return Future.value(true);
+    return true;
   }
 
   Future<bool> maybePop(

@@ -221,7 +221,7 @@ mixin ThrioModule {
   /// Called when the first page in the module is about to be pushed.
   ///
   @protected
-  void onModuleLoading(ModuleContext moduleContext) {
+  Future onModuleLoading(ModuleContext moduleContext) async {
     verbose('onModuleLoading: $key');
   }
 

@@ -69,7 +69,7 @@ class ModuleAnchor
     ThrioNavigatorImplement.shared().init(moduleContext);
   }
 
-  void loading(String url) {
+  Future loading(String url) async {
     final modules = getModules(url: url);
     if (modules == null) {
       return;
@@ -77,9 +77,8 @@ class ModuleAnchor
 
     for (final module in modules) {
       if (!module.isLoaded) {
-        module
-          ..isLoaded = true
-          ..onModuleLoading(module.moduleContext);
+        module.isLoaded = true;
+        await module.onModuleLoading(module.moduleContext);
       }
     }
   }
