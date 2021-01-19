@@ -54,6 +54,10 @@ internal object NavigationController : Application.ActivityLifecycleCallbacks {
     }
 
     override fun onActivityResumed(activity: Activity) {
+        if (context == null || context?.get() == null) {
+            context = WeakReference(activity)
+        }
+
         Notify.doNotify(activity)
         Push.doPush(activity)
     }
@@ -105,7 +109,12 @@ internal object NavigationController : Application.ActivityLifecycleCallbacks {
             var entrypoint = NAVIGATION_NATIVE_ENTRYPOINT
 
             val lastHolder = PageRoutes.lastRouteHolder()
-            val lastActivity = lastHolder?.activity?.get() ?: context?.get() ?: return
+            val lastActivity = lastHolder?.activity?.get() ?: context?.get()
+            if (lastActivity == null) {
+                result?.invoke(null)
+                routeAction = RouteAction.NONE
+                return
+            }
             val lastEntrypoint = lastHolder?.entrypoint
 
             if (builder is FlutterIntentBuilder) {
@@ -161,7 +170,13 @@ internal object NavigationController : Application.ActivityLifecycleCallbacks {
             if (routeAction != RouteAction.PUSH) {
                 return
             }
-            val settings = routeSettings ?: activity.intent.getRouteSettings() ?: return
+            val settings = routeSettings ?: activity.intent.getRouteSettings()
+            if (settings == null) {
+                result?.invoke(null)
+                result = null
+                routeAction = RouteAction.NONE
+                return
+            }
 
             routeAction = RouteAction.PUSHING
 

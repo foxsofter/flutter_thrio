@@ -242,3 +242,7 @@
 ## 1.7.3
 
 * fix: change `onModuleLoading` to async method.
+
+## 1.7.4
+
+* fix: 修复部分Android机型可能出现的无法获取当前 Activity 的bug，导致无法 push 页面
