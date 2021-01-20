@@ -16,14 +16,14 @@
 01. 稳定性、通用性在部分项目中得到验证，有用户反馈，将整个 app 的路由方案全部切换到后，崩溃率降低显著
 2.  内存占用方面，thrio 在连续打开 Flutter 页面的内存占用方面从一开始就碾压主流的 Flutter 混合栈，更进一步的，避开原理层面带来的内存优势，这里有个对比，也说明 thrio 在内存占用上的优异表现，[传送门](https://github.com/alibaba/flutter_boost/issues/933)
 3.  支持 `FlutterEngine` 的复用，还支持 `FlutterViewController` 和 `FlutterActivity` 的复用，这保证了 `Flutter` 混合栈框架在内存占用上是最优解
-4.  在 1 情形下，支持 **跨栈路由** 的能力，这是目前唯一能做到的 Flutter混合栈开源框架
-5.  在 1 情形下，除了提供 `push` 和 `pop`，也提供了 `remove` 和 `popTo` 的能力，目前唯一能做到的 Flutter混合栈开源框架
-6.  在 1 情形下，提供页面通知的能力，组合 `push` 和 `pop` 的路由传参能力，可以让状态参数在页面间传递，省去很多 channel 通讯的必要
-7.  在 4 情形下，页面传参支持Json对象类型
-8.  在 1 情形下，支持完整的页面生命周期
-9.  在 1 情形下，支持完整的路由周期
-10. 在 1 情形下，支持多引擎模式，可以在一个原生 `App` 中运行多份 `Flutter` 代码，目前唯一能做到的 `Flutter` 混合栈开源框架
-11. 在 1 情形下，解决 iOS 和 Android 上的侧滑返回手势冲突
+4.  在 3 情形下，支持 **跨栈路由** 的能力，这是目前唯一能做到的 Flutter混合栈开源框架
+5.  在 3 情形下，除了提供 `push` 和 `pop`，也提供了 `remove` 和 `popTo` 的能力，目前唯一能做到的 Flutter混合栈开源框架
+6.  在 3 情形下，提供页面通知的能力，组合 `push` 和 `pop` 的路由传参能力，可以让状态参数在页面间传递，省去很多 channel 通讯的必要
+7.  在 3 情形下，页面传参支持Json对象类型，单引擎下纯 `Flutter` 开发支持直接传递对象类型
+8.  在 3 情形下，支持完整的页面生命周期
+9.  在 3 情形下，支持完整的路由周期，兼容使用 `Flutter` 的 `Navigator` 来打开对话框等弹窗
+10. 在 3 情形下，支持多引擎模式，可以在一个原生 `App` 中运行多份 `Flutter` 代码，目前唯一能做到的 `Flutter` 混合栈开源框架
+11. 在 3 情形下，解决 iOS 和 Android 上的侧滑返回手势冲突
 12. iOS 上自动隐藏 `Flutter` 页面的导航栏
 13. 额外的支持三端统一的模块化方式，更好的与路由API配合
 
@@ -39,6 +39,7 @@
 03. 模仿 thrio demo 中的源码，在现有工程上加入相关代码
 04. 不要继承 Flutter SDK 中的一些类，比如 `FlutterViewController`、`FlutterActivity`、`FlutterAppDelegate` 等
 05. 不要调用 `GeneratedPluginRegistrant` 的 `registerWithRegistry` 方法了，因为框架会自动调用
+6.  url 至少保持两段
 
 ## 最后
 
