@@ -246,3 +246,7 @@
 ## 1.7.4
 
 * fix: 修复部分Android机型可能出现的无法获取当前 Activity 的bug，导致无法 push 页面
+
+## 1.7.5
+
+* fix: 可能出现的 `NavigatorPageRoute` as 失败
