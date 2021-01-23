@@ -16,7 +16,7 @@
 //    [ThrioModule init:[MainModule new] multiEngineEnabled:YES];
 
     // Flutter页面作为第一页
-    UINavigationController *nvc = [[NavigatorNavigationController alloc] initWithUrl:@"/biz1/flutter3" params:nil];
+    UINavigationController *nvc = [[NavigatorNavigationController alloc] initWithUrl:@"/biz1/native1" params:nil];
     self.window.rootViewController = nvc;
     [self.window makeKeyAndVisible];
 

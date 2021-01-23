@@ -75,9 +75,10 @@ class NavigatorObserverManager extends NavigatorObserver {
       if (_currentPopRoutes.length == 1) {
         Future(() {
           if (_currentPopRoutes.length == 1) {
-            // ignore: avoid_as
-            final lastRoute = pageRoutes.last as NavigatorPageRoute;
-            if (lastRoute.routeAction == NavigatorRouteAction.popTo) {
+            if (pageRoutes.last is NavigatorPageRoute &&
+                // ignore: avoid_as
+                (pageRoutes.last as NavigatorPageRoute).routeAction ==
+                    NavigatorRouteAction.popTo) {
               if (pageRoutes.last.settings.url != '/') {
                 verbose('didPopTo: url->${pageRoutes.last.settings.url} '
                     'index->${pageRoutes.last.settings.index}');
@@ -88,7 +89,8 @@ class NavigatorObserverManager extends NavigatorObserver {
                     NavigatorRouteAction.popTo,
                   );
               }
-              lastRoute.routeAction = null;
+              // ignore: avoid_as
+              (pageRoutes.last as NavigatorPageRoute).routeAction = null;
             } else if (route.routeAction == NavigatorRouteAction.pop ||
                 route.routeAction == null) {
               // 这里需要判断 routeAction == null 的场景，处理滑动返回需要

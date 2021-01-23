@@ -29,7 +29,7 @@
 
 ## 劣势
 
-01. 在 iOS 上不支持 `present`，技术上完全可以实现，甚至使用者可以通过传参的方式在 `builder` 中自己 `present`，但为了 API 设计上统一，作者选择不支持  `present`，demo 中其实是有 `present` 的示例的，建议 `present` 的时候外套一个 `UINavigationController`，可以保证不管何时 `push` 时 API 都是有效的，flutter_thrio 时支持多 `UINavigationController` 的，有一点需要注意的是，如果多个 `UINavigationController` 内嵌于 `UITabBar` 中时，要注意无法同时将多个 `FlutterViewController` 呈现，不支持是因为支持的话无法进行引擎复用。
+01. 在 iOS 上不支持 `present`，技术上完全可以实现，甚至使用者可以通过传参的方式在 `builder` 中自己 `present`，但为了 API 设计上统一，作者选择不支持  `present`，demo 中其实是有 `present` 的示例的，建议 `present` 的时候外套一个 `UINavigationController`，可以保证不管何时 `push` 时 API 都是有效的，flutter_thrio 是支持多 `UINavigationController` 的，有一点需要注意的是，如果多个 `UINavigationController` 内嵌于 `UITabBar` 中时，要注意无法同时将多个 `FlutterViewController` 呈现，不支持是因为支持的话无法进行引擎复用。
 02. 在 Android 上不支持 `Fragment`，原因是复杂性无法解决，作者目前不能够保证提供一个通用稳定的版本。
 
 ## 入门

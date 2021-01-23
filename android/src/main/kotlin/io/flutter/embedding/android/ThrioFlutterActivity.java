@@ -207,8 +207,6 @@ public class ThrioFlutterActivity extends Activity
         implements ThrioFlutterPageDelegate.Host, LifecycleOwner {
     private static final String TAG = "ThrioFlutterActivity";
 
-    private boolean resumeNeedDelay = false;
-
     /**
      * Creates an {@link Intent} that launches a {@code ThrioFlutterActivity}, which creates a {@link
      * FlutterEngine} that executes a {@code main()} Dart entrypoint, and displays the "/" route as
@@ -412,6 +410,7 @@ public class ThrioFlutterActivity extends Activity
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         switchLaunchThemeForNormalTheme();
+        resumeOnCreate = true;
 
         super.onCreate(savedInstanceState);
 
@@ -548,7 +547,8 @@ public class ThrioFlutterActivity extends Activity
         delegate.onStart();
     }
 
-    private static Timer lastResumeTimer;
+    private Timer lastResumeTimer;
+    private boolean resumeOnCreate = false;
 
     @Override
     public void onResume() {
@@ -560,13 +560,12 @@ public class ThrioFlutterActivity extends Activity
                 lastResumeTimer = null;
             }
 
-            //first init no need delay
-            if (!resumeNeedDelay) {
+            // first init no need delay
+            if (resumeOnCreate) {
+                resumeOnCreate = false;
                 resume();
                 return;
             }
-
-            resumeNeedDelay = true;
 
             lastResumeTimer = new Timer();
             lastResumeTimer.schedule(new TimerTask() {
@@ -578,6 +577,7 @@ public class ThrioFlutterActivity extends Activity
         } catch (IllegalStateException ignored) {
         }
     }
+
 
     private void resume() {
         if (Looper.getMainLooper() == Looper.myLooper()) {
