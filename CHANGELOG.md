@@ -250,3 +250,7 @@
 ## 1.7.5
 
 * fix: 可能出现的 `NavigatorPageRoute` as 失败
+
+## 1.7.6
+
+* fix: iOS `remove` 时如果 `url` 拼写错误导致 result 不调用

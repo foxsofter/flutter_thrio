@@ -112,9 +112,16 @@
           animated:(BOOL)animated
             result:(ThrioBoolCallback _Nullable)result {
     NSArray *allNvcs = [self.navigationControllers.allObjects.reverseObjectEnumerator allObjects];
+    BOOL contains = NO;
     for (UINavigationController *nvc in allNvcs) {
         if ([nvc thrio_containsUrl:url index:index]) {
+            contains = YES;
             [nvc thrio_removeUrl:url index:index animated:animated result:result];
+        }
+    }
+    if (!contains) {
+        if (result) {
+            result(NO);
         }
     }
 }
