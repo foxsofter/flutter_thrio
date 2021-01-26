@@ -27,6 +27,14 @@ import com.hellobike.flutter.thrio.channel.ThrioChannel
 
 internal class RouteReceiveChannel(val channel: ThrioChannel,
                                    var readyListener: EngineReadyListener? = null) {
+
+    var isReady = false
+        private set
+
+    private val readyLock = Any()
+
+    private var readyListenerSet: MutableSet<EngineReadyListener>? = mutableSetOf()
+
     init {
         onReady()
         onPush()
@@ -44,10 +52,29 @@ internal class RouteReceiveChannel(val channel: ThrioChannel,
         onUnregisterUrls()
     }
 
+    fun addReadyListener(readyListener: EngineReadyListener?) {
+        if (readyListener == null) return
+        if (isReady) {
+            readyListener.onReady(channel.entrypoint)
+        } else {
+            synchronized(readyLock) {
+                if (isReady) {
+                    readyListener.onReady(channel.entrypoint)
+                } else {
+                    readyListenerSet?.add(readyListener)
+                }
+            }
+        }
+    }
+
     private fun onReady() {
+        addReadyListener(readyListener)
         channel.registryMethod("ready") { _, _ ->
-            readyListener?.onReady(channel.entrypoint)
-            readyListener = null
+            synchronized(readyLock) {
+                isReady = true
+                readyListenerSet?.forEach { it.onReady(channel.entrypoint) }
+                readyListenerSet = null
+            }
         }
     }
 
@@ -68,7 +95,7 @@ internal class RouteReceiveChannel(val channel: ThrioChannel,
             val index = if (arguments["index"] != null) arguments["index"] as Int else 0
             val name = arguments["name"] as String
             val params = arguments["params"]
-            NavigationController.Notify.notify(url, index, name, params){
+            NavigationController.Notify.notify(url, index, name, params) {
                 result(it)
             }
         }

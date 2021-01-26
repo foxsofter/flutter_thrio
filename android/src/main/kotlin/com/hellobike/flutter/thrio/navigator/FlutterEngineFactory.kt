@@ -40,7 +40,12 @@ object FlutterEngineFactory : PageObserver, RouteObserver {
             entrypoint
 
         if (engines.contains(ep)) {
-            readyListener?.onReady(ep)
+            val engine = engines[ep]!!
+            if (engine.isReady) {
+                readyListener?.onReady(ep)
+            } else {
+                engine.addReadyListener(readyListener)
+            }
         } else {
             engines[ep] = FlutterEngine(context, ep, readyListener)
         }

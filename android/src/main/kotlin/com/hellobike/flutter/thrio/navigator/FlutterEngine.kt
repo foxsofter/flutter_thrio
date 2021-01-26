@@ -39,6 +39,8 @@ data class FlutterEngine(private val context: Context,
     internal var routeChannel: RouteObserverChannel
     internal var pageChannel: PageObserverChannel
 
+    val isReady get() = receiveChannel.isReady
+
     init {
         val channel = ThrioChannel(entrypoint, "__thrio_app__${entrypoint}")
         channel.setupMethodChannel(flutterEngine.dartExecutor)
@@ -52,6 +54,10 @@ data class FlutterEngine(private val context: Context,
         flutterEngine.dartExecutor.executeDartEntrypoint(dartEntrypoint)
 
         FlutterEngineCache.getInstance().put(entrypoint, flutterEngine)
+    }
+
+    fun addReadyListener(readyListener: EngineReadyListener?) {
+        receiveChannel.addReadyListener(readyListener)
     }
 
     companion object {
