@@ -25,8 +25,8 @@ package com.hellobike.flutter.thrio.module
 
 import android.app.Application
 import android.content.Context
+import com.hellobike.flutter.thrio.navigator.*
 import com.hellobike.flutter.thrio.navigator.ActivityDelegate
-import com.hellobike.flutter.thrio.navigator.FlutterEngineFactory
 import com.hellobike.flutter.thrio.navigator.Log
 import com.hellobike.flutter.thrio.navigator.NAVIGATION_FLUTTER_ENTRYPOINT_DEFAULT
 
@@ -37,20 +37,17 @@ open class ThrioModule {
         private val root by lazy { ThrioModule() }
 
         @JvmStatic
-        fun init(context: Application, module: ThrioModule) {
-            context.registerActivityLifecycleCallbacks(ActivityDelegate)
-
-            root.registerModule(context, module)
-            root.initModule(context)
-        }
-
-        @JvmStatic
-        fun init(context: Application, module: ThrioModule, multiEngineEnabled: Boolean) {
+        @JvmOverloads
+        fun init(context: Application, module: ThrioModule,
+                 multiEngineEnabled: Boolean = false,
+                 entrypoint: String = NAVIGATION_FLUTTER_ENTRYPOINT_DEFAULT,
+                 readyListener: EngineReadyListener? = null) {
             FlutterEngineFactory.isMultiEngineEnabled = multiEngineEnabled
             context.registerActivityLifecycleCallbacks(ActivityDelegate)
 
             root.registerModule(context, module)
             root.initModule(context)
+            root.startupFlutterEngine(context, entrypoint, readyListener)
         }
     }
 
@@ -87,7 +84,6 @@ open class ThrioModule {
                 it.onJsonDeserializerRegister(context)
             }
         }
-        startupFlutterEngine(context)
     }
 
     protected open fun onModuleRegister(context: Context) {}
@@ -102,10 +98,9 @@ open class ThrioModule {
         }
 
     @JvmOverloads
-    protected fun startupFlutterEngine(context: Context,
-                                       entrypoint: String = NAVIGATION_FLUTTER_ENTRYPOINT_DEFAULT) {
+    protected fun startupFlutterEngine(context: Context, entrypoint: String = NAVIGATION_FLUTTER_ENTRYPOINT_DEFAULT, readyListener: EngineReadyListener? = null) {
         if (!FlutterEngineFactory.isMultiEngineEnabled) {
-            FlutterEngineFactory.startup(context, entrypoint)
+            FlutterEngineFactory.startup(context, entrypoint, readyListener)
         }
     }
 }
