@@ -27,6 +27,7 @@ import android.app.Activity
 import android.app.Application
 import android.content.Context
 import android.content.Intent
+import android.graphics.pdf.PdfDocument
 import android.os.Bundle
 import com.hellobike.flutter.thrio.BooleanCallback
 import com.hellobike.flutter.thrio.NullableAnyCallback
@@ -95,6 +96,7 @@ internal object NavigationController : Application.ActivityLifecycleCallbacks {
             }
 
             routeAction = RouteAction.PUSH
+            PageRoutes.willAppearPageId = 0
 
             val lastRoute = PageRoutes.lastRoute(url)
             val index = (lastRoute?.settings?.index?.plus(1)) ?: 1
@@ -268,6 +270,7 @@ internal object NavigationController : Application.ActivityLifecycleCallbacks {
             }
 
             routeAction = RouteAction.POP
+            PageRoutes.willAppearPageId = 0
 
             val firstHolder = PageRoutes.firstRouteHolder!!
             if (PageRoutes.routeHolders.count() == 1 && firstHolder.allRoute().count() < 2) {
@@ -320,6 +323,8 @@ internal object NavigationController : Application.ActivityLifecycleCallbacks {
                 return
             }
             routeAction = RouteAction.POPPING_TO
+            // 表示当前正在 popTo，在 onResume 中的处理逻辑不一样
+            PageRoutes.willAppearPageId = -1
 
             poppedToRoute.settings.animated = animated
             val poppedToHolder = PageRoutes.lastRouteHolder(url, index)
@@ -413,6 +418,7 @@ internal object NavigationController : Application.ActivityLifecycleCallbacks {
             }
 
             routeAction = RouteAction.REMOVING
+            PageRoutes.willAppearPageId = 0
 
             PageRoutes.remove(url, index, animated) {
                 result?.invoke(it)
@@ -425,6 +431,7 @@ internal object NavigationController : Application.ActivityLifecycleCallbacks {
             if (pageId == NAVIGATION_PAGE_ID_NONE) {
                 return
             }
+
             PageRoutes.removedByRemoveRouteHolder(pageId)?.activity?.get()?.apply {
                 this.finish()
             }

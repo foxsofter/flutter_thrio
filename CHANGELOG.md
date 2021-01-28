@@ -254,3 +254,7 @@
 ## 1.7.6
 
 * fix: iOS `remove` 时如果 `url` 拼写错误导致 result 不调用
+
+## 1.7.7
+
+* fix: 修复 issue #152

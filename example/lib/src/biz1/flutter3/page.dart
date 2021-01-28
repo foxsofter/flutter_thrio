@@ -20,19 +20,19 @@ class Page extends StatefulWidget {
 class _PageState extends State<Page> {
   @override
   Widget build(BuildContext context) => NavigatorPageLifecycle(
-      didAppear: (settings) {
-        SystemChrome.setPreferredOrientations([
-          DeviceOrientation.landscapeLeft,
-          DeviceOrientation.landscapeRight,
-        ]);
-      },
-      didDisappear: (settings) {
-        SystemChrome.setPreferredOrientations([
-          DeviceOrientation.portraitUp,
-          // DeviceOrientation.landscapeLeft,
-          // DeviceOrientation.landscapeRight,
-        ]);
-      },
+      // didAppear: (settings) {
+      //   SystemChrome.setPreferredOrientations([
+      //     DeviceOrientation.landscapeLeft,
+      //     DeviceOrientation.landscapeRight,
+      //   ]);
+      // },
+      // didDisappear: (settings) {
+      //   SystemChrome.setPreferredOrientations([
+      //     DeviceOrientation.portraitUp,
+      //     // DeviceOrientation.landscapeLeft,
+      //     // DeviceOrientation.landscapeRight,
+      //   ]);
+      // },
       child: WillPopScope(
           onWillPop: () async {
             ThrioLogger.i('page3 WillPopScope');

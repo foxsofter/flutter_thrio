@@ -27,6 +27,8 @@ import androidx.lifecycle.Lifecycle;
 import androidx.lifecycle.LifecycleOwner;
 import androidx.lifecycle.LifecycleRegistry;
 
+import com.hellobike.flutter.thrio.navigator.PageRoutes;
+
 import java.lang.reflect.Method;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -547,37 +549,61 @@ public class ThrioFlutterActivity extends Activity
         delegate.onStart();
     }
 
-    private Timer lastResumeTimer;
+    private static Timer lastResumeTimer;
     private boolean resumeOnCreate = false;
 
     @Override
     public void onResume() {
         super.onResume();
-        // 设置一个桶，仅使 600ms 内最后调用的一次生效
-        try {
-            if (lastResumeTimer != null) {
-                lastResumeTimer.cancel();
-                lastResumeTimer = null;
-            }
 
-            // first init no need delay
-            if (resumeOnCreate) {
-                resumeOnCreate = false;
-                resume();
-                return;
-            }
+        int willAppearPageId = PageRoutes.INSTANCE.getWillAppearPageId();
 
-            lastResumeTimer = new Timer();
-            lastResumeTimer.schedule(new TimerTask() {
-                @Override
-                public void run() {
-                    resume();
+        if (willAppearPageId == -1) {
+            // 设置一个桶，仅使 600ms 内最后调用的一次生效
+            try {
+                if (lastResumeTimer != null) {
+                    lastResumeTimer.cancel();
+                    lastResumeTimer = null;
                 }
-            }, 600);
-        } catch (IllegalStateException ignored) {
+
+                // first init no need delay
+                if (resumeOnCreate) {
+                    resumeOnCreate = false;
+                    resume();
+                    return;
+                }
+
+                lastResumeTimer = new Timer();
+                lastResumeTimer.schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        resume();
+                    }
+                }, 600);
+            } catch (IllegalStateException ignored) {
+            }
+        } else if (willAppearPageId == 0) {
+            resume();
+        } else {
+            int pageId = getIntent().getIntExtra("NAVIGATION_PAGE_ID", -1);
+            if (pageId == willAppearPageId) {
+                // 马上调用不然画面模糊
+                resume();
+                // 600ms 后再次调用让输入法生效
+                if (lastResumeTimer != null) {
+                    lastResumeTimer.cancel();
+                    lastResumeTimer = null;
+                }
+                lastResumeTimer = new Timer();
+                lastResumeTimer.schedule(new TimerTask() {
+                    @Override
+                    public void run() {
+                        resume();
+                    }
+                }, 600);
+            }
         }
     }
-
 
     private void resume() {
         if (Looper.getMainLooper() == Looper.myLooper()) {
@@ -610,8 +636,12 @@ public class ThrioFlutterActivity extends Activity
     @Override
     protected void onStop() {
         super.onStop();
-        delegate.onStop();
-        lifecycle.handleLifecycleEvent(Lifecycle.Event.ON_STOP);
+
+        int willAppearPageId = PageRoutes.INSTANCE.getWillAppearPageId();
+        if (willAppearPageId == 0) {
+            delegate.onStop();
+            lifecycle.handleLifecycleEvent(Lifecycle.Event.ON_STOP);
+        }
     }
 
     @Override
@@ -623,9 +653,13 @@ public class ThrioFlutterActivity extends Activity
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        delegate.onDestroyView();
-        delegate.onDetach();
-        lifecycle.handleLifecycleEvent(Lifecycle.Event.ON_DESTROY);
+
+        int willAppearPageId = PageRoutes.INSTANCE.getWillAppearPageId();
+        if (willAppearPageId == 0) {
+            delegate.onDestroyView();
+            delegate.onDetach();
+            lifecycle.handleLifecycleEvent(Lifecycle.Event.ON_DESTROY);
+        }
     }
 
     @Override

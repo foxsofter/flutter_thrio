@@ -46,6 +46,8 @@ internal object PageRoutes : Application.ActivityLifecycleCallbacks {
             }
         }
 
+    var willAppearPageId = 0
+
     val routeHolders by lazy { mutableListOf<PageRouteHolder>() }
     val firstRouteHolder: PageRouteHolder? get() = routeHolders.firstOrNull()
 
@@ -119,10 +121,10 @@ internal object PageRoutes : Application.ActivityLifecycleCallbacks {
     }
 
     fun <T> notify(url: String?,
-               index: Int?,
-               name: String,
-               params: T?,
-               result: BooleanCallback) {
+                   index: Int?,
+                   name: String,
+                   params: T?,
+                   result: BooleanCallback) {
         if (!hasRoute(url, index)) {
             result(false)
             return
@@ -148,9 +150,14 @@ internal object PageRoutes : Application.ActivityLifecycleCallbacks {
             holder.activity?.get()?.finish()
             result(true)
         } else {
+            // 记下次顶部的 Activity 的 holder
+            val secondTopHolder = routeHolders[routeHolders.count() - 2]
+
             holder.pop<T>(params, animated, inRoot) { it ->
                 if (it == true) {
                     if (!holder.hasRoute()) {
+                        willAppearPageId = if (secondTopHolder.entrypoint == NAVIGATION_NATIVE_ENTRYPOINT) 0 else secondTopHolder.pageId
+
                         holder.activity?.get()?.let {
                             routeHolders.remove(holder)
                             it.finish()
@@ -206,14 +213,25 @@ internal object PageRoutes : Application.ActivityLifecycleCallbacks {
             return
         }
 
+
+
         holder.remove(url, index, animated) {
             if (it) {
                 if (!holder.hasRoute()) {
+                    willAppearPageId = 0
+                    if (holder == routeHolders.last() && routeHolders.count() > 1) {
+                        val secondTopHolder = routeHolders[routeHolders.count() - 2]
+                        if (secondTopHolder.entrypoint != NAVIGATION_NATIVE_ENTRYPOINT) {
+                            willAppearPageId = secondTopHolder.pageId
+                        }
+                    }
                     val activity = holder.activity?.get()
                     if (activity == null) {
+                        routeHolders.remove(holder)
                         removedRouteHolders.add(holder)
                     } else {
                         activity.finish()
+                        routeHolders.remove(holder)
                     }
                 }
             }
