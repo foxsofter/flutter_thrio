@@ -637,11 +637,8 @@ public class ThrioFlutterActivity extends Activity
     protected void onStop() {
         super.onStop();
 
-        int willAppearPageId = PageRoutes.INSTANCE.getWillAppearPageId();
-        if (willAppearPageId == 0) {
-            delegate.onStop();
-            lifecycle.handleLifecycleEvent(Lifecycle.Event.ON_STOP);
-        }
+        delegate.onStop();
+        lifecycle.handleLifecycleEvent(Lifecycle.Event.ON_STOP);
     }
 
     @Override
@@ -653,13 +650,10 @@ public class ThrioFlutterActivity extends Activity
     @Override
     protected void onDestroy() {
         super.onDestroy();
-
-        int willAppearPageId = PageRoutes.INSTANCE.getWillAppearPageId();
-        if (willAppearPageId == 0) {
-            delegate.onDestroyView();
-            delegate.onDetach();
-            lifecycle.handleLifecycleEvent(Lifecycle.Event.ON_DESTROY);
-        }
+        
+        delegate.onDestroyView();
+        delegate.onDetach();
+        lifecycle.handleLifecycleEvent(Lifecycle.Event.ON_DESTROY);
     }
 
     @Override
