@@ -153,12 +153,14 @@ internal object PageRoutes : Application.ActivityLifecycleCallbacks {
             result(true)
         } else {
             // 记下次顶部的 Activity 的 holder
-            val secondTopHolder = routeHolders[routeHolders.count() - 2]
+            val secondTopHolder = if (routeHolders.count() > 1) routeHolders[routeHolders.count() - 2] else null
 
             holder.pop<T>(params, animated, inRoot) { it ->
                 if (it == true) {
                     if (!holder.hasRoute()) {
-                        willAppearPageId = if (secondTopHolder.entrypoint == NAVIGATION_NATIVE_ENTRYPOINT) 0 else secondTopHolder.pageId
+                        willAppearPageId =
+                                if (secondTopHolder == null || secondTopHolder.entrypoint == NAVIGATION_NATIVE_ENTRYPOINT) 0
+                                else secondTopHolder.pageId
 
                         holder.activity?.get()?.let {
                             routeHolders.remove(holder)
@@ -221,7 +223,6 @@ internal object PageRoutes : Application.ActivityLifecycleCallbacks {
         holder.remove(url, index, animated) {
             if (it) {
                 if (!holder.hasRoute()) {
-                    willAppearPageId = 0
                     if (holder == routeHolders.last() && routeHolders.count() > 1) {
                         val secondTopHolder = routeHolders[routeHolders.count() - 2]
                         if (secondTopHolder.entrypoint != NAVIGATION_NATIVE_ENTRYPOINT) {

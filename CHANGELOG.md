@@ -264,3 +264,7 @@
 * feat: 添加 `isContainsInnerRoute`
 * feat: 当 route 为 `PopupRoute` 时，不触发 `didAppear`
 * fix: Android 下出现的异常
+
+## 1.7.9
+
+* fix: 1.7.7 和 1.7.8 出现的 `pop` 失败

@@ -636,7 +636,6 @@ public class ThrioFlutterActivity extends Activity
     @Override
     protected void onStop() {
         super.onStop();
-
         delegate.onStop();
         lifecycle.handleLifecycleEvent(Lifecycle.Event.ON_STOP);
     }
@@ -650,7 +649,6 @@ public class ThrioFlutterActivity extends Activity
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        
         delegate.onDestroyView();
         delegate.onDetach();
         lifecycle.handleLifecycleEvent(Lifecycle.Event.ON_DESTROY);
