@@ -183,6 +183,18 @@ class ThrioNavigatorImplement {
   Future<List<RouteSettings>> allRoutes({String url}) =>
       _sendChannel?.allRoutes(url: url);
 
+  bool isContainsInnerRoute({String url}) {
+    final index = url?.isEmpty ?? true
+        ? navigatorState.history
+            .lastIndexWhere((route) => route is NavigatorPageRoute)
+        : navigatorState.history.lastIndexWhere((route) =>
+            route is NavigatorPageRoute && route.settings.url == url);
+    if (index < 0 || navigatorState.history.length <= index + 1) {
+      return false;
+    }
+    return navigatorState.history[index + 1] is! NavigatorPageRoute;
+  }
+
   Future<bool> setPopDisabled({
     @required String url,
     int index,

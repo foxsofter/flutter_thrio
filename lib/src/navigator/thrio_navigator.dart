@@ -108,4 +108,9 @@ abstract class ThrioNavigator {
   ///
   static Future<List<RouteSettings>> allRoutes({String url}) =>
       ThrioNavigatorImplement.shared().allRoutes(url: url);
+
+  /// Returns true if there is a route pushed by the Navigator
+  /// on the last matching url.
+  static bool isContainsInnerRoute({String url}) =>
+      ThrioNavigatorImplement.shared().isContainsInnerRoute(url: url);
 }

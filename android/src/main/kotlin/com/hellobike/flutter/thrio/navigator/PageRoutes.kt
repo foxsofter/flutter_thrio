@@ -47,6 +47,7 @@ internal object PageRoutes : Application.ActivityLifecycleCallbacks {
         }
 
     var willAppearPageId = 0
+    private val killBySystemPageIds = mutableListOf<Int>()
 
     val routeHolders by lazy { mutableListOf<PageRouteHolder>() }
     val firstRouteHolder: PageRouteHolder? get() = routeHolders.firstOrNull()
@@ -148,6 +149,7 @@ internal object PageRoutes : Application.ActivityLifecycleCallbacks {
 
         if (holder.routes.isEmpty()) {
             holder.activity?.get()?.finish()
+            routeHolders.remove(holder)
             result(true)
         } else {
             // 记下次顶部的 Activity 的 holder
@@ -201,6 +203,9 @@ internal object PageRoutes : Application.ActivityLifecycleCallbacks {
                         FlutterEngineFactory.getEngine(entrypoint)?.sendChannel?.onPopTo(poppedToSettings.toArguments()) {}
                     }
                 }
+                while (routeHolders.lastIndex > poppedToIndex) {
+                    routeHolders.removeLast()
+                }
             }
             result(ret)
         }
@@ -212,8 +217,6 @@ internal object PageRoutes : Application.ActivityLifecycleCallbacks {
             result(false)
             return
         }
-
-
 
         holder.remove(url, index, animated) {
             if (it) {
@@ -380,6 +383,9 @@ internal object PageRoutes : Application.ActivityLifecycleCallbacks {
         val pageId = activity.intent.getPageId()
         if (pageId != NAVIGATION_PAGE_ID_NONE) {
             outState.putInt(NAVIGATION_PAGE_ID_KEY, pageId)
+
+            // 如果经过这里表示 Activity 即将被系统杀掉
+            killBySystemPageIds.add(pageId)
         }
     }
 
@@ -421,11 +427,13 @@ internal object PageRoutes : Application.ActivityLifecycleCallbacks {
     override fun onActivityDestroyed(activity: Activity) {
         val pageId = activity.intent.getPageId()
         if (pageId != NAVIGATION_PAGE_ID_NONE) {
-            routeHolders.lastOrNull { it.pageId == pageId }?.apply {
-                if (activity.isFinishing) {
-                    routeHolders.remove(this)
+            if (!killBySystemPageIds.remove(pageId)) {
+                routeHolders.lastOrNull { it.pageId == pageId }?.apply {
+                    if (activity.isFinishing) {
+                        routeHolders.remove(this)
+                        this.activity = null
+                    }
                 }
-                this.activity = null
             }
         }
     }
