@@ -29,6 +29,9 @@ class _MainAppState extends State<MainApp> {
   Widget build(BuildContext context) => ExcludeSemantics(
         child: NavigatorMaterialApp(
           home: const NavigatorHome(showRestartButton: true),
+          builder: (context, child) => Container(
+            child: child,
+          ),
           theme: ThemeData(
             pageTransitionsTheme: const PageTransitionsTheme(builders: {
               TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
