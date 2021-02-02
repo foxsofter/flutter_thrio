@@ -268,3 +268,7 @@
 ## 1.7.9
 
 * fix: 1.7.7 和 1.7.8 出现的 `pop` 失败
+
+## 1.7.10
+
+* fix: support TransitionBuilder
