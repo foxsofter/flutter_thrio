@@ -272,3 +272,7 @@
 ## 1.7.10
 
 * fix: support TransitionBuilder
+
+## 1.7.11
+
+* fix: Activity 被系统杀掉可能引起的无法 `pop` 的问题

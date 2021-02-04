@@ -384,9 +384,10 @@ internal object PageRoutes : Application.ActivityLifecycleCallbacks {
         val pageId = activity.intent.getPageId()
         if (pageId != NAVIGATION_PAGE_ID_NONE) {
             outState.putInt(NAVIGATION_PAGE_ID_KEY, pageId)
-
-            // 如果经过这里表示 Activity 即将被系统杀掉
-            killBySystemPageIds.add(pageId)
+            if (activity is ThrioActivity) {
+                // 如果经过这里表示 Activity 即将被系统杀掉
+                killBySystemPageIds.add(pageId)
+            }
         }
     }
 
