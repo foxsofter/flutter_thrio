@@ -29,62 +29,50 @@ internal object Log {
     var navigatorLogging = false;
 
     fun v(tag: String, message: String) {
-        if (navigatorLogging) Log.v(tag, message) else {
-        }
+        if (navigatorLogging) Log.v(tag, message)
     }
 
     fun v(tag: String, message: String, tr: Throwable) {
-        if (navigatorLogging) Log.v(tag, message, tr) else {
-        }
+        if (navigatorLogging) Log.v(tag, message, tr)
     }
 
     fun i(tag: String, message: String) {
-        if (navigatorLogging) Log.i(tag, message) else {
-        }
+        if (navigatorLogging) Log.i(tag, message)
     }
 
     fun i(tag: String, message: String, tr: Throwable) {
-        if (navigatorLogging) Log.i(tag, message, tr) else {
-        }
+        if (navigatorLogging) Log.i(tag, message, tr)
     }
 
     fun d(tag: String, message: String) {
-        if (navigatorLogging) Log.d(tag, message) else {
-        }
+        if (navigatorLogging) Log.d(tag, message)
     }
 
     fun d(tag: String, message: String, tr: Throwable) {
-        if (navigatorLogging) Log.d(tag, message, tr) else {
-        }
+        if (navigatorLogging) Log.d(tag, message, tr)
     }
 
     fun w(tag: String, message: String) {
-        if (navigatorLogging) Log.w(tag, message) else {
-        }
+        if (navigatorLogging) Log.w(tag, message)
     }
 
     fun w(tag: String, message: String, tr: Throwable) {
-        if (navigatorLogging) Log.w(tag, message, tr) else {
-        }
+        if (navigatorLogging) Log.w(tag, message, tr)
     }
 
     fun e(tag: String, message: String) {
-        if (navigatorLogging) Log.e(tag, message) else {
-        }
+        if (navigatorLogging) Log.e(tag, message)
     }
 
     fun e(tag: String, message: String, tr: Throwable) {
-        if (navigatorLogging) Log.e(tag, message, tr) else {
-        }
+        if (navigatorLogging) Log.e(tag, message, tr)
     }
 
     fun wtf(tag: String, message: String) {
-        if (navigatorLogging) Log.wtf(tag, message) else {
-        }
+        if (navigatorLogging) Log.wtf(tag, message)
     }
 
     fun wtf(tag: String, message: String, tr: Throwable) {
-        if (navigatorLogging) Log.wtf(tag, message, tr) else {
-        }
+        if (navigatorLogging) Log.wtf(tag, message, tr)
     }
 }

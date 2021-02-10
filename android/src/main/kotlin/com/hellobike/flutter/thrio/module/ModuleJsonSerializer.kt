@@ -23,17 +23,15 @@
 
 package com.hellobike.flutter.thrio.module
 
-import android.content.Context
 import com.hellobike.flutter.thrio.JsonSerializer
 import com.hellobike.flutter.thrio.VoidCallback
-import com.hellobike.flutter.thrio.navigator.JsonSerializers
 
 interface ModuleJsonSerializer {
-    fun onJsonSerializerRegister(context: Context) {
 
+    fun onJsonSerializerRegister(moduleContext: ModuleContext) {
     }
 
     fun <T> registerJsonSerializer(serializer: JsonSerializer<T>, clazz: Class<T>): VoidCallback {
-        return JsonSerializers.serializers.registry(clazz.toString(), serializer)
+        return ModuleJsonSerializers.serializers.registry(clazz.toString(), serializer)
     }
 }

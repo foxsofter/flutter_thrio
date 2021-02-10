@@ -1,7 +1,7 @@
 /**
  * The MIT License (MIT)
  *
- * Copyright (c) 2019 Hellobike Group
+ * Copyright (c) 2020 foxsofter
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -23,20 +23,32 @@
 
 package com.hellobike.flutter.thrio.module
 
-import com.hellobike.flutter.thrio.VoidCallback
-import com.hellobike.flutter.thrio.navigator.RouteObserver
+import com.hellobike.flutter.thrio.JsonSerializer
+import com.hellobike.flutter.thrio.registry.RegistryMap
 
-interface ModuleRouteObserver {
+internal object ModuleJsonSerializers {
 
-    fun onRouteObserverRegister(moduleContext: ModuleContext) {
+    private const val TAG = "ModuleJsonSerializers"
 
-    }
+    val serializers by lazy { RegistryMap<String, JsonSerializer<*>>() }
 
-    fun registerRouteObserver(observer: RouteObserver): VoidCallback {
-        return ModuleRouteObservers.observers.registry(observer)
-    }
+    fun <T> serializeParams(params: T?): Any? {
+        if (params == null) {
+            return null
+        }
+        // 已经序列化过了
+        if (params is Map<*, *> && params.containsKey("__thrio_TParams__")) {
+            @Suppress("UNCHECKED_CAST")
+            return params as Map<String, Any>
+        }
+        val type = params.javaClass.toString()
+        val value = serializers[type] ?: return params
 
-    fun registerRouteObservers(observers: List<RouteObserver>): VoidCallback {
-        return ModuleRouteObservers.observers.registryAll(observers.toSet())
+        @Suppress("UNCHECKED_CAST")
+        val serializer = value as JsonSerializer<T>
+        val serializeParams: Map<String, Any?>? = serializer(params) ?: return params
+        return mutableMapOf<String, Any?>(
+            "__thrio_TParams__" to type
+        ).apply { if (serializeParams != null) putAll(serializeParams) }
     }
 }

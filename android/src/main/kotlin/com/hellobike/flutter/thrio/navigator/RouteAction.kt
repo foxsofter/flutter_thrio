@@ -39,6 +39,7 @@ internal enum class RouteAction(val value: String) {
             "push" -> PUSH
             "pushing" -> PUSHING
             "pop" -> POP
+            "popping"->POPPING
             "popTo" -> POP_TO
             "poppingTo" -> POPPING_TO
             "remove" -> REMOVE

@@ -21,15 +21,15 @@
  * IN THE SOFTWARE.
  */
 
-package com.hellobike.flutter.thrio.navigator
+package com.hellobike.flutter.thrio.module
 
+import com.hellobike.flutter.thrio.navigator.FlutterIntentBuilder
+import com.hellobike.flutter.thrio.navigator.IntentBuilder
 import com.hellobike.flutter.thrio.registry.RegistryMap
 
-internal object IntentBuilders {
+internal object ModuleIntentBuilders {
 
     val intentBuilders by lazy { RegistryMap<String, IntentBuilder>() }
 
     var flutterIntentBuilder = FlutterIntentBuilder()
 }
-
-

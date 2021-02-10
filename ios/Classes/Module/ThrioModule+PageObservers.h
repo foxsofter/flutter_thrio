@@ -1,6 +1,6 @@
 // The MIT License (MIT)
 //
-// Copyright (c) 2020 foxsofter
+// Copyright (c) 2021 foxsofter
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
 // copy of this software and associated documentation files (the "Software"),
@@ -20,16 +20,28 @@
 // IN THE SOFTWARE.
 
 #import <Foundation/Foundation.h>
-#import "ThrioNavigator.h"
-#import "ThrioRegistryMap.h"
+#import "ThrioModule.h"
+#import "ThrioRegistrySet.h"
+#import "NavigatorPageObservers.h"
+#import "NavigatorRouteSettings.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface ThrioNavigator (JsonSerializers)
+@interface ThrioModule (PageObservers)
 
-+ (ThrioRegistryMap *)jsonSerializers;
++ (NavigatorPageObservers *)pageObservers;
 
-+ (id _Nullable)serializeParams:(id _Nullable)params;
++ (void)willAppear:(NavigatorRouteSettings *)routeSettings
+       routeAction:(NSString *)routeAction;
+
++ (void)didAppear:(NavigatorRouteSettings *)routeSettings
+      routeAction:(NSString *)routeAction;
+
++ (void)willDisappear:(NavigatorRouteSettings *)routeSettings
+          routeAction:(NSString *)routeAction;
+
++ (void)didDisappear:(NavigatorRouteSettings *)routeSettings
+         routeAction:(NSString *)routeAction;
 
 @end
 

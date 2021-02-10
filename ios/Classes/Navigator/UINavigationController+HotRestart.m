@@ -24,7 +24,7 @@
 #import "NavigatorLogger.h"
 #import "NavigatorRouteSettings.h"
 #import "ThrioNavigator+Internal.h"
-#import "ThrioNavigator+JsonSerializers.h"
+#import "ThrioModule+JsonSerializers.h"
 #import "ThrioNavigator.h"
 #import "UINavigationController+HotRestart.h"
 #import "UIViewController+Navigator.h"
@@ -52,7 +52,7 @@
                    dispatch_get_main_queue(), ^{
         NavigatorVerbose(@"hot restart push");
         NavigatorRouteSettings *settings = viewController.thrio_firstRoute.settings;
-        id serializerParams = [ThrioNavigator serializeParams:settings.params];
+        id serializerParams = [ThrioModule serializeParams:settings.params];
         NavigatorRouteSendChannel *channel =
             [NavigatorFlutterEngineFactory.shared getSendChannelByEntrypoint:viewController.entrypoint];
         [channel push:[settings toArgumentsWithParams:serializerParams] result:nil];

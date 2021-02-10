@@ -7,20 +7,20 @@
 
 #import "ThrioModule.h"
 #import "ThrioModulePageBuilder.h"
-#import "ThrioNavigator+PageBuilders.h"
+#import "ThrioModule+PageBuilders.h"
 
 @implementation ThrioModule (PageBuilder)
 
 - (ThrioVoidCallback)registerPageBuilder:(NavigatorPageBuilder)builder
                                   forUrl:(NSString *)url {
-    return [ThrioNavigator.pageBuilders registry:url value:builder];
+    return [ThrioModule.pageBuilders registry:url value:builder];
 }
 
 - (void)setFlutterPageBuilder:(NavigatorFlutterPageBuilder)builder {
-    ThrioNavigator.flutterPageBuilder = builder;
+    ThrioModule.flutterPageBuilder = builder;
 }
 
-- (void)onPageBuilderRegister {
+- (void)onPageBuilderRegister:(ThrioModuleContext *)moduleContext {
 }
 
 @end

@@ -37,19 +37,24 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (instancetype)shared;
 
-- (void)startupWithEntrypoint:(NSString *)entrypoint readyBlock:(ThrioIdCallback _Nullable)block;
+- (void)startupWithEntrypoint:(NSString *)entrypoint
+                   readyBlock:(ThrioIdCallback _Nullable)block;
 
 - (FlutterEngine *)getEngineByEntrypoint:(NSString *)entrypoint;
 
 - (NavigatorRouteSendChannel *)getSendChannelByEntrypoint:(NSString *)entrypoint;
 
+- (ThrioChannel *)getModuleChannelByEntrypoint:(NSString *)entrypoint;
+
+- (void)setModuleContextValue:(id _Nullable)value forKey:(NSString *)key;
+
 - (void)pushViewController:(NavigatorFlutterViewController *)viewController;
 
 - (void)popViewController:(NavigatorFlutterViewController *)viewController;
 
-- (void)registerFlutterUrls:(NSArray *)urls;
-
-- (void)unregisterFlutterUrls:(NSArray *)urls;
+//- (void)registerFlutterUrls:(NSArray *)urls;
+//
+//- (void)unregisterFlutterUrls:(NSArray *)urls;
 
 @end
 

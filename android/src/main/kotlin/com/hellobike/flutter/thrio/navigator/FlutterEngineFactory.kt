@@ -27,22 +27,24 @@ import android.content.Context
 
 object FlutterEngineFactory : PageObserver, RouteObserver {
 
-    private val engines = mutableMapOf<String, FlutterEngine>()
+    private val flutterEngines = mutableMapOf<String, FlutterEngine>()
 
     internal var isMultiEngineEnabled = false
 
-    fun startup(context: Context,
-                entrypoint: String = NAVIGATION_FLUTTER_ENTRYPOINT_DEFAULT,
-                readyListener: EngineReadyListener? = null) {
+    fun startup(
+        context: Context,
+        entrypoint: String = NAVIGATION_FLUTTER_ENTRYPOINT_DEFAULT,
+        readyListener: EngineReadyListener? = null
+    ) {
         val ep = if (!isMultiEngineEnabled)
             NAVIGATION_FLUTTER_ENTRYPOINT_DEFAULT
         else
             entrypoint
 
-        if (engines.contains(ep)) {
+        if (flutterEngines.contains(ep)) {
             readyListener?.onReady(ep)
         } else {
-            engines[ep] = FlutterEngine(context, ep, readyListener)
+            flutterEngines[ep] = FlutterEngine(context, ep, readyListener)
         }
     }
 
@@ -51,53 +53,60 @@ object FlutterEngineFactory : PageObserver, RouteObserver {
             NAVIGATION_FLUTTER_ENTRYPOINT_DEFAULT
         else
             entrypoint
-        return engines[ep]
+        return flutterEngines[ep]
+    }
+
+    fun setModuleContextValue(value: Any?, key: String) {
+        val engines = flutterEngines.values;
+        for (engine in engines) {
+            engine.moduleContextChannel.invokeMethod("set", mutableMapOf(key to value))
+        }
     }
 
     override fun willAppear(routeSettings: RouteSettings) {
-        engines.values.forEach { engine ->
+        flutterEngines.values.forEach { engine ->
             engine.pageChannel.willAppear(routeSettings)
         }
     }
 
     override fun didAppear(routeSettings: RouteSettings) {
-        engines.values.forEach { engine ->
+        flutterEngines.values.forEach { engine ->
             engine.pageChannel.didAppear(routeSettings)
         }
     }
 
     override fun willDisappear(routeSettings: RouteSettings) {
-        engines.values.forEach { engine ->
+        flutterEngines.values.forEach { engine ->
             engine.pageChannel.willDisappear(routeSettings)
         }
     }
 
     override fun didDisappear(routeSettings: RouteSettings) {
-        engines.values.forEach { engine ->
+        flutterEngines.values.forEach { engine ->
             engine.pageChannel.didDisappear(routeSettings)
         }
     }
 
     override fun didPush(routeSettings: RouteSettings) {
-        engines.values.forEach { engine ->
+        flutterEngines.values.forEach { engine ->
             engine.routeChannel.didPush(routeSettings)
         }
     }
 
     override fun didPop(routeSettings: RouteSettings) {
-        engines.values.forEach { engine ->
+        flutterEngines.values.forEach { engine ->
             engine.routeChannel.didPop(routeSettings)
         }
     }
 
     override fun didPopTo(routeSettings: RouteSettings) {
-        engines.values.forEach { engine ->
+        flutterEngines.values.forEach { engine ->
             engine.routeChannel.didPopTo(routeSettings)
         }
     }
 
     override fun didRemove(routeSettings: RouteSettings) {
-        engines.values.forEach { engine ->
+        flutterEngines.values.forEach { engine ->
             engine.routeChannel.didRemove(routeSettings)
         }
     }

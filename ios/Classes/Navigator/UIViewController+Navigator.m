@@ -25,9 +25,9 @@
 #import "NavigatorFlutterEngineFactory.h"
 #import "NavigatorFlutterViewController.h"
 #import "NavigatorLogger.h"
-#import "ThrioNavigator+JsonDeserializers.h"
-#import "ThrioNavigator+JsonSerializers.h"
-#import "ThrioNavigator+PageObservers.h"
+#import "ThrioModule+JsonDeserializers.h"
+#import "ThrioModule+JsonSerializers.h"
+#import "ThrioModule+PageObservers.h"
 #import "UINavigationController+Navigator.h"
 #import "UINavigationController+PopGesture.h"
 #import "UIViewController+HidesNavigationBar.h"
@@ -81,7 +81,7 @@ NS_ASSUME_NONNULL_BEGIN
     newRoute.poppedResult = poppedResult;
 
     if ([self isKindOfClass:NavigatorFlutterViewController.class]) {
-        id serializeParams = [ThrioNavigator serializeParams:params];
+        id serializeParams = [ThrioModule serializeParams:params];
         NSMutableDictionary *arguments = [NSMutableDictionary dictionaryWithDictionary:[settings toArgumentsWithParams:serializeParams]];
         [arguments setObject:[NSNumber numberWithBool:animated] forKey:@"animated"];
         NSString *entrypoint = [(NavigatorFlutterViewController *)self entrypoint];
@@ -98,7 +98,7 @@ NS_ASSUME_NONNULL_BEGIN
                     strongSelf.thrio_firstRoute = newRoute;
                 }
 
-                ThrioNavigator.pageObservers.lastRoute = newRoute;
+                ThrioModule.pageObservers.lastRoute = newRoute;
             }
             if (result) {
                 result(r ? index : nil);
@@ -113,7 +113,7 @@ NS_ASSUME_NONNULL_BEGIN
             self.thrio_firstRoute = newRoute;
         }
 
-        ThrioNavigator.pageObservers.lastRoute = newRoute;
+        ThrioModule.pageObservers.lastRoute = newRoute;
         if (result) {
             result(index);
         }
@@ -153,7 +153,7 @@ NS_ASSUME_NONNULL_BEGIN
         }
         return;
     }
-    id serializeParams = [ThrioNavigator serializeParams:params];
+    id serializeParams = [ThrioModule serializeParams:params];
     NSMutableDictionary *arguments =
         [NSMutableDictionary dictionaryWithDictionary:[route.settings
                                                        toArgumentsWithParams:serializeParams]];
@@ -169,7 +169,7 @@ NS_ASSUME_NONNULL_BEGIN
             __strong typeof(weakself) strongSelf = weakself;
             if (r && r.boolValue) {
                 if (route != strongSelf.thrio_firstRoute) {
-                    ThrioNavigator.pageObservers.lastRoute = route.prev;
+                    ThrioModule.pageObservers.lastRoute = route.prev;
                     [strongSelf thrio_onNotify:route.prev];
                 } else {
                     [strongSelf.navigationController popViewControllerAnimated:animated];
@@ -182,7 +182,7 @@ NS_ASSUME_NONNULL_BEGIN
             // 关闭成功,处理页面回传参数
             if (r && r.boolValue) {
                 if (route.poppedResult) {
-                    id deserializeParams = [ThrioNavigator deserializeParams:params];
+                    id deserializeParams = [ThrioModule deserializeParams:params];
                     route.poppedResult(deserializeParams);
                 }
                 // 检查打开页面的源引擎是否和关闭页面的源引擎不同，不同则继续发送onPop
@@ -201,7 +201,7 @@ NS_ASSUME_NONNULL_BEGIN
             // 关闭成功,处理页面回传参数
             if ([self.navigationController popViewControllerAnimated:animated]) {
                 if (route.poppedResult) {
-                    id deserializeParams = [ThrioNavigator deserializeParams:params];
+                    id deserializeParams = [ThrioModule deserializeParams:params];
                     route.poppedResult(deserializeParams);
                 }
                 // 检查打开页面的源引擎是否来自Flutter引擎，是则发送onPon
@@ -243,7 +243,7 @@ NS_ASSUME_NONNULL_BEGIN
             __strong typeof(weakself) strongSelf = weakself;
             if (r) {
                 route.next = nil;
-                ThrioNavigator.pageObservers.lastRoute = route;
+                ThrioModule.pageObservers.lastRoute = route;
                 [strongSelf thrio_onNotify:route];
             }
             if (result) {
@@ -282,10 +282,10 @@ NS_ASSUME_NONNULL_BEGIN
                 if (route == strongSelf.thrio_firstRoute) {
                     strongSelf.thrio_firstRoute = route.next;
                     route.prev.next = nil;
-                    ThrioNavigator.pageObservers.lastRoute = route.prev;
+                    ThrioModule.pageObservers.lastRoute = route.prev;
                 } else if (route == strongSelf.thrio_lastRoute) {
                     route.prev.next = nil;
-                    ThrioNavigator.pageObservers.lastRoute = route.prev;
+                    ThrioModule.pageObservers.lastRoute = route.prev;
                     [strongSelf thrio_onNotify:route.prev];
                 } else {
                     route.prev.next = route.next;
@@ -326,7 +326,7 @@ NS_ASSUME_NONNULL_BEGIN
     NavigatorPageRoute *route = [self thrio_getRouteByUrl:url index:index];
     if (route) {
         route.prev.next = nil;
-        ThrioNavigator.pageObservers.lastRoute = route.prev;
+        ThrioModule.pageObservers.lastRoute = route.prev;
         [self thrio_onNotify:route.prev];
     }
 }
@@ -336,7 +336,7 @@ NS_ASSUME_NONNULL_BEGIN
     NavigatorPageRoute *route = [self thrio_getRouteByUrl:url index:index];
     if (route) {
         route.next = nil;
-        ThrioNavigator.pageObservers.lastRoute = route;
+        ThrioModule.pageObservers.lastRoute = route;
         [self thrio_onNotify:route];
     }
 }
@@ -350,7 +350,7 @@ NS_ASSUME_NONNULL_BEGIN
             self.thrio_firstRoute.prev = nil;
         } else if (route == self.thrio_lastRoute) {
             route.prev.next = nil;
-            ThrioNavigator.pageObservers.lastRoute = route.prev;
+            ThrioModule.pageObservers.lastRoute = route.prev;
             [self thrio_onNotify:route.prev];
         } else {
             route.prev.next = route.next;
@@ -408,7 +408,7 @@ NS_ASSUME_NONNULL_BEGIN
     [self thrio_viewWillAppear:animated];
 
     if (self.thrio_firstRoute && ![self isKindOfClass:NavigatorFlutterViewController.class]) {
-        [ThrioNavigator.pageObservers willAppear:self.thrio_lastRoute.settings];
+        [ThrioModule.pageObservers willAppear:self.thrio_lastRoute.settings];
     }
 }
 
@@ -421,7 +421,7 @@ NS_ASSUME_NONNULL_BEGIN
     }
 
     if (self.thrio_firstRoute && ![self isKindOfClass:NavigatorFlutterViewController.class]) {
-        [ThrioNavigator.pageObservers didAppear:self.thrio_lastRoute.settings];
+        [ThrioModule.pageObservers didAppear:self.thrio_lastRoute.settings];
     }
 
     if (self.thrio_firstRoute &&
@@ -461,7 +461,7 @@ NS_ASSUME_NONNULL_BEGIN
     [self thrio_viewWillDisappear:animated];
 
     if (self.thrio_firstRoute && ![self isKindOfClass:NavigatorFlutterViewController.class]) {
-        [ThrioNavigator.pageObservers willDisappear:self.thrio_lastRoute.settings];
+        [ThrioModule.pageObservers willDisappear:self.thrio_lastRoute.settings];
     }
 }
 
@@ -470,7 +470,7 @@ NS_ASSUME_NONNULL_BEGIN
     [self.navigationController thrio_removePopGesture];
 
     if (self.thrio_firstRoute && ![self isKindOfClass:NavigatorFlutterViewController.class]) {
-        [ThrioNavigator.pageObservers didDisappear:self.thrio_lastRoute.settings];
+        [ThrioModule.pageObservers didDisappear:self.thrio_lastRoute.settings];
     }
 }
 
@@ -479,7 +479,7 @@ NS_ASSUME_NONNULL_BEGIN
     for (NSString *name in keys) {
         id params = [route removeNotify:name];
         if ([self isKindOfClass:NavigatorFlutterViewController.class]) {
-            id serializeParams = [ThrioNavigator serializeParams:params];
+            id serializeParams = [ThrioModule serializeParams:params];
             NSDictionary *arguments = serializeParams ? @{
                 @"url": route.settings.url,
                 @"index": route.settings.index,
@@ -494,7 +494,7 @@ NS_ASSUME_NONNULL_BEGIN
             NavigatorRouteSendChannel *channel = [NavigatorFlutterEngineFactory.shared getSendChannelByEntrypoint:entrypoint];
             [channel notify:arguments];
         } else {
-            id deserializeParams = [ThrioNavigator deserializeParams:params];
+            id deserializeParams = [ThrioModule deserializeParams:params];
             if ([self conformsToProtocol:@protocol(NavigatorPageNotifyProtocol)]) {
                 [(id<NavigatorPageNotifyProtocol>)self onNotify:name params:deserializeParams];
             }

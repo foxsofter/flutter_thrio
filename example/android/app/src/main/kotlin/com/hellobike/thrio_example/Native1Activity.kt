@@ -15,16 +15,19 @@ class Native1Activity : AppCompatActivity(), PageNotifyListener {
 
         btn_10.setOnClickListener {
             ThrioNavigator.push("/biz1/flutter1",
-                    params = People(mapOf(
-                            "name" to "foxsofter",
-                            "age" to 100,
-                            "sex" to "x")),
-                    result = {
-                        Log.i("Thrio", "push result data $it")
-                    },
-                    poppedResult = {
-                        Log.i("Thrio", "/biz1/native1 poppedResult call params $it")
-                    }
+                params = People(
+                    mapOf(
+                        "name" to "foxsofter",
+                        "age" to 100,
+                        "sex" to "x"
+                    )
+                ),
+                result = {
+                    Log.i("Thrio", "push result data $it")
+                },
+                poppedResult = {
+                    Log.i("Thrio", "/biz1/native1 poppedResult call params $it")
+                }
             )
         }
 
@@ -36,13 +39,13 @@ class Native1Activity : AppCompatActivity(), PageNotifyListener {
 
         btn_12.setOnClickListener {
             ThrioNavigator.push("/biz2/flutter2",
-                    params = mapOf("k1" to 1),
-                    result = {
-                        Log.i("Thrio", "push result data $it")
-                    },
-                    poppedResult = {
-                        Log.i("Thrio", "/biz1/native1 poppedResult call params $it")
-                    }
+                params = mapOf("k1" to 1),
+                result = {
+                    Log.i("Thrio", "push result data $it")
+                },
+                poppedResult = {
+                    Log.i("Thrio", "/biz1/native1 poppedResult call params $it")
+                }
             )
         }
 
@@ -54,14 +57,14 @@ class Native1Activity : AppCompatActivity(), PageNotifyListener {
 
         btn_20.setOnClickListener {
             ThrioNavigator.push("/biz1/native1",
-                    mapOf("k1" to 1),
-                    true,
-                    result = {
-                        Log.i("Thrio", "push result data $it")
-                    },
-                    poppedResult = {
-                        Log.i("Thrio", "/biz1/native1 poppedResult call params $it")
-                    }
+                mapOf("k1" to 1),
+                true,
+                result = {
+                    Log.i("Thrio", "push result data $it")
+                },
+                poppedResult = {
+                    Log.i("Thrio", "/biz1/native1 poppedResult call params $it")
+                }
             )
         }
 
@@ -71,14 +74,14 @@ class Native1Activity : AppCompatActivity(), PageNotifyListener {
 
         btn_22.setOnClickListener {
             ThrioNavigator.push("/biz2/native2",
-                    mapOf("k1" to 1),
-                    true,
-                    result = {
-                        Log.i("Thrio", "push result data $it")
-                    },
-                    poppedResult = {
-                        Log.i("Thrio", "/biz1/native1 poppedResult call params $it")
-                    }
+                mapOf("k1" to 1),
+                true,
+                result = {
+                    Log.i("Thrio", "push result data $it")
+                },
+                poppedResult = {
+                    Log.i("Thrio", "/biz1/native1 poppedResult call params $it")
+                }
             )
         }
 
@@ -87,10 +90,15 @@ class Native1Activity : AppCompatActivity(), PageNotifyListener {
         }
 
         btn_3.setOnClickListener {
-            ThrioNavigator.pop( People(mapOf(
-                    "name" to "foxsofter",
-                    "age" to 100,
-                    "sex" to "from pop")))
+            ThrioNavigator.pop(
+                People(
+                    mapOf(
+                        "name" to "foxsofter",
+                        "age" to 100,
+                        "sex" to "from pop"
+                    )
+                )
+            )
         }
     }
 
@@ -118,7 +126,6 @@ class Native1Activity : AppCompatActivity(), PageNotifyListener {
         setContentView(R.layout.activity_native)
         initView()
     }
-
 
 }
 

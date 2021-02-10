@@ -30,28 +30,37 @@ import io.flutter.embedding.engine.FlutterEngineCache
 import io.flutter.embedding.engine.dart.DartExecutor
 import io.flutter.view.FlutterMain
 
-data class FlutterEngine(private val context: Context,
-                         private val entrypoint: String,
-                         private val readyListener: EngineReadyListener? = null) {
-    val flutterEngine = FlutterEngine(context)
+data class FlutterEngine(
+    private val context: Context,
+    private val entrypoint: String,
+    private val readyListener: EngineReadyListener? = null
+) {
+    private val engine = FlutterEngine(context)
     internal var sendChannel: RouteSendChannel private set
-    private var receiveChannel: RouteReceiveChannel
-    internal var routeChannel: RouteObserverChannel
-    internal var pageChannel: PageObserverChannel
+    private val receiveChannel: RouteReceiveChannel
+    internal val routeChannel: RouteObserverChannel
+    internal val pageChannel: PageObserverChannel
+    internal val moduleContextChannel: ThrioChannel
 
     init {
         val channel = ThrioChannel(entrypoint, "__thrio_app__${entrypoint}")
-        channel.setupMethodChannel(flutterEngine.dartExecutor)
-        channel.setupEventChannel(flutterEngine.dartExecutor)
+        channel.setupMethodChannel(engine.dartExecutor)
+        channel.setupEventChannel(engine.dartExecutor)
         sendChannel = RouteSendChannel(channel)
         receiveChannel = RouteReceiveChannel(channel, readyListener)
-        routeChannel = RouteObserverChannel(entrypoint, flutterEngine.dartExecutor)
-        pageChannel = PageObserverChannel(entrypoint, flutterEngine.dartExecutor)
+        routeChannel = RouteObserverChannel(entrypoint, engine.dartExecutor)
+        pageChannel = PageObserverChannel(entrypoint, engine.dartExecutor)
+        moduleContextChannel = ThrioChannel(
+            entrypoint,
+            "__thrio_module_context__${entrypoint}"
+        )
+        moduleContextChannel.setupMethodChannel(engine.dartExecutor)
 
-        val dartEntrypoint = DartExecutor.DartEntrypoint(FlutterMain.findAppBundlePath(), entrypoint)
-        flutterEngine.dartExecutor.executeDartEntrypoint(dartEntrypoint)
+        val dartEntrypoint =
+            DartExecutor.DartEntrypoint(FlutterMain.findAppBundlePath(), entrypoint)
+        engine.dartExecutor.executeDartEntrypoint(dartEntrypoint)
 
-        FlutterEngineCache.getInstance().put(entrypoint, flutterEngine)
+        FlutterEngineCache.getInstance().put(entrypoint, engine)
     }
 
     companion object {

@@ -32,8 +32,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, strong) NSMutableDictionary *flutterEngines;
 
-@property (nonatomic, strong) NSMutableSet *flutterUrls;
-
 @end
 
 @implementation NavigatorFlutterEngineFactory
@@ -56,14 +54,8 @@ static NSString *const kDefaultEntrypoint = @"main";
     return _flutterEngines;
 }
 
-- (NSMutableSet *)flutterUrls {
-    if (!_flutterUrls) {
-        _flutterUrls = [NSMutableSet set];
-    }
-    return _flutterUrls;
-}
-
-- (void)startupWithEntrypoint:(NSString *)entrypoint readyBlock:(ThrioIdCallback _Nullable)block {
+- (void)startupWithEntrypoint:(NSString *)entrypoint
+                   readyBlock:(ThrioIdCallback _Nullable)block {
     if (!NavigatorFlutterEngineFactory.shared.multiEngineEnabled) {
         entrypoint = kDefaultEntrypoint;
     }
@@ -94,6 +86,21 @@ static NSString *const kDefaultEntrypoint = @"main";
     return flutterEngine.sendChannel;
 }
 
+- (ThrioChannel *)getModuleChannelByEntrypoint:(NSString *)entrypoint {
+    if (!self.multiEngineEnabled) {
+        entrypoint = kDefaultEntrypoint;
+    }
+    NavigatorFlutterEngine *flutterEngine = self.flutterEngines[entrypoint];
+    return flutterEngine.moduleContextChannel;
+}
+
+- (void)setModuleContextValue:(id _Nullable)value forKey:(NSString *)key {
+    NSArray *flutterEngines = [_flutterEngines.allValues copy];
+    for (NavigatorFlutterEngine *flutterEngine in flutterEngines) {
+        [flutterEngine.moduleContextChannel invokeMethod:@"set" arguments:@{ key: value }];
+    }
+}
+
 - (void)pushViewController:(NavigatorFlutterViewController *)viewController {
     NavigatorFlutterEngine *flutterEngine = self.flutterEngines[viewController.entrypoint];
     [flutterEngine pushViewController:viewController];
@@ -101,23 +108,7 @@ static NSString *const kDefaultEntrypoint = @"main";
 
 - (void)popViewController:(NavigatorFlutterViewController *)viewController {
     NavigatorFlutterEngine *flutterEngine = self.flutterEngines[viewController.entrypoint];
-    if ([flutterEngine popViewController:viewController] < 1) {
-//        if (ThrioNavigator.isMultiEngineEnabled &&
-//            _flutterEngines.count > 1 &&
-//            flutterEngine.registerUrlCount < ThrioNavigator.multiEngineKeepAliveUrlCount) {
-//            [self.flutterEngines removeObjectForKey:viewController.entrypoint];
-//        }
-    }
-}
-
-- (void)registerFlutterUrls:(NSArray *)urls {
-    [self.flutterUrls addObjectsFromArray:urls];
-    [self recalculateUrlsCount];
-}
-
-- (void)unregisterFlutterUrls:(NSArray *)urls {
-    [self.flutterUrls minusSet:[NSSet setWithArray:urls]];
-    [self recalculateUrlsCount];
+    [flutterEngine popViewController:viewController];
 }
 
 #pragma mark - NavigatorRouteObserverProtocol methods
@@ -177,27 +168,6 @@ static NSString *const kDefaultEntrypoint = @"main";
     NSArray *flutterEngines = [_flutterEngines.allValues copy];
     for (NavigatorFlutterEngine *flutterEngine in flutterEngines) {
         [flutterEngine.pageChannel didDisappear:routeSettings];
-    }
-}
-
-#pragma mark - private methods
-
-- (void)recalculateUrlsCount {
-    NSMutableDictionary *kvs = [NSMutableDictionary dictionary];
-
-    for (NSString *url in self.flutterUrls) {
-        NSString *entrypoint = [url componentsSeparatedByString:@"/"].firstObject;
-        if (![kvs.allKeys containsObject:entrypoint]) {
-            kvs[entrypoint] = @1;
-        } else {
-            NSNumber *v = kvs[entrypoint];
-            kvs[entrypoint] = @(v.integerValue + 1);
-        }
-    }
-
-    for (NSString *entrypoint in kvs) {
-        NavigatorFlutterEngine *flutterEngine = self.flutterEngines[entrypoint];
-        flutterEngine.registerUrlCount = [kvs[entrypoint] integerValue];
     }
 }
 

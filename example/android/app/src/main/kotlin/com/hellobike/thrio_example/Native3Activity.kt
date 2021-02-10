@@ -3,7 +3,6 @@ package com.hellobike.thrio_example
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.hellobike.flutter.thrio.navigator.ThrioNavigator
-import kotlinx.android.synthetic.main.activity_native.*
 
 class Native3Activity : AppCompatActivity() {
 

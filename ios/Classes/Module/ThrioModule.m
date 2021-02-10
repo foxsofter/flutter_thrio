@@ -19,36 +19,47 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
+#import "NavigatorFlutterEngine.h"
 #import "NavigatorFlutterEngineFactory.h"
 #import "NavigatorPageObserverProtocol.h"
 #import "NavigatorRouteObserverProtocol.h"
 #import "ThrioModule.h"
+#import "ThrioModuleContext+Internal.h"
 #import "ThrioNavigator+Internal.h"
-#import "ThrioNavigator+PageBuilders.h"
-#import "ThrioNavigator+PageObservers.h"
-#import "ThrioNavigator+RouteObservers.h"
+#import "ThrioModule+PageBuilders.h"
+#import "ThrioModule+PageObservers.h"
+#import "ThrioModule+RouteObservers.h"
+#import "ThrioModule+JsonSerializers.h"
 #import "ThrioModuleJsonDeserializer.h"
 #import "ThrioModuleJsonSerializer.h"
 #import "ThrioModulePageBuilder.h"
 #import "ThrioModulePageObserver.h"
 #import "ThrioModuleRouteObserver.h"
+#import "NSObject+Thrio.h"
+
+@interface ThrioModule ()
+
+@property (nonatomic, readwrite) ThrioModuleContext *moduleContext;
+
+@end
 
 @implementation ThrioModule
 
 static NSMutableDictionary *modules;
 
 + (void)init:(ThrioModule *)rootModule {
-    [rootModule registerModule:rootModule];
+    ThrioModuleContext *moduleContext = [[ThrioModuleContext alloc] init];
+    [rootModule registerModule:rootModule withModuleContext:moduleContext];
     [rootModule initModule];
 }
 
 + (void)init:(ThrioModule *)rootModule multiEngineEnabled:(BOOL)enabled {
     NavigatorFlutterEngineFactory.shared.multiEngineEnabled = enabled;
-    [rootModule registerModule:rootModule];
-    [rootModule initModule];
+    [ThrioModule init:rootModule];
 }
 
-- (void)registerModule:(ThrioModule *)module {
+- (void)registerModule:(ThrioModule *)module
+     withModuleContext:(ThrioModuleContext *)moduleContext {
     if (!modules) {
         modules = [NSMutableDictionary dictionary];
     }
@@ -58,62 +69,80 @@ static NSMutableDictionary *modules;
                     format:@"%@ already registered", key];
     }
     [modules setObject:module forKey:key];
-    [module onModuleRegister];
+    module.moduleContext = moduleContext;
+    [module onModuleRegister:moduleContext];
 }
 
 - (void)initModule {
     NSArray *values = modules.allValues;
     for (ThrioModule *module in values) {
-        if ([module respondsToSelector:@selector(onModuleInit)]) {
-            [module onModuleInit];
+        if ([module respondsToSelector:@selector(onModuleInit:)]) {
+            [module onModuleInit:module.moduleContext];
         }
     }
     dispatch_async(dispatch_get_main_queue(), ^{
         for (ThrioModule *module in values) {
-            if ([module respondsToSelector:@selector(onModuleAsyncInit)]) {
-                [module onModuleAsyncInit];
+            if ([module respondsToSelector:@selector(onModuleAsyncInit:)]) {
+                [module onModuleAsyncInit:module.moduleContext];
             }
         }
     });
     for (ThrioModule *module in values) {
-        if ([module respondsToSelector:@selector(onPageBuilderRegister)]) {
-            [module onPageBuilderRegister];
+        if ([module respondsToSelector:@selector(onPageBuilderRegister:)]) {
+            [module onPageBuilderRegister:module.moduleContext];
         }
     }
     for (ThrioModule *module in values) {
-        if ([module respondsToSelector:@selector(onPageObserverRegister)]) {
-            [module onPageObserverRegister];
+        if ([module respondsToSelector:@selector(onPageObserverRegister:)]) {
+            [module onPageObserverRegister:module.moduleContext];
         }
-        if ([module respondsToSelector:@selector(onRouteObserverRegister)]) {
-            [module onRouteObserverRegister];
+        if ([module respondsToSelector:@selector(onRouteObserverRegister:)]) {
+            [module onRouteObserverRegister:module.moduleContext];
         }
     }
     for (ThrioModule *module in values) {
-        if ([module respondsToSelector:@selector(onJsonSerializerRegister)]) {
-            [module onJsonSerializerRegister];
+        if ([module respondsToSelector:@selector(onJsonSerializerRegister:)]) {
+            [module onJsonSerializerRegister:module.moduleContext];
         }
-        if ([module respondsToSelector:@selector(onJsonDeserializerRegister)]) {
-            [module onJsonDeserializerRegister];
+        if ([module respondsToSelector:@selector(onJsonDeserializerRegister:)]) {
+            [module onJsonDeserializerRegister:module.moduleContext];
         }
     }
 
     // 单引擎模式下，提前启动，默认 `entrypoint` 为 main
     if (!NavigatorFlutterEngineFactory.shared.multiEngineEnabled) {
-        [NavigatorFlutterEngineFactory.shared startupWithEntrypoint:@"main" readyBlock:nil];
+        [self startupFlutterEngineWithEntrypoint:@"main"];
     }
 }
 
-- (void)onModuleRegister {
+- (void)onModuleRegister:(ThrioModuleContext *)moduleContext {
 }
 
-- (void)onModuleInit {
+- (void)onModuleInit:(ThrioModuleContext *)moduleContext {
 }
 
-- (void)onModuleAsyncInit {
+- (void)onModuleAsyncInit:(ThrioModuleContext *)moduleContext {
 }
 
 - (void)startupFlutterEngineWithEntrypoint:(NSString *)entrypoint {
-    [NavigatorFlutterEngineFactory.shared startupWithEntrypoint:entrypoint readyBlock:nil];
+    __weak typeof(self) weakself = self;
+    ThrioIdCallback readyBlock = ^(id entrypoint) {
+        __strong typeof(weakself) strongSelf = weakself;
+        NSMutableDictionary *canTransParams = [NSMutableDictionary dictionary];
+        for (NSString *key in strongSelf.moduleContext.params) {
+            id value = strongSelf.moduleContext.params[key];
+            if (![value canTransToFlutter]) {
+                value = [ThrioModule serializeParams:value];
+            }
+            if (value) {
+                canTransParams[key] = value;
+            }
+        }
+        ThrioChannel *moduleContextChannel = [NavigatorFlutterEngineFactory.shared getModuleChannelByEntrypoint:entrypoint];
+        [moduleContextChannel invokeMethod:@"set" arguments:canTransParams];
+    };
+    [NavigatorFlutterEngineFactory.shared startupWithEntrypoint:entrypoint
+                                                     readyBlock:readyBlock];
 }
 
 @end

@@ -1,7 +1,7 @@
 /**
  * The MIT License (MIT)
  *
- * Copyright (c) 2020 foxsofter
+ * Copyright (c) 2021 foxsofter.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -21,34 +21,36 @@
  * IN THE SOFTWARE.
  */
 
-package com.hellobike.flutter.thrio.navigator
+package com.hellobike.flutter.thrio.module
 
-import com.hellobike.flutter.thrio.JsonDeserializer
-import com.hellobike.flutter.thrio.JsonSerializer
-import com.hellobike.flutter.thrio.registry.RegistryMap
+import com.hellobike.flutter.thrio.exception.ThrioException
+import com.hellobike.flutter.thrio.extension.canTransToFlutter
+import com.hellobike.flutter.thrio.navigator.FlutterEngineFactory
 
-internal object JsonSerializers {
-    private const val TAG = "JsonSerializers"
+class ModuleContext {
+    internal val params by lazy { mutableMapOf<String, Any>() }
 
-    val serializers by lazy { RegistryMap<String, JsonSerializer<*>>() }
+    operator fun get(key: String): Any? = params[key]
 
-    fun <T> serializeParams(params: T?): Any? {
-        if (params == null) {
-            return null
+    operator fun set(key: String, value: Any) {
+        val v = params[key]
+        if (v != null && v.javaClass != value.javaClass) {
+            throw ThrioException("Type of value is not ${v.javaClass}")
         }
-        // 已经序列化过了
-        if (params is Map<*, *> && params.containsKey("__thrio_TParams__")) {
-            @Suppress("UNCHECKED_CAST")
-            return params as Map<String, Any>
+        if (v != value) {
+            params[key] = value
+            if (value.canTransToFlutter()) {
+                FlutterEngineFactory.setModuleContextValue(value, key)
+            }
         }
-        val type = params.javaClass.toString()
-        val value = serializers[type] ?: return params
-
-        @Suppress("UNCHECKED_CAST")
-        val serializer = value as JsonSerializer<T>
-        val serializeParams: Map<String, Any?>? = serializer(params) ?: return params
-        return mutableMapOf<String, Any?>(
-                "__thrio_TParams__" to type
-        ).apply { if (serializeParams != null) putAll(serializeParams) }
     }
+
+    fun remove(key: String): Any? {
+        val v = params.remove(key)
+        if (v != null) {
+            FlutterEngineFactory.setModuleContextValue(null, key)
+        }
+        return v
+    }
+
 }

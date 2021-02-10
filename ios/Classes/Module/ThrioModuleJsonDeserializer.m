@@ -21,19 +21,19 @@
 
 #import "ThrioModule.h"
 #import "ThrioModuleJsonDeserializer.h"
-#import "ThrioNavigator+JsonDeserializers.h"
+#import "ThrioModule+JsonDeserializers.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 @implementation ThrioModule (JsonDeserializer)
 
-- (void)onJsonDeserializerRegister {
+- (void)onJsonDeserializerRegister:(ThrioModuleContext *)moduleContext {
 }
 
 - (ThrioVoidCallback)registerJsonDeserializer:(id)deserializer
                                      forClass:(id)clazz {
-    return [ThrioNavigator.jsonDeserializers registry:NSStringFromClass(clazz)
-                                                value:deserializer];
+    return [ThrioModule.jsonDeserializers registry:NSStringFromClass(clazz)
+                                             value:deserializer];
 }
 
 @end

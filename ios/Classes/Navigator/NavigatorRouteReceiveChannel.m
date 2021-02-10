@@ -23,7 +23,7 @@
 #import "NavigatorLogger.h"
 #import "NavigatorRouteReceiveChannel.h"
 #import "ThrioNavigator+Internal.h"
-#import "ThrioNavigator+PageBuilders.h"
+#import "ThrioModule+PageBuilders.h"
 #import "UINavigationController+HotRestart.h"
 #import "UINavigationController+Navigator.h"
 #import "UINavigationController+PopDisabled.h"
@@ -56,8 +56,6 @@ NS_ASSUME_NONNULL_BEGIN
 
         [self _onSetPopDisabled];
         [self _onHotRestart];
-        [self _onRegisterUrls];
-        [self _onUnregisterUrls];
     }
     return self;
 }
@@ -279,28 +277,6 @@ NS_ASSUME_NONNULL_BEGIN
                         result(@(r));
                     }];
                 }
-            }];
-}
-
-- (void)_onRegisterUrls {
-    [_channel
-     registryMethod:@"registerUrls"
-            handler:
-     ^void (NSDictionary<NSString *, id> *arguments,
-            ThrioIdCallback _Nullable result) {
-                NSArray *urls = arguments[@"urls"];
-                [NavigatorFlutterEngineFactory.shared registerFlutterUrls:urls];
-            }];
-}
-
-- (void)_onUnregisterUrls {
-    [_channel registryMethod:@"unregisterUrls"
-                     handler:
-     ^void (NSDictionary<NSString *, id> *arguments,
-            ThrioIdCallback _Nullable result) {
-                NSArray *urls = arguments[@"urls"];
-                [NavigatorFlutterEngineFactory.shared
-                 unregisterFlutterUrls:urls];
             }];
 }
 

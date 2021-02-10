@@ -21,15 +21,15 @@
 
 #import "ThrioModule.h"
 #import "ThrioModulePageObserver.h"
-#import "ThrioNavigator+PageObservers.h"
+#import "ThrioModule+PageObservers.h"
 
 @implementation ThrioModule (PageObserver)
 
 - (ThrioVoidCallback)registerPageObserver:(id<NavigatorPageObserverProtocol>)pageObserver {
-    return [ThrioNavigator.pageObservers.observers registry:pageObserver];
+    return [ThrioModule.pageObservers.observers registry:pageObserver];
 }
 
-- (void)onPageObserverRegister {
+- (void)onPageObserverRegister:(ThrioModuleContext *)moduleContext {
 }
 
 @end

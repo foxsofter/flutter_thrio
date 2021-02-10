@@ -23,7 +23,7 @@
 #import "NavigatorFlutterEngineFactory.h"
 #import "ThrioNavigator+Internal.h"
 #import "ThrioNavigator+Internal.h"
-#import "ThrioNavigator+PageBuilders.h"
+#import "ThrioModule+PageBuilders.h"
 #import "ThrioNavigator.h"
 #import "ThrioRegistrySet.h"
 #import "UIApplication+Thrio.h"

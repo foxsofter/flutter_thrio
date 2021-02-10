@@ -1,7 +1,7 @@
 /**
  * The MIT License (MIT)
  *
- * Copyright (c) 2019 Hellobike Group
+ * Copyright (c) 2021 foxsoter.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -21,9 +21,10 @@
  * IN THE SOFTWARE.
  */
 
-package com.hellobike.flutter.thrio.navigator
+package com.hellobike.flutter.thrio.extension
 
 import android.content.Intent
+import com.hellobike.flutter.thrio.navigator.*
 
 fun Intent.GetRouteUrl() = when (
     val routeSettings = getRouteSettings()) {
@@ -68,9 +69,4 @@ fun Intent.getRouteSettings(): RouteSettings? {
         return RouteSettings.fromArguments(data as Map<String, Any?>)
     }
     return null
-}
-
-internal fun String.getEntrypoint(): String {
-    return substring(1).split("/").firstOrNull()
-            ?: throw IllegalArgumentException("entrypoint must not be null")
 }

@@ -21,13 +21,13 @@
  * IN THE SOFTWARE.
  */
 
-package com.hellobike.flutter.thrio.navigator
+package com.hellobike.flutter.thrio.module
 
 import com.hellobike.flutter.thrio.JsonDeserializer
 import com.hellobike.flutter.thrio.registry.RegistryMap
 
-internal object JsonDeserializers {
-    private const val TAG = "JsonDeserializers"
+internal object ModuleJsonDeserializers {
+    private const val TAG = "ModuleJsonDeserializers"
 
     val deserializers by lazy { RegistryMap<String, JsonDeserializer<*>>() }
 
@@ -43,7 +43,8 @@ internal object JsonDeserializers {
         val type = params["__thrio_TParams__"] as String
         var deserializer = deserializers[type]
         if (deserializer == null) {
-            deserializer = deserializers.lastOrNull { it.key == type || it.key.endsWith(type) }?.value
+            deserializer =
+                deserializers.lastOrNull { it.key == type || it.key.endsWith(type) }?.value
         }
         if (deserializer == null) {
             return params

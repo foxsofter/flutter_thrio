@@ -19,7 +19,7 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-#import "ThrioNavigator+PageObservers.h"
+#import "ThrioModule+PageObservers.h"
 #import "UINavigationController+Navigator.h"
 #import "UINavigationController+PageObservers.h"
 #import "UIViewController+Navigator.h"
@@ -40,10 +40,10 @@
             return;
         }
         // 触发所有 observer 的 `willAppear`
-        [ThrioNavigator.pageObservers willAppear:routeSettings];
+        [ThrioModule.pageObservers willAppear:routeSettings];
         // 触发顶部 route 的 `willDisappear`
         if (lastRoute) {
-            [ThrioNavigator.pageObservers willDisappear:lastRoute.settings];
+            [ThrioModule.pageObservers willDisappear:lastRoute.settings];
         }
     }
 }
@@ -57,16 +57,16 @@
     }
     // popTo 才会进到这里
     if (routeAction == NavigatorRouteActionPopTo) {
-        NavigatorPageRoute *preLastRoute = ThrioNavigator.pageObservers.prevLastRoute;
+        NavigatorPageRoute *preLastRoute = ThrioModule.pageObservers.prevLastRoute;
         if (route == preLastRoute) {
             return;
         }
 
         // 触发 `didAppear`
-        [ThrioNavigator.pageObservers didAppear:routeSettings];
+        [ThrioModule.pageObservers didAppear:routeSettings];
         // 如果存在前序的 route，触发其 `didDisappear`
         if (preLastRoute) {
-            [ThrioNavigator.pageObservers didDisappear:preLastRoute.settings];
+            [ThrioModule.pageObservers didDisappear:preLastRoute.settings];
         }
     }
 }
@@ -78,7 +78,7 @@
     if (!route) {
         return;
     }
-    [ThrioNavigator.pageObservers willDisappear:routeSettings];
+    [ThrioModule.pageObservers willDisappear:routeSettings];
 }
 
 - (void)thrio_didDisappear:(NavigatorRouteSettings *)routeSettings
@@ -88,7 +88,7 @@
     if (!route) {
         return;
     }
-    [ThrioNavigator.pageObservers didDisappear:routeSettings];
+    [ThrioModule.pageObservers didDisappear:routeSettings];
 }
 
 @end

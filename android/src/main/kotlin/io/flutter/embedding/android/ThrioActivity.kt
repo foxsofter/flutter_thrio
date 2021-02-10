@@ -27,6 +27,7 @@ import android.content.pm.PackageManager
 import android.os.Bundle
 import com.hellobike.flutter.thrio.BooleanCallback
 import com.hellobike.flutter.thrio.NullableBooleanCallback
+import com.hellobike.flutter.thrio.extension.getEntrypoint
 import com.hellobike.flutter.thrio.navigator.*
 
 open class ThrioActivity : ThrioFlutterActivity() {
@@ -44,9 +45,10 @@ open class ThrioActivity : ThrioFlutterActivity() {
 
     override fun getCachedEngineId(): String? {
         if (_initialEntrypoint == null) {
-            _initialEntrypoint = if (!FlutterEngineFactory.isMultiEngineEnabled) NAVIGATION_FLUTTER_ENTRYPOINT_DEFAULT
-            else if (initialUrl?.isEmpty() == true) ""
-            else initialUrl?.getEntrypoint()
+            _initialEntrypoint =
+                if (!FlutterEngineFactory.isMultiEngineEnabled) NAVIGATION_FLUTTER_ENTRYPOINT_DEFAULT
+                else if (initialUrl?.isEmpty() == true) ""
+                else initialUrl?.getEntrypoint()
         }
         return if (_initialEntrypoint?.isNotEmpty() == true) _initialEntrypoint else super.getCachedEngineId()
     }
@@ -81,40 +83,41 @@ open class ThrioActivity : ThrioFlutterActivity() {
     fun onPush(arguments: Map<String, Any?>?, result: BooleanCallback) {
         val id = cachedEngineId ?: throw IllegalStateException("cachedEngineId must not be null")
         val engine = FlutterEngineFactory.getEngine(id)
-                ?: throw IllegalStateException("engine must not be null")
+            ?: throw IllegalStateException("engine must not be null")
         engine.sendChannel.onPush(arguments, result)
     }
 
     fun onNotify(arguments: Map<String, Any?>?, result: BooleanCallback) {
         val id = cachedEngineId ?: throw IllegalStateException("cachedEngineId must not be null")
         val engine = FlutterEngineFactory.getEngine(id)
-                ?: throw IllegalStateException("engine must not be null")
+            ?: throw IllegalStateException("engine must not be null")
         engine.sendChannel.onNotify(arguments, result)
     }
 
     fun onPop(arguments: Map<String, Any?>?, result: NullableBooleanCallback) {
         val id = cachedEngineId ?: throw IllegalStateException("cachedEngineId must not be null")
         val engine = FlutterEngineFactory.getEngine(id)
-                ?: throw IllegalStateException("engine must not be null")
+            ?: throw IllegalStateException("engine must not be null")
         engine.sendChannel.onPop(arguments, result)
     }
 
     fun onPopTo(arguments: Map<String, Any?>?, result: BooleanCallback) {
         val id = cachedEngineId ?: throw IllegalStateException("cachedEngineId must not be null")
         val engine = FlutterEngineFactory.getEngine(id)
-                ?: throw IllegalStateException("engine must not be null")
+            ?: throw IllegalStateException("engine must not be null")
         engine.sendChannel.onPopTo(arguments, result)
     }
 
     fun onRemove(arguments: Map<String, Any?>?, result: BooleanCallback) {
         val id = cachedEngineId ?: throw IllegalStateException("cachedEngineId must not be null")
         val engine = FlutterEngineFactory.getEngine(id)
-                ?: throw IllegalStateException("engine must not be null")
+            ?: throw IllegalStateException("engine must not be null")
         engine.sendChannel.onRemove(arguments, result)
     }
 
     private fun readInitialUrl() {
-        val activityInfo = packageManager.getActivityInfo(componentName, PackageManager.GET_META_DATA)
+        val activityInfo =
+            packageManager.getActivityInfo(componentName, PackageManager.GET_META_DATA)
         _initialUrl = if (activityInfo.metaData == null) "" else {
             activityInfo.metaData.getString("io.flutter.InitialUrl", "")
         }

@@ -24,7 +24,6 @@
 package com.hellobike.flutter.thrio.navigator
 
 interface PageObserver {
-
     /**
      * The `route` is about to be activated.
      */

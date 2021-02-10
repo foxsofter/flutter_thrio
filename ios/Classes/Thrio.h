@@ -22,7 +22,6 @@
 #ifndef Thrio_h
 #define Thrio_h
 
-#import "Thrio.h"
 #import "ThrioPlugin.h"
 #import "ThrioTypes.h"
 #import "NSObject+ThrioSwizzling.h"
@@ -32,11 +31,13 @@
 #import "ThrioChannel.h"
 #import "ThrioLogger.h"
 #import "ThrioModule.h"
+#import "ThrioModuleContext.h"
 #import "ThrioModuleJsonDeserializer.h"
 #import "ThrioModuleJsonSerializer.h"
 #import "ThrioModulePageBuilder.h"
 #import "ThrioModulePageObserver.h"
 #import "ThrioModuleRouteObserver.h"
+#import "ThrioModuleTypes.h"
 #import "NavigatorFlutterViewController.h"
 #import "NavigatorNavigationController.h"
 #import "NavigatorPageNotifyProtocol.h"

@@ -1,7 +1,7 @@
 /**
  * The MIT License (MIT)
  *
- * Copyright (c) 2019 Hellobike Group
+ * Copyright (c) 2021 foxsoter.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -21,22 +21,9 @@
  * IN THE SOFTWARE.
  */
 
-package com.hellobike.flutter.thrio.module
+package com.hellobike.flutter.thrio.extension
 
-import com.hellobike.flutter.thrio.VoidCallback
-import com.hellobike.flutter.thrio.navigator.RouteObserver
-
-interface ModuleRouteObserver {
-
-    fun onRouteObserverRegister(moduleContext: ModuleContext) {
-
-    }
-
-    fun registerRouteObserver(observer: RouteObserver): VoidCallback {
-        return ModuleRouteObservers.observers.registry(observer)
-    }
-
-    fun registerRouteObservers(observers: List<RouteObserver>): VoidCallback {
-        return ModuleRouteObservers.observers.registryAll(observers.toSet())
-    }
+internal fun String.getEntrypoint(): String {
+    return substring(1).split("/").firstOrNull()
+        ?: throw IllegalArgumentException("entrypoint must not be null")
 }

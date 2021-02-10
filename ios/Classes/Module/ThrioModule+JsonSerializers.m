@@ -21,9 +21,9 @@
 
 #import <objc/runtime.h>
 #import "ThrioModuleTypes.h"
-#import "ThrioNavigator+JsonSerializers.h"
+#import "ThrioModule+JsonSerializers.h"
 
-@implementation ThrioNavigator (JsonSerializers)
+@implementation ThrioModule (JsonSerializers)
 
 + (ThrioRegistryMap *)jsonSerializers {
     id serializers = objc_getAssociatedObject(self, _cmd);
@@ -45,7 +45,7 @@
         return params;
     }
     NSString *type = NSStringFromClass([params class]);
-    ThrioJsonSerializer serializer = [ThrioNavigator jsonSerializers][type];
+    ThrioJsonSerializer serializer = [ThrioModule jsonSerializers][type];
     if (!serializer) {
         return params;
     }

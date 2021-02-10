@@ -21,7 +21,7 @@
 
 #import "NavigatorRouteObserverChannel.h"
 #import "ThrioNavigator+Internal.h"
-#import "ThrioNavigator+RouteObservers.h"
+#import "ThrioModule+RouteObservers.h"
 
 @interface NavigatorRouteObserverChannel ()
 
@@ -82,7 +82,7 @@
     #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
                 SEL selector = NSSelectorFromString([NSString stringWithFormat:@"%@:", method]);
                 [ThrioNavigator performSelector:selector withObject:routeSettings];
-                [ThrioNavigator.routeObservers performSelector:selector withObject:routeSettings];
+                [ThrioModule.routeObservers performSelector:selector withObject:routeSettings];
     #pragma clang diagnostic pop
             }];
 }

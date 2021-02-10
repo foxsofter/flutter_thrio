@@ -13,14 +13,14 @@ NS_ASSUME_NONNULL_BEGIN
 
 @implementation Module2
 
-- (void)onPageBuilderRegister {
+- (void)onPageBuilderRegister:(ThrioModuleContext *)moduleContext {
     [self registerPageBuilder:^UIViewController *_Nullable (id params) {
         UIStoryboard *sb = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
         return [sb instantiateViewControllerWithIdentifier:@"ThrioViewController2"];
     } forUrl:@"/biz2/native2"];
 }
 
-- (void)onRouteObserverRegister {
+- (void)onRouteObserverRegister:(ThrioModuleContext *)moduleContext {
     [self registerRouteObserver:self];
 }
 

@@ -24,7 +24,6 @@
 package com.hellobike.flutter.thrio.navigator
 
 interface RouteObserver {
-
     /**
      * The [ThrioNavigator] pushed `route`.
      *

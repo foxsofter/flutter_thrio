@@ -25,75 +25,74 @@ package com.hellobike.flutter.thrio.module
 
 import android.app.Application
 import android.content.Context
-import com.hellobike.flutter.thrio.navigator.ActivityDelegate
-import com.hellobike.flutter.thrio.navigator.FlutterEngineFactory
-import com.hellobike.flutter.thrio.navigator.Log
-import com.hellobike.flutter.thrio.navigator.NAVIGATION_FLUTTER_ENTRYPOINT_DEFAULT
+import com.hellobike.flutter.thrio.extension.canTransToFlutter
+import com.hellobike.flutter.thrio.navigator.*
 
 open class ThrioModule {
     private val modules by lazy { mutableMapOf<Class<out ThrioModule>, ThrioModule>() }
+
+    private var _moduleContext: ModuleContext? = null
+
+    val moduleContext: ModuleContext get() = _moduleContext!!
 
     companion object {
         private val root by lazy { ThrioModule() }
 
         @JvmStatic
-        fun init(context: Application, module: ThrioModule) {
+        fun init(module: ThrioModule, context: Application) {
             context.registerActivityLifecycleCallbacks(ActivityDelegate)
-
-            root.registerModule(context, module)
-            root.initModule(context)
+            root._moduleContext = ModuleContext()
+            root.registerModule(module, root.moduleContext)
+            root.initModule()
+            root.startupFlutterEngine(context)
         }
 
         @JvmStatic
-        fun init(context: Application, module: ThrioModule, multiEngineEnabled: Boolean) {
+        fun init(module: ThrioModule, context: Application, multiEngineEnabled: Boolean) {
             FlutterEngineFactory.isMultiEngineEnabled = multiEngineEnabled
-            context.registerActivityLifecycleCallbacks(ActivityDelegate)
-
-            root.registerModule(context, module)
-            root.initModule(context)
+            init(module, context)
         }
     }
 
-    protected fun registerModule(context: Context, module: ThrioModule) {
+    protected fun registerModule(module: ThrioModule, moduleContext: ModuleContext) {
         val jClazz = module::class.java
         require(!modules.containsKey(jClazz)) { "can not register Module twice" }
         modules[jClazz] = module
-        module.onModuleRegister(context)
+        module._moduleContext = moduleContext
+        module.onModuleRegister(moduleContext)
     }
 
-    protected fun initModule(context: Context) {
+    protected fun initModule() {
         modules.values.forEach {
-            it.onModuleInit(context)
-            it.initModule(context)
+            it.onModuleInit(it.moduleContext)
+            it.initModule()
         }
         modules.values.forEach {
             if (it is ModuleIntentBuilder) {
-                it.onIntentBuilderRegister(context)
+                it.onIntentBuilderRegister(it.moduleContext)
             }
         }
         modules.values.forEach {
             if (it is ModulePageObserver) {
-                it.onPageObserverRegister(context)
+                it.onPageObserverRegister(it.moduleContext)
             }
             if (it is ModuleRouteObserver) {
-                it.onRouteObserverRegister(context)
+                it.onRouteObserverRegister(it.moduleContext)
             }
         }
         modules.values.forEach {
             if (it is ModuleJsonSerializer) {
-                it.onJsonSerializerRegister(context)
+                it.onJsonSerializerRegister(it.moduleContext)
             }
             if (it is ModuleJsonDeserializer) {
-                it.onJsonDeserializerRegister(context)
+                it.onJsonDeserializerRegister(it.moduleContext)
             }
         }
-        startupFlutterEngine(context)
     }
 
-    protected open fun onModuleRegister(context: Context) {}
+    protected open fun onModuleRegister(moduleContext: ModuleContext) {}
 
-
-    protected open fun onModuleInit(context: Context) {}
+    protected open fun onModuleInit(moduleContext: ModuleContext) {}
 
     protected var navigatorLogEnabled
         get() = Log.navigatorLogging
@@ -102,10 +101,30 @@ open class ThrioModule {
         }
 
     @JvmOverloads
-    protected fun startupFlutterEngine(context: Context,
-                                       entrypoint: String = NAVIGATION_FLUTTER_ENTRYPOINT_DEFAULT) {
+    protected fun startupFlutterEngine(
+        context: Context,
+        entrypoint: String = NAVIGATION_FLUTTER_ENTRYPOINT_DEFAULT
+    ) {
         if (!FlutterEngineFactory.isMultiEngineEnabled) {
-            FlutterEngineFactory.startup(context, entrypoint)
+            FlutterEngineFactory.startup(
+                context, entrypoint,
+                object : EngineReadyListener {
+                    override fun onReady(it: Any?) {
+                        val params = moduleContext.params
+                        val canTransParams = mutableMapOf<String, Any>()
+                        for (param in params) {
+                            val value =
+                                if (param.value.canTransToFlutter()) param.value else
+                                    ModuleJsonSerializers.serializeParams(param.value)
+                            if (value != null) {
+                                canTransParams[param.key] = value
+                            }
+                        }
+                        val channel =
+                            FlutterEngineFactory.getEngine(entrypoint)?.moduleContextChannel
+                        channel?.invokeMethod("set", canTransParams)
+                    }
+                })
         }
     }
 }

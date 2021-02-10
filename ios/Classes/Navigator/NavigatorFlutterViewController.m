@@ -25,7 +25,7 @@
 #import "NavigatorLogger.h"
 #import "ThrioChannel.h"
 #import "ThrioNavigator+Internal.h"
-#import "ThrioNavigator+PageObservers.h"
+#import "ThrioModule+PageObservers.h"
 #import "ThrioNavigator.h"
 #import "UINavigationController+Navigator.h"
 #import "UIViewController+HidesNavigationBar.h"
@@ -79,7 +79,7 @@ NS_ASSUME_NONNULL_BEGIN
     [super viewWillAppear:animated];
 
     if (![self isMovingToParentViewController]) {
-        [ThrioNavigator.pageObservers willAppear:self.thrio_lastRoute.settings];
+        [ThrioModule.pageObservers willAppear:self.thrio_lastRoute.settings];
     }
 }
 
@@ -89,14 +89,14 @@ NS_ASSUME_NONNULL_BEGIN
     if ([self isMovingToParentViewController]) {
         [NavigatorFlutterEngineFactory.shared pushViewController:self];
     } else {
-        [ThrioNavigator.pageObservers didAppear:self.thrio_lastRoute.settings];
+        [ThrioModule.pageObservers didAppear:self.thrio_lastRoute.settings];
     }
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
 
-    [ThrioNavigator.pageObservers willDisappear:self.thrio_lastRoute.settings];
+    [ThrioModule.pageObservers willDisappear:self.thrio_lastRoute.settings];
 
     [[UIApplication sharedApplication].delegate.window endEditing:YES];
 }
@@ -105,7 +105,7 @@ NS_ASSUME_NONNULL_BEGIN
     [super viewDidDisappear:animated];
 
     if ([self.navigationController thrio_getAllRoutesByUrl:nil].count > 1) {
-        [ThrioNavigator.pageObservers didDisappear:self.thrio_lastRoute.settings];
+        [ThrioModule.pageObservers didDisappear:self.thrio_lastRoute.settings];
     }
 }
 

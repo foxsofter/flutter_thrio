@@ -25,8 +25,10 @@ package com.hellobike.flutter.thrio.navigator
 
 import com.hellobike.flutter.thrio.channel.ThrioChannel
 
-internal class RouteReceiveChannel(val channel: ThrioChannel,
-                                   var readyListener: EngineReadyListener? = null) {
+internal class RouteReceiveChannel(
+    val channel: ThrioChannel,
+    var readyListener: EngineReadyListener? = null
+) {
     init {
         onReady()
         onPush()
@@ -40,8 +42,6 @@ internal class RouteReceiveChannel(val channel: ThrioChannel,
 
         onSetPopDisabled()
         onHotRestart()
-        onRegisterUrls()
-        onUnregisterUrls()
     }
 
     private fun onReady() {
@@ -56,8 +56,15 @@ internal class RouteReceiveChannel(val channel: ThrioChannel,
             if (arguments == null) return@registryMethod
             val url = arguments["url"] as String
             val params = arguments["params"]
-            val animated = if (arguments["animated"] != null) arguments["animated"] as Boolean else true
-            NavigationController.Push.push(url, params, animated, channel.entrypoint, result = result)
+            val animated =
+                if (arguments["animated"] != null) arguments["animated"] as Boolean else true
+            NavigationController.Push.push(
+                url,
+                params,
+                animated,
+                channel.entrypoint,
+                result = result
+            )
         }
     }
 
@@ -68,7 +75,7 @@ internal class RouteReceiveChannel(val channel: ThrioChannel,
             val index = if (arguments["index"] != null) arguments["index"] as Int else 0
             val name = arguments["name"] as String
             val params = arguments["params"]
-            NavigationController.Notify.notify(url, index, name, params){
+            NavigationController.Notify.notify(url, index, name, params) {
                 result(it)
             }
         }
@@ -78,7 +85,8 @@ internal class RouteReceiveChannel(val channel: ThrioChannel,
         channel.registryMethod("pop") { arguments, result ->
             if (arguments == null) return@registryMethod
             val params = arguments["params"]
-            val animated = if (arguments["animated"] != null) arguments["animated"] as Boolean else true
+            val animated =
+                if (arguments["animated"] != null) arguments["animated"] as Boolean else true
             NavigationController.Pop.pop(params, animated, result)
         }
     }
@@ -88,7 +96,8 @@ internal class RouteReceiveChannel(val channel: ThrioChannel,
             if (arguments == null) return@registryMethod
             val url = arguments["url"] as String
             val index = if (arguments["index"] != null) arguments["index"] as Int else 0
-            val animated = if (arguments["animated"] != null) arguments["animated"] as Boolean else true
+            val animated =
+                if (arguments["animated"] != null) arguments["animated"] as Boolean else true
             NavigationController.PopTo.popTo(url, index, animated, result)
         }
     }
@@ -98,7 +107,8 @@ internal class RouteReceiveChannel(val channel: ThrioChannel,
             if (arguments == null) return@registryMethod
             val url = arguments["url"] as String
             val index = if (arguments["index"] != null) arguments["index"] as Int else 0
-            val animated = if (arguments["animated"] != null) arguments["animated"] as Boolean else true
+            val animated =
+                if (arguments["animated"] != null) arguments["animated"] as Boolean else true
             NavigationController.Remove.remove(url, index, animated, result)
         }
     }
@@ -128,14 +138,6 @@ internal class RouteReceiveChannel(val channel: ThrioChannel,
 
     private fun onHotRestart() {
         channel.registryMethod("hotRestart") { _, _ -> }
-    }
-
-    private fun onRegisterUrls() {
-        channel.registryMethod("registerUrls") { _, _ -> }
-    }
-
-    private fun onUnregisterUrls() {
-        channel.registryMethod("unregisterUrls") { _, _ -> }
     }
 
 }

@@ -1,16 +1,9 @@
 package com.hellobike.thrio_example
 
-import android.os.Bundle
 import com.hellobike.flutter.thrio.channel.ThrioChannel
-import com.hellobike.flutter.thrio.navigator.FlutterEngineFactory
-import com.hellobike.flutter.thrio.navigator.ThrioNavigator
-import com.hellobike.flutter.thrio.navigator.getEntrypoint
-import io.flutter.embedding.android.FlutterSurfaceView
+import com.hellobike.flutter.thrio.extension.getEntrypoint
 import io.flutter.embedding.android.ThrioActivity
-import io.flutter.embedding.android.TransparencyMode
 import io.flutter.embedding.engine.FlutterEngine
-import java.util.*
-import kotlin.concurrent.timerTask
 
 class CustomFlutterActivity : ThrioActivity() {
 
@@ -21,7 +14,6 @@ class CustomFlutterActivity : ThrioActivity() {
         channel = ThrioChannel(intent.getEntrypoint(), "custom_thrio_channel")
         channel?.setupMethodChannel(flutterEngine.dartExecutor)
     }
-
 
     override fun onFlutterUiDisplayed() {
         super.onFlutterUiDisplayed()

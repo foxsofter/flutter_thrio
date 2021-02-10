@@ -114,6 +114,10 @@ class _PageState extends State<Page> {
                               widget.moduleContext.get('int_key_root_module');
                           ThrioLogger.v('int_key_root_module value is $value');
                         }
+
+                        final value =
+                            widget.moduleContext.get('people_from_native');
+                        ThrioLogger.v('people_from_native value is $value');
                       },
                       child: Container(
                           padding: const EdgeInsets.all(8),

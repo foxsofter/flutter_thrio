@@ -7,8 +7,8 @@ class MainApp : Application() {
     override fun onCreate() {
         super.onCreate()
 
-        ThrioModule.init(this, MainModule)
-//        ThrioModule.init(this, FlutterModule, true)
+        ThrioModule.init(MainModule,this)
+//        ThrioModule.init( MainModule, this, true)
     }
 }
 

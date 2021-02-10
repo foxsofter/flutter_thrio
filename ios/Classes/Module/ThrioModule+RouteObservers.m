@@ -1,6 +1,6 @@
 // The MIT License (MIT)
 //
-// Copyright (c) 2019 Hellobike Group
+// Copyright (c) 2021 foxsofter
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
 // copy of this software and associated documentation files (the "Software"),
@@ -22,12 +22,12 @@
 #import <objc/runtime.h>
 #import "NavigatorLogger.h"
 #import "ThrioNavigator+Internal.h"
-#import "ThrioNavigator+RouteObservers.h"
+#import "ThrioModule+RouteObservers.h"
 #import "UINavigationController+Navigator.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@implementation ThrioNavigator (RouteObservers)
+@implementation ThrioModule (RouteObservers)
 
 + (NavigatorRouteObservers *)routeObservers {
     NavigatorRouteObservers *value = objc_getAssociatedObject(self, _cmd);
@@ -75,7 +75,7 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 + (void)didPushUrl:(NSString *)url index:(NSNumber *)index {
-    NSArray *allNvcs = [self.navigationControllers.allObjects.reverseObjectEnumerator allObjects];
+    NSArray *allNvcs = [ThrioNavigator.navigationControllers.allObjects.reverseObjectEnumerator allObjects];
     for (UINavigationController *nvc in allNvcs) {
         if ([nvc thrio_containsUrl:url index:index]) {
             [nvc thrio_didPushUrl:url index:index];
@@ -85,7 +85,7 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 + (void)didPopUrl:(NSString *)url index:(NSNumber *)index {
-    NSArray *allNvcs = [self.navigationControllers.allObjects.reverseObjectEnumerator allObjects];
+    NSArray *allNvcs = [ThrioNavigator.navigationControllers.allObjects.reverseObjectEnumerator allObjects];
     for (UINavigationController *nvc in allNvcs) {
         if ([nvc thrio_containsUrl:url index:index]) {
             [nvc thrio_didPopUrl:url index:index];
@@ -95,7 +95,7 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 + (void)didPopToUrl:(NSString *)url index:(NSNumber *)index {
-    NSArray *allNvcs = [self.navigationControllers.allObjects.reverseObjectEnumerator allObjects];
+    NSArray *allNvcs = [ThrioNavigator.navigationControllers.allObjects.reverseObjectEnumerator allObjects];
     for (UINavigationController *nvc in allNvcs) {
         if ([nvc thrio_containsUrl:url index:index]) {
             [nvc thrio_didPopToUrl:url index:index];
@@ -105,7 +105,7 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 + (void)didRemoveUrl:(NSString *)url index:(NSNumber *)index {
-    NSArray *allNvcs = [self.navigationControllers.allObjects.reverseObjectEnumerator allObjects];
+    NSArray *allNvcs = [ThrioNavigator.navigationControllers.allObjects.reverseObjectEnumerator allObjects];
     for (UINavigationController *nvc in allNvcs) {
         if ([nvc thrio_containsUrl:url index:index]) {
             [nvc thrio_didRemoveUrl:url index:index];

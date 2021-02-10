@@ -21,12 +21,18 @@
 
 #import <Foundation/Foundation.h>
 #import "ThrioTypes.h"
+#import "ThrioModuleContext.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 @interface ThrioModule : NSObject
 
-/// Module entrypoint method.
+@property (nonatomic, readonly) ThrioModuleContext *moduleContext;
+
+/// A function for module initialization that will call  the `onPageBuilderRegister:`, `onModuleInit:`
+/// and `onModuleAsyncInit:` methods of all modules.
+///
+/// Should only be called once when the app startups.
 ///
 + (void)init:(ThrioModule *)rootModule;
 
@@ -34,32 +40,26 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// A function for registering a module.
 ///
-/// Should be called in `onModuleRegister`.
+/// Should be called in `onModuleRegister:`.
 ///
-- (void)registerModule:(ThrioModule *)module;
-
-/// A function for module initialization that will call  the `onPageRegister`, `onModuleInit` and `onModuleAsyncInit`
-/// methods of all modules.
-///
-/// Should only be called once when the app startups.
-///
-- (void)initModule;
+- (void)registerModule:(ThrioModule *)module
+     withModuleContext:(ThrioModuleContext *)moduleContext;
 
 /// A function for registering submodules.
 ///
-- (void)onModuleRegister;
+- (void)onModuleRegister:(ThrioModuleContext *)moduleContext;
 
 /// A function for module initialization.
 ///
-- (void)onModuleInit;
+- (void)onModuleInit:(ThrioModuleContext *)moduleContext;
 
 /// A function for module asynchronous initialization.
 ///
-- (void)onModuleAsyncInit;
+- (void)onModuleAsyncInit:(ThrioModuleContext *)moduleContext;
 
 /// Startup the flutter engine with `entrypoint`.
 ///
-/// Should be called in `onModuleAsyncInit`. Subsequent calls will return immediately if the entrypoint is the same.
+/// Should be called in `onModuleAsyncInit:`. Subsequent calls will return immediately if the entrypoint is the same.
 ///
 /// Do not override this method.
 ///

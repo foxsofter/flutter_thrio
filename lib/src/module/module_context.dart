@@ -45,10 +45,7 @@ class ModuleContext {
         return value;
       }
     }
-    // Anchor module caches the data of the framework
-    return module.parent == anchor || module.parent == null
-        ? null
-        : module.parent._moduleContext?.get<T>(key);
+    return module.parent?._moduleContext?.get<T>(key);
   }
 
   /// Set param `value` with `key`.

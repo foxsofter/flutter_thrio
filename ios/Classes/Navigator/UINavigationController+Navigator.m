@@ -28,10 +28,10 @@
 #import "NavigatorPageNotifyProtocol.h"
 #import "NavigatorRouteSettings.h"
 #import "ThrioNavigator+Internal.h"
-#import "ThrioNavigator+JsonDeserializers.h"
-#import "ThrioNavigator+PageBuilders.h"
-#import "ThrioNavigator+PageObservers.h"
-#import "ThrioNavigator+RouteObservers.h"
+#import "ThrioModule+JsonDeserializers.h"
+#import "ThrioModule+PageBuilders.h"
+#import "ThrioModule+PageObservers.h"
+#import "ThrioModule+RouteObservers.h"
 #import "ThrioNavigator.h"
 #import "ThrioRegistryMap.h"
 #import "UINavigationController+Navigator.h"
@@ -269,7 +269,7 @@ NS_ASSUME_NONNULL_BEGIN
                     [CATransaction begin];
                     [CATransaction setCompletionBlock:^{
                         if (![vc isKindOfClass:NavigatorFlutterViewController.class]) {
-                            [ThrioNavigator didRemove:routeSettings];
+                            [ThrioModule didRemove:routeSettings];
                         }
                     }];
                     [strongSelf setViewControllers:vcs animated:animated];
@@ -278,7 +278,7 @@ NS_ASSUME_NONNULL_BEGIN
                     [vcs removeObject:vc];
                     [strongSelf setViewControllers:vcs animated:animated];
                     if (![vc isKindOfClass:NavigatorFlutterViewController.class]) {
-                        [ThrioNavigator didRemove:routeSettings];
+                        [ThrioModule didRemove:routeSettings];
                     }
                 }
             }
@@ -422,7 +422,7 @@ NS_ASSUME_NONNULL_BEGIN
         [CATransaction begin];
         NavigatorRouteSettings *routeSettings = viewController.thrio_lastRoute.settings;
         [CATransaction setCompletionBlock:^{
-            [ThrioNavigator didPush:routeSettings];
+            [ThrioModule didPush:routeSettings];
         }];
         [self thrio_pushViewController:viewController animated:animated];
         [CATransaction commit];
@@ -473,13 +473,13 @@ NS_ASSUME_NONNULL_BEGIN
                         if (animated) {
                             [CATransaction begin];
                             [CATransaction setCompletionBlock:^{
-                                [ThrioNavigator didPop:routeSettings];
+                                [ThrioModule didPop:routeSettings];
                             }];
                             poppedVC = [strongSelf thrio_popViewControllerAnimated:animated];
                             [CATransaction commit];
                         } else {
                             poppedVC = [strongSelf thrio_popViewControllerAnimated:animated];
-                            [ThrioNavigator didPop:routeSettings];
+                            [ThrioModule didPop:routeSettings];
                         }
                     } else {
                         poppedVC = [strongSelf thrio_popViewControllerAnimated:animated];
@@ -518,13 +518,13 @@ NS_ASSUME_NONNULL_BEGIN
         if (animated) {
             [CATransaction begin];
             [CATransaction setCompletionBlock:^{
-                [ThrioNavigator didPop:routeSettings];
+                [ThrioModule didPop:routeSettings];
             }];
             vc = [self thrio_popViewControllerAnimated:animated];
             [CATransaction commit];
         } else {
             vc = [self thrio_popViewControllerAnimated:animated];
-            [ThrioNavigator didPop:routeSettings];
+            [ThrioModule didPop:routeSettings];
         }
         if (previousVC) {
             // 判断前一个页面导航栏是否需要切换
@@ -551,14 +551,14 @@ NS_ASSUME_NONNULL_BEGIN
         if (animated) {
             [CATransaction begin];
             [CATransaction setCompletionBlock:^{
-                [ThrioNavigator didPopTo:routeSettings];
+                [ThrioModule didPopTo:routeSettings];
             }];
             NSArray *vcs = [self thrio_popToViewController:viewController animated:animated];
             [CATransaction commit];
             return vcs;
         }
         NSArray *vcs = [self thrio_popToViewController:viewController animated:animated];
-        [ThrioNavigator didPopTo:routeSettings];
+        [ThrioModule didPopTo:routeSettings];
         return vcs;
     }
     return [self thrio_popToViewController:viewController animated:animated];
@@ -578,7 +578,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)thrio_didShowViewController:(UIViewController *)viewController animated:(BOOL)animated {
     // 记录最后展示的 Route
-    ThrioNavigator.pageObservers.lastRoute = viewController.thrio_lastRoute;
+    ThrioModule.pageObservers.lastRoute = viewController.thrio_lastRoute;
 
     // 如果即将显示的页面为NavigatorFlutterViewController，需要将该页面切换到引擎上
     if ([viewController isKindOfClass:NavigatorFlutterViewController.class]) {
@@ -614,7 +614,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (NavigatorFlutterViewController *)thrio_createFlutterViewControllerWithEntrypoint:(NSString *)entrypoint {
     NavigatorFlutterViewController *viewController;
-    NavigatorFlutterPageBuilder flutterBuilder = [ThrioNavigator flutterPageBuilder];
+    NavigatorFlutterPageBuilder flutterBuilder = [ThrioModule flutterPageBuilder];
     if (flutterBuilder) {
         viewController = flutterBuilder(entrypoint);
     } else {
@@ -626,9 +626,9 @@ NS_ASSUME_NONNULL_BEGIN
 - (UIViewController *_Nullable)thrio_createNativeViewControllerWithUrl:(NSString *)url
                                                                 params:(NSDictionary *)params {
     UIViewController *viewController;
-    NavigatorPageBuilder builder = [ThrioNavigator pageBuilders][url];
+    NavigatorPageBuilder builder = [ThrioModule pageBuilders][url];
     if (builder) {
-        id deserializeParams = [ThrioNavigator deserializeParams:params];
+        id deserializeParams = [ThrioModule deserializeParams:params];
         viewController = builder(deserializeParams);
         if (viewController.thrio_hidesNavigationBar_ == nil) {
             viewController.thrio_hidesNavigationBar_ = @NO;

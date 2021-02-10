@@ -24,6 +24,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 import '../channel/thrio_channel.dart';
+import '../module/module_anchor.dart';
+import '../module/module_types.dart';
 import '../module/thrio_module.dart';
 import 'navigator_logger.dart';
 import 'navigator_observer_manager.dart';
@@ -45,8 +47,21 @@ class ThrioNavigatorImplement {
   static ThrioNavigatorImplement _default;
 
   void init(ModuleContext moduleContext) {
-    _channel =
-        ThrioChannel(channel: '__thrio_app__${moduleContext.entrypoint}');
+    _channel = ThrioChannel(
+      channel: '__thrio_app__${moduleContext.entrypoint}',
+    );
+    ThrioChannel(
+      channel: '__thrio_module_context__${moduleContext.entrypoint}',
+    ).registryMethodCall('set', ([arguments]) async {
+      for (final key in arguments.keys) {
+        final value = arguments[key];
+        if (value == null) {
+          anchor.remove(key);
+        } else {
+          anchor.set(key, _deserializeParams(value));
+        }
+      }
+    });
     _sendChannel = NavigatorRouteSendChannel(_channel);
     _receiveChannel = NavigatorRouteReceiveChannel(_channel);
     _pageChannel = NavigatorPageObserverChannel(moduleContext.entrypoint);
@@ -54,7 +69,6 @@ class ThrioNavigatorImplement {
     _observerManager = NavigatorObserverManager();
 
     verbose('TransitionBuilder init');
-    // sendChannel.registerUrls(_pageBuilders.keys.toList());
   }
 
   TransitionBuilder get builder => (context, child) {
@@ -219,5 +233,26 @@ class ThrioNavigatorImplement {
 
   void hotRestart() {
     _channel?.invokeMethod<bool>('hotRestart');
+  }
+
+  dynamic _deserializeParams(dynamic params) {
+    if (params == null) {
+      return null;
+    }
+
+    if (params is Map) {
+      // ignore: avoid_as
+      final typeString = params['__thrio_TParams__'] as String;
+      if (typeString?.isNotEmpty ?? false) {
+        final paramsInstance =
+            ThrioModule.get<JsonDeserializer>(key: typeString)
+                ?.call(params.cast<String, dynamic>());
+        if (paramsInstance != null) {
+          return paramsInstance;
+        }
+      }
+    }
+
+    return params;
   }
 }

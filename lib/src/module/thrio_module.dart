@@ -76,10 +76,7 @@ mixin ThrioModule {
   /// `NavigatorPageBuilder`, and `url` is null or empty, find instance of `T`
   /// in all modules.
   ///
-  static T get<T>({
-    String url,
-    String key,
-  }) =>
+  static T get<T>({String url, String key}) =>
       anchor.get<T>(url: url, key: key);
 
   /// Returns true if the `url` has been registered.

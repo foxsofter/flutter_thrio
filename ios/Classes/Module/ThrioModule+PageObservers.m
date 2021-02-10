@@ -1,6 +1,6 @@
 // The MIT License (MIT)
 //
-// Copyright (c) 2019 Hellobike Group
+// Copyright (c) 2021 foxsofter
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
 // copy of this software and associated documentation files (the "Software"),
@@ -22,13 +22,13 @@
 #import <objc/runtime.h>
 #import "NavigatorLogger.h"
 #import "ThrioNavigator+Internal.h"
-#import "ThrioNavigator+PageObservers.h"
+#import "ThrioModule+PageObservers.h"
 #import "UINavigationController+Navigator.h"
 #import "UINavigationController+PageObservers.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@implementation ThrioNavigator (PageObservers)
+@implementation ThrioModule (PageObservers)
 
 + (NavigatorPageObservers *)pageObservers {
     id value = objc_getAssociatedObject(self, _cmd);
@@ -42,13 +42,13 @@ NS_ASSUME_NONNULL_BEGIN
 + (void)willAppear:(NavigatorRouteSettings *)routeSettings
        routeAction:(NSString *)routeAction {
     NavigatorRouteAction action = [self routeActionFromString:routeAction];
-    UINavigationController *nvc = self.navigationController;
+    UINavigationController *nvc = ThrioNavigator.navigationController;
     if (action == NavigatorRouteActionPush) {
-        [ThrioNavigator.pageObservers willAppear:routeSettings];
+        [ThrioModule.pageObservers willAppear:routeSettings];
         NavigatorPageRoute *lastRoute = nvc.thrio_lastRoute;
         if ([[nvc thrio_getAllRoutesByUrl:nil] count] > 0 &&
             ![lastRoute.settings isEqualToRouteSettings:routeSettings]) {
-            [ThrioNavigator.pageObservers willDisappear:lastRoute.settings];
+            [ThrioModule.pageObservers willDisappear:lastRoute.settings];
         }
     } else if ([nvc thrio_containsUrl:routeSettings.url index:routeSettings.index]) {
         [nvc thrio_willAppear:routeSettings routeAction:action];
@@ -58,12 +58,12 @@ NS_ASSUME_NONNULL_BEGIN
 + (void)didAppear:(NavigatorRouteSettings *)routeSettings
       routeAction:(NSString *)routeAction {
     NavigatorRouteAction action = [self routeActionFromString:routeAction];
-    UINavigationController *nvc = self.navigationController;
+    UINavigationController *nvc = ThrioNavigator.navigationController;
     if (action == NavigatorRouteActionPush) {
-        [ThrioNavigator.pageObservers didAppear:routeSettings];
+        [ThrioModule.pageObservers didAppear:routeSettings];
         if ([[nvc thrio_getAllRoutesByUrl:nil] count] > 0) {
             NavigatorPageRoute *lastRoute = nvc.thrio_lastRoute;
-            [ThrioNavigator.pageObservers didDisappear:lastRoute.settings];
+            [ThrioModule.pageObservers didDisappear:lastRoute.settings];
         }
     } else if ([nvc thrio_containsUrl:routeSettings.url index:routeSettings.index]) {
         [nvc thrio_didAppear:routeSettings routeAction:action];
@@ -73,12 +73,12 @@ NS_ASSUME_NONNULL_BEGIN
 + (void)willDisappear:(NavigatorRouteSettings *)routeSettings
           routeAction:(NSString *)routeAction {
     NavigatorRouteAction action = [self routeActionFromString:routeAction];
-    UINavigationController *nvc = self.navigationController;
+    UINavigationController *nvc = ThrioNavigator.navigationController;
     if (action == NavigatorRouteActionPop || action == NavigatorRouteActionRemove) {
         NavigatorPageRoute *lastRoute = nvc.thrio_lastRoute;
         if ([lastRoute.settings isEqualToRouteSettings:routeSettings]) {
-            [ThrioNavigator.pageObservers willDisappear:routeSettings];
-            [ThrioNavigator.pageObservers willAppear:lastRoute.prev.settings];
+            [ThrioModule.pageObservers willDisappear:routeSettings];
+            [ThrioModule.pageObservers willAppear:lastRoute.prev.settings];
         }
     } else if ([nvc thrio_containsUrl:routeSettings.url index:routeSettings.index]) {
         [nvc thrio_willDisappear:routeSettings routeAction:action];
@@ -88,12 +88,12 @@ NS_ASSUME_NONNULL_BEGIN
 + (void)didDisappear:(NavigatorRouteSettings *)routeSettings
          routeAction:(NSString *)routeAction {
     NavigatorRouteAction action = [self routeActionFromString:routeAction];
-    UINavigationController *nvc = self.navigationController;
+    UINavigationController *nvc = ThrioNavigator.navigationController;
     if (action == NavigatorRouteActionPop || action == NavigatorRouteActionRemove) {
-        NavigatorPageRoute *prevLastRoute = ThrioNavigator.pageObservers.prevLastRoute;
+        NavigatorPageRoute *prevLastRoute = ThrioModule.pageObservers.prevLastRoute;
         if ([prevLastRoute.settings isEqualToRouteSettings:routeSettings]) {
-            [ThrioNavigator.pageObservers didDisappear:routeSettings];
-            [ThrioNavigator.pageObservers didAppear:prevLastRoute.prev.settings];
+            [ThrioModule.pageObservers didDisappear:routeSettings];
+            [ThrioModule.pageObservers didAppear:prevLastRoute.prev.settings];
         }
     } else if ([nvc thrio_containsUrl:routeSettings.url index:routeSettings.index]) {
         [nvc thrio_didDisappear:routeSettings routeAction:action];

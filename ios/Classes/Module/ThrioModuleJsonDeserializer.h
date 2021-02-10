@@ -23,6 +23,7 @@
 
 #import "ThrioModuleTypes.h"
 #import "ThrioTypes.h"
+#import "ThrioModule.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -41,7 +42,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface ThrioModule (JsonDeserializer) <ThrioModuleJsonDeserializer>
 
-- (void)onJsonDeserializerRegister;
+- (void)onJsonDeserializerRegister:(ThrioModuleContext *)moduleContext;
 
 @end
 

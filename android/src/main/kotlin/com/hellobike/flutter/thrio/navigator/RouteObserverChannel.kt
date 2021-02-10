@@ -24,11 +24,14 @@
 package com.hellobike.flutter.thrio.navigator
 
 import com.hellobike.flutter.thrio.channel.ThrioChannel
+import com.hellobike.flutter.thrio.module.ModuleRouteObservers
 import io.flutter.plugin.common.BinaryMessenger
 
-class RouteObserverChannel constructor(entrypoint: String, messenger: BinaryMessenger) : RouteObserver {
+class RouteObserverChannel constructor(entrypoint: String, messenger: BinaryMessenger) :
+    RouteObserver {
 
-    private val channel: ThrioChannel = ThrioChannel(entrypoint, "__thrio_route_channel__$entrypoint")
+    private val channel: ThrioChannel =
+        ThrioChannel(entrypoint, "__thrio_route_channel__$entrypoint")
 
     init {
         channel.setupMethodChannel(messenger)
@@ -62,15 +65,15 @@ class RouteObserverChannel constructor(entrypoint: String, messenger: BinaryMess
         channel.registryMethod(method) { arguments, _ ->
             if (arguments == null) return@registryMethod
             val routeSettings = RouteSettings.fromArguments(arguments)
-                    ?: return@registryMethod
+                ?: return@registryMethod
             when (method) {
-                "didPush" -> RouteObservers.didPush(routeSettings)
+                "didPush" -> ModuleRouteObservers.didPush(routeSettings)
                 "didPop" -> {
-                    RouteObservers.didPop(routeSettings)
+                    ModuleRouteObservers.didPop(routeSettings)
                     PageRoutes.didPop(routeSettings)
                 }
-                "didPopTo" -> RouteObservers.didPopTo(routeSettings)
-                "didRemove" -> RouteObservers.didRemove(routeSettings)
+                "didPopTo" -> ModuleRouteObservers.didPopTo(routeSettings)
+                "didRemove" -> ModuleRouteObservers.didRemove(routeSettings)
             }
         }
     }

@@ -1,6 +1,6 @@
 // The MIT License (MIT)
 //
-// Copyright (c) 2019 Hellobike Group
+// Copyright (c) 2020 foxsofter
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
 // copy of this software and associated documentation files (the "Software"),
@@ -19,19 +19,17 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-#import "ThrioNavigator.h"
+#import <Foundation/Foundation.h>
+#import "ThrioModule.h"
 #import "ThrioRegistryMap.h"
-#import "ThrioTypes.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface ThrioNavigator (PageBuilders)
+@interface ThrioModule (JsonSerializers)
 
-+ (ThrioRegistryMap *)pageBuilders;
++ (ThrioRegistryMap *)jsonSerializers;
 
-+ (void)setFlutterPageBuilder:(NavigatorFlutterPageBuilder _Nullable)builder;
-
-+ (NavigatorFlutterPageBuilder _Nullable)flutterPageBuilder;
++ (id _Nullable)serializeParams:(id _Nullable)params;
 
 @end
 

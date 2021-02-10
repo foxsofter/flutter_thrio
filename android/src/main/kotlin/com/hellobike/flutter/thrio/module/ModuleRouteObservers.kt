@@ -21,51 +21,60 @@
  * IN THE SOFTWARE.
  */
 
-package com.hellobike.flutter.thrio.navigator
+package com.hellobike.flutter.thrio.module
 
+import com.hellobike.flutter.thrio.navigator.FlutterEngineFactory
+import com.hellobike.flutter.thrio.navigator.Log
+import com.hellobike.flutter.thrio.navigator.RouteObserver
+import com.hellobike.flutter.thrio.navigator.RouteSettings
 import com.hellobike.flutter.thrio.registry.RegistrySet
 
-internal object PageObservers : PageObserver {
-    private const val TAG = "PageObservers"
+internal object ModuleRouteObservers : RouteObserver {
+    private const val TAG = "RouteObservers"
 
-    val observers by lazy { RegistrySet<PageObserver>() }
+    val observers by lazy { RegistrySet<RouteObserver>() }
 
     init {
         observers.registry(FlutterEngineFactory)
     }
 
-    override fun willAppear(routeSettings: RouteSettings) {
+    override fun didPush(routeSettings: RouteSettings) {
+        Log.i(
+            TAG, "didPush: url->${routeSettings.url} " +
+                    "index->${routeSettings.index} "
+        )
         observers.forEach {
-            it.willAppear(routeSettings)
-        }
-        Log.i(TAG, "willAppear: url->${routeSettings.url} " +
-                "index->${routeSettings.index} ")
-    }
-
-    override fun didAppear(routeSettings: RouteSettings) {
-        observers.forEach {
-            it.didAppear(routeSettings)
-        }
-        Log.i(TAG, "didAppear: url->${routeSettings.url} " +
-                "index->${routeSettings.index} ")
-        PageRoutes.lastRouteHolder(routeSettings.url, routeSettings.index)?.activity?.get()?.apply {
-            NavigationController.Notify.doNotify(this)
+            it.didPush(routeSettings)
         }
     }
 
-    override fun willDisappear(routeSettings: RouteSettings) {
+    override fun didPop(routeSettings: RouteSettings) {
+        Log.i(
+            TAG, "didPop: url->${routeSettings.url} " +
+                    "index->${routeSettings.index} "
+        )
         observers.forEach {
-            it.willDisappear(routeSettings)
+            it.didPop(routeSettings)
         }
-        Log.i(TAG, "willDisappear: url->${routeSettings.url} " +
-                "index->${routeSettings.index} ")
     }
 
-    override fun didDisappear(routeSettings: RouteSettings) {
+    override fun didPopTo(routeSettings: RouteSettings) {
+        Log.i(
+            TAG, "didPopTo: url->${routeSettings.url} " +
+                    "index->${routeSettings.index} "
+        )
         observers.forEach {
-            it.didDisappear(routeSettings)
+            it.didPopTo(routeSettings)
         }
-        Log.i(TAG, "didDisappear: url->${routeSettings.url} " +
-                "index->${routeSettings.index} ")
+    }
+
+    override fun didRemove(routeSettings: RouteSettings) {
+        Log.i(
+            TAG, "didRemove: url->${routeSettings.url} " +
+                    "index->${routeSettings.index} "
+        )
+        observers.forEach {
+            it.didRemove(routeSettings)
+        }
     }
 }

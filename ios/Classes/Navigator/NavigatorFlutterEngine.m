@@ -35,6 +35,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, strong, nullable) ThrioChannel *channel;
 
+@property (nonatomic, strong, readwrite, nullable) ThrioChannel *moduleContextChannel;
+
 @property (nonatomic, strong, readwrite, nullable) NavigatorRouteReceiveChannel *receiveChannel;
 
 @property (nonatomic, strong, readwrite, nullable) NavigatorRouteSendChannel *sendChannel;
@@ -129,9 +131,15 @@ NS_ASSUME_NONNULL_BEGIN
     NSString *channelName = [NSString stringWithFormat:@"__thrio_app__%@", entrypoint];
     _channel = [ThrioChannel channelWithEntrypoint:entrypoint
                                               name:channelName];
-
     [_channel setupEventChannel:_engine.binaryMessenger];
     [_channel setupMethodChannel:_engine.binaryMessenger];
+
+    NSString *moduleContextChannelName =
+    [NSString stringWithFormat:@"__thrio_module_context__%@", entrypoint];
+    _moduleContextChannel = [ThrioChannel channelWithEntrypoint:entrypoint
+                                                           name:moduleContextChannelName];
+    [_moduleContextChannel setupMethodChannel:_engine.binaryMessenger];
+
     _receiveChannel = [[NavigatorRouteReceiveChannel alloc] initWithChannel:_channel];
     [_receiveChannel setReadyBlock:block];
 

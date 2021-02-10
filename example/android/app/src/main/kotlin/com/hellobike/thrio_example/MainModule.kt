@@ -1,24 +1,31 @@
 package com.hellobike.thrio_example
 
 import android.app.Activity
-import android.content.Context
-import com.hellobike.flutter.thrio.module.ModuleIntentBuilder
-import com.hellobike.flutter.thrio.module.ModuleJsonDeserializer
-import com.hellobike.flutter.thrio.module.ModuleJsonSerializer
-import com.hellobike.flutter.thrio.module.ThrioModule
-import com.hellobike.flutter.thrio.navigator.FlutterIntentBuilder
+import com.hellobike.flutter.thrio.module.*
 import com.hellobike.flutter.thrio.navigator.IntentBuilder
 
-object MainModule : ThrioModule(), ModuleIntentBuilder, ModuleJsonSerializer, ModuleJsonDeserializer {
+object MainModule : ThrioModule(), ModuleIntentBuilder, ModuleJsonSerializer,
+    ModuleJsonDeserializer {
 
-    override fun onModuleInit(context: Context) {
+    override fun onModuleInit(moduleContext: ModuleContext) {
 //        setFlutterIntentBuilder(object : FlutterIntentBuilder() {
 //            override fun getActivityClz(): Class<out Activity> = CustomFlutterActivity::class.java
 //        })
         navigatorLogEnabled = true
+
+        val people = People(
+            mapOf(
+                "name" to "foxsofter",
+                "age" to 100,
+                "sex" to "x"
+            )
+        )
+
+        moduleContext["people_from_native"] = people
+
     }
 
-    override fun onIntentBuilderRegister(context: Context) {
+    override fun onIntentBuilderRegister(moduleContext: ModuleContext) {
         registerIntentBuilder("/biz1/native1", object : IntentBuilder {
             override fun getActivityClz(): Class<out Activity> {
                 return Native1Activity::class.java
@@ -31,11 +38,11 @@ object MainModule : ThrioModule(), ModuleIntentBuilder, ModuleJsonSerializer, Mo
         })
     }
 
-    override fun onJsonSerializerRegister(context: Context) {
+    override fun onJsonSerializerRegister(moduleContext: ModuleContext) {
         registerJsonSerializer({ people -> people.toJson() }, People::class.java)
     }
 
-    override fun onJsonDeserializerRegister(context: Context) {
+    override fun onJsonDeserializerRegister(moduleContext: ModuleContext) {
         registerJsonDeserializer({ json -> People(json) }, People::class.java)
     }
 }

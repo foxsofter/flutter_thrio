@@ -21,17 +21,17 @@
 
 #import "ThrioModule.h"
 #import "ThrioModuleRouteObserver.h"
-#import "ThrioNavigator+RouteObservers.h"
+#import "ThrioModule+RouteObservers.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 @implementation ThrioModule (RouteObserver)
 
 - (ThrioVoidCallback)registerRouteObserver:(id<NavigatorRouteObserverProtocol>)routeObserver {
-    return [ThrioNavigator.routeObservers.observers registry:routeObserver];
+    return [ThrioModule.routeObservers.observers registry:routeObserver];
 }
 
-- (void)onRouteObserverRegister {
+- (void)onRouteObserverRegister:(ThrioModuleContext *)moduleContext {
     
 }
 

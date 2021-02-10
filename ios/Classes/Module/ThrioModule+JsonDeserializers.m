@@ -21,10 +21,10 @@
 
 #import <Foundation/Foundation.h>
 #import <objc/runtime.h>
-#import "ThrioNavigator+JsonDeserializers.h"
+#import "ThrioModule+JsonDeserializers.h"
 #import "ThrioModuleTypes.h"
 
-@implementation ThrioNavigator (JsonDeserializers)
+@implementation ThrioModule (JsonDeserializers)
 
 + (ThrioRegistryMap *)jsonDeserializers {
     id deserializers = objc_getAssociatedObject(self, _cmd);
@@ -45,7 +45,7 @@
         return params;
     }
     // 来自 FlutterEngine
-    ThrioRegistryMap *jsonDeserializers = [ThrioNavigator jsonDeserializers];
+    ThrioRegistryMap *jsonDeserializers = [ThrioModule jsonDeserializers];
     ThrioJsonDeserializer deserializer = jsonDeserializers[type];
     if (!deserializer) {
         for (NSString *key in jsonDeserializers) {

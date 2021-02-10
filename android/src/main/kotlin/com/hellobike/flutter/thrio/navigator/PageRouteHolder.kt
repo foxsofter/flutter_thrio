@@ -25,14 +25,19 @@ package com.hellobike.flutter.thrio.navigator
 
 import android.app.Activity
 import com.hellobike.flutter.thrio.BooleanCallback
-import com.hellobike.flutter.thrio.NullableIntCallback
 import com.hellobike.flutter.thrio.NullableBooleanCallback
+import com.hellobike.flutter.thrio.NullableIntCallback
+import com.hellobike.flutter.thrio.module.ModuleJsonDeserializers
+import com.hellobike.flutter.thrio.module.ModuleJsonSerializers
+import com.hellobike.flutter.thrio.module.ModuleRouteObservers
 import io.flutter.embedding.android.ThrioActivity
 import java.lang.ref.WeakReference
 
-internal data class PageRouteHolder(val pageId: Int,
-                                    val clazz: Class<out Activity>,
-                                    val entrypoint: String = NAVIGATION_NATIVE_ENTRYPOINT) {
+internal data class PageRouteHolder(
+    val pageId: Int,
+    val clazz: Class<out Activity>,
+    val entrypoint: String = NAVIGATION_NATIVE_ENTRYPOINT
+) {
     internal val routes by lazy { mutableListOf<PageRoute>() }
 
     var activity: WeakReference<out Activity>? = null
@@ -51,7 +56,8 @@ internal data class PageRouteHolder(val pageId: Int,
         }
     }
 
-    fun lastRoute(entrypoint: String): PageRoute? = routes.lastOrNull { it.entrypoint == entrypoint }
+    fun lastRoute(entrypoint: String): PageRoute? =
+        routes.lastOrNull { it.entrypoint == entrypoint }
 
     fun allRoute(url: String? = null): List<PageRoute> = when (url) {
         null -> routes
@@ -62,7 +68,7 @@ internal data class PageRouteHolder(val pageId: Int,
         val activity = activity?.get()
         if (activity != null) {
             if (activity is ThrioActivity) {
-                route.settings.params = JsonSerializers.serializeParams(route.settings.params)
+                route.settings.params = ModuleJsonSerializers.serializeParams(route.settings.params)
                 activity.onPush(route.settings.toArguments()) {
                     if (it) {
                         routes.add(route)
@@ -75,7 +81,7 @@ internal data class PageRouteHolder(val pageId: Int,
             } else {
                 routes.add(route)
                 result(route.settings.index)
-                RouteObservers.didPush(route.settings)
+                ModuleRouteObservers.didPush(route.settings)
                 PageRoutes.lastRoute = route
             }
         } else {
@@ -83,12 +89,12 @@ internal data class PageRouteHolder(val pageId: Int,
         }
     }
 
-
     fun <T> notify(url: String?, index: Int?, name: String, params: T?, result: BooleanCallback) {
         var isMatch = false
         routes.forEach {
             if ((url == null || it.settings.url == url)
-                    && (index == null || index == 0 || it.settings.index == index)) {
+                && (index == null || index == 0 || it.settings.index == index)
+            ) {
                 isMatch = true
                 it.addNotify<T>(name, params)
             }
@@ -96,8 +102,12 @@ internal data class PageRouteHolder(val pageId: Int,
         result(isMatch)
     }
 
-
-    fun <T> pop(params: T?, animated: Boolean, inRoot: Boolean = false, result: NullableBooleanCallback) {
+    fun <T> pop(
+        params: T?,
+        animated: Boolean,
+        inRoot: Boolean = false,
+        result: NullableBooleanCallback
+    ) {
         val lastRoute = lastRoute()
         if (lastRoute == null) {
             result(false)
@@ -106,7 +116,7 @@ internal data class PageRouteHolder(val pageId: Int,
         val activity = activity?.get()
         if (activity != null && !activity.isDestroyed) {
             if (activity is ThrioActivity) {
-                lastRoute.settings.params = JsonSerializers.serializeParams(params)
+                lastRoute.settings.params = ModuleJsonSerializers.serializeParams(params)
                 lastRoute.settings.animated = animated
                 var arguments = lastRoute.settings.toArguments();
                 arguments = mutableMapOf<String, Any?>().also {
@@ -121,12 +131,15 @@ internal data class PageRouteHolder(val pageId: Int,
                     if (it == true) {
                         lastRoute.poppedResult?.let {
                             @Suppress("UNCHECKED_CAST")
-                            it(JsonDeserializers.deserializeParams(params))
+                            it(ModuleJsonDeserializers.deserializeParams(params))
                         }
                         lastRoute.poppedResult = null
                         if (lastRoute.fromEntrypoint != NAVIGATION_NATIVE_ENTRYPOINT
-                                && lastRoute.entrypoint != lastRoute.fromEntrypoint) {
-                            FlutterEngineFactory.getEngine(lastRoute.fromEntrypoint)?.sendChannel?.onPop(lastRoute.settings.toArguments()) {}
+                            && lastRoute.entrypoint != lastRoute.fromEntrypoint
+                        ) {
+                            FlutterEngineFactory.getEngine(lastRoute.fromEntrypoint)?.sendChannel?.onPop(
+                                lastRoute.settings.toArguments()
+                            ) {}
                         }
                     }
                     PageRoutes.lastRoute = PageRoutes.lastRoute()
@@ -136,15 +149,17 @@ internal data class PageRouteHolder(val pageId: Int,
                 result(true)
                 lastRoute.poppedResult?.let {
                     @Suppress("UNCHECKED_CAST")
-                    it(JsonDeserializers.deserializeParams(params))
+                    it(ModuleJsonDeserializers.deserializeParams(params))
                 }
                 lastRoute.poppedResult = null
                 if (lastRoute.fromEntrypoint != NAVIGATION_NATIVE_ENTRYPOINT) {
-                    lastRoute.settings.params = JsonSerializers.serializeParams(params)
+                    lastRoute.settings.params = ModuleJsonSerializers.serializeParams(params)
                     lastRoute.settings.animated = false
-                    FlutterEngineFactory.getEngine(lastRoute.fromEntrypoint)?.sendChannel?.onPop(lastRoute.settings.toArguments()) {}
+                    FlutterEngineFactory.getEngine(lastRoute.fromEntrypoint)?.sendChannel?.onPop(
+                        lastRoute.settings.toArguments()
+                    ) {}
                 }
-                RouteObservers.didPop(lastRoute.settings)
+                ModuleRouteObservers.didPop(lastRoute.settings)
                 PageRoutes.lastRoute = PageRoutes.lastRoute()
             }
         } else {
@@ -177,7 +192,7 @@ internal data class PageRouteHolder(val pageId: Int,
                 }
             } else {
                 result(true)
-                RouteObservers.didPopTo(route.settings)
+                ModuleRouteObservers.didPopTo(route.settings)
                 PageRoutes.lastRoute = route;
             }
         } else {
@@ -207,7 +222,7 @@ internal data class PageRouteHolder(val pageId: Int,
             } else {
                 routes.remove(route)
                 result(true)
-                RouteObservers.didRemove(route.settings)
+                ModuleRouteObservers.didRemove(route.settings)
                 PageRoutes.lastRoute = PageRoutes.lastRoute()
             }
         } else {

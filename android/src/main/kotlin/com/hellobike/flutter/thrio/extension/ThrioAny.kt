@@ -1,7 +1,7 @@
 /**
  * The MIT License (MIT)
  *
- * Copyright (c) 2019 Hellobike Group
+ * Copyright (c) 2021 foxsoter.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -21,22 +21,16 @@
  * IN THE SOFTWARE.
  */
 
-package com.hellobike.flutter.thrio.module
+package com.hellobike.flutter.thrio.extension
 
-import com.hellobike.flutter.thrio.VoidCallback
-import com.hellobike.flutter.thrio.navigator.RouteObserver
-
-interface ModuleRouteObserver {
-
-    fun onRouteObserverRegister(moduleContext: ModuleContext) {
-
-    }
-
-    fun registerRouteObserver(observer: RouteObserver): VoidCallback {
-        return ModuleRouteObservers.observers.registry(observer)
-    }
-
-    fun registerRouteObservers(observers: List<RouteObserver>): VoidCallback {
-        return ModuleRouteObservers.observers.registryAll(observers.toSet())
-    }
-}
+fun  Any.canTransToFlutter() = this is Boolean ||
+        this is Int ||
+        this is Double ||
+        this is String ||
+        this is ByteArray ||
+        this is IntArray ||
+        this is DoubleArray ||
+        this is ArrayList<*> ||
+        this is HashMap<*, *> ||
+        this is List<*> ||
+        this is Map<*, *>

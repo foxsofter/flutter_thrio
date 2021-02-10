@@ -26,9 +26,11 @@ package com.hellobike.flutter.thrio.navigator
 import com.hellobike.flutter.thrio.channel.ThrioChannel
 import io.flutter.plugin.common.BinaryMessenger
 
-class PageObserverChannel constructor(entrypoint: String, messenger: BinaryMessenger) : PageObserver {
+class PageObserverChannel constructor(entrypoint: String, messenger: BinaryMessenger) :
+    PageObserver {
 
-    private val channel: ThrioChannel = ThrioChannel(entrypoint, "__thrio_page_channel__$entrypoint")
+    private val channel: ThrioChannel =
+        ThrioChannel(entrypoint, "__thrio_page_channel__$entrypoint")
 
     init {
         channel.setupMethodChannel(messenger)
@@ -45,10 +47,22 @@ class PageObserverChannel constructor(entrypoint: String, messenger: BinaryMesse
             val routeActionString = arguments["routeAction"] as String
 
             when (method) {
-                "willAppear" -> PageRoutes.willAppear(routeSettings, RouteAction.from(routeActionString))
-                "didAppear" -> PageRoutes.didAppear(routeSettings, RouteAction.from(routeActionString))
-                "willDisappear" -> PageRoutes.willDisappear(routeSettings, RouteAction.from(routeActionString))
-                "didDisappear" -> PageRoutes.didDisappear(routeSettings, RouteAction.from(routeActionString))
+                "willAppear" -> PageRoutes.willAppear(
+                    routeSettings,
+                    RouteAction.from(routeActionString)
+                )
+                "didAppear" -> PageRoutes.didAppear(
+                    routeSettings,
+                    RouteAction.from(routeActionString)
+                )
+                "willDisappear" -> PageRoutes.willDisappear(
+                    routeSettings,
+                    RouteAction.from(routeActionString)
+                )
+                "didDisappear" -> PageRoutes.didDisappear(
+                    routeSettings,
+                    RouteAction.from(routeActionString)
+                )
             }
         }
     }

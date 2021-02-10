@@ -7,7 +7,6 @@ import com.hellobike.flutter.thrio.navigator.PageNotifyListener
 import com.hellobike.flutter.thrio.navigator.RouteSettings
 import com.hellobike.flutter.thrio.navigator.ThrioNavigator
 import io.flutter.Log
-import kotlinx.android.synthetic.main.activity_native2.tv_native
 import kotlinx.android.synthetic.main.activity_native2.*
 
 class Native2Activity : AppCompatActivity(), PageNotifyListener {
@@ -23,13 +22,13 @@ class Native2Activity : AppCompatActivity(), PageNotifyListener {
 
         btn_10.setOnClickListener {
             ThrioNavigator.push("/biz2/flutter2",
-                    params = mapOf("k1" to 1),
-                    result = {
-                        Log.i("Thrio", "push result data $it")
-                    },
-                    poppedResult = {
-                        Log.i("Thrio", "/biz2/native2 poppedResult call params $it")
-                    }
+                params = mapOf("k1" to 1),
+                result = {
+                    Log.i("Thrio", "push result data $it")
+                },
+                poppedResult = {
+                    Log.i("Thrio", "/biz2/native2 poppedResult call params $it")
+                }
             )
         }
 
@@ -41,13 +40,13 @@ class Native2Activity : AppCompatActivity(), PageNotifyListener {
 
         btn_12.setOnClickListener {
             ThrioNavigator.push("/biz1/native1",
-                    params = mapOf("k1" to 1),
-                    result = {
-                        Log.i("Thrio", "push result data $it")
-                    },
-                    poppedResult = {
-                        Log.i("Thrio", "/biz2/native2 poppedResult call params $it")
-                    }
+                params = mapOf("k1" to 1),
+                result = {
+                    Log.i("Thrio", "push result data $it")
+                },
+                poppedResult = {
+                    Log.i("Thrio", "/biz2/native2 poppedResult call params $it")
+                }
             )
         }
 

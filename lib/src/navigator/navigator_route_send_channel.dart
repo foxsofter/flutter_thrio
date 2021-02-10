@@ -131,12 +131,6 @@ class NavigatorRouteSendChannel {
     return _channel.invokeMethod<bool>('setPopDisabled', arguments);
   }
 
-  Future registerUrls(List<String> urls) =>
-      _channel.invokeMethod('registerUrls', {'urls': urls});
-
-  Future unregisterUrls(List<String> urls) =>
-      _channel.invokeMethod('unregisterUrls', {'urls': urls});
-
   dynamic _serializeParams<TParams>({String url, TParams params}) {
     if (params == null) {
       return null;
@@ -151,8 +145,7 @@ class NavigatorRouteSendChannel {
         // 判断 url 是否是当前引擎下的，如果是则直接缓存参数并传递 hashCode
         if (ThrioModule.contains(url) != null) {
           final hashCode = params.hashCode;
-          // ignore: invalid_use_of_protected_member
-          anchor.setParam(hashCode, params);
+          anchor.set(hashCode, params);
           serializeParams['__thrio_Params_HashCode__'] = hashCode;
         }
         return serializeParams;
@@ -160,8 +153,7 @@ class NavigatorRouteSendChannel {
       // 判断 url 是否是当前引擎下的，如果是则直接缓存参数并传递 hashCode
       if (ThrioModule.contains(url) != null) {
         final hashCode = params.hashCode;
-        // ignore: invalid_use_of_protected_member
-        anchor.setParam(hashCode, params);
+        anchor.set(hashCode, params);
         return {'__thrio_Params_HashCode__': hashCode};
       }
     }

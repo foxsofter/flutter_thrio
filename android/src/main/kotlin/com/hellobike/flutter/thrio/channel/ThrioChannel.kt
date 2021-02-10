@@ -37,8 +37,10 @@ import io.flutter.plugin.common.BinaryMessenger
 import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.MethodChannel
 
-open class ThrioChannel constructor(val entrypoint: String = NAVIGATION_FLUTTER_ENTRYPOINT_DEFAULT,
-                                    private val channelName: String = "__thrio__") {
+open class ThrioChannel constructor(
+    val entrypoint: String = NAVIGATION_FLUTTER_ENTRYPOINT_DEFAULT,
+    private val channelName: String = "__thrio__"
+) {
 
     init {
         if (FlutterEngineFactory.isMultiEngineEnabled && entrypoint == NAVIGATION_FLUTTER_ENTRYPOINT_DEFAULT) {
@@ -66,7 +68,8 @@ open class ThrioChannel constructor(val entrypoint: String = NAVIGATION_FLUTTER_
             } else {
                 try {
                     @Suppress("UNCHECKED_CAST")
-                    val args = if (call.arguments == null) null else call.arguments as Map<String, Any?>
+                    val args =
+                        if (call.arguments == null) null else call.arguments as Map<String, Any?>
                     methodHandler.invoke(args) {
                         result.success(it)
                     }
@@ -78,7 +81,11 @@ open class ThrioChannel constructor(val entrypoint: String = NAVIGATION_FLUTTER_
     }
 
     @JvmOverloads
-    fun invokeMethod(method: String, arguments: Map<String, Any?>? = null, callback: NullableAnyCallback? = null) {
+    fun invokeMethod(
+        method: String,
+        arguments: Map<String, Any?>? = null,
+        callback: NullableAnyCallback? = null
+    ) {
         methodChannel?.invokeMethod(method, arguments, object : MethodChannel.Result {
             override fun success(value: Any?) {
                 callback?.invoke(value)
@@ -107,7 +114,7 @@ open class ThrioChannel constructor(val entrypoint: String = NAVIGATION_FLUTTER_
 
     fun sendEvent(name: String, arguments: Map<String, Any?>?) {
         var args = arguments?.toMutableMap()?.also { it["__event_name__"] = name }
-                ?: mapOf<String, Any>("__event_name__" to name)
+            ?: mapOf<String, Any>("__event_name__" to name)
         streamHandler?.sink?.success(args)
     }
 

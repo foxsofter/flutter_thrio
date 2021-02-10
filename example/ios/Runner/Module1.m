@@ -11,7 +11,7 @@
 
 @implementation Module1
 
-- (void)onPageBuilderRegister {
+- (void)onPageBuilderRegister:(ThrioModuleContext *)moduleContext {
     [self registerPageBuilder:^UIViewController *_Nullable (id params) {
         ThrioLogI(@"/biz1/native1 pushed params: %@", params);
         UIStoryboard *sb = [UIStoryboard storyboardWithName:@"Main" bundle:nil];
@@ -19,7 +19,7 @@
     } forUrl:@"/biz1/native1"];
 }
 
-- (void)onPageObserverRegister {
+- (void)onPageObserverRegister:(ThrioModuleContext *)moduleContext {
     [self registerPageObserver:self];
 }
 

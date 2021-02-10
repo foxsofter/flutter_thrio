@@ -8,7 +8,7 @@
 #import "NavigatorFlutterEngineFactory.h"
 #import "NavigatorFlutterViewController.h"
 #import "NavigatorNavigationController.h"
-#import "ThrioNavigator+PageBuilders.h"
+#import "ThrioModule+PageBuilders.h"
 #import "ThrioTypes.h"
 #import "UIViewController+Internal.h"
 #import "UIViewController+Navigator.h"
@@ -29,7 +29,7 @@ NS_ASSUME_NONNULL_BEGIN
     _initialUrl = url;
     _initialParams = params;
     UIViewController *viewController;
-    NavigatorPageBuilder builder = [ThrioNavigator pageBuilders][url];
+    NavigatorPageBuilder builder = [ThrioModule pageBuilders][url];
     if (builder) {
         viewController = builder(params);
         if (viewController.thrio_hidesNavigationBar_ == nil) {
@@ -41,7 +41,7 @@ NS_ASSUME_NONNULL_BEGIN
         if (NavigatorFlutterEngineFactory.shared.multiEngineEnabled) {
             entrypoint = [url componentsSeparatedByString:@"/"][1];
         }
-        NavigatorFlutterPageBuilder flutterBuilder = [ThrioNavigator flutterPageBuilder];
+        NavigatorFlutterPageBuilder flutterBuilder = [ThrioModule flutterPageBuilder];
         if (flutterBuilder) {
             viewController = flutterBuilder(entrypoint);
         } else {

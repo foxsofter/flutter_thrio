@@ -35,8 +35,6 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)startupWithEntrypoint:(NSString *)entrypoint
                    readyBlock:(ThrioIdCallback _Nullable)block;
 
-@property (nonatomic, assign) NSUInteger registerUrlCount;
-
 @property (nonatomic, readonly, nullable) FlutterEngine *engine;
 
 @property (nonatomic, readonly, nullable) NavigatorRouteReceiveChannel *receiveChannel;
@@ -46,6 +44,8 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, readonly, nullable) NavigatorPageObserverChannel *pageChannel;
 
 @property (nonatomic, readonly, nullable) NavigatorRouteObserverChannel *routeChannel;
+
+@property (nonatomic, strong, readonly, nullable) ThrioChannel *moduleContextChannel;
 
 - (void)pushViewController:(NavigatorFlutterViewController *)viewController;
 

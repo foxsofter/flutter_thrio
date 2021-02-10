@@ -23,22 +23,18 @@
 
 package com.hellobike.flutter.thrio.module
 
-import android.content.Context
 import com.hellobike.flutter.thrio.VoidCallback
 import com.hellobike.flutter.thrio.navigator.PageObserver
-import com.hellobike.flutter.thrio.navigator.PageObservers
 
 interface ModulePageObserver {
-
-    fun onPageObserverRegister(context: Context) {
-
+    fun onPageObserverRegister(moduleContext: ModuleContext) {
     }
 
     fun registerPageObserver(observer: PageObserver): VoidCallback {
-        return PageObservers.observers.registry(observer)
+        return ModulePageObservers.observers.registry(observer)
     }
 
     fun registerPageObservers(observers: List<PageObserver>): VoidCallback {
-        return PageObservers.observers.registryAll(observers.toSet())
+        return ModulePageObservers.observers.registryAll(observers.toSet())
     }
 }

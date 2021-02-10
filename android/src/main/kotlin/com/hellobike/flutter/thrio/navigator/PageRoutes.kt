@@ -29,6 +29,10 @@ import android.os.Bundle
 import com.hellobike.flutter.thrio.BooleanCallback
 import com.hellobike.flutter.thrio.NullableBooleanCallback
 import com.hellobike.flutter.thrio.NullableIntCallback
+import com.hellobike.flutter.thrio.extension.getEntrypoint
+import com.hellobike.flutter.thrio.extension.getPageId
+import com.hellobike.flutter.thrio.extension.getRouteSettings
+import com.hellobike.flutter.thrio.module.ModulePageObservers
 import io.flutter.embedding.android.ThrioActivity
 import java.lang.ref.WeakReference
 
@@ -69,7 +73,7 @@ internal object PageRoutes : Application.ActivityLifecycleCallbacks {
 
     fun popToRouteHolders(url: String, index: Int?): List<PageRouteHolder> {
         val holder = routeHolders.lastOrNull { it.lastRoute(url, index) != null }
-                ?: return listOf()
+            ?: return listOf()
 
         val holderIndex = routeHolders.lastIndexOf(holder)
         return routeHolders.subList(holderIndex + 1, routeHolders.size).toMutableList()
@@ -121,11 +125,13 @@ internal object PageRoutes : Application.ActivityLifecycleCallbacks {
         holder.push(route, result)
     }
 
-    fun <T> notify(url: String?,
-                   index: Int?,
-                   name: String,
-                   params: T?,
-                   result: BooleanCallback) {
+    fun <T> notify(
+        url: String?,
+        index: Int?,
+        name: String,
+        params: T?,
+        result: BooleanCallback
+    ) {
         if (!hasRoute(url, index)) {
             result(false)
             return
@@ -140,7 +146,12 @@ internal object PageRoutes : Application.ActivityLifecycleCallbacks {
         result(isMatch)
     }
 
-    fun <T> pop(params: T?, animated: Boolean, inRoot: Boolean = false, result: NullableBooleanCallback) {
+    fun <T> pop(
+        params: T?,
+        animated: Boolean,
+        inRoot: Boolean = false,
+        result: NullableBooleanCallback
+    ) {
         val holder = routeHolders.lastOrNull()
         if (holder == null) {
             result(false)
@@ -153,14 +164,15 @@ internal object PageRoutes : Application.ActivityLifecycleCallbacks {
             result(true)
         } else {
             // 记下次顶部的 Activity 的 holder
-            val secondTopHolder = if (routeHolders.count() > 1) routeHolders[routeHolders.count() - 2] else null
+            val secondTopHolder =
+                if (routeHolders.count() > 1) routeHolders[routeHolders.count() - 2] else null
 
             holder.pop<T>(params, animated, inRoot) { it ->
                 if (it == true) {
                     if (!holder.hasRoute()) {
                         willAppearPageId =
-                                if (secondTopHolder == null || secondTopHolder.entrypoint == NAVIGATION_NATIVE_ENTRYPOINT) 0
-                                else secondTopHolder.pageId
+                            if (secondTopHolder == null || secondTopHolder.entrypoint == NAVIGATION_NATIVE_ENTRYPOINT) 0
+                            else secondTopHolder.pageId
 
                         holder.activity?.get()?.let {
                             routeHolders.remove(holder)
@@ -183,7 +195,8 @@ internal object PageRoutes : Application.ActivityLifecycleCallbacks {
         routeHolder.popTo(url, index, animated) { ret ->
             if (ret) {
                 val poppedToIndex = routeHolders.lastIndexOf(routeHolder)
-                val removedByPopToHolders = routeHolders.subList(poppedToIndex + 1, routeHolders.size).toMutableList()
+                val removedByPopToHolders =
+                    routeHolders.subList(poppedToIndex + 1, routeHolders.size).toMutableList()
                 val entrypoints = mutableSetOf<String>()
                 for (holder in removedByPopToHolders) {
                     if (holder.entrypoint != routeHolder.entrypoint && holder.entrypoint != NAVIGATION_NATIVE_ENTRYPOINT) {
@@ -193,17 +206,20 @@ internal object PageRoutes : Application.ActivityLifecycleCallbacks {
 
                 // 清理其它引擎的页面
                 entrypoints.forEach { entrypoint ->
-                    removedByPopToHolders.firstOrNull { holder -> holder.entrypoint == entrypoint }?.let {
-                        var poppedToSettings = RouteSettings("/", 1)
-                        for (i in poppedToIndex downTo 0) {
-                            val poppedToRoute = routeHolders[i].lastRoute(entrypoint)
-                            if (poppedToRoute != null) {
-                                poppedToSettings = poppedToRoute.settings
-                                break
+                    removedByPopToHolders.firstOrNull { holder -> holder.entrypoint == entrypoint }
+                        ?.let {
+                            var poppedToSettings = RouteSettings("/", 1)
+                            for (i in poppedToIndex downTo 0) {
+                                val poppedToRoute = routeHolders[i].lastRoute(entrypoint)
+                                if (poppedToRoute != null) {
+                                    poppedToSettings = poppedToRoute.settings
+                                    break
+                                }
                             }
+                            FlutterEngineFactory.getEngine(entrypoint)?.sendChannel?.onPopTo(
+                                poppedToSettings.toArguments()
+                            ) {}
                         }
-                        FlutterEngineFactory.getEngine(entrypoint)?.sendChannel?.onPopTo(poppedToSettings.toArguments()) {}
-                    }
                 }
                 while (routeHolders.lastIndex > poppedToIndex) {
                     routeHolders.removeLast()
@@ -254,23 +270,24 @@ internal object PageRoutes : Application.ActivityLifecycleCallbacks {
             val holder = lastRouteHolder()
             val activity = holder?.activity?.get()
             if (holder == null
-                    || (activity is ThrioActivity && FlutterEngineFactory.isMultiEngineEnabled)
-                    || (activity is ThrioActivity && holder.routes.count() < 1)
-                    || activity !is ThrioActivity) {
+                || (activity is ThrioActivity && FlutterEngineFactory.isMultiEngineEnabled)
+                || (activity is ThrioActivity && holder.routes.count() < 1)
+                || activity !is ThrioActivity
+            ) {
                 return
             }
-            PageObservers.willAppear(routeSettings)
+            ModulePageObservers.willAppear(routeSettings)
             lastRoute?.let { route ->
                 if (route.settings != routeSettings) {
-                    PageObservers.willDisappear(route.settings)
+                    ModulePageObservers.willDisappear(route.settings)
                 }
             }
         } else if (routeAction == RouteAction.POP_TO) {
             val route = lastRoute(routeSettings.url, routeSettings.index)
             if (route != null && route != lastRoute) {
-                PageObservers.willAppear(routeSettings)
+                ModulePageObservers.willAppear(routeSettings)
                 lastRoute?.let {
-                    PageObservers.willDisappear(it.settings)
+                    ModulePageObservers.willDisappear(it.settings)
                 }
             }
         }
@@ -281,23 +298,24 @@ internal object PageRoutes : Application.ActivityLifecycleCallbacks {
             val holder = lastRouteHolder()
             val activity = holder?.activity?.get()
             if (holder == null
-                    || (activity is ThrioActivity && FlutterEngineFactory.isMultiEngineEnabled)
-                    || (activity is ThrioActivity && holder.routes.count() < 1)
-                    || activity !is ThrioActivity) {
+                || (activity is ThrioActivity && FlutterEngineFactory.isMultiEngineEnabled)
+                || (activity is ThrioActivity && holder.routes.count() < 1)
+                || activity !is ThrioActivity
+            ) {
                 return
             }
-            PageObservers.didAppear(routeSettings)
+            ModulePageObservers.didAppear(routeSettings)
             lastRoute?.let {
                 if (it.settings != routeSettings) {
-                    PageObservers.didDisappear(it.settings)
+                    ModulePageObservers.didDisappear(it.settings)
                 }
             }
         } else if (routeAction == RouteAction.POP_TO) {
             val route = lastRoute(routeSettings.url, routeSettings.index)
             if (route != null && route != prevLastRoute) {
-                PageObservers.didAppear(routeSettings)
+                ModulePageObservers.didAppear(routeSettings)
                 prevLastRoute?.let {
-                    PageObservers.didDisappear(it.settings)
+                    ModulePageObservers.didDisappear(it.settings)
                 }
             }
         }
@@ -310,10 +328,10 @@ internal object PageRoutes : Application.ActivityLifecycleCallbacks {
                 if (holder != null && holder.routes.count() < 2) {
                     return
                 }
-                PageObservers.willDisappear(routeSettings)
+                ModulePageObservers.willDisappear(routeSettings)
                 lastRouteHolder()?.let {
                     if (it.routes.count() > 1) {
-                        PageObservers.willAppear(it.routes[it.routes.count() - 2].settings)
+                        ModulePageObservers.willAppear(it.routes[it.routes.count() - 2].settings)
                     }
                 }
             }
@@ -326,14 +344,15 @@ internal object PageRoutes : Application.ActivityLifecycleCallbacks {
                 val holder = lastRouteHolder()
                 val activity = holder?.activity?.get()
                 if (holder == null
-                        || (activity is ThrioActivity && FlutterEngineFactory.isMultiEngineEnabled)
-                        || (activity is ThrioActivity && holder.routes.count() < 1)
-                        || activity !is ThrioActivity) {
+                    || (activity is ThrioActivity && FlutterEngineFactory.isMultiEngineEnabled)
+                    || (activity is ThrioActivity && holder.routes.count() < 1)
+                    || activity !is ThrioActivity
+                ) {
                     return
                 }
-                PageObservers.didDisappear(routeSettings)
+                ModulePageObservers.didDisappear(routeSettings)
                 lastRoute?.let {
-                    PageObservers.didAppear(it.settings)
+                    ModulePageObservers.didAppear(it.settings)
                 }
             }
         }
@@ -374,7 +393,7 @@ internal object PageRoutes : Application.ActivityLifecycleCallbacks {
         if (pageId != NAVIGATION_PAGE_ID_NONE && NavigationController.routeAction != RouteAction.POP_TO) {
             routeHolders.lastOrNull { it.pageId == pageId }?.let {
                 activity.intent.getRouteSettings()?.let {
-                    PageObservers.willAppear(it)
+                    ModulePageObservers.willAppear(it)
                 }
             }
         }
@@ -399,7 +418,7 @@ internal object PageRoutes : Application.ActivityLifecycleCallbacks {
             lastRoute = holder?.lastRoute()
             routeHolders.lastOrNull { it.pageId == pageId }?.let {
                 activity.intent.getRouteSettings()?.let {
-                    PageObservers.didAppear(it)
+                    ModulePageObservers.didAppear(it)
                 }
             }
         }
@@ -409,7 +428,7 @@ internal object PageRoutes : Application.ActivityLifecycleCallbacks {
         val pageId = activity.intent.getPageId()
         if (pageId != NAVIGATION_PAGE_ID_NONE && NavigationController.routeAction != RouteAction.POP_TO) {
             activity.intent.getRouteSettings()?.let {
-                PageObservers.willDisappear(it)
+                ModulePageObservers.willDisappear(it)
             }
         }
     }
@@ -418,7 +437,7 @@ internal object PageRoutes : Application.ActivityLifecycleCallbacks {
         val pageId = activity.intent.getPageId()
         if (pageId != NAVIGATION_PAGE_ID_NONE && NavigationController.routeAction != RouteAction.POP_TO) {
             activity.intent.getRouteSettings()?.let {
-                PageObservers.didDisappear(it)
+                ModulePageObservers.didDisappear(it)
             }
         }
     }

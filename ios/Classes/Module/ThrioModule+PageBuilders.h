@@ -1,6 +1,6 @@
 // The MIT License (MIT)
 //
-// Copyright (c) 2019 Hellobike Group
+// Copyright (c) 2021 foxsofter
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
 // copy of this software and associated documentation files (the "Software"),
@@ -19,29 +19,19 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-#import <Foundation/Foundation.h>
-#import "ThrioNavigator.h"
-#import "ThrioRegistrySet.h"
-#import "NavigatorPageObservers.h"
-#import "NavigatorRouteSettings.h"
+#import "ThrioModule.h"
+#import "ThrioRegistryMap.h"
+#import "ThrioTypes.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface ThrioNavigator (PageObservers)
+@interface ThrioModule (PageBuilders)
 
-+ (NavigatorPageObservers *)pageObservers;
++ (ThrioRegistryMap *)pageBuilders;
 
-+ (void)willAppear:(NavigatorRouteSettings *)routeSettings
-       routeAction:(NSString *)routeAction;
++ (void)setFlutterPageBuilder:(NavigatorFlutterPageBuilder _Nullable)builder;
 
-+ (void)didAppear:(NavigatorRouteSettings *)routeSettings
-      routeAction:(NSString *)routeAction;
-
-+ (void)willDisappear:(NavigatorRouteSettings *)routeSettings
-          routeAction:(NSString *)routeAction;
-
-+ (void)didDisappear:(NavigatorRouteSettings *)routeSettings
-         routeAction:(NSString *)routeAction;
++ (NavigatorFlutterPageBuilder _Nullable)flutterPageBuilder;
 
 @end
 

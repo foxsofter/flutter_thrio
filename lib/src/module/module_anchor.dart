@@ -70,7 +70,7 @@ class ModuleAnchor
   }
 
   Future loading(String url) async {
-    final modules = getModules(url: url);
+    final modules = _getModules(url: url);
     if (modules == null) {
       return;
     }
@@ -100,7 +100,7 @@ class ModuleAnchor
     }
     final modules = <ThrioModule>{};
     for (final url in notPushedUrls) {
-      modules.addAll(getModules(url: url));
+      modules.addAll(_getModules(url: url));
     }
     final notPushedModules = modules
         .where(
@@ -129,7 +129,7 @@ class ModuleAnchor
   }
 
   T get<T>({String url, String key}) {
-    var modules = getModules(url: url);
+    var modules = _getModules(url: url);
     if (url?.isNotEmpty ?? false) {
       if (T == ThrioModule || T == dynamic) {
         return modules == null ? null : modules.last as T;
@@ -158,14 +158,14 @@ class ModuleAnchor
         }
         return null;
       } else {
-        modules ??= getModules();
+        modules ??= _getModules();
       }
     }
     return _get<T>(modules, key);
   }
 
   Iterable<T> gets<T>(String url) {
-    final modules = getModules(url: url);
+    final modules = _getModules(url: url);
     if (modules == null) {
       return <T>[];
     }
@@ -191,7 +191,11 @@ class ModuleAnchor
     return <T>[];
   }
 
-  List<ThrioModule> getModules({String url}) {
+  void set<T>(Comparable key, T value) => setParam(key, value);
+
+  T remove<T>(Comparable key) => removeParam(key);
+
+  List<ThrioModule> _getModules({String url}) {
     var module = modules.values.first;
     final allModules = [module];
 

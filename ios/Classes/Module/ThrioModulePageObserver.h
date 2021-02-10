@@ -8,6 +8,7 @@
 #import <Foundation/Foundation.h>
 #import "ThrioTypes.h"
 #import "NavigatorPageObserverProtocol.h"
+#import "ThrioModule.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -25,7 +26,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface ThrioModule (PageObserver) <ThrioModulePageObserver>
 
-- (void)onPageObserverRegister;
+- (void)onPageObserverRegister:(ThrioModuleContext *)moduleContext;
 
 @end
 
