@@ -276,3 +276,7 @@
 ## 1.7.11
 
 * fix: Activity 被系统杀掉可能引起的无法 `pop` 的问题
+
+## 1.8.0
+
+* feat: 添加 `iOS` 和 `Android` 的 `ModuleContext`，并默认传递给 `Flutter`
