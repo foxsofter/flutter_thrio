@@ -280,3 +280,4 @@
 ## 1.8.0
 
 * feat: 添加 `iOS` 和 `Android` 的 `ModuleContext`，并默认传递给 `Flutter`
+* feat: 完善 `shouldCanPop`，支持混合栈用于判断是否显示箭头

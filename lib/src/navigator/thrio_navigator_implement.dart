@@ -160,15 +160,6 @@ class ThrioNavigatorImplement {
         animated: animated,
       );
 
-  Future<bool> canPop(String url, int index) =>
-      allRoutes().then<bool>((routes) {
-        if (routes.isEmpty ||
-            (routes.first.url == url && routes.first.index == index)) {
-          return false;
-        }
-        return true;
-      });
-
   Future<bool> popTo({
     @required String url,
     int index,
@@ -189,6 +180,15 @@ class ThrioNavigatorImplement {
         url: url,
         index: index,
         animated: animated,
+      );
+
+  Future<bool> isInitialRoute({
+    String url,
+    int index,
+  }) =>
+      _sendChannel?.isInitialRoute(
+        url: url,
+        index: index,
       );
 
   Future<RouteSettings> lastRoute({String url}) =>

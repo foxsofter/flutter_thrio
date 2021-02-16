@@ -417,6 +417,10 @@ NS_ASSUME_NONNULL_BEGIN
 ///
 + (NSArray *)getAllRoutesByUrl:(NSString *)url;
 
+/// Returns true if `url` and `index` in the first of navigation stack.
+///
++ (BOOL)isInitialRoute:(NSString *)url index:(NSNumber *_Nullable)index;
+
 #pragma mark - engine methods
 
 /// Get `FlutterEngine` instance by entrypoint.

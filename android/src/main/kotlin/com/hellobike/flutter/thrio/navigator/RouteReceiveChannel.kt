@@ -36,9 +36,9 @@ internal class RouteReceiveChannel(
         onPop()
         onPopTo()
         onRemove()
-
         onLastRoute()
         onGetAllRoutes()
+        isInitialRoute()
 
         onSetPopDisabled()
         onHotRestart()
@@ -129,6 +129,15 @@ internal class RouteReceiveChannel(
             val routes = ThrioNavigator.allRoutes(url)
             val routeNames = routes.map { it.settings.name }
             result(routeNames)
+        }
+    }
+
+    private fun isInitialRoute() {
+        channel.registryMethod("isInitialRoute") { arguments, result ->
+            if (arguments == null) return@registryMethod
+            val url = arguments["url"] as String
+            val index = if (arguments["index"] != null) arguments["index"] as Int else 0
+            result(NavigationController.isInitialRoute(url, index))
         }
     }
 

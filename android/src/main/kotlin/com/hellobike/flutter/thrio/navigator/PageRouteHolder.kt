@@ -49,6 +49,13 @@ internal data class PageRouteHolder(
         }
     }
 
+    fun firstRoute(url: String? = null, index: Int? = null): PageRoute? = when (url) {
+        null -> routes.firstOrNull()
+        else -> routes.firstOrNull {
+            it.settings.url == url && (index == null || index == 0 || it.settings.index == index)
+        }
+    }
+
     fun lastRoute(url: String? = null, index: Int? = null): PageRoute? = when (url) {
         null -> routes.lastOrNull()
         else -> routes.lastOrNull {

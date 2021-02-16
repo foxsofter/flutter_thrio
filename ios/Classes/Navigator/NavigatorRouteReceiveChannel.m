@@ -22,6 +22,7 @@
 #import "NavigatorFlutterEngineFactory.h"
 #import "NavigatorLogger.h"
 #import "NavigatorRouteReceiveChannel.h"
+#import "ThrioNavigator.h"
 #import "ThrioNavigator+Internal.h"
 #import "ThrioModule+PageBuilders.h"
 #import "UINavigationController+HotRestart.h"
@@ -53,6 +54,7 @@ NS_ASSUME_NONNULL_BEGIN
 
         [self _onLastRoute];
         [self _onGetAllRoutes];
+        [self _onIsInitialRoute];
 
         [self _onSetPopDisabled];
         [self _onHotRestart];
@@ -247,6 +249,22 @@ NS_ASSUME_NONNULL_BEGIN
                 }
                 if (result) {
                     result(allNames);
+                }
+            }];
+}
+
+- (void)_onIsInitialRoute {
+    [_channel registryMethod:@"isInitialRoute"
+                     handler:
+     ^void (NSDictionary<NSString *, id> *arguments,
+            ThrioIdCallback _Nullable result) {
+                NSString *url = arguments[@"url"];
+                NSNumber *index =
+                    [arguments[@"index"] isKindOfClass:NSNull.class]
+            ? nil
+            : arguments[@"index"];
+                if (result) {
+                    result(@([ThrioNavigator isInitialRoute:url index:index]));
                 }
             }];
 }

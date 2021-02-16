@@ -32,6 +32,8 @@
 #import "UINavigationController+PopDisabled.h"
 #import "UINavigationController+PopGesture.h"
 
+NS_ASSUME_NONNULL_BEGIN
+
 @implementation ThrioNavigator (Internal)
 
 + (UINavigationController *_Nullable)navigationController {
@@ -44,6 +46,12 @@
     dispatch_once(&onceToken, ^{
         controllers = [NSPointerArray weakObjectsPointerArray];
     });
+    if (controllers.count < 1) {
+        id nvc = [[UIApplication sharedApplication] topmostNavigationController];
+        if (nvc) {
+            [controllers addObject:nvc];
+        }
+    }
     return controllers;
 }
 
@@ -126,6 +134,18 @@
     }
 }
 
++ (NSArray *)_getAllRoutesByUrl:(NSString *_Nullable)url {
+    NSMutableArray *allRoutes = [NSMutableArray array];
+    NSArray *allNvcs = [self.navigationControllers.allObjects.reverseObjectEnumerator allObjects];
+    for (UINavigationController *nvc in allNvcs) {
+        NSArray *routes = [nvc thrio_getAllRoutesByUrl:url];
+        if (routes.count > 0) {
+            [allRoutes addObjectsFromArray:routes];
+        }
+    }
+    return allRoutes;
+}
+
 + (void)_setPopDisabledUrl:(NSString *)url index:(NSNumber *)index disabled:(BOOL)disabled {
     NSArray *allNvcs = [self.navigationControllers.allObjects.reverseObjectEnumerator allObjects];
     for (UINavigationController *nvc in allNvcs) {
@@ -173,3 +193,5 @@
 }
 
 @end
+
+NS_ASSUME_NONNULL_END

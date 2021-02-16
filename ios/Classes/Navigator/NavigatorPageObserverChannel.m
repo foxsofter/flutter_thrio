@@ -56,7 +56,7 @@ NS_ASSUME_NONNULL_BEGIN
     #pragma clang diagnostic push
     #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
                 SEL selector = NSSelectorFromString([NSString stringWithFormat:@"%@:routeAction:", method]);
-                [ThrioNavigator performSelector:selector withObject:settings withObject:routeActionString];
+                [ThrioModule performSelector:selector withObject:settings withObject:routeActionString];
     #pragma clang diagnostic pop
             }];
 }

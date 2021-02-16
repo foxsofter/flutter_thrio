@@ -122,5 +122,11 @@ object ThrioNavigator {
 
     @JvmStatic
     @JvmOverloads
-    fun allRoutes(url: String? = null): List<PageRoute> = PageRoutes.allRoutes(url);
+    fun allRoutes(url: String? = null): List<PageRoute> = PageRoutes.allRoutes(url)
+
+    @JvmStatic
+    @JvmOverloads
+    fun isInitialRoute(url: String, index: Int = 0) {
+        NavigationController.isInitialRoute(url, index)
+    }
 }

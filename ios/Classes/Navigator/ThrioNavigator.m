@@ -358,16 +358,15 @@ NS_ASSUME_NONNULL_BEGIN
     return [self _getAllRoutesByUrl:url];
 }
 
-+ (NSArray *)_getAllRoutesByUrl:(NSString *_Nullable)url {
-    NSMutableArray *allRoutes = [NSMutableArray array];
++ (BOOL)isInitialRoute:(NSString *)url index:(NSNumber *_Nullable)index {
     NSArray *allNvcs = [self.navigationControllers.allObjects.reverseObjectEnumerator allObjects];
     for (UINavigationController *nvc in allNvcs) {
-        NSArray *routes = [nvc thrio_getAllRoutesByUrl:url];
-        if (routes.count > 0) {
-            [allRoutes addObjectsFromArray:routes];
-        }
+        NavigatorPageRoute *firstRoute = [nvc.viewControllers.firstObject thrio_firstRoute];
+        return firstRoute &&
+               [firstRoute.settings.url isEqualToString:url] &&
+               (index || index == 0 || [firstRoute.settings.index isEqualToNumber:index]);
     }
-    return allRoutes;
+    return NO;
 }
 
 #pragma mark - engine methods

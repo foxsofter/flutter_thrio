@@ -81,7 +81,7 @@
     #pragma clang diagnostic push
     #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
                 SEL selector = NSSelectorFromString([NSString stringWithFormat:@"%@:", method]);
-                [ThrioNavigator performSelector:selector withObject:routeSettings];
+                [ThrioModule performSelector:selector withObject:routeSettings];
                 [ThrioModule.routeObservers performSelector:selector withObject:routeSettings];
     #pragma clang diagnostic pop
             }];

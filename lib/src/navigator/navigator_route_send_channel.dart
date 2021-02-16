@@ -72,6 +72,17 @@ class NavigatorRouteSendChannel {
     return _channel.invokeMethod<bool>('pop', arguments);
   }
 
+  Future<bool> isInitialRoute({
+    @required String url,
+    int index,
+  }) {
+    final arguments = <String, dynamic>{
+      'url': url,
+      'index': index,
+    };
+    return _channel.invokeMethod<bool>('isInitialRoute', arguments);
+  }
+
   Future<bool> popTo({
     @required String url,
     int index,

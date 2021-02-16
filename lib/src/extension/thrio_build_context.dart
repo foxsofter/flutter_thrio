@@ -49,7 +49,7 @@ extension ThrioBuildContext on BuildContext {
     return null;
   }
 
-  /// Use canPop to determine whether to display the back arrow.
+  /// Use `shouldCanPop` to determine whether to display the back arrow.
   ///
   /// ```dart
   /// AppBar(
@@ -58,7 +58,7 @@ extension ThrioBuildContext on BuildContext {
   ///   title: const Text(
   ///     'thrio_example',
   ///     style: TextStyle(color: Colors.black)),
-  ///   leading: context.canPop(const IconButton(
+  ///   leading: context.shouldCanPop(const IconButton(
   ///     color: Colors.black,
   ///     tooltip: 'back',
   ///     icon: Icon(Icons.arrow_back_ios),
@@ -67,28 +67,30 @@ extension ThrioBuildContext on BuildContext {
   /// ))
   /// ```
   ///
-  Widget canPop(
+  Widget shouldCanPop(
     Widget trueWidget, {
     Widget falseWidget = const SizedBox(),
-    void Function(bool) canPopResult,
+    void Function(bool) shoulCanPopResult,
   }) =>
       FutureBuilder<bool>(
-          future: _canPop(),
+          future: _isInitialRoute(),
           builder: (context, snapshot) {
-            canPopResult?.call(snapshot.data == true);
+            shoulCanPopResult?.call(snapshot.data != true);
             if (snapshot.data == true) {
-              return trueWidget;
-            } else {
               return falseWidget;
+            } else {
+              return trueWidget;
             }
           });
 
-  Future<bool> _canPop() {
+  Future<bool> _isInitialRoute() {
     final state = stateOf<NavigatorWidgetState>();
     final route = state.history.last;
     return route is NavigatorPageRoute
-        ? ThrioNavigatorImplement.shared()
-            .canPop(route.settings.url, route.settings.index)
-        : Future<bool>.value(true);
+        ? ThrioNavigatorImplement.shared().isInitialRoute(
+            url: route.settings.url,
+            index: route.settings.index,
+          )
+        : Future<bool>.value(false);
   }
 }

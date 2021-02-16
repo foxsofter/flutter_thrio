@@ -42,6 +42,14 @@ import java.lang.ref.WeakReference
 
 internal object NavigationController : Application.ActivityLifecycleCallbacks {
 
+    fun isInitialRoute(url: String, index: Int?): Boolean {
+        if (PageRoutes.firstRouteHolder?.allRoute()?.isNotEmpty() == true) {
+            val settings = PageRoutes.firstRouteHolder?.firstRoute()?.settings
+            return settings?.url == url && settings.index == index
+        }
+        return false
+    }
+
     override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
         if (context == null || context?.get() == null) {
             context = WeakReference(activity)

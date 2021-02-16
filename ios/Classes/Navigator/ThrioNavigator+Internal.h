@@ -59,6 +59,8 @@ NS_ASSUME_NONNULL_BEGIN
           animated:(BOOL)animated
             result:(ThrioBoolCallback _Nullable)result;
 
++ (NSArray *)_getAllRoutesByUrl:(NSString *_Nullable)url;
+
 + (void)_setPopDisabledUrl:(NSString *)url
                      index:(NSNumber *)index
                   disabled:(BOOL)disabled;
