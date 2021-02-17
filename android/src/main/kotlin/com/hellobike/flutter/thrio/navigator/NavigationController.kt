@@ -306,7 +306,7 @@ internal object NavigationController : Application.ActivityLifecycleCallbacks {
                         if (it == false) {
                             firstHolder.activity?.get()?.apply {
                                 if (this is ThrioActivity && this.shouldMoveToBack()) {
-                                    moveTaskToBack(true)
+                                    moveTaskToBack(false)
                                 }
                             }
                         } else {
