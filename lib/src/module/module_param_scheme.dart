@@ -19,6 +19,8 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 
 import '../exception/thrio_exception.dart';
@@ -30,6 +32,41 @@ mixin ModuleParamScheme on ThrioModule {
   /// Param schemes registered in the current Module
   ///
   final _paramSchemes = RegistryMap<Comparable, Type>();
+
+  @protected
+  bool hasParamScheme<T>(Comparable key) {
+    if (_paramSchemes.keys.contains(key)) {
+      if (T == dynamic || T == Object) {
+        return true;
+      }
+      return _paramSchemes[key] == T;
+    }
+    return false;
+  }
+
+  @protected
+  final paramStreamCtrls = <Comparable, Set<StreamController<dynamic>>>{};
+
+  /// Subscribe to a series of param by `key`.
+  ///
+  @protected
+  Stream<T> onParam<T>(Comparable key) {
+    final sc = StreamController<T>();
+    sc
+      ..onListen = () {
+        paramStreamCtrls[key] ??= <StreamController<dynamic>>{};
+        paramStreamCtrls[key].add(sc);
+        // sink lastest value.
+        final value = getParam<T>(key);
+        if (value != null) {
+          sc.add(value);
+        }
+      }
+      ..onCancel = () {
+        paramStreamCtrls[key].remove(sc);
+      };
+    return sc.stream;
+  }
 
   final _params = <Comparable, dynamic>{};
 
@@ -44,6 +81,7 @@ mixin ModuleParamScheme on ThrioModule {
       return _params[key] as T; // ignore: avoid_as
     }
     if (T != dynamic &&
+        T != Object &&
         _paramSchemes.keys.contains(key) &&
         _paramSchemes[key] != T) {
       throw ThrioException(
@@ -61,7 +99,7 @@ mixin ModuleParamScheme on ThrioModule {
   bool setParam<T>(Comparable key, T value) {
     // Anchor module does not need to set param scheme.
     if (this == anchor) {
-      _params[key] = value;
+      _setParam(key, value);
       return true;
     }
 
@@ -69,8 +107,25 @@ mixin ModuleParamScheme on ThrioModule {
         _paramSchemes[key] != value.runtimeType) {
       return false;
     }
-    _params[key] = value;
+    _setParam(key, value);
     return true;
+  }
+
+  void _setParam(Comparable key, value) {
+    if (_params[key] != value) {
+      _params[key] = value;
+      Future(() {
+        final scs = paramStreamCtrls[key];
+        if (scs?.isEmpty ?? true) {
+          return;
+        }
+        for (final sc in scs) {
+          if (sc.hasListener && !sc.isPaused && !sc.isClosed) {
+            sc.add(value);
+          }
+        }
+      });
+    }
   }
 
   /// Remove param by `key` & `T`, if exists, return the `value`.
@@ -83,6 +138,7 @@ mixin ModuleParamScheme on ThrioModule {
       return _params.remove(key) as T; // ignore: avoid_as
     }
     if (T != dynamic &&
+        T != Object &&
         _paramSchemes.keys.contains(key) &&
         _paramSchemes[key] != T) {
       throw ThrioException(
@@ -102,10 +158,19 @@ mixin ModuleParamScheme on ThrioModule {
   /// Unregistry by calling the return value `VoidCallback`.
   ///
   @protected
-  VoidCallback registerParamScheme<T>(String key) {
+  VoidCallback registerParamScheme<T>(Comparable key) {
     if (_paramSchemes.keys.contains(key)) {
       return null;
     }
-    return _paramSchemes.registry(key, T);
+    final callback = _paramSchemes.registry(key, T);
+    return () {
+      callback();
+      final scs = paramStreamCtrls.remove(key);
+      if (scs?.isNotEmpty ?? false) {
+        for (final sc in scs) {
+          sc.close();
+        }
+      }
+    };
   }
 }

@@ -147,7 +147,7 @@ class NavigatorRouteSendChannel {
       return null;
     }
     final type = params.runtimeType;
-    if (type != dynamic && params.isComplexType) {
+    if (type != dynamic && type != Object && params.isComplexType) {
       final serializeParams =
           ThrioModule.get<JsonSerializer>(url: url, key: type.toString())
               ?.call(<type>() => params as type); // ignore: avoid_as

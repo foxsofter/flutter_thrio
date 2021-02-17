@@ -103,7 +103,7 @@ class _PageState extends State<Page> {
                               'double_key_biz1_flutter1 value is $value');
                         }
                         if (widget.moduleContext
-                            .set('string_key_biz1', 'fewfwew23 fwwljls')) {
+                            .set('string_key_biz1', _inputController.text)) {
                           final value =
                               widget.moduleContext.get('string_key_biz1');
                           ThrioLogger.v('string_key_biz1 value is $value');
@@ -252,15 +252,17 @@ class _PageState extends State<Page> {
                         didDisappear: (settings) {
                           ThrioLogger.v('lifecycle didDisappear -> $settings');
                         },
-                        child: Container(
-                            padding: const EdgeInsets.all(8),
-                            margin: const EdgeInsets.all(8),
-                            color: Colors.grey,
-                            child: const Text(
-                              '',
-                              style:
-                                  TextStyle(fontSize: 22, color: Colors.black),
-                            )))
+                        child: StreamBuilder<Object>(
+                            stream: widget.moduleContext.on('string_key_biz1'),
+                            builder: (context, snapshot) => Container(
+                                padding: const EdgeInsets.all(8),
+                                margin: const EdgeInsets.all(8),
+                                color: Colors.grey,
+                                child: Text(
+                                  '${snapshot?.data}',
+                                  style: const TextStyle(
+                                      fontSize: 22, color: Colors.black),
+                                ))))
                   ]),
                 ),
               ))));

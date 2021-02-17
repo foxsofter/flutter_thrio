@@ -81,6 +81,19 @@ class ModuleContext {
         : module.parent._moduleContext?.remove<T>(key);
   }
 
+  /// Subscribe to a series of param by `key`.
+  ///
+  Stream<T> on<T>(String key) {
+    if (module is ModuleParamScheme) {
+      final paramModule = module as ModuleParamScheme;
+      if (paramModule.hasParamScheme<T>(key)) {
+        return paramModule.onParam(key);
+      }
+    }
+
+    return module.parent?._moduleContext?.on(key);
+  }
+
   @override
   String toString() => 'Context of module ${module.key}';
 }

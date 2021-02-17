@@ -282,3 +282,4 @@
 * feat: 添加 `iOS` 和 `Android` 的 `ModuleContext`，并默认传递给 `Flutter`
 * feat: 完善 `shouldCanPop`，支持混合栈用于判断是否显示箭头
 * fix: 修复 `ThrioActivity` 作为 lanuch Activity 时可能导致出现加载页的bug
+* feat: `ModuleContext` 支持 `Stream` 接口

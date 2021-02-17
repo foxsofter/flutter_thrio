@@ -112,6 +112,9 @@ class ModuleAnchor
       if (module.isLoaded) {
         module.isLoaded = false;
         await module.onModuleUnloading(module.moduleContext);
+        if (module is ModuleParamScheme) {
+          module.paramStreamCtrls.clear();
+        }
       }
       // 页 Module 的 父 Module onModuleUnloading
       var parentModule = module.parent;
@@ -121,6 +124,9 @@ class ModuleAnchor
           if (parentModule.isLoaded) {
             parentModule.isLoaded = false;
             await parentModule.onModuleUnloading(parentModule.moduleContext);
+            if (parentModule is ModuleParamScheme) {
+              parentModule.paramStreamCtrls.clear();
+            }
           }
         }
         parentModule = parentModule.parent;
@@ -131,7 +137,7 @@ class ModuleAnchor
   T get<T>({String url, String key}) {
     var modules = _getModules(url: url);
     if (url?.isNotEmpty ?? false) {
-      if (T == ThrioModule || T == dynamic) {
+      if (T == ThrioModule || T == dynamic || T == Object) {
         return modules == null ? null : modules.last as T;
       } else if (T == NavigatorPageBuilder) {
         if (modules == null) {

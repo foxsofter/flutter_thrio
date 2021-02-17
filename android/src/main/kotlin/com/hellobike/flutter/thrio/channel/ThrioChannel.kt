@@ -127,11 +127,11 @@ open class ThrioChannel constructor(
 
         override fun onListen(arguments: Any?, events: EventChannel.EventSink?) {
             sink = events
-            Log.i("Thrio", "onListen arguments $arguments events $events")
+            Log.v("Thrio", "onListen arguments $arguments events $events")
         }
 
         override fun onCancel(arguments: Any?) {
-            Log.i("Thrio", "onCancel arguments $arguments")
+            Log.v("Thrio", "onCancel arguments $arguments")
         }
     }
 }
