@@ -18,8 +18,8 @@ class Module
 
   @override
   void onParamSchemeRegister(ModuleContext moduleContext) {
-    registerParamScheme<int>('int_key_root_module');
-    registerParamScheme<People>('people_key_root_module');
+    registerParamScheme('int_key_root_module');
+    registerParamScheme('people_key_root_module');
   }
 
   @override

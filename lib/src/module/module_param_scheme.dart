@@ -80,15 +80,19 @@ mixin ModuleParamScheme on ThrioModule {
     if (this == anchor) {
       return _params[key] as T; // ignore: avoid_as
     }
-    if (T != dynamic &&
-        T != Object &&
-        _paramSchemes.keys.contains(key) &&
-        _paramSchemes[key] != T) {
+    if (!_paramSchemes.keys.contains(key)) {
+      return null;
+    }
+    final value = _params[key];
+    if (value == null) {
+      return null;
+    }
+    if (T != dynamic && T != Object && value.runtimeType != T) {
       throw ThrioException(
-        '$T does not match the param scheme type: ${_paramSchemes[key]}',
+        '$T does not match the param scheme type: ${value.runtimeType}',
       );
     }
-    return _params[key] as T; // ignore: avoid_as
+    return value as T; // ignore: avoid_as
   }
 
   /// Sets param with `key` & `value`.
@@ -99,13 +103,26 @@ mixin ModuleParamScheme on ThrioModule {
   bool setParam<T>(Comparable key, T value) {
     // Anchor module does not need to set param scheme.
     if (this == anchor) {
+      final oldValue = _params[key];
+      if (oldValue != null && oldValue.runtimeType != value.runtimeType) {
+        return false;
+      }
       _setParam(key, value);
       return true;
     }
-
-    if (!_paramSchemes.keys.contains(key) ||
-        _paramSchemes[key] != value.runtimeType) {
+    if (!_paramSchemes.keys.contains(key)) {
       return false;
+    }
+    final schemeType = _paramSchemes[key];
+    if (schemeType == dynamic || schemeType == Object) {
+      final oldValue = _params[key];
+      if (oldValue != null && oldValue.runtimeType != value.runtimeType) {
+        return false;
+      }
+    } else {
+      if (schemeType != value.runtimeType) {
+        return false;
+      }
     }
     _setParam(key, value);
     return true;
@@ -154,6 +171,8 @@ mixin ModuleParamScheme on ThrioModule {
   void onParamSchemeRegister(ModuleContext moduleContext) {}
 
   /// Register a param scheme for the module.
+  ///
+  /// `T` can be optional.
   ///
   /// Unregistry by calling the return value `VoidCallback`.
   ///

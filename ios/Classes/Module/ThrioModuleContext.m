@@ -7,7 +7,9 @@
 
 #import "ThrioModuleContext.h"
 #import "ThrioModuleContext+Internal.h"
+#import "ThrioModule+JsonSerializers.h"
 #import "NavigatorFlutterEngineFactory.h"
+#import "NSObject+Thrio.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -32,9 +34,12 @@ NS_ASSUME_NONNULL_BEGIN
     id v = _params[key];
     if (v != value) {
         _params[key] = value;
-        // 将数据同步给所有的 FlutterEngine
-        [NavigatorFlutterEngineFactory.shared setModuleContextValue:value
-                                                             forKey:key];
+        id v = [ThrioModule serializeParams:value];
+        if ([v canTransToFlutter]) {
+            // 将数据同步给所有的 FlutterEngine
+            [NavigatorFlutterEngineFactory.shared setModuleContextValue:value
+                                                                 forKey:key];
+        }
     }
 }
 

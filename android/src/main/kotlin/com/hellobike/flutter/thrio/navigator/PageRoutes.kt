@@ -62,7 +62,7 @@ internal object PageRoutes : Application.ActivityLifecycleCallbacks {
         return routeHolders.lastOrNull { it.pageId == pageId }
     }
 
-    fun lastRouteHolder(url: String? = null, index: Int? = null): PageRouteHolder? = when(url) {
+    fun lastRouteHolder(url: String? = null, index: Int? = null): PageRouteHolder? = when (url) {
         null -> routeHolders.lastOrNull()
         else -> routeHolders.lastOrNull { it.hasRoute(url, index) }
     }
@@ -454,7 +454,7 @@ internal object PageRoutes : Application.ActivityLifecycleCallbacks {
                     if (activity.isFinishing) {
                         routeHolders.remove(this)
                         this.activity = null
-                        // 需重置标记为，如果 ThrioActivity 是首页的话，下次进入的时候才会打开第一个页面
+                        // 需重置标记位，如果 ThrioActivity 曾经是首页的话，下次进入的时候才会打开第一个页面
                         if (routeHolders.isEmpty()) {
                             ThrioActivity.isPushed = false
                         }

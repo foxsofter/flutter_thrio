@@ -131,15 +131,15 @@ static NSMutableDictionary *modules;
         NSMutableDictionary *canTransParams = [NSMutableDictionary dictionary];
         for (NSString *key in strongSelf.moduleContext.params) {
             id value = strongSelf.moduleContext.params[key];
-            if (![value canTransToFlutter]) {
-                value = [ThrioModule serializeParams:value];
-            }
-            if (value) {
+            value = [ThrioModule serializeParams:value];
+            if ([value canTransToFlutter]) {
                 canTransParams[key] = value;
             }
         }
-        ThrioChannel *moduleContextChannel = [NavigatorFlutterEngineFactory.shared getModuleChannelByEntrypoint:entrypoint];
-        [moduleContextChannel invokeMethod:@"set" arguments:canTransParams];
+        if (canTransParams.count > 0) {
+            ThrioChannel *moduleContextChannel = [NavigatorFlutterEngineFactory.shared getModuleChannelByEntrypoint:entrypoint];
+            [moduleContextChannel invokeMethod:@"set" arguments:canTransParams];
+        }
     };
     [NavigatorFlutterEngineFactory.shared startupWithEntrypoint:entrypoint
                                                      readyBlock:readyBlock];

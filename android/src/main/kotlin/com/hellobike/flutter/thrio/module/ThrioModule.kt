@@ -39,18 +39,15 @@ open class ThrioModule {
         private val root by lazy { ThrioModule() }
 
         @JvmStatic
-        fun init(module: ThrioModule, context: Application) {
+        fun init(module: ThrioModule, context: Application, multiEngineEnabled: Boolean = false) {
+            FlutterEngineFactory.isMultiEngineEnabled = multiEngineEnabled
             context.registerActivityLifecycleCallbacks(ActivityDelegate)
             root._moduleContext = ModuleContext()
             root.registerModule(module, root.moduleContext)
             root.initModule()
-            root.startupFlutterEngine(context)
-        }
-
-        @JvmStatic
-        fun init(module: ThrioModule, context: Application, multiEngineEnabled: Boolean) {
-            FlutterEngineFactory.isMultiEngineEnabled = multiEngineEnabled
-            init(module, context)
+            if (!FlutterEngineFactory.isMultiEngineEnabled) {
+                root.startupFlutterEngine(context)
+            }
         }
     }
 
@@ -105,26 +102,25 @@ open class ThrioModule {
         context: Context,
         entrypoint: String = NAVIGATION_FLUTTER_ENTRYPOINT_DEFAULT
     ) {
-        if (!FlutterEngineFactory.isMultiEngineEnabled) {
-            FlutterEngineFactory.startup(
-                context, entrypoint,
-                object : EngineReadyListener {
-                    override fun onReady(it: Any?) {
-                        val params = moduleContext.params
-                        val canTransParams = mutableMapOf<String, Any>()
-                        for (param in params) {
-                            val value =
-                                if (param.value.canTransToFlutter()) param.value else
-                                    ModuleJsonSerializers.serializeParams(param.value)
-                            if (value != null) {
-                                canTransParams[param.key] = value
-                            }
+        FlutterEngineFactory.startup(
+            context, entrypoint,
+            object : EngineReadyListener {
+                override fun onReady(it: Any?) {
+                    val params = moduleContext.params
+                    val canTransParams = mutableMapOf<String, Any>()
+                    for (param in params) {
+                        val value = ModuleJsonSerializers.serializeParams(param.value)
+                        if (value != null && value.canTransToFlutter()) {
+                            canTransParams[param.key] = value
                         }
-                        val channel =
-                            FlutterEngineFactory.getEngine(entrypoint)?.moduleContextChannel
-                        channel?.invokeMethod("set", canTransParams)
                     }
-                })
-        }
+                    if (canTransParams.isNotEmpty()) {
+                        FlutterEngineFactory.getEngine(entrypoint)?.moduleContextChannel?.apply {
+                            invokeMethod("set", canTransParams)
+                        }
+                    }
+                }
+            })
+
     }
 }

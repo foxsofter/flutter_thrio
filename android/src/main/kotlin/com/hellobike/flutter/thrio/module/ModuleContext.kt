@@ -33,14 +33,15 @@ class ModuleContext {
     operator fun get(key: String): Any? = params[key]
 
     operator fun set(key: String, value: Any) {
-        val v = params[key]
+        var v = params[key]
         if (v != null && v.javaClass != value.javaClass) {
             throw ThrioException("Type of value is not ${v.javaClass}")
         }
         if (v != value) {
             params[key] = value
-            if (value.canTransToFlutter()) {
-                FlutterEngineFactory.setModuleContextValue(value, key)
+            v = ModuleJsonSerializers.serializeParams(value)
+            if (v != null && v.canTransToFlutter()) {
+                FlutterEngineFactory.setModuleContextValue(v, key)
             }
         }
     }
