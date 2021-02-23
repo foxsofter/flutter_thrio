@@ -115,7 +115,8 @@ class NavigatorRouteSendChannel {
         : <String, dynamic>{'url': url};
     return _channel
         .invokeMethod<String>('lastRoute', arguments)
-        .then<RouteSettings>((value) => RouteSettings(name: value));
+        .then<RouteSettings>(
+            (value) => value == null ? null : RouteSettings(name: value));
   }
 
   Future<List<RouteSettings>> allRoutes({String url}) {
