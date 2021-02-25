@@ -197,6 +197,24 @@ class ThrioNavigatorImplement {
   Future<List<RouteSettings>> allRoutes({String url}) =>
       _sendChannel?.allRoutes(url: url);
 
+  RouteSettings lastFlutterRoute({String url}) => navigatorState?.history
+      ?.lastWhere(
+        (it) =>
+            it is NavigatorPageRoute &&
+            ((url?.isEmpty ?? true) || it.settings.url == url),
+        orElse: () => null,
+      )
+      ?.settings;
+
+  List<RouteSettings> allFlutterRoutes({String url}) =>
+      navigatorState?.history
+          ?.map((it) => it.settings)
+          ?.where((it) =>
+              it is NavigatorPageRoute &&
+              ((url?.isEmpty ?? true) || it.url == url))
+          ?.toList() ??
+      <RouteSettings>[];
+
   bool isContainsInnerRoute({String url}) {
     final index = url?.isEmpty ?? true
         ? navigatorState.history

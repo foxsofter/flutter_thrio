@@ -109,6 +109,17 @@ abstract class ThrioNavigator {
   static Future<List<RouteSettings>> allRoutes({String url}) =>
       ThrioNavigatorImplement.shared().allRoutes(url: url);
 
+  /// Returns the flutter route of the page that was last pushed to the
+  /// navigation stack.
+  ///
+  static RouteSettings lastFlutterRoute({String url}) =>
+      ThrioNavigatorImplement.shared().lastFlutterRoute(url: url);
+
+  /// Returns all flutter route of the page with `url` in the navigation stack.
+  ///
+  static List<RouteSettings> allFlutterRoutes({String url}) =>
+      ThrioNavigatorImplement.shared().allFlutterRoutes(url: url);
+
   /// Returns true if there is a route pushed by the Navigator
   /// on the last matching url.
   static bool isContainsInnerRoute({String url}) =>

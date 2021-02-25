@@ -283,3 +283,8 @@
 * feat: 完善 `shouldCanPop`，支持混合栈用于判断是否显示箭头
 * fix: 修复 `ThrioActivity` 作为 lanuch Activity 时可能导致出现加载页的bug
 * feat: `ModuleContext` 支持 `Stream` 接口
+
+## 1.8.1
+
+* feat: 增加 `lastFlutterRoute` 和 `allFlutterRoutes` 两个 接口
+* fix: `lastRoute` 返回空不是 `null`
