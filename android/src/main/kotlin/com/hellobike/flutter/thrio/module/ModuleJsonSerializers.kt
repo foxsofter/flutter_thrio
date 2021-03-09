@@ -41,7 +41,7 @@ internal object ModuleJsonSerializers {
             @Suppress("UNCHECKED_CAST")
             return params as Map<String, Any>
         }
-        val type = params.javaClass.toString()
+        val type = (params as Any).javaClass.toString()
         val value = serializers[type] ?: return params
 
         @Suppress("UNCHECKED_CAST")

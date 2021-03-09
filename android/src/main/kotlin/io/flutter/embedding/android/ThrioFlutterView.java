@@ -534,13 +534,13 @@ public class ThrioFlutterView extends FrameLayout implements MouseCursorPlugin.M
         }
 
         // Status bar (top) and left/right system insets should partially obscure the content (padding).
-        viewportMetrics.paddingTop = statusBarHidden ? 0 : insets.getSystemWindowInsetTop();
-        viewportMetrics.paddingRight =
+        viewportMetrics.viewPaddingTop = statusBarHidden ? 0 : insets.getSystemWindowInsetTop();
+        viewportMetrics.viewPaddingRight =
                 zeroSides == ZeroSides.RIGHT || zeroSides == ZeroSides.BOTH
                         ? 0
                         : insets.getSystemWindowInsetRight();
-        viewportMetrics.paddingBottom = 0;
-        viewportMetrics.paddingLeft =
+        viewportMetrics.viewPaddingBottom = 0;
+        viewportMetrics.viewPaddingLeft =
                 zeroSides == ZeroSides.LEFT || zeroSides == ZeroSides.BOTH
                         ? 0
                         : insets.getSystemWindowInsetLeft();
@@ -566,11 +566,11 @@ public class ThrioFlutterView extends FrameLayout implements MouseCursorPlugin.M
                 TAG,
                 "Updating window insets (onApplyWindowInsets()):\n"
                         + "Status bar insets: Top: "
-                        + viewportMetrics.paddingTop
+                        + viewportMetrics.viewPaddingTop
                         + ", Left: "
-                        + viewportMetrics.paddingLeft
+                        + viewportMetrics.viewPaddingLeft
                         + ", Right: "
-                        + viewportMetrics.paddingRight
+                        + viewportMetrics.viewPaddingRight
                         + "\n"
                         + "Keyboard insets: Bottom: "
                         + viewportMetrics.viewInsetBottom
@@ -604,10 +604,10 @@ public class ThrioFlutterView extends FrameLayout implements MouseCursorPlugin.M
     protected boolean fitSystemWindows(@NonNull Rect insets) {
         if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT) {
             // Status bar, left/right system insets partially obscure content (padding).
-            viewportMetrics.paddingTop = insets.top;
-            viewportMetrics.paddingRight = insets.right;
-            viewportMetrics.paddingBottom = 0;
-            viewportMetrics.paddingLeft = insets.left;
+            viewportMetrics.viewPaddingTop = insets.top;
+            viewportMetrics.viewPaddingRight = insets.right;
+            viewportMetrics.viewPaddingBottom = 0;
+            viewportMetrics.viewPaddingLeft = insets.left;
 
             // Bottom system inset (keyboard) should adjust scrollable bottom edge (inset).
             viewportMetrics.viewInsetTop = 0;
@@ -619,11 +619,11 @@ public class ThrioFlutterView extends FrameLayout implements MouseCursorPlugin.M
                     TAG,
                     "Updating window insets (fitSystemWindows()):\n"
                             + "Status bar insets: Top: "
-                            + viewportMetrics.paddingTop
+                            + viewportMetrics.viewPaddingTop
                             + ", Left: "
-                            + viewportMetrics.paddingLeft
+                            + viewportMetrics.viewPaddingLeft
                             + ", Right: "
-                            + viewportMetrics.paddingRight
+                            + viewportMetrics.viewPaddingRight
                             + "\n"
                             + "Keyboard insets: Bottom: "
                             + viewportMetrics.viewInsetBottom
@@ -697,7 +697,7 @@ public class ThrioFlutterView extends FrameLayout implements MouseCursorPlugin.M
             return super.onKeyUp(keyCode, event);
         }
 
-        androidKeyProcessor.onKeyUp(event);
+        androidKeyProcessor.onKeyEvent(event);
         return super.onKeyUp(keyCode, event);
     }
 
@@ -718,7 +718,7 @@ public class ThrioFlutterView extends FrameLayout implements MouseCursorPlugin.M
             return super.onKeyDown(keyCode, event);
         }
 
-        androidKeyProcessor.onKeyDown(event);
+        androidKeyProcessor.onKeyEvent(event);
         return super.onKeyDown(keyCode, event);
     }
 
