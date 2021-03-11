@@ -219,8 +219,10 @@ class _TestPageState extends State<TestPage> {
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
-                child: RaisedButton(
-                  color: Colors.indigo,
+                child: ElevatedButton(
+                  style: ButtonStyle(
+                      foregroundColor:
+                          MaterialStateProperty.all(Colors.indigo)),
                   onPressed: () {
                     Navigator.of(context).pop();
                   },

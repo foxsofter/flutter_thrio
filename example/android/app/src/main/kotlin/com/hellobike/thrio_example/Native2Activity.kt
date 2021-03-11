@@ -2,25 +2,28 @@ package com.hellobike.thrio_example
 
 import android.content.Intent
 import android.os.Bundle
+import android.view.LayoutInflater
 import androidx.appcompat.app.AppCompatActivity
 import com.hellobike.flutter.thrio.navigator.PageNotifyListener
 import com.hellobike.flutter.thrio.navigator.RouteSettings
 import com.hellobike.flutter.thrio.navigator.ThrioNavigator
+import com.hellobike.thrio_example.databinding.ActivityNative2Binding
 import io.flutter.Log
-import kotlinx.android.synthetic.main.activity_native2.*
 
 class Native2Activity : AppCompatActivity(), PageNotifyListener {
+    private lateinit var binding: ActivityNative2Binding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_native2)
+        binding = ActivityNative2Binding.inflate(LayoutInflater.from(this))
+        setContentView(binding.root)
         initView()
     }
 
     private fun initView() {
-        tv_native.text = "native 2"
+        binding.tvNative.text = "native 2"
 
-        btn_10.setOnClickListener {
+        binding.btn10.setOnClickListener {
             ThrioNavigator.push("/biz2/flutter2",
                 params = mapOf("k1" to 1),
                 result = {
@@ -32,13 +35,13 @@ class Native2Activity : AppCompatActivity(), PageNotifyListener {
             )
         }
 
-        btn_11.setOnClickListener {
+        binding.btn11.setOnClickListener {
             ThrioNavigator.remove("/biz2/flutter2") {
                 Log.i("Thrio", "push result data $it")
             }
         }
 
-        btn_12.setOnClickListener {
+        binding.btn12.setOnClickListener {
             ThrioNavigator.push("/biz1/native1",
                 params = mapOf("k1" to 1),
                 result = {
@@ -50,26 +53,26 @@ class Native2Activity : AppCompatActivity(), PageNotifyListener {
             )
         }
 
-        btn_13.setOnClickListener {
+        binding.btn13.setOnClickListener {
             ThrioNavigator.remove("/biz1/native1") {
                 Log.i("Thrio", "push result data $it")
             }
         }
 
-        btn_20.setOnClickListener {
+        binding.btn20.setOnClickListener {
             ThrioNavigator.popTo("/biz1/native1")
         }
 
-        btn_21.setOnClickListener {
+        binding.btn21.setOnClickListener {
             val intent = Intent(this, Native1Activity::class.java)
             startActivity(intent)
         }
 
-        btn_3.setOnClickListener {
+        binding.btn3.setOnClickListener {
             ThrioNavigator.pop("native 2 popResult")
         }
 
-        btn_notify_all.setOnClickListener {
+        binding.btnNotifyAll.setOnClickListener {
             ThrioNavigator.notify(name = "notify_all_page")
         }
     }
@@ -82,7 +85,7 @@ class Native2Activity : AppCompatActivity(), PageNotifyListener {
         if (data != null) {
             @Suppress("UNCHECKED_CAST")
             RouteSettings.fromArguments(data as Map<String, Any?>)?.apply {
-                tv_native.text = "/biz2/native2 index $index"
+                binding.tvNative.text = "/biz2/native2 index $index"
             }
         }
     }
