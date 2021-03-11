@@ -288,3 +288,8 @@
 
 * feat: 增加 `lastFlutterRoute` 和 `allFlutterRoutes` 两个 接口
 * fix: `lastRoute` 返回空不是 `null`
+
+## 1.8.2
+
+* feat: 移除 kotlin-android-extensions
+* feat: 适配 Flutter 2.x.x 版本
