@@ -51,7 +51,6 @@ internal object PageRoutes : Application.ActivityLifecycleCallbacks {
         }
 
     var willAppearPageId = 0
-    private val killBySystemPageIds = mutableSetOf<Int>()
 
     val routeHolders by lazy { mutableListOf<PageRouteHolder>() }
     val firstRouteHolder: PageRouteHolder? get() = routeHolders.firstOrNull()
@@ -404,10 +403,6 @@ internal object PageRoutes : Application.ActivityLifecycleCallbacks {
         val pageId = activity.intent.getPageId()
         if (pageId != NAVIGATION_PAGE_ID_NONE) {
             outState.putInt(NAVIGATION_PAGE_ID_KEY, pageId)
-            if (activity is ThrioActivity) {
-                // 如果经过这里表示 Activity 即将被系统杀掉
-                killBySystemPageIds.add(pageId)
-            }
         }
     }
 
@@ -449,15 +444,13 @@ internal object PageRoutes : Application.ActivityLifecycleCallbacks {
     override fun onActivityDestroyed(activity: Activity) {
         val pageId = activity.intent.getPageId()
         if (pageId != NAVIGATION_PAGE_ID_NONE) {
-            if (!killBySystemPageIds.remove(pageId)) {
-                routeHolders.lastOrNull { it.pageId == pageId }?.apply {
-                    if (activity.isFinishing) {
-                        routeHolders.remove(this)
-                        this.activity = null
-                        // 需重置标记位，如果 ThrioActivity 曾经是首页的话，下次进入的时候才会打开第一个页面
-                        if (routeHolders.isEmpty()) {
-                            ThrioActivity.isPushed = false
-                        }
+            routeHolders.lastOrNull { it.pageId == pageId }?.apply {
+                if (activity.isFinishing) {
+                    routeHolders.remove(this)
+                    this.activity = null
+                    // 需重置标记位，如果 ThrioActivity 曾经是首页的话，下次进入的时候才会打开第一个页面
+                    if (routeHolders.isEmpty()) {
+                        ThrioActivity.isPushed = false
                     }
                 }
             }

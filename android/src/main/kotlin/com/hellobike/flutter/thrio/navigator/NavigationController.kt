@@ -51,9 +51,7 @@ internal object NavigationController : Application.ActivityLifecycleCallbacks {
     }
 
     override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
-        if (context == null || context?.get() == null) {
-            context = WeakReference(activity)
-        }
+        context = WeakReference(activity)
 
         Remove.doRemove(activity)
         Push.doPush(activity)
@@ -68,9 +66,7 @@ internal object NavigationController : Application.ActivityLifecycleCallbacks {
     }
 
     override fun onActivityResumed(activity: Activity) {
-        if (context == null || context?.get() == null) {
-            context = WeakReference(activity)
-        }
+        context = WeakReference(activity)
 
         Notify.doNotify(activity)
         Push.doPush(activity)
