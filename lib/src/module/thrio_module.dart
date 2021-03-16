@@ -36,8 +36,6 @@ import 'module_json_serializer.dart';
 import 'module_page_builder.dart';
 import 'module_page_observer.dart';
 import 'module_param_scheme.dart';
-import 'module_protobuf_deserializer.dart';
-import 'module_protobuf_serializer.dart';
 import 'module_route_observer.dart';
 import 'module_route_transitions_builder.dart';
 
@@ -47,11 +45,13 @@ mixin ThrioModule {
   /// Modular initialization function, needs to be called
   /// once during App initialization.
   ///
-  static void init(ThrioModule rootModule, [String entrypoint]) {
+  static void init(ThrioModule rootModule, [String? entrypoint]) {
     if (anchor.modules.length == 1) {
       throw ThrioException('init method can only be called once.');
     } else {
-      final moduleContext = ModuleContext(entrypoint: entrypoint);
+      final moduleContext = entrypoint == null
+          ? ModuleContext()
+          : ModuleContext(entrypoint: entrypoint);
       moduleOf[moduleContext] = anchor;
       anchor
         .._moduleContext = moduleContext
@@ -76,7 +76,7 @@ mixin ThrioModule {
   /// `NavigatorPageBuilder`, and `url` is null or empty, find instance of `T`
   /// in all modules.
   ///
-  static T get<T>({String url, String key}) =>
+  static T? get<T>({String? url, String? key}) =>
       anchor.get<T>(url: url, key: key);
 
   /// Returns true if the `url` has been registered.
@@ -95,7 +95,7 @@ mixin ThrioModule {
   /// If `T` is `NavigatorRouteObserver`, returns all route observers
   /// matched by `url`.
   ///
-  static Iterable<T> gets<T>({@required String url}) => anchor.gets<T>(url);
+  static Iterable<T> gets<T>({required String url}) => anchor.gets<T>(url);
 
   @protected
   final modules = <String, ThrioModule>{};
@@ -108,13 +108,13 @@ mixin ThrioModule {
   /// Get parent module.
   ///
   @protected
-  ThrioModule get parent => parentOf[this];
+  ThrioModule? get parent => parentOf[this];
 
   /// `ModuleContext` of current module.
   ///
   @protected
   ModuleContext get moduleContext => _moduleContext;
-  ModuleContext _moduleContext;
+  late ModuleContext _moduleContext;
 
   /// A function for registering a module, which will call
   /// the `onModuleRegister` function of the `module`.
@@ -183,14 +183,6 @@ mixin ThrioModule {
       }
       if (module is ModuleJsonDeserializer) {
         module.onJsonDeserializerRegister(module._moduleContext);
-      }
-    }
-    for (final module in values) {
-      if (module is ModuleProtobufSerializer) {
-        module.onProtobufSerializerRegister(module._moduleContext);
-      }
-      if (module is ModuleProtobufDeserializer) {
-        module.onProtobufDeserializerRegister(module._moduleContext);
       }
     }
     for (final module in values) {

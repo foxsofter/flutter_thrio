@@ -25,12 +25,4 @@ typedef JsonSerializer = Map<String, dynamic> Function(T Function<T>() factory);
 
 /// Signature of callbacks for json deserializer.
 ///
-typedef JsonDeserializer<T> = T Function(Map<String, dynamic> params);
-
-/// Signature of callbacks for protobuf serializer.
-///
-typedef ProtobufSerializer = List<int> Function(T Function<T>() factory);
-
-/// Signature of callbacks for protobuf deserializer.
-///
-typedef ProtobufDeserializer<T> = T Function(List<int> params);
+typedef JsonDeserializer<T> = T? Function(Map<String, dynamic> params);

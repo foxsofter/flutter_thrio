@@ -77,10 +77,12 @@ class NavigatorRouteObserverChannel with NavigatorRouteObserver {
   void _on(String method, NavigatorRouteObserverCallback callback) =>
       _channel.registryMethodCall(method, ([arguments]) {
         final routeSettings = NavigatorRouteSettings.fromArguments(arguments);
-        final observers =
-            ThrioModule.gets<NavigatorRouteObserver>(url: routeSettings.url);
-        for (final observer in observers) {
-          callback(observer, routeSettings);
+        if (routeSettings != null) {
+          final observers =
+              ThrioModule.gets<NavigatorRouteObserver>(url: routeSettings.url!);
+          for (final observer in observers) {
+            callback(observer, routeSettings);
+          }
         }
         return Future.value();
       });

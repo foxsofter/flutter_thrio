@@ -36,7 +36,7 @@ class RegistrySet<T> with IterableMixin<T> {
   }
 
   VoidCallback registryAll(Set<T> values) {
-    assert(values?.isNotEmpty ?? false, 'values must not be null or empty');
+    assert(values.isNotEmpty, 'values must not be null or empty');
 
     _sets.addAll(values);
     return () {

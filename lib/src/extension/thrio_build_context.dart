@@ -41,7 +41,7 @@ extension ThrioBuildContext on BuildContext {
 
   /// Get widget state by ancestorStateOfType method.
   ///
-  T tryStateOf<T extends State<StatefulWidget>>() {
+  T? tryStateOf<T extends State<StatefulWidget>>() {
     final state = findAncestorStateOfType<T>();
     if (state != null && state is T) {
       return state;
@@ -70,7 +70,7 @@ extension ThrioBuildContext on BuildContext {
   Widget shouldCanPop(
     Widget trueWidget, {
     Widget falseWidget = const SizedBox(),
-    void Function(bool) shoulCanPopResult,
+    void Function(bool)? shoulCanPopResult,
   }) =>
       FutureBuilder<bool>(
           future: _isInitialRoute(),
@@ -88,7 +88,7 @@ extension ThrioBuildContext on BuildContext {
     final route = state.history.last;
     return route is NavigatorPageRoute
         ? ThrioNavigatorImplement.shared().isInitialRoute(
-            url: route.settings.url,
+            url: route.settings.url!,
             index: route.settings.index,
           )
         : Future<bool>.value(false);

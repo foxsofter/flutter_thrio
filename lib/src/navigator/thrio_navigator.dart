@@ -31,10 +31,10 @@ abstract class ThrioNavigator {
   /// otherwise open the flutter page.
   ///
   static Future<int> push<TParams>({
-    @required String url,
-    TParams params,
+    required String url,
+    TParams? params,
     bool animated = true,
-    NavigatorParamsCallback poppedResult,
+    NavigatorParamsCallback? poppedResult,
   }) =>
       ThrioNavigatorImplement.shared().push<TParams>(
         url: url,
@@ -49,10 +49,10 @@ abstract class ThrioNavigator {
   /// Notifications with the same `name` will be overwritten.
   ///
   static Future<bool> notify<TParams>({
-    String url,
-    int index,
-    @required String name,
-    TParams params,
+    String? url,
+    int index = 0,
+    required String name,
+    TParams? params,
   }) =>
       ThrioNavigatorImplement.shared().notify<TParams>(
         url: url,
@@ -64,7 +64,7 @@ abstract class ThrioNavigator {
   /// Pop a page from the navigation stack.
   ///
   static Future<bool> pop<TParams>({
-    TParams params,
+    TParams? params,
     bool animated = true,
   }) =>
       ThrioNavigatorImplement.shared().pop<TParams>(
@@ -75,8 +75,8 @@ abstract class ThrioNavigator {
   /// Pop the page in the navigation stack until the page with `url`.
   ///
   static Future<bool> popTo({
-    @required String url,
-    int index,
+    required String url,
+    int index = 0,
     bool animated = true,
   }) =>
       ThrioNavigatorImplement.shared().popTo(
@@ -88,8 +88,8 @@ abstract class ThrioNavigator {
   /// Remove the page with `url` in the navigation stack.
   ///
   static Future<bool> remove({
-    @required String url,
-    int index,
+    required String url,
+    int index = 0,
     bool animated = true,
   }) =>
       ThrioNavigatorImplement.shared().remove(
@@ -101,27 +101,27 @@ abstract class ThrioNavigator {
   /// Returns the route of the page that was last pushed to the navigation
   /// stack.
   ///
-  static Future<RouteSettings> lastRoute({String url}) =>
+  static Future<RouteSettings?> lastRoute({String? url}) =>
       ThrioNavigatorImplement.shared().lastRoute(url: url);
 
   /// Returns all route of the page with `url` in the navigation stack.
   ///
-  static Future<List<RouteSettings>> allRoutes({String url}) =>
+  static Future<List<RouteSettings>> allRoutes({String? url}) =>
       ThrioNavigatorImplement.shared().allRoutes(url: url);
 
   /// Returns the flutter route of the page that was last pushed to the
   /// navigation stack.
   ///
-  static RouteSettings lastFlutterRoute({String url}) =>
+  static RouteSettings? lastFlutterRoute({String? url}) =>
       ThrioNavigatorImplement.shared().lastFlutterRoute(url: url);
 
   /// Returns all flutter route of the page with `url` in the navigation stack.
   ///
-  static List<RouteSettings> allFlutterRoutes({String url}) =>
+  static List<RouteSettings> allFlutterRoutes({String? url}) =>
       ThrioNavigatorImplement.shared().allFlutterRoutes(url: url);
 
   /// Returns true if there is a route pushed by the Navigator
   /// on the last matching url.
-  static bool isContainsInnerRoute({String url}) =>
+  static bool isContainsInnerRoute({required String url}) =>
       ThrioNavigatorImplement.shared().isContainsInnerRoute(url: url);
 }

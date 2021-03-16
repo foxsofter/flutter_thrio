@@ -26,21 +26,21 @@ import 'thrio_navigator_implement.dart';
 
 class NavigatorMaterialApp extends MaterialApp {
   NavigatorMaterialApp({
-    Key key,
-    GlobalKey<NavigatorState> navigatorKey,
+    Key? key,
+    GlobalKey<NavigatorState>? navigatorKey,
     List<NavigatorObserver> navigatorObservers = const <NavigatorObserver>[],
-    TransitionBuilder builder,
+    TransitionBuilder? builder,
     String title = '',
-    Widget home,
-    GenerateAppTitle onGenerateTitle,
-    Color color,
-    ThemeData theme,
-    ThemeData darkTheme,
+    Widget? home,
+    GenerateAppTitle? onGenerateTitle,
+    Color? color,
+    ThemeData? theme,
+    ThemeData? darkTheme,
     ThemeMode themeMode = ThemeMode.system,
-    Locale locale,
-    Iterable<LocalizationsDelegate<dynamic>> localizationsDelegates,
-    LocaleListResolutionCallback localeListResolutionCallback,
-    LocaleResolutionCallback localeResolutionCallback,
+    Locale? locale,
+    Iterable<LocalizationsDelegate<dynamic>>? localizationsDelegates,
+    LocaleListResolutionCallback? localeListResolutionCallback,
+    LocaleResolutionCallback? localeResolutionCallback,
     Iterable<Locale> supportedLocales = const <Locale>[Locale('en', 'US')],
     bool debugShowMaterialGrid = false,
     bool showPerformanceOverlay = false,
@@ -48,8 +48,9 @@ class NavigatorMaterialApp extends MaterialApp {
     bool checkerboardOffscreenLayers = false,
     bool showSemanticsDebugger = false,
     bool debugShowCheckedModeBanner = true,
-    Map<LogicalKeySet, Intent> shortcuts,
-    Map<Type, Action<Intent>> actions,
+    Map<LogicalKeySet, Intent>? shortcuts,
+    Map<Type, Action<Intent>>? actions,
+    String? restorationScopeId,
   }) : super(
             key: key,
             navigatorKey: navigatorKey,
@@ -89,5 +90,6 @@ class NavigatorMaterialApp extends MaterialApp {
             showSemanticsDebugger: showSemanticsDebugger,
             debugShowCheckedModeBanner: debugShowCheckedModeBanner,
             shortcuts: shortcuts,
-            actions: actions);
+            actions: actions,
+            restorationScopeId: restorationScopeId);
 }

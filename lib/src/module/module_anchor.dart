@@ -35,8 +35,6 @@ import 'module_json_serializer.dart';
 import 'module_page_builder.dart';
 import 'module_page_observer.dart';
 import 'module_param_scheme.dart';
-import 'module_protobuf_deserializer.dart';
-import 'module_protobuf_serializer.dart';
 import 'module_route_observer.dart';
 import 'module_route_transitions_builder.dart';
 import 'module_types.dart';
@@ -49,8 +47,6 @@ class ModuleAnchor
         ThrioModule,
         ModulePageObserver,
         ModuleJsonDeserializer,
-        ModuleProtobufSerializer,
-        ModuleProtobufDeserializer,
         ModuleParamScheme,
         ModuleJsonSerializer,
         ModuleRouteObserver,
@@ -71,10 +67,6 @@ class ModuleAnchor
 
   Future loading(String url) async {
     final modules = _getModules(url: url);
-    if (modules == null) {
-      return;
-    }
-
     for (final module in modules) {
       if (!module.isLoaded) {
         module.isLoaded = true;
@@ -84,7 +76,7 @@ class ModuleAnchor
   }
 
   Future unloading(Iterable<NavigatorPageRoute> allRoutes) async {
-    final urls = allRoutes.map<String>((it) => it.settings.url).toSet();
+    final urls = allRoutes.map<String>((it) => it.settings.url!).toSet();
     final notPushedUrls = allUrls.where((it) => !urls.contains(it)).toList();
     // 需要过滤掉不带 home 的 url
     for (var i = notPushedUrls.length - 1; i >= 0; i--) {
@@ -118,7 +110,7 @@ class ModuleAnchor
       }
       // 页 Module 的 父 Module onModuleUnloading
       var parentModule = module.parent;
-      do {
+      while (parentModule != null) {
         final leafModules = _getAllLeafModules(parentModule);
         if (notPushedModules.containsAll(leafModules)) {
           if (parentModule.isLoaded) {
@@ -130,17 +122,18 @@ class ModuleAnchor
           }
         }
         parentModule = parentModule.parent;
-      } while (parentModule != null);
+      }
     }
   }
 
-  T get<T>({String url, String key}) {
-    var modules = _getModules(url: url);
-    if (url?.isNotEmpty ?? false) {
+  T? get<T>({String? url, String? key}) {
+    late List<ThrioModule> modules;
+    if (url != null && url.isNotEmpty) {
+      modules = _getModules(url: url);
       if (T == ThrioModule || T == dynamic || T == Object) {
-        return modules == null ? null : modules.last as T;
+        return modules.isEmpty ? null : modules.last as T;
       } else if (T.toString() == (NavigatorPageBuilder).toString()) {
-        if (modules == null) {
+        if (modules.isEmpty) {
           return null;
         }
         final lastModule = modules.last;
@@ -148,7 +141,7 @@ class ModuleAnchor
           return lastModule.pageBuilder as T;
         }
       } else if (T.toString() == (RouteTransitionsBuilder).toString()) {
-        if (modules == null) {
+        if (modules.isEmpty) {
           return null;
         }
         for (final it in modules.reversed) {
@@ -163,16 +156,19 @@ class ModuleAnchor
           }
         }
         return null;
-      } else {
-        modules ??= _getModules();
       }
+    } else {
+      modules = _getModules();
+    }
+    if (key == null || key.isEmpty) {
+      return null;
     }
     return _get<T>(modules, key);
   }
 
   Iterable<T> gets<T>(String url) {
     final modules = _getModules(url: url);
-    if (modules == null) {
+    if (modules.isEmpty) {
       return <T>[];
     }
     switch (T) {
@@ -201,37 +197,40 @@ class ModuleAnchor
 
   T remove<T>(Comparable key) => removeParam(key);
 
-  List<ThrioModule> _getModules({String url}) {
-    var module = modules.values.first;
-    final allModules = [module];
+  List<ThrioModule> _getModules({String? url}) {
+    if (modules.isEmpty) {
+      return <ThrioModule>[];
+    }
+    final firstModule = modules.values.first;
+    final allModules = [firstModule];
 
-    if (url?.isEmpty ?? true) {
-      return allModules..addAll(_getAllModules(module));
+    if (url == null || url.isEmpty) {
+      // 子节点所有的 module
+      return allModules..addAll(_getAllModules(firstModule));
     }
 
-    final components = url?.isEmpty ?? true
-        ? <String>[]
-        : url.replaceAll('/', ' ').trim().split(' ');
+    final components =
+        url.isEmpty ? <String>[] : url.replaceAll('/', ' ').trim().split(' ');
     final length = components.length;
-    do {
+    late ThrioModule? module = firstModule;
+    while (components.isNotEmpty) {
       final key = components.removeAt(0);
-      if (key?.isEmpty ?? true) {
-        break;
-      }
-      module = module.modules[key];
+      module = module?.modules[key];
       if (module != null) {
         allModules.add(module);
       }
-    } while (components.isNotEmpty);
+    }
 
     // url 不能完全匹配到 module，可能是原生的 url 或者不存在的 url
     if (allModules.length != length + 1) {
-      return null;
+      return <ThrioModule>[];
     }
 
-    if (!url.endsWith(kNavigatorPageDefaultUrl) &&
-        allModules.last.modules.containsKey(kNavigatorPageDefaultUrl)) {
-      allModules.add(allModules.last.modules[kNavigatorPageDefaultUrl]);
+    if (!url.endsWith(kNavigatorPageDefaultUrl)) {
+      final module = allModules.last.modules[kNavigatorPageDefaultUrl];
+      if (module != null) {
+        allModules.add(module);
+      }
     }
 
     return allModules;
@@ -261,7 +260,7 @@ class ModuleAnchor
     return allLeafModules;
   }
 
-  T _get<T>(List<ThrioModule> modules, String key) {
+  T? _get<T>(List<ThrioModule> modules, String key) {
     switch (T) {
       case JsonSerializer:
         for (final it in modules.reversed) {
@@ -279,26 +278,6 @@ class ModuleAnchor
             final jsonDeserializer = it.getJsonDeserializer(key);
             if (jsonDeserializer != null) {
               return jsonDeserializer as T;
-            }
-          }
-        }
-        break;
-      case ProtobufSerializer:
-        for (final it in modules.reversed) {
-          if (it is ModuleProtobufSerializer) {
-            final protobufSerializer = it.getProtobufSerializer(key);
-            if (protobufSerializer != null) {
-              return protobufSerializer as T;
-            }
-          }
-        }
-        break;
-      case ProtobufDeserializer:
-        for (final it in modules.reversed) {
-          if (it is ModuleProtobufDeserializer) {
-            final protobufDeserializer = it.getProtobufDeserializer(key);
-            if (protobufDeserializer != null) {
-              return protobufDeserializer as T;
             }
           }
         }

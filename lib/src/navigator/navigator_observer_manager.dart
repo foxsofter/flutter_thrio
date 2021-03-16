@@ -42,7 +42,7 @@ class NavigatorObserverManager extends NavigatorObserver {
   ];
 
   @override
-  void didPush(Route<dynamic> route, Route<dynamic> previousRoute) {
+  void didPush(Route<dynamic> route, Route<dynamic>? previousRoute) {
     if (route is NavigatorPageRoute) {
       verbose(
         'didPush: url->${route.settings.url} '
@@ -58,7 +58,7 @@ class NavigatorObserverManager extends NavigatorObserver {
         pageRoutes.add(route);
         if (route is! PopupRoute && lastRoute is NavigatorPageRoute) {
           final observers = ThrioModule.gets<NavigatorPageObserver>(
-              url: lastRoute.settings.url);
+              url: lastRoute.settings.url!);
           for (final observer in observers) {
             observer.didDisappear(lastRoute.settings);
           }
@@ -68,7 +68,7 @@ class NavigatorObserverManager extends NavigatorObserver {
   }
 
   @override
-  void didPop(Route<dynamic> route, Route<dynamic> previousRoute) {
+  void didPop(Route<dynamic> route, Route<dynamic>? previousRoute) {
     if (route is NavigatorPageRoute) {
       pageRoutes.remove(route);
       _currentPopRoutes.add(route);
@@ -104,7 +104,7 @@ class NavigatorObserverManager extends NavigatorObserver {
                 );
               route.routeAction = null;
             } else if (route.routeAction == NavigatorRouteAction.remove) {
-              if (WidgetsBinding.instance.lifecycleState ==
+              if (WidgetsBinding.instance?.lifecycleState ==
                   AppLifecycleState.resumed) {
                 verbose(
                   'didRemove: url->${route.settings.url} '
@@ -142,7 +142,7 @@ class NavigatorObserverManager extends NavigatorObserver {
       pageRoutes.remove(route);
       if (route is! PopupRoute && pageRoutes.last is NavigatorPageRoute) {
         final observers = ThrioModule.gets<NavigatorPageObserver>(
-            url: pageRoutes.last.settings.url);
+            url: pageRoutes.last.settings.url!);
         for (final observer in observers) {
           observer.didAppear(pageRoutes.last.settings);
         }
@@ -151,7 +151,7 @@ class NavigatorObserverManager extends NavigatorObserver {
   }
 
   @override
-  void didRemove(Route<dynamic> route, Route<dynamic> previousRoute) {
+  void didRemove(Route<dynamic> route, Route<dynamic>? previousRoute) {
     if (route is NavigatorPageRoute) {
       pageRoutes.remove(route);
       _currentRemoveRoutes.add(route);

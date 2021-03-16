@@ -5,13 +5,13 @@ import '../../models/people.dart';
 
 class Page extends StatefulWidget {
   const Page({
-    Key key,
-    this.url,
-    this.index,
+    Key? key,
+    required this.url,
+    required this.index,
     this.params,
   }) : super(key: key);
 
-  final String url;
+  final String? url;
 
   final int index;
 
@@ -26,9 +26,8 @@ class _PageState extends State<Page> {
   @override
   void initState() {
     super.initState();
-    _channel.registryMethodCall('sayHello', ([arguments]) {
+    _channel.registryMethodCall('sayHello', ([arguments]) async {
       ThrioLogger.v('sayHello from native');
-      return null;
     });
   }
 

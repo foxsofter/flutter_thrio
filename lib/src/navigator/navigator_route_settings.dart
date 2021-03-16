@@ -24,8 +24,8 @@ import 'package:flutter/widgets.dart';
 extension NavigatorRouteSettings on RouteSettings {
   /// Converting arguments to route settings.
   ///
-  static RouteSettings fromArguments(Map<String, dynamic> arguments) {
-    if ((arguments?.isNotEmpty ?? false) &&
+  static RouteSettings? fromArguments(Map<String, dynamic>? arguments) {
+    if ((arguments != null && arguments.isNotEmpty) &&
         arguments.containsKey('url') &&
         arguments.containsKey('index')) {
       final urlValue = arguments['url'];
@@ -50,25 +50,23 @@ extension NavigatorRouteSettings on RouteSettings {
         'params': params,
       };
 
-  /// Creates a copy of this route settings object with the given fields
-  /// replaced with the new values.
-  ///
-  RouteSettings copyWith({
-    String url,
-    int index,
-    bool isNested,
-    dynamic params,
-  }) =>
-      RouteSettings(
-        name: '$index $url',
-        arguments: <String, dynamic>{'isNested': isNested, 'params': params},
-      );
+  String? get url {
+    final settingsName = name;
+    return settingsName == null ||
+            settingsName.isEmpty ||
+            !settingsName.contains(' ')
+        ? null
+        : settingsName.split(' ').last;
+  }
 
-  String get url => (name?.isNotEmpty ?? false) && name.contains(' ')
-      ? name.split(' ').last
-      : '';
-
-  int get index => int.tryParse(name?.split(' ')?.first) ?? 0;
+  int get index {
+    final settingsName = name;
+    return settingsName == null ||
+            settingsName.isEmpty ||
+            !settingsName.contains(' ')
+        ? 0
+        : int.tryParse(settingsName.split(' ').first) ?? 0;
+  }
 
   bool get isNested {
     if (arguments != null && arguments is Map<String, dynamic>) {

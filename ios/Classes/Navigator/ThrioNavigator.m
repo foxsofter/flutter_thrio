@@ -364,7 +364,7 @@ NS_ASSUME_NONNULL_BEGIN
         NavigatorPageRoute *firstRoute = [nvc.viewControllers.firstObject thrio_firstRoute];
         return firstRoute &&
                [firstRoute.settings.url isEqualToString:url] &&
-               (index || index == 0 || [firstRoute.settings.index isEqualToNumber:index]);
+               (index == nil || index == 0 || [firstRoute.settings.index isEqualToNumber:index]);
     }
     return NO;
 }

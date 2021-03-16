@@ -23,6 +23,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import '../extension/thrio_iterable.dart';
 import '../extension/thrio_stateful_widget.dart';
 import '../module/module_anchor.dart';
 import '../module/module_types.dart';
@@ -38,11 +39,11 @@ import 'thrio_navigator_implement.dart';
 ///
 class NavigatorWidget extends StatefulWidget {
   const NavigatorWidget({
-    Key key,
-    this.moduleContext,
-    NavigatorObserverManager observerManager,
-    this.child,
-  })  : _observerManager = observerManager,
+    Key? key,
+    required this.moduleContext,
+    required NavigatorObserverManager observerManager,
+    required this.child,
+  })   : _observerManager = observerManager,
         super(key: key);
 
   final Navigator child;
@@ -74,7 +75,7 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
     }
 
     // 加载模块
-    await anchor.loading(settings.url);
+    await anchor.loading(settings.url!);
 
     final route = NavigatorPageRoute(
       builder: pageBuilder,
@@ -116,7 +117,7 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
         // 不匹配的时候，调用 poppedResult 回调
         final poppedResult = poppedResults.remove(settings.name);
         if (poppedResult != null) {
-          _poppedResultCallback(poppedResult, settings.url, settings.params);
+          _poppedResultCallback(poppedResult, settings.url!, settings.params);
         }
         return false;
       }
@@ -230,8 +231,8 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
     if (navigatorState == null) {
       return Future.value(false);
     }
-    final route = history.lastWhere((it) => it.settings.name == settings.name,
-        orElse: () => null);
+    final route =
+        history.firstWhereOrNull((it) => it.settings.name == settings.name);
     if (route == null) {
       return Future.value(false);
     }
@@ -245,7 +246,8 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
     (route as NavigatorPageRoute).routeAction = NavigatorRouteAction.remove;
 
     if (settings.name == history.last.settings.name) {
-      if (WidgetsBinding.instance.lifecycleState == AppLifecycleState.resumed) {
+      if (WidgetsBinding.instance?.lifecycleState ==
+          AppLifecycleState.resumed) {
         ThrioNavigatorImplement.shared().pageChannel.willDisappear(
               route.settings,
               NavigatorRouteAction.remove,
@@ -271,8 +273,8 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
   Widget build(BuildContext context) => widget.child;
 
   void _poppedResultCallback(
-    NavigatorParamsCallback poppedResultCallback,
-    String url,
+    NavigatorParamsCallback? poppedResultCallback,
+    String? url,
     dynamic params,
   ) {
     if (poppedResultCallback == null) {
@@ -281,14 +283,21 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
     if (url?.isEmpty ?? true && params == null) {
       poppedResultCallback(null);
     } else {
-      if (params is Map && params.containsKey('__thrio_TParams__')) {
-        // ignore: avoid_as
-        final typeString = params['__thrio_TParams__'] as String;
-        if (typeString != null) {
-          final paramsInstance =
+      if (params is Map) {
+        if (params.containsKey('__thrio_Params_HashCode__')) {
+          final paramsObjs =
+              // ignore: avoid_as
+              anchor.removeParam(params['__thrio_Params_HashCode__'] as int);
+          poppedResultCallback(paramsObjs);
+          return;
+        }
+        if (params.containsKey('__thrio_TParams__')) {
+          // ignore: avoid_as
+          final typeString = params['__thrio_TParams__'] as String;
+          final paramsObjs =
               ThrioModule.get<JsonDeserializer>(url: url, key: typeString)
                   ?.call(params.cast<String, dynamic>());
-          poppedResultCallback(paramsInstance);
+          poppedResultCallback(paramsObjs);
           return;
         }
       }

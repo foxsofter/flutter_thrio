@@ -28,29 +28,36 @@ import 'thrio_module.dart';
 const String kNavigatorPageDefaultUrl = 'home';
 
 mixin ModulePageBuilder on ThrioModule {
-  NavigatorPageBuilder _pageBuilder;
+  NavigatorPageBuilder? _pageBuilder;
 
-  NavigatorPageBuilder get pageBuilder => _pageBuilder;
+  NavigatorPageBuilder? get pageBuilder => _pageBuilder;
 
   /// If there is a ModulePageBuilder in a module, there can be no submodules.
   ///
-  set pageBuilder(NavigatorPageBuilder builder) {
+  set pageBuilder(NavigatorPageBuilder? builder) {
     _pageBuilder = builder;
 
     final urlComponents = <String>['/$key'];
     var parentModule = parent;
-    do {
+    while (parentModule != null && parentModule.key.isNotEmpty) {
       urlComponents.insert(0, '/${parentModule.key}');
       parentModule = parentModule.parent;
-    } while (parentModule != null && parentModule.key.isNotEmpty);
-
-    anchor.allUrls.add((StringBuffer()..writeAll(urlComponents)).toString());
+    }
+    final url = (StringBuffer()..writeAll(urlComponents)).toString();
+    if (builder == null) {
+      anchor.allUrls.remove(url);
+    } else {
+      anchor.allUrls.add(url);
+    }
+    // 处理存在 home 的 url
     if (key == kNavigatorPageDefaultUrl) {
-      anchor.allUrls.add((StringBuffer()
-            ..writeAll(
-              urlComponents..removeLast(),
-            ))
-          .toString());
+      final url =
+          (StringBuffer()..writeAll(urlComponents..removeLast())).toString();
+      if (builder == null) {
+        anchor.allUrls.remove(url);
+      } else {
+        anchor.allUrls.add(url);
+      }
     }
   }
 

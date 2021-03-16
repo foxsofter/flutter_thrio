@@ -55,7 +55,7 @@ mixin ModuleParamScheme on ThrioModule {
     sc
       ..onListen = () {
         paramStreamCtrls[key] ??= <StreamController<dynamic>>{};
-        paramStreamCtrls[key].add(sc);
+        paramStreamCtrls[key]?.add(sc);
         // sink lastest value.
         final value = getParam<T>(key);
         if (value != null) {
@@ -63,7 +63,7 @@ mixin ModuleParamScheme on ThrioModule {
         }
       }
       ..onCancel = () {
-        paramStreamCtrls[key].remove(sc);
+        paramStreamCtrls[key]?.remove(sc);
       };
     return sc.stream;
   }
@@ -75,7 +75,7 @@ mixin ModuleParamScheme on ThrioModule {
   /// Throw `ThrioException` if `T` is not matched param scheme.
   ///
   @protected
-  T getParam<T>(Comparable key) {
+  T? getParam<T>(Comparable key) {
     // Anchor module does not need to get param scheme.
     if (this == anchor) {
       return _params[key] as T; // ignore: avoid_as
@@ -87,7 +87,7 @@ mixin ModuleParamScheme on ThrioModule {
     if (value == null) {
       return null;
     }
-    if (T != dynamic && T != Object && value.runtimeType != T) {
+    if (T != dynamic && T != Object && value is! T) {
       throw ThrioException(
         '$T does not match the param scheme type: ${value.runtimeType}',
       );
@@ -133,7 +133,7 @@ mixin ModuleParamScheme on ThrioModule {
       _params[key] = value;
       Future(() {
         final scs = paramStreamCtrls[key];
-        if (scs?.isEmpty ?? true) {
+        if (scs == null || scs.isEmpty) {
           return;
         }
         for (final sc in scs) {
@@ -179,13 +179,15 @@ mixin ModuleParamScheme on ThrioModule {
   @protected
   VoidCallback registerParamScheme<T>(Comparable key) {
     if (_paramSchemes.keys.contains(key)) {
-      return null;
+      throw ThrioException(
+        '$T is already registered for key ${_paramSchemes[key]}',
+      );
     }
     final callback = _paramSchemes.registry(key, T);
     return () {
       callback();
       final scs = paramStreamCtrls.remove(key);
-      if (scs?.isNotEmpty ?? false) {
+      if (scs != null && scs.isNotEmpty) {
         for (final sc in scs) {
           sc.close();
         }

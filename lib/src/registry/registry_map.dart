@@ -35,7 +35,7 @@ class RegistryMap<K, V> {
   }
 
   VoidCallback registryAll(Map<K, V> values) {
-    assert(values?.isNotEmpty ?? false, 'values must not be null or empty.');
+    assert(values.isNotEmpty, 'values must not be null or empty.');
 
     _maps.addAll(values);
     return () {
@@ -49,5 +49,5 @@ class RegistryMap<K, V> {
 
   void clear() => _maps.clear();
 
-  V operator [](K key) => _maps[key];
+  V? operator [](K key) => _maps[key];
 }

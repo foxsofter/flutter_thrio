@@ -33,10 +33,10 @@ mixin ModuleJsonDeserializer on ThrioModule {
   /// Get json deserializer by type string.
   ///
   @protected
-  JsonDeserializer getJsonDeserializer(String typeString) {
+  JsonDeserializer? getJsonDeserializer(String typeString) {
     final type = _jsonDeserializers.keys.lastWhere(
       (it) => it.toString() == typeString || typeString.endsWith(it.toString()),
-      orElse: () => null,
+      orElse: () => Null,
     );
     return _jsonDeserializers[type];
   }

@@ -25,20 +25,11 @@ import 'package:flutter/widgets.dart';
 import 'thrio_module.dart';
 
 mixin ModuleRouteTransitionsBuilder on ThrioModule {
-  RouteTransitionsBuilder _routeTransitionsBuilder;
   @protected
-  RouteTransitionsBuilder get routeTransitionsBuilder =>
-      _routeTransitionsBuilder;
-
-  set routeTransitionsBuilder(RouteTransitionsBuilder value) {
-    if (value == null) {
-      routeTransitionsDisabled = true;
-    }
-    _routeTransitionsBuilder = value;
-  }
+  RouteTransitionsBuilder? routeTransitionsBuilder;
 
   @protected
-  bool routeTransitionsDisabled = false;
+  bool get routeTransitionsDisabled => routeTransitionsBuilder == null;
 
   /// A function for setting a `RouteTransitionsBuilder` .
   ///

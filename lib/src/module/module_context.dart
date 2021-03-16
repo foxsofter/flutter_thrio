@@ -32,20 +32,20 @@ class ModuleContext {
 
   /// Module of module context.
   ///
-  ThrioModule get module => moduleOf[this];
+  ThrioModule get module => moduleOf[this]!;
 
   /// Get param `value` of `key`.
   ///
   /// If not exist, get from parent module's `ModuleContext`.
   ///
-  T get<T>(String key) {
+  T? get<T>(String key) {
     if (module is ModuleParamScheme) {
       final value = (module as ModuleParamScheme).getParam<T>(key);
       if (value != null) {
         return value;
       }
     }
-    return module.parent?._moduleContext?.get<T>(key);
+    return module.parent?._moduleContext.get<T>(key);
   }
 
   /// Set param `value` with `key`.
@@ -61,14 +61,14 @@ class ModuleContext {
     // Anchor module caches the data of the framework
     return module.parent != anchor &&
         module.parent != null &&
-        (module.parent._moduleContext?.set<T>(key, value) ?? false);
+        (module.parent?._moduleContext.set<T>(key, value) ?? false);
   }
 
   /// Remove param with `key`.
   ///
   /// Return `value` if param not exists.
   ///
-  T remove<T>(String key) {
+  T? remove<T>(String key) {
     if (module is ModuleParamScheme) {
       final value = (module as ModuleParamScheme).removeParam<T>(key);
       if (value != null) {
@@ -78,12 +78,12 @@ class ModuleContext {
     // Anchor module caches the data of the framework
     return module.parent == anchor || module.parent == null
         ? null
-        : module.parent._moduleContext?.remove<T>(key);
+        : module.parent?._moduleContext.remove<T>(key);
   }
 
   /// Subscribe to a series of param by `key`.
   ///
-  Stream<T> on<T>(String key) {
+  Stream<T>? on<T>(String key) {
     if (module is ModuleParamScheme) {
       final paramModule = module as ModuleParamScheme;
       if (paramModule.hasParamScheme<T>(key)) {
@@ -91,7 +91,7 @@ class ModuleContext {
       }
     }
 
-    return module.parent?._moduleContext?.on(key);
+    return module.parent?._moduleContext.on(key);
   }
 
   @override
