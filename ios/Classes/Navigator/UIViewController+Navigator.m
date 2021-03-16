@@ -129,7 +129,7 @@ NS_ASSUME_NONNULL_BEGIN
     NavigatorPageRoute *last = self.thrio_lastRoute;
     do {
         if ((url == nil || [last.settings.url isEqualToString:url]) &&
-            (index == nil || [last.settings.index isEqualToNumber:index])) {
+            (index == nil || [index isEqualToNumber:@0] || [last.settings.index isEqualToNumber:index])) {
             [last addNotify:name params:params];
             if (self == self.navigationController.topViewController &&
                 last == self.thrio_lastRoute) {
@@ -367,7 +367,7 @@ NS_ASSUME_NONNULL_BEGIN
     }
     do {
         if ([last.settings.url isEqualToString:url] &&
-            (index == nil || [last.settings.index isEqualToNumber:index])) {
+            (index == nil || [index isEqualToNumber:@0] || [last.settings.index isEqualToNumber:index])) {
             return last;
         }
     } while ((last = last.prev));

@@ -27,7 +27,7 @@ import '../navigator/navigator_logger.dart';
 import '../registry/registry_map.dart';
 
 typedef MethodHandler = Future<dynamic> Function([
-  Map<String, dynamic> arguments,
+  Map<String, dynamic>? arguments,
 ]);
 
 const String _kEventNameKey = '__event_name__';
@@ -36,32 +36,35 @@ class ThrioChannel {
   factory ThrioChannel({String channel = '__thrio_channel__'}) =>
       ThrioChannel._(channel: channel);
 
-  ThrioChannel._({String channel}) : _channel = channel;
+  ThrioChannel._({required String channel}) : _channel = channel;
 
   final String _channel;
 
   final _methodHandlers = RegistryMap<String, MethodHandler>();
 
-  MethodChannel _methodChannel;
+  MethodChannel? _methodChannel;
 
-  EventChannel _eventChannel;
+  EventChannel? _eventChannel;
 
   final _eventControllers = <String, List<StreamController>>{};
-  final _eventNameControllers = <StreamController>{};
 
-  Future<List<T>> invokeListMethod<T>(String method, [Map arguments]) {
+  Future<List<T>?> invokeListMethod<T>(String method,
+      [Map<String, dynamic>? arguments]) {
     _setupMethodChannelIfNeeded();
-    return _methodChannel.invokeListMethod<T>(method, arguments);
+    return _methodChannel?.invokeListMethod<T>(method, arguments) ??
+        Future.value();
   }
 
-  Future<Map<K, V>> invokeMapMethod<K, V>(String method, [Map arguments]) {
+  Future<Map<K, V>?> invokeMapMethod<K, V>(String method,
+      [Map<String, dynamic>? arguments]) {
     _setupMethodChannelIfNeeded();
-    return _methodChannel.invokeMapMethod<K, V>(method, arguments);
+    return _methodChannel?.invokeMapMethod<K, V>(method, arguments) ??
+        Future.value();
   }
 
-  Future<T> invokeMethod<T>(String method, [Map arguments]) {
+  Future<T?> invokeMethod<T>(String method, [Map<String, dynamic>? arguments]) {
     _setupMethodChannelIfNeeded();
-    return _methodChannel.invokeMethod<T>(method, arguments);
+    return _methodChannel?.invokeMethod<T>(method, arguments) ?? Future.value();
   }
 
   VoidCallback registryMethodCall(String method, MethodHandler handler) {
@@ -69,12 +72,15 @@ class ThrioChannel {
     return _methodHandlers.registry(method, handler);
   }
 
-  void sendEvent(String name, [Map<String, dynamic> arguments]) {
+  void sendEvent(String name, [Map<String, dynamic>? arguments]) {
     _setupEventChannelIfNeeded();
     final controllers = _eventControllers[name];
-    if (controllers?.isNotEmpty ?? false) {
+    if (controllers != null && controllers.isNotEmpty) {
       for (final controller in controllers) {
-        controller.add(<String, dynamic>{...arguments, _kEventNameKey: name});
+        controller.add(<String, dynamic>{
+          if (arguments != null) ...arguments,
+          _kEventNameKey: name
+        });
       }
     }
   }
@@ -82,16 +88,14 @@ class ThrioChannel {
   Stream<Map<String, dynamic>> onEventStream(String name) {
     _setupEventChannelIfNeeded();
     final controller = StreamController<Map<String, dynamic>>();
-    _eventNameControllers.add(controller);
     controller
       ..onListen = () {
         _eventControllers[name] ??= <StreamController>[];
-        _eventControllers[name].add(controller);
+        _eventControllers[name]?.add(controller);
       }
       ..onCancel = () {
         controller.close();
-        _eventControllers[name].remove(controller);
-        _eventNameControllers.remove(controller);
+        _eventControllers[name]?.remove(controller);
       };
     return controller.stream;
   }
@@ -122,14 +126,14 @@ class ThrioChannel {
     }
     _eventChannel = EventChannel('_event_$_channel')
       ..receiveBroadcastStream()
-          .map<Map<String, dynamic>>(
-              (data) => data is Map ? data.cast<String, dynamic>() : null)
-          .where((data) => data?.containsKey(_kEventNameKey) ?? false)
+          .map<Map<String, dynamic>>((data) =>
+              data is Map ? data.cast<String, dynamic>() : <String, dynamic>{})
+          .where((data) => data.containsKey(_kEventNameKey))
           .listen((data) {
         verbose('Notify on $_channel $data');
         final eventName = data.remove(_kEventNameKey);
         final controllers = _eventControllers[eventName];
-        if (controllers?.isNotEmpty ?? false) {
+        if (controllers != null && controllers.isNotEmpty) {
           for (final controller in controllers) {
             controller.add(data);
           }

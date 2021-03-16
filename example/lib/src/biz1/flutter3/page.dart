@@ -4,8 +4,8 @@ import 'package:thrio/thrio.dart';
 
 class Page extends StatefulWidget {
   const Page({
-    Key key,
-    this.index,
+    Key? key,
+    required this.index,
     this.params,
   }) : super(key: key);
 

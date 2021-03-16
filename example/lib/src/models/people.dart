@@ -1,5 +1,5 @@
 class People {
-  People({this.name, this.age, this.sex});
+  People({required this.name, required this.age, required this.sex});
 
   People.fromJson(Map<String, dynamic> json) {
     name = json['name'] as String; // ignore: avoid_as
@@ -7,9 +7,9 @@ class People {
     sex = json['sex'] as String; // ignore: avoid_as
   }
 
-  String name;
-  int age;
-  String sex;
+  late final String name;
+  late final int age;
+  late final String sex;
 
   Map<String, dynamic> toJson() {
     final data = <String, dynamic>{};

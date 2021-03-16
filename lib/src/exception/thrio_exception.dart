@@ -20,13 +20,13 @@
 // IN THE SOFTWARE.
 
 class ThrioException extends Exception {
-  factory ThrioException([String message]) => _ThrioException(message);
+  factory ThrioException([var message]) => _ThrioException(message);
 }
 
 class _ThrioException implements ThrioException {
   const _ThrioException(this.message);
 
-  final String message;
+  final dynamic message;
 
   @override
   String toString() => 'ThrioException:${message ?? ''}';

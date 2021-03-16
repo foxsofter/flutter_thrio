@@ -10,6 +10,7 @@ class Module
   @override
   void onPageBuilderSetting(ModuleContext moduleContext) {
     pageBuilder = (settings) => flutter2.Page(
+          url: settings.url,
           index: settings.index,
           params: settings.params,
         );

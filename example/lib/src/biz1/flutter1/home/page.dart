@@ -8,9 +8,9 @@ import '../../../models/people.dart';
 
 class Page extends StatefulWidget {
   const Page({
-    Key key,
-    this.moduleContext,
-    this.index,
+    Key? key,
+    required this.moduleContext,
+    required this.index,
     this.params,
   }) : super(key: key);
 
@@ -25,15 +25,7 @@ class Page extends StatefulWidget {
 }
 
 class _PageState extends State<Page> {
-  TextEditingController _inputController;
-  @override
-  void initState() {
-    super.initState();
-
-    if (mounted) {
-      _inputController = TextEditingController();
-    }
-  }
+  late final TextEditingController _inputController = TextEditingController();
 
   @override
   void dispose() {
@@ -259,7 +251,7 @@ class _PageState extends State<Page> {
                                 margin: const EdgeInsets.all(8),
                                 color: Colors.grey,
                                 child: Text(
-                                  '${snapshot?.data}',
+                                  '${snapshot.data}',
                                   style: const TextStyle(
                                       fontSize: 22, color: Colors.black),
                                 ))))

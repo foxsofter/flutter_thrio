@@ -1,6 +1,6 @@
 // The MIT License (MIT)
 //
-// Copyright (c) 2020 foxsofter
+// Copyright (c) 2021 foxsofter
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
 // copy of this software and associated documentation files (the "Software"),
@@ -19,38 +19,4 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-import 'package:flutter/foundation.dart';
-
-import '../registry/registry_map.dart';
-import 'module_types.dart';
-import 'thrio_module.dart';
-
-mixin ModuleProtobufDeserializer on ThrioModule {
-  final _protobufDeserializers = RegistryMap<Type, ProtobufDeserializer>();
-
-  /// Get protobuf deserializer by type string.
-  ///
-  @protected
-  ProtobufDeserializer getProtobufDeserializer(String typeString) {
-    final type = _protobufDeserializers.keys.lastWhere(
-      (it) => it.toString() == typeString || typeString.endsWith(it.toString()),
-      orElse: () => null,
-    );
-    return _protobufDeserializers[type];
-  }
-
-  /// A function for register a protobuf deserializer.
-  ///
-  @protected
-  void onProtobufDeserializerRegister(ModuleContext moduleContext) {}
-
-  /// Register a protobuf deserializer for the module.
-  ///
-  /// Unregistry by calling the return value `VoidCallback`.
-  ///
-  @protected
-  VoidCallback registerProtobufDeserializer<T>(
-    ProtobufDeserializer<T> deserializer,
-  ) =>
-      _protobufDeserializers.registry(T, deserializer);
-}
+extension ThrioDynamic on dynamic {}

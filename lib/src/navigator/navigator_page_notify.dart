@@ -24,6 +24,7 @@ import 'dart:async';
 import 'package:flutter/widgets.dart';
 
 import '../extension/thrio_build_context.dart';
+import '../module/module_anchor.dart';
 import '../module/module_types.dart';
 import '../module/thrio_module.dart';
 import 'navigator_page_route.dart';
@@ -34,13 +35,12 @@ import 'thrio_navigator_implement.dart';
 
 class NavigatorPageNotify extends StatefulWidget {
   const NavigatorPageNotify({
-    Key key,
-    @required this.name,
-    @required this.onPageNotify,
+    Key? key,
+    required this.name,
+    required this.onPageNotify,
     this.initialParams,
-    @required this.child,
-  })  : assert(child != null),
-        super(key: key);
+    required this.child,
+  }) : super(key: key);
 
   final String name;
 
@@ -55,10 +55,9 @@ class NavigatorPageNotify extends StatefulWidget {
 }
 
 class _NavigatorPageNotifyState extends State<NavigatorPageNotify> {
-  NavigatorPageRoute _route;
+  // NavigatorPageRoute? _route;
 
-  Stream _notifyStream;
-  StreamSubscription _notifySubscription;
+  StreamSubscription? _notifySubscription;
 
   @override
   void initState() {
@@ -72,19 +71,18 @@ class _NavigatorPageNotifyState extends State<NavigatorPageNotify> {
 
   @override
   void didChangeDependencies() {
-    if (widget.onPageNotify != null) {
-      _notifySubscription?.cancel();
-    }
+    _notifySubscription?.cancel();
     final state = context.stateOf<NavigatorWidgetState>();
     final route = state.history.last;
-    if (route != null && route is NavigatorPageRoute) {
-      _route = route;
-      _notifyStream = ThrioNavigatorImplement.shared().onPageNotify(
-        url: _route.settings.url,
-        index: _route.settings.index,
-        name: widget.name,
-      );
-      _notifySubscription = _notifyStream.listen(_listen);
+    if (route is NavigatorPageRoute) {
+      // _route = route;
+      _notifySubscription = ThrioNavigatorImplement.shared()
+          .onPageNotify(
+            url: route.settings.url!,
+            index: route.settings.index,
+            name: widget.name,
+          )
+          .listen(_listen);
     }
 
     super.didChangeDependencies();
@@ -93,9 +91,16 @@ class _NavigatorPageNotifyState extends State<NavigatorPageNotify> {
   void _listen(params) {
     if (params != null) {
       if (params is Map) {
-        // ignore: avoid_as
-        final typeString = params['__thrio_TParams__'] as String;
-        if (typeString != null) {
+        if (params.containsKey('__thrio_Params_HashCode__')) {
+          final paramsObjs =
+              // ignore: avoid_as
+              anchor.removeParam(params['__thrio_Params_HashCode__'] as int);
+          widget.onPageNotify(paramsObjs);
+          return;
+        }
+        if (params.containsKey('__thrio_TParams__')) {
+          // ignore: avoid_as
+          final typeString = params['__thrio_TParams__'] as String;
           final paramsObj = ThrioModule.get<JsonDeserializer>(key: typeString)
               ?.call(params.cast<String, dynamic>());
           if (paramsObj != null) {
@@ -110,32 +115,9 @@ class _NavigatorPageNotifyState extends State<NavigatorPageNotify> {
     }
   }
 
-  // @override
-  // void didUpdateWidget(NavigatorPageNotify oldWidget) {
-  //   super.didUpdateWidget(oldWidget);
-  //   final state = context.stateOf<NavigatorWidgetState>();
-  //   final route = state.history.last;
-  //   if (widget.onPageNotify != oldWidget.onPageNotify && _route != null) {
-  //     if (oldWidget.onPageNotify != null) {
-  //       _notifySubscription?.cancel();
-  //     }
-  //     if (widget.onPageNotify != null) {
-  //       _route = route;
-  //       _notifyStream = ThrioNavigatorImplement.onPageNotify(
-  //         url: _route.settings.url,
-  //         index: _route.settings.index,
-  //         name: widget.name,
-  //       );
-  //       _notifySubscription = _notifyStream.listen(widget.onPageNotify);
-  //     }
-  //   }
-  // }
-
   @override
   void dispose() {
-    if (widget.onPageNotify != null) {
-      _notifySubscription?.cancel();
-    }
+    _notifySubscription?.cancel();
     super.dispose();
   }
 

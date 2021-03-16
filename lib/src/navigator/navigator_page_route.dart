@@ -35,10 +35,10 @@ enum NavigatorRouteAction {
 
 /// A route managed by the `ThrioNavigatorImplement`.
 ///
-class NavigatorPageRoute<TCallbackParams> extends MaterialPageRoute<bool> {
+class NavigatorPageRoute extends MaterialPageRoute<bool> {
   NavigatorPageRoute({
-    @required NavigatorPageBuilder builder,
-    @required RouteSettings settings,
+    required NavigatorPageBuilder builder,
+    required RouteSettings settings,
     bool maintainState = true,
     bool fullscreenDialog = false,
   }) : super(
@@ -47,9 +47,9 @@ class NavigatorPageRoute<TCallbackParams> extends MaterialPageRoute<bool> {
             maintainState: maintainState,
             fullscreenDialog: fullscreenDialog);
 
-  NavigatorRouteAction routeAction;
+  NavigatorRouteAction? routeAction;
 
-  NavigatorParamsCallback poppedResult;
+  NavigatorParamsCallback? poppedResult;
 
   final _popDisableds = <String, bool>{};
 
@@ -68,18 +68,20 @@ class NavigatorPageRoute<TCallbackParams> extends MaterialPageRoute<bool> {
   }
 
   void _setPopDisabled(bool disabled) {
-    _popDisableds[settings.name] = disabled;
+    _popDisableds[settings.name!] = disabled;
 
     // 延迟300ms执行，避免因为WillPopScope依赖变更导致发送过多的Channel消息
-    _popDisabledFutures[settings.name] ??=
+    _popDisabledFutures[settings.name!] ??=
         Future.delayed(const Duration(milliseconds: 300), () {
       _popDisabledFutures.remove(settings.name); // ignore: unawaited_futures
       final disabled = _popDisableds.remove(settings.name);
-      ThrioNavigatorImplement.shared().setPopDisabled(
-        url: settings.url,
-        index: settings.index,
-        disabled: disabled,
-      );
+      if (disabled != null) {
+        ThrioNavigatorImplement.shared().setPopDisabled(
+          url: settings.url!,
+          index: settings.index,
+          disabled: disabled,
+        );
+      }
     });
   }
 
@@ -108,6 +110,7 @@ class NavigatorPageRoute<TCallbackParams> extends MaterialPageRoute<bool> {
 
   @override
   void dispose() {
+    _popDisabledFutures.clear();
     super.dispose();
   }
 }

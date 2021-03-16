@@ -19,9 +19,6 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-import 'package:flutter/foundation.dart';
-import 'package:flutter/widgets.dart';
-
 import '../channel/thrio_channel.dart';
 import '../module/module_anchor.dart';
 import '../module/module_types.dart';
@@ -42,82 +39,98 @@ class NavigatorRouteReceiveChannel {
 
   void _onPush() => _channel.registryMethodCall('push', ([arguments]) {
         final routeSettings = NavigatorRouteSettings.fromArguments(arguments);
+        if (routeSettings == null) {
+          return Future.value(null);
+        }
         verbose(
           'push: url->${routeSettings.url} '
           'index->${routeSettings.index}',
         );
         routeSettings.params = _deserializeParams(
-          routeSettings.url,
+          routeSettings.url!,
           routeSettings.params,
         );
-        final animatedValue = arguments['animated'];
+        final animatedValue = arguments != null ? arguments['animated'] : null;
         final animated =
             (animatedValue != null && animatedValue is bool) && animatedValue;
         return ThrioNavigatorImplement.shared()
-            .navigatorState
-            ?.push(routeSettings, animated: animated)
-            ?.then((value) {
-          _syncPagePoppedResults();
-          return value;
-        });
+                .navigatorState
+                ?.push(routeSettings, animated: animated)
+                .then((value) {
+              _syncPagePoppedResults();
+              return value;
+            }) ??
+            Future.value(null);
       });
 
   void _onPop() => _channel.registryMethodCall('pop', ([arguments]) {
         final routeSettings = NavigatorRouteSettings.fromArguments(arguments);
-        final animatedValue = arguments['animated'];
+        if (routeSettings == null) {
+          return Future.value(false);
+        }
+        final animatedValue = arguments != null ? arguments['animated'] : null;
         final animated =
             (animatedValue != null && animatedValue is bool) && animatedValue;
-        final inRootValue = arguments['inRoot'];
+        final inRootValue = arguments != null ? arguments['inRoot'] : null;
         final inRoot =
             (inRootValue != null && inRootValue is bool) && inRootValue;
         return ThrioNavigatorImplement.shared()
-            .navigatorState
-            ?.maybePop(routeSettings, animated: animated, inRoot: inRoot)
-            ?.then((value) {
-          _syncPagePoppedResults();
-          return value;
-        });
+                .navigatorState
+                ?.maybePop(routeSettings, animated: animated, inRoot: inRoot)
+                .then((value) {
+              _syncPagePoppedResults();
+              return value;
+            }) ??
+            Future.value(null);
       });
 
   void _onPopTo() => _channel.registryMethodCall('popTo', ([arguments]) {
         final routeSettings = NavigatorRouteSettings.fromArguments(arguments);
-        final animatedValue = arguments['animated'];
+        if (routeSettings == null) {
+          return Future.value(false);
+        }
+        final animatedValue = arguments != null ? arguments['animated'] : null;
         final animated =
             (animatedValue != null && animatedValue is bool) && animatedValue;
         return ThrioNavigatorImplement.shared()
-            .navigatorState
-            ?.popTo(routeSettings, animated: animated)
-            ?.then((value) {
-          _syncPagePoppedResults();
-          return value;
-        });
+                .navigatorState
+                ?.popTo(routeSettings, animated: animated)
+                .then((value) {
+              _syncPagePoppedResults();
+              return value;
+            }) ??
+            Future.value(null);
       });
 
   void _onRemove() => _channel.registryMethodCall('remove', ([arguments]) {
         final routeSettings = NavigatorRouteSettings.fromArguments(arguments);
-        final animatedValue = arguments['animated'];
+        if (routeSettings == null) {
+          return Future.value(false);
+        }
+        final animatedValue = arguments != null ? arguments['animated'] : null;
         final animated =
             (animatedValue != null && animatedValue is bool) && animatedValue;
         return ThrioNavigatorImplement.shared()
-            .navigatorState
-            ?.remove(routeSettings, animated: animated)
-            ?.then((value) {
-          _syncPagePoppedResults();
-          return value;
-        });
+                .navigatorState
+                ?.remove(routeSettings, animated: animated)
+                .then((value) {
+              _syncPagePoppedResults();
+              return value;
+            }) ??
+            Future.value(null);
       });
 
   Stream onPageNotify({
-    @required String name,
-    String url,
-    int index,
+    required String name,
+    String? url,
+    int index = 0,
   }) =>
       _channel
           .onEventStream('__onNotify__')
           .where((arguments) =>
               arguments.containsValue(name) &&
-              (url == null || arguments.containsValue(url)) &&
-              (index == null || arguments.containsValue(index)))
+              (url == null || url.isEmpty || arguments.containsValue(url)) &&
+              (index == 0 || arguments.containsValue(index)))
           .map((arguments) => arguments['params']);
 
   dynamic _deserializeParams(String url, dynamic params) {
@@ -131,14 +144,16 @@ class NavigatorRouteReceiveChannel {
         return anchor.removeParam(params['__thrio_Params_HashCode__'] as int);
       }
 
-      // ignore: avoid_as
-      final typeString = params['__thrio_TParams__'] as String;
-      if (typeString?.isNotEmpty ?? false) {
-        final paramsInstance =
-            ThrioModule.get<JsonDeserializer>(url: url, key: typeString)
-                ?.call(params.cast<String, dynamic>());
-        if (paramsInstance != null) {
-          return paramsInstance;
+      if (params.containsKey('__thrio_TParams__')) {
+        // ignore: avoid_as
+        final typeString = params['__thrio_TParams__'] as String;
+        if (typeString.isNotEmpty) {
+          final paramsObj =
+              ThrioModule.get<JsonDeserializer>(url: url, key: typeString)
+                  ?.call(params.cast<String, dynamic>());
+          if (paramsObj != null) {
+            return paramsObj;
+          }
         }
       }
     }
@@ -151,7 +166,7 @@ class NavigatorRouteReceiveChannel {
       return;
     }
     final routes = await ThrioNavigatorImplement.shared().allRoutes();
-    if (routes?.isEmpty ?? true) {
+    if (routes.isEmpty) {
       ThrioNavigatorImplement.shared().poppedResults.clear();
     }
     ThrioNavigatorImplement.shared()

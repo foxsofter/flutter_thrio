@@ -29,7 +29,7 @@ class RegistrySetMap<K, V> {
     assert(value != null, 'value must not be null.');
 
     _maps[key] ??= <V>{};
-    _maps[key].add(value);
+    _maps[key]?.add(value);
     return () {
       _maps[key]?.remove(value);
       if (_maps[key]?.isEmpty ?? true) {
@@ -39,11 +39,14 @@ class RegistrySetMap<K, V> {
   }
 
   VoidCallback registryAll(Map<K, V> values) {
-    assert(values?.isNotEmpty ?? false, 'values must not be null or empty.');
+    assert(values.isNotEmpty, 'values must not be null or empty.');
 
     for (final key in values.keys) {
       _maps[key] ??= <V>{};
-      _maps[key].add(values[key]);
+      final value = values[key];
+      if (value != null) {
+        _maps[key]?.add(value);
+      }
     }
     return () {
       for (final key in values.keys) {
