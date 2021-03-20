@@ -127,7 +127,7 @@ class ModuleAnchor
   }
 
   T? get<T>({String? url, String? key}) {
-    late List<ThrioModule> modules;
+    var modules = <ThrioModule>[];
     if (url != null && url.isNotEmpty) {
       modules = _getModules(url: url);
       if (T == ThrioModule || T == dynamic || T == Object) {
@@ -157,9 +157,12 @@ class ModuleAnchor
         }
         return null;
       }
-    } else {
+    }
+    if (modules.isEmpty &&
+        (url == null || url.isEmpty || !ThrioModule.contains(url))) {
       modules = _getModules();
     }
+
     if (key == null || key.isEmpty) {
       return null;
     }
@@ -171,24 +174,24 @@ class ModuleAnchor
     if (modules.isEmpty) {
       return <T>[];
     }
-    switch (T) {
-      case NavigatorPageObserver:
-        final observers = <NavigatorPageObserver>{};
-        for (final module in modules) {
-          if (module is ModulePageObserver) {
-            observers.addAll(module.pageObservers);
-          }
+    final typeString = T.toString();
+    if (typeString == (NavigatorPageObserver).toString()) {
+      final observers = <NavigatorPageObserver>{};
+      for (final module in modules) {
+        if (module is ModulePageObserver) {
+          observers.addAll(module.pageObservers);
         }
-        observers.addAll(pageLifecycleObservers[url]);
-        return observers.toList().cast<T>();
-      case NavigatorRouteObserver:
-        final observers = <NavigatorRouteObserver>{};
-        for (final module in modules) {
-          if (module is ModuleRouteObserver) {
-            observers.addAll(module.routeObservers);
-          }
+      }
+      observers.addAll(pageLifecycleObservers[url]);
+      return observers.toList().cast<T>();
+    } else if (typeString == (NavigatorRouteObserver).toString()) {
+      final observers = <NavigatorRouteObserver>{};
+      for (final module in modules) {
+        if (module is ModuleRouteObserver) {
+          observers.addAll(module.routeObservers);
         }
-        return observers.toList().cast<T>();
+      }
+      return observers.toList().cast<T>();
     }
     return <T>[];
   }
@@ -261,27 +264,25 @@ class ModuleAnchor
   }
 
   T? _get<T>(List<ThrioModule> modules, String key) {
-    switch (T) {
-      case JsonSerializer:
-        for (final it in modules.reversed) {
-          if (it is ModuleJsonSerializer) {
-            final jsonSerializer = it.getJsonSerializer(key);
-            if (jsonSerializer != null) {
-              return jsonSerializer as T;
-            }
+    final typeString = T.toString();
+    if (typeString == (JsonSerializer).toString()) {
+      for (final it in modules.reversed) {
+        if (it is ModuleJsonSerializer) {
+          final jsonSerializer = it.getJsonSerializer(key);
+          if (jsonSerializer != null) {
+            return jsonSerializer as T;
           }
         }
-        break;
-      case JsonDeserializer:
-        for (final it in modules.reversed) {
-          if (it is ModuleJsonDeserializer) {
-            final jsonDeserializer = it.getJsonDeserializer(key);
-            if (jsonDeserializer != null) {
-              return jsonDeserializer as T;
-            }
+      }
+    } else if (typeString == (JsonDeserializer).toString()) {
+      for (final it in modules.reversed) {
+        if (it is ModuleJsonDeserializer) {
+          final jsonDeserializer = it.getJsonDeserializer(key);
+          if (jsonDeserializer != null) {
+            return jsonDeserializer as T;
           }
         }
-        break;
+      }
     }
     return null;
   }

@@ -26,6 +26,7 @@ import '../extension/thrio_object.dart';
 import '../module/module_anchor.dart';
 import '../module/module_types.dart';
 import '../module/thrio_module.dart';
+import 'navigator_route_settings.dart';
 
 class NavigatorRouteSendChannel {
   const NavigatorRouteSendChannel(ThrioChannel channel) : _channel = channel;
@@ -40,7 +41,7 @@ class NavigatorRouteSendChannel {
     final arguments = <String, dynamic>{
       'url': url,
       'animated': animated,
-      'params': _serializeParams<TParams>(params: params),
+      'params': _serializeParams<TParams>(url: url, params: params),
     };
     return _channel
         .invokeMethod<int>('push', arguments)
@@ -57,7 +58,7 @@ class NavigatorRouteSendChannel {
       'url': url,
       'index': index,
       'name': name,
-      'params': _serializeParams<TParams>(params: params),
+      'params': _serializeParams<TParams>(url: url, params: params),
     };
     return _channel
         .invokeMethod<bool>('notify', arguments)
@@ -67,9 +68,11 @@ class NavigatorRouteSendChannel {
   Future<bool> pop<TParams>({
     TParams? params,
     bool animated = true,
-  }) {
+  }) async {
+    final settings = await lastRoute();
+    final url = settings?.url;
     final arguments = <String, dynamic>{
-      'params': _serializeParams<TParams>(params: params),
+      'params': _serializeParams<TParams>(url: url, params: params),
       'animated': animated,
     };
     return _channel

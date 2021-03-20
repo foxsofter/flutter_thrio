@@ -105,10 +105,10 @@ open class ThrioModule {
         FlutterEngineFactory.startup(
             context, entrypoint,
             object : EngineReadyListener {
-                override fun onReady(it: Any?) {
-                    val params = moduleContext.params
+                override fun onReady(params: Any?) {
+                    val nativeParams = moduleContext.params
                     val canTransParams = mutableMapOf<String, Any>()
-                    for (param in params) {
+                    for (param in nativeParams) {
                         val value = ModuleJsonSerializers.serializeParams(param.value)
                         if (value != null && value.canTransToFlutter()) {
                             canTransParams[param.key] = value

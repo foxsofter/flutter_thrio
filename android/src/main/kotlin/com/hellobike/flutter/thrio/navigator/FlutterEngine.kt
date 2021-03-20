@@ -25,10 +25,11 @@ package com.hellobike.flutter.thrio.navigator
 
 import android.content.Context
 import com.hellobike.flutter.thrio.channel.ThrioChannel
+import io.flutter.FlutterInjector
 import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.embedding.engine.FlutterEngineCache
 import io.flutter.embedding.engine.dart.DartExecutor
-import io.flutter.view.FlutterMain
+import io.flutter.embedding.engine.loader.FlutterLoader
 
 data class FlutterEngine(
     private val context: Context,
@@ -57,7 +58,7 @@ data class FlutterEngine(
         moduleContextChannel.setupMethodChannel(engine.dartExecutor)
 
         val dartEntrypoint =
-            DartExecutor.DartEntrypoint(FlutterMain.findAppBundlePath(), entrypoint)
+            DartExecutor.DartEntrypoint(FlutterInjector.instance().flutterLoader().findAppBundlePath(), entrypoint)
         engine.dartExecutor.executeDartEntrypoint(dartEntrypoint)
 
         FlutterEngineCache.getInstance().put(entrypoint, engine)
