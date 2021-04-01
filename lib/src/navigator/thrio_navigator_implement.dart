@@ -278,11 +278,11 @@ class ThrioNavigatorImplement {
       // ignore: avoid_as
       final typeString = params['__thrio_TParams__'] as String;
       if (typeString.isNotEmpty) {
-        final paramsInstance =
+        final paramsObj =
             ThrioModule.get<JsonDeserializer>(key: typeString)
                 ?.call(params.cast<String, dynamic>());
-        if (paramsInstance != null) {
-          return paramsInstance;
+        if (paramsObj != null) {
+          return paramsObj;
         }
       }
     }

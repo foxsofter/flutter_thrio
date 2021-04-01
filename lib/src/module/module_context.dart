@@ -84,6 +84,10 @@ class ModuleContext {
   /// Subscribe to a series of param by `key`.
   ///
   Stream<T>? on<T>(String key) {
+    if (module == anchor) {
+      return (T as ModuleParamScheme).onParam(key);
+    }
+
     if (module is ModuleParamScheme) {
       final paramModule = module as ModuleParamScheme;
       if (paramModule.hasParamScheme<T>(key)) {

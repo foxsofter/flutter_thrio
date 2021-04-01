@@ -300,8 +300,25 @@
 * fix: 修复一些资源释放问题
 * fix: 修复Dart异常
 
+## 1.8.4
+
+* fix: 优化 dart 代码
+* fix: 修复部分使用场景下的 bug
+
+## 2.0.0
+
+* feat: 适配 Flutter 2.x.x
+
 ## 2.0.0-nullsafety
 
 * feat: support null safety
 * feat: support flutter 2.0
 * fix: bugs
+  
+## 2.0.1
+
+* fix: moduleContext.on 无法收到原生的状态
+  
+## 2.0.1-nullsafety
+
+* fix: moduleContext.on 无法收到原生的状态
