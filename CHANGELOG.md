@@ -322,3 +322,12 @@
 ## 2.0.1-nullsafety
 
 * fix: moduleContext.on 无法收到原生的状态
+
+
+## 2.0.2
+
+* fix: 原生页面 pop 某些场景下可能将 Flutter 页面也 pop
+
+## 2.0.2-nullsafety
+
+* fix: 原生页面 pop 某些场景下可能将 Flutter 页面也 pop

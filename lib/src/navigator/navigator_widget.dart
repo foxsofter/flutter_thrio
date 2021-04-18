@@ -138,9 +138,14 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
       return Future.value(false);
     }
 
-    // 处理经过 Navigator 入栈的 Route，不管成功与否都 return false，避免原生端清栈
-    if (settings.name != history.last.settings.name) {
+    // 处理经过 Navigator 入栈的匿名 Route
+    if (settings.name == null) {
       return navigatorState.maybePop().then((_) => false);
+    }
+
+    // 不管成功与否都 return false，避免原生端清栈
+    if (settings.name != history.last.settings.name) {
+      return Future.value(false);
     }
 
     // 在原生端处于容器的根部，且当前 Flutter 页面栈上不超过 3，则不能再 pop
