@@ -331,3 +331,7 @@
 ## 2.0.2-nullsafety
 
 * fix: 原生页面 pop 某些场景下可能将 Flutter 页面也 pop
+
+## 2.0.3-nullsafety
+
+* fix: 因为 nullsafety 版本被覆盖，后续奇数版本支持，偶数版本不支持 nullsafety
