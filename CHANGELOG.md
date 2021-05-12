@@ -335,7 +335,7 @@
 
 - fix: 因为 nullsafety 版本被覆盖，后续奇数版本支持，偶数版本不支持 nullsafety
 
-## 2.0.5
+## 2.0.7
 
 - fix: NSStringFromClass 判断类型的错误
 - fix: ModuleContext.on 方法订阅原生状态失败

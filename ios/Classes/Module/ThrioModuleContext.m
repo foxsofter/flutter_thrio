@@ -27,8 +27,21 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 - (void)set:(id _Nullable)value forKey:(NSString *)key {
-    if ([_params.allKeys containsObject:key] && [value isKindOfClass:[_params[key] class]]) {
-        return;
+    if ([_params.allKeys containsObject:key]) {
+        id oldValue = _params[key];
+        if ([oldValue isKindOfClass:NSString.class]) {
+            if (![value isKindOfClass:NSString.class]) {
+                return;
+            }
+        } else if ([oldValue isKindOfClass:NSNumber.class]) {
+            if (![value isKindOfClass:NSNumber.class]) {
+                return;
+            }
+        } else {
+            if (![value isKindOfClass:[oldValue class]]) {
+                return;
+            }
+        }
     }
     id v = _params[key];
     if (v != value) {
