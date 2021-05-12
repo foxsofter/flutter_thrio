@@ -27,8 +27,7 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 - (void)set:(id _Nullable)value forKey:(NSString *)key {
-    if ([_params.allKeys containsObject:key] &&
-        ![NSStringFromClass([_params[key] class]) isEqualToString:NSStringFromClass([value class])]) {
+    if ([_params.allKeys containsObject:key] && [value isKindOfClass:[_params[key] class]]) {
         return;
     }
     id v = _params[key];
