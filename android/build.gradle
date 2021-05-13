@@ -1,5 +1,5 @@
 group 'com.hellobike.flutter.thrio'
-version '2.0.7'
+version '2.0.9'
 
 buildscript {
     ext.kotlin_version = '1.4.10'

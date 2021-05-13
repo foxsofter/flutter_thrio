@@ -339,3 +339,7 @@
 
 - fix: NSStringFromClass 判断类型的错误
 - fix: ModuleContext.on 方法订阅原生状态失败
+
+## 2.0.9
+
+- fix: viewPaddingTop -> viewInsetTop
