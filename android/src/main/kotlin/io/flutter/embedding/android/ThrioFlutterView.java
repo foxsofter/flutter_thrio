@@ -546,7 +546,7 @@ public class ThrioFlutterView extends FrameLayout implements MouseCursorPlugin.M
                         : insets.getSystemWindowInsetLeft();
 
         // Bottom system inset (keyboard) should adjust scrollable bottom edge (inset).
-        viewportMetrics.viewPaddingTop = 0;
+        viewportMetrics.viewInsetTop = 0;
         viewportMetrics.viewInsetRight = 0;
         viewportMetrics.viewInsetBottom =
                 navigationBarHidden
