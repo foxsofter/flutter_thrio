@@ -42,8 +42,5 @@ mixin ModulePageObserver on ThrioModule {
   /// Do not override this method.
   ///
   @protected
-  VoidCallback registerPageObserver(
-    NavigatorPageObserver pageObserver,
-  ) =>
-      pageObservers.registry(pageObserver);
+  VoidCallback registerPageObserver(NavigatorPageObserver pageObserver) => pageObservers.registry(pageObserver);
 }

@@ -343,3 +343,7 @@
 ## 2.0.9
 
 - fix: viewPaddingTop -> viewInsetTop
+
+## 2.0.11
+
+- feat: code format for line length 100

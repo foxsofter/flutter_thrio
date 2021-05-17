@@ -77,7 +77,7 @@ linter:
     join_return_with_assignment: true # 可能时合并返回体
     library_names: true # 库名使用 下划线命名法
     library_prefixes: true # 使用 下划线命名法 导库
-    lines_longer_than_80_chars: true # 行宽80字符
+    # lines_longer_than_80_chars: true # 行宽80字符
     list_remove_unrelated_type: true # 禁止使用 remove 删除和 Iterable 不同的参数类型
     literal_only_boolean_expressions: true # 禁止条件判断编译时固定的 bool
     no_adjacent_strings_in_list: true # 不要在list定义时使用相邻字符串,使用 +

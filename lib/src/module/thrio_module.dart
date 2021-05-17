@@ -49,9 +49,7 @@ mixin ThrioModule {
     if (anchor.modules.length == 1) {
       throw ThrioException('init method can only be called once.');
     } else {
-      final moduleContext = entrypoint == null
-          ? ModuleContext()
-          : ModuleContext(entrypoint: entrypoint);
+      final moduleContext = entrypoint == null ? ModuleContext() : ModuleContext(entrypoint: entrypoint);
       moduleOf[moduleContext] = anchor;
       anchor
         .._moduleContext = moduleContext
@@ -76,13 +74,11 @@ mixin ThrioModule {
   /// `NavigatorPageBuilder`, and `url` is null or empty, find instance of `T`
   /// in all modules.
   ///
-  static T? get<T>({String? url, String? key}) =>
-      anchor.get<T>(url: url, key: key);
+  static T? get<T>({String? url, String? key}) => anchor.get<T>(url: url, key: key);
 
   /// Returns true if the `url` has been registered.
   ///
-  static bool contains(String url) =>
-      anchor.get<NavigatorPageBuilder>(url: url) != null;
+  static bool contains(String url) => anchor.get<NavigatorPageBuilder>(url: url) != null;
 
   /// Get instances by `T` and `url`.
   ///
@@ -120,17 +116,11 @@ mixin ThrioModule {
   /// the `onModuleRegister` function of the `module`.
   ///
   @protected
-  void registerModule(
-    ThrioModule module,
-    ModuleContext moduleContext,
-  ) {
+  void registerModule(ThrioModule module, ModuleContext moduleContext) {
     if (modules.containsKey(module.key)) {
-      throw ThrioException(
-        'A module with the same key ${module.key} already exists',
-      );
+      throw ThrioException('A module with the same key ${module.key} already exists');
     } else {
-      final submoduleContext =
-          ModuleContext(entrypoint: moduleContext.entrypoint);
+      final submoduleContext = ModuleContext(entrypoint: moduleContext.entrypoint);
       moduleOf[submoduleContext] = module;
       modules[module.key] = module;
       parentOf[module] = this;
@@ -210,16 +200,12 @@ mixin ThrioModule {
   /// Called when the first page in the module is about to be pushed.
   ///
   @protected
-  Future onModuleLoading(ModuleContext moduleContext) async {
-    verbose('onModuleLoading: $key');
-  }
+  Future onModuleLoading(ModuleContext moduleContext) async => verbose('onModuleLoading: $key');
 
   /// Called when the last page in the module is closed.
   ///
   @protected
-  Future onModuleUnloading(ModuleContext moduleContext) async {
-    verbose('onModuleUnloading: $key');
-  }
+  Future onModuleUnloading(ModuleContext moduleContext) async => verbose('onModuleUnloading: $key');
 
   /// A function for module asynchronous initialization.
   ///

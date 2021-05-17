@@ -19,58 +19,45 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
+// ignore_for_file: avoid_as
+
 import 'package:flutter/widgets.dart';
 
 extension NavigatorRouteSettings on RouteSettings {
   /// Converting arguments to route settings.
   ///
   static RouteSettings? fromArguments(Map<String, dynamic>? arguments) {
-    if ((arguments != null && arguments.isNotEmpty) &&
-        arguments.containsKey('url') &&
-        arguments.containsKey('index')) {
+    if ((arguments != null && arguments.isNotEmpty) && arguments.containsKey('url') && arguments.containsKey('index')) {
       final urlValue = arguments['url'];
       final url = urlValue is String ? urlValue : null;
       final indexValue = arguments['index'];
       final index = indexValue is int ? indexValue : null;
       final isNestedValue = arguments['isNested'];
-      final isNested =
-          isNestedValue != null && isNestedValue is bool && isNestedValue;
+      final isNested = isNestedValue != null && isNestedValue is bool && isNestedValue;
       final params = arguments['params'];
-      return RouteSettings(
-        name: '$index $url',
-        arguments: <String, dynamic>{'isNested': isNested, 'params': params},
-      );
+      return RouteSettings(name: '$index $url', arguments: <String, dynamic>{'isNested': isNested, 'params': params});
     }
     return null;
   }
 
-  Map<String, dynamic> toArguments() => <String, dynamic>{
-        'url': url,
-        'index': index,
-        'params': params,
-      };
+  Map<String, dynamic> toArguments() => <String, dynamic>{'url': url, 'index': index, 'params': params};
 
   String? get url {
     final settingsName = name;
-    return settingsName == null ||
-            settingsName.isEmpty ||
-            !settingsName.contains(' ')
+    return settingsName == null || settingsName.isEmpty || !settingsName.contains(' ')
         ? null
         : settingsName.split(' ').last;
   }
 
   int get index {
     final settingsName = name;
-    return settingsName == null ||
-            settingsName.isEmpty ||
-            !settingsName.contains(' ')
+    return settingsName == null || settingsName.isEmpty || !settingsName.contains(' ')
         ? 0
         : int.tryParse(settingsName.split(' ').first) ?? 0;
   }
 
   bool get isNested {
     if (arguments != null && arguments is Map<String, dynamic>) {
-      // ignore: avoid_as
       final isNestedValue = (arguments as Map<String, dynamic>)['isNested'];
       return isNestedValue != null && isNestedValue is bool && isNestedValue;
     }
@@ -79,7 +66,6 @@ extension NavigatorRouteSettings on RouteSettings {
 
   dynamic get params {
     if (arguments != null && arguments is Map<String, dynamic>) {
-      // ignore: avoid_as
       return (arguments as Map<String, dynamic>)['params'];
     }
     return null;
@@ -87,7 +73,6 @@ extension NavigatorRouteSettings on RouteSettings {
 
   set params(dynamic value) {
     if (arguments != null && arguments is Map<String, dynamic>) {
-      // ignore: avoid_as
       (arguments as Map<String, dynamic>)['params'] = value;
     }
   }

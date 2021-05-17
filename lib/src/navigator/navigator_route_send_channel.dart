@@ -33,132 +33,66 @@ class NavigatorRouteSendChannel {
 
   final ThrioChannel _channel;
 
-  Future<int> push<TParams>({
-    required String url,
-    TParams? params,
-    bool animated = true,
-  }) {
+  Future<int> push<TParams>({required String url, TParams? params, bool animated = true}) {
     final arguments = <String, dynamic>{
       'url': url,
       'animated': animated,
       'params': _serializeParams<TParams>(url: url, params: params),
     };
-    return _channel
-        .invokeMethod<int>('push', arguments)
-        .then((value) => value ?? 0);
+    return _channel.invokeMethod<int>('push', arguments).then((value) => value ?? 0);
   }
 
-  Future<bool> notify<TParams>({
-    String? url,
-    int? index,
-    required String name,
-    TParams? params,
-  }) {
+  Future<bool> notify<TParams>({String? url, int? index, required String name, TParams? params}) {
     final arguments = <String, dynamic>{
       'url': url,
       'index': index,
       'name': name,
       'params': _serializeParams<TParams>(url: url, params: params),
     };
-    return _channel
-        .invokeMethod<bool>('notify', arguments)
-        .then((it) => it ?? false);
+    return _channel.invokeMethod<bool>('notify', arguments).then((it) => it ?? false);
   }
 
-  Future<bool> pop<TParams>({
-    TParams? params,
-    bool animated = true,
-  }) async {
+  Future<bool> pop<TParams>({TParams? params, bool animated = true}) async {
     final settings = await lastRoute();
     final url = settings?.url;
     final arguments = <String, dynamic>{
       'params': _serializeParams<TParams>(url: url, params: params),
       'animated': animated,
     };
-    return _channel
-        .invokeMethod<bool>('pop', arguments)
-        .then((it) => it ?? false);
+    return _channel.invokeMethod<bool>('pop', arguments).then((it) => it ?? false);
   }
 
-  Future<bool> isInitialRoute({
-    required String url,
-    int index = 0,
-  }) {
-    final arguments = <String, dynamic>{
-      'url': url,
-      'index': index,
-    };
-    return _channel
-        .invokeMethod<bool>('isInitialRoute', arguments)
-        .then((it) => it ?? false);
+  Future<bool> isInitialRoute({required String url, int index = 0}) {
+    final arguments = <String, dynamic>{'url': url, 'index': index};
+    return _channel.invokeMethod<bool>('isInitialRoute', arguments).then((it) => it ?? false);
   }
 
-  Future<bool> popTo({
-    required String url,
-    int? index,
-    bool animated = true,
-  }) {
-    final arguments = <String, dynamic>{
-      'url': url,
-      'index': index,
-      'animated': animated,
-    };
-    return _channel
-        .invokeMethod<bool>('popTo', arguments)
-        .then((it) => it ?? false);
+  Future<bool> popTo({required String url, int? index, bool animated = true}) {
+    final arguments = <String, dynamic>{'url': url, 'index': index, 'animated': animated};
+    return _channel.invokeMethod<bool>('popTo', arguments).then((it) => it ?? false);
   }
 
-  Future<bool> remove({
-    required String url,
-    int? index,
-    bool animated = true,
-  }) {
-    final arguments = <String, dynamic>{
-      'url': url,
-      'index': index,
-      'animated': animated,
-    };
-    return _channel
-        .invokeMethod<bool>('remove', arguments)
-        .then((it) => it ?? false);
+  Future<bool> remove({required String url, int? index, bool animated = true}) {
+    final arguments = <String, dynamic>{'url': url, 'index': index, 'animated': animated};
+    return _channel.invokeMethod<bool>('remove', arguments).then((it) => it ?? false);
   }
 
   Future<RouteSettings?> lastRoute({String? url}) {
-    final arguments = (url == null || url.isEmpty)
-        ? <String, dynamic>{}
-        : <String, dynamic>{'url': url};
+    final arguments = (url == null || url.isEmpty) ? <String, dynamic>{} : <String, dynamic>{'url': url};
     return _channel
         .invokeMethod<String>('lastRoute', arguments)
-        .then<RouteSettings?>(
-            (value) => value == null ? null : RouteSettings(name: value));
+        .then<RouteSettings?>((value) => value == null ? null : RouteSettings(name: value));
   }
 
   Future<List<RouteSettings>> allRoutes({String? url}) {
-    final arguments = (url == null || url.isEmpty)
-        ? <String, dynamic>{}
-        : <String, dynamic>{'url': url};
-    return _channel
-        .invokeListMethod<String>('allRoutes', arguments)
-        .then<List<RouteSettings>>((values) => values == null
-            ? <RouteSettings>[]
-            : values
-                .map<RouteSettings>((value) => RouteSettings(name: value))
-                .toList());
+    final arguments = (url == null || url.isEmpty) ? <String, dynamic>{} : <String, dynamic>{'url': url};
+    return _channel.invokeListMethod<String>('allRoutes', arguments).then<List<RouteSettings>>((values) =>
+        values == null ? <RouteSettings>[] : values.map<RouteSettings>((value) => RouteSettings(name: value)).toList());
   }
 
-  Future<bool> setPopDisabled({
-    required String url,
-    required int index,
-    bool disabled = true,
-  }) {
-    final arguments = <String, dynamic>{
-      'url': url,
-      'index': index,
-      'disabled': disabled,
-    };
-    return _channel
-        .invokeMethod<bool>('setPopDisabled', arguments)
-        .then((it) => it ?? false);
+  Future<bool> setPopDisabled({required String url, required int index, bool disabled = true}) {
+    final arguments = <String, dynamic>{'url': url, 'index': index, 'disabled': disabled};
+    return _channel.invokeMethod<bool>('setPopDisabled', arguments).then((it) => it ?? false);
   }
 
   dynamic _serializeParams<TParams>({String? url, TParams? params}) {
@@ -168,8 +102,7 @@ class NavigatorRouteSendChannel {
     final type = params.runtimeType;
     if (type != dynamic && type != Object && params.isComplexType) {
       final serializeParams =
-          ThrioModule.get<JsonSerializer>(key: type.toString())
-              ?.call(<type>() => params as type); // ignore: avoid_as
+          ThrioModule.get<JsonSerializer>(key: type.toString())?.call(<type>() => params as type); // ignore: avoid_as
       if (serializeParams != null) {
         serializeParams['__thrio_TParams__'] = type.toString();
         // 判断 url 是否是当前引擎下的，如果是则直接缓存参数并传递 hashCode

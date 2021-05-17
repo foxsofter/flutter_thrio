@@ -34,10 +34,8 @@ mixin ModuleJsonDeserializer on ThrioModule {
   ///
   @protected
   JsonDeserializer? getJsonDeserializer(String typeString) {
-    final type = _jsonDeserializers.keys.lastWhere(
-      (it) => it.toString() == typeString || typeString.endsWith(it.toString()),
-      orElse: () => Null,
-    );
+    final type = _jsonDeserializers.keys
+        .lastWhere((it) => it.toString() == typeString || typeString.endsWith(it.toString()), orElse: () => Null);
     return _jsonDeserializers[type];
   }
 
@@ -51,8 +49,6 @@ mixin ModuleJsonDeserializer on ThrioModule {
   /// Unregistry by calling the return value `VoidCallback`.
   ///
   @protected
-  VoidCallback registerJsonDeserializer<T>(
-    JsonDeserializer<T> deserializer,
-  ) =>
+  VoidCallback registerJsonDeserializer<T>(JsonDeserializer<T> deserializer) =>
       _jsonDeserializers.registry(T, deserializer);
 }

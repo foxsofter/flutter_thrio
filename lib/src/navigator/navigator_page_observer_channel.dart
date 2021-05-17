@@ -27,88 +27,47 @@ import 'navigator_page_observer.dart';
 import 'navigator_page_route.dart';
 import 'navigator_route_settings.dart';
 
-typedef NavigatorPageObserverCallback = void Function(
-  NavigatorPageObserver observer,
-  RouteSettings settings,
-);
+typedef NavigatorPageObserverCallback = void Function(NavigatorPageObserver observer, RouteSettings settings);
 
 class NavigatorPageObserverChannel {
   NavigatorPageObserverChannel(String entrypoint)
       : _channel = ThrioChannel(channel: '__thrio_page_channel__$entrypoint') {
-    _on(
-      'willAppear',
-      (observer, routeSettings) => observer.willAppear(routeSettings),
-    );
-    _on(
-      'didAppear',
-      (observer, routeSettings) => observer.didAppear(routeSettings),
-    );
-    _on(
-      'willDisappear',
-      (observer, routeSettings) => observer.willDisappear(routeSettings),
-    );
-    _on(
-      'didDisappear',
-      (observer, routeSettings) => observer.didDisappear(routeSettings),
-    );
+    _on('willAppear', (observer, routeSettings) => observer.willAppear(routeSettings));
+    _on('didAppear', (observer, routeSettings) => observer.didAppear(routeSettings));
+    _on('willDisappear', (observer, routeSettings) => observer.willDisappear(routeSettings));
+    _on('didDisappear', (observer, routeSettings) => observer.didDisappear(routeSettings));
   }
 
   final ThrioChannel _channel;
 
-  void willAppear(
-    RouteSettings routeSettings,
-    NavigatorRouteAction routeAction,
-  ) {
+  void willAppear(RouteSettings routeSettings, NavigatorRouteAction routeAction) {
     final arguments = routeSettings.toArguments()..remove('params');
     arguments['routeAction'] = routeAction.toString().split('.').last;
-    _channel.invokeMethod(
-      'willAppear',
-      arguments,
-    );
+    _channel.invokeMethod('willAppear', arguments);
   }
 
-  void didAppear(
-    RouteSettings routeSettings,
-    NavigatorRouteAction routeAction,
-  ) {
+  void didAppear(RouteSettings routeSettings, NavigatorRouteAction routeAction) {
     final arguments = routeSettings.toArguments()..remove('params');
     arguments['routeAction'] = routeAction.toString().split('.').last;
-    _channel.invokeMethod(
-      'didAppear',
-      arguments,
-    );
+    _channel.invokeMethod('didAppear', arguments);
   }
 
-  void willDisappear(
-    RouteSettings routeSettings,
-    NavigatorRouteAction routeAction,
-  ) {
+  void willDisappear(RouteSettings routeSettings, NavigatorRouteAction routeAction) {
     final arguments = routeSettings.toArguments()..remove('params');
     arguments['routeAction'] = routeAction.toString().split('.').last;
-    _channel.invokeMethod(
-      'willDisappear',
-      arguments,
-    );
+    _channel.invokeMethod('willDisappear', arguments);
   }
 
-  void didDisappear(
-    RouteSettings routeSettings,
-    NavigatorRouteAction routeAction,
-  ) {
+  void didDisappear(RouteSettings routeSettings, NavigatorRouteAction routeAction) {
     final arguments = routeSettings.toArguments()..remove('params');
     arguments['routeAction'] = routeAction.toString().split('.').last;
-    _channel.invokeMethod(
-      'didDisappear',
-      arguments,
-    );
+    _channel.invokeMethod('didDisappear', arguments);
   }
 
-  void _on(String method, NavigatorPageObserverCallback callback) =>
-      _channel.registryMethodCall(method, ([arguments]) {
+  void _on(String method, NavigatorPageObserverCallback callback) => _channel.registryMethodCall(method, ([arguments]) {
         final routeSettings = NavigatorRouteSettings.fromArguments(arguments);
         if (routeSettings != null) {
-          final observers =
-              ThrioModule.gets<NavigatorPageObserver>(url: routeSettings.url!);
+          final observers = ThrioModule.gets<NavigatorPageObserver>(url: routeSettings.url!);
           for (final observer in observers) {
             callback(observer, routeSettings);
           }

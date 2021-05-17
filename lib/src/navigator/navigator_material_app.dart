@@ -57,17 +57,9 @@ class NavigatorMaterialApp extends MaterialApp {
             navigatorObservers: [...navigatorObservers],
             builder: (context, child) {
               if (builder != null) {
-                return builder(
-                    context,
-                    ThrioNavigatorImplement.shared().builder(
-                      context,
-                      child,
-                    ));
+                return builder(context, ThrioNavigatorImplement.shared().builder(context, child));
               } else {
-                return ThrioNavigatorImplement.shared().builder(
-                  context,
-                  child,
-                );
+                return ThrioNavigatorImplement.shared().builder(context, child);
               }
             },
             title: title,

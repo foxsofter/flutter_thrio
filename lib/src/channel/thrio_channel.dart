@@ -33,8 +33,7 @@ typedef MethodHandler = Future<dynamic> Function([
 const String _kEventNameKey = '__event_name__';
 
 class ThrioChannel {
-  factory ThrioChannel({String channel = '__thrio_channel__'}) =>
-      ThrioChannel._(channel: channel);
+  factory ThrioChannel({String channel = '__thrio_channel__'}) => ThrioChannel._(channel: channel);
 
   ThrioChannel._({required String channel}) : _channel = channel;
 
@@ -48,18 +47,14 @@ class ThrioChannel {
 
   final _eventControllers = <String, List<StreamController>>{};
 
-  Future<List<T>?> invokeListMethod<T>(String method,
-      [Map<String, dynamic>? arguments]) {
+  Future<List<T>?> invokeListMethod<T>(String method, [Map<String, dynamic>? arguments]) {
     _setupMethodChannelIfNeeded();
-    return _methodChannel?.invokeListMethod<T>(method, arguments) ??
-        Future.value();
+    return _methodChannel?.invokeListMethod<T>(method, arguments) ?? Future.value();
   }
 
-  Future<Map<K, V>?> invokeMapMethod<K, V>(String method,
-      [Map<String, dynamic>? arguments]) {
+  Future<Map<K, V>?> invokeMapMethod<K, V>(String method, [Map<String, dynamic>? arguments]) {
     _setupMethodChannelIfNeeded();
-    return _methodChannel?.invokeMapMethod<K, V>(method, arguments) ??
-        Future.value();
+    return _methodChannel?.invokeMapMethod<K, V>(method, arguments) ?? Future.value();
   }
 
   Future<T?> invokeMethod<T>(String method, [Map<String, dynamic>? arguments]) {
@@ -77,10 +72,7 @@ class ThrioChannel {
     final controllers = _eventControllers[name];
     if (controllers != null && controllers.isNotEmpty) {
       for (final controller in controllers) {
-        controller.add(<String, dynamic>{
-          if (arguments != null) ...arguments,
-          _kEventNameKey: name
-        });
+        controller.add(<String, dynamic>{if (arguments != null) ...arguments, _kEventNameKey: name});
       }
     }
   }
@@ -126,8 +118,7 @@ class ThrioChannel {
     }
     _eventChannel = EventChannel('_event_$_channel')
       ..receiveBroadcastStream()
-          .map<Map<String, dynamic>>((data) =>
-              data is Map ? data.cast<String, dynamic>() : <String, dynamic>{})
+          .map<Map<String, dynamic>>((data) => data is Map ? data.cast<String, dynamic>() : <String, dynamic>{})
           .where((data) => data.containsKey(_kEventNameKey))
           .listen((data) {
         verbose('Notify on $_channel $data');

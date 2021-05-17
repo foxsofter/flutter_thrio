@@ -34,52 +34,35 @@ typedef NavigatorRouteObserverCallback = void Function(
 class NavigatorRouteObserverChannel with NavigatorRouteObserver {
   NavigatorRouteObserverChannel(String entrypoint)
       : _channel = ThrioChannel(channel: '__thrio_route_channel__$entrypoint') {
-    _on('didPush', (observer, routeSettings) {
-      observer.didPush(routeSettings);
-    });
-    _on('didPop', (observer, routeSettings) {
-      observer.didPop(routeSettings);
-    });
-    _on('didPopTo', (observer, routeSettings) {
-      observer.didPopTo(routeSettings);
-    });
-    _on('didRemove', (observer, routeSettings) {
-      observer.didRemove(routeSettings);
-    });
+    _on('didPush', (observer, routeSettings) => observer.didPush(routeSettings));
+    _on('didPop', (observer, routeSettings) => observer.didPop(routeSettings));
+    _on('didPopTo', (observer, routeSettings) => observer.didPopTo(routeSettings));
+    _on('didRemove', (observer, routeSettings) => observer.didRemove(routeSettings));
   }
 
   final ThrioChannel _channel;
 
   @override
-  void didPush(RouteSettings routeSettings) => _channel.invokeMethod<bool>(
-        'didPush',
-        routeSettings.toArguments()..remove('params'),
-      );
+  void didPush(RouteSettings routeSettings) =>
+      _channel.invokeMethod<bool>('didPush', routeSettings.toArguments()..remove('params'));
 
   @override
-  void didPop(RouteSettings routeSettings) => _channel.invokeMethod<bool>(
-        'didPop',
-        routeSettings.toArguments()..remove('params'),
-      );
+  void didPop(RouteSettings routeSettings) =>
+      _channel.invokeMethod<bool>('didPop', routeSettings.toArguments()..remove('params'));
 
   @override
-  void didPopTo(RouteSettings routeSettings) => _channel.invokeMethod<bool>(
-        'didPopTo',
-        routeSettings.toArguments()..remove('params'),
-      );
+  void didPopTo(RouteSettings routeSettings) =>
+      _channel.invokeMethod<bool>('didPopTo', routeSettings.toArguments()..remove('params'));
 
   @override
-  void didRemove(RouteSettings routeSettings) => _channel.invokeMethod<bool>(
-        'didRemove',
-        routeSettings.toArguments()..remove('params'),
-      );
+  void didRemove(RouteSettings routeSettings) =>
+      _channel.invokeMethod<bool>('didRemove', routeSettings.toArguments()..remove('params'));
 
   void _on(String method, NavigatorRouteObserverCallback callback) =>
       _channel.registryMethodCall(method, ([arguments]) {
         final routeSettings = NavigatorRouteSettings.fromArguments(arguments);
         if (routeSettings != null) {
-          final observers =
-              ThrioModule.gets<NavigatorRouteObserver>(url: routeSettings.url!);
+          final observers = ThrioModule.gets<NavigatorRouteObserver>(url: routeSettings.url!);
           for (final observer in observers) {
             callback(observer, routeSettings);
           }

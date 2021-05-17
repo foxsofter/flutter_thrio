@@ -42,8 +42,5 @@ mixin ModuleRouteObserver on ThrioModule {
   /// Do not override this method.
   ///
   @protected
-  VoidCallback registerRouteObserver(
-    NavigatorRouteObserver routeObserver,
-  ) =>
-      routeObservers.registry(routeObserver);
+  VoidCallback registerRouteObserver(NavigatorRouteObserver routeObserver) => routeObservers.registry(routeObserver);
 }

@@ -26,12 +26,7 @@ import 'navigator_route_settings.dart';
 import 'navigator_types.dart';
 import 'thrio_navigator_implement.dart';
 
-enum NavigatorRouteAction {
-  push,
-  pop,
-  popTo,
-  remove,
-}
+enum NavigatorRouteAction { push, pop, popTo, remove }
 
 /// A route managed by the `ThrioNavigatorImplement`.
 ///
@@ -42,10 +37,11 @@ class NavigatorPageRoute extends MaterialPageRoute<bool> {
     bool maintainState = true,
     bool fullscreenDialog = false,
   }) : super(
-            builder: (_) => builder(settings),
-            settings: settings,
-            maintainState: maintainState,
-            fullscreenDialog: fullscreenDialog);
+          builder: (_) => builder(settings),
+          settings: settings,
+          maintainState: maintainState,
+          fullscreenDialog: fullscreenDialog,
+        );
 
   NavigatorRouteAction? routeAction;
 
@@ -71,8 +67,7 @@ class NavigatorPageRoute extends MaterialPageRoute<bool> {
     _popDisableds[settings.name!] = disabled;
 
     // 延迟300ms执行，避免因为WillPopScope依赖变更导致发送过多的Channel消息
-    _popDisabledFutures[settings.name!] ??=
-        Future.delayed(const Duration(milliseconds: 300), () {
+    _popDisabledFutures[settings.name!] ??= Future.delayed(const Duration(milliseconds: 300), () {
       _popDisabledFutures.remove(settings.name); // ignore: unawaited_futures
       final disabled = _popDisableds.remove(settings.name);
       if (disabled != null) {
@@ -93,17 +88,11 @@ class NavigatorPageRoute extends MaterialPageRoute<bool> {
     Widget child,
   ) {
     if (settings.isNested) {
-      final builder =
-          ThrioModule.get<RouteTransitionsBuilder>(url: settings.url);
+      final builder = ThrioModule.get<RouteTransitionsBuilder>(url: settings.url);
       if (builder != null) {
         return builder(context, animation, secondaryAnimation, child);
       }
-      return super.buildTransitions(
-        context,
-        animation,
-        secondaryAnimation,
-        child,
-      );
+      return super.buildTransitions(context, animation, secondaryAnimation, child);
     }
     return child;
   }

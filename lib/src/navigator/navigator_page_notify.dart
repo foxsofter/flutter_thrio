@@ -55,8 +55,6 @@ class NavigatorPageNotify extends StatefulWidget {
 }
 
 class _NavigatorPageNotifyState extends State<NavigatorPageNotify> {
-  // NavigatorPageRoute? _route;
-
   StreamSubscription? _notifySubscription;
 
   @override
@@ -75,13 +73,8 @@ class _NavigatorPageNotifyState extends State<NavigatorPageNotify> {
     final state = context.stateOf<NavigatorWidgetState>();
     final route = state.history.last;
     if (route is NavigatorPageRoute) {
-      // _route = route;
       _notifySubscription = ThrioNavigatorImplement.shared()
-          .onPageNotify(
-            url: route.settings.url!,
-            index: route.settings.index,
-            name: widget.name,
-          )
+          .onPageNotify(url: route.settings.url!, index: route.settings.index, name: widget.name)
           .listen(_listen);
     }
 
@@ -92,17 +85,15 @@ class _NavigatorPageNotifyState extends State<NavigatorPageNotify> {
     if (params != null) {
       if (params is Map) {
         if (params.containsKey('__thrio_Params_HashCode__')) {
-          final paramsObjs =
-              // ignore: avoid_as
-              anchor.removeParam(params['__thrio_Params_HashCode__'] as int);
+          // ignore: avoid_as
+          final paramsObjs = anchor.removeParam(params['__thrio_Params_HashCode__'] as int);
           widget.onPageNotify(paramsObjs);
           return;
         }
         if (params.containsKey('__thrio_TParams__')) {
           // ignore: avoid_as
           final typeString = params['__thrio_TParams__'] as String;
-          final paramsObj = ThrioModule.get<JsonDeserializer>(key: typeString)
-              ?.call(params.cast<String, dynamic>());
+          final paramsObj = ThrioModule.get<JsonDeserializer>(key: typeString)?.call(params.cast<String, dynamic>());
           if (paramsObj != null) {
             widget.onPageNotify(paramsObj);
             return;

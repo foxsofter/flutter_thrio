@@ -53,17 +53,14 @@ class ModuleAnchor
         ModuleRouteTransitionsBuilder {
   /// Holds PageObserver registered by `NavigatorPageLifecycle`.
   ///
-  final pageLifecycleObservers =
-      RegistrySetMap<String, NavigatorPageObserver>();
+  final pageLifecycleObservers = RegistrySetMap<String, NavigatorPageObserver>();
 
   /// All registered urls.
   ///
   final allUrls = <String>[];
 
   @override
-  void onModuleInit(ModuleContext moduleContext) {
-    ThrioNavigatorImplement.shared().init(moduleContext);
-  }
+  void onModuleInit(ModuleContext moduleContext) => ThrioNavigatorImplement.shared().init(moduleContext);
 
   Future loading(String url) async {
     final modules = _getModules(url: url);
@@ -94,11 +91,7 @@ class ModuleAnchor
     for (final url in notPushedUrls) {
       modules.addAll(_getModules(url: url));
     }
-    final notPushedModules = modules
-        .where(
-          (it) => it is ModulePageBuilder && it.pageBuilder != null,
-        )
-        .toSet();
+    final notPushedModules = modules.where((it) => it is ModulePageBuilder && it.pageBuilder != null).toSet();
     for (final module in notPushedModules) {
       // 页 Module onModuleUnloading
       if (module.isLoaded) {
@@ -149,8 +142,7 @@ class ModuleAnchor
             if (it.routeTransitionsDisabled) {
               return null;
             }
-            if (!it.routeTransitionsDisabled &&
-                it.routeTransitionsBuilder != null) {
+            if (!it.routeTransitionsDisabled && it.routeTransitionsBuilder != null) {
               return it.routeTransitionsBuilder as T;
             }
           }
@@ -158,8 +150,7 @@ class ModuleAnchor
         return null;
       }
     }
-    if (modules.isEmpty &&
-        (url == null || url.isEmpty || !ThrioModule.contains(url))) {
+    if (modules.isEmpty && (url == null || url.isEmpty || !ThrioModule.contains(url))) {
       modules = _getModules();
     }
 
@@ -212,8 +203,7 @@ class ModuleAnchor
       return allModules..addAll(_getAllModules(firstModule));
     }
 
-    final components =
-        url.isEmpty ? <String>[] : url.replaceAll('/', ' ').trim().split(' ');
+    final components = url.isEmpty ? <String>[] : url.replaceAll('/', ' ').trim().split(' ');
     final length = components.length;
     late ThrioModule? module = firstModule;
     while (components.isNotEmpty) {
