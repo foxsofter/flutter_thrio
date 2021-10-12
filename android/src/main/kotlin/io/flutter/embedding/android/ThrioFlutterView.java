@@ -114,7 +114,7 @@ public class ThrioFlutterView extends FrameLayout implements MouseCursorPlugin.M
     @Nullable
     private LocalizationPlugin localizationPlugin;
     @Nullable
-    private AndroidKeyProcessor androidKeyProcessor;
+    private KeyboardManager keyboardManager;
     @Nullable
     private AndroidTouchProcessor androidTouchProcessor;
     @Nullable
@@ -662,7 +662,7 @@ public class ThrioFlutterView extends FrameLayout implements MouseCursorPlugin.M
             return super.onCreateInputConnection(outAttrs);
         }
 
-        return textInputPlugin.createInputConnection(this, outAttrs);
+        return textInputPlugin.createInputConnection(this, keyboardManager, outAttrs);
     }
 
     /**
@@ -687,7 +687,7 @@ public class ThrioFlutterView extends FrameLayout implements MouseCursorPlugin.M
      * D-pad button. It is generally not invoked when a virtual software keyboard is used, though a
      * software keyboard may choose to invoke this method in some situations.
      *
-     * <p>{@link KeyEvent}s are sent from Android to Flutter. {@link AndroidKeyProcessor} may do some
+     * <p>{@link KeyEvent}s are sent from Android to Flutter. {@link KeyboardManager} may do some
      * additional work with the given {@link KeyEvent}, e.g., combine this {@code keyCode} with the
      * previous {@code keyCode} to generate a unicode combined character.
      */
@@ -697,7 +697,7 @@ public class ThrioFlutterView extends FrameLayout implements MouseCursorPlugin.M
             return super.onKeyUp(keyCode, event);
         }
 
-        androidKeyProcessor.onKeyEvent(event);
+        keyboardManager.handleEvent(event);
         return super.onKeyUp(keyCode, event);
     }
 
@@ -708,7 +708,7 @@ public class ThrioFlutterView extends FrameLayout implements MouseCursorPlugin.M
      * D-pad button. It is generally not invoked when a virtual software keyboard is used, though a
      * software keyboard may choose to invoke this method in some situations.
      *
-     * <p>{@link KeyEvent}s are sent from Android to Flutter. {@link AndroidKeyProcessor} may do some
+     * <p>{@link KeyEvent}s are sent from Android to Flutter. {@link KeyboardManager} may do some
      * additional work with the given {@link KeyEvent}, e.g., combine this {@code keyCode} with the
      * previous {@code keyCode} to generate a unicode combined character.
      */
@@ -718,7 +718,7 @@ public class ThrioFlutterView extends FrameLayout implements MouseCursorPlugin.M
             return super.onKeyDown(keyCode, event);
         }
 
-        androidKeyProcessor.onKeyEvent(event);
+        keyboardManager.handleEvent(event);
         return super.onKeyDown(keyCode, event);
     }
 
@@ -868,8 +868,9 @@ public class ThrioFlutterView extends FrameLayout implements MouseCursorPlugin.M
                         this.flutterEngine.getTextInputChannel(),
                         this.flutterEngine.getPlatformViewsController());
         localizationPlugin = this.flutterEngine.getLocalizationPlugin();
-        androidKeyProcessor =
-                new AndroidKeyProcessor(this, this.flutterEngine.getKeyEventChannel(), textInputPlugin);
+        keyboardManager = new KeyboardManager(this, textInputPlugin, new KeyChannelResponder[] {
+                new KeyChannelResponder(flutterEngine.getKeyEventChannel())
+        });
         androidTouchProcessor =
                 new AndroidTouchProcessor(this.flutterEngine.getRenderer(), /*trackMotionEvents=*/ false);
         accessibilityBridge =
@@ -944,11 +945,12 @@ public class ThrioFlutterView extends FrameLayout implements MouseCursorPlugin.M
                         this.flutterEngine.getTextInputChannel(),
                         this.flutterEngine.getPlatformViewsController());
         localizationPlugin = this.flutterEngine.getLocalizationPlugin();
-        if (androidKeyProcessor != null) {
-            androidKeyProcessor.destroy();
+        if (keyboardManager != null) {
+            keyboardManager.destroy();
         }
-        androidKeyProcessor =
-                new AndroidKeyProcessor(this, this.flutterEngine.getKeyEventChannel(), textInputPlugin);
+        keyboardManager = new KeyboardManager(this, textInputPlugin, new KeyChannelResponder[] {
+                new KeyChannelResponder(flutterEngine.getKeyEventChannel())
+        });
         androidTouchProcessor =
                 new AndroidTouchProcessor(this.flutterEngine.getRenderer(), /*trackMotionEvents=*/ false);
         if (accessibilityBridge != null) {
@@ -1041,9 +1043,9 @@ public class ThrioFlutterView extends FrameLayout implements MouseCursorPlugin.M
             textInputPlugin = null;
         }
 
-        if (androidKeyProcessor != null) {
-            androidKeyProcessor.destroy();
-            androidKeyProcessor = null;
+        if (keyboardManager != null) {
+            keyboardManager.destroy();
+            keyboardManager = null;
         }
 
         // Instruct our FlutterRenderer that we are no longer interested in being its RenderSurface.
