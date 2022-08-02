@@ -17,10 +17,10 @@ void main() {
   });
 
   test('getPlatformVersion', () async {
-    FlutterThrio flutterThrioPlugin = FlutterThrio();
-    MockFlutterThrioPlatform fakePlatform = MockFlutterThrioPlatform();
-    FlutterThrioPlatform.instance = fakePlatform;
+    // FlutterThrio flutterThrioPlugin = FlutterThrio();
+    // MockFlutterThrioPlatform fakePlatform = MockFlutterThrioPlatform();
+    // FlutterThrioPlatform.instance = fakePlatform;
 
-    expect(await flutterThrioPlugin.getPlatformVersion(), '42');
+    // expect(await flutterThrioPlugin.getPlatformVersion(), '42');
   });
 }
