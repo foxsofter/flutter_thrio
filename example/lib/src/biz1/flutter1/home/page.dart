@@ -1,8 +1,8 @@
 import 'dart:io' show Platform;
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:thrio/thrio.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_thrio/flutter_thrio.dart';
 
 import '../../../models/people.dart';
 
@@ -36,28 +36,24 @@ class _PageState extends State<Page> {
   @override
   Widget build(BuildContext context) => NavigatorPageNotify(
       name: 'all_page_notify',
-      onPageNotify: (params) =>
-          ThrioLogger.v('flutter1 receive all page notify:$params'),
+      onPageNotify: (params) => ThrioLogger.v('flutter1 receive all page notify:$params'),
       child: NavigatorPageNotify(
           name: 'page1Notify',
-          onPageNotify: (params) =>
-              ThrioLogger.v('flutter1 receive notify:$params'),
+          onPageNotify: (params) => ThrioLogger.v('flutter1 receive notify:$params'),
           child: Scaffold(
               appBar: PreferredSize(
-                  preferredSize: Platform.isIOS
-                      ? const Size.fromHeight(44)
-                      : const Size.fromHeight(56),
+                  preferredSize:
+                      Platform.isIOS ? const Size.fromHeight(44) : const Size.fromHeight(56),
                   child: AppBar(
-                    brightness: Brightness.light,
                     backgroundColor: Colors.blue,
-                    title: const Text('thrio_example',
-                        style: TextStyle(color: Colors.black)),
+                    title: const Text('thrio_example', style: TextStyle(color: Colors.black)),
                     leading: context.shouldCanPop(const IconButton(
                       color: Colors.black,
                       tooltip: 'back',
                       icon: Icon(Icons.arrow_back_ios),
                       onPressed: ThrioNavigator.pop,
                     )),
+                    systemOverlayStyle: SystemUiOverlayStyle.dark,
                   )),
               body: SingleChildScrollView(
                 child: Container(
@@ -68,8 +64,7 @@ class _PageState extends State<Page> {
                       alignment: AlignmentDirectional.center,
                       child: Text(
                         'flutter1: index is ${widget.index}',
-                        style:
-                            const TextStyle(fontSize: 28, color: Colors.blue),
+                        style: const TextStyle(fontSize: 28, color: Colors.blue),
                       ),
                     ),
                     Container(
@@ -87,28 +82,20 @@ class _PageState extends State<Page> {
                             onChanged: print)),
                     InkWell(
                       onTap: () {
-                        if (widget.moduleContext
-                            .set('double_key_biz1_flutter1', 2.0)) {
-                          final value = widget.moduleContext
-                              .get('double_key_biz1_flutter1');
-                          ThrioLogger.v(
-                              'double_key_biz1_flutter1 value is $value');
+                        if (widget.moduleContext.set('double_key_biz1_flutter1', 2.0)) {
+                          final value = widget.moduleContext.get('double_key_biz1_flutter1');
+                          ThrioLogger.v('double_key_biz1_flutter1 value is $value');
                         }
-                        if (widget.moduleContext
-                            .set('string_key_biz1', _inputController.text)) {
-                          final value =
-                              widget.moduleContext.get('string_key_biz1');
+                        if (widget.moduleContext.set('string_key_biz1', _inputController.text)) {
+                          final value = widget.moduleContext.get('string_key_biz1');
                           ThrioLogger.v('string_key_biz1 value is $value');
                         }
-                        if (widget.moduleContext
-                            .set('int_key_root_module', 10000)) {
-                          final value =
-                              widget.moduleContext.get('int_key_root_module');
+                        if (widget.moduleContext.set('int_key_root_module', 10000)) {
+                          final value = widget.moduleContext.get('int_key_root_module');
                           ThrioLogger.v('int_key_root_module value is $value');
                         }
 
-                        final value =
-                            widget.moduleContext.get('people_from_native');
+                        final value = widget.moduleContext.get('people_from_native');
                         ThrioLogger.v('people_from_native value is $value');
                       },
                       child: Container(
@@ -124,8 +111,7 @@ class _PageState extends State<Page> {
                       onTap: () => ThrioNavigator.push(
                         url: '/biz1/flutter1',
                         params: People(name: 'foxsofter', age: 100, sex: '男性'),
-                        poppedResult: (params) =>
-                            ThrioLogger.v('/biz1/flutter1 popped:$params'),
+                        poppedResult: (params) => ThrioLogger.v('/biz1/flutter1 popped:$params'),
                       ),
                       child: Container(
                           padding: const EdgeInsets.all(8),
@@ -151,8 +137,8 @@ class _PageState extends State<Page> {
                       onTap: () => ThrioNavigator.push(
                         url: '/biz2/flutter2',
                         params: People(name: '大宝剑', age: 0, sex: 'x'),
-                        poppedResult: (params) => ThrioLogger.v(
-                            '/biz1/flutter1 poppedResult call popped:$params'),
+                        poppedResult: (params) =>
+                            ThrioLogger.v('/biz1/flutter1 poppedResult call popped:$params'),
                       ),
                       child: Container(
                           padding: const EdgeInsets.all(8),
@@ -164,8 +150,8 @@ class _PageState extends State<Page> {
                           )),
                     ),
                     InkWell(
-                      onTap: () => ThrioNavigator.pop(
-                          params: People(name: '大宝剑', age: 0, sex: 'x')),
+                      onTap: () =>
+                          ThrioNavigator.pop(params: People(name: '大宝剑', age: 0, sex: 'x')),
                       child: Container(
                           padding: const EdgeInsets.all(8),
                           margin: const EdgeInsets.all(8),
@@ -179,8 +165,8 @@ class _PageState extends State<Page> {
                       onTap: () => ThrioNavigator.push(
                         url: '/biz1/native1',
                         params: People(name: '大宝剑', age: 10, sex: 'x'),
-                        poppedResult: (params) => ThrioLogger.v(
-                            '/biz1/native1 poppedResult call params:$params'),
+                        poppedResult: (params) =>
+                            ThrioLogger.v('/biz1/native1 poppedResult call params:$params'),
                       ),
                       child: Container(
                           padding: const EdgeInsets.all(8),
@@ -220,8 +206,7 @@ class _PageState extends State<Page> {
                           )),
                     ),
                     InkWell(
-                      onTap: () => ThrioNavigator.push(
-                          url: '/biz1/swift1', params: '11221131'),
+                      onTap: () => ThrioNavigator.push(url: '/biz1/swift1', params: '11221131'),
                       child: Container(
                           padding: const EdgeInsets.all(8),
                           margin: const EdgeInsets.all(8),
@@ -252,8 +237,7 @@ class _PageState extends State<Page> {
                                 color: Colors.grey,
                                 child: Text(
                                   '${snapshot.data}',
-                                  style: const TextStyle(
-                                      fontSize: 22, color: Colors.black),
+                                  style: const TextStyle(fontSize: 22, color: Colors.black),
                                 ))))
                   ]),
                 ),

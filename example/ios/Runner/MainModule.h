@@ -6,7 +6,7 @@
 //  Copyright © 2019 foxsofter. All rights reserved.
 //
 
-#import <thrio/Thrio.h>
+#import <flutter_thrio/FlutterThrio.h>
 
 NS_ASSUME_NONNULL_BEGIN
 

@@ -6,7 +6,7 @@
 //  Copyright © 2020 foxsofter. All rights reserved.
 //
 
-#import <thrio/Thrio.h>
+#import <flutter_thrio/FlutterThrio.h>
 #import "NavigatorFlutterViewController.h"
 
 NS_ASSUME_NONNULL_BEGIN

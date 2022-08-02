@@ -19,6 +19,8 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
+// ignore_for_file: avoid_classes_with_only_static_members
+
 import 'package:flutter/material.dart';
 
 import 'navigator_types.dart';
@@ -48,8 +50,10 @@ abstract class ThrioNavigator {
   /// Notifications will be triggered when the page enters the foreground.
   /// Notifications with the same `name` will be overwritten.
   ///
-  static Future<bool> notify<TParams>({String? url, int index = 0, required String name, TParams? params}) =>
-      ThrioNavigatorImplement.shared().notify<TParams>(url: url, index: index, name: name, params: params);
+  static Future<bool> notify<TParams>(
+          {String? url, int index = 0, required String name, TParams? params}) =>
+      ThrioNavigatorImplement.shared()
+          .notify<TParams>(url: url, index: index, name: name, params: params);
 
   /// Pop a page from the navigation stack.
   ///
@@ -69,16 +73,19 @@ abstract class ThrioNavigator {
   /// Returns the route of the page that was last pushed to the navigation
   /// stack.
   ///
-  static Future<RouteSettings?> lastRoute({String? url}) => ThrioNavigatorImplement.shared().lastRoute(url: url);
+  static Future<RouteSettings?> lastRoute({String? url}) =>
+      ThrioNavigatorImplement.shared().lastRoute(url: url);
 
   /// Returns all route of the page with `url` in the navigation stack.
   ///
-  static Future<List<RouteSettings>> allRoutes({String? url}) => ThrioNavigatorImplement.shared().allRoutes(url: url);
+  static Future<List<RouteSettings>> allRoutes({String? url}) =>
+      ThrioNavigatorImplement.shared().allRoutes(url: url);
 
   /// Returns the flutter route of the page that was last pushed to the
   /// navigation stack.
   ///
-  static RouteSettings? lastFlutterRoute({String? url}) => ThrioNavigatorImplement.shared().lastFlutterRoute(url: url);
+  static RouteSettings? lastFlutterRoute({String? url}) =>
+      ThrioNavigatorImplement.shared().lastFlutterRoute(url: url);
 
   /// Returns all flutter route of the page with `url` in the navigation stack.
   ///

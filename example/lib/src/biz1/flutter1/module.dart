@@ -1,4 +1,4 @@
-import 'package:thrio/thrio.dart';
+import 'package:flutter_thrio/flutter_thrio.dart';
 
 import 'home/module.dart' as home;
 

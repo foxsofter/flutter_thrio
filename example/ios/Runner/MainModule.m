@@ -6,7 +6,7 @@
 //  Copyright © 2019 foxsofter. All rights reserved.
 //
 
-@import thrio;
+@import flutter_thrio;
 
 #import "MainModule.h"
 #import "SampleModule.h"

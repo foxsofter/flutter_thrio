@@ -33,7 +33,7 @@ extension ThrioBuildContext on BuildContext {
   ///
   T stateOf<T extends State<StatefulWidget>>() {
     final state = findAncestorStateOfType<T>();
-    if (state != null && state is T) {
+    if (state != null) {
       return state;
     }
     throw Exception('${state.runtimeType} is not a $T');
@@ -43,7 +43,7 @@ extension ThrioBuildContext on BuildContext {
   ///
   T? tryStateOf<T extends State<StatefulWidget>>() {
     final state = findAncestorStateOfType<T>();
-    if (state != null && state is T) {
+    if (state != null) {
       return state;
     }
     return null;
@@ -87,7 +87,8 @@ extension ThrioBuildContext on BuildContext {
     final state = stateOf<NavigatorWidgetState>();
     final route = state.history.last;
     return route is NavigatorPageRoute
-        ? ThrioNavigatorImplement.shared().isInitialRoute(url: route.settings.url!, index: route.settings.index)
+        ? ThrioNavigatorImplement.shared()
+            .isInitialRoute(url: route.settings.url!, index: route.settings.index)
         : Future<bool>.value(false);
   }
 }

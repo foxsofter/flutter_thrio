@@ -36,7 +36,8 @@ class NavigatorObserverManager extends NavigatorObserver {
   final _currentRemoveRoutes = <NavigatorPageRoute>[];
 
   final pageRoutes = <Route>[
-    NavigatorPageRoute(builder: (settings) => const NavigatorHome(), settings: const RouteSettings(name: '1 /'))
+    NavigatorPageRoute(
+        builder: (settings) => const NavigatorHome(), settings: const RouteSettings(name: '1 /'))
   ];
 
   @override
@@ -93,7 +94,7 @@ class NavigatorObserverManager extends NavigatorObserver {
                 ..pageChannel.didDisappear(route.settings, NavigatorRouteAction.pop);
               route.routeAction = null;
             } else if (route.routeAction == NavigatorRouteAction.remove) {
-              if (WidgetsBinding.instance?.lifecycleState == AppLifecycleState.resumed) {
+              if (WidgetsBinding.instance.lifecycleState == AppLifecycleState.resumed) {
                 verbose(
                   'didRemove: url->${route.settings.url} '
                   'index->${route.settings.index} ',
@@ -123,7 +124,8 @@ class NavigatorObserverManager extends NavigatorObserver {
     } else {
       pageRoutes.remove(route);
       if (route is! PopupRoute && pageRoutes.last is NavigatorPageRoute) {
-        final observers = ThrioModule.gets<NavigatorPageObserver>(url: pageRoutes.last.settings.url!);
+        final observers =
+            ThrioModule.gets<NavigatorPageObserver>(url: pageRoutes.last.settings.url!);
         for (final observer in observers) {
           observer.didAppear(pageRoutes.last.settings);
         }

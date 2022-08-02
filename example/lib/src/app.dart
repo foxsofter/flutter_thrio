@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:thrio/thrio.dart';
+import 'package:flutter_thrio/flutter_thrio.dart';
 import 'module.dart';
 
 void main() => runApp(const MainApp());

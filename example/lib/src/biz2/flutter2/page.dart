@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:thrio/thrio.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_thrio/flutter_thrio.dart';
 
 import '../../models/people.dart';
 
@@ -34,20 +35,18 @@ class _PageState extends State<Page> {
   @override
   Widget build(BuildContext context) => NavigatorPageNotify(
       name: 'page2Notify',
-      onPageNotify: (params) =>
-          ThrioLogger.v('flutter2 receive notify:$params'),
+      onPageNotify: (params) => ThrioLogger.v('flutter2 receive notify:$params'),
       child: Scaffold(
           appBar: AppBar(
-            brightness: Brightness.light,
             backgroundColor: Colors.white,
-            title: const Text('thrio_example',
-                style: TextStyle(color: Colors.black)),
+            title: const Text('thrio_example', style: TextStyle(color: Colors.black)),
             leading: context.shouldCanPop(const IconButton(
               color: Colors.black,
               tooltip: 'back',
               icon: Icon(Icons.arrow_back_ios),
               onPressed: ThrioNavigator.pop,
             )),
+            systemOverlayStyle: SystemUiOverlayStyle.dark,
           ),
           body: SingleChildScrollView(
             child: Container(
@@ -89,8 +88,7 @@ class _PageState extends State<Page> {
                       )),
                 ),
                 InkWell(
-                  onTap: () => ThrioNavigator.pop(
-                      params: People(name: '大宝剑', age: 0, sex: 'x')),
+                  onTap: () => ThrioNavigator.pop(params: People(name: '大宝剑', age: 0, sex: 'x')),
                   child: Container(
                       padding: const EdgeInsets.all(8),
                       margin: const EdgeInsets.all(8),
@@ -106,8 +104,7 @@ class _PageState extends State<Page> {
                       params: {
                         '1': {'2': '3'}
                       },
-                      poppedResult: (params) =>
-                          ThrioLogger.v('/biz1/native1 popped:$params')),
+                      poppedResult: (params) => ThrioLogger.v('/biz1/native1 popped:$params')),
                   child: Container(
                       padding: const EdgeInsets.all(8),
                       margin: const EdgeInsets.all(8),

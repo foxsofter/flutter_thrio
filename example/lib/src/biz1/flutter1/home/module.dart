@@ -1,5 +1,5 @@
 import 'package:flutter/widgets.dart';
-import 'package:thrio/thrio.dart';
+import 'package:flutter_thrio/flutter_thrio.dart';
 
 import '../../../models/people.dart';
 import 'page.dart' as flutter1;

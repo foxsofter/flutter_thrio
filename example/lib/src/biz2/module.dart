@@ -1,11 +1,10 @@
 import 'package:flutter/widgets.dart';
-import 'package:thrio/thrio.dart';
+import 'package:flutter_thrio/flutter_thrio.dart';
 
 import 'flutter2/module.dart' as flutter2;
 import 'flutter4/module.dart' as flutter4;
 
-class Module
-    with ThrioModule, ModulePageBuilder, ModuleRouteTransitionsBuilder {
+class Module with ThrioModule, ModulePageBuilder, ModuleRouteTransitionsBuilder {
   @override
   String get key => 'biz2';
 

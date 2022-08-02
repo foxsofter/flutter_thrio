@@ -1,15 +1,10 @@
-import 'package:thrio/thrio.dart';
+import 'package:flutter_thrio/flutter_thrio.dart';
 
 import 'biz1/module.dart' as biz1;
 import 'biz2/module.dart' as biz2;
 import 'models/people.dart';
 
-class Module
-    with
-        ThrioModule,
-        ModuleParamScheme,
-        ModuleJsonSerializer,
-        ModuleJsonDeserializer {
+class Module with ThrioModule, ModuleParamScheme, ModuleJsonSerializer, ModuleJsonDeserializer {
   @override
   void onModuleRegister(ModuleContext moduleContext) {
     registerModule(biz1.Module(), moduleContext);

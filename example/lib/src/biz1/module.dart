@@ -1,5 +1,5 @@
 import 'package:flutter/widgets.dart';
-import 'package:thrio/thrio.dart';
+import 'package:flutter_thrio/flutter_thrio.dart';
 
 import 'flutter1/module.dart' as flutter1;
 import 'flutter3/module.dart' as flutter3;
@@ -39,8 +39,7 @@ class Module
       child,
     ) =>
         SlideTransition(
-          position: Tween(begin: const Offset(0.0, 1.0), end: Offset.zero)
-              .animate(CurvedAnimation(
+          position: Tween(begin: const Offset(0.0, 1.0), end: Offset.zero).animate(CurvedAnimation(
             parent: animation,
             curve: Curves.ease,
           )),

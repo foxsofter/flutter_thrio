@@ -1,14 +1,9 @@
 import 'package:flutter/widgets.dart';
-import 'package:thrio/thrio.dart';
+import 'package:flutter_thrio/flutter_thrio.dart';
 
 import 'page.dart' as flutter4;
 
-class Module
-    with
-        ThrioModule,
-        ModulePageBuilder,
-        ModuleRouteObserver,
-        NavigatorRouteObserver {
+class Module with ThrioModule, ModulePageBuilder, ModuleRouteObserver, NavigatorRouteObserver {
   @override
   String get key => 'flutter4';
 

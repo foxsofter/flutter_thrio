@@ -19,7 +19,6 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -43,7 +42,7 @@ class NavigatorWidget extends StatefulWidget {
     required this.moduleContext,
     required NavigatorObserverManager observerManager,
     required this.child,
-  })   : _observerManager = observerManager,
+  })  : _observerManager = observerManager,
         super(key: key);
 
   final Navigator child;
@@ -78,7 +77,9 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
 
     final route = NavigatorPageRoute(builder: pageBuilder, settings: settings);
 
-    ThrioNavigatorImplement.shared().pageChannel.willAppear(route.settings, NavigatorRouteAction.push);
+    ThrioNavigatorImplement.shared()
+        .pageChannel
+        .willAppear(route.settings, NavigatorRouteAction.push);
 
     verbose(
       'push: url->${route.settings.url} '
@@ -150,7 +151,9 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
       return Future.value(false);
     }
 
-    ThrioNavigatorImplement.shared().pageChannel.willDisappear(route.settings, NavigatorRouteAction.pop);
+    ThrioNavigatorImplement.shared()
+        .pageChannel
+        .willDisappear(route.settings, NavigatorRouteAction.pop);
 
     route.routeAction = NavigatorRouteAction.pop;
     if (animated) {
@@ -225,8 +228,10 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
     (route as NavigatorPageRoute).routeAction = NavigatorRouteAction.remove;
 
     if (settings.name == history.last.settings.name) {
-      if (WidgetsBinding.instance?.lifecycleState == AppLifecycleState.resumed) {
-        ThrioNavigatorImplement.shared().pageChannel.willDisappear(route.settings, NavigatorRouteAction.remove);
+      if (WidgetsBinding.instance.lifecycleState == AppLifecycleState.resumed) {
+        ThrioNavigatorImplement.shared()
+            .pageChannel
+            .willDisappear(route.settings, NavigatorRouteAction.remove);
       }
       navigatorState.pop();
       return Future.value(true);
@@ -247,7 +252,8 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
   @override
   Widget build(BuildContext context) => widget.child;
 
-  void _poppedResultCallback(NavigatorParamsCallback? poppedResultCallback, String? url, dynamic params) {
+  void _poppedResultCallback(
+      NavigatorParamsCallback? poppedResultCallback, String? url, dynamic params) {
     if (poppedResultCallback == null) {
       return;
     }
@@ -264,8 +270,8 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
         if (params.containsKey('__thrio_TParams__')) {
           // ignore: avoid_as
           final typeString = params['__thrio_TParams__'] as String;
-          final paramsObjs =
-              ThrioModule.get<JsonDeserializer>(url: url, key: typeString)?.call(params.cast<String, dynamic>());
+          final paramsObjs = ThrioModule.get<JsonDeserializer>(url: url, key: typeString)
+              ?.call(params.cast<String, dynamic>());
           poppedResultCallback(paramsObjs);
           return;
         }

@@ -23,7 +23,7 @@
 
 #import "NavigatorFlutterEngineFactory.h"
 #import "ThrioChannel.h"
-#import "ThrioPlugin.h"
+#import "FlutterThrioPlugin.h"
 #import "ThrioRegistryMap.h"
 #import "ThrioRegistrySetMap.h"
 

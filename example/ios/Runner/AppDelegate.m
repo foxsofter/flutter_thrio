@@ -1,5 +1,5 @@
 #import "AppDelegate.h"
-#import <thrio/Thrio.h>
+#import <flutter_thrio/FlutterThrio.h>
 #import <Flutter/Flutter.h>
 
 #import "MainModule.h"

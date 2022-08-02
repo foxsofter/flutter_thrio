@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:thrio/thrio.dart';
+import 'package:flutter_thrio/flutter_thrio.dart';
 
 class Page extends StatefulWidget {
   const Page({
@@ -40,16 +40,15 @@ class _PageState extends State<Page> {
           },
           child: Scaffold(
               appBar: AppBar(
-                brightness: Brightness.light,
                 backgroundColor: Colors.white,
-                title: const Text('thrio_example',
-                    style: TextStyle(color: Colors.black)),
+                title: const Text('thrio_example', style: TextStyle(color: Colors.black)),
                 leading: context.shouldCanPop(const IconButton(
                   color: Colors.black,
                   tooltip: 'back',
                   icon: Icon(Icons.arrow_back_ios),
                   onPressed: ThrioNavigator.pop,
                 )),
+                systemOverlayStyle: SystemUiOverlayStyle.dark,
               ),
               body: SingleChildScrollView(
                 child: Container(
@@ -60,8 +59,7 @@ class _PageState extends State<Page> {
                       alignment: AlignmentDirectional.center,
                       child: Text(
                         'flutter3: index is ${widget.index}',
-                        style:
-                            const TextStyle(fontSize: 28, color: Colors.blue),
+                        style: const TextStyle(fontSize: 28, color: Colors.blue),
                       ),
                     ),
                     InkWell(
@@ -172,8 +170,8 @@ class _PageState extends State<Page> {
                           )),
                     ),
                     InkWell(
-                      onTap: () => Navigator.push(context,
-                          MaterialPageRoute(builder: (context) => TestPage())),
+                      onTap: () => Navigator.push(
+                          context, MaterialPageRoute(builder: (context) => TestPage())),
                       child: Container(
                           padding: const EdgeInsets.all(8),
                           margin: const EdgeInsets.all(8),
@@ -220,9 +218,7 @@ class _TestPageState extends State<TestPage> {
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: ElevatedButton(
-                  style: ButtonStyle(
-                      foregroundColor:
-                          MaterialStateProperty.all(Colors.indigo)),
+                  style: ButtonStyle(foregroundColor: MaterialStateProperty.all(Colors.indigo)),
                   onPressed: () {
                     Navigator.of(context).pop();
                   },

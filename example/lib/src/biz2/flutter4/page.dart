@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:thrio/thrio.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_thrio/flutter_thrio.dart';
 
 class Page extends StatefulWidget {
   const Page({
@@ -26,16 +27,15 @@ class _PageState extends State<Page> {
   @override
   Widget build(BuildContext context) => Scaffold(
       appBar: AppBar(
-        brightness: Brightness.light,
         backgroundColor: Colors.white,
-        title:
-            const Text('thrio_example', style: TextStyle(color: Colors.black)),
+        title: const Text('thrio_example', style: TextStyle(color: Colors.black)),
         leading: context.shouldCanPop(const IconButton(
           color: Colors.black,
           tooltip: 'back',
           icon: Icon(Icons.arrow_back_ios),
           onPressed: ThrioNavigator.pop,
         )),
+        systemOverlayStyle: SystemUiOverlayStyle.dark,
       ),
       body: SingleChildScrollView(
         child: Container(
@@ -133,8 +133,7 @@ class _PageState extends State<Page> {
                   url: '/biz1/flutter1',
                   name: 'page1Notify',
                 )) {
-                  await ThrioNavigator.push(
-                      url: '/biz1/flutter1', params: {'page1Notify': {}});
+                  await ThrioNavigator.push(url: '/biz1/flutter1', params: {'page1Notify': {}});
                 }
               },
               child: Container(

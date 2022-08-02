@@ -1,9 +1,8 @@
-import 'package:thrio/thrio.dart';
+import 'package:flutter_thrio/flutter_thrio.dart';
 
 import 'page.dart' as flutter2;
 
-class Module
-    with ThrioModule, ModulePageBuilder, ModuleRouteTransitionsBuilder {
+class Module with ThrioModule, ModulePageBuilder, ModuleRouteTransitionsBuilder {
   @override
   String get key => 'flutter2';
 
