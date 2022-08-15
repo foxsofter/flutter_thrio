@@ -31,10 +31,10 @@ import 'thrio_module.dart';
 mixin ModuleParamScheme on ThrioModule {
   /// Param schemes registered in the current Module
   ///
-  final _paramSchemes = RegistryMap<Comparable, Type>();
+  final _paramSchemes = RegistryMap<Comparable<dynamic>, Type>();
 
   @protected
-  bool hasParamScheme<T>(Comparable key) {
+  bool hasParamScheme<T>(final Comparable<dynamic> key) {
     if (_paramSchemes.keys.contains(key)) {
       if (T == dynamic || T == Object) {
         return true;
@@ -45,12 +45,12 @@ mixin ModuleParamScheme on ThrioModule {
   }
 
   @protected
-  final paramStreamCtrls = <Comparable, Set<StreamController<dynamic>>>{};
+  final paramStreamCtrls = <Comparable<dynamic>, Set<StreamController<dynamic>>>{};
 
   /// Subscribe to a series of param by `key`.
   ///
   @protected
-  Stream<T> onParam<T>(Comparable key) {
+  Stream<T> onParam<T>(final Comparable<dynamic> key) {
     final sc = StreamController<T>();
     sc
       ..onListen = () {
@@ -68,14 +68,14 @@ mixin ModuleParamScheme on ThrioModule {
     return sc.stream;
   }
 
-  final _params = <Comparable, dynamic>{};
+  final _params = <Comparable<dynamic>, dynamic>{};
 
   /// Gets param by `key` & `T`.
   ///
   /// Throw `ThrioException` if `T` is not matched param scheme.
   ///
   @protected
-  T? getParam<T>(Comparable key) {
+  T? getParam<T>(final Comparable<dynamic> key) {
     // Anchor module does not need to get param scheme.
     if (this == anchor) {
       return _params[key] as T; // ignore: avoid_as
@@ -98,7 +98,7 @@ mixin ModuleParamScheme on ThrioModule {
   /// Return `false` if param scheme is not registered.
   ///
   @protected
-  bool setParam<T>(Comparable key, T value) {
+  bool setParam<T>(final Comparable<dynamic> key, final T value) {
     // Anchor module does not need to set param scheme.
     if (this == anchor) {
       final oldValue = _params[key];
@@ -126,7 +126,7 @@ mixin ModuleParamScheme on ThrioModule {
     return true;
   }
 
-  void _setParam(Comparable key, value) {
+  void _setParam(final Comparable<dynamic> key, final dynamic value) {
     if (_params[key] != value) {
       _params[key] = value;
       Future(() {
@@ -147,12 +147,15 @@ mixin ModuleParamScheme on ThrioModule {
   ///
   /// Throw `ThrioException` if `T` is not matched param scheme.
   ///
-  T removeParam<T>(Comparable key) {
+  T removeParam<T>(final Comparable<dynamic> key) {
     // Anchor module does not need to get param scheme.
     if (this == anchor) {
       return _params.remove(key) as T; // ignore: avoid_as
     }
-    if (T != dynamic && T != Object && _paramSchemes.keys.contains(key) && _paramSchemes[key] != T) {
+    if (T != dynamic &&
+        T != Object &&
+        _paramSchemes.keys.contains(key) &&
+        _paramSchemes[key] != T) {
       throw ThrioException('$T does not match the param scheme type: ${_paramSchemes[key]}');
     }
     return _params.remove(key) as T; // ignore: avoid_as
@@ -161,7 +164,7 @@ mixin ModuleParamScheme on ThrioModule {
   /// A function for register a param scheme.
   ///
   @protected
-  void onParamSchemeRegister(ModuleContext moduleContext) {}
+  void onParamSchemeRegister(final ModuleContext moduleContext) {}
 
   /// Register a param scheme for the module.
   ///
@@ -170,9 +173,9 @@ mixin ModuleParamScheme on ThrioModule {
   /// Unregistry by calling the return value `VoidCallback`.
   ///
   @protected
-  VoidCallback registerParamScheme<T>(Comparable key) {
+  VoidCallback registerParamScheme<T>(final Comparable<dynamic> key) {
     if (_paramSchemes.keys.contains(key)) {
-      throw ThrioException('$T is already registered for key ${_paramSchemes[key]}');
+      throw ThrioException('$T is already registered for key ${_paramSchemes[key]}');
     }
     final callback = _paramSchemes.registry(key, T);
     return () {

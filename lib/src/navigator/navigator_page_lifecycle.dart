@@ -31,7 +31,7 @@ import 'navigator_widget.dart';
 
 class NavigatorPageLifecycle extends StatefulWidget {
   const NavigatorPageLifecycle({
-    Key? key,
+    final Key? key,
     this.willAppear,
     this.didAppear,
     this.willDisappear,
@@ -103,7 +103,7 @@ class _NavigatorPageLifecycleState extends State<NavigatorPageLifecycle> {
   }
 
   @override
-  Widget build(BuildContext context) => widget.child;
+  Widget build(final BuildContext context) => widget.child;
 }
 
 class _PageLifecyclePageObserver with NavigatorPageObserver {
@@ -112,32 +112,32 @@ class _PageLifecyclePageObserver with NavigatorPageObserver {
   final _NavigatorPageLifecycleState lifecycleState;
 
   @override
-  void willAppear(RouteSettings routeSettings) {
+  void willAppear(final RouteSettings routeSettings) {
     final callback = lifecycleState.widget.willAppear;
     _lifecycleCallback(callback, routeSettings);
   }
 
   @override
-  void didAppear(RouteSettings routeSettings) {
+  void didAppear(final RouteSettings routeSettings) {
     final callback = lifecycleState.widget.didAppear;
     _lifecycleCallback(callback, routeSettings);
   }
 
   @override
-  void willDisappear(RouteSettings routeSettings) {
+  void willDisappear(final RouteSettings routeSettings) {
     final callback = lifecycleState.widget.willDisappear;
     _lifecycleCallback(callback, routeSettings);
   }
 
   @override
-  void didDisappear(RouteSettings routeSettings) {
+  void didDisappear(final RouteSettings routeSettings) {
     final callback = lifecycleState.widget.didDisappear;
     _lifecycleCallback(callback, routeSettings);
   }
 
   void _lifecycleCallback(
-    NavigatorRouteSettingsCallback? callback,
-    RouteSettings routeSettings,
+    final NavigatorRouteSettingsCallback? callback,
+    final RouteSettings routeSettings,
   ) {
     if (callback != null) {
       final route = lifecycleState._route;

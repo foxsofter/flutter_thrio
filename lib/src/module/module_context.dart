@@ -38,7 +38,7 @@ class ModuleContext {
   ///
   /// If not exist, get from parent module's `ModuleContext`.
   ///
-  T? get<T>(String key) {
+  T? get<T>(final String key) {
     if (module is ModuleParamScheme) {
       final value = (module as ModuleParamScheme).getParam<T>(key);
       if (value != null) {
@@ -52,7 +52,7 @@ class ModuleContext {
   ///
   /// Return `false` if param scheme is not registered.
   ///
-  bool set<T>(String key, T value) {
+  bool set<T>(final String key, final T value) {
     if (module is ModuleParamScheme) {
       if ((module as ModuleParamScheme).setParam<T>(key, value)) {
         return true;
@@ -68,7 +68,7 @@ class ModuleContext {
   ///
   /// Return `value` if param not exists.
   ///
-  T? remove<T>(String key) {
+  T? remove<T>(final String key) {
     if (module is ModuleParamScheme) {
       final value = (module as ModuleParamScheme).removeParam<T>(key);
       if (value != null) {
@@ -81,7 +81,7 @@ class ModuleContext {
 
   /// Subscribe to a series of param by `key`.
   ///
-  Stream<T>? on<T>(String key) {
+  Stream<T>? on<T>(final String key) {
     if (module == anchor) {
       return anchor.onParam(key);
     }

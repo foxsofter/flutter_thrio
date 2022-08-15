@@ -46,7 +46,7 @@ class ThrioChannel {
 
   EventChannel? _eventChannel;
 
-  final _eventControllers = <String, List<StreamController>>{};
+  final _eventControllers = <String, List<StreamController<dynamic>>>{};
 
   Future<List<T>?> invokeListMethod<T>(final String method,
       [final Map<String, dynamic>? arguments]) {
@@ -86,7 +86,7 @@ class ThrioChannel {
     final controller = StreamController<Map<String, dynamic>>();
     controller
       ..onListen = () {
-        _eventControllers[name] ??= <StreamController>[];
+        _eventControllers[name] ??= <StreamController<dynamic>>[];
         _eventControllers[name]?.add(controller);
       }
       ..onCancel = () {

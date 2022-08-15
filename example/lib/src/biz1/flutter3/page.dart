@@ -171,7 +171,7 @@ class _PageState extends State<Page> {
                     ),
                     InkWell(
                       onTap: () => Navigator.push(
-                          context, MaterialPageRoute(builder: (context) => TestPage())),
+                          context, MaterialPageRoute(builder: (context) => const TestPage())),
                       child: Container(
                           padding: const EdgeInsets.all(8),
                           margin: const EdgeInsets.all(8),
@@ -187,6 +187,8 @@ class _PageState extends State<Page> {
 }
 
 class TestPage extends StatefulWidget {
+  const TestPage({Key? key}) : super(key: key);
+
   @override
   _TestPageState createState() => _TestPageState();
 }

@@ -45,11 +45,12 @@ mixin ThrioModule {
   /// Modular initialization function, needs to be called
   /// once during App initialization.
   ///
-  static void init(ThrioModule rootModule, [String? entrypoint]) {
+  static void init(final ThrioModule rootModule, [final String? entrypoint]) {
     if (anchor.modules.length == 1) {
       throw ThrioException('init method can only be called once.');
     } else {
-      final moduleContext = entrypoint == null ? ModuleContext() : ModuleContext(entrypoint: entrypoint);
+      final moduleContext =
+          entrypoint == null ? ModuleContext() : ModuleContext(entrypoint: entrypoint);
       moduleOf[moduleContext] = anchor;
       anchor
         .._moduleContext = moduleContext
@@ -74,11 +75,11 @@ mixin ThrioModule {
   /// `NavigatorPageBuilder`, and `url` is null or empty, find instance of `T`
   /// in all modules.
   ///
-  static T? get<T>({String? url, String? key}) => anchor.get<T>(url: url, key: key);
+  static T? get<T>({final String? url, final String? key}) => anchor.get<T>(url: url, key: key);
 
   /// Returns true if the `url` has been registered.
   ///
-  static bool contains(String url) => anchor.get<NavigatorPageBuilder>(url: url) != null;
+  static bool contains(final String url) => anchor.get<NavigatorPageBuilder>(url: url) != null;
 
   /// Get instances by `T` and `url`.
   ///
@@ -91,7 +92,7 @@ mixin ThrioModule {
   /// If `T` is `NavigatorRouteObserver`, returns all route observers
   /// matched by `url`.
   ///
-  static Iterable<T> gets<T>({required String url}) => anchor.gets<T>(url);
+  static Iterable<T> gets<T>({required final String url}) => anchor.gets<T>(url);
 
   @protected
   final modules = <String, ThrioModule>{};
@@ -116,7 +117,7 @@ mixin ThrioModule {
   /// the `onModuleRegister` function of the `module`.
   ///
   @protected
-  void registerModule(ThrioModule module, ModuleContext moduleContext) {
+  void registerModule(final ThrioModule module, final ModuleContext moduleContext) {
     if (modules.containsKey(module.key)) {
       throw ThrioException('A module with the same key ${module.key} already exists');
     } else {
@@ -185,12 +186,12 @@ mixin ThrioModule {
   /// A function for registering submodules.
   ///
   @protected
-  void onModuleRegister(ModuleContext moduleContext) {}
+  void onModuleRegister(final ModuleContext moduleContext) {}
 
   /// A function for module initialization.
   ///
   @protected
-  void onModuleInit(ModuleContext moduleContext) {}
+  void onModuleInit(final ModuleContext moduleContext) {}
 
   /// Returns whether the module is loaded.
   ///
@@ -200,23 +201,25 @@ mixin ThrioModule {
   /// Called when the first page in the module is about to be pushed.
   ///
   @protected
-  Future onModuleLoading(ModuleContext moduleContext) async => verbose('onModuleLoading: $key');
+  Future<dynamic> onModuleLoading(final ModuleContext moduleContext) async =>
+      verbose('onModuleLoading: $key');
 
   /// Called when the last page in the module is closed.
   ///
   @protected
-  Future onModuleUnloading(ModuleContext moduleContext) async => verbose('onModuleUnloading: $key');
+  Future<dynamic> onModuleUnloading(final ModuleContext moduleContext) async =>
+      verbose('onModuleUnloading: $key');
 
   /// A function for module asynchronous initialization.
   ///
   @protected
-  void onModuleAsyncInit(ModuleContext moduleContext) {}
+  void onModuleAsyncInit(final ModuleContext moduleContext) {}
 
   @protected
   bool get navigatorLogEnabled => navigatorLogging;
 
   @protected
-  set navigatorLogEnabled(bool enabled) => navigatorLogging = enabled;
+  set navigatorLogEnabled(final bool enabled) => navigatorLogging = enabled;
 
   @override
   String toString() => '$key: ${modules.keys.toString()}';

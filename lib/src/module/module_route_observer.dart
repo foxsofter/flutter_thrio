@@ -32,7 +32,7 @@ mixin ModuleRouteObserver on ThrioModule {
   /// A function for register a route observer.
   ///
   @protected
-  void onRouteObserverRegister(ModuleContext moduleContext) {}
+  void onRouteObserverRegister(final ModuleContext moduleContext) {}
 
   /// Register observers for route action of Dart pages under
   /// the current module and submodules.
@@ -42,5 +42,6 @@ mixin ModuleRouteObserver on ThrioModule {
   /// Do not override this method.
   ///
   @protected
-  VoidCallback registerRouteObserver(NavigatorRouteObserver routeObserver) => routeObservers.registry(routeObserver);
+  VoidCallback registerRouteObserver(final NavigatorRouteObserver routeObserver) =>
+      routeObservers.registry(routeObserver);
 }

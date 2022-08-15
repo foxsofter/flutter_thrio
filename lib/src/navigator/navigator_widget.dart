@@ -38,9 +38,9 @@ import 'thrio_navigator_implement.dart';
 ///
 class NavigatorWidget extends StatefulWidget {
   const NavigatorWidget({
-    Key? key,
+    final Key? key,
     required this.moduleContext,
-    required NavigatorObserverManager observerManager,
+    required final NavigatorObserverManager observerManager,
     required this.child,
   })  : _observerManager = observerManager,
         super(key: key);
@@ -58,10 +58,10 @@ class NavigatorWidget extends StatefulWidget {
 class NavigatorWidgetState extends State<NavigatorWidget> {
   final _style = const SystemUiOverlayStyle();
 
-  List<Route> get history => widget._observerManager.pageRoutes;
+  List<Route<dynamic>> get history => widget._observerManager.pageRoutes;
 
   /// 还无法实现animated=false
-  Future<bool> push(RouteSettings settings, {bool animated = true}) async {
+  Future<bool> push(final RouteSettings settings, {final bool animated = true}) async {
     final navigatorState = widget.child.tryStateOf<NavigatorState>();
     if (navigatorState == null) {
       return false;
@@ -96,7 +96,8 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
     return true;
   }
 
-  Future<bool> maybePop(RouteSettings settings, {bool animated = true, bool inRoot = false}) async {
+  Future<bool> maybePop(final RouteSettings settings,
+      {final bool animated = true, final bool inRoot = false}) async {
     final navigatorState = widget.child.tryStateOf<NavigatorState>();
     if (navigatorState == null) {
       return false;
@@ -118,7 +119,8 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
     return pop(settings, animated: animated, inRoot: inRoot);
   }
 
-  Future<bool> pop(RouteSettings settings, {bool animated = true, bool inRoot = false}) {
+  Future<bool> pop(final RouteSettings settings,
+      {final bool animated = true, final bool inRoot = false}) {
     final navigatorState = widget.child.tryStateOf<NavigatorState>();
     if (navigatorState == null || history.isEmpty) {
       return Future.value(false);
@@ -126,7 +128,7 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
 
     // 处理经过 Navigator 入栈的匿名 Route
     if (settings.name == null) {
-      return navigatorState.maybePop().then((_) => false);
+      return navigatorState.maybePop().then((final _) => false);
     }
 
     // 不管成功与否都 return false，避免原生端清栈
@@ -162,19 +164,19 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
       navigatorState.removeRoute(route);
     }
 
-    return Future.value(true).then((value) async {
+    return Future.value(true).then((final value) async {
       _poppedResultCallback(route.poppedResult, route.settings.url, settings.params);
       return value;
     });
   }
 
-  Future<bool> popTo(RouteSettings settings, {bool animated = true}) {
+  Future<bool> popTo(final RouteSettings settings, {final bool animated = true}) {
     final navigatorState = widget.child.tryStateOf<NavigatorState>();
     if (navigatorState == null || history.length < 2) {
       return Future.value(false);
     }
 
-    final index = history.indexWhere((it) => it.settings.name == settings.name);
+    final index = history.indexWhere((final it) => it.settings.name == settings.name);
     if (index == -1 || index == history.length - 1) {
       return Future.value(false);
     }
@@ -194,7 +196,7 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
     // ignore: avoid_as
     (route as NavigatorPageRoute).routeAction = NavigatorRouteAction.popTo;
     if (animated) {
-      navigatorState.popUntil((it) => it.settings.name == settings.name);
+      navigatorState.popUntil((final it) => it.settings.name == settings.name);
     } else {
       if (history.last != route) {
         for (var i = history.length - 2; i > index; i--) {
@@ -209,12 +211,12 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
     return Future.value(true);
   }
 
-  Future<bool> remove(RouteSettings settings, {bool animated = false}) {
+  Future<bool> remove(final RouteSettings settings, {final bool animated = false}) {
     final navigatorState = widget.child.tryStateOf<NavigatorState>();
     if (navigatorState == null) {
       return Future.value(false);
     }
-    final route = history.firstWhereOrNull((it) => it.settings.name == settings.name);
+    final route = history.firstWhereOrNull((final it) => it.settings.name == settings.name);
     if (route == null) {
       return Future.value(false);
     }
@@ -250,10 +252,10 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
   }
 
   @override
-  Widget build(BuildContext context) => widget.child;
+  Widget build(final BuildContext context) => widget.child;
 
-  void _poppedResultCallback(
-      NavigatorParamsCallback? poppedResultCallback, String? url, dynamic params) {
+  void _poppedResultCallback(final NavigatorParamsCallback? poppedResultCallback, final String? url,
+      final dynamic params) {
     if (poppedResultCallback == null) {
       return;
     }
@@ -263,14 +265,15 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
       if (params is Map) {
         if (params.containsKey('__thrio_Params_HashCode__')) {
           // ignore: avoid_as
-          final paramsObjs = anchor.removeParam(params['__thrio_Params_HashCode__'] as int);
+          final paramsObjs =
+              anchor.removeParam<dynamic>(params['__thrio_Params_HashCode__'] as int);
           poppedResultCallback(paramsObjs);
           return;
         }
         if (params.containsKey('__thrio_TParams__')) {
           // ignore: avoid_as
           final typeString = params['__thrio_TParams__'] as String;
-          final paramsObjs = ThrioModule.get<JsonDeserializer>(url: url, key: typeString)
+          final paramsObjs = ThrioModule.get<JsonDeserializer<dynamic>>(url: url, key: typeString)
               ?.call(params.cast<String, dynamic>());
           poppedResultCallback(paramsObjs);
           return;

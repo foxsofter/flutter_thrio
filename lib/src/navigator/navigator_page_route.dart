@@ -32,12 +32,12 @@ enum NavigatorRouteAction { push, pop, popTo, remove }
 ///
 class NavigatorPageRoute extends MaterialPageRoute<bool> {
   NavigatorPageRoute({
-    required NavigatorPageBuilder builder,
-    required RouteSettings settings,
-    bool maintainState = true,
-    bool fullscreenDialog = false,
+    required final NavigatorPageBuilder builder,
+    required final RouteSettings settings,
+    final bool maintainState = true,
+    final bool fullscreenDialog = false,
   }) : super(
-          builder: (_) => builder(settings),
+          builder: (final _) => builder(settings),
           settings: settings,
           maintainState: maintainState,
           fullscreenDialog: fullscreenDialog,
@@ -49,21 +49,21 @@ class NavigatorPageRoute extends MaterialPageRoute<bool> {
 
   final _popDisableds = <String, bool>{};
 
-  final _popDisabledFutures = <String, Future>{};
+  final _popDisabledFutures = <String, Future<dynamic>>{};
 
   @override
-  void addScopedWillPopCallback(WillPopCallback callback) {
+  void addScopedWillPopCallback(final WillPopCallback callback) {
     _setPopDisabled(true);
     super.addScopedWillPopCallback(callback);
   }
 
   @override
-  void removeScopedWillPopCallback(WillPopCallback callback) {
+  void removeScopedWillPopCallback(final WillPopCallback callback) {
     _setPopDisabled(false);
     super.removeScopedWillPopCallback(callback);
   }
 
-  void _setPopDisabled(bool disabled) {
+  void _setPopDisabled(final bool disabled) {
     _popDisableds[settings.name!] = disabled;
 
     // 延迟300ms执行，避免因为WillPopScope依赖变更导致发送过多的Channel消息
@@ -82,10 +82,10 @@ class NavigatorPageRoute extends MaterialPageRoute<bool> {
 
   @override
   Widget buildTransitions(
-    BuildContext context,
-    Animation<double> animation,
-    Animation<double> secondaryAnimation,
-    Widget child,
+    final BuildContext context,
+    final Animation<double> animation,
+    final Animation<double> secondaryAnimation,
+    final Widget child,
   ) {
     if (settings.isNested) {
       final builder = ThrioModule.get<RouteTransitionsBuilder>(url: settings.url);

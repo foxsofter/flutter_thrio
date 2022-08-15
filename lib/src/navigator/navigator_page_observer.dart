@@ -28,17 +28,17 @@ import 'thrio_navigator.dart';
 mixin NavigatorPageObserver {
   /// The `route` is about to be activated.
   ///
-  void willAppear(RouteSettings routeSettings) {}
+  void willAppear(final RouteSettings routeSettings) {}
 
   /// The `route` has been activated.
   ///
-  void didAppear(RouteSettings routeSettings) {}
+  void didAppear(final RouteSettings routeSettings) {}
 
   /// The `route` is about to disappear.
   ///
-  void willDisappear(RouteSettings routeSettings) {}
+  void willDisappear(final RouteSettings routeSettings) {}
 
   /// The `route` is has disappeared.
   ///
-  void didDisappear(RouteSettings routeSettings) {}
+  void didDisappear(final RouteSettings routeSettings) {}
 }

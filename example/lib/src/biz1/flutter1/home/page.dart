@@ -67,7 +67,7 @@ class _PageState extends State<Page> {
                         style: const TextStyle(fontSize: 28, color: Colors.blue),
                       ),
                     ),
-                    Container(
+                    SizedBox(
                         height: 25,
                         width: 100,
                         child: TextField(

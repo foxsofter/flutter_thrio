@@ -1,3 +1,4 @@
+/* groovylint-disable-next-line CompileStatic */
 group 'com.foxsofter.flutter_thrio'
 version '3.0.0'
 

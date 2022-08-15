@@ -1,1 +1,2 @@
+/* groovylint-disable-next-line CompileStatic */
 rootProject.name = 'flutter_thrio'

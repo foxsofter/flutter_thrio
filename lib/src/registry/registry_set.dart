@@ -26,7 +26,7 @@ import 'package:flutter/foundation.dart';
 class RegistrySet<T> with IterableMixin<T> {
   final Set<T> _sets = {};
 
-  VoidCallback registry(T value) {
+  VoidCallback registry(final T value) {
     assert(value != null, 'value must not be null.');
 
     _sets.add(value);
@@ -35,7 +35,7 @@ class RegistrySet<T> with IterableMixin<T> {
     };
   }
 
-  VoidCallback registryAll(Set<T> values) {
+  VoidCallback registryAll(final Set<T> values) {
     assert(values.isNotEmpty, 'values must not be null or empty');
 
     _sets.addAll(values);

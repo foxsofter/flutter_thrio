@@ -26,8 +26,10 @@ import 'package:flutter/widgets.dart';
 extension NavigatorRouteSettings on RouteSettings {
   /// Converting arguments to route settings.
   ///
-  static RouteSettings? fromArguments(Map<String, dynamic>? arguments) {
-    if ((arguments != null && arguments.isNotEmpty) && arguments.containsKey('url') && arguments.containsKey('index')) {
+  static RouteSettings? fromArguments(final Map<String, dynamic>? arguments) {
+    if ((arguments != null && arguments.isNotEmpty) &&
+        arguments.containsKey('url') &&
+        arguments.containsKey('index')) {
       final urlValue = arguments['url'];
       final url = urlValue is String ? urlValue : null;
       final indexValue = arguments['index'];
@@ -35,12 +37,15 @@ extension NavigatorRouteSettings on RouteSettings {
       final isNestedValue = arguments['isNested'];
       final isNested = isNestedValue != null && isNestedValue is bool && isNestedValue;
       final params = arguments['params'];
-      return RouteSettings(name: '$index $url', arguments: <String, dynamic>{'isNested': isNested, 'params': params});
+      return RouteSettings(
+          name: '$index $url',
+          arguments: <String, dynamic>{'isNested': isNested, 'params': params});
     }
     return null;
   }
 
-  Map<String, dynamic> toArguments() => <String, dynamic>{'url': url, 'index': index, 'params': params};
+  Map<String, dynamic> toArguments() =>
+      <String, dynamic>{'url': url, 'index': index, 'params': params};
 
   String? get url {
     final settingsName = name;
@@ -71,7 +76,7 @@ extension NavigatorRouteSettings on RouteSettings {
     return null;
   }
 
-  set params(dynamic value) {
+  set params(final dynamic value) {
     if (arguments != null && arguments is Map<String, dynamic>) {
       (arguments as Map<String, dynamic>)['params'] = value;
     }

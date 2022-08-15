@@ -25,7 +25,7 @@ import 'package:flutter/services.dart';
 import 'thrio_navigator_implement.dart';
 
 class NavigatorHome extends StatefulWidget {
-  const NavigatorHome({this.showRestartButton = false});
+  const NavigatorHome({final Key? key, this.showRestartButton = false}) : super(key: key);
 
   final bool showRestartButton;
 
@@ -35,7 +35,7 @@ class NavigatorHome extends StatefulWidget {
 
 class _NavigatorHomeState extends State<NavigatorHome> {
   @override
-  Widget build(BuildContext context) => Scaffold(
+  Widget build(final BuildContext context) => Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.white,
           title: const Text('...', style: TextStyle(color: Colors.blue)),

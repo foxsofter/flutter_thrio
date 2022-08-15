@@ -43,19 +43,19 @@ class ThrioNavigatorImplement {
 
   ThrioNavigatorImplement._();
 
-  static late final ThrioNavigatorImplement _default = ThrioNavigatorImplement._();
+  static final ThrioNavigatorImplement _default = ThrioNavigatorImplement._();
 
-  void init(ModuleContext moduleContext) {
+  void init(final ModuleContext moduleContext) {
     _channel = ThrioChannel(channel: '__thrio_app__${moduleContext.entrypoint}');
-    ThrioChannel(channel: '__thrio_module_context__${moduleContext.entrypoint}').registryMethodCall('set', (
-        [arguments]) async {
+    ThrioChannel(channel: '__thrio_module_context__${moduleContext.entrypoint}')
+        .registryMethodCall('set', ([final arguments]) async {
       if (arguments == null || arguments.isEmpty) {
         return;
       }
       for (final key in arguments.keys) {
         final value = arguments[key];
         if (value == null) {
-          anchor.remove(key);
+          anchor.remove<dynamic>(key);
         } else {
           anchor.set(key, _deserializeParams(value));
         }
@@ -72,7 +72,7 @@ class ThrioNavigatorImplement {
     verbose('TransitionBuilder init');
   }
 
-  TransitionBuilder get builder => (context, child) {
+  TransitionBuilder get builder => (final context, final child) {
         if (child is Navigator) {
           final navigator = child;
           if (!navigator.observers.contains(_observerManager)) {
@@ -85,7 +85,11 @@ class ThrioNavigatorImplement {
             child: navigator,
           );
         }
-        return Container(width: 200, height: 100, child: const Text('child for builder must be Navigator'));
+        return const SizedBox(
+          width: 200,
+          height: 100,
+          child: Text('child for builder must be Navigator'),
+        );
       };
 
   late final ModuleContext _moduleContext;
@@ -111,16 +115,18 @@ class ThrioNavigatorImplement {
   void ready() => _channel.invokeMethod<bool>('ready');
 
   Future<int> push<TParams>({
-    required String url,
-    TParams? params,
-    bool animated = true,
-    NavigatorParamsCallback? poppedResult,
+    required final String url,
+    final TParams? params,
+    final bool animated = true,
+    final NavigatorParamsCallback? poppedResult,
   }) =>
-      _sendChannel.push<TParams>(url: url, params: params, animated: animated).then<int>((index) {
+      _sendChannel
+          .push<TParams>(url: url, params: params, animated: animated)
+          .then<int>((final index) {
         if (poppedResult != null && index > 0) {
           final routeName = '$index $url';
           final routeHistory = ThrioNavigatorImplement.shared().navigatorState?.history;
-          final route = routeHistory?.lastWhereOrNull((it) => it.settings.name == routeName);
+          final route = routeHistory?.lastWhereOrNull((final it) => it.settings.name == routeName);
           if (route != null && route is NavigatorPageRoute) {
             route.poppedResult = poppedResult;
           } else {
@@ -131,68 +137,80 @@ class ThrioNavigatorImplement {
         return index;
       });
 
-  Future<bool> notify<TParams>({String? url, int index = 0, required String name, TParams? params}) =>
+  Future<bool> notify<TParams>(
+          {final String? url,
+          final int index = 0,
+          required final String name,
+          final TParams? params}) =>
       _sendChannel.notify<TParams>(name: name, url: url, index: index, params: params);
 
-  Future<bool> pop<TParams>({TParams? params, bool animated = true}) =>
+  Future<bool> pop<TParams>({final TParams? params, final bool animated = true}) =>
       _sendChannel.pop<TParams>(params: params, animated: animated);
 
-  Future<bool> popTo({required String url, int index = 0, bool animated = true}) =>
+  Future<bool> popTo(
+          {required final String url, final int index = 0, final bool animated = true}) =>
       _sendChannel.popTo(url: url, index: index, animated: animated);
 
-  Future<bool> remove({required String url, int index = 0, bool animated = true}) =>
+  Future<bool> remove(
+          {required final String url, final int index = 0, final bool animated = true}) =>
       _sendChannel.remove(url: url, index: index, animated: animated);
 
-  Future<bool> isInitialRoute({required String url, int index = 0}) =>
+  Future<bool> isInitialRoute({required final String url, final int index = 0}) =>
       _sendChannel.isInitialRoute(url: url, index: index);
 
-  Future<RouteSettings?> lastRoute({String? url}) => _sendChannel.lastRoute(url: url);
+  Future<RouteSettings?> lastRoute({final String? url}) => _sendChannel.lastRoute(url: url);
 
-  Future<List<RouteSettings>> allRoutes({String? url}) => _sendChannel.allRoutes(url: url);
+  Future<List<RouteSettings>> allRoutes({final String? url}) => _sendChannel.allRoutes(url: url);
 
-  RouteSettings? lastFlutterRoute({String? url}) {
+  RouteSettings? lastFlutterRoute({final String? url}) {
     if (url == null || url.isEmpty) {
       return navigatorState?.history.lastOrNull?.settings;
     }
     return navigatorState?.history
-        .lastWhereOrNull((it) => it is NavigatorPageRoute && it.settings.url == url)
+        .lastWhereOrNull((final it) => it is NavigatorPageRoute && it.settings.url == url)
         ?.settings;
   }
 
-  List<RouteSettings> allFlutterRoutes({String? url}) {
+  List<RouteSettings> allFlutterRoutes({final String? url}) {
     if (url == null || url.isEmpty) {
-      return navigatorState?.history.whereType<NavigatorPageRoute>().map<RouteSettings>((it) => it.settings).toList() ??
+      return navigatorState?.history
+              .whereType<NavigatorPageRoute>()
+              .map<RouteSettings>((final it) => it.settings)
+              .toList() ??
           <RouteSettings>[];
     }
     return navigatorState?.history
-            .where((it) => it is NavigatorPageRoute && it.settings.url == url)
-            .map((it) => it.settings)
+            .where((final it) => it is NavigatorPageRoute && it.settings.url == url)
+            .map((final it) => it.settings)
             .toList() ??
         <RouteSettings>[];
   }
 
-  bool isContainsInnerRoute({required String url}) {
+  bool isContainsInnerRoute({required final String url}) {
     final routes = navigatorState?.history ?? <NavigatorPageRoute>[];
     final index = url.isEmpty
-        ? routes.lastIndexWhere((route) => route is NavigatorPageRoute)
-        : routes.lastIndexWhere((route) => route is NavigatorPageRoute && route.settings.url == url);
+        ? routes.lastIndexWhere((final route) => route is NavigatorPageRoute)
+        : routes.lastIndexWhere(
+            (final route) => route is NavigatorPageRoute && route.settings.url == url);
     if (index < 0 || routes.length <= index + 1) {
       return false;
     }
     return routes[index + 1] is! NavigatorPageRoute;
   }
 
-  Future<bool> setPopDisabled({required String url, int index = 0, bool disabled = true}) =>
+  Future<bool> setPopDisabled(
+          {required final String url, final int index = 0, final bool disabled = true}) =>
       _sendChannel.setPopDisabled(url: url, index: index, disabled: disabled);
 
-  Stream onPageNotify({required String name, String? url, int index = 0}) =>
+  Stream<dynamic> onPageNotify(
+          {required final String name, final String? url, final int index = 0}) =>
       _receiveChannel.onPageNotify(name: name, url: url, index: index);
 
   void hotRestart() {
     _channel.invokeMethod<bool>('hotRestart');
   }
 
-  dynamic _deserializeParams(dynamic params) {
+  dynamic _deserializeParams(final dynamic params) {
     if (params == null) {
       return null;
     }
@@ -201,7 +219,8 @@ class ThrioNavigatorImplement {
       // ignore: avoid_as
       final typeString = params['__thrio_TParams__'] as String;
       if (typeString.isNotEmpty) {
-        final paramsObj = ThrioModule.get<JsonDeserializer>(key: typeString)?.call(params.cast<String, dynamic>());
+        final paramsObj = ThrioModule.get<JsonDeserializer<dynamic>>(key: typeString)
+            ?.call(params.cast<String, dynamic>());
         if (paramsObj != null) {
           return paramsObj;
         }

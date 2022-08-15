@@ -38,7 +38,7 @@ extension ThrioIterable<E> on Iterable<E> {
   ///
   /// If no element satisfies [test], return `null`.
   ///
-  E? firstWhereOrNull(bool Function(E it) predicate) {
+  E? firstWhereOrNull(final bool Function(E it) predicate) {
     for (final it in this) {
       if (predicate(it)) {
         return it;
@@ -51,7 +51,7 @@ extension ThrioIterable<E> on Iterable<E> {
   ///
   /// If no element satisfies [test], return `null`.
   ///
-  E? lastWhereOrNull(bool Function(E it) predicate) {
+  E? lastWhereOrNull(final bool Function(E it) predicate) {
     late E result;
     var foundMatching = false;
     for (final it in this) {

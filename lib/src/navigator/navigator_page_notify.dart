@@ -35,7 +35,7 @@ import 'thrio_navigator_implement.dart';
 
 class NavigatorPageNotify extends StatefulWidget {
   const NavigatorPageNotify({
-    Key? key,
+    final Key? key,
     required this.name,
     required this.onPageNotify,
     this.initialParams,
@@ -55,7 +55,7 @@ class NavigatorPageNotify extends StatefulWidget {
 }
 
 class _NavigatorPageNotifyState extends State<NavigatorPageNotify> {
-  StreamSubscription? _notifySubscription;
+  StreamSubscription<dynamic>? _notifySubscription;
 
   @override
   void initState() {
@@ -81,19 +81,21 @@ class _NavigatorPageNotifyState extends State<NavigatorPageNotify> {
     super.didChangeDependencies();
   }
 
-  void _listen(params) {
+  void _listen(final dynamic params) {
     if (params != null) {
       if (params is Map) {
         if (params.containsKey('__thrio_Params_HashCode__')) {
           // ignore: avoid_as
-          final paramsObjs = anchor.removeParam(params['__thrio_Params_HashCode__'] as int);
+          final paramsObjs =
+              anchor.removeParam<dynamic>(params['__thrio_Params_HashCode__'] as int);
           widget.onPageNotify(paramsObjs);
           return;
         }
         if (params.containsKey('__thrio_TParams__')) {
           // ignore: avoid_as
           final typeString = params['__thrio_TParams__'] as String;
-          final paramsObj = ThrioModule.get<JsonDeserializer>(key: typeString)?.call(params.cast<String, dynamic>());
+          final paramsObj = ThrioModule.get<JsonDeserializer<dynamic>>(key: typeString)
+              ?.call(params.cast<String, dynamic>());
           if (paramsObj != null) {
             widget.onPageNotify(paramsObj);
             return;
@@ -113,5 +115,5 @@ class _NavigatorPageNotifyState extends State<NavigatorPageNotify> {
   }
 
   @override
-  Widget build(BuildContext context) => widget.child;
+  Widget build(final BuildContext context) => widget.child;
 }

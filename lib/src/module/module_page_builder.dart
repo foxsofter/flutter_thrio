@@ -34,7 +34,7 @@ mixin ModulePageBuilder on ThrioModule {
 
   /// If there is a ModulePageBuilder in a module, there can be no submodules.
   ///
-  set pageBuilder(NavigatorPageBuilder? builder) {
+  set pageBuilder(final NavigatorPageBuilder? builder) {
     _pageBuilder = builder;
 
     final urlComponents = <String>['/$key'];
@@ -63,5 +63,5 @@ mixin ModulePageBuilder on ThrioModule {
   /// A function for setting a `NavigatorPageBuilder`.
   ///
   @protected
-  void onPageBuilderSetting(ModuleContext moduleContext) {}
+  void onPageBuilderSetting(final ModuleContext moduleContext) {}
 }

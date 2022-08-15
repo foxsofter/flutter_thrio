@@ -32,34 +32,34 @@ typedef NavigatorRouteObserverCallback = void Function(
 );
 
 class NavigatorRouteObserverChannel with NavigatorRouteObserver {
-  NavigatorRouteObserverChannel(String entrypoint)
+  NavigatorRouteObserverChannel(final String entrypoint)
       : _channel = ThrioChannel(channel: '__thrio_route_channel__$entrypoint') {
-    _on('didPush', (observer, routeSettings) => observer.didPush(routeSettings));
-    _on('didPop', (observer, routeSettings) => observer.didPop(routeSettings));
-    _on('didPopTo', (observer, routeSettings) => observer.didPopTo(routeSettings));
-    _on('didRemove', (observer, routeSettings) => observer.didRemove(routeSettings));
+    _on('didPush', (final observer, final routeSettings) => observer.didPush(routeSettings));
+    _on('didPop', (final observer, final routeSettings) => observer.didPop(routeSettings));
+    _on('didPopTo', (final observer, final routeSettings) => observer.didPopTo(routeSettings));
+    _on('didRemove', (final observer, final routeSettings) => observer.didRemove(routeSettings));
   }
 
   final ThrioChannel _channel;
 
   @override
-  void didPush(RouteSettings routeSettings) =>
+  void didPush(final RouteSettings routeSettings) =>
       _channel.invokeMethod<bool>('didPush', routeSettings.toArguments()..remove('params'));
 
   @override
-  void didPop(RouteSettings routeSettings) =>
+  void didPop(final RouteSettings routeSettings) =>
       _channel.invokeMethod<bool>('didPop', routeSettings.toArguments()..remove('params'));
 
   @override
-  void didPopTo(RouteSettings routeSettings) =>
+  void didPopTo(final RouteSettings routeSettings) =>
       _channel.invokeMethod<bool>('didPopTo', routeSettings.toArguments()..remove('params'));
 
   @override
-  void didRemove(RouteSettings routeSettings) =>
+  void didRemove(final RouteSettings routeSettings) =>
       _channel.invokeMethod<bool>('didRemove', routeSettings.toArguments()..remove('params'));
 
-  void _on(String method, NavigatorRouteObserverCallback callback) =>
-      _channel.registryMethodCall(method, ([arguments]) {
+  void _on(final String method, final NavigatorRouteObserverCallback callback) =>
+      _channel.registryMethodCall(method, ([final arguments]) {
         final routeSettings = NavigatorRouteSettings.fromArguments(arguments);
         if (routeSettings != null) {
           final observers = ThrioModule.gets<NavigatorRouteObserver>(url: routeSettings.url!);

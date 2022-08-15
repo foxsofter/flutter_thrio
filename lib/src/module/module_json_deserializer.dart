@@ -28,27 +28,28 @@ import 'thrio_module.dart';
 mixin ModuleJsonDeserializer on ThrioModule {
   /// Json deserializer registered in the current Module
   ///
-  final _jsonDeserializers = RegistryMap<Type, JsonDeserializer>();
+  final _jsonDeserializers = RegistryMap<Type, JsonDeserializer<dynamic>>();
 
   /// Get json deserializer by type string.
   ///
   @protected
-  JsonDeserializer? getJsonDeserializer(String typeString) {
-    final type = _jsonDeserializers.keys
-        .lastWhere((it) => it.toString() == typeString || typeString.endsWith(it.toString()), orElse: () => Null);
+  JsonDeserializer<dynamic>? getJsonDeserializer(final String typeString) {
+    final type = _jsonDeserializers.keys.lastWhere(
+        (final it) => it.toString() == typeString || typeString.endsWith(it.toString()),
+        orElse: () => Null);
     return _jsonDeserializers[type];
   }
 
   /// A function for register a json deserializer.
   ///
   @protected
-  void onJsonDeserializerRegister(ModuleContext moduleContext) {}
+  void onJsonDeserializerRegister(final ModuleContext moduleContext) {}
 
   /// Register a json deserializer for the module.
   ///
   /// Unregistry by calling the return value `VoidCallback`.
   ///
   @protected
-  VoidCallback registerJsonDeserializer<T>(JsonDeserializer<T> deserializer) =>
+  VoidCallback registerJsonDeserializer<T>(final JsonDeserializer<T> deserializer) =>
       _jsonDeserializers.registry(T, deserializer);
 }

@@ -28,7 +28,7 @@ import 'navigator_route_settings.dart';
 import 'thrio_navigator_implement.dart';
 
 class NavigatorRouteReceiveChannel {
-  NavigatorRouteReceiveChannel(ThrioChannel channel) : _channel = channel {
+  NavigatorRouteReceiveChannel(final ThrioChannel channel) : _channel = channel {
     _onPush();
     _onPop();
     _onPopTo();
@@ -37,7 +37,7 @@ class NavigatorRouteReceiveChannel {
 
   final ThrioChannel _channel;
 
-  void _onPush() => _channel.registryMethodCall('push', ([arguments]) {
+  void _onPush() => _channel.registryMethodCall('push', ([final arguments]) {
         final routeSettings = NavigatorRouteSettings.fromArguments(arguments);
         if (routeSettings == null) {
           return Future.value();
@@ -52,7 +52,7 @@ class NavigatorRouteReceiveChannel {
         return ThrioNavigatorImplement.shared()
                 .navigatorState
                 ?.push(routeSettings, animated: animated)
-                .then((value) {
+                .then((final value) {
               _syncPagePoppedResults();
               return value;
             }) ??
@@ -95,7 +95,7 @@ class NavigatorRouteReceiveChannel {
             Future.value();
       });
 
-  void _onRemove() => _channel.registryMethodCall('remove', ([arguments]) {
+  void _onRemove() => _channel.registryMethodCall('remove', ([final arguments]) {
         final routeSettings = NavigatorRouteSettings.fromArguments(arguments);
         if (routeSettings == null) {
           return Future.value(false);
@@ -105,22 +105,24 @@ class NavigatorRouteReceiveChannel {
         return ThrioNavigatorImplement.shared()
                 .navigatorState
                 ?.remove(routeSettings, animated: animated)
-                .then((value) {
+                .then((final value) {
               _syncPagePoppedResults();
               return value;
             }) ??
             Future.value();
       });
 
-  Stream onPageNotify({required String name, String? url, int index = 0}) => _channel
-      .onEventStream('__onNotify__')
-      .where((arguments) =>
-          arguments.containsValue(name) &&
-          (url == null || url.isEmpty || arguments.containsValue(url)) &&
-          (index == 0 || arguments.containsValue(index)))
-      .map((arguments) => arguments['params']);
+  Stream<dynamic> onPageNotify(
+          {required final String name, final String? url, final int index = 0}) =>
+      _channel
+          .onEventStream('__onNotify__')
+          .where((final arguments) =>
+              arguments.containsValue(name) &&
+              (url == null || url.isEmpty || arguments.containsValue(url)) &&
+              (index == 0 || arguments.containsValue(index)))
+          .map((final arguments) => arguments['params']);
 
-  dynamic _deserializeParams(String url, dynamic params) {
+  dynamic _deserializeParams(final String url, final dynamic params) {
     if (params == null) {
       return null;
     }
@@ -128,14 +130,14 @@ class NavigatorRouteReceiveChannel {
     if (params is Map) {
       if (params.containsKey('__thrio_Params_HashCode__')) {
         // ignore: avoid_as
-        return anchor.removeParam(params['__thrio_Params_HashCode__'] as int);
+        return anchor.removeParam<dynamic>(params['__thrio_Params_HashCode__'] as int);
       }
 
       if (params.containsKey('__thrio_TParams__')) {
         // ignore: avoid_as
         final typeString = params['__thrio_TParams__'] as String;
         if (typeString.isNotEmpty) {
-          final paramsObj = ThrioModule.get<JsonDeserializer>(url: url, key: typeString)
+          final paramsObj = ThrioModule.get<JsonDeserializer<dynamic>>(url: url, key: typeString)
               ?.call(params.cast<String, dynamic>());
           if (paramsObj != null) {
             return paramsObj;
@@ -157,6 +159,6 @@ class NavigatorRouteReceiveChannel {
     }
     ThrioNavigatorImplement.shared()
         .poppedResults
-        .removeWhere((name, _) => !routes.any((it) => it.name == name));
+        .removeWhere((final name, final _) => !routes.any((final it) => it.name == name));
   }
 }

@@ -35,13 +35,14 @@ class NavigatorObserverManager extends NavigatorObserver {
 
   final _currentRemoveRoutes = <NavigatorPageRoute>[];
 
-  final pageRoutes = <Route>[
+  final pageRoutes = <Route<dynamic>>[
     NavigatorPageRoute(
-        builder: (settings) => const NavigatorHome(), settings: const RouteSettings(name: '1 /'))
+        builder: (final settings) => const NavigatorHome(),
+        settings: const RouteSettings(name: '1 /'))
   ];
 
   @override
-  void didPush(Route<dynamic> route, Route<dynamic>? previousRoute) {
+  void didPush(final Route<dynamic> route, final Route<dynamic>? previousRoute) {
     if (route is NavigatorPageRoute) {
       verbose(
         'didPush: url->${route.settings.url} '
@@ -66,7 +67,7 @@ class NavigatorObserverManager extends NavigatorObserver {
   }
 
   @override
-  void didPop(Route<dynamic> route, Route<dynamic>? previousRoute) {
+  void didPop(final Route<dynamic> route, final Route<dynamic>? previousRoute) {
     if (route is NavigatorPageRoute) {
       pageRoutes.remove(route);
       _currentPopRoutes.add(route);
@@ -134,7 +135,7 @@ class NavigatorObserverManager extends NavigatorObserver {
   }
 
   @override
-  void didRemove(Route<dynamic> route, Route<dynamic>? previousRoute) {
+  void didRemove(final Route<dynamic> route, final Route<dynamic>? previousRoute) {
     if (route is NavigatorPageRoute) {
       pageRoutes.remove(route);
       _currentRemoveRoutes.add(route);
