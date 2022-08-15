@@ -1,7 +1,7 @@
 /**
  * The MIT License (MIT)
  *
- * Copyright (c) 2019 Hellobike Group
+ * Copyright (c) 2019 foxsofter
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -33,7 +33,7 @@ import com.foxsofter.flutter_thrio.extension.getEntrypoint
 import com.foxsofter.flutter_thrio.extension.getPageId
 import com.foxsofter.flutter_thrio.extension.getRouteSettings
 import com.foxsofter.flutter_thrio.module.ModulePageObservers
-import io.flutter.embedding.android.ThrioActivity
+import io.flutter.embedding.android.ThrioFlutterActivity
 import java.lang.ref.WeakReference
 
 internal object PageRoutes : Application.ActivityLifecycleCallbacks {
@@ -216,9 +216,11 @@ internal object PageRoutes : Application.ActivityLifecycleCallbacks {
                                     break
                                 }
                             }
-                            FlutterEngineFactory.getEngine(entrypoint)?.sendChannel?.onPopTo(
-                                poppedToSettings.toArguments()
-                            ) {}
+                            FlutterEngineFactory.getEngines(entrypoint).forEach { engine ->
+                                engine.sendChannel.onPopTo(
+                                    poppedToSettings.toArguments()
+                                ) {}
+                            }
                         }
                 }
                 while (routeHolders.lastIndex > poppedToIndex) {
@@ -270,9 +272,9 @@ internal object PageRoutes : Application.ActivityLifecycleCallbacks {
             val holder = lastRouteHolder()
             val activity = holder?.activity?.get()
             if (holder == null
-                || (activity is ThrioActivity && FlutterEngineFactory.isMultiEngineEnabled)
-                || (activity is ThrioActivity && holder.routes.count() < 1)
-                || activity !is ThrioActivity
+                || (activity is ThrioFlutterActivity && FlutterEngineFactory.isMultiEngineEnabled)
+                || (activity is ThrioFlutterActivity && holder.routes.isEmpty())
+                || activity !is ThrioFlutterActivity
             ) {
                 return
             }
@@ -298,9 +300,9 @@ internal object PageRoutes : Application.ActivityLifecycleCallbacks {
             val holder = lastRouteHolder()
             val activity = holder?.activity?.get()
             if (holder == null
-                || (activity is ThrioActivity && FlutterEngineFactory.isMultiEngineEnabled)
-                || (activity is ThrioActivity && holder.routes.count() < 1)
-                || activity !is ThrioActivity
+                || (activity is ThrioFlutterActivity && FlutterEngineFactory.isMultiEngineEnabled)
+                || (activity is ThrioFlutterActivity && holder.routes.isEmpty())
+                || activity !is ThrioFlutterActivity
             ) {
                 return
             }
@@ -344,9 +346,9 @@ internal object PageRoutes : Application.ActivityLifecycleCallbacks {
                 val holder = lastRouteHolder()
                 val activity = holder?.activity?.get()
                 if (holder == null
-                    || (activity is ThrioActivity && FlutterEngineFactory.isMultiEngineEnabled)
-                    || (activity is ThrioActivity && holder.routes.count() < 1)
-                    || activity !is ThrioActivity
+                    || (activity is ThrioFlutterActivity && FlutterEngineFactory.isMultiEngineEnabled)
+                    || (activity is ThrioFlutterActivity && holder.routes.isEmpty())
+                    || activity !is ThrioFlutterActivity
                 ) {
                     return
                 }
@@ -361,19 +363,27 @@ internal object PageRoutes : Application.ActivityLifecycleCallbacks {
     override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
         if (savedInstanceState == null) {
             var pageId = activity.intent.getPageId()
-            if (pageId == NAVIGATION_PAGE_ID_NONE) {
+            if (pageId == NAVIGATION_ROUTE_PAGE_ID_NONE) {
                 pageId = activity.hashCode()
-                activity.intent.putExtra(NAVIGATION_PAGE_ID_KEY, pageId)
-                val entrypoint = activity.intent.getEntrypoint()
+                activity.intent.putExtra(NAVIGATION_ROUTE_PAGE_ID_KEY, pageId)
+                var entrypoint = activity.intent.getEntrypoint()
+                if (activity is ThrioFlutterActivity &&
+                    !FlutterEngineFactory.isMultiEngineEnabled
+                ) {
+                    entrypoint = NAVIGATION_FLUTTER_ENTRYPOINT_DEFAULT
+                }
                 val holder = PageRouteHolder(pageId, activity.javaClass, entrypoint).also {
                     it.activity = WeakReference(activity)
                 }
                 routeHolders.add(holder)
             }
         } else {
-            val pageId = savedInstanceState.getInt(NAVIGATION_PAGE_ID_KEY, NAVIGATION_PAGE_ID_NONE)
-            if (pageId != NAVIGATION_PAGE_ID_NONE) {
-                activity.intent.putExtra(NAVIGATION_PAGE_ID_KEY, pageId)
+            val pageId = savedInstanceState.getInt(
+                NAVIGATION_ROUTE_PAGE_ID_KEY,
+                NAVIGATION_ROUTE_PAGE_ID_NONE
+            )
+            if (pageId != NAVIGATION_ROUTE_PAGE_ID_NONE) {
+                activity.intent.putExtra(NAVIGATION_ROUTE_PAGE_ID_KEY, pageId)
                 val holder = routeHolders.lastOrNull { it.pageId == pageId }
                 holder?.activity = WeakReference(activity)
             }
@@ -382,7 +392,7 @@ internal object PageRoutes : Application.ActivityLifecycleCallbacks {
 
     override fun onActivityStarted(activity: Activity) {
         val pageId = activity.intent.getPageId()
-        if (pageId != NAVIGATION_PAGE_ID_NONE) {
+        if (pageId != NAVIGATION_ROUTE_PAGE_ID_NONE) {
             val holder = routeHolders.lastOrNull { it.pageId == pageId }
             holder?.activity = WeakReference(activity)
         }
@@ -390,7 +400,7 @@ internal object PageRoutes : Application.ActivityLifecycleCallbacks {
 
     override fun onActivityPreResumed(activity: Activity) {
         val pageId = activity.intent.getPageId()
-        if (pageId != NAVIGATION_PAGE_ID_NONE && NavigationController.routeAction != RouteAction.POP_TO) {
+        if (pageId != NAVIGATION_ROUTE_PAGE_ID_NONE && NavigationController.routeAction != RouteAction.POP_TO) {
             routeHolders.lastOrNull { it.pageId == pageId }?.let {
                 activity.intent.getRouteSettings()?.let {
                     ModulePageObservers.willAppear(it)
@@ -401,14 +411,14 @@ internal object PageRoutes : Application.ActivityLifecycleCallbacks {
 
     override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {
         val pageId = activity.intent.getPageId()
-        if (pageId != NAVIGATION_PAGE_ID_NONE) {
-            outState.putInt(NAVIGATION_PAGE_ID_KEY, pageId)
+        if (pageId != NAVIGATION_ROUTE_PAGE_ID_NONE) {
+            outState.putInt(NAVIGATION_ROUTE_PAGE_ID_KEY, pageId)
         }
     }
 
     override fun onActivityResumed(activity: Activity) {
         val pageId = activity.intent.getPageId()
-        if (pageId != NAVIGATION_PAGE_ID_NONE && NavigationController.routeAction != RouteAction.POP_TO) {
+        if (pageId != NAVIGATION_ROUTE_PAGE_ID_NONE && NavigationController.routeAction != RouteAction.POP_TO) {
             val holder = routeHolders.lastOrNull { it.pageId == pageId }
             holder?.activity = WeakReference(activity)
             lastRoute = holder?.lastRoute()
@@ -422,7 +432,7 @@ internal object PageRoutes : Application.ActivityLifecycleCallbacks {
 
     override fun onActivityPrePaused(activity: Activity) {
         val pageId = activity.intent.getPageId()
-        if (pageId != NAVIGATION_PAGE_ID_NONE && NavigationController.routeAction != RouteAction.POP_TO) {
+        if (pageId != NAVIGATION_ROUTE_PAGE_ID_NONE && NavigationController.routeAction != RouteAction.POP_TO) {
             activity.intent.getRouteSettings()?.let {
                 ModulePageObservers.willDisappear(it)
             }
@@ -431,7 +441,7 @@ internal object PageRoutes : Application.ActivityLifecycleCallbacks {
 
     override fun onActivityPaused(activity: Activity) {
         val pageId = activity.intent.getPageId()
-        if (pageId != NAVIGATION_PAGE_ID_NONE && NavigationController.routeAction != RouteAction.POP_TO) {
+        if (pageId != NAVIGATION_ROUTE_PAGE_ID_NONE && NavigationController.routeAction != RouteAction.POP_TO) {
             activity.intent.getRouteSettings()?.let {
                 ModulePageObservers.didDisappear(it)
             }
@@ -443,14 +453,14 @@ internal object PageRoutes : Application.ActivityLifecycleCallbacks {
 
     override fun onActivityDestroyed(activity: Activity) {
         val pageId = activity.intent.getPageId()
-        if (pageId != NAVIGATION_PAGE_ID_NONE) {
+        if (pageId != NAVIGATION_ROUTE_PAGE_ID_NONE) {
             routeHolders.lastOrNull { it.pageId == pageId }?.apply {
                 if (activity.isFinishing) {
                     routeHolders.remove(this)
                     this.activity = null
-                    // 需重置标记位，如果 ThrioActivity 曾经是首页的话，下次进入的时候才会打开第一个页面
+                    // 需重置标记位，如果 ThrioFlutterActivity 曾经是首页的话，下次进入的时候才会打开第一个页面
                     if (routeHolders.isEmpty()) {
-                        ThrioActivity.isPushed = false
+                        ThrioFlutterActivity.isPushed = false
                     }
                 }
             }

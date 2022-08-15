@@ -28,8 +28,7 @@ import com.foxsofter.flutter_thrio.VoidCallback
 
 interface ModuleJsonSerializer {
 
-    fun onJsonSerializerRegister(moduleContext: ModuleContext) {
-    }
+    fun onJsonSerializerRegister(moduleContext: ModuleContext)
 
     fun <T> registerJsonSerializer(serializer: JsonSerializer<T>, clazz: Class<T>): VoidCallback {
         return ModuleJsonSerializers.serializers.registry(clazz.toString(), serializer)

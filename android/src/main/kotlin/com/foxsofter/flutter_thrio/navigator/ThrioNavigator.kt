@@ -1,7 +1,7 @@
 /**
  * The MIT License (MIT)
  *
- * Copyright (c) 2019 Hellobike Group
+ * Copyright (c) 2019 foxsofter
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -40,7 +40,10 @@ object ThrioNavigator {
     ) {
         NavigationController.Push.push<T>(
             url, params, animated,
-            NAVIGATION_NATIVE_ENTRYPOINT, poppedResult, result
+            NAVIGATION_NATIVE_ENTRYPOINT,
+            NAVIGATION_ROUTE_PAGE_ID_NONE,
+            poppedResult,
+            result
         )
     }
 
@@ -53,7 +56,10 @@ object ThrioNavigator {
     ) {
         NavigationController.Push.push(
             url, null, animated,
-            NAVIGATION_NATIVE_ENTRYPOINT, poppedResult, result
+            NAVIGATION_NATIVE_ENTRYPOINT,
+            NAVIGATION_ROUTE_PAGE_ID_NONE,
+            poppedResult,
+            result
         )
     }
 

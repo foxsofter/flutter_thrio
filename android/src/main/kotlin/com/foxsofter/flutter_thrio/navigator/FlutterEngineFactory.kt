@@ -1,7 +1,7 @@
 /**
  * The MIT License (MIT)
  *
- * Copyright (c) 2019 Hellobike Group
+ * Copyright (c) 2019 foxsofter
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -24,90 +24,140 @@
 package com.foxsofter.flutter_thrio.navigator
 
 import android.content.Context
+import com.foxsofter.flutter_thrio.extension.getEntrypoint
+import com.foxsofter.flutter_thrio.extension.getPageId
+import io.flutter.embedding.android.ThrioFlutterActivity
 
 object FlutterEngineFactory : PageObserver, RouteObserver {
 
-    private val flutterEngines = mutableMapOf<String, FlutterEngine>()
+    private val engineGroups = mutableMapOf<String, FlutterEngineGroup>()
 
     internal var isMultiEngineEnabled = false
 
     fun startup(
         context: Context,
         entrypoint: String = NAVIGATION_FLUTTER_ENTRYPOINT_DEFAULT,
-        readyListener: EngineReadyListener? = null
+        readyListener: FlutterEngineReadyListener? = null
     ) {
-        val ep = if (!isMultiEngineEnabled)
-            NAVIGATION_FLUTTER_ENTRYPOINT_DEFAULT
-        else
-            entrypoint
-
-        if (flutterEngines.contains(ep)) {
-            readyListener?.onReady(ep)
-        } else {
-            flutterEngines[ep] = FlutterEngine(context, ep, readyListener)
+        val ep = getEntrypoint(entrypoint)
+        var engineGroup = engineGroups[ep]
+        if (engineGroup == null) {
+            engineGroup = FlutterEngineGroup(ep)
+            engineGroups[ep] = engineGroup
         }
+        engineGroup.startup(context, readyListener)
     }
 
-    fun getEngine(entrypoint: String = NAVIGATION_FLUTTER_ENTRYPOINT_DEFAULT): FlutterEngine? {
-        val ep = if (!isMultiEngineEnabled)
-            NAVIGATION_FLUTTER_ENTRYPOINT_DEFAULT
-        else
-            entrypoint
-        return flutterEngines[ep]
+    // 仅用于让 ThrioFlutterActivity 调用
+    fun provideEngine(activity: ThrioFlutterActivity): io.flutter.embedding.engine.FlutterEngine {
+        val entrypoint = getEntrypoint(activity.intent.getEntrypoint())
+        val pageId = activity.intent.getPageId()
+        return engineGroups[entrypoint]?.provideEngine(pageId)
+            ?: throw RuntimeException("FlutterEngine not exists")
     }
+
+    // 仅用于让 ThrioFlutterActivity 调用
+    fun cleanUpFlutterEngine(activity: ThrioFlutterActivity) {
+        val entrypoint = getEntrypoint(activity.intent.getEntrypoint())
+        val pageId = activity.intent.getPageId()
+        engineGroups[entrypoint]?.cleanUpFlutterEngine(pageId)
+    }
+
+    // 获取 FlutterEngine 的实例
+    fun getEngine(
+        pageId: Int,
+        entrypoint: String = NAVIGATION_FLUTTER_ENTRYPOINT_DEFAULT
+    ): FlutterEngine? {
+        val ep = getEntrypoint(entrypoint)
+        return engineGroups[ep]?.getEngine(pageId)
+    }
+
+    // 获取 entrypoint 的所有 FlutterEngine 实例
+    fun getEngines(
+        entrypoint: String = NAVIGATION_FLUTTER_ENTRYPOINT_DEFAULT
+    ): Iterable<FlutterEngine> {
+        val ep = getEntrypoint(entrypoint)
+        return engineGroups[ep]?.engines ?: listOf()
+    }
+
+    // 判断是否匹配的是主引擎
+    fun isMainEngine(pageId: Int, entrypoint: String): Boolean {
+        val ep = getEntrypoint(entrypoint)
+        return engineGroups[ep]?.isMainEngine(pageId) ?: false
+    }
+
+    private fun getEntrypoint(entrypoint: String): String =
+        if (!isMultiEngineEnabled) NAVIGATION_FLUTTER_ENTRYPOINT_DEFAULT else entrypoint
 
     fun setModuleContextValue(value: Any?, key: String) {
-        val engines = flutterEngines.values;
-        for (engine in engines) {
-            engine.moduleContextChannel.invokeMethod("set", mutableMapOf(key to value))
+        engineGroups.values.forEach { engineGroup ->
+            engineGroup.engines.forEach { engine ->
+                engine.moduleContextChannel.invokeMethod("set", mutableMapOf(key to value))
+            }
         }
     }
 
     override fun willAppear(routeSettings: RouteSettings) {
-        flutterEngines.values.forEach { engine ->
-            engine.pageChannel.willAppear(routeSettings)
+        engineGroups.values.forEach { engineGroup ->
+            engineGroup.engines.forEach { engine ->
+                engine.pageChannel.willAppear(routeSettings)
+            }
         }
     }
 
     override fun didAppear(routeSettings: RouteSettings) {
-        flutterEngines.values.forEach { engine ->
-            engine.pageChannel.didAppear(routeSettings)
+        engineGroups.values.forEach { engineGroup ->
+            engineGroup.engines.forEach { engine ->
+                engine.pageChannel.didAppear(routeSettings)
+            }
         }
     }
 
     override fun willDisappear(routeSettings: RouteSettings) {
-        flutterEngines.values.forEach { engine ->
-            engine.pageChannel.willDisappear(routeSettings)
+        engineGroups.values.forEach { engineGroup ->
+            engineGroup.engines.forEach { engine ->
+                engine.pageChannel.willDisappear(routeSettings)
+            }
         }
     }
 
     override fun didDisappear(routeSettings: RouteSettings) {
-        flutterEngines.values.forEach { engine ->
-            engine.pageChannel.didDisappear(routeSettings)
+        engineGroups.values.forEach { engineGroup ->
+            engineGroup.engines.forEach { engine ->
+                engine.pageChannel.didDisappear(routeSettings)
+            }
         }
     }
 
     override fun didPush(routeSettings: RouteSettings) {
-        flutterEngines.values.forEach { engine ->
-            engine.routeChannel.didPush(routeSettings)
+        engineGroups.values.forEach { engineGroup ->
+            engineGroup.engines.forEach { engine ->
+                engine.routeChannel.didPush(routeSettings)
+            }
         }
     }
 
     override fun didPop(routeSettings: RouteSettings) {
-        flutterEngines.values.forEach { engine ->
-            engine.routeChannel.didPop(routeSettings)
+        engineGroups.values.forEach { engineGroup ->
+            engineGroup.engines.forEach { engine ->
+                engine.routeChannel.didPop(routeSettings)
+            }
         }
     }
 
     override fun didPopTo(routeSettings: RouteSettings) {
-        flutterEngines.values.forEach { engine ->
-            engine.routeChannel.didPopTo(routeSettings)
+        engineGroups.values.forEach { engineGroup ->
+            engineGroup.engines.forEach { engine ->
+                engine.routeChannel.didPopTo(routeSettings)
+            }
         }
     }
 
     override fun didRemove(routeSettings: RouteSettings) {
-        flutterEngines.values.forEach { engine ->
-            engine.routeChannel.didRemove(routeSettings)
+        engineGroups.values.forEach { engineGroup ->
+            engineGroup.engines.forEach { engine ->
+                engine.routeChannel.didRemove(routeSettings)
+            }
         }
     }
 }

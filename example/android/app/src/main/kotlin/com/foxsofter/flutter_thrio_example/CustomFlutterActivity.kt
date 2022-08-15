@@ -2,17 +2,21 @@ package com.foxsofter.flutter_thrio_example
 
 import com.foxsofter.flutter_thrio.channel.ThrioChannel
 import com.foxsofter.flutter_thrio.extension.getEntrypoint
-import io.flutter.embedding.android.ThrioActivity
+import com.foxsofter.flutter_thrio.navigator.FlutterEngineFactory
+import io.flutter.embedding.android.ThrioFlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
+import java.lang.ref.WeakReference
 
-class CustomFlutterActivity : ThrioActivity() {
+class CustomFlutterActivity : ThrioFlutterActivity() {
 
     private var channel: ThrioChannel? = null
 
     override fun configureFlutterEngine(flutterEngine: FlutterEngine) {
         super.configureFlutterEngine(flutterEngine)
-        channel = ThrioChannel(intent.getEntrypoint(), "custom_thrio_channel")
-        channel?.setupMethodChannel(flutterEngine.dartExecutor)
+        engine?.apply {
+            channel = ThrioChannel(this, "custom_thrio_channel")
+            channel?.setupMethodChannel(flutterEngine.dartExecutor)
+        }
     }
 
     override fun onFlutterUiDisplayed() {

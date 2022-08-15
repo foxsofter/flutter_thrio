@@ -1,7 +1,7 @@
 /**
  * The MIT License (MIT)
  *
- * Copyright (c) 2019 Hellobike Group
+ * Copyright (c) 2019 foxsofter
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -23,10 +23,11 @@
 
 package com.foxsofter.flutter_thrio.navigator
 
-internal const val NAVIGATION_PAGE_ID_KEY = "NAVIGATION_PAGE_ID"
-internal const val NAVIGATION_PAGE_ID_NONE = -1
+internal const val NAVIGATION_ROUTE_PAGE_ID_KEY = "NAVIGATION_ROUTE_PAGE_ID"
+internal const val NAVIGATION_ROUTE_PAGE_ID_NONE = -1
 internal const val NAVIGATION_ROUTE_SETTINGS_KEY = "NAVIGATION_ROUTE_SETTINGS"
 internal const val NAVIGATION_ROUTE_FROM_ENTRYPOINT_KEY = "NAVIGATION_ROUTE_FROM_ENTRYPOINT"
+internal const val NAVIGATION_ROUTE_FROM_PAGE_ID_KEY = "NAVIGATION_ROUTE_FROM_PAGE_ID"
 internal const val NAVIGATION_ROUTE_ENTRYPOINT_KEY = "NAVIGATION_ROUTE_ENTRYPOINT"
 
 internal const val NAVIGATION_FLUTTER_ENTRYPOINT_DEFAULT = "main"

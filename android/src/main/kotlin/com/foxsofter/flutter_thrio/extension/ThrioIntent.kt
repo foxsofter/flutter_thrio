@@ -1,7 +1,7 @@
 /**
  * The MIT License (MIT)
  *
- * Copyright (c) 2021 foxsoter.
+ * Copyright (c) 2021 foxsofter.
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -50,8 +50,12 @@ fun Intent.GetRouteParams(): Any? = when (
     else -> routeSettings.params
 }
 
-internal fun Intent.getPageId(): Int {
-    return getIntExtra(NAVIGATION_PAGE_ID_KEY, NAVIGATION_PAGE_ID_NONE)
+fun Intent.getPageId(): Int {
+    return getIntExtra(NAVIGATION_ROUTE_PAGE_ID_KEY, NAVIGATION_ROUTE_PAGE_ID_NONE)
+}
+
+internal fun Intent.getFromPageId(): Int {
+    return getIntExtra(NAVIGATION_ROUTE_FROM_PAGE_ID_KEY, NAVIGATION_ROUTE_PAGE_ID_NONE)
 }
 
 fun Intent.getEntrypoint(): String {

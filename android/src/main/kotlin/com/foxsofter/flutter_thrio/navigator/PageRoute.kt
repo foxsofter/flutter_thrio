@@ -1,7 +1,7 @@
 /**
  * The MIT License (MIT)
  *
- * Copyright (c) 2019 Hellobike Group
+ * Copyright (c) 2019 foxsofter
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -31,7 +31,10 @@ data class PageRoute(val settings: RouteSettings, val clazz: Class<out Activity>
     private val notifications: MutableMap<String, Any?> = mutableMapOf()
 
     var entrypoint: String = NAVIGATION_FLUTTER_ENTRYPOINT_DEFAULT
+    var pageId: Int = NAVIGATION_ROUTE_PAGE_ID_NONE
+
     var fromEntrypoint: String = NAVIGATION_NATIVE_ENTRYPOINT
+    var fromPageId: Int = NAVIGATION_ROUTE_PAGE_ID_NONE
 
     var poppedResult: NullableAnyCallback? = null
 

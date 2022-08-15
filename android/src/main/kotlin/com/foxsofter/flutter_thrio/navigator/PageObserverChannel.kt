@@ -1,7 +1,7 @@
 /**
  * The MIT License (MIT)
  *
- * Copyright (c) 2019 Hellobike Group
+ * Copyright (c) 2019 foxsofter
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -25,12 +25,21 @@ package com.foxsofter.flutter_thrio.navigator
 
 import com.foxsofter.flutter_thrio.channel.ThrioChannel
 import io.flutter.plugin.common.BinaryMessenger
+import java.lang.ref.WeakReference
 
-class PageObserverChannel constructor(entrypoint: String, messenger: BinaryMessenger) :
-    PageObserver {
+class PageObserverChannel constructor(
+    engine: FlutterEngine,
+    messenger: BinaryMessenger
+) : PageObserver, FlutterEngineIdentifier {
+    val engine = WeakReference(engine)
 
-    private val channel: ThrioChannel =
-        ThrioChannel(entrypoint, "__thrio_page_channel__$entrypoint")
+    private val channel: ThrioChannel = ThrioChannel(
+        engine, "__thrio_page_channel__$entrypoint"
+    )
+
+    override val entrypoint
+        get() = engine.get()?.entrypoint ?: NAVIGATION_FLUTTER_ENTRYPOINT_DEFAULT
+    override val pageId get() = engine.get()?.pageId ?: NAVIGATION_ROUTE_PAGE_ID_NONE
 
     init {
         channel.setupMethodChannel(messenger)
@@ -68,22 +77,22 @@ class PageObserverChannel constructor(entrypoint: String, messenger: BinaryMesse
     }
 
     override fun willAppear(routeSettings: RouteSettings) {
-        val arguments = routeSettings.toArgumentsWithParams(null);
+        val arguments = routeSettings.toArgumentsWithParams(null)
         channel.invokeMethod("willAppear", arguments)
     }
 
     override fun didAppear(routeSettings: RouteSettings) {
-        val arguments = routeSettings.toArgumentsWithParams(null);
+        val arguments = routeSettings.toArgumentsWithParams(null)
         channel.invokeMethod("didAppear", arguments)
     }
 
     override fun willDisappear(routeSettings: RouteSettings) {
-        val arguments = routeSettings.toArgumentsWithParams(null);
+        val arguments = routeSettings.toArgumentsWithParams(null)
         channel.invokeMethod("willDisappear", arguments)
     }
 
     override fun didDisappear(routeSettings: RouteSettings) {
-        val arguments = routeSettings.toArgumentsWithParams(null);
+        val arguments = routeSettings.toArgumentsWithParams(null)
         channel.invokeMethod("didDisappear", arguments)
     }
 }

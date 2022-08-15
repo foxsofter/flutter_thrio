@@ -46,7 +46,7 @@ internal object ModuleJsonSerializers {
 
         @Suppress("UNCHECKED_CAST")
         val serializer = value as JsonSerializer<T>
-        val serializeParams: Map<String, Any?>? = serializer(params) ?: return params
+        val serializeParams: Map<String, Any?> = serializer(params) ?: return params
         return mutableMapOf<String, Any?>(
             "__thrio_TParams__" to type
         ).apply { if (serializeParams != null) putAll(serializeParams) }

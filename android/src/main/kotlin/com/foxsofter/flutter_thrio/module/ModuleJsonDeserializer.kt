@@ -28,8 +28,7 @@ import com.foxsofter.flutter_thrio.VoidCallback
 
 interface ModuleJsonDeserializer {
 
-    fun onJsonDeserializerRegister(moduleContext: ModuleContext) {
-    }
+    fun onJsonDeserializerRegister(moduleContext: ModuleContext)
 
     fun <T> registerJsonDeserializer(
         deserializer: JsonDeserializer<T>,

@@ -59,7 +59,7 @@ class NavigatorRouteReceiveChannel {
             Future.value();
       });
 
-  void _onPop() => _channel.registryMethodCall('pop', ([arguments]) {
+  void _onPop() => _channel.registryMethodCall('pop', ([final arguments]) {
         final routeSettings = NavigatorRouteSettings.fromArguments(arguments);
         if (routeSettings == null) {
           return Future.value(false);
@@ -71,14 +71,14 @@ class NavigatorRouteReceiveChannel {
         return ThrioNavigatorImplement.shared()
                 .navigatorState
                 ?.maybePop(routeSettings, animated: animated, inRoot: inRoot)
-                .then((value) {
+                .then((final value) {
               _syncPagePoppedResults();
               return value;
             }) ??
             Future.value();
       });
 
-  void _onPopTo() => _channel.registryMethodCall('popTo', ([arguments]) {
+  void _onPopTo() => _channel.registryMethodCall('popTo', ([final arguments]) {
         final routeSettings = NavigatorRouteSettings.fromArguments(arguments);
         if (routeSettings == null) {
           return Future.value(false);
@@ -88,7 +88,7 @@ class NavigatorRouteReceiveChannel {
         return ThrioNavigatorImplement.shared()
                 .navigatorState
                 ?.popTo(routeSettings, animated: animated)
-                .then((value) {
+                .then((final value) {
               _syncPagePoppedResults();
               return value;
             }) ??

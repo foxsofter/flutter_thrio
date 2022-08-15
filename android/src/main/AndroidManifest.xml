@@ -3,7 +3,7 @@
 
     <application>
         <activity
-            android:name="io.flutter.embedding.android.ThrioActivity"
+            android:name="io.flutter.embedding.android.ThrioFlutterActivity"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
             android:hardwareAccelerated="true"
             android:launchMode="standard"

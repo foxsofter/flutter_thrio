@@ -3,7 +3,7 @@
     package="com.foxsofter.flutter_thrio_example">
 
     <application
-        android:name="${applicationName}"
+        android:name=".MainApp"
         android:icon="@mipmap/ic_launcher"
         android:label="flutter_thrio_example">
         <!-- <activity -->
@@ -13,7 +13,7 @@
         <!-- android:theme="@style/Theme.AppCompat.DayNight" -->
         <!-- android:windowSoftInputMode="adjustResize"> -->
         <activity
-            android:name="io.flutter.embedding.android.ThrioActivity"
+            android:name="io.flutter.embedding.android.ThrioFlutterActivity"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
             android:exported="true"
             android:hardwareAccelerated="true"
@@ -50,7 +50,7 @@
             android:theme="@style/Theme.AppCompat.DayNight"
             android:windowSoftInputMode="adjustResize" />
         <!-- <activity -->
-        <!-- android:name="io.flutter.embedding.android.ThrioActivity" -->
+        <!-- android:name="io.flutter.embedding.android.ThrioFlutterActivity" -->
         <!-- android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode" -->
         <!-- android:hardwareAccelerated="true" -->
         <!-- android:launchMode="standard" -->

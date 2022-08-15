@@ -1,7 +1,7 @@
 /**
  * The MIT License (MIT)
  *
- * Copyright (c) 2019 Hellobike Group
+ * Copyright (c) 2019 foxsofter
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -23,34 +23,34 @@
 
 package io.flutter.embedding.android
 
+import android.content.Context
 import android.content.pm.PackageManager
 import android.os.Bundle
 import com.foxsofter.flutter_thrio.BooleanCallback
 import com.foxsofter.flutter_thrio.NullableBooleanCallback
 import com.foxsofter.flutter_thrio.extension.getEntrypoint
+import com.foxsofter.flutter_thrio.extension.getPageId
 import com.foxsofter.flutter_thrio.navigator.*
+import io.flutter.embedding.engine.FlutterEngine
 
-open class ThrioActivity : FlutterActivity() {
+open class ThrioFlutterActivity : FlutterActivity() {
     companion object {
         var isPushed = false
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        intent.putExtra(NAVIGATION_ROUTE_ENTRYPOINT_KEY, cachedEngineId)
+    val engine: com.foxsofter.flutter_thrio.navigator.FlutterEngine?
+        get() {
+            val entrypoint = intent.getEntrypoint()
+            val pageId = intent.getPageId()
+            return FlutterEngineFactory.getEngine(pageId, entrypoint)
+        }
 
-        super.onCreate(savedInstanceState)
+    override fun provideFlutterEngine(context: Context): FlutterEngine? {
+        return FlutterEngineFactory.provideEngine(this)
     }
 
-    private var _initialEntrypoint: String? = null
-
-    override fun getCachedEngineId(): String? {
-        if (_initialEntrypoint == null) {
-            _initialEntrypoint =
-                if (!FlutterEngineFactory.isMultiEngineEnabled) NAVIGATION_FLUTTER_ENTRYPOINT_DEFAULT
-                else if (initialUrl?.isEmpty() == true) ""
-                else initialUrl?.getEntrypoint()
-        }
-        return if (_initialEntrypoint?.isNotEmpty() == true) _initialEntrypoint else super.getCachedEngineId()
+    override fun cleanUpFlutterEngine(flutterEngine: FlutterEngine) {
+        FlutterEngineFactory.cleanUpFlutterEngine(this)
     }
 
     private var _initialUrl: String? = null
@@ -71,10 +71,6 @@ open class ThrioActivity : FlutterActivity() {
         super.onFlutterUiDisplayed()
     }
 
-    override public fun onResume() {
-        super.onResume()
-    }
-
     override fun shouldAttachEngineToActivity(): Boolean = true
 
     override fun shouldDestroyEngineWithHost(): Boolean = false
@@ -85,36 +81,46 @@ open class ThrioActivity : FlutterActivity() {
     open fun shouldMoveToBack(): Boolean = true
 
     fun onPush(arguments: Map<String, Any?>?, result: BooleanCallback) {
-        val id = cachedEngineId ?: throw IllegalStateException("cachedEngineId must not be null")
-        val engine = FlutterEngineFactory.getEngine(id)
+        val pageId = intent.getPageId()
+        if (pageId == NAVIGATION_ROUTE_PAGE_ID_NONE) throw IllegalStateException("pageId must not be null")
+        val entrypoint = intent.getEntrypoint()
+        val engine = FlutterEngineFactory.getEngine(pageId, entrypoint)
             ?: throw IllegalStateException("engine must not be null")
         engine.sendChannel.onPush(arguments, result)
     }
 
     fun onNotify(arguments: Map<String, Any?>?, result: BooleanCallback) {
-        val id = cachedEngineId ?: throw IllegalStateException("cachedEngineId must not be null")
-        val engine = FlutterEngineFactory.getEngine(id)
+        val pageId = intent.getPageId()
+        if (pageId == NAVIGATION_ROUTE_PAGE_ID_NONE) throw IllegalStateException("pageId must not be null")
+        val entrypoint = intent.getEntrypoint()
+        val engine = FlutterEngineFactory.getEngine(pageId, entrypoint)
             ?: throw IllegalStateException("engine must not be null")
         engine.sendChannel.onNotify(arguments, result)
     }
 
     fun onPop(arguments: Map<String, Any?>?, result: NullableBooleanCallback) {
-        val id = cachedEngineId ?: throw IllegalStateException("cachedEngineId must not be null")
-        val engine = FlutterEngineFactory.getEngine(id)
+        val pageId = intent.getPageId()
+        if (pageId == NAVIGATION_ROUTE_PAGE_ID_NONE) throw IllegalStateException("pageId must not be null")
+        val entrypoint = intent.getEntrypoint()
+        val engine = FlutterEngineFactory.getEngine(pageId, entrypoint)
             ?: throw IllegalStateException("engine must not be null")
         engine.sendChannel.onPop(arguments, result)
     }
 
     fun onPopTo(arguments: Map<String, Any?>?, result: BooleanCallback) {
-        val id = cachedEngineId ?: throw IllegalStateException("cachedEngineId must not be null")
-        val engine = FlutterEngineFactory.getEngine(id)
+        val pageId = intent.getPageId()
+        if (pageId == NAVIGATION_ROUTE_PAGE_ID_NONE) throw IllegalStateException("pageId must not be null")
+        val entrypoint = intent.getEntrypoint()
+        val engine = FlutterEngineFactory.getEngine(pageId, entrypoint)
             ?: throw IllegalStateException("engine must not be null")
         engine.sendChannel.onPopTo(arguments, result)
     }
 
     fun onRemove(arguments: Map<String, Any?>?, result: BooleanCallback) {
-        val id = cachedEngineId ?: throw IllegalStateException("cachedEngineId must not be null")
-        val engine = FlutterEngineFactory.getEngine(id)
+        val pageId = intent.getPageId()
+        if (pageId == NAVIGATION_ROUTE_PAGE_ID_NONE) throw IllegalStateException("pageId must not be null")
+        val entrypoint = intent.getEntrypoint()
+        val engine = FlutterEngineFactory.getEngine(pageId, entrypoint)
             ?: throw IllegalStateException("engine must not be null")
         engine.sendChannel.onRemove(arguments, result)
     }

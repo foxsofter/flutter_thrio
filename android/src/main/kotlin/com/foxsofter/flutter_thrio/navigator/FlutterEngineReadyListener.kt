@@ -1,7 +1,7 @@
 /**
  * The MIT License (MIT)
  *
- * Copyright (c) 2019 Hellobike Group
+ * Copyright (c) 2019 foxsofter
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -23,6 +23,6 @@
 
 package com.foxsofter.flutter_thrio.navigator
 
-interface EngineReadyListener {
-    fun onReady(params: Any?)
+interface FlutterEngineReadyListener {
+    fun onReady(engine: FlutterEngine)
 }

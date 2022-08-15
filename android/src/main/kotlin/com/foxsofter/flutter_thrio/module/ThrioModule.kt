@@ -1,7 +1,7 @@
 /**
  * The MIT License (MIT)
  *
- * Copyright (c) 2019 Hellobike Group
+ * Copyright (c) 2019 foxsofter
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -60,29 +60,29 @@ open class ThrioModule {
     }
 
     protected fun initModule() {
-        modules.values.forEach {
-            it.onModuleInit(it.moduleContext)
-            it.initModule()
+        modules.values.forEach { module ->
+            module.onModuleInit(module.moduleContext)
+            module.initModule()
         }
-        modules.values.forEach {
-            if (it is ModuleIntentBuilder) {
-                it.onIntentBuilderRegister(it.moduleContext)
-            }
-        }
-        modules.values.forEach {
-            if (it is ModulePageObserver) {
-                it.onPageObserverRegister(it.moduleContext)
-            }
-            if (it is ModuleRouteObserver) {
-                it.onRouteObserverRegister(it.moduleContext)
+        modules.values.forEach { module ->
+            if (module is ModuleIntentBuilder) {
+                module.onIntentBuilderRegister(module.moduleContext)
             }
         }
-        modules.values.forEach {
-            if (it is ModuleJsonSerializer) {
-                it.onJsonSerializerRegister(it.moduleContext)
+        modules.values.forEach { module ->
+            if (module is ModulePageObserver) {
+                module.onPageObserverRegister(module.moduleContext)
             }
-            if (it is ModuleJsonDeserializer) {
-                it.onJsonDeserializerRegister(it.moduleContext)
+            if (module is ModuleRouteObserver) {
+                module.onRouteObserverRegister(module.moduleContext)
+            }
+        }
+        modules.values.forEach { module ->
+            if (module is ModuleJsonSerializer) {
+                module.onJsonSerializerRegister(module.moduleContext)
+            }
+            if (module is ModuleJsonDeserializer) {
+                module.onJsonDeserializerRegister(module.moduleContext)
             }
         }
     }
@@ -104,8 +104,8 @@ open class ThrioModule {
     ) {
         FlutterEngineFactory.startup(
             context, entrypoint,
-            object : EngineReadyListener {
-                override fun onReady(params: Any?) {
+            object : FlutterEngineReadyListener {
+                override fun onReady(engine: FlutterEngine) {
                     val nativeParams = moduleContext.params
                     val canTransParams = mutableMapOf<String, Any>()
                     for (param in nativeParams) {
@@ -115,12 +115,11 @@ open class ThrioModule {
                         }
                     }
                     if (canTransParams.isNotEmpty()) {
-                        FlutterEngineFactory.getEngine(entrypoint)?.moduleContextChannel?.apply {
+                        engine.moduleContextChannel.apply {
                             invokeMethod("set", canTransParams)
                         }
                     }
                 }
             })
-
     }
 }

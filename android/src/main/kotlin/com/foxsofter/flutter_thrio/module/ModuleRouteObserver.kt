@@ -1,7 +1,7 @@
 /**
  * The MIT License (MIT)
  *
- * Copyright (c) 2019 Hellobike Group
+ * Copyright (c) 2019 foxsofter
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -28,9 +28,7 @@ import com.foxsofter.flutter_thrio.navigator.RouteObserver
 
 interface ModuleRouteObserver {
 
-    fun onRouteObserverRegister(moduleContext: ModuleContext) {
-
-    }
+    fun onRouteObserverRegister(moduleContext: ModuleContext)
 
     fun registerRouteObserver(observer: RouteObserver): VoidCallback {
         return ModuleRouteObservers.observers.registry(observer)

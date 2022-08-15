@@ -33,9 +33,10 @@ typedef MethodHandler = Future<dynamic> Function([
 const String _kEventNameKey = '__event_name__';
 
 class ThrioChannel {
-  factory ThrioChannel({String channel = '__thrio_channel__'}) => ThrioChannel._(channel: channel);
+  factory ThrioChannel({final String channel = '__thrio_channel__'}) =>
+      ThrioChannel._(channel: channel);
 
-  ThrioChannel._({required String channel}) : _channel = channel;
+  ThrioChannel._({required final String channel}) : _channel = channel;
 
   final String _channel;
 
@@ -47,37 +48,40 @@ class ThrioChannel {
 
   final _eventControllers = <String, List<StreamController>>{};
 
-  Future<List<T>?> invokeListMethod<T>(String method, [Map<String, dynamic>? arguments]) {
+  Future<List<T>?> invokeListMethod<T>(final String method,
+      [final Map<String, dynamic>? arguments]) {
     _setupMethodChannelIfNeeded();
     return _methodChannel?.invokeListMethod<T>(method, arguments) ?? Future.value();
   }
 
-  Future<Map<K, V>?> invokeMapMethod<K, V>(String method, [Map<String, dynamic>? arguments]) {
+  Future<Map<K, V>?> invokeMapMethod<K, V>(final String method,
+      [final Map<String, dynamic>? arguments]) {
     _setupMethodChannelIfNeeded();
     return _methodChannel?.invokeMapMethod<K, V>(method, arguments) ?? Future.value();
   }
 
-  Future<T?> invokeMethod<T>(String method, [Map<String, dynamic>? arguments]) {
+  Future<T?> invokeMethod<T>(final String method, [final Map<String, dynamic>? arguments]) {
     _setupMethodChannelIfNeeded();
     return _methodChannel?.invokeMethod<T>(method, arguments) ?? Future.value();
   }
 
-  VoidCallback registryMethodCall(String method, MethodHandler handler) {
+  VoidCallback registryMethodCall(final String method, final MethodHandler handler) {
     _setupMethodChannelIfNeeded();
     return _methodHandlers.registry(method, handler);
   }
 
-  void sendEvent(String name, [Map<String, dynamic>? arguments]) {
+  void sendEvent(final String name, [final Map<String, dynamic>? arguments]) {
     _setupEventChannelIfNeeded();
     final controllers = _eventControllers[name];
     if (controllers != null && controllers.isNotEmpty) {
       for (final controller in controllers) {
-        controller.add(<String, dynamic>{if (arguments != null) ...arguments, _kEventNameKey: name});
+        controller
+            .add(<String, dynamic>{if (arguments != null) ...arguments, _kEventNameKey: name});
       }
     }
   }
 
-  Stream<Map<String, dynamic>> onEventStream(String name) {
+  Stream<Map<String, dynamic>> onEventStream(final String name) {
     _setupEventChannelIfNeeded();
     final controller = StreamController<Map<String, dynamic>>();
     controller
@@ -97,7 +101,7 @@ class ThrioChannel {
       return;
     }
     _methodChannel = MethodChannel('_method_$_channel')
-      ..setMethodCallHandler((call) {
+      ..setMethodCallHandler((final call) {
         final handler = _methodHandlers[call.method];
         final args = call.arguments;
         if (handler != null) {
@@ -118,9 +122,10 @@ class ThrioChannel {
     }
     _eventChannel = EventChannel('_event_$_channel')
       ..receiveBroadcastStream()
-          .map<Map<String, dynamic>>((data) => data is Map ? data.cast<String, dynamic>() : <String, dynamic>{})
-          .where((data) => data.containsKey(_kEventNameKey))
-          .listen((data) {
+          .map<Map<String, dynamic>>(
+              (final data) => data is Map ? data.cast<String, dynamic>() : <String, dynamic>{})
+          .where((final data) => data.containsKey(_kEventNameKey))
+          .listen((final data) {
         verbose('Notify on $_channel $data');
         final eventName = data.remove(_kEventNameKey);
         final controllers = _eventControllers[eventName];

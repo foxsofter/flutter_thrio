@@ -1,7 +1,7 @@
 /**
  * The MIT License (MIT)
  *
- * Copyright (c) 2019 Hellobike Group
+ * Copyright (c) 2019 foxsofter
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -28,7 +28,7 @@ import com.foxsofter.flutter_thrio.MethodHandler
 import com.foxsofter.flutter_thrio.NullableAnyCallback
 import com.foxsofter.flutter_thrio.VoidCallback
 import com.foxsofter.flutter_thrio.exception.ThrioException
-import com.foxsofter.flutter_thrio.navigator.FlutterEngineFactory
+import com.foxsofter.flutter_thrio.navigator.*
 import com.foxsofter.flutter_thrio.navigator.Log
 import com.foxsofter.flutter_thrio.navigator.NAVIGATION_FLUTTER_ENTRYPOINT_DEFAULT
 import com.foxsofter.flutter_thrio.registry.RegistryMap
@@ -36,18 +36,22 @@ import com.foxsofter.flutter_thrio.registry.RegistrySetMap
 import io.flutter.plugin.common.BinaryMessenger
 import io.flutter.plugin.common.EventChannel
 import io.flutter.plugin.common.MethodChannel
+import java.lang.ref.WeakReference
 
-open class ThrioChannel constructor(
-    val entrypoint: String = NAVIGATION_FLUTTER_ENTRYPOINT_DEFAULT,
-    private val channelName: String = "__thrio__"
-) {
+class ThrioChannel(
+    engine: FlutterEngine,
+    private val channelName: String = "__thrio__",
+) : FlutterEngineIdentifier {
+    val engine: WeakReference<FlutterEngine> = WeakReference(engine)
+
+    override val entrypoint get() = engine.get()?.entrypoint ?: NAVIGATION_FLUTTER_ENTRYPOINT_DEFAULT
+    override val pageId get() = engine.get()?.pageId ?: NAVIGATION_ROUTE_PAGE_ID_NONE
 
     init {
         if (FlutterEngineFactory.isMultiEngineEnabled && entrypoint == NAVIGATION_FLUTTER_ENTRYPOINT_DEFAULT) {
             throw ThrioException("multi-engine mode, entrypoint should not be main.")
         }
     }
-
     private var methodChannel: MethodChannel? = null
 
     private var eventChannel: EventChannel? = null
@@ -113,7 +117,7 @@ open class ThrioChannel constructor(
     }
 
     fun sendEvent(name: String, arguments: Map<String, Any?>?) {
-        var args = arguments?.toMutableMap()?.also { it["__event_name__"] = name }
+        val args = arguments?.toMutableMap()?.also { it["__event_name__"] = name }
             ?: mapOf<String, Any>("__event_name__" to name)
         streamHandler?.sink?.success(args)
     }

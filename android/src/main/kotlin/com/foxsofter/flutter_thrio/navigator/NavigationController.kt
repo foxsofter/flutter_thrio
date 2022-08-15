@@ -1,7 +1,7 @@
 /**
  * The MIT License (MIT)
  *
- * Copyright (c) 2019 Hellobike Group
+ * Copyright (c) 2019 foxsofter
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -30,14 +30,14 @@ import android.os.Bundle
 import com.foxsofter.flutter_thrio.BooleanCallback
 import com.foxsofter.flutter_thrio.NullableAnyCallback
 import com.foxsofter.flutter_thrio.NullableIntCallback
+import com.foxsofter.flutter_thrio.extension.*
 import com.foxsofter.flutter_thrio.extension.getEntrypoint
 import com.foxsofter.flutter_thrio.extension.getFromEntrypoint
 import com.foxsofter.flutter_thrio.extension.getPageId
-import com.foxsofter.flutter_thrio.extension.getRouteSettings
 import com.foxsofter.flutter_thrio.module.ModuleIntentBuilders
 import com.foxsofter.flutter_thrio.module.ModuleJsonSerializers
 import com.foxsofter.flutter_thrio.module.ModuleRouteObservers
-import io.flutter.embedding.android.ThrioActivity
+import io.flutter.embedding.android.ThrioFlutterActivity
 import java.lang.ref.WeakReference
 
 internal object NavigationController : Application.ActivityLifecycleCallbacks {
@@ -97,7 +97,8 @@ internal object NavigationController : Application.ActivityLifecycleCallbacks {
             url: String,
             params: T? = null,
             animated: Boolean,
-            fromEntrypoint: String = "",
+            fromEntrypoint: String = NAVIGATION_NATIVE_ENTRYPOINT,
+            fromPageId: Int = NAVIGATION_ROUTE_PAGE_ID_NONE,
             poppedResult: NullableAnyCallback? = null,
             result: NullableIntCallback?
         ) {
@@ -109,19 +110,7 @@ internal object NavigationController : Application.ActivityLifecycleCallbacks {
             routeAction = RouteAction.PUSH
             PageRoutes.willAppearPageId = 0
 
-            val lastRoute = PageRoutes.lastRoute(url)
-            val index = (lastRoute?.settings?.index?.plus(1)) ?: 1
-
-            val settings = RouteSettings(url, index).also {
-                it.params = ModuleJsonSerializers.serializeParams(params)
-                it.animated = animated
-            }
-
-            val builder = ModuleIntentBuilders.intentBuilders[url]
-                ?: ModuleIntentBuilders.flutterIntentBuilder
-
-            var entrypoint = NAVIGATION_NATIVE_ENTRYPOINT
-
+            // 获取 lastActivity & lastEntrypoint & lastPageId
             val lastHolder = PageRoutes.lastRouteHolder()
             val lastActivity = lastHolder?.activity?.get() ?: context?.get()
             if (lastActivity == null) {
@@ -131,6 +120,10 @@ internal object NavigationController : Application.ActivityLifecycleCallbacks {
             }
             val lastEntrypoint = lastHolder?.entrypoint
 
+            // 获取 builder & entrypoint
+            val builder = ModuleIntentBuilders.intentBuilders[url]
+                ?: ModuleIntentBuilders.flutterIntentBuilder
+            var entrypoint = NAVIGATION_NATIVE_ENTRYPOINT
             if (builder is FlutterIntentBuilder) {
                 entrypoint = if (FlutterEngineFactory.isMultiEngineEnabled) {
                     url.getEntrypoint()
@@ -139,12 +132,22 @@ internal object NavigationController : Application.ActivityLifecycleCallbacks {
                 }
             }
 
+            // 确定索引
+            val lastRoute = PageRoutes.lastRoute(url)
+            val index = (lastRoute?.settings?.index?.plus(1)) ?: 1
+            // 序列化参数
+            val settings = RouteSettings(url, index).also {
+                it.params = ModuleJsonSerializers.serializeParams(params)
+                it.animated = animated
+            }
             val settingsData = hashMapOf<String, Any?>().also {
                 it.putAll(settings.toArguments())
             }
-
-            val intent = if (lastActivity is ThrioActivity && lastEntrypoint == entrypoint) {
-                lastActivity.intent
+            // 准备 intent
+            val intent = if (lastActivity is ThrioFlutterActivity &&
+                (lastEntrypoint == entrypoint || PageRoutes.lastRoute == null)
+            ) {
+                lastActivity.intent // 复用 ThrioFlutterActivity
             } else {
                 builder.build(lastActivity, entrypoint).apply {
                     if (!animated) {
@@ -155,30 +158,30 @@ internal object NavigationController : Application.ActivityLifecycleCallbacks {
                 putExtra(NAVIGATION_ROUTE_SETTINGS_KEY, settingsData)
                 putExtra(NAVIGATION_ROUTE_ENTRYPOINT_KEY, entrypoint)
                 putExtra(NAVIGATION_ROUTE_FROM_ENTRYPOINT_KEY, fromEntrypoint)
+                putExtra(NAVIGATION_ROUTE_FROM_PAGE_ID_KEY, fromPageId)
             }
 
             this.result = result
             this.poppedResult = poppedResult
 
             if (builder is FlutterIntentBuilder) {
-                if (PageRoutes.lastRoute == null && lastActivity is ThrioActivity) {
-                    doPush(lastActivity, routeSettings = settings)
-                } else if (lastActivity is ThrioActivity && lastEntrypoint == entrypoint) {
-                    doPush(lastActivity)
+                if (lastActivity is ThrioFlutterActivity && PageRoutes.lastRoute == null) {
+                    doPush(lastActivity, routeSettings = settings) // ThrioFlutterActivity 做为首页被打开
+                } else if (lastActivity is ThrioFlutterActivity && lastEntrypoint == entrypoint) {
+                    doPush(lastActivity) // ThrioFlutterActivity 作为最后打开的 Activity，且是同样的 entrypoint
                 } else {
+                    // 需要启动新的 ThrioFlutterActivity，则需要先启动引擎，ready 后再启动 ThrioFlutterActivity
                     FlutterEngineFactory.startup(
                         lastActivity,
                         entrypoint,
-                        object : EngineReadyListener {
-                            override fun onReady(params: Any?) {
-                                if (params !is String || params != entrypoint) {
-                                    throw IllegalStateException("entrypoint must match.")
-                                }
+                        object : FlutterEngineReadyListener {
+                            override fun onReady(engine: FlutterEngine) {
                                 lastActivity.startActivity(intent)
                             }
                         })
                 }
             } else {
+                // 原生的 Activity
                 lastActivity.startActivity(intent)
             }
         }
@@ -194,22 +197,27 @@ internal object NavigationController : Application.ActivityLifecycleCallbacks {
                 routeAction = RouteAction.NONE
                 return
             }
-
+            // 开始 push Flutter 页面
             routeAction = RouteAction.PUSHING
 
             val entrypoint = activity.intent.getEntrypoint()
             val fromEntryPoint = activity.intent.getFromEntrypoint()
+            val fromPageId = activity.intent.getFromPageId()
 
+            // 设置 pageId
             var pageId = activity.intent.getPageId()
-            if (pageId == NAVIGATION_PAGE_ID_NONE) {
+            if (pageId == NAVIGATION_ROUTE_PAGE_ID_NONE) {
                 pageId = activity.hashCode()
-                activity.intent.putExtra(NAVIGATION_PAGE_ID_KEY, pageId)
+                activity.intent.putExtra(NAVIGATION_ROUTE_PAGE_ID_KEY, pageId)
             }
+            // 这个 activity 下已存在 PageRoute 表示为嵌套的页面
             settings.isNested = PageRoutes.hasRoute(pageId)
 
+            // 生成新的 PageRoute
             val route = PageRoute(settings, activity::class.java)
             route.fromEntrypoint = fromEntryPoint
             route.entrypoint = entrypoint
+            route.fromPageId = fromPageId
             route.poppedResult = poppedResult
             poppedResult = null
 
@@ -255,7 +263,7 @@ internal object NavigationController : Application.ActivityLifecycleCallbacks {
 
             val notifications = route.removeNotify()
             notifications.forEach {
-                if (activity is ThrioActivity) {
+                if (activity is ThrioFlutterActivity) {
                     val arguments = if (it.value == null) mapOf<String, Any>(
                         "__event_name__" to "__onNotify__",
                         "url" to route.settings.url,
@@ -297,11 +305,11 @@ internal object NavigationController : Application.ActivityLifecycleCallbacks {
             val firstHolder = PageRoutes.firstRouteHolder!!
             if (PageRoutes.routeHolders.count() == 1 && firstHolder.allRoute().count() < 2) {
                 val activity = firstHolder.activity?.get() ?: return
-                if (activity is ThrioActivity) {
+                if (activity is ThrioFlutterActivity) {
                     PageRoutes.pop<T>(params, animated, true) {
                         if (it == false) {
                             firstHolder.activity?.get()?.apply {
-                                if (this is ThrioActivity && this.shouldMoveToBack()) {
+                                if (this is ThrioFlutterActivity && this.shouldMoveToBack()) {
                                     moveTaskToBack(false)
                                 }
                             }
@@ -385,15 +393,15 @@ internal object NavigationController : Application.ActivityLifecycleCallbacks {
                 return
             }
             val pageId = activity.intent.getPageId()
-            if (pageId == NAVIGATION_PAGE_ID_NONE) {
+            if (pageId == NAVIGATION_ROUTE_PAGE_ID_NONE) {
                 return
             }
             val index = poppedToHolders.indexOfLast { it.pageId == pageId }
             if (index == -1 && poppedToHolder != null && poppedToHolder!!.pageId == pageId) {
                 poppedToHolder?.activity?.get()?.let {
                     poppedToHolder = null
-                    if (it is ThrioActivity) {
-                        it.onResume()
+                    if (it is ThrioFlutterActivity) {
+//                        it.onResume()
                     }
                 }
                 return
@@ -412,7 +420,7 @@ internal object NavigationController : Application.ActivityLifecycleCallbacks {
             }
             val pageId = activity.intent.getPageId()
             val index = poppingToHolders.indexOfLast { it.pageId == pageId }
-            if (pageId != NAVIGATION_PAGE_ID_NONE && index != -1) {
+            if (pageId != NAVIGATION_ROUTE_PAGE_ID_NONE && index != -1) {
                 destroyingHolders.add(poppingToHolders[index])
                 if (poppingToHolders.count() == poppedToHolderCount &&
                     destroyingHolders.count() == poppedToHolderCount
@@ -453,7 +461,7 @@ internal object NavigationController : Application.ActivityLifecycleCallbacks {
 
         internal fun doRemove(activity: Activity) {
             val pageId = activity.intent.getPageId()
-            if (pageId == NAVIGATION_PAGE_ID_NONE) {
+            if (pageId == NAVIGATION_ROUTE_PAGE_ID_NONE) {
                 return
             }
 

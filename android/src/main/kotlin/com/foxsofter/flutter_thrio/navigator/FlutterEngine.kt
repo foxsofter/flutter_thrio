@@ -1,7 +1,7 @@
 /**
  * The MIT License (MIT)
  *
- * Copyright (c) 2019 Hellobike Group
+ * Copyright (c) 2019 foxsofter
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -23,20 +23,19 @@
 
 package com.foxsofter.flutter_thrio.navigator
 
-import android.content.Context
 import com.foxsofter.flutter_thrio.channel.ThrioChannel
 import io.flutter.FlutterInjector
-import io.flutter.embedding.engine.FlutterEngine
-import io.flutter.embedding.engine.FlutterEngineCache
+import io.flutter.embedding.engine.ThrioFlutterEngine
 import io.flutter.embedding.engine.dart.DartExecutor
-import io.flutter.embedding.engine.loader.FlutterLoader
+import java.lang.ref.WeakReference
 
 data class FlutterEngine(
-    private val context: Context,
-    private val entrypoint: String,
-    private val readyListener: EngineReadyListener? = null
-) {
-    private val engine = FlutterEngine(context)
+    val engine: ThrioFlutterEngine,
+    override val entrypoint: String,
+    private val readyListener: FlutterEngineReadyListener? = null
+) : FlutterEngineIdentifier {
+    override var pageId: Int = NAVIGATION_ROUTE_PAGE_ID_NONE
+
     internal var sendChannel: RouteSendChannel private set
     private val receiveChannel: RouteReceiveChannel
     internal val routeChannel: RouteObserverChannel
@@ -44,27 +43,26 @@ data class FlutterEngine(
     internal val moduleContextChannel: ThrioChannel
 
     init {
-        val channel = ThrioChannel(entrypoint, "__thrio_app__${entrypoint}")
+        val channel = ThrioChannel(
+            this, "__thrio_app__${entrypoint}"
+        )
         channel.setupMethodChannel(engine.dartExecutor)
         channel.setupEventChannel(engine.dartExecutor)
         sendChannel = RouteSendChannel(channel)
-        receiveChannel = RouteReceiveChannel(channel, readyListener)
-        routeChannel = RouteObserverChannel(entrypoint, engine.dartExecutor)
-        pageChannel = PageObserverChannel(entrypoint, engine.dartExecutor)
+        receiveChannel = RouteReceiveChannel(channel) {
+            readyListener?.onReady(this)
+        }
+        routeChannel = RouteObserverChannel(this, engine.dartExecutor)
+        pageChannel = PageObserverChannel(this, engine.dartExecutor)
         moduleContextChannel = ThrioChannel(
-            entrypoint,
+            this,
             "__thrio_module_context__${entrypoint}"
         )
         moduleContextChannel.setupMethodChannel(engine.dartExecutor)
 
-        val dartEntrypoint =
-            DartExecutor.DartEntrypoint(FlutterInjector.instance().flutterLoader().findAppBundlePath(), entrypoint)
+        val dartEntrypoint = DartExecutor.DartEntrypoint(
+            FlutterInjector.instance().flutterLoader().findAppBundlePath(), entrypoint
+        )
         engine.dartExecutor.executeDartEntrypoint(dartEntrypoint)
-
-        FlutterEngineCache.getInstance().put(entrypoint, engine)
-    }
-
-    companion object {
-        private const val TAG = "FlutterEngine"
     }
 }

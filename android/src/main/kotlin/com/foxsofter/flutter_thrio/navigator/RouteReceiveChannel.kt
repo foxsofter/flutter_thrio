@@ -1,7 +1,7 @@
 /**
  * The MIT License (MIT)
  *
- * Copyright (c) 2019 Hellobike Group
+ * Copyright (c) 2019 foxsofter
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -23,11 +23,12 @@
 
 package com.foxsofter.flutter_thrio.navigator
 
+import com.foxsofter.flutter_thrio.VoidCallback
 import com.foxsofter.flutter_thrio.channel.ThrioChannel
 
 internal class RouteReceiveChannel(
-    val channel: ThrioChannel,
-    var readyListener: EngineReadyListener? = null
+    private val channel: ThrioChannel,
+    private var onReady: VoidCallback? = null
 ) {
     init {
         onReady()
@@ -46,8 +47,8 @@ internal class RouteReceiveChannel(
 
     private fun onReady() {
         channel.registryMethod("ready") { _, _ ->
-            readyListener?.onReady(channel.entrypoint)
-            readyListener = null
+            onReady?.invoke()
+            onReady = null
         }
     }
 
