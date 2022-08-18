@@ -1,10 +1,11 @@
 package com.foxsofter.flutter_thrio_example
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.appcompat.app.AppCompatActivity
+import com.foxsofter.flutter_thrio.extension.getRouteIndex
 import com.foxsofter.flutter_thrio.navigator.PageNotifyListener
-import com.foxsofter.flutter_thrio.navigator.RouteSettings
 import com.foxsofter.flutter_thrio.navigator.ThrioNavigator
 import com.foxsofter.flutter_thrio_example.databinding.ActivityNativeBinding
 import io.flutter.Log
@@ -13,7 +14,7 @@ class Native1Activity : AppCompatActivity(), PageNotifyListener {
     private lateinit var binding: ActivityNativeBinding
 
     private fun initView() {
-        binding.tvNative.text = "Native 1"
+        binding.tvNative.text = getString(R.string.native1)
 
         binding.btn10.setOnClickListener {
             ThrioNavigator.push("/biz1/flutter1",
@@ -104,17 +105,12 @@ class Native1Activity : AppCompatActivity(), PageNotifyListener {
         }
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onResume() {
         super.onResume()
 
-        val data = intent.getSerializableExtra("NAVIGATION_ROUTE_SETTINGS")
-
-        if (data != null) {
-            @Suppress("UNCHECKED_CAST")
-            RouteSettings.fromArguments(data as Map<String, Any?>)?.apply {
-                binding.tvNative.text = "/biz1/native1 index $index"
-            }
-        }
+        val index = intent.getRouteIndex()
+        if (index != null) binding.tvNative.text = "/biz1/native1 index $index"
     }
 
     override fun onNotify(name: String, params: Any?) {

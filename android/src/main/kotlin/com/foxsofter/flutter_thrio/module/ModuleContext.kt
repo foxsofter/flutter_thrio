@@ -23,7 +23,6 @@
 
 package com.foxsofter.flutter_thrio.module
 
-import com.foxsofter.flutter_thrio.exception.ThrioException
 import com.foxsofter.flutter_thrio.extension.canTransToFlutter
 import com.foxsofter.flutter_thrio.navigator.FlutterEngineFactory
 
@@ -35,7 +34,7 @@ class ModuleContext {
     operator fun set(key: String, value: Any) {
         var v = params[key]
         if (v != null && v.javaClass != value.javaClass) {
-            throw ThrioException("Type of value is not ${v.javaClass}")
+            throw IllegalArgumentException("Type of value is not ${v.javaClass}")
         }
         if (v != value) {
             params[key] = value

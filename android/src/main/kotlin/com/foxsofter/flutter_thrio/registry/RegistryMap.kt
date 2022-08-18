@@ -26,6 +26,7 @@ package com.foxsofter.flutter_thrio.registry
 import com.foxsofter.flutter_thrio.VoidCallback
 
 class RegistryMap<K, V> : Iterable<Map.Entry<K, V>> {
+
     private val maps by lazy { mutableMapOf<K, V>() }
 
     fun registry(key: K, value: V): VoidCallback {

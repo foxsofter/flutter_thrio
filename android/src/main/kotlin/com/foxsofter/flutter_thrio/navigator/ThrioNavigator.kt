@@ -37,15 +37,14 @@ object ThrioNavigator {
         animated: Boolean = true,
         poppedResult: NullableAnyCallback? = null,
         result: NullableIntCallback = {}
-    ) {
-        NavigationController.Push.push<T>(
-            url, params, animated,
-            NAVIGATION_NATIVE_ENTRYPOINT,
-            NAVIGATION_ROUTE_PAGE_ID_NONE,
-            poppedResult,
-            result
-        )
-    }
+    ) = NavigationController.Push.push<T>(
+        url, params, animated,
+        NAVIGATION_NATIVE_ENTRYPOINT,
+        NAVIGATION_ROUTE_PAGE_ID_NONE,
+        poppedResult,
+        result
+    )
+
 
     @JvmStatic
     fun push(
@@ -53,15 +52,14 @@ object ThrioNavigator {
         animated: Boolean = true,
         poppedResult: NullableAnyCallback? = null,
         result: NullableIntCallback = {}
-    ) {
-        NavigationController.Push.push(
-            url, null, animated,
-            NAVIGATION_NATIVE_ENTRYPOINT,
-            NAVIGATION_ROUTE_PAGE_ID_NONE,
-            poppedResult,
-            result
-        )
-    }
+    ) = NavigationController.Push.push(
+        url, null, animated,
+        NAVIGATION_NATIVE_ENTRYPOINT,
+        NAVIGATION_ROUTE_PAGE_ID_NONE,
+        poppedResult,
+        result
+    )
+
 
     @JvmStatic
     @JvmOverloads
@@ -71,9 +69,8 @@ object ThrioNavigator {
         name: String,
         params: T? = null,
         result: BooleanCallback = {}
-    ) {
-        NavigationController.Notify.notify<T>(url, index, name, params, result)
-    }
+    ) = NavigationController.Notify.notify<T>(url, index, name, params, result)
+
 
     @JvmStatic
     fun notify(
@@ -81,9 +78,8 @@ object ThrioNavigator {
         index: Int = 0,
         name: String,
         result: BooleanCallback = {}
-    ) {
-        NavigationController.Notify.notify(url, index, name, null, result)
-    }
+    ) = NavigationController.Notify.notify(url, index, name, null, result)
+
 
     @JvmStatic
     @JvmOverloads
@@ -91,14 +87,13 @@ object ThrioNavigator {
         params: T? = null,
         animated: Boolean = true,
         result: BooleanCallback = {}
-    ) {
-        NavigationController.Pop.pop<T>(params, animated, result)
-    }
+    ) = NavigationController.Pop.pop<T>(params, animated, result)
+
 
     @JvmStatic
-    fun pop(animated: Boolean = true, result: BooleanCallback = {}) {
+    fun pop(animated: Boolean = true, result: BooleanCallback = {}) =
         NavigationController.Pop.pop(null, animated, result)
-    }
+
 
     @JvmStatic
     @JvmOverloads
@@ -107,9 +102,8 @@ object ThrioNavigator {
         index: Int = 0,
         animated: Boolean = true,
         result: BooleanCallback = {}
-    ) {
-        NavigationController.Remove.remove(url, index, animated, result)
-    }
+    ) = NavigationController.Remove.remove(url, index, animated, result)
+
 
     @JvmStatic
     @JvmOverloads
@@ -118,9 +112,8 @@ object ThrioNavigator {
         index: Int = 0,
         animated: Boolean = true,
         result: BooleanCallback = {}
-    ) {
-        NavigationController.PopTo.popTo(url, index, animated, result)
-    }
+    ) = NavigationController.PopTo.popTo(url, index, animated, result)
+
 
     @JvmStatic
     @JvmOverloads
@@ -132,7 +125,7 @@ object ThrioNavigator {
 
     @JvmStatic
     @JvmOverloads
-    fun isInitialRoute(url: String, index: Int = 0) {
+    fun isInitialRoute(url: String, index: Int = 0) =
         NavigationController.isInitialRoute(url, index)
-    }
+
 }

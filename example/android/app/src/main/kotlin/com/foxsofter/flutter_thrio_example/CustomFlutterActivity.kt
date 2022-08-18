@@ -1,11 +1,8 @@
 package com.foxsofter.flutter_thrio_example
 
 import com.foxsofter.flutter_thrio.channel.ThrioChannel
-import com.foxsofter.flutter_thrio.extension.getEntrypoint
-import com.foxsofter.flutter_thrio.navigator.FlutterEngineFactory
 import io.flutter.embedding.android.ThrioFlutterActivity
 import io.flutter.embedding.engine.FlutterEngine
-import java.lang.ref.WeakReference
 
 class CustomFlutterActivity : ThrioFlutterActivity() {
 

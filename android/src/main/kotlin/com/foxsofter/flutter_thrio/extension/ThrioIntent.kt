@@ -26,25 +26,25 @@ package com.foxsofter.flutter_thrio.extension
 import android.content.Intent
 import com.foxsofter.flutter_thrio.navigator.*
 
-fun Intent.GetRouteUrl() = when (
+fun Intent.getRouteUrl() = when (
     val routeSettings = getRouteSettings()) {
     null -> null
     else -> routeSettings.url
 }
 
-fun Intent.GetRouteIndex(): Int? = when (
+fun Intent.getRouteIndex(): Int? = when (
     val routeSettings = getRouteSettings()) {
     null -> null
     else -> routeSettings.index
 }
 
-fun Intent.GetRouteAnimated(): Boolean? = when (
+fun Intent.getRouteAnimated(): Boolean? = when (
     val routeSettings = getRouteSettings()) {
     null -> null
     else -> routeSettings.animated
 }
 
-fun Intent.GetRouteParams(): Any? = when (
+fun Intent.getRouteParams(): Any? = when (
     val routeSettings = getRouteSettings()) {
     null -> null
     else -> routeSettings.params

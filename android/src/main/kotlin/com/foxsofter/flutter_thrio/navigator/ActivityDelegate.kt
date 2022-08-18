@@ -23,13 +23,11 @@
 
 package com.foxsofter.flutter_thrio.navigator
 
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Application
 import android.os.Bundle
 import com.foxsofter.flutter_thrio.extension.getPageId
 
-@SuppressLint("StaticFieldLeak")
 internal object ActivityDelegate : Application.ActivityLifecycleCallbacks {
     private const val TAG = "ActivityDelegate"
 

@@ -13,4 +13,6 @@
     <string name="push_native1_without_thrio">push native1 without thrio</string>
     <string name="push_native2">push native2</string>
     <string name="remove_native2">remove native2</string>
+    <string name="native1">Native 1</string>
+    <string name="native2">native 2</string>
 </resources>

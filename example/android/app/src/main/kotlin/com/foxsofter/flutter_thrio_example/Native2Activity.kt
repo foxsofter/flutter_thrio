@@ -1,11 +1,12 @@
 package com.foxsofter.flutter_thrio_example
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.appcompat.app.AppCompatActivity
+import com.foxsofter.flutter_thrio.extension.getRouteIndex
 import com.foxsofter.flutter_thrio.navigator.PageNotifyListener
-import com.foxsofter.flutter_thrio.navigator.RouteSettings
 import com.foxsofter.flutter_thrio.navigator.ThrioNavigator
 import com.foxsofter.flutter_thrio_example.databinding.ActivityNative2Binding
 import io.flutter.Log
@@ -21,7 +22,7 @@ class Native2Activity : AppCompatActivity(), PageNotifyListener {
     }
 
     private fun initView() {
-        binding.tvNative.text = "native 2"
+        binding.tvNative.text = getString(R.string.native2)
 
         binding.btn10.setOnClickListener {
             ThrioNavigator.push("/biz2/flutter2",
@@ -77,17 +78,12 @@ class Native2Activity : AppCompatActivity(), PageNotifyListener {
         }
     }
 
+    @SuppressLint("SetTextI18n")
     override fun onResume() {
         super.onResume()
 
-        val data = intent.getSerializableExtra("NAVIGATION_ROUTE_SETTINGS")
-
-        if (data != null) {
-            @Suppress("UNCHECKED_CAST")
-            RouteSettings.fromArguments(data as Map<String, Any?>)?.apply {
-                binding.tvNative.text = "/biz2/native2 index $index"
-            }
-        }
+        val index = intent.getRouteIndex()
+        if (index != null) binding.tvNative.text = "/biz2/native2 index $index"
     }
 
     override fun onNotify(name: String, params: Any?) {

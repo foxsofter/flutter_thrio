@@ -27,7 +27,6 @@ import com.foxsofter.flutter_thrio.channel.ThrioChannel
 import io.flutter.FlutterInjector
 import io.flutter.embedding.engine.ThrioFlutterEngine
 import io.flutter.embedding.engine.dart.DartExecutor
-import java.lang.ref.WeakReference
 
 data class FlutterEngine(
     val engine: ThrioFlutterEngine,

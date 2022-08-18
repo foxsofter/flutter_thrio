@@ -31,11 +31,7 @@ internal class RouteSendChannel constructor(private val channel: ThrioChannel) {
 
     fun onPush(arguments: Map<String, Any?>?, result: BooleanCallback) {
         channel.invokeMethod("push", arguments) {
-            if (it is Boolean) {
-                result(it)
-            } else {
-                result(false)
-            }
+            result(it == true)
         }
     }
 
@@ -57,21 +53,13 @@ internal class RouteSendChannel constructor(private val channel: ThrioChannel) {
 
     fun onPopTo(arguments: Map<String, Any?>?, result: BooleanCallback) {
         channel.invokeMethod("popTo", arguments) {
-            if (it is Boolean) {
-                result(it)
-            } else {
-                result(false)
-            }
+            result(it == true)
         }
     }
 
     fun onRemove(arguments: Map<String, Any?>?, result: BooleanCallback) {
         channel.invokeMethod("remove", arguments) {
-            if (it is Boolean) {
-                result(it)
-            } else {
-                result(false)
-            }
+            result(it == true)
         }
     }
 }

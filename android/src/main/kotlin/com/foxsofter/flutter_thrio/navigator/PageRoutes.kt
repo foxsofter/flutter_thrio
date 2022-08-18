@@ -460,7 +460,7 @@ internal object PageRoutes : Application.ActivityLifecycleCallbacks {
                     this.activity = null
                     // 需重置标记位，如果 ThrioFlutterActivity 曾经是首页的话，下次进入的时候才会打开第一个页面
                     if (routeHolders.isEmpty()) {
-                        ThrioFlutterActivity.isPushed = false
+                        ThrioFlutterActivity.isInitialUrlPushed = false
                     }
                 }
             }

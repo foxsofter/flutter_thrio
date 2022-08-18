@@ -18,7 +18,9 @@ open class ThrioFlutterEngine private constructor(context: Context, flutterJNI: 
         jniField.isAccessible = true
         val flutterJNI = jniField.get(this) as FlutterJNI
 
-        check(flutterJNI.isAttached) { "Spawn can only be called on a fully constructed FlutterEngine" }
+        check(flutterJNI.isAttached) {
+            "Spawn can only be called on a fully constructed FlutterEngine"
+        }
 
         val newFlutterJNI = flutterJNI.spawn(
             dartEntrypoint.dartEntrypointFunctionName,

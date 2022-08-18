@@ -24,8 +24,6 @@
 package com.foxsofter.flutter_thrio.navigator
 
 import android.app.Activity
-import android.os.Build
-import androidx.annotation.RequiresApi
 import com.foxsofter.flutter_thrio.BooleanCallback
 import com.foxsofter.flutter_thrio.NullableBooleanCallback
 import com.foxsofter.flutter_thrio.NullableIntCallback

@@ -33,7 +33,5 @@ interface ModuleJsonDeserializer {
     fun <T> registerJsonDeserializer(
         deserializer: JsonDeserializer<T>,
         clazz: Class<T>
-    ): VoidCallback {
-        return ModuleJsonDeserializers.deserializers.registry(clazz.toString(), deserializer)
-    }
+    ): VoidCallback = ModuleJsonDeserializers.deserializers.registry(clazz.toString(), deserializer)
 }

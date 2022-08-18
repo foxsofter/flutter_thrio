@@ -26,6 +26,7 @@ package com.foxsofter.flutter_thrio.registry
 import com.foxsofter.flutter_thrio.VoidCallback
 
 class RegistrySet<E> : Iterable<E> {
+
     private val sets by lazy { mutableSetOf<E>() }
 
     fun registry(value: E): VoidCallback {

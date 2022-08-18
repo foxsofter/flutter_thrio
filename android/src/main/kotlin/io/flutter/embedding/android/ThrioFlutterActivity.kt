@@ -25,7 +25,6 @@ package io.flutter.embedding.android
 
 import android.content.Context
 import android.content.pm.PackageManager
-import android.os.Bundle
 import com.foxsofter.flutter_thrio.BooleanCallback
 import com.foxsofter.flutter_thrio.NullableBooleanCallback
 import com.foxsofter.flutter_thrio.extension.getEntrypoint
@@ -35,7 +34,7 @@ import io.flutter.embedding.engine.FlutterEngine
 
 open class ThrioFlutterActivity : FlutterActivity() {
     companion object {
-        var isPushed = false
+        var isInitialUrlPushed = false
     }
 
     val engine: com.foxsofter.flutter_thrio.navigator.FlutterEngine?
@@ -64,8 +63,8 @@ open class ThrioFlutterActivity : FlutterActivity() {
         }
 
     override fun onFlutterUiDisplayed() {
-        if (!isPushed && initialUrl?.isNotEmpty() == true) {
-            isPushed = true
+        if (!isInitialUrlPushed && initialUrl?.isNotEmpty() == true) {
+            isInitialUrlPushed = true
             NavigationController.Push.push(initialUrl!!, null, false) {}
         }
         super.onFlutterUiDisplayed()
@@ -73,7 +72,12 @@ open class ThrioFlutterActivity : FlutterActivity() {
 
     override fun shouldAttachEngineToActivity(): Boolean = true
 
-    override fun shouldDestroyEngineWithHost(): Boolean = false
+    override fun shouldDestroyEngineWithHost(): Boolean {
+        val pageId = intent.getPageId()
+        if (pageId == NAVIGATION_ROUTE_PAGE_ID_NONE) throw IllegalStateException("pageId must not be null")
+        val entrypoint = intent.getEntrypoint()
+        return !FlutterEngineFactory.isMainEngine(pageId, entrypoint)
+    }
 
     override fun onBackPressed() = ThrioNavigator.pop()
 
