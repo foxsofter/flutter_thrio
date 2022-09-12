@@ -20,7 +20,7 @@
 // IN THE SOFTWARE.
 
 #import <Foundation/Foundation.h>
-#import "ThrioTypes.h"
+#import "FlutterThrioTypes.h"
 #import "ThrioModuleContext.h"
 
 NS_ASSUME_NONNULL_BEGIN

@@ -19,14 +19,14 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    _channel = [ThrioChannel channelWithEntrypoint:self.entrypoint name:@"custom_thrio_channel"];
-    [_channel setupMethodChannel:[ThrioNavigator getEngineByEntrypoint:self.entrypoint].binaryMessenger];
+//    _channel = [ThrioChannel channelWithEntrypoint:self.entrypoint name:@"custom_thrio_channel"];
+//    [_channel setupMethodChannel:[ThrioNavigator getEngineByEntrypoint:self.entrypoint].binaryMessenger];
 }
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     
-    [_channel invokeMethod:@"sayHello"];
+//    [_channel invokeMethod:@"sayHello"];
 }
 
 @end

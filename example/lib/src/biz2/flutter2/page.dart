@@ -33,6 +33,13 @@ class _PageState extends State<Page> {
   }
 
   @override
+  void dispose() {
+    ThrioLogger.d('page2 dispose');
+
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) => NavigatorPageNotify(
       name: 'page2Notify',
       onPageNotify: (params) => ThrioLogger.v('flutter2 receive notify:$params'),

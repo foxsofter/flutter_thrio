@@ -25,6 +25,13 @@ class _PageState extends State<Page> {
   }
 
   @override
+  void dispose() {
+    ThrioLogger.d('page4 dispose');
+
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) => Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,

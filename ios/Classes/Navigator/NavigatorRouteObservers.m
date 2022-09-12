@@ -39,6 +39,8 @@
     return self;
 }
 
+#pragma mark - NavigatorRouteObserverProtocol methods
+
 - (void)didPush:(NavigatorRouteSettings *)routeSettings {
     if (!routeSettings) {
         return;

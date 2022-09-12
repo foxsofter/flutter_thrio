@@ -20,12 +20,16 @@
 // IN THE SOFTWARE.
 
 #import <Flutter/Flutter.h>
+#import "NavigatorFlutterEngineIdentifier.h"
 #import "NavigatorPageNotifyProtocol.h"
-#import "ThrioTypes.h"
+#import "FlutterThrioTypes.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface NavigatorFlutterViewController : FlutterViewController <UINavigationControllerDelegate>
+@interface NavigatorFlutterViewController : FlutterViewController <
+UINavigationControllerDelegate,
+NavigatorFlutterEngineIdentifier
+>
 
 - (instancetype)initWithEntrypoint:(NSString *)entrypoint NS_DESIGNATED_INITIALIZER;
 
@@ -45,8 +49,6 @@ NS_ASSUME_NONNULL_BEGIN
                          bundle:(nullable NSBundle *)nibBundle NS_UNAVAILABLE;
 
 - (void)surfaceUpdated:(BOOL)appeared;
-
-@property (nonatomic, copy, readonly) NSString *entrypoint;
 
 @end
 

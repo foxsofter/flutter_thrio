@@ -21,12 +21,13 @@
 
 #import <Foundation/Foundation.h>
 #import <Flutter/Flutter.h>
+#import "NavigatorFlutterEngineIdentifier.h"
 #import "ThrioChannel.h"
-#import "ThrioTypes.h"
+#import "FlutterThrioTypes.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface NavigatorRouteSendChannel : NSObject
+@interface NavigatorRouteSendChannel : NSObject<NavigatorFlutterEngineIdentifier>
 
 - (instancetype)initWithChannel:(ThrioChannel *)channel;
 
@@ -34,7 +35,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)notify:(id)arguments;
 
-- (void)pop:(id)arguments result:(ThrioNumberCallback _Nullable)result;
+- (void)pop:(id)arguments result:(ThrioBoolCallback _Nullable)result;
 
 - (void)popTo:(id)arguments result:(ThrioBoolCallback _Nullable)result;
 

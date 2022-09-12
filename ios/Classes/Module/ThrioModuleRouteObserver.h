@@ -1,6 +1,6 @@
 // The MIT License (MIT)
 //
-// Copyright (c) 2019 foxsofter
+// Copyright (c) 2020 foxsofter
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
 // copy of this software and associated documentation files (the "Software"),
@@ -20,7 +20,7 @@
 // IN THE SOFTWARE.
 
 #import <Foundation/Foundation.h>
-#import "ThrioTypes.h"
+#import "FlutterThrioTypes.h"
 #import "NavigatorRouteObserverProtocol.h"
 #import "ThrioModule.h"
 

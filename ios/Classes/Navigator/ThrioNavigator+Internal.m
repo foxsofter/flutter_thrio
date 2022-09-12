@@ -20,11 +20,12 @@
 // IN THE SOFTWARE.
 
 #import "NSPointerArray+Thrio.h"
+#import "NavigatorConsts.h"
 #import "NavigatorFlutterEngineFactory.h"
-#import "ThrioNavigator+Internal.h"
-#import "ThrioNavigator+Internal.h"
 #import "ThrioModule+PageBuilders.h"
 #import "ThrioNavigator.h"
+#import "ThrioNavigator+Internal.h"
+#import "ThrioNavigator+Internal.h"
 #import "ThrioRegistrySet.h"
 #import "UIApplication+Thrio.h"
 #import "UINavigationController+HotRestart.h"
@@ -68,11 +69,12 @@ NS_ASSUME_NONNULL_BEGIN
                 params:params
               animated:animated
         fromEntrypoint:fromEntrypoint
+            fromPageId:kNavigatorRoutePageIdNone
                 result:^(NSNumber *idx) {
-                    if (result) {
-                        result(idx);
-                    }
-                } poppedResult:poppedResult];
+        if (result) {
+            result(idx);
+        }
+    } poppedResult:poppedResult];
 }
 
 + (void)_notifyUrl:(NSString *_Nullable)url

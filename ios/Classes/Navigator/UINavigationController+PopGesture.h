@@ -20,8 +20,8 @@
 // IN THE SOFTWARE.
 
 #import <UIKit/UIKit.h>
-#import "NavigatorPopGestureRecognizerDelegate.h"
 #import "NavigatorControllerDelegate.h"
+#import "NavigatorPopGestureRecognizerDelegate.h"
 
 NS_ASSUME_NONNULL_BEGIN
 

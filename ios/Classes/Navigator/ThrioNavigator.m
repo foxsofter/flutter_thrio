@@ -23,9 +23,9 @@
 
 #import "NSPointerArray+Thrio.h"
 #import "NavigatorFlutterEngineFactory.h"
-#import "ThrioNavigator+Internal.h"
 #import "ThrioModule+PageBuilders.h"
 #import "ThrioNavigator.h"
+#import "ThrioNavigator+Internal.h"
 #import "ThrioRegistrySet.h"
 #import "UINavigationController+Navigator.h"
 #import "UINavigationController+PopGesture.h"
@@ -363,16 +363,18 @@ NS_ASSUME_NONNULL_BEGIN
     for (UINavigationController *nvc in allNvcs) {
         NavigatorPageRoute *firstRoute = [nvc.viewControllers.firstObject thrio_firstRoute];
         return firstRoute &&
-               [firstRoute.settings.url isEqualToString:url] &&
-               (index == nil || index == 0 || [firstRoute.settings.index isEqualToNumber:index]);
+        [firstRoute.settings.url isEqualToString:url] &&
+        (index == nil || index == 0 || [firstRoute.settings.index isEqualToNumber:index]);
     }
     return NO;
 }
 
 #pragma mark - engine methods
 
-+ (FlutterEngine *)getEngineByEntrypoint:(NSString *)entrypoint {
-    return [NavigatorFlutterEngineFactory.shared getEngineByEntrypoint:entrypoint];
++ (FlutterEngine *)getEngineByViewContontroller:(NavigatorFlutterViewController *)viewController
+                                 withEntrypoint:(NSString *)entrypoint {
+    return [NavigatorFlutterEngineFactory.shared getEngineByPageId:viewController.pageId
+                                                    withEntrypoint:entrypoint].flutterEngine;
 }
 
 @end

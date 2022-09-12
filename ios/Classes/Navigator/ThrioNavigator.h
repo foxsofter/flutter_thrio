@@ -21,7 +21,7 @@
 
 #import <Foundation/Foundation.h>
 #import <Flutter/Flutter.h>
-#import "ThrioTypes.h"
+#import "FlutterThrioTypes.h"
 #import "ThrioChannel.h"
 #import "NavigatorPageRoute.h"
 
@@ -427,7 +427,8 @@ NS_ASSUME_NONNULL_BEGIN
 ///
 /// Should be called after the engine is initialized.
 ///
-+ (FlutterEngine *)getEngineByEntrypoint:(NSString *)entrypoint;
++ (FlutterEngine *)getEngineByViewContontroller:(NavigatorFlutterViewController *)viewController
+                                 withEntrypoint:(NSString *)entrypoint;
 
 @end
 

@@ -25,7 +25,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface NavigatorPageRoute ()
 
-@property (nonatomic, strong, readwrite) NavigatorRouteSettings *settings;
+@property (nonatomic, readwrite) NavigatorRouteSettings *settings;
 
 @end
 
@@ -43,6 +43,7 @@ NS_ASSUME_NONNULL_BEGIN
     if (self) {
         _settings = settings;
         _notifications = [NSMutableDictionary dictionary];
+//        _fromEntrypoint = 
     }
     return self;
 }

@@ -76,6 +76,7 @@ open class FlutterEngineGroup constructor(private var entrypoint: String) {
             readyListener?.onReady(mainEngine!!)
             currentEngine = mainEngine
             isRunning = false
+            return
         }
         val flutterEngine =
             mainEngine?.engine?.fork(context, entrypoint) ?: ThrioFlutterEngine(context)

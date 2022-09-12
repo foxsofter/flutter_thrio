@@ -75,7 +75,7 @@ class NavigatorRouteReceiveChannel {
               _syncPagePoppedResults();
               return value;
             }) ??
-            Future.value();
+            Future.value(false);
       });
 
   void _onPopTo() => _channel.registryMethodCall('popTo', ([final arguments]) {

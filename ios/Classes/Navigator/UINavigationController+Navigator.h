@@ -20,8 +20,8 @@
 // IN THE SOFTWARE.
 
 #import <UIKit/UIKit.h>
-#import "ThrioTypes.h"
 #import "NavigatorPageRoute.h"
+#import "FlutterThrioTypes.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -30,7 +30,8 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)thrio_pushUrl:(NSString *)url
                params:(id _Nullable)params
              animated:(BOOL)animated
-       fromEntrypoint:(NSString *_Nullable)entrypoint
+       fromEntrypoint:(NSString *_Nullable)fromEntrypoint
+           fromPageId:(NSUInteger)fromPageId
                result:(ThrioNumberCallback _Nullable)result
          poppedResult:(ThrioIdCallback _Nullable)poppedResult;
 
@@ -79,7 +80,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)thrio_didShowViewController:(UIViewController *)viewController
                            animated:(BOOL)animated;
 
-/// 手势触发的当前正要被pop的`UIViewController`
+/// 侧滑触发的当前正要被pop的`UIViewController`
 ///
 @property (nonatomic, strong, nullable) UIViewController *thrio_popingViewController;
 

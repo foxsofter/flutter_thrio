@@ -20,12 +20,16 @@
 // IN THE SOFTWARE.
 
 #import <Foundation/Foundation.h>
-#import "ThrioChannel.h"
+#import "NavigatorFlutterEngineIdentifier.h"
 #import "NavigatorRouteObserverProtocol.h"
+#import "ThrioChannel.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface NavigatorRouteObserverChannel : NSObject<NavigatorRouteObserverProtocol>
+@interface NavigatorRouteObserverChannel : NSObject<
+NavigatorRouteObserverProtocol,
+NavigatorFlutterEngineIdentifier
+>
 
 - (instancetype)initWithChannel:(ThrioChannel *)channel;
 

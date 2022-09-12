@@ -53,6 +53,8 @@ NS_ASSUME_NONNULL_BEGIN
     }
 }
 
+#pragma mark - NavigatorPageObserverProtocol methods
+
 - (void)willAppear:(NavigatorRouteSettings *)routeSettings {
     if (!routeSettings) {
         return;

@@ -21,7 +21,7 @@
 
 #import "ThrioModule.h"
 #import "ThrioRegistryMap.h"
-#import "ThrioTypes.h"
+#import "FlutterThrioTypes.h"
 
 NS_ASSUME_NONNULL_BEGIN
 

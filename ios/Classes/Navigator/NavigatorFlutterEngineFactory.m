@@ -19,8 +19,10 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
+#import "NavigatorConsts.h"
 #import "NavigatorFlutterEngine.h"
 #import "NavigatorFlutterEngineFactory.h"
+#import "NavigatorFlutterEngineGroup.h"
 #import "NavigatorLogger.h"
 #import "ThrioChannel.h"
 #import "ThrioNavigator+Internal.h"
@@ -30,144 +32,152 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface NavigatorFlutterEngineFactory ()
 
-@property (nonatomic, strong) NSMutableDictionary *flutterEngines;
+@property (nonatomic, strong) NSMutableDictionary *engineGroups;
 
 @end
 
 @implementation NavigatorFlutterEngineFactory
 
-static NSString *const kDefaultEntrypoint = @"main";
 
 + (instancetype)shared {
     static NavigatorFlutterEngineFactory *_instance;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         _instance = [[self alloc] init];
+        _instance.engineGroups = [NSMutableDictionary dictionary];
     });
     return _instance;
 }
 
-- (NSMutableDictionary *)flutterEngines {
-    if (!_flutterEngines) {
-        _flutterEngines = [NSMutableDictionary dictionary];
-    }
-    return _flutterEngines;
-}
 
 - (void)startupWithEntrypoint:(NSString *)entrypoint
-                   readyBlock:(ThrioIdCallback _Nullable)block {
-    if (!NavigatorFlutterEngineFactory.shared.multiEngineEnabled) {
-        entrypoint = kDefaultEntrypoint;
+                   readyBlock:(ThrioEngineReadyCallback _Nullable)block {
+    if (!_multiEngineEnabled) {
+        entrypoint = kNavigatorDefaultEntrypoint;
     }
-
-    if ([self.flutterEngines.allKeys containsObject:entrypoint]) {
-        block(entrypoint);
-    } else {
-        NavigatorVerbose(@"push in startupWithEntrypoint:%@", entrypoint);
-        NavigatorFlutterEngine *flutterEngine = [[NavigatorFlutterEngine alloc] init];
-        [self.flutterEngines setObject:flutterEngine forKey:entrypoint];
-        [flutterEngine startupWithEntrypoint:entrypoint readyBlock:block];
+    NavigatorFlutterEngineGroup *engineGroup = _engineGroups[entrypoint];
+    if (!engineGroup) {
+        engineGroup = [[NavigatorFlutterEngineGroup alloc] initWithEntrypoint:entrypoint];
+        _engineGroups[entrypoint] = engineGroup;
     }
+    [engineGroup startupWithReadyBlock:block];
 }
 
-- (FlutterEngine *)getEngineByEntrypoint:(NSString *)entrypoint {
-    if (!NavigatorFlutterEngineFactory.shared.multiEngineEnabled) {
-        entrypoint = kDefaultEntrypoint;
-    }
-    NavigatorFlutterEngine *flutterEngine = self.flutterEngines[entrypoint];
-    return flutterEngine.engine;
+- (BOOL)isMainEngineByPageId:(NSUInteger)pageId withEntrypoint:(NSString *)entrypoint {
+    return [_engineGroups[@(pageId)] isMainEngineByPageId:pageId];
 }
 
-- (NavigatorRouteSendChannel *)getSendChannelByEntrypoint:(NSString *)entrypoint {
-    if (!self.multiEngineEnabled) {
-        entrypoint = kDefaultEntrypoint;
+- (NavigatorFlutterEngine *_Nullable)getEngineByPageId:(NSUInteger)pageId withEntrypoint:(NSString *)entrypoint {
+    if (!_multiEngineEnabled) {
+        entrypoint = kNavigatorDefaultEntrypoint;
     }
-    NavigatorFlutterEngine *flutterEngine = self.flutterEngines[entrypoint];
-    return flutterEngine.sendChannel;
+    NavigatorFlutterEngineGroup *engineGroup = _engineGroups[entrypoint];
+    return [engineGroup getEngineByPageId:pageId];
 }
 
-- (ThrioChannel *)getModuleChannelByEntrypoint:(NSString *)entrypoint {
-    if (!self.multiEngineEnabled) {
-        entrypoint = kDefaultEntrypoint;
-    }
-    NavigatorFlutterEngine *flutterEngine = self.flutterEngines[entrypoint];
-    return flutterEngine.moduleContextChannel;
+- (void)destroyEngineByPageId:(NSUInteger)pageId withEntrypoint:(NSString *)entrypoint {
+    [_engineGroups[entrypoint] destroyEngineByPageId:pageId];
+}
+
+- (NavigatorRouteSendChannel *)getSendChannelByPageId:(NSUInteger)pageId withEntrypoint:(NSString *)entrypoint {
+    return [self getEngineByPageId:pageId withEntrypoint:entrypoint].sendChannel;
+}
+
+- (ThrioChannel *)getModuleChannelByPageId:(NSUInteger)pageId withEntrypoint:(NSString *)entrypoint {
+    return [self getEngineByPageId:pageId withEntrypoint:entrypoint].moduleContextChannel;
 }
 
 - (void)setModuleContextValue:(id _Nullable)value forKey:(NSString *)key {
-    NSArray *flutterEngines = [_flutterEngines.allValues copy];
-    for (NavigatorFlutterEngine *flutterEngine in flutterEngines) {
-        [flutterEngine.moduleContextChannel invokeMethod:@"set" arguments:@{ key: value }];
+    NSArray *engineGroups = [_engineGroups.allValues copy];
+    for (NavigatorFlutterEngineGroup *engineGroup in engineGroups) {
+        NSArray *engines = engineGroup.engines;
+        for (NavigatorFlutterEngine *engine in engines) {
+            [engine.moduleContextChannel invokeMethod:@"set" arguments:@{ key: value }];
+        }
     }
-}
-
-- (void)pushViewController:(NavigatorFlutterViewController *)viewController {
-    NavigatorFlutterEngine *flutterEngine = self.flutterEngines[viewController.entrypoint];
-    [flutterEngine pushViewController:viewController];
-}
-
-- (void)popViewController:(NavigatorFlutterViewController *)viewController {
-    NavigatorFlutterEngine *flutterEngine = self.flutterEngines[viewController.entrypoint];
-    [flutterEngine popViewController:viewController];
 }
 
 #pragma mark - NavigatorRouteObserverProtocol methods
 
 - (void)didPush:(NavigatorRouteSettings *)routeSettings {
-    NSArray *flutterEngines = [_flutterEngines.allValues copy];
-    for (NavigatorFlutterEngine *flutterEngine in flutterEngines) {
-        [flutterEngine.routeChannel didPush:routeSettings];
+    NSArray *engineGroups = [_engineGroups.allValues copy];
+    for (NavigatorFlutterEngineGroup *engineGroup in engineGroups) {
+        NSArray *engines = engineGroup.engines;
+        for (NavigatorFlutterEngine *engine in engines) {
+            [engine.routeChannel didPush:routeSettings];
+        }
     }
 }
 
 - (void)didPop:(NavigatorRouteSettings *)routeSettings {
-    NSArray *flutterEngines = [_flutterEngines.allValues copy];
-    for (NavigatorFlutterEngine *flutterEngine in flutterEngines) {
-        [flutterEngine.routeChannel didPop:routeSettings];
+    NSArray *engineGroups = [_engineGroups.allValues copy];
+    for (NavigatorFlutterEngineGroup *engineGroup in engineGroups) {
+        NSArray *engines = engineGroup.engines;
+        for (NavigatorFlutterEngine *engine in engines) {
+            [engine.routeChannel didPop:routeSettings];
+        }
     }
 }
 
 - (void)didPopTo:(NavigatorRouteSettings *)routeSettings {
-    NSArray *flutterEngines = [_flutterEngines.allValues copy];
-    for (NavigatorFlutterEngine *flutterEngine in flutterEngines) {
-        [flutterEngine.routeChannel didPopTo:routeSettings];
+    NSArray *engineGroups = [_engineGroups.allValues copy];
+    for (NavigatorFlutterEngineGroup *engineGroup in engineGroups) {
+        NSArray *engines = engineGroup.engines;
+        for (NavigatorFlutterEngine *engine in engines) {
+            [engine.routeChannel didPopTo:routeSettings];
+        }
     }
 }
 
 - (void)didRemove:(NavigatorRouteSettings *)routeSettings {
-    NSArray *flutterEngines = [_flutterEngines.allValues copy];
-    for (NavigatorFlutterEngine *flutterEngine in flutterEngines) {
-        [flutterEngine.routeChannel didRemove:routeSettings];
+    NSArray *engineGroups = [_engineGroups.allValues copy];
+    for (NavigatorFlutterEngineGroup *engineGroup in engineGroups) {
+        NSArray *engines = engineGroup.engines;
+        for (NavigatorFlutterEngine *engine in engines) {
+            [engine.routeChannel didRemove:routeSettings];
+        }
     }
 }
 
 #pragma mark - NavigatorPageObserverProtocol methods
 
 - (void)willAppear:(NavigatorRouteSettings *)routeSettings {
-    NSArray *flutterEngines = [_flutterEngines.allValues copy];
-    for (NavigatorFlutterEngine *flutterEngine in flutterEngines) {
-        [flutterEngine.pageChannel willAppear:routeSettings];
+    NSArray *engineGroups = [_engineGroups.allValues copy];
+    for (NavigatorFlutterEngineGroup *engineGroup in engineGroups) {
+        NSArray *engines = engineGroup.engines;
+        for (NavigatorFlutterEngine *engine in engines) {
+            [engine.pageChannel willAppear:routeSettings];
+        }
     }
 }
 
 - (void)didAppear:(NavigatorRouteSettings *)routeSettings {
-    NSArray *flutterEngines = [_flutterEngines.allValues copy];
-    for (NavigatorFlutterEngine *flutterEngine in flutterEngines) {
-        [flutterEngine.pageChannel didAppear:routeSettings];
+    NSArray *engineGroups = [_engineGroups.allValues copy];
+    for (NavigatorFlutterEngineGroup *engineGroup in engineGroups) {
+        NSArray *engines = engineGroup.engines;
+        for (NavigatorFlutterEngine *engine in engines) {
+            [engine.pageChannel didAppear:routeSettings];
+        }
     }
 }
 
 - (void)willDisappear:(NavigatorRouteSettings *)routeSettings {
-    NSArray *flutterEngines = [_flutterEngines.allValues copy];
-    for (NavigatorFlutterEngine *flutterEngine in flutterEngines) {
-        [flutterEngine.pageChannel willDisappear:routeSettings];
+    NSArray *engineGroups = [_engineGroups.allValues copy];
+    for (NavigatorFlutterEngineGroup *engineGroup in engineGroups) {
+        NSArray *engines = engineGroup.engines;
+        for (NavigatorFlutterEngine *engine in engines) {
+            [engine.pageChannel willDisappear:routeSettings];
+        }
     }
 }
 
 - (void)didDisappear:(NavigatorRouteSettings *)routeSettings {
-    NSArray *flutterEngines = [_flutterEngines.allValues copy];
-    for (NavigatorFlutterEngine *flutterEngine in flutterEngines) {
-        [flutterEngine.pageChannel didDisappear:routeSettings];
+    NSArray *engineGroups = [_engineGroups.allValues copy];
+    for (NavigatorFlutterEngineGroup *engineGroup in engineGroups) {
+        NSArray *engines = engineGroup.engines;
+        for (NavigatorFlutterEngine *engine in engines) {
+            [engine.pageChannel didDisappear:routeSettings];
+        }
     }
 }
 

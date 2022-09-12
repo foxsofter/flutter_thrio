@@ -21,6 +21,7 @@
 
 #import <Flutter/Flutter.h>
 
+#import "NavigatorConsts.h"
 #import "NavigatorFlutterEngineFactory.h"
 #import "ThrioChannel.h"
 #import "FlutterThrioPlugin.h"
@@ -33,9 +34,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, copy) NSString *channelName;
 
-@property (nonatomic, copy, readwrite) NSString *entrypoint;
-
-@property (nonatomic, strong) NSObject<FlutterBinaryMessenger> *messenger;
+@property (nonatomic, weak, readwrite) NavigatorFlutterEngine *engine;
 
 @property (nonatomic, strong) FlutterMethodChannel *methodChannel;
 
@@ -55,29 +54,40 @@ static NSString *const kEventNameKey = @"__event_name__";
 
 @implementation ThrioChannel
 
-+ (instancetype)channelWithEntrypoint:(NSString *)entrypoint {
-    return [self channelWithEntrypoint:entrypoint name:kDefaultChannelName];
++ (instancetype)channelWithEngine:(NavigatorFlutterEngine *)engine {
+    return [self channelWithEngine:engine name:kDefaultChannelName];
 }
 
-+ (instancetype)channelWithEntrypoint:(NSString *)entrypoint name:(NSString *)channelName {
++ (instancetype)channelWithEngine:(NavigatorFlutterEngine *)engine name:(NSString *)channelName {
     if (!channelName || channelName.length < 1) {
         channelName = kDefaultChannelName;
     }
-    return [[ThrioChannel alloc] initWithEntrypoint:entrypoint name:channelName];
+    return [[ThrioChannel alloc] initWithEngine:engine name:channelName];
 }
 
-- (instancetype)initWithEntrypoint:(NSString *)entrypoint name:(NSString *)channelName {
+- (instancetype)initWithEngine:(NavigatorFlutterEngine *)engine name:(NSString *)channelName {
     self = [super init];
     if (self) {
         if (NavigatorFlutterEngineFactory.shared.multiEngineEnabled &&
-            [entrypoint isEqualToString:@"main"]) {
-            [NSException raise:@"ThrioException"
-                        format:@"multi-engine mode, entrypoint should not be main."];
+            [engine.entrypoint isEqualToString:kNavigatorDefaultEntrypoint]) {
+            @throw [NSException exceptionWithName:@"ThrioException"
+                                           reason:@"multi-engine mode, entrypoint should not be main."
+                                         userInfo:nil];
         }
-        _entrypoint = entrypoint;
         _channelName = channelName;
+        _engine = engine;
     }
     return self;
+}
+
+#pragma mark - NavigatorFlutterEngineIdentifier methods
+
+- (NSString *)entrypoint {
+    return _engine.entrypoint;
+}
+
+- (NSUInteger)pageId {
+    return _engine.pageId;
 }
 
 #pragma mark - method channel methods
@@ -102,34 +112,34 @@ static NSString *const kEventNameKey = @"__event_name__";
                                  result:callback];
 }
 
-- (ThrioVoidCallback)registryMethod:(NSString *)method
-                            handler:(ThrioMethodHandler)handler {
+- (ThrioVoidCallback)registryMethod:(NSString *)method handler:(ThrioMethodHandler)handler {
     return [_methodHandlers registry:method value:handler];
 }
 
-- (void)setupMethodChannel:(NSObject<FlutterBinaryMessenger> *)messenger {
+- (void)setupMethodChannel {
     _methodHandlers = [ThrioRegistryMap map];
-
+    
     NSString *methodChannelName = [NSString stringWithFormat:@"_method_%@", _channelName];
     _methodChannel = [FlutterMethodChannel methodChannelWithName:methodChannelName
-                                                 binaryMessenger:messenger];
+                                                 binaryMessenger:_engine.flutterEngine.binaryMessenger];
     __weak typeof(self) weakself = self;
     [_methodChannel setMethodCallHandler:
-     ^(FlutterMethodCall *_Nonnull call,
-       FlutterResult _Nonnull result) {
-           __strong typeof(weakself) strongSelf = weakself;
-           ThrioMethodHandler handler = strongSelf.methodHandlers[call.method];
-           if (handler) {
-               @try {
-                   handler(call.arguments, ^(id r) {
-                               result(r);
-                           });
-               } @catch (NSException *exception) {
-                   [FlutterError errorWithCode:exception.name message:exception.reason details:exception.userInfo];
-                   result(nil);
-               }
-           }
-       }];
+     ^(FlutterMethodCall *_Nonnull call, FlutterResult _Nonnull result) {
+        __strong typeof(weakself) strongSelf = weakself;
+        ThrioMethodHandler handler = strongSelf.methodHandlers[call.method];
+        if (handler) {
+            @try {
+                handler(call.arguments, ^(id r) {
+                    result(r);
+                });
+            } @catch (NSException *exception) {
+                FlutterError *error = [FlutterError errorWithCode:exception.name
+                                                          message:exception.reason
+                                                          details:exception.userInfo];
+                result(error);
+            }
+        }
+    }];
 }
 
 #pragma mark - event channel methods
@@ -147,12 +157,12 @@ static NSString *const kEventNameKey = @"__event_name__";
     return [_eventHandlers registry:name value:handler];
 }
 
-- (void)setupEventChannel:(NSObject<FlutterBinaryMessenger> *)messenger {
+- (void)setupEventChannel {
     _eventHandlers = [ThrioRegistrySetMap map];
-
+    
     NSString *eventChannelName = [NSString stringWithFormat:@"_event_%@", _channelName];
     _eventChannel = [FlutterEventChannel eventChannelWithName:eventChannelName
-                                              binaryMessenger:messenger];
+                                              binaryMessenger:_engine.flutterEngine.binaryMessenger];
     [_eventChannel setStreamHandler:self];
 }
 

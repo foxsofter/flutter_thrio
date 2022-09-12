@@ -61,7 +61,7 @@
         if (route == preLastRoute) {
             return;
         }
-
+        
         // 触发 `didAppear`
         [ThrioModule.pageObservers didAppear:routeSettings];
         // 如果存在前序的 route，触发其 `didDisappear`

@@ -23,9 +23,9 @@
 #import "NavigatorFlutterViewController.h"
 #import "NavigatorLogger.h"
 #import "NavigatorRouteSettings.h"
-#import "ThrioNavigator+Internal.h"
 #import "ThrioModule+JsonSerializers.h"
 #import "ThrioNavigator.h"
+#import "ThrioNavigator+Internal.h"
 #import "UINavigationController+HotRestart.h"
 #import "UIViewController+Navigator.h"
 
@@ -43,10 +43,11 @@
     if (!viewController) {
         return;
     }
+    // 如果 NavigatorFlutterViewController 不在顶部则 popTo 让它出现在顶部
     if (viewController != self.topViewController) {
         [self popToViewController:viewController animated:YES];
     }
-
+    
     viewController.thrio_firstRoute.next = nil;
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.6 * NSEC_PER_SEC)),
                    dispatch_get_main_queue(), ^{
@@ -54,7 +55,8 @@
         NavigatorRouteSettings *settings = viewController.thrio_firstRoute.settings;
         id serializerParams = [ThrioModule serializeParams:settings.params];
         NavigatorRouteSendChannel *channel =
-            [NavigatorFlutterEngineFactory.shared getSendChannelByEntrypoint:viewController.entrypoint];
+        [NavigatorFlutterEngineFactory.shared getSendChannelByPageId:viewController.pageId
+                                                      withEntrypoint:viewController.entrypoint];
         [channel push:[settings toArgumentsWithParams:serializerParams] result:nil];
     });
 }

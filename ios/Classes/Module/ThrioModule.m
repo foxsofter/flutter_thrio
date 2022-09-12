@@ -19,6 +19,7 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
+#import "NavigatorConsts.h"
 #import "NavigatorFlutterEngine.h"
 #import "NavigatorFlutterEngineFactory.h"
 #import "NavigatorPageObserverProtocol.h"
@@ -108,10 +109,10 @@ static NSMutableDictionary *modules;
             [module onJsonDeserializerRegister:module.moduleContext];
         }
     }
-
+    
     // 单引擎模式下，提前启动，默认 `entrypoint` 为 main
     if (!NavigatorFlutterEngineFactory.shared.multiEngineEnabled) {
-        [self startupFlutterEngineWithEntrypoint:@"main"];
+        [self startupFlutterEngineWithEntrypoint:kNavigatorDefaultEntrypoint];
     }
 }
 
@@ -126,7 +127,7 @@ static NSMutableDictionary *modules;
 
 - (void)startupFlutterEngineWithEntrypoint:(NSString *)entrypoint {
     __weak typeof(self) weakself = self;
-    ThrioIdCallback readyBlock = ^(id entrypoint) {
+    ThrioEngineReadyCallback readyBlock = ^(NavigatorFlutterEngine *engine) {
         __strong typeof(weakself) strongSelf = weakself;
         NSMutableDictionary *canTransParams = [NSMutableDictionary dictionary];
         for (NSString *key in strongSelf.moduleContext.params) {
@@ -137,8 +138,7 @@ static NSMutableDictionary *modules;
             }
         }
         if (canTransParams.count > 0) {
-            ThrioChannel *moduleContextChannel = [NavigatorFlutterEngineFactory.shared getModuleChannelByEntrypoint:entrypoint];
-            [moduleContextChannel invokeMethod:@"set" arguments:canTransParams];
+            [engine.moduleContextChannel invokeMethod:@"set" arguments:canTransParams];
         }
     };
     [NavigatorFlutterEngineFactory.shared startupWithEntrypoint:entrypoint

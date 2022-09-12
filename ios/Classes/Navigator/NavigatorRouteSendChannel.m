@@ -37,6 +37,18 @@
     return self;
 }
 
+#pragma mark - NavigatorFlutterEngineIdentifier methods
+
+- (NSString *)entrypoint {
+    return _channel.entrypoint;
+}
+
+- (NSUInteger)pageId {
+    return _channel.pageId;
+}
+
+#pragma mark - navigator methods
+
 - (void)push:(id)arguments result:(ThrioBoolCallback _Nullable)result {
     [_channel invokeMethod:@"push" arguments:arguments result:^(id _Nullable value) {
         if (result) {
@@ -53,11 +65,11 @@
     [_channel sendEvent:@"__onNotify__" arguments:arguments];
 }
 
-- (void)pop:(id)arguments result:(ThrioNumberCallback _Nullable)result {
+- (void)pop:(id)arguments result:(ThrioBoolCallback _Nullable)result {
     [_channel invokeMethod:@"pop" arguments:arguments result:^(id _Nullable r) {
         if (result) {
             if (r && [r isKindOfClass:NSNumber.class]) {
-                result(r);
+                result([r boolValue]);
             } else {
                 result(nil);
             }

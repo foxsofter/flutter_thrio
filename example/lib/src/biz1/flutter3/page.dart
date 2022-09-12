@@ -19,6 +19,13 @@ class Page extends StatefulWidget {
 
 class _PageState extends State<Page> {
   @override
+  void dispose() {
+    ThrioLogger.d('page3 dispose');
+
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) => NavigatorPageLifecycle(
       // didAppear: (settings) {
       //   SystemChrome.setPreferredOrientations([

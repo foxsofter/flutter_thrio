@@ -35,6 +35,8 @@ NS_ASSUME_NONNULL_BEGIN
                      nested:(BOOL)nested
                      params:(id _Nullable)params;
 
+- (instancetype)init NS_UNAVAILABLE;
+
 + (id _Nullable)settingsFromArguments:(NSDictionary *)arguments;
 
 - (NSDictionary *)toArguments;
@@ -43,7 +45,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, copy, readonly) NSString *url;
 
-@property (nonatomic, strong, readonly, nullable) NSNumber *index;
+@property (nonatomic, readonly, nullable) NSNumber *index;
 
 @property (nonatomic, copy, readonly) NSString *name;
 

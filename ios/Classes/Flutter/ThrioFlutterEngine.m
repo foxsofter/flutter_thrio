@@ -1,6 +1,6 @@
 // The MIT License (MIT)
 //
-// Copyright (c) 2019 Hellobike Group
+// Copyright (c) 2022 foxsofter
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
 // copy of this software and associated documentation files (the "Software"),
@@ -19,17 +19,34 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-#import <UIKit/UIKit.h>
-#import "FlutterThrioTypes.h"
+#import "ThrioFlutterEngine.h"
+#import <objc/message.h>
 
-NS_ASSUME_NONNULL_BEGIN
+@interface ThrioFlutterEngine ()
 
-@interface UINavigationController (PopDisabled)
-
-- (void)thrio_setPopDisabledUrl:(NSString *)url
-                          index:(NSNumber *)index
-                       disabled:(BOOL)disabled;
+- (id)performSelector:(SEL)aSelector withObject:(id)obj1 withObject:(id)obj2 withObject:(id)obj3;
 
 @end
 
-NS_ASSUME_NONNULL_END
+@implementation ThrioFlutterEngine
+
+
+- (instancetype)initWithName:(NSString*)labelPrefix
+      allowHeadlessExecution:(BOOL)allowHeadlessExecution {
+    return [super initWithName:labelPrefix project:nil allowHeadlessExecution:allowHeadlessExecution];
+}
+
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wundeclared-selector"
+- (ThrioFlutterEngine*)fork:(NSString*)entrypoint {
+    SEL sel = @selector(spawnWithEntrypoint:libraryURI:initialRoute:entrypointArgs:);
+    return [self performSelector:sel withObject:entrypoint withObject:nil withObject:nil];
+}
+#pragma clang diagnostic pop
+
+- (id)performSelector:(SEL)aSelector withObject:(id)obj1 withObject:(id)obj2 withObject:(id)obj3 {
+    if (!aSelector) [self doesNotRecognizeSelector:aSelector];
+    return ((id(*)(id, SEL, id, id, id))objc_msgSend)(self, aSelector, obj1, obj2, obj3);
+}
+
+@end

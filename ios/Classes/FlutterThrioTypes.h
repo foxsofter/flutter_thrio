@@ -21,8 +21,8 @@
 
 #import <UIKit/UIKit.h>
 
-#ifndef ThrioTypes_h
-#define ThrioTypes_h
+#ifndef FlutterThrioTypes_h
+#define FlutterThrioTypes_h
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -63,6 +63,13 @@ typedef NavigatorFlutterViewController *_Nullable (^NavigatorFlutterPageBuilder)
 ///
 typedef UIViewController *_Nullable (^NavigatorPageBuilder)(id _Nullable params);
 
+
+/// Signature of callbacks with `NavigatorFlutterEngine` parameters.
+///
+@class NavigatorFlutterEngine;
+typedef void (^ThrioEngineReadyCallback)(NavigatorFlutterEngine *);
+
+
 NS_ASSUME_NONNULL_END
 
-#endif /* ThrioTypes_h */
+#endif /* FlutterThrioTypes_h */

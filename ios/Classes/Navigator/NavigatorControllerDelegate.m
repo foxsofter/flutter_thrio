@@ -43,7 +43,7 @@
     }
 }
 
-#pragma mark - UINavigationControllerDelegate
+#pragma mark - UINavigationControllerDelegate methods
 
 - (void)navigationController:(UINavigationController *)navigationController
        didShowViewController:(UIViewController *)viewController
@@ -104,7 +104,7 @@
     return animator;
 }
 
-#pragma mark - UIImagePickerControllerDelegate
+#pragma mark - UIImagePickerControllerDelegate methods
 
 - (void)    imagePickerController:(UIImagePickerController *)picker
     didFinishPickingMediaWithInfo:(NSDictionary<UIImagePickerControllerInfoKey, id> *)info {

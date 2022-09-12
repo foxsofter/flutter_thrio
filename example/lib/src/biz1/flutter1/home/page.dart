@@ -29,6 +29,7 @@ class _PageState extends State<Page> {
 
   @override
   void dispose() {
+    ThrioLogger.d('page1 dispose');
     _inputController.dispose();
     super.dispose();
   }

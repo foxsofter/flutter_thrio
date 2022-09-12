@@ -1,6 +1,6 @@
 // The MIT License (MIT)
 //
-// Copyright (c) 2019 Hellobike Group
+// Copyright (c) 2022 foxsofter
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
 // copy of this software and associated documentation files (the "Software"),
@@ -19,17 +19,12 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-#import <UIKit/UIKit.h>
-#import "FlutterThrioTypes.h"
+#ifndef NavigatorConsts_h
+#define NavigatorConsts_h
 
-NS_ASSUME_NONNULL_BEGIN
+static NSString *const kNavigatorDefaultEntrypoint = @"main";
+static NSString *const kNavigatorNativeEntrypoint = @"_";
 
-@interface UINavigationController (PopDisabled)
+static NSUInteger const kNavigatorRoutePageIdNone = 0;
 
-- (void)thrio_setPopDisabledUrl:(NSString *)url
-                          index:(NSNumber *)index
-                       disabled:(BOOL)disabled;
-
-@end
-
-NS_ASSUME_NONNULL_END
+#endif /* NavigatorConsts_h */

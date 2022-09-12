@@ -20,8 +20,8 @@
 // IN THE SOFTWARE.
 
 #import <Foundation/Foundation.h>
-#import "ThrioTypes.h"
 #import "NavigatorRouteSettings.h"
+#import "FlutterThrioTypes.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -39,15 +39,17 @@ typedef enum : NSUInteger {
 
 - (instancetype)initWithSettings:(NavigatorRouteSettings *)settings;
 
+- (instancetype)init NS_UNAVAILABLE;
+
 - (void)addNotify:(NSString *)name params:(id _Nullable)params;
 
 - (id _Nullable)removeNotify:(NSString *)name;
 
-@property (nonatomic, strong, nullable) NavigatorPageRoute *prev;
+@property (nonatomic, nullable) NavigatorPageRoute *prev;
 
-@property (nonatomic, strong, nullable) NavigatorPageRoute *next;
+@property (nonatomic, nullable) NavigatorPageRoute *next;
 
-@property (nonatomic, strong, readonly) NavigatorRouteSettings *settings;
+@property (nonatomic, readonly) NavigatorRouteSettings *settings;
 
 @property (nonatomic, copy, readonly) NSDictionary *notifications;
 
@@ -58,6 +60,11 @@ typedef enum : NSUInteger {
 /// The current route was pushed by the engine with `fromEntrypoint`.
 ///
 @property (nonatomic, copy, nullable) NSString *fromEntrypoint;
+
+/// The current route was pushed by the engine with `fromPageId`.
+///
+@property (nonatomic, assign) NSUInteger fromPageId;
+
 
 @end
 

@@ -20,7 +20,7 @@
 // IN THE SOFTWARE.
 
 #import <UIKit/UIKit.h>
-#import "ThrioTypes.h"
+#import "FlutterThrioTypes.h"
 
 NS_ASSUME_NONNULL_BEGIN
 

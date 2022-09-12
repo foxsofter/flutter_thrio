@@ -21,37 +21,40 @@
 
 #import <Foundation/Foundation.h>
 #import <Flutter/Flutter.h>
-#import "ThrioTypes.h"
+#import "NavigatorFlutterEngineIdentifier.h"
 #import "NavigatorFlutterViewController.h"
-#import "NavigatorRouteReceiveChannel.h"
-#import "NavigatorRouteSendChannel.h"
 #import "NavigatorPageObserverChannel.h"
 #import "NavigatorRouteObserverChannel.h"
+#import "NavigatorRouteReceiveChannel.h"
+#import "NavigatorRouteSendChannel.h"
+#import "ThrioChannel.h"
+#import "ThrioFlutterEngine.h"
+#import "FlutterThrioTypes.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface NavigatorFlutterEngine : NSObject
+@interface NavigatorFlutterEngine : NSObject<NavigatorFlutterEngineIdentifier>
 
-- (void)startupWithEntrypoint:(NSString *)entrypoint
-                   readyBlock:(ThrioIdCallback _Nullable)block;
+- (instancetype)initWithEntrypoint:(NSString *)entrypoint withEngine:(ThrioFlutterEngine *)flutterEngine NS_DESIGNATED_INITIALIZER;
+- (instancetype)init NS_UNAVAILABLE;
 
-@property (nonatomic, readonly, nullable) FlutterEngine *engine;
+- (void)startupWithReadyBlock:(ThrioEngineReadyCallback _Nullable)block;
 
-@property (nonatomic, readonly, nullable) NavigatorRouteReceiveChannel *receiveChannel;
+@property (nonatomic, assign) NSUInteger pageId;
 
-@property (nonatomic, readonly, nullable) NavigatorRouteSendChannel *sendChannel;
+@property (nonatomic, readonly) ThrioFlutterEngine *flutterEngine;
 
-@property (nonatomic, readonly, nullable) NavigatorPageObserverChannel *pageChannel;
+@property (nonatomic, readonly) NavigatorRouteReceiveChannel *receiveChannel;
 
-@property (nonatomic, readonly, nullable) NavigatorRouteObserverChannel *routeChannel;
+@property (nonatomic, readonly) NavigatorRouteSendChannel *sendChannel;
 
-@property (nonatomic, strong, readonly, nullable) ThrioChannel *moduleContextChannel;
+@property (nonatomic, readonly) NavigatorPageObserverChannel *pageChannel;
 
-- (void)pushViewController:(NavigatorFlutterViewController *)viewController;
+@property (nonatomic, readonly) NavigatorRouteObserverChannel *routeChannel;
 
-/// 返回当前引擎上剩余的NavigatorFlutterViewController个数
-///
-- (NSUInteger)popViewController:(NavigatorFlutterViewController *)viewController;
+@property (nonatomic, readonly) ThrioChannel *moduleContextChannel;
+
+- (void)destroyContext;
 
 @end
 

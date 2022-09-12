@@ -19,13 +19,14 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
+#import "NavigatorConsts.h"
 #import "NavigatorFlutterEngine.h"
 #import "NavigatorFlutterEngineFactory.h"
 #import "NavigatorFlutterViewController.h"
 #import "NavigatorLogger.h"
 #import "ThrioChannel.h"
-#import "ThrioNavigator+Internal.h"
 #import "ThrioModule+PageObservers.h"
+#import "ThrioNavigator+Internal.h"
 #import "ThrioNavigator.h"
 #import "UINavigationController+Navigator.h"
 #import "UIViewController+HidesNavigationBar.h"
@@ -36,7 +37,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface NavigatorFlutterViewController ()
 
-@property (nonatomic, copy, readwrite) NSString *entrypoint;
+@property (nonatomic, copy) NSString *entrypoint;
+
+@property (nonatomic, assign) NSUInteger pageId;
+
 
 @end
 
@@ -45,26 +49,18 @@ NS_ASSUME_NONNULL_BEGIN
 @implementation NavigatorFlutterViewController
 
 - (instancetype)initWithEntrypoint:(NSString *)entrypoint {
-    FlutterEngine *engine =
-        [NavigatorFlutterEngineFactory.shared getEngineByEntrypoint:entrypoint];
-    if (engine.viewController) {
-        if ([engine.viewController
-             isKindOfClass:NavigatorFlutterViewController.class]) {
-            [NavigatorFlutterEngineFactory.shared
-             popViewController:(NavigatorFlutterViewController *)
-             engine.viewController];
-        } else {
-            engine.viewController = nil;
-        }
+    _pageId = [self hash];
+    if (NavigatorFlutterEngineFactory.shared.multiEngineEnabled) {
+        _entrypoint = entrypoint;
+    } else {
+        _entrypoint = kNavigatorDefaultEntrypoint;
     }
-    self = [super initWithEngine:engine nibName:nil bundle:nil];
+    
+    NavigatorFlutterEngine *engine = [NavigatorFlutterEngineFactory.shared getEngineByPageId:_pageId
+                                                                              withEntrypoint:entrypoint];
+    self = [super initWithEngine:engine.flutterEngine nibName:nil bundle:nil];
     if (self) {
         self.thrio_hidesNavigationBar_ = @YES;
-        if (NavigatorFlutterEngineFactory.shared.multiEngineEnabled) {
-            _entrypoint = entrypoint;
-        } else {
-            _entrypoint = @"main";
-        }
     }
     self.hidesBottomBarWhenPushed = YES;
     return self;
@@ -72,12 +68,12 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    self.view.backgroundColor = UIColor.whiteColor;
+    self.view.backgroundColor = UIColor.clearColor;
 }
 
 - (void)viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-
+    
     if (![self isMovingToParentViewController]) {
         [ThrioModule.pageObservers willAppear:self.thrio_lastRoute.settings];
     }
@@ -85,58 +81,54 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-
-    if ([self isMovingToParentViewController]) {
-        [NavigatorFlutterEngineFactory.shared pushViewController:self];
-    } else {
+    
+    if (![self isMovingToParentViewController]) {
         [ThrioModule.pageObservers didAppear:self.thrio_lastRoute.settings];
     }
 }
 
 - (void)viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
-
+    
     [ThrioModule.pageObservers willDisappear:self.thrio_lastRoute.settings];
-
+    
     [[UIApplication sharedApplication].delegate.window endEditing:YES];
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
     [super viewDidDisappear:animated];
-
+    
     if ([self.navigationController thrio_getAllRoutesByUrl:nil].count > 1) {
         [ThrioModule.pageObservers didDisappear:self.thrio_lastRoute.settings];
     }
 }
 
 - (void)dealloc {
-    [NavigatorFlutterEngineFactory.shared popViewController:self];
     NavigatorVerbose(@"NavigatorFlutterViewController dealloc: %@", self);
-    NSString *entrypoint = self.entrypoint;
-    dispatch_after(
-        dispatch_time(DISPATCH_TIME_NOW, (int64_t)(300)),
-        dispatch_get_main_queue(), ^{
-        NavigatorRouteSendChannel *channel =
-            [NavigatorFlutterEngineFactory.shared
-             getSendChannelByEntrypoint:entrypoint];
-        if (!channel) {
-            return;
-        }
-        NavigatorRouteSettings *settings =
-            [[ThrioNavigator _getLastRouteByEntrypoint:entrypoint] settings];
-        if (!settings) {
-            settings = [NavigatorRouteSettings settingsWithUrl:@"/"
-                                                         index:@0
-                                                        nested:NO
-                                                        params:nil];
-        }
-        NSMutableDictionary *arguments = [NSMutableDictionary
-                                          dictionaryWithDictionary:[settings toArgumentsWithParams:nil]];
-        [arguments setObject:@NO forKey:@"animated"];
-        [channel popTo:arguments
-                result:^(BOOL r) {
-         }];
-    });
+    [NavigatorFlutterEngineFactory.shared destroyEngineByPageId:_pageId withEntrypoint:_entrypoint];
+
+//    NSString *entrypoint = self.entrypoint;
+//    NSUInteger pageId = self.pageId;
+//    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(300)), dispatch_get_main_queue(), ^{
+//        NavigatorRouteSendChannel *channel = [NavigatorFlutterEngineFactory.shared getSendChannelByPageId:pageId
+//                                                                                           withEntrypoint:entrypoint];
+//        if (!channel) {
+//            return;
+//        }
+//        NavigatorRouteSettings *settings = [[ThrioNavigator _getLastRouteByEntrypoint:entrypoint] settings];
+//        if (!settings) {
+//            settings = [NavigatorRouteSettings settingsWithUrl:@"/"
+//                                                         index:@0
+//                                                        nested:NO
+//                                                        params:nil];
+//        }
+//        NSDictionary *params = [settings toArgumentsWithParams:nil];
+//        NSMutableDictionary *arguments = [NSMutableDictionary dictionaryWithDictionary:params];
+//        [arguments setObject:@NO forKey:@"animated"];
+//        [channel popTo:arguments
+//                result:^(BOOL r) {
+//        }];
+//    });
 }
 
 @end

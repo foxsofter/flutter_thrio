@@ -20,41 +20,39 @@
 // IN THE SOFTWARE.
 
 #import <Foundation/Foundation.h>
-#import <Flutter/Flutter.h>
+#import "NavigatorFlutterEngine.h"
 #import "NavigatorFlutterViewController.h"
-#import "ThrioTypes.h"
-#import "NavigatorRouteSendChannel.h"
 #import "NavigatorPageObserverProtocol.h"
+#import "NavigatorRouteSendChannel.h"
 #import "NavigatorRouteObserverProtocol.h"
+#import "ThrioFlutterEngine.h"
+#import "FlutterThrioTypes.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
 @interface NavigatorFlutterEngineFactory : NSObject<
-        NavigatorPageObserverProtocol,
-        NavigatorRouteObserverProtocol>
+NavigatorPageObserverProtocol,
+NavigatorRouteObserverProtocol
+>
 
 @property (nonatomic) BOOL multiEngineEnabled;
 
 + (instancetype)shared;
+- (instancetype)init NS_UNAVAILABLE;
 
-- (void)startupWithEntrypoint:(NSString *)entrypoint
-                   readyBlock:(ThrioIdCallback _Nullable)block;
+- (void)startupWithEntrypoint:(NSString *)entrypoint readyBlock:(ThrioEngineReadyCallback _Nullable)block;
 
-- (FlutterEngine *)getEngineByEntrypoint:(NSString *)entrypoint;
+- (BOOL)isMainEngineByPageId:(NSUInteger)pageId withEntrypoint:(NSString *)entrypoint;
 
-- (NavigatorRouteSendChannel *)getSendChannelByEntrypoint:(NSString *)entrypoint;
+- (NavigatorFlutterEngine *_Nullable)getEngineByPageId:(NSUInteger)pageId withEntrypoint:(NSString *)entrypoint;
 
-- (ThrioChannel *)getModuleChannelByEntrypoint:(NSString *)entrypoint;
+- (void)destroyEngineByPageId:(NSUInteger)pageId withEntrypoint:(NSString *)entrypoint;
+
+- (NavigatorRouteSendChannel *)getSendChannelByPageId:(NSUInteger)pageId withEntrypoint:(NSString *)entrypoint;
+
+- (ThrioChannel *)getModuleChannelByPageId:(NSUInteger)pageId withEntrypoint:(NSString *)entrypoint;
 
 - (void)setModuleContextValue:(id _Nullable)value forKey:(NSString *)key;
-
-- (void)pushViewController:(NavigatorFlutterViewController *)viewController;
-
-- (void)popViewController:(NavigatorFlutterViewController *)viewController;
-
-//- (void)registerFlutterUrls:(NSArray *)urls;
-//
-//- (void)unregisterFlutterUrls:(NSArray *)urls;
 
 @end
 

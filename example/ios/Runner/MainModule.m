@@ -6,12 +6,13 @@
 //  Copyright © 2019 foxsofter. All rights reserved.
 //
 
-@import flutter_thrio;
+//@import flutter_thrio;
 
 #import "MainModule.h"
 #import "SampleModule.h"
 #import "CustomFlutterViewController.h"
 #import "THRPeople.h"
+#import <flutter_thrio/FlutterThrio.h>
 
 @implementation MainModule
 

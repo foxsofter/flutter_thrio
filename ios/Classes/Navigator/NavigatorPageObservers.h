@@ -21,8 +21,8 @@
 
 #import <Foundation/Foundation.h>
 
-#import "ThrioRegistrySet.h"
 #import "NavigatorPageObserverProtocol.h"
+#import "ThrioRegistrySet.h"
 
 NS_ASSUME_NONNULL_BEGIN
 

@@ -20,8 +20,8 @@
 // IN THE SOFTWARE.
 
 #import "NavigatorRouteObserverChannel.h"
-#import "ThrioNavigator+Internal.h"
 #import "ThrioModule+RouteObservers.h"
+#import "ThrioNavigator+Internal.h"
 
 @interface NavigatorRouteObserverChannel ()
 
@@ -42,6 +42,18 @@
     }
     return self;
 }
+
+#pragma mark - NavigatorFlutterEngineIdentifier methods
+
+- (NSString *)entrypoint {
+    return _channel.entrypoint;
+}
+
+- (NSUInteger)pageId {
+    return _channel.pageId;
+}
+
+#pragma mark - NavigatorRouteObserverProtocol methods
 
 /// Send `didPush` to all flutter engines.
 ///
@@ -71,20 +83,22 @@
     [_channel invokeMethod:@"didRemove" arguments:arguments];
 }
 
+#pragma mark - private methods
+
 - (void)on:(NSString *)method {
     [_channel registryMethod:method
                      handler:
      ^void (NSDictionary<NSString *, id> *arguments,
             ThrioIdCallback _Nullable result) {
-                NavigatorRouteSettings *routeSettings = [NavigatorRouteSettings settingsFromArguments:arguments];
-
-    #pragma clang diagnostic push
-    #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
-                SEL selector = NSSelectorFromString([NSString stringWithFormat:@"%@:", method]);
-                [ThrioModule performSelector:selector withObject:routeSettings];
-                [ThrioModule.routeObservers performSelector:selector withObject:routeSettings];
-    #pragma clang diagnostic pop
-            }];
+        NavigatorRouteSettings *routeSettings = [NavigatorRouteSettings settingsFromArguments:arguments];
+        
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Warc-performSelector-leaks"
+        SEL selector = NSSelectorFromString([NSString stringWithFormat:@"%@:", method]);
+        [ThrioModule performSelector:selector withObject:routeSettings];
+        [ThrioModule.routeObservers performSelector:selector withObject:routeSettings];
+#pragma clang diagnostic pop
+    }];
 }
 
 @end

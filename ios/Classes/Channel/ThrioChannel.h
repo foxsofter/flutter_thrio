@@ -22,27 +22,29 @@
 #import <Foundation/Foundation.h>
 #import <Flutter/Flutter.h>
 
-#import "ThrioTypes.h"
+#import "FlutterThrioTypes.h"
+#import "NavigatorFlutterEngineIdentifier.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
+@class NavigatorFlutterEngine;
+
 /// A wrapper class for FlutterMethodChannel and FlutterEventChannel.
 ///
-@interface ThrioChannel : NSObject <FlutterStreamHandler>
+@interface ThrioChannel : NSObject<FlutterStreamHandler,NavigatorFlutterEngineIdentifier>
 
 /// Construct the instance with a default channel name.
 ///
-+ (instancetype)channelWithEntrypoint:(NSString *)entrypoint;
++ (instancetype)channelWithEngine:(NavigatorFlutterEngine *)engine;
 
 /// Construct the instance with a `channelName`.
 ///
-+ (instancetype)channelWithEntrypoint:(NSString *)entrypoint
-                                 name:(NSString *)channelName;
++ (instancetype)channelWithEngine:(NavigatorFlutterEngine *)engine name:(NSString *)channelName;
 
 + (instancetype)new NS_UNAVAILABLE;
 - (instancetype)init NS_UNAVAILABLE;
 
-@property (nonatomic, copy, readonly) NSString *entrypoint;
+@property (nonatomic, weak, readonly) NavigatorFlutterEngine *engine;
 
 /// Invokes the specified Flutter method, expecting no results.
 ///
@@ -66,12 +68,11 @@ NS_ASSUME_NONNULL_BEGIN
 /// Register a handler for the specified Flutter method with the specified
 /// method.
 ///
-- (ThrioVoidCallback)registryMethod:(NSString *)method
-                            handler:(ThrioMethodHandler)handler;
+- (ThrioVoidCallback)registryMethod:(NSString *)method handler:(ThrioMethodHandler)handler;
 
 /// Must be called before `invokeMethod` to setup the method channel.
 ///
-- (void)setupMethodChannel:(NSObject<FlutterBinaryMessenger> *)messenger;
+- (void)setupMethodChannel;
 
 /// Sends the specified Flutter event with the specified name and arguments.
 ///
@@ -80,12 +81,11 @@ NS_ASSUME_NONNULL_BEGIN
 /// Register a handler for the specified Flutter event with the specified
 /// name.
 ///
-- (ThrioVoidCallback)registryEvent:(NSString *)name
-                           handler:(ThrioEventHandler)handler;
+- (ThrioVoidCallback)registryEvent:(NSString *)name handler:(ThrioEventHandler)handler;
 
 /// Must be called before `sendEvent` to setup the event channel.
 ///
-- (void)setupEventChannel:(NSObject<FlutterBinaryMessenger> *)messenger;
+- (void)setupEventChannel;
 
 @end
 

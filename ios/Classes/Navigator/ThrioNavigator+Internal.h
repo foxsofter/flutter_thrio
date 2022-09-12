@@ -19,10 +19,10 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-#import "ThrioNavigator.h"
 #import "NavigatorPageRoute.h"
 #import "NavigatorPageObservers.h"
 #import "NavigatorRouteObservers.h"
+#import "ThrioNavigator.h"
 
 NS_ASSUME_NONNULL_BEGIN
 

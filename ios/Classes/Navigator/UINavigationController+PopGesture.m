@@ -36,7 +36,7 @@
         id target = self.interactivePopGestureRecognizer.delegate;
         SEL action = NSSelectorFromString(@"handleNavigationTransition:");
         [panGestureRecognizer addTarget:target action:action];
-
+        
         objc_setAssociatedObject(self,
                                  _cmd,
                                  panGestureRecognizer,
@@ -89,8 +89,7 @@
 #pragma mark - method swizzling
 
 + (void)load {
-    [self instanceSwizzle:@selector(setDelegate:)
-              newSelector:@selector(thrio_setDelegate:)];
+    [self instanceSwizzle:@selector(setDelegate:) newSelector:@selector(thrio_setDelegate:)];
 }
 
 /// Make sure that external delegate can take effect.

@@ -1,15 +1,30 @@
+// The MIT License (MIT)
 //
-//  NavigatorNavigationController.m
-//  thrio
+// Copyright (c) 2020 foxsofter
 //
-//  Created by aadan on 2020/11/24.
+// Permission is hereby granted, free of charge, to any person obtaining a
+// copy of this software and associated documentation files (the "Software"),
+// to deal in the Software without restriction, including without limitation
+// the rights to use, copy, modify, merge, publish, distribute, sublicense,
+// and/or sell copies of the Software, and to permit persons to whom the
+// Software is furnished to do so, subject to the following conditions:
+// The above copyright notice and this permission notice shall be included
+// in all copies or substantial portions of the Software.
 //
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+// OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+// THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+// FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+// IN THE SOFTWARE.
 
+#import "NavigatorConsts.h"
 #import "NavigatorFlutterEngineFactory.h"
 #import "NavigatorFlutterViewController.h"
 #import "NavigatorNavigationController.h"
 #import "ThrioModule+PageBuilders.h"
-#import "ThrioTypes.h"
+#import "FlutterThrioTypes.h"
 #import "UIViewController+Internal.h"
 #import "UIViewController+Navigator.h"
 #import "UIViewController+ThrioInjection.h"
@@ -37,7 +52,7 @@ NS_ASSUME_NONNULL_BEGIN
         }
     }
     if (!viewController) {
-        NSString *entrypoint = @"main";
+        NSString *entrypoint = kNavigatorDefaultEntrypoint;
         if (NavigatorFlutterEngineFactory.shared.multiEngineEnabled) {
             entrypoint = [url componentsSeparatedByString:@"/"][1];
         }
@@ -58,6 +73,7 @@ NS_ASSUME_NONNULL_BEGIN
                                                  params:strongSelf.initialParams
                                                animated:NO
                                          fromEntrypoint:nil
+                                             fromPageId:kNavigatorRoutePageIdNone
                                                  result:nil
                                            poppedResult:nil];
         }];
@@ -71,6 +87,7 @@ NS_ASSUME_NONNULL_BEGIN
                             params:strongSelf.initialParams
                           animated:NO
                     fromEntrypoint:nil
+                        fromPageId:kNavigatorRoutePageIdNone
                             result:nil
                       poppedResult:nil];
             }

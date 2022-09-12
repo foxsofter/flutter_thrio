@@ -22,7 +22,7 @@
 #import <Foundation/Foundation.h>
 
 #import "ThrioModuleTypes.h"
-#import "ThrioTypes.h"
+#import "FlutterThrioTypes.h"
 #import "ThrioModule.h"
 
 NS_ASSUME_NONNULL_BEGIN

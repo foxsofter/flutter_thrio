@@ -21,8 +21,8 @@
 
 #import "NavigatorPageObserverChannel.h"
 #import "ThrioChannel.h"
-#import "ThrioNavigator.h"
 #import "ThrioModule+PageObservers.h"
+#import "ThrioNavigator.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -46,20 +46,18 @@ NS_ASSUME_NONNULL_BEGIN
     return self;
 }
 
-- (void)on:(NSString *)method {
-    [_channel registryMethod:method
-                     handler:
-     ^void (NSDictionary<NSString *, id> *arguments,
-            ThrioIdCallback _Nullable result) {
-                NavigatorRouteSettings *settings = [NavigatorRouteSettings settingsFromArguments:arguments];
-                NSString *routeActionString = arguments[@"routeAction"];
-    #pragma clang diagnostic push
-    #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
-                SEL selector = NSSelectorFromString([NSString stringWithFormat:@"%@:routeAction:", method]);
-                [ThrioModule performSelector:selector withObject:settings withObject:routeActionString];
-    #pragma clang diagnostic pop
-            }];
+#pragma mark - NavigatorFlutterEngineIdentifier methods
+
+- (NSString *)entrypoint {
+    return _channel.entrypoint;
 }
+
+- (NSUInteger)pageId {
+    return _channel.pageId;
+}
+
+
+#pragma mark - NavigatorPageObserverProtocol methods
 
 /// Send `willAppear` to all flutter engines.
 ///
@@ -87,6 +85,22 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)didDisappear:(NavigatorRouteSettings *)routeSettings {
     NSDictionary *arguments = [routeSettings toArgumentsWithParams:nil];
     [_channel invokeMethod:@"didDisappear" arguments:arguments];
+}
+
+#pragma mark - private methods
+
+- (void)on:(NSString *)method {
+    [_channel registryMethod:method handler:
+     ^void (NSDictionary<NSString *, id> *arguments,
+            ThrioIdCallback _Nullable result) {
+        NavigatorRouteSettings *settings = [NavigatorRouteSettings settingsFromArguments:arguments];
+        NSString *routeActionString = arguments[@"routeAction"];
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Warc-performSelector-leaks"
+        SEL selector = NSSelectorFromString([NSString stringWithFormat:@"%@:routeAction:", method]);
+        [ThrioModule performSelector:selector withObject:settings withObject:routeActionString];
+#pragma clang diagnostic pop
+    }];
 }
 
 @end
