@@ -1,6 +1,6 @@
 name: flutter_thrio_example
 description: Demonstrates how to use the flutter_thrio plugin.
-
+version: 1.0.0+1
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
@@ -17,7 +17,6 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  vm_service: ^9.3.0
   flutter_thrio:
     # When depending on this package from a real application you should use:
     #   flutter_thrio: ^x.y.z

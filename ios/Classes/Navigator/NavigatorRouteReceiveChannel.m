@@ -113,6 +113,7 @@ NS_ASSUME_NONNULL_BEGIN
                           params:params
                         animated:animated
                   fromEntrypoint:strongSelf.channel.entrypoint
+                      fromPageId:strongSelf.channel.pageId
                           result:^(NSNumber *idx) {
             result(idx);
         }

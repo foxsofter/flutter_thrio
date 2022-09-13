@@ -193,7 +193,7 @@ NS_ASSUME_NONNULL_BEGIN
                     route.poppedResult(deserializeParams);
                 }
                 // 检查打开页面的源引擎是否和关闭页面的源引擎不同，不同则继续发送onPop
-                if (route.fromEntrypoint && route.fromEntrypoint != kNavigatorNativeEntrypoint &&
+                if (route.fromEntrypoint && route.fromPageId != kNavigatorRoutePageIdNone &&
                     !([route.fromEntrypoint isEqualToString:entrypoint] && route.fromPageId == pageId)) {
                     NavigatorRouteSendChannel *channel =
                     [NavigatorFlutterEngineFactory.shared getSendChannelByPageId:route.fromPageId
@@ -214,8 +214,8 @@ NS_ASSUME_NONNULL_BEGIN
                     id deserializeParams = [ThrioModule deserializeParams:params];
                     route.poppedResult(deserializeParams);
                 }
-                // 检查打开页面的源引擎是否来自Flutter引擎，是则发送onPon
-                if (route.fromEntrypoint != kNavigatorNativeEntrypoint) {
+                // 检查打开页面的源引擎是否来自Flutter引擎，是则发送onPop
+                if (route.fromEntrypoint && route.fromPageId != kNavigatorRoutePageIdNone) {
                     NavigatorRouteSendChannel *channel =
                     [NavigatorFlutterEngineFactory.shared getSendChannelByPageId:route.fromPageId
                                                                   withEntrypoint:route.fromEntrypoint];

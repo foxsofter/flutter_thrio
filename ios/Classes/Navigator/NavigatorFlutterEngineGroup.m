@@ -53,11 +53,9 @@
     return [_engineMap.allValues copy];
 }
 
-- (void)startupWithReadyBlock:(ThrioEngineReadyCallback _Nullable)block {
-    if (_isRunning) { // 引擎正在启动中，抛出异常
-        @throw [NSException exceptionWithName:@"FlutterFailedException"
-                                       reason:@"There is an engine starting and cannot continue."
-                                     userInfo:nil];
+- (NavigatorFlutterEngine *)startupWithReadyBlock:(ThrioEngineReadyCallback _Nullable)block {
+    if (_isRunning) { // 引擎正在启动过了
+        return _currentEngine;
     }
     _isRunning = YES;
     // 主引擎存在，且还没有使用
@@ -67,7 +65,7 @@
             _currentEngine = _mainEngine;
             _isRunning = NO;
         }
-        return;
+        return _currentEngine;
     }
     ThrioFlutterEngine *flutterEngine = [_mainEngine.flutterEngine fork:_entrypoint];
     if (!flutterEngine) {
@@ -76,6 +74,9 @@
         flutterEngine = [[ThrioFlutterEngine alloc] initWithName:enginName allowHeadlessExecution:YES];
     }
     _currentEngine = [[NavigatorFlutterEngine alloc] initWithEntrypoint:_entrypoint withEngine:flutterEngine];
+    if (_mainEngine == nil) {
+        _mainEngine = _currentEngine;
+    }
     __weak typeof(self) weakself = self;
     [_currentEngine startupWithReadyBlock: ^(NavigatorFlutterEngine * engine) {
         __strong typeof(weakself) strongSelf = weakself;
@@ -83,10 +84,8 @@
         if (block) {
             block(engine);
         }
-        if (strongSelf.mainEngine == nil) {
-            strongSelf.mainEngine = engine;
-        }
     }];
+    return _currentEngine;
 }
 
 - (BOOL)isMainEngineByPageId:(NSUInteger)pageId {

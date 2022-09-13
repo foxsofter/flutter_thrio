@@ -50,7 +50,7 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 
-- (void)startupWithEntrypoint:(NSString *)entrypoint
+- (NavigatorFlutterEngine *)startupWithEntrypoint:(NSString *)entrypoint
                    readyBlock:(ThrioEngineReadyCallback _Nullable)block {
     if (!_multiEngineEnabled) {
         entrypoint = kNavigatorDefaultEntrypoint;
@@ -60,7 +60,7 @@ NS_ASSUME_NONNULL_BEGIN
         engineGroup = [[NavigatorFlutterEngineGroup alloc] initWithEntrypoint:entrypoint];
         _engineGroups[entrypoint] = engineGroup;
     }
-    [engineGroup startupWithReadyBlock:block];
+    return [engineGroup startupWithReadyBlock:block];
 }
 
 - (BOOL)isMainEngineByPageId:(NSUInteger)pageId withEntrypoint:(NSString *)entrypoint {

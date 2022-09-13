@@ -35,7 +35,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, copy, readonly) NSArray *engines;
 
-- (void)startupWithReadyBlock:(ThrioEngineReadyCallback _Nullable)block;
+- (NavigatorFlutterEngine *)startupWithReadyBlock:(ThrioEngineReadyCallback _Nullable)block;
 
 - (BOOL)isMainEngineByPageId:(NSUInteger)pageId;
 

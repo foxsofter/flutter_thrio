@@ -37,10 +37,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface NavigatorFlutterViewController ()
 
-@property (nonatomic, copy) NSString *entrypoint;
+@property (nonatomic, weak, readwrite) NavigatorFlutterEngine *warpEngine;
 
 @property (nonatomic, assign) NSUInteger pageId;
-
 
 @end
 
@@ -48,22 +47,21 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma clang diagnostic ignored "-Wincomplete-implementation"
 @implementation NavigatorFlutterViewController
 
-- (instancetype)initWithEntrypoint:(NSString *)entrypoint {
+- (instancetype)initWithEngine:(NavigatorFlutterEngine *)engine {
+    _warpEngine = engine;
     _pageId = [self hash];
-    if (NavigatorFlutterEngineFactory.shared.multiEngineEnabled) {
-        _entrypoint = entrypoint;
-    } else {
-        _entrypoint = kNavigatorDefaultEntrypoint;
-    }
+    engine.pageId = _pageId;
     
-    NavigatorFlutterEngine *engine = [NavigatorFlutterEngineFactory.shared getEngineByPageId:_pageId
-                                                                              withEntrypoint:entrypoint];
     self = [super initWithEngine:engine.flutterEngine nibName:nil bundle:nil];
     if (self) {
         self.thrio_hidesNavigationBar_ = @YES;
     }
     self.hidesBottomBarWhenPushed = YES;
     return self;
+}
+
+- (NSString *)entrypoint {
+    return _warpEngine.entrypoint;
 }
 
 - (void)viewDidLoad {
@@ -105,30 +103,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)dealloc {
     NavigatorVerbose(@"NavigatorFlutterViewController dealloc: %@", self);
-    [NavigatorFlutterEngineFactory.shared destroyEngineByPageId:_pageId withEntrypoint:_entrypoint];
-
-//    NSString *entrypoint = self.entrypoint;
-//    NSUInteger pageId = self.pageId;
-//    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(300)), dispatch_get_main_queue(), ^{
-//        NavigatorRouteSendChannel *channel = [NavigatorFlutterEngineFactory.shared getSendChannelByPageId:pageId
-//                                                                                           withEntrypoint:entrypoint];
-//        if (!channel) {
-//            return;
-//        }
-//        NavigatorRouteSettings *settings = [[ThrioNavigator _getLastRouteByEntrypoint:entrypoint] settings];
-//        if (!settings) {
-//            settings = [NavigatorRouteSettings settingsWithUrl:@"/"
-//                                                         index:@0
-//                                                        nested:NO
-//                                                        params:nil];
-//        }
-//        NSDictionary *params = [settings toArgumentsWithParams:nil];
-//        NSMutableDictionary *arguments = [NSMutableDictionary dictionaryWithDictionary:params];
-//        [arguments setObject:@NO forKey:@"animated"];
-//        [channel popTo:arguments
-//                result:^(BOOL r) {
-//        }];
-//    });
+    [NavigatorFlutterEngineFactory.shared destroyEngineByPageId:_pageId withEntrypoint:self.entrypoint];
 }
 
 @end

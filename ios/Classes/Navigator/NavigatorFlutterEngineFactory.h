@@ -40,7 +40,7 @@ NavigatorRouteObserverProtocol
 + (instancetype)shared;
 - (instancetype)init NS_UNAVAILABLE;
 
-- (void)startupWithEntrypoint:(NSString *)entrypoint readyBlock:(ThrioEngineReadyCallback _Nullable)block;
+- (NavigatorFlutterEngine *)startupWithEntrypoint:(NSString *)entrypoint readyBlock:(ThrioEngineReadyCallback _Nullable)block;
 
 - (BOOL)isMainEngineByPageId:(NSUInteger)pageId withEntrypoint:(NSString *)entrypoint;
 

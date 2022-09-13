@@ -82,35 +82,36 @@ NS_ASSUME_NONNULL_BEGIN
                                     result:result
                               poppedResult:poppedResult];
         } else {
-            NSString *entrypoint = kNavigatorNativeEntrypoint;
+            NSString *entrypoint = kNavigatorDefaultEntrypoint;
             if (NavigatorFlutterEngineFactory.shared.multiEngineEnabled) {
                 entrypoint = [url componentsSeparatedByString:@"/"][1];
             }
-            
-            __weak typeof(self) weakself = self;
-            ThrioEngineReadyCallback readyBlock = ^(NavigatorFlutterEngine * engine) {
-                NavigatorVerbose(@"push entrypoint: %@, url:%@", entrypoint, url);
-                __strong typeof(weakself) strongSelf = weakself;
-                if ([strongSelf.topViewController isKindOfClass:NavigatorFlutterViewController.class] &&
-                    [[(NavigatorFlutterViewController *)strongSelf.topViewController entrypoint] isEqualToString:entrypoint]) {
-                    NavigatorPageRoute *lastRoute = [ThrioNavigator getLastRouteByUrl:url];
-                    NSNumber *index = lastRoute ? @(lastRoute.settings.index.integerValue + 1) : @1;
-                    [strongSelf.topViewController thrio_pushUrl:url
-                                                          index:index
-                                                         params:params
-                                                       animated:animated
-                                                 fromEntrypoint:fromEntrypoint
-                                                     fromPageId:fromPageId
-                                                         result:^(NSNumber *idx) {
-                        if (idx && [idx boolValue]) {
-                            [strongSelf thrio_removePopGesture];
-                        }
-                        if (result) {
-                            result(idx);
-                        }
-                    }                              poppedResult:poppedResult];
-                } else {
-                    NavigatorFlutterViewController *viewController = [strongSelf thrio_createFlutterViewControllerWithEntrypoint:entrypoint];
+            if ([self.topViewController isKindOfClass:NavigatorFlutterViewController.class] &&
+                [[(NavigatorFlutterViewController *)self.topViewController entrypoint] isEqualToString:entrypoint]) {
+                NavigatorPageRoute *lastRoute = [ThrioNavigator getLastRouteByUrl:url];
+                NSNumber *index = lastRoute ? @(lastRoute.settings.index.integerValue + 1) : @1;
+                ThrioNumberCallback resultBlock = ^(NSNumber *idx) {
+                    if (idx && [idx boolValue]) {
+                        [self thrio_removePopGesture];
+                    }
+                    if (result) {
+                        result(idx);
+                    }
+                };
+                [self.topViewController thrio_pushUrl:url
+                                                index:index
+                                               params:params
+                                             animated:animated
+                                       fromEntrypoint:fromEntrypoint
+                                           fromPageId:fromPageId
+                                               result:resultBlock
+                                         poppedResult:poppedResult];
+            } else {
+                __weak typeof(self) weakself = self;
+                ThrioEngineReadyCallback readyBlock = ^(NavigatorFlutterEngine * engine) {
+                    NavigatorVerbose(@"push entrypoint: %@, url:%@", entrypoint, url);
+                    __strong typeof(weakself) strongSelf = weakself;
+                    NavigatorFlutterViewController *viewController = [strongSelf thrio_createFlutterViewControllerWithEngine:engine];
                     [strongSelf thrio_pushViewController:viewController
                                                      url:url
                                                   params:params
@@ -119,10 +120,9 @@ NS_ASSUME_NONNULL_BEGIN
                                               fromPageId:fromPageId
                                                   result:result
                                             poppedResult:poppedResult];
-                }
-            };
-            
-            [NavigatorFlutterEngineFactory.shared startupWithEntrypoint:entrypoint readyBlock:readyBlock];
+                };
+                [NavigatorFlutterEngineFactory.shared startupWithEntrypoint:entrypoint readyBlock:readyBlock];
+            }
         }
     }
 }
@@ -597,13 +597,13 @@ NS_ASSUME_NONNULL_BEGIN
 
 #pragma mark - private methods
 
-- (NavigatorFlutterViewController *)thrio_createFlutterViewControllerWithEntrypoint:(NSString *)entrypoint {
+- (NavigatorFlutterViewController *)thrio_createFlutterViewControllerWithEngine:(NavigatorFlutterEngine *)engine {
     NavigatorFlutterViewController *viewController;
     NavigatorFlutterPageBuilder flutterBuilder = [ThrioModule flutterPageBuilder];
     if (flutterBuilder) {
-        viewController = flutterBuilder(entrypoint);
+        viewController = flutterBuilder(engine);
     } else {
-        viewController = [[NavigatorFlutterViewController alloc] initWithEntrypoint:entrypoint];
+        viewController = [[NavigatorFlutterViewController alloc] initWithEngine:engine];
     }
     return viewController;
 }

@@ -23,7 +23,6 @@
 #define NavigatorConsts_h
 
 static NSString *const kNavigatorDefaultEntrypoint = @"main";
-static NSString *const kNavigatorNativeEntrypoint = @"_";
 
 static NSUInteger const kNavigatorRoutePageIdNone = 0;
 

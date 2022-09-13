@@ -51,29 +51,32 @@ NS_ASSUME_NONNULL_BEGIN
             viewController.thrio_hidesNavigationBar_ = @NO;
         }
     }
+    // 不是原生页面
     if (!viewController) {
         NSString *entrypoint = kNavigatorDefaultEntrypoint;
         if (NavigatorFlutterEngineFactory.shared.multiEngineEnabled) {
             entrypoint = [url componentsSeparatedByString:@"/"][1];
         }
+        NavigatorFlutterEngine *engine =
+        [NavigatorFlutterEngineFactory.shared startupWithEntrypoint:entrypoint readyBlock:nil];
         NavigatorFlutterPageBuilder flutterBuilder = [ThrioModule flutterPageBuilder];
         if (flutterBuilder) {
-            viewController = flutterBuilder(entrypoint);
+            viewController = flutterBuilder(engine);
         } else {
-            viewController = [[NavigatorFlutterViewController alloc] initWithEntrypoint:entrypoint];
+            viewController = [[NavigatorFlutterViewController alloc] initWithEngine:engine];
         }
-    }
-    if ([viewController isKindOfClass:NavigatorFlutterViewController.class]) {
-        NavigatorFlutterViewController *fvc = (NavigatorFlutterViewController *)viewController;
+        // 调用一次让 engine 状态变成被使用
+        NSUInteger pageId = [(NavigatorFlutterViewController *)viewController pageId];
+        [NavigatorFlutterEngineFactory.shared getEngineByPageId:pageId withEntrypoint:entrypoint];
         __weak typeof(self) weakSelf = self;
-        [fvc setFlutterViewDidRenderCallback:^{
+        [(NavigatorFlutterViewController *)viewController setFlutterViewDidRenderCallback:^{
             __strong typeof(weakSelf) strongSelf = weakSelf;
             [strongSelf.topViewController thrio_pushUrl:strongSelf.initialUrl
                                                   index:@1
                                                  params:strongSelf.initialParams
                                                animated:NO
-                                         fromEntrypoint:nil
-                                             fromPageId:kNavigatorRoutePageIdNone
+                                         fromEntrypoint:entrypoint
+                                             fromPageId:pageId
                                                  result:nil
                                            poppedResult:nil];
         }];

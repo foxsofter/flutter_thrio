@@ -17,8 +17,8 @@
 @implementation MainModule
 
 - (void)onModuleInit:(ThrioModuleContext *)moduleContext {
-    [self setFlutterPageBuilder:^(NSString *entrypoint) {
-        return [[CustomFlutterViewController alloc] initWithEntrypoint:entrypoint];
+    [self setFlutterPageBuilder:^(NavigatorFlutterEngine *engine) {
+        return [[CustomFlutterViewController alloc] initWithEngine:engine];
     }];
     
     THRPeople *people = [THRPeople fromJson:@{

@@ -40,7 +40,7 @@ class NavigatorRouteReceiveChannel {
   void _onPush() => _channel.registryMethodCall('push', ([final arguments]) {
         final routeSettings = NavigatorRouteSettings.fromArguments(arguments);
         if (routeSettings == null) {
-          return Future.value();
+          return Future.value(false);
         }
         verbose(
           'push: url->${routeSettings.url} '
@@ -56,7 +56,7 @@ class NavigatorRouteReceiveChannel {
               _syncPagePoppedResults();
               return value;
             }) ??
-            Future.value();
+            Future.value(false);
       });
 
   void _onPop() => _channel.registryMethodCall('pop', ([final arguments]) {
@@ -92,7 +92,7 @@ class NavigatorRouteReceiveChannel {
               _syncPagePoppedResults();
               return value;
             }) ??
-            Future.value();
+            Future.value(false);
       });
 
   void _onRemove() => _channel.registryMethodCall('remove', ([final arguments]) {
@@ -109,7 +109,7 @@ class NavigatorRouteReceiveChannel {
               _syncPagePoppedResults();
               return value;
             }) ??
-            Future.value();
+            Future.value(false);
       });
 
   Stream<dynamic> onPageNotify(

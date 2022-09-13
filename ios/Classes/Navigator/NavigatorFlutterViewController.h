@@ -20,6 +20,7 @@
 // IN THE SOFTWARE.
 
 #import <Flutter/Flutter.h>
+#import "NavigatorFlutterEngine.h"
 #import "NavigatorFlutterEngineIdentifier.h"
 #import "NavigatorPageNotifyProtocol.h"
 #import "FlutterThrioTypes.h"
@@ -31,7 +32,7 @@ UINavigationControllerDelegate,
 NavigatorFlutterEngineIdentifier
 >
 
-- (instancetype)initWithEntrypoint:(NSString *)entrypoint NS_DESIGNATED_INITIALIZER;
+- (instancetype)initWithEngine:(NavigatorFlutterEngine *)engine NS_DESIGNATED_INITIALIZER;
 
 - (instancetype)init NS_UNAVAILABLE;
 - (instancetype)initWithCoder:(NSCoder *)aDecoder NS_UNAVAILABLE;
@@ -49,6 +50,8 @@ NavigatorFlutterEngineIdentifier
                          bundle:(nullable NSBundle *)nibBundle NS_UNAVAILABLE;
 
 - (void)surfaceUpdated:(BOOL)appeared;
+
+@property (nonatomic, weak, readonly) NavigatorFlutterEngine *warpEngine;
 
 @end
 

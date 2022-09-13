@@ -26,6 +26,9 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+@class NavigatorFlutterEngine;
+@class NavigatorFlutterViewController;
+
 /// Signature of callbacks that have no arguments.
 ///
 typedef void (^ThrioVoidCallback)(void);
@@ -56,19 +59,15 @@ typedef void (^ThrioEventHandler)(NSDictionary<NSString *, id> *arguments, Thrio
 
 /// Signature of a block that creates a NavigatorFlutterViewController.
 ///
-@class NavigatorFlutterViewController;
-typedef NavigatorFlutterViewController *_Nullable (^NavigatorFlutterPageBuilder)(NSString *entrypoint);
+typedef NavigatorFlutterViewController *_Nullable (^NavigatorFlutterPageBuilder)(NavigatorFlutterEngine *engine);
 
 /// Signature for a block that creates a native UIViewController.
 ///
 typedef UIViewController *_Nullable (^NavigatorPageBuilder)(id _Nullable params);
 
-
 /// Signature of callbacks with `NavigatorFlutterEngine` parameters.
 ///
-@class NavigatorFlutterEngine;
 typedef void (^ThrioEngineReadyCallback)(NavigatorFlutterEngine *);
-
 
 NS_ASSUME_NONNULL_END
 

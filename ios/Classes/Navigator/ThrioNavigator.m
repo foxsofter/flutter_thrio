@@ -22,6 +22,7 @@
 #import <UIKit/UIKit.h>
 
 #import "NSPointerArray+Thrio.h"
+#import "NavigatorConsts.h"
 #import "NavigatorFlutterEngineFactory.h"
 #import "ThrioModule+PageBuilders.h"
 #import "ThrioNavigator.h"
@@ -38,81 +39,165 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark - push methods
 
 + (void)pushUrl:(NSString *)url {
-    [self _pushUrl:url params:nil animated:YES fromEntrypoint:nil result:nil poppedResult:nil];
+    [self _pushUrl:url
+            params:nil
+          animated:YES
+    fromEntrypoint:nil
+        fromPageId:kNavigatorRoutePageIdNone
+            result:nil
+      poppedResult:nil];
 }
 
 + (void)pushUrl:(NSString *)url result:(ThrioNumberCallback)result {
-    [self _pushUrl:url params:nil animated:YES fromEntrypoint:nil result:result poppedResult:nil];
+    [self _pushUrl:url
+            params:nil
+          animated:YES
+    fromEntrypoint:nil
+        fromPageId:kNavigatorRoutePageIdNone
+            result:result
+      poppedResult:nil];
 }
 
 + (void)pushUrl:(NSString *)url poppedResult:(ThrioIdCallback)poppedResult {
-    [self _pushUrl:url params:nil animated:YES fromEntrypoint:nil result:nil poppedResult:poppedResult];
+    [self _pushUrl:url
+            params:nil
+          animated:YES
+    fromEntrypoint:nil
+        fromPageId:kNavigatorRoutePageIdNone
+            result:nil
+      poppedResult:poppedResult];
 }
 
 + (void)pushUrl:(NSString *)url params:(id)params {
-    [self _pushUrl:url params:params animated:YES fromEntrypoint:nil result:nil poppedResult:nil];
+    [self _pushUrl:url
+            params:params
+          animated:YES
+    fromEntrypoint:nil
+        fromPageId:kNavigatorRoutePageIdNone
+            result:nil
+      poppedResult:nil];
 }
 
 + (void)pushUrl:(NSString *)url
          params:(id)params
          result:(ThrioNumberCallback)result {
-    [self _pushUrl:url params:params animated:YES fromEntrypoint:nil result:result poppedResult:nil];
+    [self _pushUrl:url
+            params:params
+          animated:YES
+    fromEntrypoint:nil
+        fromPageId:kNavigatorRoutePageIdNone
+            result:result
+      poppedResult:nil];
 }
 
 + (void) pushUrl:(NSString *)url
           params:(id)params
     poppedResult:(ThrioIdCallback)poppedResult {
-    [self _pushUrl:url params:params animated:YES fromEntrypoint:nil result:nil poppedResult:poppedResult];
+    [self _pushUrl:url
+            params:params
+          animated:YES
+    fromEntrypoint:nil
+        fromPageId:kNavigatorRoutePageIdNone
+            result:nil
+      poppedResult:poppedResult];
 }
 
 + (void) pushUrl:(NSString *)url
           params:(id)params
           result:(ThrioNumberCallback)result
     poppedResult:(ThrioIdCallback)poppedResult {
-    [self _pushUrl:url params:params animated:YES fromEntrypoint:nil result:result poppedResult:poppedResult];
+    [self _pushUrl:url
+            params:params
+          animated:YES
+    fromEntrypoint:nil
+        fromPageId:kNavigatorRoutePageIdNone
+            result:result
+      poppedResult:poppedResult];
 }
 
 + (void)pushUrl:(NSString *)url animated:(BOOL)animated {
-    [self _pushUrl:url params:nil animated:animated fromEntrypoint:nil result:nil poppedResult:nil];
+    [self _pushUrl:url
+            params:nil
+          animated:animated
+    fromEntrypoint:nil
+        fromPageId:kNavigatorRoutePageIdNone
+            result:nil
+      poppedResult:nil];
 }
 
 + (void)pushUrl:(NSString *)url
        animated:(BOOL)animated
          result:(ThrioNumberCallback)result {
-    [self _pushUrl:url params:nil animated:animated fromEntrypoint:nil result:result poppedResult:nil];
+    [self _pushUrl:url
+            params:nil
+          animated:animated
+    fromEntrypoint:nil
+        fromPageId:kNavigatorRoutePageIdNone
+            result:result
+      poppedResult:nil];
 }
 
 + (void) pushUrl:(NSString *)url
         animated:(BOOL)animated
     poppedResult:(ThrioIdCallback)poppedResult {
-    [self _pushUrl:url params:nil animated:animated fromEntrypoint:nil result:nil poppedResult:poppedResult];
+    [self _pushUrl:url
+            params:nil
+          animated:animated
+    fromEntrypoint:nil
+        fromPageId:kNavigatorRoutePageIdNone
+            result:nil
+      poppedResult:poppedResult];
 }
 
 + (void) pushUrl:(NSString *)url
         animated:(BOOL)animated
           result:(ThrioNumberCallback)result
     poppedResult:(ThrioIdCallback)poppedResult {
-    [self _pushUrl:url params:nil animated:animated fromEntrypoint:nil result:result poppedResult:poppedResult];
+    [self _pushUrl:url
+            params:nil
+          animated:animated
+    fromEntrypoint:nil
+        fromPageId:kNavigatorRoutePageIdNone
+            result:result
+      poppedResult:poppedResult];
 }
 
 + (void)pushUrl:(NSString *)url
          params:(id)params
        animated:(BOOL)animated {
-    [self _pushUrl:url params:params animated:animated fromEntrypoint:nil result:nil poppedResult:nil];
+    [self _pushUrl:url
+            params:params
+          animated:animated
+    fromEntrypoint:nil
+        fromPageId:kNavigatorRoutePageIdNone
+            result:nil
+      poppedResult:nil];
 }
 
 + (void)pushUrl:(NSString *)url
          params:(id)params
        animated:(BOOL)animated
          result:(ThrioNumberCallback)result {
-    [self _pushUrl:url params:params animated:animated fromEntrypoint:nil result:result poppedResult:nil];
+    [self _pushUrl:url
+            params:params
+          animated:animated
+    fromEntrypoint:nil
+        fromPageId:kNavigatorRoutePageIdNone
+            result:result
+      poppedResult:nil];
 }
 
 + (void) pushUrl:(NSString *)url
           params:(id)params
         animated:(BOOL)animated
     poppedResult:(ThrioIdCallback)poppedResult {
-    [self _pushUrl:url params:params animated:animated fromEntrypoint:nil result:nil poppedResult:poppedResult];
+    [self _pushUrl:url
+            params:params
+          animated:animated
+    fromEntrypoint:nil
+        fromPageId:kNavigatorRoutePageIdNone
+            result:nil
+      poppedResult:poppedResult];
 }
 
 + (void) pushUrl:(NSString *)url
@@ -120,7 +205,13 @@ NS_ASSUME_NONNULL_BEGIN
         animated:(BOOL)animated
           result:(ThrioNumberCallback)result
     poppedResult:(ThrioIdCallback)poppedResult {
-    [self _pushUrl:url params:params animated:animated fromEntrypoint:nil result:result poppedResult:poppedResult];
+    [self _pushUrl:url
+            params:params
+          animated:animated
+    fromEntrypoint:nil
+        fromPageId:kNavigatorRoutePageIdNone
+            result:result
+      poppedResult:poppedResult];
 }
 
 #pragma mark - notify methods
