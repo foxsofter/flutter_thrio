@@ -50,30 +50,55 @@ abstract class ThrioNavigator {
   /// Notifications will be triggered when the page enters the foreground.
   /// Notifications with the same `name` will be overwritten.
   ///
-  static Future<bool> notify<TParams>(
-          {final String? url,
-          final int index = 0,
-          required final String name,
-          final TParams? params}) =>
-      ThrioNavigatorImplement.shared()
-          .notify<TParams>(url: url, index: index, name: name, params: params);
+  static Future<bool> notify<TParams>({
+    final String? url,
+    final int index = 0,
+    required final String name,
+    final TParams? params,
+  }) =>
+      ThrioNavigatorImplement.shared().notify<TParams>(
+        url: url,
+        index: index,
+        name: name,
+        params: params,
+      );
 
   /// Pop a page from the navigation stack.
   ///
-  static Future<bool> pop<TParams>({final TParams? params, final bool animated = true}) =>
-      ThrioNavigatorImplement.shared().pop<TParams>(params: params, animated: animated);
+  static Future<bool> pop<TParams>({
+    final TParams? params,
+    final bool animated = true,
+  }) =>
+      ThrioNavigatorImplement.shared().pop<TParams>(
+        params: params,
+        animated: animated,
+      );
 
   /// Pop the page in the navigation stack until the page with `url`.
   ///
-  static Future<bool> popTo(
-          {required final String url, final int index = 0, final bool animated = true}) =>
-      ThrioNavigatorImplement.shared().popTo(url: url, index: index, animated: animated);
+  static Future<bool> popTo({
+    required final String url,
+    final int index = 0,
+    final bool animated = true,
+  }) =>
+      ThrioNavigatorImplement.shared().popTo(
+        url: url,
+        index: index,
+        animated: animated,
+      );
 
   /// Remove the page with `url` in the navigation stack.
   ///
-  static Future<bool> remove(
-          {required final String url, final int index = 0, final bool animated = true}) =>
-      ThrioNavigatorImplement.shared().remove(url: url, index: index, animated: animated);
+  static Future<bool> remove({
+    required final String url,
+    final int index = 0,
+    final bool animated = true,
+  }) =>
+      ThrioNavigatorImplement.shared().remove(
+        url: url,
+        index: index,
+        animated: animated,
+      );
 
   /// Returns the route of the page that was last pushed to the navigation
   /// stack.

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_thrio/flutter_thrio.dart';
 
+import '../../../home.g.dart';
 import '../../../models/people.dart';
 
 class Page extends StatefulWidget {
@@ -36,7 +37,7 @@ class _PageState extends State<Page> {
 
   @override
   Widget build(BuildContext context) => NavigatorRoutePush(
-        url: '/biz2/flutter2',
+        url: home.biz2.flutter2.url,
         onPush: (settings, {animated = true}) {
           ThrioLogger.d('page2 onPush');
           return Future.value(true);
@@ -116,8 +117,7 @@ class _PageState extends State<Page> {
                                 )),
                           ),
                           InkWell(
-                            onTap: () => ThrioNavigator.push(
-                              url: '/biz1/flutter1',
+                            onTap: () => home.biz1.flutter1.push(
                               params: People(name: 'foxsofter', age: 100, sex: '男性'),
                               poppedResult: (params) =>
                                   ThrioLogger.v('/biz1/flutter1 popped:$params'),
@@ -132,7 +132,7 @@ class _PageState extends State<Page> {
                                 )),
                           ),
                           InkWell(
-                            onTap: () => ThrioNavigator.remove(url: '/biz1/flutter1'),
+                            onTap: () => home.biz1.flutter1.remove(),
                             child: Container(
                                 padding: const EdgeInsets.all(8),
                                 margin: const EdgeInsets.all(8),
@@ -143,11 +143,11 @@ class _PageState extends State<Page> {
                                 )),
                           ),
                           InkWell(
-                            onTap: () => ThrioNavigator.push(
-                              url: '/biz2/flutter2',
+                            onTap: () => home.biz2.flutter2.push(
                               params: People(name: '大宝剑', age: 0, sex: 'x'),
-                              poppedResult: (params) =>
-                                  ThrioLogger.v('/biz1/flutter1 poppedResult call popped:$params'),
+                              poppedResult: (params) => ThrioLogger.v(
+                                '${home.biz2.flutter2.url} poppedResult call popped:$params',
+                              ),
                             ),
                             child: Container(
                                 padding: const EdgeInsets.all(8),

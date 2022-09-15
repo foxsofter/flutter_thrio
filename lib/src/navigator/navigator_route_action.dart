@@ -56,14 +56,15 @@ class _NavigatorRouteActionState extends State<NavigatorRouteAction> {
   @override
   Widget build(final BuildContext context) => NavigatorPageLifecycle(
       didAppear: (final _) {
-        if (_registry != null) {
-          _registry?.call();
-          _registry = null;
-        }
+        _registry?.call();
         _registry = anchor.routeActionHandlers.registry(
           widget.url,
           _RouteActionHandler(this),
         );
+      },
+      didDisappear: (final _) {
+        _registry?.call();
+        _registry = null;
       },
       child: widget.child);
 }
