@@ -25,10 +25,12 @@ import 'package:flutter/widgets.dart';
 
 import '../navigator/navigator_page_observer.dart';
 import '../navigator/navigator_page_route.dart';
+import '../navigator/navigator_route_handler.dart';
 import '../navigator/navigator_route_observer.dart';
 import '../navigator/navigator_route_settings.dart';
 import '../navigator/navigator_types.dart';
 import '../navigator/thrio_navigator_implement.dart';
+import '../registry/registry_map.dart';
 import '../registry/registry_set_map.dart';
 import 'module_json_deserializer.dart';
 import 'module_json_serializer.dart';
@@ -45,15 +47,19 @@ final anchor = ModuleAnchor();
 class ModuleAnchor
     with
         ThrioModule,
-        ModulePageObserver,
-        ModuleJsonDeserializer,
-        ModuleParamScheme,
         ModuleJsonSerializer,
+        ModuleJsonDeserializer,
+        ModulePageObserver,
+        ModuleParamScheme,
         ModuleRouteObserver,
         ModuleRouteTransitionsBuilder {
   /// Holds PageObserver registered by `NavigatorPageLifecycle`.
   ///
   final pageLifecycleObservers = RegistrySetMap<String, NavigatorPageObserver>();
+
+  /// Holds RouteHandler registered by `NavigatorRoutePush` and `NavigatorRoutePop`.
+  ///
+  final routeActionHandlers = RegistryMap<String, NavigatorRouteHandler>();
 
   /// All registered urls.
   ///
@@ -124,18 +130,28 @@ class ModuleAnchor
   T? get<T>({final String? url, final String? key}) {
     var modules = <ThrioModule>[];
     if (url != null && url.isNotEmpty) {
+      final typeString = T.toString();
+      if (typeString == (NavigatorRouteHandler).toString()) {
+        final handler = routeActionHandlers[url];
+        if (handler != null) {
+          return handler as T;
+        }
+      }
       modules = _getModules(url: url);
       if (T == ThrioModule || T == dynamic || T == Object) {
         return modules.isEmpty ? null : modules.last as T;
-      } else if (T.toString() == (NavigatorPageBuilder).toString()) {
+      } else if (typeString == (NavigatorPageBuilder).toString()) {
         if (modules.isEmpty) {
           return null;
         }
         final lastModule = modules.last;
         if (lastModule is ModulePageBuilder) {
-          return lastModule.pageBuilder as T;
+          final builder = lastModule.pageBuilder;
+          if (builder is NavigatorPageBuilder) {
+            return builder as T;
+          }
         }
-      } else if (T.toString() == (RouteTransitionsBuilder).toString()) {
+      } else if (typeString == (RouteTransitionsBuilder).toString()) {
         if (modules.isEmpty) {
           return null;
         }

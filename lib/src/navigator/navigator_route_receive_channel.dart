@@ -24,6 +24,7 @@ import '../module/module_anchor.dart';
 import '../module/module_types.dart';
 import '../module/thrio_module.dart';
 import 'navigator_logger.dart';
+import 'navigator_route_handler.dart';
 import 'navigator_route_settings.dart';
 import 'thrio_navigator_implement.dart';
 
@@ -37,10 +38,10 @@ class NavigatorRouteReceiveChannel {
 
   final ThrioChannel _channel;
 
-  void _onPush() => _channel.registryMethodCall('push', ([final arguments]) {
+  void _onPush() => _channel.registryMethodCall('push', ([final arguments]) async {
         final routeSettings = NavigatorRouteSettings.fromArguments(arguments);
         if (routeSettings == null) {
-          return Future.value(false);
+          return false;
         }
         verbose(
           'push: url->${routeSettings.url} '
@@ -49,33 +50,47 @@ class NavigatorRouteReceiveChannel {
         routeSettings.params = _deserializeParams(routeSettings.url!, routeSettings.params);
         final animatedValue = arguments != null ? arguments['animated'] : null;
         final animated = (animatedValue != null && animatedValue is bool) && animatedValue;
-        return ThrioNavigatorImplement.shared()
+        final handler = anchor.get<NavigatorRouteHandler>(url: routeSettings.url!);
+        if (handler != null) {
+          final result = await handler.onPush(routeSettings, animated: animated);
+          if (result == true) {
+            return false;
+          }
+        }
+        return await ThrioNavigatorImplement.shared()
                 .navigatorState
                 ?.push(routeSettings, animated: animated)
                 .then((final value) {
               _syncPagePoppedResults();
               return value;
             }) ??
-            Future.value(false);
+            false;
       });
 
-  void _onPop() => _channel.registryMethodCall('pop', ([final arguments]) {
+  void _onPop() => _channel.registryMethodCall('pop', ([final arguments]) async {
         final routeSettings = NavigatorRouteSettings.fromArguments(arguments);
         if (routeSettings == null) {
-          return Future.value(false);
+          return false;
         }
         final animatedValue = arguments != null ? arguments['animated'] : null;
         final animated = (animatedValue != null && animatedValue is bool) && animatedValue;
         final inRootValue = arguments != null ? arguments['inRoot'] : null;
         final inRoot = (inRootValue != null && inRootValue is bool) && inRootValue;
-        return ThrioNavigatorImplement.shared()
+        final handler = anchor.get<NavigatorRouteHandler>(url: routeSettings.url!);
+        if (handler == null) {
+          final result = await handler?.onPop(routeSettings, animated: animated);
+          if (result == true) {
+            return true;
+          }
+        }
+        return await ThrioNavigatorImplement.shared()
                 .navigatorState
                 ?.maybePop(routeSettings, animated: animated, inRoot: inRoot)
                 .then((final value) {
               _syncPagePoppedResults();
               return value;
             }) ??
-            Future.value(false);
+            false;
       });
 
   void _onPopTo() => _channel.registryMethodCall('popTo', ([final arguments]) {

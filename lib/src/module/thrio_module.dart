@@ -42,8 +42,7 @@ import 'module_route_transitions_builder.dart';
 part 'module_context.dart';
 
 mixin ThrioModule {
-  /// Modular initialization function, needs to be called
-  /// once during App initialization.
+  /// Modular initialization function, needs to be called once during App initialization.
   ///
   static void init(final ThrioModule rootModule, [final String? entrypoint]) {
     if (anchor.modules.length == 1) {

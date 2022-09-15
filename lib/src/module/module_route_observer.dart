@@ -34,8 +34,8 @@ mixin ModuleRouteObserver on ThrioModule {
   @protected
   void onRouteObserverRegister(final ModuleContext moduleContext) {}
 
-  /// Register observers for route action of Dart pages under
-  /// the current module and submodules.
+  /// Register observers for routing actions. Only the pages under the current module and
+  /// sub-module take effect.
   ///
   /// Unregistry by calling the return value `VoidCallback`.
   ///

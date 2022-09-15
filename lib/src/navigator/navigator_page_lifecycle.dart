@@ -39,10 +39,10 @@ class NavigatorPageLifecycle extends StatefulWidget {
     required this.child,
   }) : super(key: key);
 
-  final NavigatorRouteSettingsCallback? willAppear;
-  final NavigatorRouteSettingsCallback? didAppear;
-  final NavigatorRouteSettingsCallback? willDisappear;
-  final NavigatorRouteSettingsCallback? didDisappear;
+  final NavigatorPageObserverCallback? willAppear;
+  final NavigatorPageObserverCallback? didAppear;
+  final NavigatorPageObserverCallback? willDisappear;
+  final NavigatorPageObserverCallback? didDisappear;
   final Widget child;
 
   @override
@@ -136,7 +136,7 @@ class _PageLifecyclePageObserver with NavigatorPageObserver {
   }
 
   void _lifecycleCallback(
-    final NavigatorRouteSettingsCallback? callback,
+    final NavigatorPageObserverCallback? callback,
     final RouteSettings routeSettings,
   ) {
     if (callback != null) {

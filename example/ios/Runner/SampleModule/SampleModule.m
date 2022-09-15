@@ -13,6 +13,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
+
 @implementation SampleModule
 
 - (void)onModuleRegister:(ThrioModuleContext *)moduleContext {

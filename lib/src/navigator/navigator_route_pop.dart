@@ -1,6 +1,6 @@
 // The MIT License (MIT)
 //
-// Copyright (c) 2019 Hellobike Group
+// Copyright (c) 2022 foxsofter.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
 // copy of this software and associated documentation files (the "Software"),
@@ -21,21 +21,20 @@
 
 import 'package:flutter/widgets.dart';
 
-/// Signature of page builder with RouteSettings.
-///
-typedef NavigatorPageBuilder = Widget Function(RouteSettings settings);
+import 'navigator_page_route.dart' as route;
+import 'navigator_route_action.dart';
+import 'navigator_types.dart';
 
-/// Signature of callbacks with generic parameters with type `T`.
-///
-typedef NavigatorParamsCallback = void Function(dynamic params);
-
-/// Signature of page observer callbacks with RouteSettings.
-///
-typedef NavigatorPageObserverCallback = void Function(RouteSettings settings);
-
-/// Signature of route push and pop handler callbacks with RouteSettings.
-///
-typedef NavigatorRouteHandleCallback = Future<bool?> Function(
-  RouteSettings settings, {
-  bool animated,
-});
+class NavigatorRoutePop extends NavigatorRouteAction {
+  const NavigatorRoutePop({
+    final Key? key,
+    required final String url,
+    required final NavigatorRouteHandleCallback onPop,
+    required final Widget child,
+  }) : super(
+            key: key,
+            url: url,
+            onAction: onPop,
+            action: route.NavigatorRouteAction.pop,
+            child: child);
+}

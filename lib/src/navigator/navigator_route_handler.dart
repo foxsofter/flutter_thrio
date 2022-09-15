@@ -1,6 +1,6 @@
 // The MIT License (MIT)
 //
-// Copyright (c) 2019 Hellobike Group
+// Copyright (c) 2022 foxsofter.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
 // copy of this software and associated documentation files (the "Software"),
@@ -21,21 +21,28 @@
 
 import 'package:flutter/widgets.dart';
 
-/// Signature of page builder with RouteSettings.
-///
-typedef NavigatorPageBuilder = Widget Function(RouteSettings settings);
+import 'thrio_navigator.dart';
 
-/// Signature of callbacks with generic parameters with type `T`.
+/// An interface for handling the `push` and `pop` behavior of a [ThrioNavigator].
 ///
-typedef NavigatorParamsCallback = void Function(dynamic params);
+mixin NavigatorRouteHandler {
+  /// The [ThrioNavigator] pushed `route`.
+  ///
+  /// returns `null` if the `push` method is not implements.
+  ///
+  /// returns `true` if the `push` method should not continue executing, otherwise `false`
+  /// should abort executing.
+  ///
+  Future<bool?> onPush(final RouteSettings routeSettings, {final bool animated = true}) async =>
+      null;
 
-/// Signature of page observer callbacks with RouteSettings.
-///
-typedef NavigatorPageObserverCallback = void Function(RouteSettings settings);
-
-/// Signature of route push and pop handler callbacks with RouteSettings.
-///
-typedef NavigatorRouteHandleCallback = Future<bool?> Function(
-  RouteSettings settings, {
-  bool animated,
-});
+  /// The [ThrioNavigator] popped `route`.
+  ///
+  /// returns `null` if the `pop` method is not implements.
+  ///
+  /// returns `true` if the `pop` method should not continue executing, otherwise `false`
+  /// should abort executing.
+  ///
+  Future<bool?> onPop(final RouteSettings routeSettings, {final bool animated = true}) async =>
+      null;
+}

@@ -42,6 +42,8 @@ export 'src/navigator/navigator_page_notify.dart';
 export 'src/navigator/navigator_page_observer.dart';
 export 'src/navigator/navigator_page_route.dart';
 export 'src/navigator/navigator_route_observer.dart';
+export 'src/navigator/navigator_route_pop.dart';
+export 'src/navigator/navigator_route_push.dart';
 export 'src/navigator/navigator_route_settings.dart';
 export 'src/navigator/navigator_types.dart';
 export 'src/navigator/thrio_navigator.dart';
