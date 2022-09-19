@@ -12,6 +12,7 @@ class Module with ThrioModule, ModulePageBuilder, ModuleRouteTransitionsBuilder 
           url: settings.url,
           index: settings.index,
           params: settings.params,
+          moduleContext: moduleContext,
         );
   }
 

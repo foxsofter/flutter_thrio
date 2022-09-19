@@ -31,13 +31,13 @@ import 'navigator_widget.dart';
 
 class NavigatorPageLifecycle extends StatefulWidget {
   const NavigatorPageLifecycle({
-    final Key? key,
+    super.key,
     this.willAppear,
     this.didAppear,
     this.willDisappear,
     this.didDisappear,
     required this.child,
-  }) : super(key: key);
+  });
 
   final NavigatorPageObserverCallback? willAppear;
   final NavigatorPageObserverCallback? didAppear;

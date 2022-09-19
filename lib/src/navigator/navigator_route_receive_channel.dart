@@ -80,7 +80,7 @@ class NavigatorRouteReceiveChannel {
         if (handler == null) {
           final result = await handler?.onPop(routeSettings, animated: animated);
           if (result == true) {
-            return true;
+            return false;
           }
         }
         return await ThrioNavigatorImplement.shared()

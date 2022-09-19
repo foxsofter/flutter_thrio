@@ -4,22 +4,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_thrio/flutter_thrio.dart';
 
-import '../../../home.g.dart';
+import '../../../root.g.dart';
 import '../../../models/people.dart';
 
-class Page extends StatefulWidget {
+class Page<T> extends StatefulWidget {
   const Page({
-    Key? key,
+    super.key,
     required this.moduleContext,
     required this.index,
     this.params,
-  }) : super(key: key);
+  });
 
   final int index;
 
   final ModuleContext moduleContext;
 
-  final dynamic params;
+  final T? params;
 
   @override
   _PageState createState() => _PageState();
@@ -37,7 +37,7 @@ class _PageState extends State<Page> {
 
   @override
   Widget build(BuildContext context) => NavigatorRoutePush(
-        url: home.biz2.flutter2.url,
+        url: root.biz2.flutter2.url,
         onPush: (settings, {animated = true}) {
           ThrioLogger.d('page2 onPush');
           return Future.value(true);
@@ -117,7 +117,7 @@ class _PageState extends State<Page> {
                                 )),
                           ),
                           InkWell(
-                            onTap: () => home.biz1.flutter1.push(
+                            onTap: () => root.biz1.flutter1.push(
                               params: People(name: 'foxsofter', age: 100, sex: '男性'),
                               poppedResult: (params) =>
                                   ThrioLogger.v('/biz1/flutter1 popped:$params'),
@@ -132,7 +132,7 @@ class _PageState extends State<Page> {
                                 )),
                           ),
                           InkWell(
-                            onTap: () => home.biz1.flutter1.remove(),
+                            onTap: () => root.biz1.flutter1.remove(),
                             child: Container(
                                 padding: const EdgeInsets.all(8),
                                 margin: const EdgeInsets.all(8),
@@ -143,10 +143,10 @@ class _PageState extends State<Page> {
                                 )),
                           ),
                           InkWell(
-                            onTap: () => home.biz2.flutter2.push(
+                            onTap: () => root.biz2.flutter2.push(
                               params: People(name: '大宝剑', age: 0, sex: 'x'),
                               poppedResult: (params) => ThrioLogger.v(
-                                '${home.biz2.flutter2.url} poppedResult call popped:$params',
+                                '${root.biz2.flutter2.url} poppedResult call popped:$params',
                               ),
                             ),
                             child: Container(

@@ -76,7 +76,9 @@ class ModuleContext {
       }
     }
     // Anchor module caches the data of the framework
-    return module.parent == anchor || module.parent == null ? null : module.parent?._moduleContext.remove<T>(key);
+    return module.parent == anchor || module.parent == null
+        ? null
+        : module.parent?._moduleContext.remove<T>(key);
   }
 
   /// Subscribe to a series of param by `key`.

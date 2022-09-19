@@ -22,40 +22,27 @@
 import 'navigator_types.dart';
 import 'thrio_navigator.dart';
 
-mixin NavigatorRouteNode {
+class NavigatorRouteNode {
+  NavigatorRouteNode(this.parent);
+
+  NavigatorRouteNode.home() : this(_emptyRouteNode);
+
   /// parent route node
   ///
-  NavigatorRouteNode get parent;
+  late final NavigatorRouteNode parent;
 
-  /// Current route part node
+  /// Current route node name
   ///
-  String get name;
+  String get name => '';
+
+  String? _url;
 
   /// Get route url by join all route node's name.
   ///
   String get url {
-    final pathComs = <String>[name];
-    var parentRoute = parent;
-    while (parentRoute != emptyRoute) {
-      pathComs.add(parentRoute.name);
-      parentRoute = parentRoute.parent;
-    }
-    return pathComs.reversed.join('/');
+    _initUrl(this);
+    return _url!;
   }
-}
-
-class NavigatorRouteLeaf with NavigatorRouteNode {
-  Future<int> push<TParams>({
-    final TParams? params,
-    final bool animated = true,
-    final NavigatorParamsCallback? poppedResult,
-  }) =>
-      ThrioNavigator.push(
-        url: url,
-        params: params,
-        animated: animated,
-        poppedResult: poppedResult,
-      );
 
   Future<bool> notify<TParams>(
     final String name, {
@@ -68,28 +55,74 @@ class NavigatorRouteLeaf with NavigatorRouteNode {
         name: name,
         params: params,
       );
+}
+
+void _initUrl(final NavigatorRouteNode routeNode) {
+  if (routeNode._url == null) {
+    final pathComs = <String>[routeNode.name];
+    var parentRoute = routeNode.parent;
+    while (parentRoute != _emptyRouteNode) {
+      pathComs.add(parentRoute.name);
+      parentRoute = parentRoute.parent;
+    }
+    routeNode._url = pathComs.reversed.join('/');
+  }
+}
+
+class NavigatorRouteLeaf extends NavigatorRouteNode {
+  NavigatorRouteLeaf(super.parent);
+
+  Future<int> push<TParams>({
+    final TParams? params,
+    final bool animated = true,
+    final NavigatorParamsCallback? poppedResult,
+  }) =>
+      ThrioNavigator.push(
+        url: url,
+        params: params,
+        animated: animated,
+        poppedResult: poppedResult,
+      );
 
   Future<bool> popTo({final bool animated = true}) =>
       ThrioNavigator.popTo(url: url, animated: animated);
 
   Future<bool> remove({final bool animated = true}) =>
       ThrioNavigator.remove(url: url, animated: animated);
-
-  @override
-  String get name => throw UnimplementedError();
-
-  @override
-  NavigatorRouteNode get parent => throw UnimplementedError();
 }
 
-final EmptyNavigatorRoute emptyRoute = EmptyNavigatorRoute._();
+final EmptyNavigatorRoute _emptyRouteNode = EmptyNavigatorRoute._();
 
-class EmptyNavigatorRoute with NavigatorRouteNode {
-  EmptyNavigatorRoute._();
+class EmptyNavigatorRoute implements NavigatorRouteNode {
+  EmptyNavigatorRoute._() {
+    _parent = this;
+  }
 
+  late final NavigatorRouteNode? _parent;
   @override
-  NavigatorRouteNode get parent => emptyRoute;
+  NavigatorRouteNode get parent => _parent!;
+  @override
+  set parent(final NavigatorRouteNode parent) {
+    _parent = parent;
+  }
 
   @override
   String get name => '';
+
+  @override
+  String? _url;
+
+  @override
+  Future<bool> notify<TParams>(
+    final String name, {
+    final TParams? params,
+    final int index = 0,
+  }) =>
+      throw UnimplementedError();
+
+  @override
+  String get url {
+    _initUrl(this);
+    return _url!;
+  }
 }

@@ -4,19 +4,18 @@ import 'package:flutter_thrio/flutter_thrio.dart';
 
 import '../../models/people.dart';
 
-class Page extends StatefulWidget {
+class Page<T> extends NavigatorPage<T> {
   const Page({
-    Key? key,
+    super.key,
     required this.url,
     required this.index,
-    this.params,
-  }) : super(key: key);
+    required super.params,
+    required super.moduleContext,
+  });
 
   final String? url;
 
   final int index;
-
-  final dynamic params;
 
   @override
   _PageState createState() => _PageState();

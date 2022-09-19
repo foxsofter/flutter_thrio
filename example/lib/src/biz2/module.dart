@@ -12,28 +12,4 @@ class Module with ThrioModule, ModulePageBuilder, ModuleRouteTransitionsBuilder 
     registerModule(flutter2.Module(), moduleContext);
     registerModule(flutter4.Module(), moduleContext);
   }
-
-  // @override
-  // void onRouteTransitionsBuilderSetting(ModuleContext moduleContext) {
-  //   routeTransitionsBuilder = (
-  //     context,
-  //     animation,
-  //     secondaryAnimation,
-  //     child,
-  //   ) =>
-  //       SlideTransition(
-  //         transformHitTests: false,
-  //         position: Tween<Offset>(
-  //           begin: const Offset(0, 1),
-  //           end: Offset.zero,
-  //         ).animate(animation),
-  //         child: SlideTransition(
-  //           position: Tween<Offset>(
-  //             begin: Offset.zero,
-  //             end: const Offset(0, -1),
-  //           ).animate(secondaryAnimation),
-  //           child: child,
-  //         ),
-  //       );
-  // }
 }

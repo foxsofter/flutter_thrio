@@ -28,12 +28,12 @@ import 'navigator_route_handler.dart';
 
 class NavigatorRouteAction extends StatefulWidget {
   const NavigatorRouteAction({
-    final Key? key,
+    super.key,
     required this.url,
     required this.onAction,
     required this.action,
     required this.child,
-  }) : super(key: key);
+  });
 
   final String url;
   final NavigatorRouteHandleCallback onAction;
