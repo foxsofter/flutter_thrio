@@ -6,12 +6,15 @@ import 'biz2/biz2.g.dart';
 final root = _Home._();
 
 class _Home extends NavigatorRouteNode {
-  _Home._() : super.home();
+  _Home._() : super.home() {
+    biz1 = Biz1(this);
+    biz2 = Biz2(this);
+  }
 
   @override
   String get name => '';
 
-  final Biz1 biz1 = Biz1(root);
+  late final Biz1 biz1;
 
-  final Biz2 biz2 = Biz2(root);
+  late final Biz2 biz2;
 }

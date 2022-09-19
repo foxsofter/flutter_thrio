@@ -94,20 +94,17 @@ class NavigatorRouteLeaf extends NavigatorRouteNode {
 final EmptyNavigatorRoute _emptyRouteNode = EmptyNavigatorRoute._();
 
 class EmptyNavigatorRoute implements NavigatorRouteNode {
-  EmptyNavigatorRoute._() {
-    _parent = this;
-  }
-
-  late final NavigatorRouteNode? _parent;
-  @override
-  NavigatorRouteNode get parent => _parent!;
-  @override
-  set parent(final NavigatorRouteNode parent) {
-    _parent = parent;
-  }
+  EmptyNavigatorRoute._();
 
   @override
-  String get name => '';
+  NavigatorRouteNode get parent =>
+      throw UnimplementedError('Methods of this instance should not be called');
+  @override
+  set parent(final NavigatorRouteNode parent) =>
+      throw UnimplementedError('Methods of this instance should not be called');
+
+  @override
+  String get name => throw UnimplementedError('Methods of this instance should not be called');
 
   @override
   String? _url;
@@ -118,11 +115,8 @@ class EmptyNavigatorRoute implements NavigatorRouteNode {
     final TParams? params,
     final int index = 0,
   }) =>
-      throw UnimplementedError();
+      throw UnimplementedError('Methods of this instance should not be called');
 
   @override
-  String get url {
-    _initUrl(this);
-    return _url!;
-  }
+  String get url => throw UnimplementedError('Methods of this instance should not be called');
 }
