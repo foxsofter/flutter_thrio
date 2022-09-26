@@ -135,4 +135,9 @@ class ThrioChannel(
             Log.v("Thrio", "onCancel arguments $arguments")
         }
     }
+
+    fun destroy() {
+        methodChannel?.setMethodCallHandler(null)
+        eventChannel?.setStreamHandler(null)
+    }
 }

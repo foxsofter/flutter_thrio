@@ -28,7 +28,7 @@ import com.foxsofter.flutter_thrio.module.ModuleRouteObservers
 import io.flutter.plugin.common.BinaryMessenger
 import java.lang.ref.WeakReference
 
-class RouteObserverChannel constructor(
+internal class RouteObserverChannel constructor(
     engine: FlutterEngine,
     messenger: BinaryMessenger
 ) : RouteObserver, FlutterEngineIdentifier {
@@ -36,7 +36,7 @@ class RouteObserverChannel constructor(
     override val entrypoint get() = engine.get()?.entrypoint ?: NAVIGATION_FLUTTER_ENTRYPOINT_DEFAULT
     override val pageId get() = engine.get()?.pageId ?: NAVIGATION_ROUTE_PAGE_ID_NONE
 
-    private val channel: ThrioChannel = ThrioChannel(
+    internal val channel: ThrioChannel = ThrioChannel(
         engine,
         "__thrio_route_channel__$entrypoint"
     )

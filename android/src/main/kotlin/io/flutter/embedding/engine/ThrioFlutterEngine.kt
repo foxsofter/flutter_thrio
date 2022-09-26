@@ -9,7 +9,12 @@ open class ThrioFlutterEngine private constructor(context: Context, flutterJNI: 
 
     constructor(context: Context) : this(context, null)
 
-    open fun fork(context: Context, entrypoint: String): ThrioFlutterEngine {
+    open fun fork(
+        context: Context,
+        entrypoint: String,
+        initialRoute: String?,
+        arguments: List<String>?,
+    ): ThrioFlutterEngine {
         val dartEntrypoint =
             DartExecutor.DartEntrypoint(
                 FlutterInjector.instance().flutterLoader().findAppBundlePath(), entrypoint
@@ -25,8 +30,8 @@ open class ThrioFlutterEngine private constructor(context: Context, flutterJNI: 
         val newFlutterJNI = flutterJNI.spawn(
             dartEntrypoint.dartEntrypointFunctionName,
             dartEntrypoint.dartEntrypointLibrary,
-            null,
-            null
+            initialRoute,
+            arguments
         )
         return ThrioFlutterEngine(context, newFlutterJNI)
     }

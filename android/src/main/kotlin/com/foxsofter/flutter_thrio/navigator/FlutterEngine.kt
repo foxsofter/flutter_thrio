@@ -29,8 +29,9 @@ import io.flutter.embedding.engine.ThrioFlutterEngine
 import io.flutter.embedding.engine.dart.DartExecutor
 
 data class FlutterEngine(
-    val engine: ThrioFlutterEngine,
     override val entrypoint: String,
+    val engine: ThrioFlutterEngine,
+    val isMainEngine: Boolean,
     private val readyListener: FlutterEngineReadyListener? = null
 ) : FlutterEngineIdentifier {
     override var pageId: Int = NAVIGATION_ROUTE_PAGE_ID_NONE
@@ -59,9 +60,18 @@ data class FlutterEngine(
         )
         moduleContextChannel.setupMethodChannel(engine.dartExecutor)
 
-        val dartEntrypoint = DartExecutor.DartEntrypoint(
-            FlutterInjector.instance().flutterLoader().findAppBundlePath(), entrypoint
-        )
-        engine.dartExecutor.executeDartEntrypoint(dartEntrypoint)
+        if (isMainEngine) {
+            val dartEntrypoint = DartExecutor.DartEntrypoint(
+                FlutterInjector.instance().flutterLoader().findAppBundlePath(), entrypoint
+            )
+            engine.dartExecutor.executeDartEntrypoint(dartEntrypoint)
+        }
+    }
+
+    fun destroy() {
+        sendChannel.channel.destroy()
+        routeChannel.channel.destroy()
+        pageChannel.channel.destroy()
+        moduleContextChannel.destroy()
     }
 }

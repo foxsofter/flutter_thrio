@@ -44,9 +44,11 @@ open class FlutterEngineGroup constructor(private var entrypoint: String) {
 
     // 仅用于让 ThrioFlutterActivity 调用
     fun cleanUpFlutterEngine(pageId: Int) {
-        engineMap.remove(pageId)
-        if (mainEngine?.pageId == pageId) {
+        val engine = engineMap.remove(pageId)
+        if (engine?.isMainEngine == true) {
             mainEngine?.pageId = NAVIGATION_ROUTE_PAGE_ID_NONE
+        } else {
+            engine?.destroy()
         }
     }
 
@@ -79,14 +81,19 @@ open class FlutterEngineGroup constructor(private var entrypoint: String) {
             return
         }
         val flutterEngine =
-            mainEngine?.engine?.fork(context, entrypoint) ?: ThrioFlutterEngine(context)
+            mainEngine?.engine?.fork(context, entrypoint, null, null)
+                ?: ThrioFlutterEngine(context)
         currentEngine =
-            FlutterEngine(flutterEngine, entrypoint, object : FlutterEngineReadyListener {
-                override fun onReady(engine: FlutterEngine) {
-                    readyListener?.onReady(engine)
-                    mainEngine = mainEngine ?: engine
-                    isRunning = false
-                }
-            })
+            FlutterEngine(
+                entrypoint,
+                flutterEngine,
+                mainEngine == null,
+                object : FlutterEngineReadyListener {
+                    override fun onReady(engine: FlutterEngine) {
+                        isRunning = false
+                        readyListener?.onReady(engine)
+                    }
+                })
+        mainEngine = mainEngine ?: currentEngine
     }
 }

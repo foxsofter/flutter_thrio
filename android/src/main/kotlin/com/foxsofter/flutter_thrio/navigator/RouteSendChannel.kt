@@ -27,7 +27,7 @@ import com.foxsofter.flutter_thrio.BooleanCallback
 import com.foxsofter.flutter_thrio.NullableBooleanCallback
 import com.foxsofter.flutter_thrio.channel.ThrioChannel
 
-internal class RouteSendChannel constructor(private val channel: ThrioChannel) {
+internal class RouteSendChannel constructor(internal val channel: ThrioChannel) {
 
     fun onPush(arguments: Map<String, Any?>?, result: BooleanCallback) {
         channel.invokeMethod("push", arguments) {

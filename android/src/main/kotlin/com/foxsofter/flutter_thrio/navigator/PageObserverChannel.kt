@@ -27,13 +27,13 @@ import com.foxsofter.flutter_thrio.channel.ThrioChannel
 import io.flutter.plugin.common.BinaryMessenger
 import java.lang.ref.WeakReference
 
-class PageObserverChannel constructor(
+internal class PageObserverChannel constructor(
     engine: FlutterEngine,
     messenger: BinaryMessenger
 ) : PageObserver, FlutterEngineIdentifier {
     val engine = WeakReference(engine)
 
-    private val channel: ThrioChannel = ThrioChannel(
+    val channel: ThrioChannel = ThrioChannel(
         engine, "__thrio_page_channel__$entrypoint"
     )
 

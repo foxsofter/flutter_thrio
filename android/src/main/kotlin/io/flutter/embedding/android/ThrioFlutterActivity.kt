@@ -29,7 +29,10 @@ import com.foxsofter.flutter_thrio.BooleanCallback
 import com.foxsofter.flutter_thrio.NullableBooleanCallback
 import com.foxsofter.flutter_thrio.extension.getEntrypoint
 import com.foxsofter.flutter_thrio.extension.getPageId
-import com.foxsofter.flutter_thrio.navigator.*
+import com.foxsofter.flutter_thrio.navigator.FlutterEngineFactory
+import com.foxsofter.flutter_thrio.navigator.NAVIGATION_ROUTE_PAGE_ID_NONE
+import com.foxsofter.flutter_thrio.navigator.NavigationController
+import com.foxsofter.flutter_thrio.navigator.ThrioNavigator
 import io.flutter.embedding.engine.FlutterEngine
 
 open class ThrioFlutterActivity : FlutterActivity() {
@@ -70,8 +73,6 @@ open class ThrioFlutterActivity : FlutterActivity() {
         super.onFlutterUiDisplayed()
     }
 
-    override fun shouldAttachEngineToActivity(): Boolean = true
-
     override fun shouldDestroyEngineWithHost(): Boolean {
         val pageId = intent.getPageId()
         if (pageId == NAVIGATION_ROUTE_PAGE_ID_NONE) throw IllegalStateException("pageId must not be null")
@@ -82,7 +83,7 @@ open class ThrioFlutterActivity : FlutterActivity() {
     override fun onBackPressed() = ThrioNavigator.pop()
 
     // 重写这个方法，拦截是否隐藏到后台
-    open fun shouldMoveToBack(): Boolean = true
+    open fun shouldMoveToBack(): Boolean = false
 
     fun onPush(arguments: Map<String, Any?>?, result: BooleanCallback) {
         val pageId = intent.getPageId()
