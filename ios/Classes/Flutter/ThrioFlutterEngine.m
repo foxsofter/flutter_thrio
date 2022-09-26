@@ -24,29 +24,31 @@
 
 @interface ThrioFlutterEngine ()
 
-- (id)performSelector:(SEL)aSelector withObject:(id)obj1 withObject:(id)obj2 withObject:(id)obj3;
+- (id)performSelector:(SEL)aSelector withObject:(id)obj1 withObject:(id)obj2 withObject:(id)obj3 withObject:(id)obj4;
 
 @end
 
 @implementation ThrioFlutterEngine
 
 
-- (instancetype)initWithName:(NSString*)labelPrefix
+- (instancetype)initWithName:(NSString *)labelPrefix
       allowHeadlessExecution:(BOOL)allowHeadlessExecution {
     return [super initWithName:labelPrefix project:nil allowHeadlessExecution:allowHeadlessExecution];
 }
 
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wundeclared-selector"
-- (ThrioFlutterEngine*)fork:(NSString*)entrypoint {
+- (ThrioFlutterEngine*)forkWithEntrypoint:(NSString *)entrypoint
+                         withInitialRoute:(nullable NSString *)initialRoute
+                            withArguments:(nullable NSArray *)arguments {
     SEL sel = @selector(spawnWithEntrypoint:libraryURI:initialRoute:entrypointArgs:);
-    return [self performSelector:sel withObject:entrypoint withObject:nil withObject:nil];
+    return [self performSelector:sel withObject:entrypoint withObject:nil withObject:initialRoute withObject:arguments];
 }
 #pragma clang diagnostic pop
 
-- (id)performSelector:(SEL)aSelector withObject:(id)obj1 withObject:(id)obj2 withObject:(id)obj3 {
+- (id)performSelector:(SEL)aSelector withObject:(id)obj1 withObject:(id)obj2 withObject:(id)obj3 withObject:(id)obj4 {
     if (!aSelector) [self doesNotRecognizeSelector:aSelector];
-    return ((id(*)(id, SEL, id, id, id))objc_msgSend)(self, aSelector, obj1, obj2, obj3);
+    return ((id(*)(id, SEL, id, id, id, id))objc_msgSend)(self, aSelector, obj1, obj2, obj3, obj4);
 }
 
 @end

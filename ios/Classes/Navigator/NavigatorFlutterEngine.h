@@ -35,7 +35,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface NavigatorFlutterEngine : NSObject<NavigatorFlutterEngineIdentifier>
 
-- (instancetype)initWithEntrypoint:(NSString *)entrypoint withEngine:(ThrioFlutterEngine *)flutterEngine NS_DESIGNATED_INITIALIZER;
+- (instancetype)initWithEntrypoint:(NSString *)entrypoint
+                        withEngine:(ThrioFlutterEngine *)flutterEngine
+                      isMainEngine:(BOOL)isMainEngine NS_DESIGNATED_INITIALIZER;
+
 - (instancetype)init NS_UNAVAILABLE;
 
 - (void)startupWithReadyBlock:(ThrioEngineReadyCallback _Nullable)block;

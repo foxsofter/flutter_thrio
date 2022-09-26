@@ -36,7 +36,7 @@ NS_ASSUME_NONNULL_BEGIN
  * @param allowHeadlessExecution Whether or not to allow this instance to continue
  *   running after passing a nil `FlutterViewController` to `-setViewController:`.
  */
-- (instancetype)initWithName:(NSString*)labelPrefix
+- (instancetype)initWithName:(NSString *)labelPrefix
       allowHeadlessExecution:(BOOL)allowHeadlessExecution;
 
 /**
@@ -46,7 +46,9 @@ NS_ASSUME_NONNULL_BEGIN
  *   main() function, that function must be decorated with `@pragma(vm:entry-point)` to ensure the
  *   method is not tree-shaken by the Dart compiler..
  */
-- (ThrioFlutterEngine*)fork:(NSString*)entrypoint;
+- (ThrioFlutterEngine*)forkWithEntrypoint:(NSString *)entrypoint
+                         withInitialRoute:(nullable NSString *)initialRoute
+                            withArguments:(nullable NSArray *)arguments;
 
 @end
 

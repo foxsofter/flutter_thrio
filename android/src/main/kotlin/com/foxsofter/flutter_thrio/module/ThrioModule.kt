@@ -31,9 +31,7 @@ import com.foxsofter.flutter_thrio.navigator.*
 open class ThrioModule {
     private val modules by lazy { mutableMapOf<Class<out ThrioModule>, ThrioModule>() }
 
-    private var _moduleContext: ModuleContext? = null
-
-    val moduleContext: ModuleContext get() = _moduleContext!!
+    lateinit var moduleContext: ModuleContext private set
 
     companion object {
         private val root by lazy { ThrioModule() }
@@ -42,7 +40,7 @@ open class ThrioModule {
         fun init(module: ThrioModule, context: Application, multiEngineEnabled: Boolean = false) {
             FlutterEngineFactory.isMultiEngineEnabled = multiEngineEnabled
             context.registerActivityLifecycleCallbacks(ActivityDelegate)
-            root._moduleContext = ModuleContext()
+            root.moduleContext = ModuleContext()
             root.registerModule(module, root.moduleContext)
             root.initModule()
             if (!FlutterEngineFactory.isMultiEngineEnabled) {
@@ -55,7 +53,7 @@ open class ThrioModule {
         val jClazz = module::class.java
         require(!modules.containsKey(jClazz)) { "can not register Module twice" }
         modules[jClazz] = module
-        module._moduleContext = moduleContext
+        module.moduleContext = moduleContext
         module.onModuleRegister(moduleContext)
     }
 

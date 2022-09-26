@@ -26,7 +26,7 @@
 @implementation UIViewController (Internal)
 
 - (BOOL)thrio_willPopCalling {
-    return [(NSNumber *)objc_getAssociatedObject (self, _cmd)boolValue];
+    return [(NSNumber *)objc_getAssociatedObject(self, _cmd) boolValue];
 }
 
 - (void)setThrio_willPopCalling:(BOOL)calling {
