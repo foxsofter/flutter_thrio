@@ -8,7 +8,7 @@ class Module with ThrioModule, ModulePageBuilder, ModuleRouteTransitionsBuilder 
   String get key => 'biz2';
 
   @override
-  void onModuleRegister(ModuleContext moduleContext) {
+  void onModuleRegister(final ModuleContext moduleContext) {
     registerModule(flutter2.Module(), moduleContext);
     registerModule(flutter4.Module(), moduleContext);
   }

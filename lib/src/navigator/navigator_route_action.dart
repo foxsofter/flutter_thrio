@@ -28,7 +28,7 @@ import 'navigator_route_handler.dart';
 
 class NavigatorRouteAction extends StatefulWidget {
   const NavigatorRouteAction({
-    super.key,
+    final super.key,
     required this.url,
     required this.onAction,
     required this.action,

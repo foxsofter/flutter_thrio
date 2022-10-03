@@ -23,10 +23,17 @@ import 'package:flutter/widgets.dart';
 
 import '../module/thrio_module.dart';
 
-abstract class NavigatorPage<T> extends StatefulWidget {
-  const NavigatorPage({super.key, required this.params, required this.moduleContext});
-
-  final T params;
+abstract class NavigatorPage extends StatefulWidget {
+  const NavigatorPage({
+    final super.key,
+    required this.moduleContext,
+    this.params,
+    this.url,
+  });
 
   final ModuleContext moduleContext;
+
+  final dynamic params;
+
+  final String? url;
 }

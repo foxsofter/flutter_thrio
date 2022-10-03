@@ -6,29 +6,29 @@ import 'models/people.dart';
 
 class Module with ThrioModule, ModuleParamScheme, ModuleJsonSerializer, ModuleJsonDeserializer {
   @override
-  void onModuleRegister(ModuleContext moduleContext) {
+  void onModuleRegister(final ModuleContext moduleContext) {
     registerModule(biz1.Module(), moduleContext);
     registerModule(biz2.Module(), moduleContext);
   }
 
   @override
-  void onParamSchemeRegister(ModuleContext moduleContext) {
+  void onParamSchemeRegister(final ModuleContext moduleContext) {
     registerParamScheme('int_key_root_module');
     registerParamScheme('people_key_root_module');
   }
 
   @override
-  void onModuleInit(ModuleContext moduleContext) {
+  void onModuleInit(final ModuleContext moduleContext) {
     navigatorLogEnabled = true;
   }
 
   @override
-  void onJsonSerializerRegister(ModuleContext moduleContext) {
-    registerJsonSerializer<People>((instance) => instance<People>().toJson());
+  void onJsonSerializerRegister(final ModuleContext moduleContext) {
+    registerJsonSerializer<People>((final instance) => instance<People>().toJson());
   }
 
   @override
-  void onJsonDeserializerRegister(ModuleContext moduleContext) {
-    registerJsonDeserializer((arguments) => People.fromJson(arguments));
+  void onJsonDeserializerRegister(final ModuleContext moduleContext) {
+    registerJsonDeserializer(People.fromJson);
   }
 }

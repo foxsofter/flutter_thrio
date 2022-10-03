@@ -4,7 +4,7 @@ import 'package:flutter_thrio/flutter_thrio.dart';
 
 class Page extends StatefulWidget {
   const Page({
-    super.key,
+    final super.key,
     required this.index,
     this.params,
   });
@@ -32,7 +32,7 @@ class _PageState extends State<Page> {
   }
 
   @override
-  Widget build(BuildContext context) => Scaffold(
+  Widget build(final BuildContext context) => Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
         title: const Text('thrio_example', style: TextStyle(color: Colors.black)),

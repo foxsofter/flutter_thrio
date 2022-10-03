@@ -25,7 +25,7 @@ import 'package:flutter/services.dart';
 import 'thrio_navigator_implement.dart';
 
 class NavigatorHome extends StatefulWidget {
-  const NavigatorHome({super.key, this.showRestartButton = false});
+  const NavigatorHome({final super.key, this.showRestartButton = false});
 
   final bool showRestartButton;
 

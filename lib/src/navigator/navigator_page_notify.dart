@@ -35,7 +35,7 @@ import 'thrio_navigator_implement.dart';
 
 class NavigatorPageNotify extends StatefulWidget {
   const NavigatorPageNotify({
-    super.key,
+    final super.key,
     required this.name,
     required this.onPageNotify,
     this.initialParams,

@@ -7,7 +7,7 @@ class Module with ThrioModule {
   String get key => 'flutter1';
 
   @override
-  void onModuleRegister(ModuleContext moduleContext) {
+  void onModuleRegister(final ModuleContext moduleContext) {
     registerModule(home.Module(), moduleContext);
   }
 }

@@ -1,32 +1,10 @@
+author: bybit
+
 pages:
   - biz1:
-    notify:
-      -onLogin:
-    pages:
       - flutter1:
-        pages:
           - home:
-            notify:
-              -onLogin:
-                params:
-                  - type: int
-                    name: index
-                    required: true
-                    default: 1
-            push:
-              params:
-                - type: int
-                  name: index
-                  required: true
-                  default: 1
-            pop:
-              params:
-                - type: bool
-                  name: result
-                  required: false
-                  default: true
       - flutter3
   - biz2:
-    pages:
       - flutter2
       - flutter4

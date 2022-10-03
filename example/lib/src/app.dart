@@ -8,7 +8,7 @@ void biz1() => runApp(const MainApp(entrypoint: 'biz1'));
 void biz2() => runApp(const MainApp(entrypoint: 'biz2'));
 
 class MainApp extends StatefulWidget {
-  const MainApp({super.key, String entrypoint = 'main'}) : _entrypoint = entrypoint;
+  const MainApp({final super.key, final String entrypoint = 'main'}) : _entrypoint = entrypoint;
 
   final String _entrypoint;
 
@@ -25,10 +25,10 @@ class _MainAppState extends State<MainApp> {
   }
 
   @override
-  Widget build(BuildContext context) => ExcludeSemantics(
+  Widget build(final BuildContext context) => ExcludeSemantics(
         child: NavigatorMaterialApp(
           home: const NavigatorHome(showRestartButton: true),
-          builder: (context, child) => Container(
+          builder: (final context, final child) => Container(
             child: child,
           ),
           theme: ThemeData(

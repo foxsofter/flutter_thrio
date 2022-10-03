@@ -31,7 +31,7 @@ import 'navigator_widget.dart';
 
 class NavigatorPageLifecycle extends StatefulWidget {
   const NavigatorPageLifecycle({
-    super.key,
+    final super.key,
     this.willAppear,
     this.didAppear,
     this.willDisappear,

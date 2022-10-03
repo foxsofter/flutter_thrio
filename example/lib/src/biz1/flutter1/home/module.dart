@@ -18,13 +18,13 @@ class Module
   String get key => kNavigatorPageDefaultUrl;
 
   @override
-  void onParamSchemeRegister(ModuleContext moduleContext) {
+  void onParamSchemeRegister(final ModuleContext moduleContext) {
     registerParamScheme<double>('double_key_biz1_flutter1');
   }
 
   @override
-  void onPageBuilderSetting(ModuleContext moduleContext) {
-    pageBuilder = (settings) => flutter1.Page(
+  void onPageBuilderSetting(final ModuleContext moduleContext) {
+    pageBuilder = (final settings) => flutter1.Page(
           moduleContext: moduleContext,
           index: settings.index,
           params: settings.params,
@@ -32,17 +32,17 @@ class Module
   }
 
   @override
-  void onJsonSerializerRegister(ModuleContext moduleContext) {
-    registerJsonSerializer<People>((instance) => instance<People>().toJson());
+  void onJsonSerializerRegister(final ModuleContext moduleContext) {
+    registerJsonSerializer<People>((final instance) => instance<People>().toJson());
   }
 
   @override
-  void onJsonDeserializerRegister(ModuleContext moduleContext) {
-    registerJsonDeserializer((arguments) => People.fromJson(arguments));
+  void onJsonDeserializerRegister(final ModuleContext moduleContext) {
+    registerJsonDeserializer(People.fromJson);
   }
 
   @override
-  void onPageObserverRegister(ModuleContext moduleContext) {
+  void onPageObserverRegister(final ModuleContext moduleContext) {
     registerPageObserver(this);
   }
 
@@ -71,22 +71,22 @@ class Module
   // }
 
   @override
-  void didAppear(RouteSettings routeSettings) {
+  void didAppear(final RouteSettings routeSettings) {
     ThrioLogger.v('flutter1 didAppear: $routeSettings');
   }
 
   @override
-  void didDisappear(RouteSettings routeSettings) {
+  void didDisappear(final RouteSettings routeSettings) {
     ThrioLogger.v('flutter1 didDisappear: $routeSettings');
   }
 
   @override
-  void willAppear(RouteSettings routeSettings) {
+  void willAppear(final RouteSettings routeSettings) {
     ThrioLogger.v('flutter1 willAppear: $routeSettings');
   }
 
   @override
-  void willDisappear(RouteSettings routeSettings) {
+  void willDisappear(final RouteSettings routeSettings) {
     ThrioLogger.v('flutter1 willDisappear: $routeSettings');
   }
 }

@@ -8,7 +8,7 @@ import 'src/app.dart' as app;
 
 Future<void> main() async {
   ThrioLogger.v('main');
-  FlutterError.onError = (details) async {
+  FlutterError.onError = (final details) async {
     Zone.current.handleUncaughtError(
       details.exception,
       details.stack ?? StackTrace.empty,
@@ -19,7 +19,7 @@ Future<void> main() async {
 
 @pragma('vm:entry-point')
 Future<void> biz1() async {
-  FlutterError.onError = (details) async {
+  FlutterError.onError = (final details) async {
     Zone.current.handleUncaughtError(
       details.exception,
       details.stack ?? StackTrace.empty,
@@ -30,7 +30,7 @@ Future<void> biz1() async {
 
 @pragma('vm:entry-point')
 Future<void> biz2() async {
-  FlutterError.onError = (details) async {
+  FlutterError.onError = (final details) async {
     Zone.current.handleUncaughtError(
       details.exception,
       details.stack ?? StackTrace.empty,

@@ -4,12 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_thrio/flutter_thrio.dart';
 
-import '../../../root.g.dart';
 import '../../../models/people.dart';
+import '../../../root.g.dart';
 
-class Page<T> extends StatefulWidget {
+class Page extends StatefulWidget {
   const Page({
-    super.key,
+    final super.key,
     required this.moduleContext,
     required this.index,
     this.params,
@@ -19,7 +19,7 @@ class Page<T> extends StatefulWidget {
 
   final ModuleContext moduleContext;
 
-  final T? params;
+  final dynamic params;
 
   @override
   _PageState createState() => _PageState();
@@ -36,18 +36,19 @@ class _PageState extends State<Page> {
   }
 
   @override
-  Widget build(BuildContext context) => NavigatorRoutePush(
+  Widget build(final BuildContext context) => NavigatorRoutePush(
         url: root.biz2.flutter2.url,
-        onPush: (settings, {animated = true}) {
+        onPush: (final settings, {final animated = true}) {
           ThrioLogger.d('page2 onPush');
           return Future.value(true);
         },
         child: NavigatorPageNotify(
             name: 'all_page_notify',
-            onPageNotify: (params) => ThrioLogger.v('flutter1 receive all page notify:$params'),
+            onPageNotify: (final params) =>
+                ThrioLogger.v('flutter1 receive all page notify:$params'),
             child: NavigatorPageNotify(
                 name: 'page1Notify',
-                onPageNotify: (params) => ThrioLogger.v('flutter1 receive notify:$params'),
+                onPageNotify: (final params) => ThrioLogger.v('flutter1 receive notify:$params'),
                 child: Scaffold(
                     appBar: PreferredSize(
                         preferredSize:
@@ -119,7 +120,7 @@ class _PageState extends State<Page> {
                           InkWell(
                             onTap: () => root.biz1.flutter1.push(
                               params: People(name: 'foxsofter', age: 100, sex: '男性'),
-                              poppedResult: (params) =>
+                              poppedResult: (final params) =>
                                   ThrioLogger.v('/biz1/flutter1 popped:$params'),
                             ),
                             child: Container(
@@ -132,7 +133,7 @@ class _PageState extends State<Page> {
                                 )),
                           ),
                           InkWell(
-                            onTap: () => root.biz1.flutter1.remove(),
+                            onTap: root.biz1.flutter1.remove,
                             child: Container(
                                 padding: const EdgeInsets.all(8),
                                 margin: const EdgeInsets.all(8),
@@ -145,7 +146,7 @@ class _PageState extends State<Page> {
                           InkWell(
                             onTap: () => root.biz2.flutter2.push(
                               params: People(name: '大宝剑', age: 0, sex: 'x'),
-                              poppedResult: (params) => ThrioLogger.v(
+                              poppedResult: (final params) => ThrioLogger.v(
                                 '${root.biz2.flutter2.url} poppedResult call popped:$params',
                               ),
                             ),
@@ -174,7 +175,7 @@ class _PageState extends State<Page> {
                             onTap: () => ThrioNavigator.push(
                               url: '/biz1/native1',
                               params: People(name: '大宝剑', age: 10, sex: 'x'),
-                              poppedResult: (params) =>
+                              poppedResult: (final params) =>
                                   ThrioLogger.v('/biz1/native1 poppedResult call params:$params'),
                             ),
                             child: Container(
@@ -227,21 +228,21 @@ class _PageState extends State<Page> {
                                 )),
                           ),
                           NavigatorPageLifecycle(
-                              willAppear: (settings) {
+                              willAppear: (final settings) {
                                 ThrioLogger.v('lifecycle willAppear -> $settings');
                               },
-                              didAppear: (settings) {
+                              didAppear: (final settings) {
                                 ThrioLogger.v('lifecycle didAppear -> $settings');
                               },
-                              willDisappear: (settings) {
+                              willDisappear: (final settings) {
                                 ThrioLogger.v('lifecycle willDisappear -> $settings');
                               },
-                              didDisappear: (settings) {
+                              didDisappear: (final settings) {
                                 ThrioLogger.v('lifecycle didDisappear -> $settings');
                               },
                               child: StreamBuilder<Object>(
                                   stream: widget.moduleContext.on('string_key_biz1'),
-                                  builder: (context, snapshot) => Container(
+                                  builder: (final context, final snapshot) => Container(
                                       padding: const EdgeInsets.all(8),
                                       margin: const EdgeInsets.all(8),
                                       color: Colors.grey,

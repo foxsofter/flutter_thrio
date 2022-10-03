@@ -7,8 +7,8 @@ class Module with ThrioModule, ModulePageBuilder, ModuleRouteTransitionsBuilder 
   String get key => 'flutter2';
 
   @override
-  void onPageBuilderSetting(ModuleContext moduleContext) {
-    pageBuilder = (settings) => flutter2.Page(
+  void onPageBuilderSetting(final ModuleContext moduleContext) {
+    pageBuilder = (final settings) => flutter2.Page(
           url: settings.url,
           index: settings.index,
           params: settings.params,
@@ -17,7 +17,7 @@ class Module with ThrioModule, ModulePageBuilder, ModuleRouteTransitionsBuilder 
   }
 
   @override
-  void onRouteTransitionsBuilderSetting(ModuleContext moduleContext) {
+  void onRouteTransitionsBuilderSetting(final ModuleContext moduleContext) {
     // 赋值为 null 可以清楚父级 module 设置的转场动画
     routeTransitionsBuilder = null;
   }

@@ -8,27 +8,27 @@ class Module with ThrioModule, ModulePageBuilder, ModuleRouteObserver, Navigator
   String get key => 'flutter3';
 
   @override
-  void onPageBuilderSetting(ModuleContext moduleContext) {
-    pageBuilder = (settings) => flutter3.Page(
+  void onPageBuilderSetting(final ModuleContext moduleContext) {
+    pageBuilder = (final settings) => flutter3.Page(
           index: settings.index,
           params: settings.params,
         );
   }
 
   @override
-  void onRouteObserverRegister(ModuleContext moduleContext) {
+  void onRouteObserverRegister(final ModuleContext moduleContext) {
     registerRouteObserver(this);
   }
 
   @override
-  void didPush(RouteSettings routeSettings) {}
+  void didPush(final RouteSettings routeSettings) {}
 
   @override
-  void didPop(RouteSettings routeSettings) {}
+  void didPop(final RouteSettings routeSettings) {}
 
   @override
-  void didPopTo(RouteSettings routeSettings) {}
+  void didPopTo(final RouteSettings routeSettings) {}
 
   @override
-  void didRemove(RouteSettings routeSettings) {}
+  void didRemove(final RouteSettings routeSettings) {}
 }

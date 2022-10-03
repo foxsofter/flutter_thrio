@@ -4,16 +4,14 @@ import 'package:flutter_thrio/flutter_thrio.dart';
 
 import '../../models/people.dart';
 
-class Page<T> extends NavigatorPage<T> {
+class Page extends NavigatorPage {
   const Page({
-    super.key,
-    required this.url,
+    final super.key,
+    required final super.moduleContext,
+    final super.params,
+    final super.url,
     required this.index,
-    required super.params,
-    required super.moduleContext,
   });
-
-  final String? url;
 
   final int index;
 
@@ -26,7 +24,7 @@ class _PageState extends State<Page> {
   @override
   void initState() {
     super.initState();
-    _channel.registryMethodCall('sayHello', ([arguments]) async {
+    _channel.registryMethodCall('sayHello', ([final arguments]) async {
       ThrioLogger.v('sayHello from native');
     });
   }
@@ -39,9 +37,9 @@ class _PageState extends State<Page> {
   }
 
   @override
-  Widget build(BuildContext context) => NavigatorPageNotify(
+  Widget build(final BuildContext context) => NavigatorPageNotify(
       name: 'page2Notify',
-      onPageNotify: (params) => ThrioLogger.v('flutter2 receive notify:$params'),
+      onPageNotify: (final params) => ThrioLogger.v('flutter2 receive notify:$params'),
       child: Scaffold(
           appBar: AppBar(
             backgroundColor: Colors.white,
@@ -110,7 +108,8 @@ class _PageState extends State<Page> {
                       params: {
                         '1': {'2': '3'}
                       },
-                      poppedResult: (params) => ThrioLogger.v('/biz1/native1 popped:$params')),
+                      poppedResult: (final params) =>
+                          ThrioLogger.v('/biz1/native1 popped:$params')),
                   child: Container(
                       padding: const EdgeInsets.all(8),
                       margin: const EdgeInsets.all(8),

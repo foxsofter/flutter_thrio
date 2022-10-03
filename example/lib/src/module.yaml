@@ -1,0 +1,49 @@
+types:
+    - userProfile:
+          - uid:
+                type: int
+          - userName:
+                type: String
+          - emailVerified:
+                type: bool
+                default: false
+          - mobileVerified:
+                type: bool
+                default: false
+          - userToken:
+                type: String
+
+contextDeclaration:
+
+contextDefinition:
+    - intValue:
+          type: int
+          method:
+              - get: "get an int value."
+              - set
+              - remove: "remove an int value.remove an int value.remove an int value.\nremove an int value.remove an int value."
+              - on:
+
+notify:
+    - login:
+          doc: 当登录成功后调用
+          parameter:
+              - uid:
+                    type: int
+              - userName:
+                    type: String
+                    doc: "user name of login user."
+              - userToken:
+                    type: String
+    - logout:
+
+push:
+    doc: 当登录成功后调用
+    parameter:
+        - boolValue:
+              type: bool
+              default: true
+              doc: "hello, this is a boolean.\ngeojgweow fewojfw fweefew"
+        - intValue:
+              type: int
+              default: 10

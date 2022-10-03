@@ -4,7 +4,7 @@ import 'package:flutter_thrio/flutter_thrio.dart';
 
 class Page extends StatefulWidget {
   const Page({
-    super.key,
+    final super.key,
     required this.index,
     this.params,
   });
@@ -26,7 +26,7 @@ class _PageState extends State<Page> {
   }
 
   @override
-  Widget build(BuildContext context) => NavigatorPageLifecycle(
+  Widget build(final BuildContext context) => NavigatorPageLifecycle(
       // didAppear: (settings) {
       //   SystemChrome.setPreferredOrientations([
       //     DeviceOrientation.landscapeLeft,
@@ -178,7 +178,7 @@ class _PageState extends State<Page> {
                     ),
                     InkWell(
                       onTap: () => Navigator.push(
-                          context, MaterialPageRoute(builder: (context) => const TestPage())),
+                          context, MaterialPageRoute(builder: (final context) => const TestPage())),
                       child: Container(
                           padding: const EdgeInsets.all(8),
                           margin: const EdgeInsets.all(8),
@@ -194,7 +194,7 @@ class _PageState extends State<Page> {
 }
 
 class TestPage extends StatefulWidget {
-  const TestPage({super.key});
+  const TestPage({final super.key});
 
   @override
   _TestPageState createState() => _TestPageState();
@@ -202,7 +202,7 @@ class TestPage extends StatefulWidget {
 
 class _TestPageState extends State<TestPage> {
   @override
-  Widget build(BuildContext context) => Scaffold(
+  Widget build(final BuildContext context) => Scaffold(
         appBar: AppBar(
           title: const Text('test page'),
           leading: const IconButton(
@@ -220,8 +220,8 @@ class _TestPageState extends State<TestPage> {
                 padding: const EdgeInsets.all(8.0),
                 child: TextFormField(
                   initialValue: '',
-                  onSaved: (val) => val,
-                  validator: (val) => val == '' ? val : null,
+                  onSaved: (final val) => val,
+                  validator: (final val) => val == '' ? val : null,
                 ),
               ),
               Padding(
