@@ -1,21 +1,25 @@
 types:
-    - userProfile:
-          - uid:
-                type: int
-          - userName:
-                type: String
-          - emailVerified:
-                type: bool
-                default: false
-          - mobileVerified:
-                type: bool
-                default: false
-          - userToken:
-                type: String
+    - UserProfile:
+          doc: 结构体的注释
+          parameter:
+              - uid:
+                    type: int
+              - userName:
+                    type: String
+              - emailVerified:
+                    type: bool
+                    default: false
+              - mobileVerified:
+                    type: bool
+                    default: false
+              - userToken:
+                    type: String
 
-contextDeclaration:
+context_declaration:
+    - intValue:
+          type: int
 
-contextDefinition:
+context_definition:
     - intValue:
           type: int
           method:

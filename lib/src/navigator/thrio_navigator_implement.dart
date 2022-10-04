@@ -137,18 +137,25 @@ class ThrioNavigatorImplement {
         return index;
       });
 
-  Future<bool> notify<TParams>(
-          {final String? url,
-          final int index = 0,
-          required final String name,
-          final TParams? params}) =>
+  Future<bool> notify<TParams>({
+    final String? url,
+    final int index = 0,
+    required final String name,
+    final TParams? params,
+  }) =>
       _sendChannel.notify<TParams>(name: name, url: url, index: index, params: params);
 
-  Future<bool> pop<TParams>({final TParams? params, final bool animated = true}) =>
+  Future<bool> pop<TParams>({
+    final TParams? params,
+    final bool animated = true,
+  }) =>
       _sendChannel.pop<TParams>(params: params, animated: animated);
 
-  Future<bool> popTo(
-          {required final String url, final int index = 0, final bool animated = true}) =>
+  Future<bool> popTo({
+    required final String url,
+    final int index = 0,
+    final bool animated = true,
+  }) =>
       _sendChannel.popTo(url: url, index: index, animated: animated);
 
   Future<bool> remove(

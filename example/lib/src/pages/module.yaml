@@ -1,0 +1,48 @@
+types:
+  - People:
+      doc: a struct description a people
+      parameter:
+          - name:
+              type: String
+          - age:
+              type: int
+          - sex:
+              type: String
+              
+  - UserProfile:
+      doc: 结构体的注释
+      parameter:
+        - uid:
+            type: int?
+            doc: "字段的注释"
+            default: 2
+            ignore: true #表示序列化时忽略
+        - userName:
+            type: String
+        - emailVerified:
+            type: bool
+            default: false
+        - mobileVerified:
+            type: bool
+            default: false
+        - userToken:
+            type: String
+
+context_declaration:
+    - intKeyRootModule:
+
+context_definition:
+
+notify:
+  - login:
+      doc: 当登录成功后调用
+      parameter:
+        - uid:
+            type: int?
+        - userName:
+            type: String
+            doc: "user name of login user."
+        - userToken:
+            type: String
+            default: "good token"
+  - logout:

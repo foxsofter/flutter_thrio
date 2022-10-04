@@ -19,7 +19,6 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-import 'navigator_types.dart';
 import 'thrio_navigator.dart';
 
 class NavigatorRouteNode {
@@ -71,18 +70,6 @@ void _initUrl(final NavigatorRouteNode routeNode) {
 
 class NavigatorRouteLeaf extends NavigatorRouteNode {
   NavigatorRouteLeaf(super.parent);
-
-  Future<int> push<TParams>({
-    final TParams? params,
-    final bool animated = true,
-    final NavigatorParamsCallback? poppedResult,
-  }) =>
-      ThrioNavigator.push(
-        url: url,
-        params: params,
-        animated: animated,
-        poppedResult: poppedResult,
-      );
 
   Future<bool> popTo({final bool animated = true}) =>
       ThrioNavigator.popTo(url: url, animated: animated);

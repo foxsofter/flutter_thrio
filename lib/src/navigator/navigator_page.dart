@@ -29,6 +29,7 @@ abstract class NavigatorPage extends StatefulWidget {
     required this.moduleContext,
     this.params,
     this.url,
+    this.index = 0,
   });
 
   final ModuleContext moduleContext;
@@ -36,4 +37,6 @@ abstract class NavigatorPage extends StatefulWidget {
   final dynamic params;
 
   final String? url;
+
+  final int index;
 }

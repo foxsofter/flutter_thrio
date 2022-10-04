@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_thrio/flutter_thrio.dart';
 
-import 'module.dart';
+import 'pages/module.dart';
 
 void main() => runApp(const MainApp());
 void biz1() => runApp(const MainApp(entrypoint: 'biz1'));
