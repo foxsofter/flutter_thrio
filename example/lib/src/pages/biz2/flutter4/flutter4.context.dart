@@ -5,4 +5,16 @@
 
 part of 'flutter4.page.dart';
 
-extension Flutter4Context on ModuleContext {}
+extension Flutter4Context on ModuleContext {
+  /// get a people.
+  ///
+  People? get people => get<People?>('people');
+
+  bool setPeople(final People value) => set<People>('people', value);
+
+  /// remove a people.
+  ///
+  People? removePeople() => remove<People>('people');
+
+  Stream<People>? onPeople() => on<People>('people');
+}

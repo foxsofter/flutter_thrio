@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_thrio/flutter_thrio.dart';
 
 import '../../route.dart';
+import '../../types/people.dart';
 
 part 'flutter3.context.dart';
 part 'flutter3.state.dart';
@@ -62,9 +63,7 @@ class _Flutter3PageState extends State<Flutter3Page> {
                   ),
                 ),
                 InkWell(
-                  onTap: () => root.biz2.flutter4.push(params: {
-                    '1': {'2': '3'}
-                  }),
+                  onTap: () => root.biz2.flutter4.push(People(age: 10, name: 'goodman', sex: '女')),
                   child: Container(
                       padding: const EdgeInsets.all(8),
                       margin: const EdgeInsets.all(8),

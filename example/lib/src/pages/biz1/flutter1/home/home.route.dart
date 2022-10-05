@@ -6,7 +6,8 @@
 import 'package:flutter_thrio/flutter_thrio.dart';
 
 class HomeRoute extends NavigatorRouteLeaf {
-  factory HomeRoute(final NavigatorRouteNode parent) => _instance ??= HomeRoute._(parent);
+  factory HomeRoute(final NavigatorRouteNode parent) =>
+      _instance ??= HomeRoute._(parent);
 
   HomeRoute._(final super.parent);
 
@@ -21,7 +22,7 @@ class HomeRoute extends NavigatorRouteLeaf {
     final NavigatorParamsCallback? poppedResult,
   }) =>
       ThrioNavigator.push(
-        url: url.replaceAll('/home', ''),
+        url: url,
         params: params,
         animated: animated,
         poppedResult: poppedResult,

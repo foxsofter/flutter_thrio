@@ -3,8 +3,18 @@ types:
 context_declaration:
 
 context_definition:
-
+    - people:
+          type: People
+          method:
+              - get: "get a people."
+              - set
+              - remove: "remove a people."
+              - on:
 notify:
 
 push:
-
+  doc: 打开 people 页面
+  parameter:
+    - people:
+        type: People
+        doc: "hello, this is a people"

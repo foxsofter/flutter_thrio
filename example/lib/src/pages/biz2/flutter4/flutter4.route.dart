@@ -5,6 +5,8 @@
 
 import 'package:flutter_thrio/flutter_thrio.dart';
 
+import '../../types/people.dart';
+
 class Flutter4Route extends NavigatorRouteLeaf {
   factory Flutter4Route(final NavigatorRouteNode parent) =>
       _instance ??= Flutter4Route._(parent);
@@ -16,14 +18,16 @@ class Flutter4Route extends NavigatorRouteLeaf {
   @override
   String get name => 'flutter4';
 
-  Future<int> push<TParams>({
-    final TParams? params,
+  /// 打开 people 页面
+  ///
+  Future<int> push(
+    final People people, {
     final bool animated = true,
     final NavigatorParamsCallback? poppedResult,
   }) =>
-      ThrioNavigator.push(
+      ThrioNavigator.push<People>(
         url: url,
-        params: params,
+        params: people,
         animated: animated,
         poppedResult: poppedResult,
       );

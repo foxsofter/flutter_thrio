@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_thrio/flutter_thrio.dart';
 
 import '../../route.dart';
+import '../../types/people.dart';
 
 part 'flutter4.state.dart';
 part 'flutter4.context.dart';

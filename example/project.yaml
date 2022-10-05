@@ -1,12 +1,12 @@
 author: bybit
 
-pageRoot: 
- 
+pageRoot:
+
 pages:
-  - biz1:
-      - flutter1:
-          - home:
-      - flutter3
-  - biz2:
-      - flutter2
-      - flutter4
+    - biz1:
+          - flutter1:
+                - home:
+          - flutter3
+    - biz2:
+          - flutter2
+          - flutter4

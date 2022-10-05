@@ -32,6 +32,7 @@ class Module
   @override
   void onParamSchemeRegister(final ModuleContext moduleContext) {
     registerParamScheme('intKeyRootModule');
+    registerParamScheme('people');
   }
 
   @override
