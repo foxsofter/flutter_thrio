@@ -1,20 +1,21 @@
-types:
+type:
 
-context_declaration:
-  - stringKeyBiz1:
+context:
+  declaration:
+    - stringKeyBiz1:
 
-context_definition:
-  - stringKeyBiz1:
-      type: String
-      method:
-        - get
-        - set
-        - on
-  - intKeyRootModule:
-      type: int
-      method:
-        - get
-        - set
+  definition:
+    - stringKeyBiz1:
+        type: String
+        method:
+          - get
+          - set
+          - on
+    - intKeyRootModule:
+        type: int
+        method:
+          - get
+          - set
 
 notify:
 

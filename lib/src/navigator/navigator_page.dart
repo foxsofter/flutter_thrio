@@ -25,7 +25,7 @@ import '../module/thrio_module.dart';
 
 abstract class NavigatorPage extends StatefulWidget {
   const NavigatorPage({
-    final super.key,
+    super.key,
     required this.moduleContext,
     this.params,
     this.url,

@@ -1,15 +1,16 @@
-types:
+type:
 
-context_declaration:
+context:
+  declaration:
 
-context_definition:
+  definition:
     - people:
-          type: People
-          method:
-              - get: "get a people."
-              - set
-              - remove: "remove a people."
-              - on:
+        type: People
+        method:
+          - get: "get a people."
+          - set
+          - remove: "remove a people."
+          - on:
 notify:
 
 push:

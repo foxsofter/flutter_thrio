@@ -9,10 +9,10 @@
 class UserProfile {
   UserProfile({
     final int? uid = 2,
-    required final this.userName,
+    required this.userName,
     final bool emailVerified = false,
     final bool mobileVerified = false,
-    required final this.userToken,
+    required this.userToken,
   })  : _uid = uid,
         _emailVerified = emailVerified,
         _mobileVerified = mobileVerified;

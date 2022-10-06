@@ -10,9 +10,9 @@ typedef LogoutNotifyCallback = void Function();
 
 class LogoutNotify extends NavigatorPageNotify {
   LogoutNotify({
-    final super.key,
+    super.key,
     required final LogoutNotifyCallback onNotify,
-    required final super.child,
+    required super.child,
   }) : super(
           name: 'logout',
           onPageNotify: (final _) => onNotify(),

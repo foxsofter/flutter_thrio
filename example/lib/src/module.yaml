@@ -47,7 +47,7 @@ push:
         - boolValue:
               type: bool
               default: true
-              doc: "hello, this is a boolean.\ngeojgweow fewojfw fweefew"
+              doc: "hello, this is a boolean."
         - intValue:
               type: int
               default: 10

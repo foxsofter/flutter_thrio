@@ -38,7 +38,7 @@ import 'thrio_navigator_implement.dart';
 ///
 class NavigatorWidget extends StatefulWidget {
   const NavigatorWidget({
-    final super.key,
+    super.key,
     required this.moduleContext,
     required final NavigatorObserverManager observerManager,
     required this.child,

@@ -13,11 +13,11 @@ part 'flutter4.context.dart';
 
 class Flutter4Page extends NavigatorPage {
   const Flutter4Page({
-    final super.key,
-    required final super.moduleContext,
-    final super.params,
-    final super.url,
-    final super.index,
+    super.key,
+    required super.moduleContext,
+    super.params,
+    super.url,
+    super.index,
   });
 
   @override

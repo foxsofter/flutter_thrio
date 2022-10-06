@@ -11,12 +11,7 @@ import 'biz2/module.dart' as biz2;
 import 'types/people.dart';
 import 'types/user_profile.dart';
 
-class Module
-    with
-        ThrioModule,
-        ModuleJsonDeserializer,
-        ModuleJsonSerializer,
-        ModuleParamScheme {
+class Module with ThrioModule, ModuleJsonDeserializer, ModuleJsonSerializer, ModuleParamScheme {
   factory Module() => _instance;
 
   Module._();

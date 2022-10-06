@@ -1,7 +1,8 @@
-types:
+type:
 
-context_declaration:
+context:
+  declaration:
 
-context_definition:
+  definition:
 
 notify:

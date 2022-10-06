@@ -8,10 +8,9 @@ import 'package:flutter_thrio/flutter_thrio.dart';
 import 'home/home.route.dart';
 
 class Flutter1Route extends NavigatorRouteNode {
-  factory Flutter1Route(final NavigatorRouteNode parent) =>
-      _instance ??= Flutter1Route._(parent);
+  factory Flutter1Route(final NavigatorRouteNode parent) => _instance ??= Flutter1Route._(parent);
 
-  Flutter1Route._(final super.parent) {
+  Flutter1Route._(super.parent) {
     home = HomeRoute(this);
   }
 

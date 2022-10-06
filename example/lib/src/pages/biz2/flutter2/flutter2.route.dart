@@ -6,10 +6,9 @@
 import 'package:flutter_thrio/flutter_thrio.dart';
 
 class Flutter2Route extends NavigatorRouteLeaf {
-  factory Flutter2Route(final NavigatorRouteNode parent) =>
-      _instance ??= Flutter2Route._(parent);
+  factory Flutter2Route(final NavigatorRouteNode parent) => _instance ??= Flutter2Route._(parent);
 
-  Flutter2Route._(final super.parent);
+  Flutter2Route._(super.parent);
 
   static Flutter2Route? _instance;
 

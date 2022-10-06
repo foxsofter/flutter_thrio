@@ -1,16 +1,17 @@
-types:
+type:
 
-context_declaration:
-  - intValue:
-      type: int
+context:
+  declaration:
+    - intValue:
+        type: int
 
-context_definition:
-  - intValue:
-      type: int
-      method:
-        - get: "get an int value."
-        - set
-        - remove: "remove an int value.remove an int value.remove an int value.\nremove an int value.remove an int value."
-        - on:
+  definition:
+    - intValue:
+        type: int
+        method:
+          - get: "get an int value."
+          - set
+          - remove: "remove an int value.remove an int value.remove an int value.\nremove an int value.remove an int value."
+          - on:
 
 notify:

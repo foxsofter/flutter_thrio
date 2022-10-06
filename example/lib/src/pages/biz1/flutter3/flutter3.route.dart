@@ -6,10 +6,9 @@
 import 'package:flutter_thrio/flutter_thrio.dart';
 
 class Flutter3Route extends NavigatorRouteLeaf {
-  factory Flutter3Route(final NavigatorRouteNode parent) =>
-      _instance ??= Flutter3Route._(parent);
+  factory Flutter3Route(final NavigatorRouteNode parent) => _instance ??= Flutter3Route._(parent);
 
-  Flutter3Route._(final super.parent);
+  Flutter3Route._(super.parent);
 
   static Flutter3Route? _instance;
 

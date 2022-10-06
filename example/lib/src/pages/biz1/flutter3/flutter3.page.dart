@@ -13,11 +13,11 @@ part 'flutter3.state.dart';
 
 class Flutter3Page extends NavigatorPage {
   const Flutter3Page({
-    final super.key,
-    required final super.moduleContext,
-    final super.params,
-    final super.url,
-    final super.index,
+    super.key,
+    required super.moduleContext,
+    super.params,
+    super.url,
+    super.index,
   });
 
   @override
@@ -176,7 +176,7 @@ class _Flutter3PageState extends State<Flutter3Page> {
 }
 
 class TestPage extends StatefulWidget {
-  const TestPage({final super.key});
+  const TestPage({super.key});
 
   @override
   _TestPageState createState() => _TestPageState();

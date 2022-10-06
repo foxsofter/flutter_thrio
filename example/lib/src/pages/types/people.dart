@@ -8,9 +8,9 @@
 ///
 class People {
   People({
-    required final this.name,
-    required final this.age,
-    required final this.sex,
+    required this.name,
+    required this.age,
+    required this.sex,
   });
 
   factory People.fromMap(final Map<String, dynamic> json) => People(
