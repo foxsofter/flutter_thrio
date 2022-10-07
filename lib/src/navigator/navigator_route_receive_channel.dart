@@ -24,8 +24,8 @@ import '../module/module_anchor.dart';
 import '../module/module_types.dart';
 import '../module/thrio_module.dart';
 import 'navigator_logger.dart';
-import 'navigator_route_handler.dart';
 import 'navigator_route_settings.dart';
+import 'navigator_types.dart';
 import 'thrio_navigator_implement.dart';
 
 class NavigatorRouteReceiveChannel {
@@ -50,9 +50,9 @@ class NavigatorRouteReceiveChannel {
         routeSettings.params = _deserializeParams(routeSettings.url!, routeSettings.params);
         final animatedValue = arguments != null ? arguments['animated'] : null;
         final animated = (animatedValue != null && animatedValue is bool) && animatedValue;
-        final handler = anchor.get<NavigatorRouteHandler>(url: routeSettings.url!);
-        if (handler != null) {
-          final result = await handler.onPush(routeSettings, animated: animated);
+        final callback = anchor.get<NavigatorRouteHandleCallback>(url: routeSettings.url!);
+        if (callback != null) {
+          final result = await callback(routeSettings, animated: animated);
           if (result == true) {
             return false;
           }
@@ -76,13 +76,6 @@ class NavigatorRouteReceiveChannel {
         final animated = (animatedValue != null && animatedValue is bool) && animatedValue;
         final inRootValue = arguments != null ? arguments['inRoot'] : null;
         final inRoot = (inRootValue != null && inRootValue is bool) && inRootValue;
-        final handler = anchor.get<NavigatorRouteHandler>(url: routeSettings.url!);
-        if (handler == null) {
-          final result = await handler?.onPop(routeSettings, animated: animated);
-          if (result == true) {
-            return false;
-          }
-        }
         return await ThrioNavigatorImplement.shared()
                 .navigatorState
                 ?.maybePop(routeSettings, animated: animated, inRoot: inRoot)

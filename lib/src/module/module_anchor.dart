@@ -25,7 +25,6 @@ import 'package:flutter/widgets.dart';
 
 import '../navigator/navigator_page_observer.dart';
 import '../navigator/navigator_page_route.dart';
-import '../navigator/navigator_route_handler.dart';
 import '../navigator/navigator_route_observer.dart';
 import '../navigator/navigator_route_settings.dart';
 import '../navigator/navigator_types.dart';
@@ -57,9 +56,9 @@ class ModuleAnchor
   ///
   final pageLifecycleObservers = RegistrySetMap<String, NavigatorPageObserver>();
 
-  /// Holds RouteHandler registered by `NavigatorRoutePush` and `NavigatorRoutePop`.
+  /// Holds PushHandler registered by `NavigatorRoutePush` .
   ///
-  final routeActionHandlers = RegistryMap<String, NavigatorRouteHandler>();
+  final pushHandlers = RegistryMap<String, NavigatorRouteHandleCallback>();
 
   /// All registered urls.
   ///
@@ -131,8 +130,8 @@ class ModuleAnchor
     var modules = <ThrioModule>[];
     if (url != null && url.isNotEmpty) {
       final typeString = T.toString();
-      if (typeString == (NavigatorRouteHandler).toString()) {
-        final handler = routeActionHandlers[url];
+      if (typeString == (NavigatorRouteHandleCallback).toString()) {
+        final handler = pushHandlers[url];
         if (handler != null) {
           return handler as T;
         }

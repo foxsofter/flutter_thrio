@@ -19,15 +19,45 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-import 'navigator_page_route.dart' as route;
-import 'navigator_route_action.dart';
-import 'navigator_types.dart';
+import 'package:flutter/widgets.dart';
 
-class NavigatorRoutePush extends NavigatorRouteAction {
+import '../../flutter_thrio.dart';
+import '../module/module_anchor.dart';
+
+class NavigatorRoutePush extends StatefulWidget {
   const NavigatorRoutePush({
     super.key,
-    required super.url,
-    required final NavigatorRouteHandleCallback onPush,
-    required super.child,
-  }) : super(onAction: onPush, action: route.NavigatorRouteAction.push);
+    required this.url,
+    required this.onPush,
+    required this.child,
+  });
+
+  final String url;
+  final NavigatorRouteHandleCallback onPush;
+  final Widget child;
+
+  @override
+  _NavigatorRoutePushState createState() => _NavigatorRoutePushState();
+}
+
+class _NavigatorRoutePushState extends State<NavigatorRoutePush> {
+  VoidCallback? _registry;
+
+  @override
+  void dispose() {
+    _registry?.call();
+    super.dispose();
+  }
+
+  @override
+  Widget build(final BuildContext context) => NavigatorPageLifecycle(
+      didAppear: (final _) {
+        _registry?.call();
+        _registry = anchor.pushHandlers.registry(widget.url, widget.onPush);
+      },
+      didDisappear: (final _) {
+        _registry?.call();
+        _registry = null;
+      },
+      child: widget.child);
 }
