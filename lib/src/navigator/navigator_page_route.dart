@@ -34,14 +34,9 @@ class NavigatorPageRoute extends MaterialPageRoute<bool> {
   NavigatorPageRoute({
     required final NavigatorPageBuilder builder,
     required final RouteSettings settings,
-    final bool maintainState = true,
-    final bool fullscreenDialog = false,
-  }) : super(
-          builder: (final _) => builder(settings),
-          settings: settings,
-          maintainState: maintainState,
-          fullscreenDialog: fullscreenDialog,
-        );
+    super.maintainState,
+    super.fullscreenDialog,
+  }) : super(builder: (final _) => builder(settings), settings: settings);
 
   NavigatorRouteAction? routeAction;
 

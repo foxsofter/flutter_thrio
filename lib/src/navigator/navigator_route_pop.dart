@@ -19,22 +19,15 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-import 'package:flutter/widgets.dart';
-
 import 'navigator_page_route.dart' as route;
 import 'navigator_route_action.dart';
 import 'navigator_types.dart';
 
 class NavigatorRoutePop extends NavigatorRouteAction {
   const NavigatorRoutePop({
-    final Key? key,
-    required final String url,
+    super.key,
+    required super.url,
     required final NavigatorRouteHandleCallback onPop,
-    required final Widget child,
-  }) : super(
-            key: key,
-            url: url,
-            onAction: onPop,
-            action: route.NavigatorRouteAction.pop,
-            child: child);
+    required super.child,
+  }) : super(onAction: onPop, action: route.NavigatorRouteAction.pop);
 }

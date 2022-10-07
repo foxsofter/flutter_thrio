@@ -26,62 +26,41 @@ import 'thrio_navigator_implement.dart';
 
 class NavigatorMaterialApp extends MaterialApp {
   NavigatorMaterialApp({
-    final Key? key,
-    final GlobalKey<NavigatorState>? navigatorKey,
-    final List<NavigatorObserver> navigatorObservers = const <NavigatorObserver>[],
+    super.key,
+    super.navigatorKey,
+    super.navigatorObservers,
     final TransitionBuilder? builder,
-    final String title = '',
+    super.title,
     final Widget? home,
-    final GenerateAppTitle? onGenerateTitle,
-    final Color? color,
-    final ThemeData? theme,
-    final ThemeData? darkTheme,
-    final ThemeMode themeMode = ThemeMode.system,
-    final Locale? locale,
-    final Iterable<LocalizationsDelegate<dynamic>>? localizationsDelegates,
-    final LocaleListResolutionCallback? localeListResolutionCallback,
-    final LocaleResolutionCallback? localeResolutionCallback,
-    final Iterable<Locale> supportedLocales = const <Locale>[Locale('en', 'US')],
-    final bool debugShowMaterialGrid = false,
-    final bool showPerformanceOverlay = false,
-    final bool checkerboardRasterCacheImages = false,
-    final bool checkerboardOffscreenLayers = false,
-    final bool showSemanticsDebugger = false,
-    final bool debugShowCheckedModeBanner = true,
-    final Map<LogicalKeySet, Intent>? shortcuts,
-    final Map<Type, Action<Intent>>? actions,
-    final String? restorationScopeId,
+    super.onGenerateTitle,
+    super.color,
+    super.theme,
+    super.darkTheme,
+    super.themeMode,
+    super.locale,
+    super.localizationsDelegates,
+    super.localeListResolutionCallback,
+    super.localeResolutionCallback,
+    super.supportedLocales,
+    super.debugShowMaterialGrid,
+    super.showPerformanceOverlay,
+    super.checkerboardRasterCacheImages,
+    super.checkerboardOffscreenLayers,
+    super.showSemanticsDebugger,
+    super.debugShowCheckedModeBanner,
+    super.shortcuts,
+    super.actions,
+    super.restorationScopeId,
   }) : super(
-            key: key,
-            navigatorKey: navigatorKey,
-            navigatorObservers: [...navigatorObservers],
-            builder: (final context, final child) {
-              if (builder != null) {
-                return builder(context, ThrioNavigatorImplement.shared().builder(context, child));
-              } else {
-                return ThrioNavigatorImplement.shared().builder(context, child);
-              }
-            },
-            title: title,
-            onGenerateTitle: onGenerateTitle,
-            initialRoute: '1 /',
-            routes: {'1 /': (final _) => home ?? const NavigatorHome()},
-            color: color,
-            theme: theme,
-            darkTheme: darkTheme,
-            themeMode: themeMode,
-            locale: locale,
-            localizationsDelegates: localizationsDelegates,
-            localeListResolutionCallback: localeListResolutionCallback,
-            localeResolutionCallback: localeResolutionCallback,
-            supportedLocales: supportedLocales,
-            debugShowMaterialGrid: debugShowMaterialGrid,
-            showPerformanceOverlay: showPerformanceOverlay,
-            checkerboardRasterCacheImages: checkerboardRasterCacheImages,
-            checkerboardOffscreenLayers: checkerboardOffscreenLayers,
-            showSemanticsDebugger: showSemanticsDebugger,
-            debugShowCheckedModeBanner: debugShowCheckedModeBanner,
-            shortcuts: shortcuts,
-            actions: actions,
-            restorationScopeId: restorationScopeId);
+          builder: (final context, final child) {
+            if (builder != null) {
+              return builder(context, ThrioNavigatorImplement.shared().builder(context, child));
+            } else {
+              return ThrioNavigatorImplement.shared().builder(context, child);
+            }
+          },
+          home: home,
+          initialRoute: '1 /',
+          routes: {'1 /': (final _) => home ?? const NavigatorHome()},
+        );
 }
