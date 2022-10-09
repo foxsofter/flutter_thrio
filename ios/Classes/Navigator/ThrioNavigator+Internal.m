@@ -56,7 +56,7 @@ NS_ASSUME_NONNULL_BEGIN
     return controllers;
 }
 
-+ (void)  _pushUrl:(NSString *)url
++ (void)_pushUrl:(NSString *)url
             params:(id _Nullable)params
           animated:(BOOL)animated
     fromEntrypoint:fromEntrypoint
