@@ -107,7 +107,7 @@
 #pragma mark - UIImagePickerControllerDelegate methods
 
 - (void)imagePickerController:(UIImagePickerController *)picker
-    didFinishPickingMediaWithInfo:(NSDictionary<UIImagePickerControllerInfoKey, id> *)info {
+didFinishPickingMediaWithInfo:(NSDictionary<UIImagePickerControllerInfoKey, id> *)info {
     if (self.originDelegate && ![self.originDelegate isEqual:self]) {
         if ([self.originDelegate conformsToProtocol:@protocol(UIImagePickerControllerDelegate)] &&
             [self.originDelegate respondsToSelector:@selector(imagePickerController:didFinishPickingMediaWithInfo:)]) {

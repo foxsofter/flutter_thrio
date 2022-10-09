@@ -122,10 +122,10 @@
 		478AE4FA2898F9B100887E22 /* Module1 */ = {
 			isa = PBXGroup;
 			children = (
-				478AE4FB2898F9B100887E22 /* Module1.m */,
-				478AE4FC2898F9B100887E22 /* ThrioViewController.m */,
 				478AE4FD2898F9B100887E22 /* Module1.h */,
+				478AE4FB2898F9B100887E22 /* Module1.m */,
 				478AE4FE2898F9B100887E22 /* ThrioViewController.h */,
+				478AE4FC2898F9B100887E22 /* ThrioViewController.m */,
 			);
 			path = Module1;
 			sourceTree = "<group>";
@@ -171,22 +171,22 @@
 		97C146F01CF9000F007C117D /* Runner */ = {
 			isa = PBXGroup;
 			children = (
-				478AE4EF2898F9B100887E22 /* SampleModule */,
-				47414A0B2898ECB8008AFDC3 /* CustomFlutterViewController.h */,
-				47414A0E2898ECB8008AFDC3 /* CustomFlutterViewController.m */,
-				47414A102898ECB8008AFDC3 /* MainModule.h */,
-				47414A142898ECB9008AFDC3 /* MainModule.m */,
-				47414A0D2898ECB8008AFDC3 /* THRPeople.h */,
-				47414A0F2898ECB8008AFDC3 /* THRPeople.m */,
 				7AFFD8ED1D35381100E5BB4D /* AppDelegate.h */,
 				7AFFD8EE1D35381100E5BB4D /* AppDelegate.m */,
-				97C146FA1CF9000F007C117D /* Main.storyboard */,
 				97C146FD1CF9000F007C117D /* Assets.xcassets */,
-				97C146FF1CF9000F007C117D /* LaunchScreen.storyboard */,
-				97C147021CF9000F007C117D /* Info.plist */,
-				97C146F11CF9000F007C117D /* Supporting Files */,
+				47414A0B2898ECB8008AFDC3 /* CustomFlutterViewController.h */,
+				47414A0E2898ECB8008AFDC3 /* CustomFlutterViewController.m */,
 				1498D2321E8E86230040F4C2 /* GeneratedPluginRegistrant.h */,
 				1498D2331E8E89220040F4C2 /* GeneratedPluginRegistrant.m */,
+				97C147021CF9000F007C117D /* Info.plist */,
+				97C146FF1CF9000F007C117D /* LaunchScreen.storyboard */,
+				97C146FA1CF9000F007C117D /* Main.storyboard */,
+				47414A102898ECB8008AFDC3 /* MainModule.h */,
+				47414A142898ECB9008AFDC3 /* MainModule.m */,
+				478AE4EF2898F9B100887E22 /* SampleModule */,
+				97C146F11CF9000F007C117D /* Supporting Files */,
+				47414A0D2898ECB8008AFDC3 /* THRPeople.h */,
+				47414A0F2898ECB8008AFDC3 /* THRPeople.m */,
 			);
 			path = Runner;
 			sourceTree = "<group>";
