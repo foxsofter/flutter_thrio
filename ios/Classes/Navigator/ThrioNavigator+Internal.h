@@ -60,6 +60,12 @@ NS_ASSUME_NONNULL_BEGIN
           animated:(BOOL)animated
             result:(ThrioBoolCallback _Nullable)result;
 
++ (void)_replaceUrl:(NSString *)url
+              index:(NSNumber *_Nullable)index
+         withNewUrl:(NSString *)newUrl
+             result:(ThrioNumberCallback _Nullable)result
+        replaceOnly:(BOOL)replaceOnly;
+
 + (NSArray *)_getAllRoutesByUrl:(NSString *_Nullable)url;
 
 + (void)_setPopDisabledUrl:(NSString *)url

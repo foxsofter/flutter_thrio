@@ -34,6 +34,7 @@ class NavigatorRouteReceiveChannel {
     _onPop();
     _onPopTo();
     _onRemove();
+    _onReplace();
   }
 
   final ThrioChannel _channel;
@@ -50,7 +51,7 @@ class NavigatorRouteReceiveChannel {
         routeSettings.params = _deserializeParams(routeSettings.url!, routeSettings.params);
         final animatedValue = arguments != null ? arguments['animated'] : null;
         final animated = (animatedValue != null && animatedValue is bool) && animatedValue;
-        final callback = anchor.get<NavigatorRouteHandleCallback>(url: routeSettings.url!);
+        final callback = anchor.get<NavigatorRoutePushCallback>(url: routeSettings.url!);
         if (callback != null) {
           final result = await callback(routeSettings, animated: animated);
           if (result == true) {
@@ -117,6 +118,24 @@ class NavigatorRouteReceiveChannel {
               _syncPagePoppedResults();
               return value;
             }) ??
+            Future.value(false);
+      });
+
+  void _onReplace() => _channel.registryMethodCall('replace', ([final arguments]) {
+        final routeSettings = NavigatorRouteSettings.fromArguments(arguments);
+        if (routeSettings == null) {
+          return Future.value(false);
+        }
+        final newRouteSettings = NavigatorRouteSettings.fromNewUrlArguments(arguments);
+        if (newRouteSettings == null) {
+          return Future.value(false);
+        }
+
+        final replaceOnly = arguments?['replaceOnly'] == true;
+
+        return ThrioNavigatorImplement.shared()
+                .navigatorState
+                ?.replace(routeSettings, newRouteSettings, replaceOnly: replaceOnly) ??
             Future.value(false);
       });
 

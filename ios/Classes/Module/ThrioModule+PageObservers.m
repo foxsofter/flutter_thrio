@@ -50,6 +50,8 @@ NS_ASSUME_NONNULL_BEGIN
             ![lastRoute.settings isEqualToRouteSettings:routeSettings]) {
             [ThrioModule.pageObservers willDisappear:lastRoute.settings];
         }
+    } else if (action == NavigatorRouteActionReplace) {
+        [ThrioModule.pageObservers willAppear:routeSettings];
     } else if ([nvc thrio_containsUrl:routeSettings.url index:routeSettings.index]) {
         [nvc thrio_willAppear:routeSettings routeAction:action];
     }
@@ -65,6 +67,8 @@ NS_ASSUME_NONNULL_BEGIN
             NavigatorPageRoute *lastRoute = nvc.thrio_lastRoute;
             [ThrioModule.pageObservers didDisappear:lastRoute.settings];
         }
+    } else if (action == NavigatorRouteActionReplace) {
+        [ThrioModule.pageObservers didAppear:routeSettings];
     } else if ([nvc thrio_containsUrl:routeSettings.url index:routeSettings.index]) {
         [nvc thrio_didAppear:routeSettings routeAction:action];
     }
@@ -80,6 +84,8 @@ NS_ASSUME_NONNULL_BEGIN
             [ThrioModule.pageObservers willDisappear:routeSettings];
             [ThrioModule.pageObservers willAppear:lastRoute.prev.settings];
         }
+    } else if (action == NavigatorRouteActionReplace) {
+        [ThrioModule.pageObservers willDisappear:routeSettings];
     } else if ([nvc thrio_containsUrl:routeSettings.url index:routeSettings.index]) {
         [nvc thrio_willDisappear:routeSettings routeAction:action];
     }
@@ -95,6 +101,8 @@ NS_ASSUME_NONNULL_BEGIN
             [ThrioModule.pageObservers didDisappear:routeSettings];
             [ThrioModule.pageObservers didAppear:prevLastRoute.prev.settings];
         }
+    } else if (action == NavigatorRouteActionReplace) {
+        [ThrioModule.pageObservers didDisappear:routeSettings];
     } else if ([nvc thrio_containsUrl:routeSettings.url index:routeSettings.index]) {
         [nvc thrio_didDisappear:routeSettings routeAction:action];
     }
@@ -109,6 +117,8 @@ NS_ASSUME_NONNULL_BEGIN
         return NavigatorRouteActionPopTo;
     } else if ([routeActionString isEqualToString:@"remove"]) {
         return NavigatorRouteActionRemove;
+    } else if ([routeActionString isEqualToString:@"replace"]) {
+        return NavigatorRouteActionReplace;
     }
     return NavigatorRouteActionNone;
 }

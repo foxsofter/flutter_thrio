@@ -94,6 +94,21 @@ class NavigatorRouteSendChannel {
     return _channel.invokeMethod<bool>('remove', arguments).then((final it) => it ?? false);
   }
 
+  Future<int> replace({
+    required final String url,
+    final int? index,
+    required final String newUrl,
+    final bool replaceOnly = false,
+  }) {
+    final arguments = <String, dynamic>{
+      'url': url.replaceAll('/home', ''),
+      'index': index,
+      'newUrl': newUrl.replaceAll('/home', ''),
+      'replaceOnly': replaceOnly,
+    };
+    return _channel.invokeMethod<int>('replace', arguments).then((final it) => it ?? 0);
+  }
+
   Future<RouteSettings?> lastRoute({final String? url}) {
     final arguments =
         (url == null || url.isEmpty) ? <String, dynamic>{} : <String, dynamic>{'url': url};

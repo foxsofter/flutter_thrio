@@ -137,6 +137,28 @@ NS_ASSUME_NONNULL_BEGIN
     }
 }
 
++ (void)_replaceUrl:(NSString *)url
+              index:(NSNumber *_Nullable)index
+         withNewUrl:(NSString *)newUrl
+             result:(ThrioNumberCallback _Nullable)result
+        replaceOnly:(BOOL)replaceOnly {
+    NSArray *allNvcs = [self.navigationControllers.allObjects.reverseObjectEnumerator allObjects];
+    BOOL contains = NO;
+    for (UINavigationController *nvc in allNvcs) {
+        if ([nvc thrio_containsUrl:url index:index]) {
+            contains = YES;
+            [nvc thrio_replaceUrl:url index:index withNewUrl:newUrl result:result replaceOnly:replaceOnly];
+        }
+    }
+    if (!contains) {
+        if (result) {
+            result(@0);
+        }
+    }
+
+}
+
+
 + (NSArray *)_getAllRoutesByUrl:(NSString *_Nullable)url {
     NSMutableArray *allRoutes = [NSMutableArray array];
     NSArray *allNvcs = [self.navigationControllers.allObjects.reverseObjectEnumerator allObjects];

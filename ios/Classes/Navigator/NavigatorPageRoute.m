@@ -43,8 +43,7 @@ NS_ASSUME_NONNULL_BEGIN
     if (self) {
         _settings = settings;
         _notifications = [NSMutableDictionary dictionary];
-//        _fromEntrypoint = 
-    }
+        }
     return self;
 }
 
@@ -63,6 +62,10 @@ NS_ASSUME_NONNULL_BEGIN
     }
     [_notifications removeObjectForKey:name];
     return params;
+}
+
+- (void)removeAllNotify {
+    [_notifications removeAllObjects];
 }
 
 - (NSDictionary *)notifications {

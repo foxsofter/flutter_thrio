@@ -38,6 +38,7 @@ class NavigatorRouteObserverChannel with NavigatorRouteObserver {
     _on('didPop', (final observer, final routeSettings) => observer.didPop(routeSettings));
     _on('didPopTo', (final observer, final routeSettings) => observer.didPopTo(routeSettings));
     _on('didRemove', (final observer, final routeSettings) => observer.didRemove(routeSettings));
+    _onDidReplace();
   }
 
   final ThrioChannel _channel;
@@ -58,6 +59,16 @@ class NavigatorRouteObserverChannel with NavigatorRouteObserver {
   void didRemove(final RouteSettings routeSettings) =>
       _channel.invokeMethod<bool>('didRemove', routeSettings.toArguments()..remove('params'));
 
+  @override
+  void didReplace(final RouteSettings newRouteSettings, final RouteSettings oldRouteSettings) {
+    final oldArgs = oldRouteSettings.toArguments()..remove('params');
+    final newArgs = newRouteSettings.toArguments()..remove('params');
+    _channel.invokeMethod<bool>('didReplace', {
+      'oldRouteSettings': oldArgs,
+      'newRouteSettings': newArgs,
+    });
+  }
+
   void _on(final String method, final NavigatorRouteObserverCallback callback) =>
       _channel.registryMethodCall(method, ([final arguments]) {
         final routeSettings = NavigatorRouteSettings.fromArguments(arguments);
@@ -65,6 +76,23 @@ class NavigatorRouteObserverChannel with NavigatorRouteObserver {
           final observers = ThrioModule.gets<NavigatorRouteObserver>(url: routeSettings.url!);
           for (final observer in observers) {
             callback(observer, routeSettings);
+          }
+        }
+        return Future.value();
+      });
+
+  void _onDidReplace() => _channel.registryMethodCall('didReplace', ([final arguments]) {
+        final newRouteSettings = NavigatorRouteSettings.fromArguments(
+            (arguments?['newRouteSettings'] as Map<Object?, Object?>).cast<String, dynamic>());
+        final oldRouteSettings = NavigatorRouteSettings.fromArguments(
+            (arguments?['oldRouteSettings'] as Map<Object?, Object?>).cast<String, dynamic>());
+        if (newRouteSettings != null && oldRouteSettings != null) {
+          final observers = <NavigatorRouteObserver>[
+            ...ThrioModule.gets<NavigatorRouteObserver>(url: newRouteSettings.url!),
+            ...ThrioModule.gets<NavigatorRouteObserver>(url: oldRouteSettings.url!),
+          ];
+          for (final observer in observers) {
+            observer.didReplace(newRouteSettings, oldRouteSettings);
           }
         }
         return Future.value();

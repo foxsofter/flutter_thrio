@@ -101,4 +101,17 @@
     }];
 }
 
+- (void)replace:(id)arguments result:(ThrioBoolCallback _Nullable)result {
+    [_channel invokeMethod:@"replace" arguments:arguments result:^(id _Nullable value) {
+        if (result) {
+            if ([value isKindOfClass:NSNumber.class]) {
+                result([value boolValue]);
+            } else {
+                result(NO);
+            }
+        }
+    }];
+}
+
+
 @end

@@ -89,4 +89,19 @@
     }
 }
 
+- (void)didReplace:(NavigatorRouteSettings *)newRouteSettings
+  oldRouteSettings:(NavigatorRouteSettings *)oldRouteSettings {
+    if (!newRouteSettings || !oldRouteSettings) {
+        return;
+    }
+    ThrioRegistrySet *routeObservers = [self.observers copy];
+    for (id<NavigatorRouteObserverProtocol> observer in routeObservers) {
+        if ([observer respondsToSelector:@selector(didReplace:oldRouteSettings:)]) {
+            [observer didReplace:newRouteSettings oldRouteSettings:oldRouteSettings];
+        }
+    }
+
+}
+
+
 @end

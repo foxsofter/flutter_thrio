@@ -100,6 +100,21 @@ abstract class ThrioNavigator {
         animated: animated,
       );
 
+  /// Replace the flutter page with `newUrl` in the navigation stack.
+  ///
+  /// Both `url` and `newUrl` must be flutter page.
+  ///
+  static Future<int> replace({
+    required final String url,
+    final int index = 0,
+    required final String newUrl,
+  }) =>
+      ThrioNavigatorImplement.shared().replace(
+        url: url,
+        index: index,
+        newUrl: newUrl,
+      );
+
   /// Returns the route of the page that was last pushed to the navigation
   /// stack.
   ///

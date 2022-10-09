@@ -76,6 +76,9 @@ class NavigatorRouteLeaf extends NavigatorRouteNode {
 
   Future<bool> remove({final bool animated = true}) =>
       ThrioNavigator.remove(url: url, animated: animated);
+
+  Future<int> replace({required final String newUrl, final int index = 0}) =>
+      ThrioNavigator.replace(url: url, index: index, newUrl: newUrl);
 }
 
 final EmptyNavigatorRoute _emptyRouteNode = EmptyNavigatorRoute._();

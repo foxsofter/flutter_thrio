@@ -53,6 +53,7 @@ NS_ASSUME_NONNULL_BEGIN
         [self _onPop];
         [self _onPopTo];
         [self _onRemove];
+        [self _onReplace];
         
         [self _onLastRoute];
         [self _onGetAllRoutes];
@@ -221,6 +222,33 @@ NS_ASSUME_NONNULL_BEGIN
         }];
     }];
 }
+
+- (void)_onReplace {
+    [_channel registryMethod:@"replace"
+                     handler:
+     ^void (NSDictionary<NSString *, id> *arguments,
+            ThrioIdCallback _Nullable result) {
+        NSString *url = arguments[@"url"];
+        NSNumber *index =
+        [arguments[@"index"] isKindOfClass:NSNull.class]
+        ? nil
+        : arguments[@"index"];
+        NSString *newUrl = arguments[@"newUrl"];
+        BOOL replaceOnly = [arguments[@"replaceOnly"] boolValue];
+        
+        NavigatorVerbose(@"on replace: %@.%@ => %@", oldUrl, oldIndex, newUrl);
+        
+        [ThrioNavigator _replaceUrl:url
+                              index:index
+                         withNewUrl:newUrl
+                             result:^(NSNumber *r) {
+            if (result) {
+                result(r);
+            }
+        } replaceOnly:replaceOnly];
+    }];
+}
+
 
 - (void)_onLastRoute {
     [_channel registryMethod:@"lastRoute"

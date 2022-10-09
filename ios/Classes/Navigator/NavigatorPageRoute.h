@@ -31,6 +31,7 @@ typedef enum : NSUInteger {
     NavigatorRouteActionPop,
     NavigatorRouteActionPopTo,
     NavigatorRouteActionRemove,
+    NavigatorRouteActionReplace,
 } NavigatorRouteAction;
 
 @interface NavigatorPageRoute : NSObject
@@ -44,6 +45,8 @@ typedef enum : NSUInteger {
 - (void)addNotify:(NSString *)name params:(id _Nullable)params;
 
 - (id _Nullable)removeNotify:(NSString *)name;
+
+- (void)removeAllNotify;
 
 @property (nonatomic, nullable) NavigatorPageRoute *prev;
 

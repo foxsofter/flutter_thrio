@@ -95,8 +95,11 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
     return true;
   }
 
-  Future<bool> maybePop(final RouteSettings settings,
-      {final bool animated = true, final bool inRoot = false}) async {
+  Future<bool> maybePop(
+    final RouteSettings settings, {
+    final bool animated = true,
+    final bool inRoot = false,
+  }) async {
     final navigatorState = widget.child.tryStateOf<NavigatorState>();
     if (navigatorState == null) {
       return false;
@@ -118,11 +121,14 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
     return pop(settings, animated: animated, inRoot: inRoot);
   }
 
-  Future<bool> pop(final RouteSettings settings,
-      {final bool animated = true, final bool inRoot = false}) {
+  Future<bool> pop(
+    final RouteSettings settings, {
+    final bool animated = true,
+    final bool inRoot = false,
+  }) async {
     final navigatorState = widget.child.tryStateOf<NavigatorState>();
     if (navigatorState == null || history.isEmpty) {
-      return Future.value(false);
+      return false;
     }
 
     // 处理经过 Navigator 入栈的匿名 Route
@@ -132,12 +138,12 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
 
     // 不管成功与否都 return false，避免原生端清栈
     if (settings.name != history.last.settings.name) {
-      return Future.value(false);
+      return false;
     }
 
     // 在原生端处于容器的根部，且当前 Flutter 页面栈上不超过 3，则不能再 pop
     if (inRoot && history.whereType<NavigatorPageRoute>().length < 3) {
-      return Future.value(false);
+      return false;
     }
 
     verbose(
@@ -149,7 +155,7 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
     final route = history.last as NavigatorPageRoute;
     // The route has been closed.
     if (route.routeAction == NavigatorRouteAction.pop) {
-      return Future.value(false);
+      return false;
     }
 
     ThrioNavigatorImplement.shared()
@@ -163,25 +169,25 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
       navigatorState.removeRoute(route);
     }
 
-    return Future.value(true).then((final value) async {
+    return Future.value(true).then((final value) {
       _poppedResultCallback(route.poppedResult, route.settings.url, settings.params);
       return value;
     });
   }
 
-  Future<bool> popTo(final RouteSettings settings, {final bool animated = true}) {
+  Future<bool> popTo(final RouteSettings settings, {final bool animated = true}) async {
     final navigatorState = widget.child.tryStateOf<NavigatorState>();
     if (navigatorState == null || history.length < 2) {
-      return Future.value(false);
+      return false;
     }
 
     final index = history.indexWhere((final it) => it.settings.name == settings.name);
     if (index == -1) {
-      return Future.value(false);
+      return false;
     }
     // 已经是最顶部的页面了，直接返回 true
     if (index == history.length - 1) {
-      return Future.value(true);
+      return true;
     }
 
     final route = history[index];
@@ -211,17 +217,17 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
         navigatorState.removeRoute(history.last);
       }
     }
-    return Future.value(true);
+    return true;
   }
 
-  Future<bool> remove(final RouteSettings settings, {final bool animated = false}) {
+  Future<bool> remove(final RouteSettings settings, {final bool animated = false}) async {
     final navigatorState = widget.child.tryStateOf<NavigatorState>();
     if (navigatorState == null) {
-      return Future.value(false);
+      return false;
     }
     final route = history.firstWhereOrNull((final it) => it.settings.name == settings.name);
     if (route == null) {
-      return Future.value(false);
+      return false;
     }
 
     verbose(
@@ -239,11 +245,65 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
             .willDisappear(route.settings, NavigatorRouteAction.remove);
       }
       navigatorState.pop();
-      return Future.value(true);
+      return true;
     }
 
     navigatorState.removeRoute(route);
-    return Future.value(true);
+    return true;
+  }
+
+  Future<bool> replace(
+    final RouteSettings settings,
+    final RouteSettings newSettings, {
+    final bool replaceOnly = false,
+  }) async {
+    final navigatorState = widget.child.tryStateOf<NavigatorState>();
+    if (navigatorState == null) {
+      return false;
+    }
+    final route = history.firstWhereOrNull((final it) => it.settings.name == settings.name);
+    if (route == null) {
+      return false;
+    }
+    if (replaceOnly) {
+      return true;
+    }
+
+    final pageBuilder = ThrioModule.get<NavigatorPageBuilder>(url: newSettings.url);
+    if (pageBuilder == null) {
+      return false;
+    }
+
+    // 加载模块
+    await anchor.loading(newSettings.url!);
+
+    final newRoute = NavigatorPageRoute(builder: pageBuilder, settings: newSettings);
+
+    verbose(
+      'replace: url->${route.settings.url} index->${route.settings.index}\n'
+      'nweUrl->${newSettings.url} newIndex->${newSettings.index}',
+    );
+
+    // ignore: avoid_as
+    (route as NavigatorPageRoute).routeAction = NavigatorRouteAction.replace;
+
+    if (settings.name == history.last.settings.name) {
+      if (WidgetsBinding.instance.lifecycleState == AppLifecycleState.resumed) {
+        ThrioNavigatorImplement.shared()
+            .pageChannel
+            .willDisappear(route.settings, NavigatorRouteAction.replace);
+        ThrioNavigatorImplement.shared()
+            .pageChannel
+            .willAppear(newRoute.settings, NavigatorRouteAction.replace);
+
+        navigatorState.replace(oldRoute: route, newRoute: newRoute);
+      }
+    } else {
+      final anchorRoute = history[history.indexOf(route) + 1];
+      navigatorState.replaceRouteBelow(anchorRoute: anchorRoute, newRoute: newRoute);
+    }
+
+    return true;
   }
 
   @override

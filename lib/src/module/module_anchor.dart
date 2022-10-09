@@ -58,7 +58,7 @@ class ModuleAnchor
 
   /// Holds PushHandler registered by `NavigatorRoutePush` .
   ///
-  final pushHandlers = RegistryMap<String, NavigatorRouteHandleCallback>();
+  final pushHandlers = RegistryMap<String, NavigatorRoutePushCallback>();
 
   /// All registered urls.
   ///
@@ -130,7 +130,7 @@ class ModuleAnchor
     var modules = <ThrioModule>[];
     if (url != null && url.isNotEmpty) {
       final typeString = T.toString();
-      if (typeString == (NavigatorRouteHandleCallback).toString()) {
+      if (typeString == (NavigatorRoutePushCallback).toString()) {
         final handler = pushHandlers[url];
         if (handler != null) {
           return handler as T;

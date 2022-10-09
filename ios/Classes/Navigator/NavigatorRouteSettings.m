@@ -49,7 +49,7 @@ NS_ASSUME_NONNULL_BEGIN
                      nested:(BOOL)nested
                      params:(id _Nullable)params {
     NSAssert(url && url.length > 0, @"url must not be null or empty.");
-
+    
     self = [super init];
     if (self) {
         _url = url;
@@ -84,6 +84,17 @@ NS_ASSUME_NONNULL_BEGIN
         @"isNested": @(_nested),
     };
 }
+
+- (NSDictionary *)toArgumentsWithNewUrl:(NSString *)newUrl newIndex:(NSNumber *)newIndex {
+    return @{
+        @"url": _url,
+        @"index": _index,
+        @"isNested": @(_nested),
+        @"newUrl": newUrl,
+        @"newIndex": newIndex,
+    };
+}
+
 
 - (NSString *)name {
     return [NSString stringWithFormat:@"%@ %@", _index == nil ? @0 : _index, _url];

@@ -139,6 +139,17 @@ NS_ASSUME_NONNULL_BEGIN
     }
 }
 
+- (void)didReplace:(NavigatorRouteSettings *)newRouteSettings
+  oldRouteSettings:(NavigatorRouteSettings *)oldRouteSettings {
+    NSArray *engineGroups = [_engineGroups.allValues copy];
+    for (NavigatorFlutterEngineGroup *engineGroup in engineGroups) {
+        NSArray *engines = engineGroup.engines;
+        for (NavigatorFlutterEngine *engine in engines) {
+            [engine.routeChannel didReplace:newRouteSettings oldRouteSettings:oldRouteSettings];
+        }
+    }
+}
+
 #pragma mark - NavigatorPageObserverProtocol methods
 
 - (void)willAppear:(NavigatorRouteSettings *)routeSettings {

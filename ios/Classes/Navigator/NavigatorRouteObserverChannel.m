@@ -39,6 +39,7 @@
         [self on:@"didPop"];
         [self on:@"didPopTo"];
         [self on:@"didRemove"];
+        [self onDidReplace];
     }
     return self;
 }
@@ -83,21 +84,38 @@
     [_channel invokeMethod:@"didRemove" arguments:arguments];
 }
 
+/// Send `didRemove` to all flutter engines.
+///
+- (void)didReplace:(NavigatorRouteSettings *)newRouteSettings oldRouteSettings:(NavigatorRouteSettings *)oldRouteSettings {
+    NSDictionary *arguments = @{
+        @"newRouteSettings": [newRouteSettings toArgumentsWithParams:nil],
+        @"oldRouteSettings":[oldRouteSettings toArgumentsWithParams:nil]
+    };
+    [_channel invokeMethod:@"didReplace" arguments:arguments];
+}
+
+
 #pragma mark - private methods
 
 - (void)on:(NSString *)method {
-    [_channel registryMethod:method
-                     handler:
-     ^void (NSDictionary<NSString *, id> *arguments,
-            ThrioIdCallback _Nullable result) {
+    [_channel registryMethod:method handler:
+     ^void (NSDictionary<NSString *, id> *arguments,ThrioIdCallback _Nullable result) {
         NavigatorRouteSettings *routeSettings = [NavigatorRouteSettings settingsFromArguments:arguments];
-        
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
         SEL selector = NSSelectorFromString([NSString stringWithFormat:@"%@:", method]);
         [ThrioModule performSelector:selector withObject:routeSettings];
         [ThrioModule.routeObservers performSelector:selector withObject:routeSettings];
 #pragma clang diagnostic pop
+    }];
+}
+
+- (void)onDidReplace {
+    [_channel registryMethod:@"didReplace" handler:
+     ^void (NSDictionary<NSString *,id> *arguments, ThrioIdCallback _Nullable result) {
+        NavigatorRouteSettings *oldRouteSettings = [NavigatorRouteSettings settingsFromArguments:arguments[@"oldRouteSettings"]];
+        NavigatorRouteSettings *newRouteSettings = [NavigatorRouteSettings settingsFromArguments:arguments[@"newRouteSettings"]];
+        [ThrioModule.routeObservers didReplace:newRouteSettings oldRouteSettings:oldRouteSettings];
     }];
 }
 

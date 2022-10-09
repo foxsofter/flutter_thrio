@@ -158,9 +158,20 @@ class ThrioNavigatorImplement {
   }) =>
       _sendChannel.popTo(url: url, index: index, animated: animated);
 
-  Future<bool> remove(
-          {required final String url, final int index = 0, final bool animated = true}) =>
+  Future<bool> remove({
+    required final String url,
+    final int index = 0,
+    final bool animated = true,
+  }) =>
       _sendChannel.remove(url: url, index: index, animated: animated);
+
+  Future<int> replace({
+    required final String url,
+    final int index = 0,
+    required final String newUrl,
+    final bool replaceOnly = false,
+  }) =>
+      _sendChannel.replace(url: url, index: index, newUrl: newUrl, replaceOnly: replaceOnly);
 
   Future<bool> isInitialRoute({required final String url, final int index = 0}) =>
       _sendChannel.isInitialRoute(url: url, index: index);
@@ -205,12 +216,18 @@ class ThrioNavigatorImplement {
     return routes[index + 1] is! NavigatorPageRoute;
   }
 
-  Future<bool> setPopDisabled(
-          {required final String url, final int index = 0, final bool disabled = true}) =>
+  Future<bool> setPopDisabled({
+    required final String url,
+    final int index = 0,
+    final bool disabled = true,
+  }) =>
       _sendChannel.setPopDisabled(url: url, index: index, disabled: disabled);
 
-  Stream<dynamic> onPageNotify(
-          {required final String name, final String? url, final int index = 0}) =>
+  Stream<dynamic> onPageNotify({
+    required final String name,
+    final String? url,
+    final int index = 0,
+  }) =>
       _receiveChannel.onPageNotify(name: name, url: url, index: index);
 
   void hotRestart() {

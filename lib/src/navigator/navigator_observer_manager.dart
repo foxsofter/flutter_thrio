@@ -179,4 +179,26 @@ class NavigatorObserverManager extends NavigatorObserver {
       }
     }
   }
+
+  @override
+  void didReplace({final Route<dynamic>? newRoute, final Route<dynamic>? oldRoute}) {
+    if (newRoute is NavigatorPageRoute && oldRoute is NavigatorPageRoute) {
+      verbose(
+        'didReplace: url->${oldRoute.settings.url} index->${oldRoute.settings.index} '
+        'newUrl->${newRoute.settings.url} newIndex->${newRoute.settings.index}',
+      );
+      final idx = pageRoutes.indexOf(oldRoute);
+      pageRoutes
+        ..remove(oldRoute)
+        ..insert(idx, newRoute);
+      ThrioNavigatorImplement.shared()
+        ..pageChannel.didDisappear(oldRoute.settings, NavigatorRouteAction.replace)
+        ..routeChannel.didReplace(newRoute.settings, oldRoute.settings);
+      if (pageRoutes.last.settings.name == newRoute.settings.name) {
+        ThrioNavigatorImplement.shared()
+            .pageChannel
+            .didAppear(newRoute.settings, NavigatorRouteAction.replace);
+      }
+    }
+  }
 }

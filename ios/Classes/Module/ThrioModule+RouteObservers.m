@@ -74,6 +74,16 @@ NS_ASSUME_NONNULL_BEGIN
     [self didRemoveUrl:routeSettings.url index:routeSettings.index];
 }
 
+
++ (void)didReplace:(NavigatorRouteSettings *)newRouteSettings
+  oldRouteSettings:(NavigatorRouteSettings *)oldRouteSettings {
+    NavigatorVerbose(@"%@: url->%@ index->%@",
+                     NSStringFromSelector(_cmd),
+                     newRouteSettings.url,
+                     newRouteSettings.index);
+    [self.routeObservers didReplace:newRouteSettings oldRouteSettings:oldRouteSettings];
+}
+
 + (void)didPushUrl:(NSString *)url index:(NSNumber *)index {
     NSArray *allNvcs = [ThrioNavigator.navigationControllers.allObjects.reverseObjectEnumerator allObjects];
     for (UINavigationController *nvc in allNvcs) {

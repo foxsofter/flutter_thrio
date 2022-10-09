@@ -331,6 +331,48 @@ NS_ASSUME_NONNULL_BEGIN
     }
 }
 
+- (void)thrio_replaceUrl:(NSString *)url
+                   index:(NSNumber *_Nullable)index
+              withNewUrl:(NSString *)newUrl
+                newIndex:(NSNumber *_Nullable)newIndex
+                  result:(ThrioBoolCallback _Nullable)result
+             replaceOnly:(BOOL)replaceOnly{
+    NavigatorPageRoute *route = [self thrio_getRouteByUrl:url index:index];
+    if (!route) {
+        if (result) {
+            result(NO);
+        }
+        return;
+    }
+    if ([self isKindOfClass:NavigatorFlutterViewController.class]) {
+        NSMutableDictionary *arguments = [NSMutableDictionary dictionaryWithDictionary:
+                                          [route.settings toArgumentsWithNewUrl:newUrl newIndex:newIndex]];
+        [arguments setObject:@(replaceOnly) forKey:@"replaceOnly"];
+        NSString *entrypoint = [(NavigatorFlutterViewController *)self entrypoint];
+        NSUInteger pageId = [(NavigatorFlutterViewController *)self pageId];
+        NavigatorRouteSendChannel *channel =
+        [NavigatorFlutterEngineFactory.shared getSendChannelByPageId:pageId
+                                                      withEntrypoint:entrypoint];
+        [channel replace:arguments result:^(BOOL r) {
+            if (r) {
+                NavigatorRouteSettings *newSettings = [NavigatorRouteSettings settingsWithUrl:newUrl
+                                                                                        index:newIndex
+                                                                                       nested:route.settings.nested
+                                                                                       params:nil];
+                [[route initWithSettings:newSettings] removeAllNotify];
+            }
+            if (result) {
+                result(r);
+            }
+        }];
+    } else {
+        if (result) {
+            result(NO);
+        }
+    }
+}
+
+
 - (void)thrio_didPushUrl:(NSString *)url index:(NSNumber *)index {
     NavigatorPageRoute *route = [self thrio_getRouteByUrl:url index:index];
     if (!route) {

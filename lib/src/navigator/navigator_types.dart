@@ -33,9 +33,9 @@ typedef NavigatorParamsCallback = void Function(dynamic params);
 ///
 typedef NavigatorPageObserverCallback = void Function(RouteSettings settings);
 
-/// Signature of route push and pop handler callbacks with RouteSettings.
+/// Signature of route push handler callbacks with RouteSettings.
 ///
-typedef NavigatorRouteHandleCallback = Future<bool?> Function(
+typedef NavigatorRoutePushCallback = Future<bool?> Function(
   RouteSettings settings, {
   bool animated,
 });

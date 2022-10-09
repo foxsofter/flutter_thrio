@@ -44,8 +44,26 @@ extension NavigatorRouteSettings on RouteSettings {
     return null;
   }
 
-  Map<String, dynamic> toArguments() =>
-      <String, dynamic>{'url': url, 'index': index, 'params': params};
+  static RouteSettings? fromNewUrlArguments(final Map<String, dynamic>? arguments) {
+    if ((arguments != null && arguments.isNotEmpty) &&
+        arguments.containsKey('newUrl') &&
+        arguments.containsKey('newIndex')) {
+      final urlValue = arguments['newUrl'];
+      final url = urlValue is String ? urlValue : null;
+      final indexValue = arguments['newIndex'];
+      final index = indexValue is int ? indexValue : null;
+      final isNestedValue = arguments['isNested'];
+      final isNested = isNestedValue != null && isNestedValue is bool && isNestedValue;
+      return RouteSettings(name: '$index $url', arguments: <String, dynamic>{'isNested': isNested});
+    }
+    return null;
+  }
+
+  Map<String, dynamic> toArguments() => <String, dynamic>{
+        'url': url,
+        'index': index,
+        'params': params,
+      };
 
   String? get url {
     final settingsName = name;

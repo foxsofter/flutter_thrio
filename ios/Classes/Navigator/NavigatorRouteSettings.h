@@ -43,6 +43,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (NSDictionary *)toArgumentsWithParams:(id _Nullable)params;
 
+- (NSDictionary *)toArgumentsWithNewUrl:(NSString *)newUrl newIndex:(NSNumber *)newIndex;
+
 @property (nonatomic, copy, readonly) NSString *url;
 
 @property (nonatomic, readonly, nullable) NSNumber *index;

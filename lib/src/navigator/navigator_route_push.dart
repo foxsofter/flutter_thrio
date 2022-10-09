@@ -19,10 +19,14 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
+import 'dart:async';
+
 import 'package:flutter/widgets.dart';
 
 import '../../flutter_thrio.dart';
 import '../module/module_anchor.dart';
+import 'navigator_widget.dart';
+import 'thrio_navigator_implement.dart';
 
 class NavigatorRoutePush extends StatefulWidget {
   const NavigatorRoutePush({
@@ -33,7 +37,7 @@ class NavigatorRoutePush extends StatefulWidget {
   });
 
   final String url;
-  final NavigatorRouteHandleCallback onPush;
+  final NavigatorRoutePushCallback onPush;
   final Widget child;
 
   @override
@@ -41,6 +45,8 @@ class NavigatorRoutePush extends StatefulWidget {
 }
 
 class _NavigatorRoutePushState extends State<NavigatorRoutePush> {
+  NavigatorPageRoute? _route;
+
   VoidCallback? _registry;
 
   @override
@@ -50,10 +56,36 @@ class _NavigatorRoutePushState extends State<NavigatorRoutePush> {
   }
 
   @override
+  void didChangeDependencies() {
+    final state = context.stateOf<NavigatorWidgetState>();
+    final route = state.history.last;
+    if (route is NavigatorPageRoute) {
+      _route = route;
+    }
+    super.didChangeDependencies();
+  }
+
+  @override
   Widget build(final BuildContext context) => NavigatorPageLifecycle(
       didAppear: (final _) {
         _registry?.call();
-        _registry = anchor.pushHandlers.registry(widget.url, widget.onPush);
+        _registry = anchor.pushHandlers.registry(widget.url, (
+          final settings, {
+          final animated = true,
+        }) async {
+          final r = await widget.onPush(settings, animated: animated);
+          if (true == r && _route != null) {
+            final route = _route!;
+            // 只是替换 url，不触发真正的 replace 操作，因为在 onPush 中已经让用户自行处理了
+            unawaited(ThrioNavigatorImplement.shared().replace(
+              url: route.settings.url!,
+              index: route.settings.index,
+              newUrl: widget.url,
+              replaceOnly: true,
+            ));
+          }
+          return r;
+        });
       },
       didDisappear: (final _) {
         _registry?.call();

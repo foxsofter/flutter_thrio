@@ -26,7 +26,7 @@ import 'navigator_route_settings.dart';
 import 'navigator_types.dart';
 import 'thrio_navigator_implement.dart';
 
-enum NavigatorRouteAction { push, pop, popTo, remove }
+enum NavigatorRouteAction { push, pop, popTo, remove, replace }
 
 /// A route managed by the `ThrioNavigatorImplement`.
 ///

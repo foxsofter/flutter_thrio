@@ -20,6 +20,7 @@ class Module with ThrioModule, ModuleJsonDeserializer, ModuleJsonSerializer, Mod
 
   @override
   void onModuleRegister(final ModuleContext moduleContext) {
+    navigatorLogEnabled = true;
     registerModule(biz1.Module(), moduleContext);
     registerModule(biz2.Module(), moduleContext);
   }

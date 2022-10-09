@@ -298,6 +298,36 @@ NS_ASSUME_NONNULL_BEGIN
     }];
 }
 
+- (void)thrio_replaceUrl:(NSString *)url
+                   index:(NSNumber *_Nullable)index
+              withNewUrl:(NSString *)newUrl
+                  result:(ThrioNumberCallback _Nullable)result
+             replaceOnly:(BOOL)replaceOnly{
+    UIViewController *vc = [self getViewControllerByUrl:url index:index];
+    UIViewController *nvc = [self getViewControllerByUrl:newUrl index:nil];
+    // 现阶段只实现 Flutter 页面之间的 replace 操作
+    if ([vc isKindOfClass:FlutterViewController.class] && (!nvc || [nvc isKindOfClass:FlutterViewController.class])) {
+        NavigatorPageRoute *route = [vc thrio_getRouteByUrl:url index:index];
+        NavigatorPageRoute *lastRoute = [ThrioNavigator getLastRouteByUrl:newUrl];
+        NSNumber *newIndex = lastRoute ? @(lastRoute.settings.index.integerValue + 1) : @1;
+        [vc thrio_replaceUrl:route.settings.url
+                       index:route.settings.index
+                  withNewUrl:newUrl
+                    newIndex:newIndex
+                      result:^(BOOL r) {
+            if (result) {
+                result(r ? newIndex : @0);
+            }
+        } replaceOnly:replaceOnly];
+        
+    } else {
+        if (result) {
+            result(@0);
+        }
+    }
+}
+
+
 - (void)thrio_didPushUrl:(NSString *)url index:(NSNumber *)index {
     UIViewController *vc = [self getViewControllerByUrl:url index:index];
     if (!vc) {

@@ -46,6 +46,12 @@ NS_ASSUME_NONNULL_BEGIN
 ///
 - (void)didRemove:(NavigatorRouteSettings *)routeSettings;
 
+/// The [ThrioNavigator] replace `route`.
+///
+- (void)didReplace:(NavigatorRouteSettings *)newRouteSettings
+  oldRouteSettings:(NavigatorRouteSettings *)oldRouteSettings;
+
+
 @end
 
 NS_ASSUME_NONNULL_END

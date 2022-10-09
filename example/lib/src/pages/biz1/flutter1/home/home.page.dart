@@ -41,6 +41,7 @@ class _HomePageState extends State<HomePage> {
   Widget build(final BuildContext context) => NavigatorRoutePush(
         url: root.biz2.flutter2.url,
         onPush: (final settings, {final animated = true}) {
+          // root.biz1.flutter1.home.replace(newUrl: root.biz2.flutter2.url);
           ThrioLogger.d('page2 onPush');
           return Future.value(true);
         },
@@ -213,14 +214,16 @@ class _HomePageState extends State<HomePage> {
                                 )),
                           ),
                           InkWell(
-                            onTap: () =>
-                                ThrioNavigator.push(url: '/biz1/swift1', params: '11221131'),
+                            onTap: () => ThrioNavigator.replace(
+                              url: root.biz1.flutter1.url,
+                              newUrl: root.biz2.flutter2.url,
+                            ),
                             child: Container(
                                 padding: const EdgeInsets.all(8),
                                 margin: const EdgeInsets.all(8),
                                 color: Colors.grey,
                                 child: const Text(
-                                  'push swift1',
+                                  'replace flutter2',
                                   style: TextStyle(fontSize: 22, color: Colors.black),
                                 )),
                           ),
