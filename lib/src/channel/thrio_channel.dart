@@ -21,6 +21,7 @@
 
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
 import '../navigator/navigator_logger.dart';
