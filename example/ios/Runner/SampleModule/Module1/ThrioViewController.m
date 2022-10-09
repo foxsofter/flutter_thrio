@@ -25,7 +25,7 @@
         @"age": @100,
         @"sex": @"x"
     }];
-    [ThrioNavigator pushUrl:@"/biz1/flutter1" params:people poppedResult:^(id _Nullable params) {
+    [ThrioNavigator pushUrl:@"/biz1/flutter1" params:[people toJson] poppedResult:^(id _Nullable params) {
         ThrioLogV(@"/biz1/flutter1 popped: %@", params);
     }];
 }
