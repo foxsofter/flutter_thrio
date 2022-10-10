@@ -43,7 +43,7 @@ class _HomePageState extends State<HomePage> {
         onPush: (final settings, {final animated = true}) {
           // root.biz1.flutter1.home.replace(newUrl: root.biz2.flutter2.url);
           ThrioLogger.d('page2 onPush');
-          return Future.value(true);
+          return Future.value(false);
         },
         child: NavigatorPageNotify(
             name: 'all_page_notify',

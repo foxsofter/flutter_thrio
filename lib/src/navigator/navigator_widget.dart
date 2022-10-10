@@ -295,9 +295,8 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
         ThrioNavigatorImplement.shared()
             .pageChannel
             .willAppear(newRoute.settings, NavigatorRouteAction.replace);
-
-        navigatorState.replace(oldRoute: route, newRoute: newRoute);
       }
+      navigatorState.replace(oldRoute: route, newRoute: newRoute);
     } else {
       final anchorRoute = history[history.indexOf(route) + 1];
       navigatorState.replaceRouteBelow(anchorRoute: anchorRoute, newRoute: newRoute);

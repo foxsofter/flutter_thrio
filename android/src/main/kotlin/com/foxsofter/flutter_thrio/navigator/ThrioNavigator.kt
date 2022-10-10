@@ -28,7 +28,6 @@ import com.foxsofter.flutter_thrio.NullableAnyCallback
 import com.foxsofter.flutter_thrio.NullableIntCallback
 
 object ThrioNavigator {
-
     @JvmStatic
     @JvmOverloads
     fun <T> push(
@@ -45,7 +44,6 @@ object ThrioNavigator {
         result
     )
 
-
     @JvmStatic
     fun push(
         url: String,
@@ -60,7 +58,6 @@ object ThrioNavigator {
         result
     )
 
-
     @JvmStatic
     @JvmOverloads
     fun <T> notify(
@@ -71,7 +68,6 @@ object ThrioNavigator {
         result: BooleanCallback = {}
     ) = NavigationController.Notify.notify<T>(url, index, name, params, result)
 
-
     @JvmStatic
     fun notify(
         url: String? = null,
@@ -79,7 +75,6 @@ object ThrioNavigator {
         name: String,
         result: BooleanCallback = {}
     ) = NavigationController.Notify.notify(url, index, name, null, result)
-
 
     @JvmStatic
     @JvmOverloads
@@ -89,21 +84,9 @@ object ThrioNavigator {
         result: BooleanCallback = {}
     ) = NavigationController.Pop.pop<T>(params, animated, result)
 
-
     @JvmStatic
     fun pop(animated: Boolean = true, result: BooleanCallback = {}) =
         NavigationController.Pop.pop(null, animated, result)
-
-
-    @JvmStatic
-    @JvmOverloads
-    fun remove(
-        url: String,
-        index: Int = 0,
-        animated: Boolean = true,
-        result: BooleanCallback = {}
-    ) = NavigationController.Remove.remove(url, index, animated, result)
-
 
     @JvmStatic
     @JvmOverloads
@@ -114,6 +97,23 @@ object ThrioNavigator {
         result: BooleanCallback = {}
     ) = NavigationController.PopTo.popTo(url, index, animated, result)
 
+    @JvmStatic
+    @JvmOverloads
+    fun remove(
+        url: String,
+        index: Int = 0,
+        animated: Boolean = true,
+        result: BooleanCallback = {}
+    ) = NavigationController.Remove.remove(url, index, animated, result)
+
+    @JvmStatic
+    @JvmOverloads
+    fun replace(
+        url: String,
+        index: Int = 0,
+        newUrl: String,
+        result: NullableIntCallback = {}
+    ) = NavigationController.Replace.replace(url, index, newUrl, false, result)
 
     @JvmStatic
     @JvmOverloads

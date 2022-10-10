@@ -275,7 +275,7 @@ internal data class PageRouteHolder(
                         }
                         activity.intent.putExtra(NAVIGATION_ROUTE_SETTINGS_KEY, settingData)
                     }
-                    result(if (it) index else null)
+                    result(if (it) newIndex else null)
                 }
             } else {
                 result(null)

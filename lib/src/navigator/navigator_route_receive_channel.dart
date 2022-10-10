@@ -87,10 +87,10 @@ class NavigatorRouteReceiveChannel {
             false;
       });
 
-  void _onPopTo() => _channel.registryMethodCall('popTo', ([final arguments]) {
+  void _onPopTo() => _channel.registryMethodCall('popTo', ([final arguments]) async {
         final routeSettings = NavigatorRouteSettings.fromArguments(arguments);
         if (routeSettings == null) {
-          return Future.value(false);
+          return false;
         }
         final animatedValue = arguments != null ? arguments['animated'] : null;
         final animated = (animatedValue != null && animatedValue is bool) && animatedValue;
@@ -101,13 +101,13 @@ class NavigatorRouteReceiveChannel {
               _syncPagePoppedResults();
               return value;
             }) ??
-            Future.value(false);
+            false;
       });
 
-  void _onRemove() => _channel.registryMethodCall('remove', ([final arguments]) {
+  void _onRemove() => _channel.registryMethodCall('remove', ([final arguments]) async {
         final routeSettings = NavigatorRouteSettings.fromArguments(arguments);
         if (routeSettings == null) {
-          return Future.value(false);
+          return false;
         }
         final animatedValue = arguments != null ? arguments['animated'] : null;
         final animated = (animatedValue != null && animatedValue is bool) && animatedValue;
@@ -118,17 +118,17 @@ class NavigatorRouteReceiveChannel {
               _syncPagePoppedResults();
               return value;
             }) ??
-            Future.value(false);
+            false;
       });
 
-  void _onReplace() => _channel.registryMethodCall('replace', ([final arguments]) {
+  void _onReplace() => _channel.registryMethodCall('replace', ([final arguments]) async {
         final routeSettings = NavigatorRouteSettings.fromArguments(arguments);
         if (routeSettings == null) {
-          return Future.value(false);
+          return false;
         }
         final newRouteSettings = NavigatorRouteSettings.fromNewUrlArguments(arguments);
         if (newRouteSettings == null) {
-          return Future.value(false);
+          return false;
         }
 
         final replaceOnly = arguments?['replaceOnly'] == true;
@@ -136,11 +136,14 @@ class NavigatorRouteReceiveChannel {
         return ThrioNavigatorImplement.shared()
                 .navigatorState
                 ?.replace(routeSettings, newRouteSettings, replaceOnly: replaceOnly) ??
-            Future.value(false);
+            false;
       });
 
-  Stream<dynamic> onPageNotify(
-          {required final String name, final String? url, final int index = 0}) =>
+  Stream<dynamic> onPageNotify({
+    required final String name,
+    final String? url,
+    final int index = 0,
+  }) =>
       _channel
           .onEventStream('__onNotify__')
           .where((final arguments) =>
