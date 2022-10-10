@@ -32,7 +32,9 @@ internal enum class RouteAction(val value: String) {
     POP_TO("popTo"),
     POPPING_TO("poppingTo"),
     REMOVE("remove"),
-    REMOVING("removing");
+    REMOVING("removing"),
+    REPLACE("replace"),
+    REPLACING("replacing");
 
     companion object {
         fun from(value: String): RouteAction = when (value) {
@@ -44,6 +46,8 @@ internal enum class RouteAction(val value: String) {
             "poppingTo" -> POPPING_TO
             "remove" -> REMOVE
             "removing" -> REMOVING
+            "replace" -> REPLACE
+            "replacing" -> REPLACING
             else -> NONE
         }
     }

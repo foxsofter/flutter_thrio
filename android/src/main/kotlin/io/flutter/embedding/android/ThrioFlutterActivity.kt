@@ -130,6 +130,15 @@ open class ThrioFlutterActivity : FlutterActivity() {
         engine.sendChannel.onRemove(arguments, result)
     }
 
+    fun onReplace(arguments: Map<String, Any?>?, result: BooleanCallback) {
+        val pageId = intent.getPageId()
+        if (pageId == NAVIGATION_ROUTE_PAGE_ID_NONE) throw IllegalStateException("pageId must not be null")
+        val entrypoint = intent.getEntrypoint()
+        val engine = FlutterEngineFactory.getEngine(pageId, entrypoint)
+            ?: throw IllegalStateException("engine must not be null")
+        engine.sendChannel.onReplace(arguments, result)
+    }
+
     private fun readInitialUrl() {
         val activityInfo =
             packageManager.getActivityInfo(componentName, PackageManager.GET_META_DATA)

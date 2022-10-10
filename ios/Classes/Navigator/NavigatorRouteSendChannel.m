@@ -71,7 +71,7 @@
             if (r && [r isKindOfClass:NSNumber.class]) {
                 result([r boolValue]);
             } else {
-                result(nil);
+                result(NO);
             }
         }
     }];

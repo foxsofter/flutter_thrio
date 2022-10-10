@@ -100,10 +100,10 @@
 		478AE4EF2898F9B100887E22 /* SampleModule */ = {
 			isa = PBXGroup;
 			children = (
-				478AE4F32898F9B100887E22 /* Module2 */,
 				478AE4F82898F9B100887E22 /* SampleModule.h */,
 				478AE4F92898F9B100887E22 /* SampleModule.m */,
 				478AE4FA2898F9B100887E22 /* Module1 */,
+				478AE4F32898F9B100887E22 /* Module2 */,
 			);
 			path = SampleModule;
 			sourceTree = "<group>";

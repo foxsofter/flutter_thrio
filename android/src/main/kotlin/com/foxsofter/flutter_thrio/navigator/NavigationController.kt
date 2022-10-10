@@ -464,4 +464,29 @@ internal object NavigationController : Application.ActivityLifecycleCallbacks {
             }
         }
     }
+
+    object Replace {
+
+        fun replace(
+            url: String,
+            index: Int?,
+            newUrl: String,
+            replaceOnly: Boolean = false,
+            result: NullableIntCallback? = null
+        ) {
+            if (routeAction != RouteAction.NONE) {
+                result?.invoke(null)
+                return
+            }
+            routeAction = RouteAction.REPLACE
+
+            val lastNewRoute = PageRoutes.lastRoute(newUrl)
+            val newIndex = (lastNewRoute?.settings?.index?.plus(1)) ?: 1
+            // 目前只实现 Flutter 页面之间的 replace，可以不考虑 Activity 被杀掉的情况
+            PageRoutes.replace(url, index, newUrl, newIndex, replaceOnly) {
+                result?.invoke(it)
+                routeAction = RouteAction.NONE
+            }
+        }
+    }
 }

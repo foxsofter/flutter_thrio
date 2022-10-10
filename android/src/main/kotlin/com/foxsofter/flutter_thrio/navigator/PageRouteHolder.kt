@@ -241,6 +241,50 @@ internal data class PageRouteHolder(
         }
     }
 
+    fun replace(
+        url: String,
+        index: Int?,
+        newUrl: String,
+        newIndex: Int,
+        replaceOnly: Boolean,
+        result: NullableIntCallback
+    ) {
+        val route = lastRoute(url, index)
+        val lastRoute = PageRoutes.lastRoute(newUrl)
+        // 现阶段只实现 Flutter 页面之间的 replace 操作
+        if (route != null && ThrioFlutterActivity::class.java.isAssignableFrom(route.clazz) &&
+            (lastRoute == null || ThrioFlutterActivity::class.java.isAssignableFrom(lastRoute.clazz))
+        ) {
+            val activity = activity?.get()
+            if (activity != null && activity is ThrioFlutterActivity) {
+                val args = mutableMapOf<String, Any?>(
+                    "replaceOnly" to replaceOnly
+                )
+                args.putAll(route.settings.toArgumentsWith(newUrl, newIndex))
+                activity.onReplace(args) {
+                    if (it) {
+                        val newRouteSettings = RouteSettings(newUrl, newIndex)
+                        newRouteSettings.isNested = route.settings.isNested
+                        route.settings = newRouteSettings
+                        route.settings.params = null
+                        // 清除通知
+                        route.removeNotify()
+                        // 更新 intent 避免引起数据错误
+                        val settingData = hashMapOf<String, Any?>().also { map ->
+                            map.putAll(newRouteSettings.toArguments())
+                        }
+                        activity.intent.putExtra(NAVIGATION_ROUTE_SETTINGS_KEY, settingData)
+                    }
+                    result(if (it) index else null)
+                }
+            } else {
+                result(null)
+            }
+        } else {
+            result(null)
+        }
+    }
+
     fun didPop(routeSettings: RouteSettings) {
         routes.lastOrNull()?.let { route ->
             if (route.settings == routeSettings) {

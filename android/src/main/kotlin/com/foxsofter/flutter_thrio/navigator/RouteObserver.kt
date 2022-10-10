@@ -26,32 +26,27 @@ package com.foxsofter.flutter_thrio.navigator
 interface RouteObserver {
     /**
      * The [ThrioNavigator] pushed `route`.
-     *
-     * The route immediately below that one, and thus the previously active
-     * route, is `previousRoute`.
      */
     fun didPush(routeSettings: RouteSettings) {}
 
     /**
      * The [ThrioNavigator] popped `route`.
-     *
-     * The route immediately below that one, and thus the newly active
-     * route, is `previousRoute`.
      */
     fun didPop(routeSettings: RouteSettings) {}
 
     /**
      * The [ThrioNavigator] popped to `route`.
-     *
-     * The previously active route, is `previousRoute`.
      */
     fun didPopTo(routeSettings: RouteSettings) {}
 
     /**
      * The [ThrioNavigator] removed `route`.
-     *
-     * The route immediately below that one, if any, is `previousRoute`.
      */
     fun didRemove(routeSettings: RouteSettings) {}
+
+    /**
+     * The [ThrioNavigator] replace old route with a new route.
+     */
+    fun didReplace(newRouteSettings: RouteSettings, oldRouteSettings: RouteSettings) {}
 
 }

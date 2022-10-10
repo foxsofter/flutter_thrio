@@ -37,6 +37,7 @@ internal class RouteReceiveChannel(
         onPop()
         onPopTo()
         onRemove()
+        onReplace()
         onLastRoute()
         onGetAllRoutes()
         isInitialRoute()
@@ -111,6 +112,17 @@ internal class RouteReceiveChannel(
             val animated =
                 if (arguments["animated"] != null) arguments["animated"] as Boolean else true
             NavigationController.Remove.remove(url, index, animated, result)
+        }
+    }
+
+    private fun onReplace() {
+        channel.registryMethod("replace") { arguments, result ->
+            if (arguments == null) return@registryMethod
+            val url = arguments["url"] as String
+            val index = if (arguments["index"] != null) arguments["index"] as Int else 0
+            val newUrl = arguments["newUrl"] as String
+            val replaceOnly = arguments["replaceOnly"] == true
+            NavigationController.Replace.replace(url, index, newUrl, replaceOnly, result)
         }
     }
 

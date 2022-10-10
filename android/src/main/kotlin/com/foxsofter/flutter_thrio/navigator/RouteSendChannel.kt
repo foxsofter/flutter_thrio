@@ -62,4 +62,10 @@ internal class RouteSendChannel constructor(internal val channel: ThrioChannel) 
             result(it == true)
         }
     }
+
+    fun onReplace(arguments: Map<String, Any?>?, result: BooleanCallback) {
+        channel.invokeMethod("replace", arguments) {
+            result(it == true)
+        }
+    }
 }

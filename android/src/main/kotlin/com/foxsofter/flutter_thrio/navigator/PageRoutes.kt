@@ -261,6 +261,16 @@ internal object PageRoutes : Application.ActivityLifecycleCallbacks {
         }
     }
 
+    fun replace(url: String, index: Int?, newUrl: String, newIndex: Int, replaceOnly: Boolean, result: NullableIntCallback) {
+        val holder = routeHolders.lastOrNull { it.lastRoute(url, index) != null }
+        if (holder == null) {
+            result(null)
+            return
+        }
+
+        holder.replace(url, index, newUrl, newIndex, replaceOnly, result)
+    }
+
     fun didPop(routeSettings: RouteSettings) {
         lastRouteHolder()?.apply {
             didPop(routeSettings)

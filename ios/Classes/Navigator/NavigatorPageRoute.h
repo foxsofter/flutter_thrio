@@ -44,9 +44,7 @@ typedef enum : NSUInteger {
 
 - (void)addNotify:(NSString *)name params:(id _Nullable)params;
 
-- (id _Nullable)removeNotify:(NSString *)name;
-
-- (void)removeAllNotify;
+- (NSDictionary *)removeNotify;
 
 @property (nonatomic, nullable) NavigatorPageRoute *prev;
 

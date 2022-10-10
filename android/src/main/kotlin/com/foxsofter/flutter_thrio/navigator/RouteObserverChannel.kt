@@ -47,6 +47,7 @@ internal class RouteObserverChannel constructor(
         on("didPop")
         on("didPopTo")
         on("didRemove")
+        onDidReplace()
     }
 
     override fun didPush(routeSettings: RouteSettings) {
@@ -69,6 +70,14 @@ internal class RouteObserverChannel constructor(
         channel.invokeMethod("didRemove", arguments)
     }
 
+    override fun didReplace(newRouteSettings: RouteSettings, oldRouteSettings: RouteSettings) {
+        val arguments = mutableMapOf(
+            "newRouteSettings" to newRouteSettings.toArguments(),
+            "oldRouteSettings" to oldRouteSettings.toArguments()
+        )
+        channel.invokeMethod("didReplace", arguments)
+    }
+
     private fun on(method: String) {
         channel.registryMethod(method) { arguments, _ ->
             if (arguments == null) return@registryMethod
@@ -83,6 +92,18 @@ internal class RouteObserverChannel constructor(
                 "didPopTo" -> ModuleRouteObservers.didPopTo(routeSettings)
                 "didRemove" -> ModuleRouteObservers.didRemove(routeSettings)
             }
+        }
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    private fun onDidReplace() {
+        channel.registryMethod("didReplace") { arguments, _ ->
+            if (arguments == null) return@registryMethod
+            val oldRouteSettings = RouteSettings.fromArguments(arguments["oldRouteSettings"] as Map<String, Any?>)
+                ?: return@registryMethod
+            val newRouteSettings = RouteSettings.fromArguments(arguments["newRouteSettings"] as Map<String, Any?>)
+                ?: return@registryMethod
+            ModuleRouteObservers.didReplace(newRouteSettings, oldRouteSettings)
         }
     }
 }

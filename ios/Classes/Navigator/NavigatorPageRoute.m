@@ -55,17 +55,10 @@ NS_ASSUME_NONNULL_BEGIN
     }
 }
 
-- (id _Nullable)removeNotify:(NSString *)name {
-    id params = _notifications[name];
-    if ([params isKindOfClass:NSNull.class]) {
-        params = nil;
-    }
-    [_notifications removeObjectForKey:name];
-    return params;
-}
-
-- (void)removeAllNotify {
+- (NSDictionary *)removeNotify {
+    NSDictionary *notifies = [_notifications copy];
     [_notifications removeAllObjects];
+    return notifies;
 }
 
 - (NSDictionary *)notifications {

@@ -77,4 +77,14 @@ internal object ModuleRouteObservers : RouteObserver {
             it.didRemove(routeSettings)
         }
     }
+
+    override fun didReplace(newRouteSettings: RouteSettings, oldRouteSettings: RouteSettings) {
+        Log.i(
+            TAG, "didReplace:url->${oldRouteSettings.url} index->${oldRouteSettings.index}"
+        + " newUrl->${newRouteSettings.url} newIndex->${newRouteSettings.index}"
+        )
+        observers.forEach {
+            it.didReplace(newRouteSettings, oldRouteSettings)
+        }
+    }
 }

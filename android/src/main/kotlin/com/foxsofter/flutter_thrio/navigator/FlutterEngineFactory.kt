@@ -160,4 +160,12 @@ object FlutterEngineFactory : PageObserver, RouteObserver {
             }
         }
     }
+
+    override fun didReplace(newRouteSettings: RouteSettings, oldRouteSettings: RouteSettings) {
+        engineGroups.values.forEach { engineGroup ->
+            engineGroup.engines.forEach { engine ->
+                engine.routeChannel.didReplace(newRouteSettings, oldRouteSettings)
+            }
+        }
+    }
 }

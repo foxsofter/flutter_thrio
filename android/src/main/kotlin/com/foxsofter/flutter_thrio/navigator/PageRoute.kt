@@ -26,8 +26,7 @@ package com.foxsofter.flutter_thrio.navigator
 import android.app.Activity
 import com.foxsofter.flutter_thrio.NullableAnyCallback
 
-data class PageRoute(val settings: RouteSettings, val clazz: Class<out Activity>) {
-
+data class PageRoute(var settings: RouteSettings, val clazz: Class<out Activity>) {
     private val notifications: MutableMap<String, Any?> = mutableMapOf()
 
     var entrypoint: String = NAVIGATION_FLUTTER_ENTRYPOINT_DEFAULT
@@ -47,4 +46,5 @@ data class PageRoute(val settings: RouteSettings, val clazz: Class<out Activity>
         notifications.clear()
         return result
     }
+
 }

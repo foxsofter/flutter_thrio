@@ -359,7 +359,7 @@ NS_ASSUME_NONNULL_BEGIN
                                                                                         index:newIndex
                                                                                        nested:route.settings.nested
                                                                                        params:nil];
-                [[route initWithSettings:newSettings] removeAllNotify];
+                [[route initWithSettings:newSettings] removeNotify];
             }
             if (result) {
                 result(r);
@@ -535,9 +535,9 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 - (void)thrio_onNotify:(NavigatorPageRoute *)route {
-    NSArray *keys = [route.notifications.allKeys copy];
-    for (NSString *name in keys) {
-        id params = [route removeNotify:name];
+    NSDictionary *notifies = [route removeNotify];
+    for (NSString *name in notifies.allKeys) {
+        id params = notifies[name];
         if ([self isKindOfClass:NavigatorFlutterViewController.class]) {
             id serializeParams = [ThrioModule serializeParams:params];
             NSDictionary *arguments = serializeParams ? @{
