@@ -347,3 +347,7 @@
 ## 2.0.11
 
 - feat: code format for line length 100
+
+## 3.0.0+1
+
+- feat: support flutter3
