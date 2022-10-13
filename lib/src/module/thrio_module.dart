@@ -24,9 +24,9 @@
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
-import 'package:flutter/widgets.dart';
 
 import '../exception/thrio_exception.dart';
+import '../logger/thrio_logger.dart';
 import '../navigator/navigator_logger.dart';
 import '../navigator/navigator_types.dart';
 import 'module_anchor.dart';
@@ -44,7 +44,7 @@ part 'module_context.dart';
 mixin ThrioModule {
   /// Modular initialization function, needs to be called once during App initialization.
   ///
-  static void init(final ThrioModule rootModule, [final String? entrypoint]) {
+  static void init(final ThrioModule rootModule, {final String? entrypoint}) {
     if (anchor.modules.length == 1) {
       throw ThrioException('init method can only be called once.');
     } else {
@@ -142,9 +142,15 @@ mixin ThrioModule {
   void initModule() {
     final values = modules.values;
     for (final module in values) {
-      module
-        ..onModuleInit(module._moduleContext)
-        ..initModule();
+      if (kDebugMode) {
+        final sw = Stopwatch()..start();
+        module.onModuleInit(module._moduleContext);
+        ThrioLogger.v('init: ${module.key} = ${sw.elapsedMicroseconds} ms');
+        sw.stop();
+      } else {
+        module.onModuleInit(module._moduleContext);
+      }
+      module.initModule();
     }
     for (final module in values) {
       if (module is ModuleParamScheme) {
@@ -176,7 +182,7 @@ mixin ThrioModule {
       }
     }
     for (final module in values) {
-      Future.microtask(() {
+      Future(() {
         module.onModuleAsyncInit(module._moduleContext);
       });
     }

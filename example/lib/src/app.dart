@@ -20,7 +20,7 @@ class _MainAppState extends State<MainApp> {
   @override
   void initState() {
     super.initState();
-    ThrioModule.init(Module(), widget._entrypoint);
+    ThrioModule.init(Module(), entrypoint: widget._entrypoint);
   }
 
   @override

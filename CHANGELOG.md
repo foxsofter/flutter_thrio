@@ -351,3 +351,7 @@
 ## 3.0.0+1
 
 - feat: support flutter3
+
+## 3.0.1
+
+- feat: Adjust Module init order to make it predictable
