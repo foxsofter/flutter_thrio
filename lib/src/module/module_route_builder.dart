@@ -1,6 +1,6 @@
 // The MIT License (MIT)
 //
-// Copyright (c) 2019 Hellobike Group
+// Copyright (c) 2022 foxsofter
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
 // copy of this software and associated documentation files (the "Software"),
@@ -21,30 +21,15 @@
 
 import 'package:flutter/widgets.dart';
 
-import 'navigator_page_route.dart';
+import '../navigator/navigator_types.dart';
+import 'thrio_module.dart';
 
-/// Signature of page builder with RouteSettings.
-///
-typedef NavigatorPageBuilder = Widget Function(RouteSettings settings);
+mixin ModuleRouteBuilder on ThrioModule {
+  @protected
+  NavigatorRouteBuilder? routeBuilder;
 
-/// Signature of route builder with NavigatorPageBuilder and RouteSettings.
-///
-typedef NavigatorRouteBuilder = NavigatorPageRoute Function(
-  NavigatorPageBuilder pageBuilder,
-  RouteSettings settings,
-);
-
-/// Signature of callbacks with generic parameters with type `T`.
-///
-typedef NavigatorParamsCallback = void Function(dynamic params);
-
-/// Signature of page observer callbacks with RouteSettings.
-///
-typedef NavigatorPageObserverCallback = void Function(RouteSettings settings);
-
-/// Signature of route push handler callbacks with RouteSettings.
-///
-typedef NavigatorRoutePushCallback = Future<bool?> Function(
-  RouteSettings settings, {
-  bool animated,
-});
+  /// A function for setting a `NavigatorRouteBuilder` .
+  ///
+  @protected
+  void onRouteBuilderSetting(final ModuleContext moduleContext) {}
+}

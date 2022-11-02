@@ -355,3 +355,7 @@
 ## 3.0.1
 
 - feat: Adjust Module init order to make it predictable
+
+## 3.0.2
+
+- feat: Support custom route builder.

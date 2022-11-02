@@ -36,6 +36,7 @@ import 'module_json_serializer.dart';
 import 'module_page_builder.dart';
 import 'module_page_observer.dart';
 import 'module_param_scheme.dart';
+import 'module_route_builder.dart';
 import 'module_route_observer.dart';
 import 'module_route_transitions_builder.dart';
 
@@ -48,8 +49,7 @@ mixin ThrioModule {
     if (anchor.modules.length == 1) {
       throw ThrioException('init method can only be called once.');
     } else {
-      final moduleContext =
-          entrypoint == null ? ModuleContext() : ModuleContext(entrypoint: entrypoint);
+      final moduleContext = entrypoint == null ? ModuleContext() : ModuleContext(entrypoint: entrypoint);
       moduleOf[moduleContext] = anchor;
       anchor
         .._moduleContext = moduleContext
@@ -161,6 +161,9 @@ mixin ThrioModule {
       if (module is ModulePageBuilder) {
         module.onPageBuilderSetting(module._moduleContext);
       }
+      if (module is ModuleRouteBuilder) {
+        module.onRouteBuilderSetting(module._moduleContext);
+      }
       if (module is ModuleRouteTransitionsBuilder) {
         module.onRouteTransitionsBuilderSetting(module._moduleContext);
       }
@@ -206,14 +209,12 @@ mixin ThrioModule {
   /// Called when the first page in the module is about to be pushed.
   ///
   @protected
-  Future<dynamic> onModuleLoading(final ModuleContext moduleContext) async =>
-      verbose('onModuleLoading: $key');
+  Future<dynamic> onModuleLoading(final ModuleContext moduleContext) async => verbose('onModuleLoading: $key');
 
   /// Called when the last page in the module is closed.
   ///
   @protected
-  Future<dynamic> onModuleUnloading(final ModuleContext moduleContext) async =>
-      verbose('onModuleUnloading: $key');
+  Future<dynamic> onModuleUnloading(final ModuleContext moduleContext) async => verbose('onModuleUnloading: $key');
 
   /// A function for module asynchronous initialization.
   ///

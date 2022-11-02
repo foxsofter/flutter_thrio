@@ -74,7 +74,13 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
     // 加载模块
     await anchor.loading(settings.url!);
 
-    final route = NavigatorPageRoute(builder: pageBuilder, settings: settings);
+    NavigatorPageRoute route;
+    final routeBuilder = ThrioModule.get<NavigatorRouteBuilder>(url: settings.url);
+    if (routeBuilder == null) {
+      route = NavigatorPageRoute(builder: pageBuilder, settings: settings);
+    } else {
+      route = routeBuilder(pageBuilder, settings);
+    }
 
     ThrioNavigatorImplement.shared()
         .pageChannel

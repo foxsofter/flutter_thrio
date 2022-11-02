@@ -138,7 +138,7 @@ linter:
     slash_for_doc_comments: true # 推荐使用 /// 而不是 /** 添加文档注释
     # sort_child_properties_last: true
     sort_constructors_first: true # 构造函数在所有函数之前
-    sort_pub_dependencies: true # 对pub依赖排序
+    #sort_pub_dependencies: true # 对pub依赖排序
     sort_unnamed_constructors_first: true # 构造函数在所有函数之前
     test_types_in_equals: true # 在 == 中 判断类型
     throw_in_finally: true # 避免在 finally 中抛出异常

@@ -36,6 +36,7 @@ import 'module_json_serializer.dart';
 import 'module_page_builder.dart';
 import 'module_page_observer.dart';
 import 'module_param_scheme.dart';
+import 'module_route_builder.dart';
 import 'module_route_observer.dart';
 import 'module_route_transitions_builder.dart';
 import 'module_types.dart';
@@ -50,6 +51,7 @@ class ModuleAnchor
         ModuleJsonDeserializer,
         ModulePageObserver,
         ModuleParamScheme,
+        ModuleRouteBuilder,
         ModuleRouteObserver,
         ModuleRouteTransitionsBuilder {
   /// Holds PageObserver registered by `NavigatorPageLifecycle`.
@@ -150,6 +152,18 @@ class ModuleAnchor
             return builder as T;
           }
         }
+      } else if (typeString == (NavigatorRouteBuilder).toString()) {
+        if (modules.isEmpty) {
+          return null;
+        }
+        for (final it in modules.reversed) {
+          if (it is ModuleRouteBuilder) {
+            if (it.routeBuilder != null) {
+              return it.routeBuilder as T;
+            }
+          }
+        }
+        return null;
       } else if (typeString == (RouteTransitionsBuilder).toString()) {
         if (modules.isEmpty) {
           return null;
