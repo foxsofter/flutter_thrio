@@ -49,7 +49,8 @@ mixin ThrioModule {
     if (anchor.modules.length == 1) {
       throw ThrioException('init method can only be called once.');
     } else {
-      final moduleContext = entrypoint == null ? ModuleContext() : ModuleContext(entrypoint: entrypoint);
+      final moduleContext =
+          entrypoint == null ? ModuleContext() : ModuleContext(entrypoint: entrypoint);
       moduleOf[moduleContext] = anchor;
       anchor
         .._moduleContext = moduleContext
@@ -142,17 +143,6 @@ mixin ThrioModule {
   void initModule() {
     final values = modules.values;
     for (final module in values) {
-      if (kDebugMode) {
-        final sw = Stopwatch()..start();
-        module.onModuleInit(module._moduleContext);
-        ThrioLogger.v('init: ${module.key} = ${sw.elapsedMicroseconds} ms');
-        sw.stop();
-      } else {
-        module.onModuleInit(module._moduleContext);
-      }
-      module.initModule();
-    }
-    for (final module in values) {
       if (module is ModuleParamScheme) {
         module.onParamSchemeRegister(module._moduleContext);
       }
@@ -185,6 +175,17 @@ mixin ThrioModule {
       }
     }
     for (final module in values) {
+      if (kDebugMode) {
+        final sw = Stopwatch()..start();
+        module.onModuleInit(module._moduleContext);
+        ThrioLogger.v('init: ${module.key} = ${sw.elapsedMicroseconds} ms');
+        sw.stop();
+      } else {
+        module.onModuleInit(module._moduleContext);
+      }
+      module.initModule();
+    }
+    for (final module in values) {
       Future(() {
         module.onModuleAsyncInit(module._moduleContext);
       });
@@ -209,12 +210,14 @@ mixin ThrioModule {
   /// Called when the first page in the module is about to be pushed.
   ///
   @protected
-  Future<dynamic> onModuleLoading(final ModuleContext moduleContext) async => verbose('onModuleLoading: $key');
+  Future<dynamic> onModuleLoading(final ModuleContext moduleContext) async =>
+      verbose('onModuleLoading: $key');
 
   /// Called when the last page in the module is closed.
   ///
   @protected
-  Future<dynamic> onModuleUnloading(final ModuleContext moduleContext) async => verbose('onModuleUnloading: $key');
+  Future<dynamic> onModuleUnloading(final ModuleContext moduleContext) async =>
+      verbose('onModuleUnloading: $key');
 
   /// A function for module asynchronous initialization.
   ///

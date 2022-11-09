@@ -78,7 +78,7 @@ mixin ModuleParamScheme on ThrioModule {
   T? getParam<T>(final Comparable<dynamic> key) {
     // Anchor module does not need to get param scheme.
     if (this == anchor) {
-      return _params[key] as T; // ignore: avoid_as
+      return _params[key] as T?; // ignore: avoid_as
     }
     if (!_paramSchemes.keys.contains(key)) {
       return null;
@@ -118,7 +118,7 @@ mixin ModuleParamScheme on ThrioModule {
         return false;
       }
     } else {
-      if (schemeType != value.runtimeType) {
+      if (schemeType.toString() != value.runtimeType.toString()) {
         return false;
       }
     }

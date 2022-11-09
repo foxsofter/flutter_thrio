@@ -25,7 +25,8 @@ context_definition:
           method:
               - get: "get an int value."
               - set
-              - remove: "remove an int value.remove an int value.remove an int value.\nremove an int value.remove an int value."
+              - remove: "remove an int value.remove an int value.remove an int value.
+remove an int value.remove an int value."
               - on:
 
 notify:
