@@ -92,7 +92,7 @@ extension ThrioObject on Object {
     }
   }
 
-  /// Determine whether the current instance is a String.
+  /// Determine whether the current instance is a List.
   ///
   /// Can be called in the following ways,
   /// `[ 'k', '2' ].isString`
@@ -104,6 +104,24 @@ extension ThrioObject on Object {
     } else {
       return this is List;
     }
+  }
+
+  /// Determine whether the current instance is a simple List.
+  ///
+  /// Can be called in the following ways,
+  /// `[ 'k', '2' ].isString`
+  ///
+  bool get isSimpleList {
+    final ts = this;
+    if (ts is! List) {
+      return false;
+    }
+    for (final it in ts) {
+      if (it is Object && it.isSimpleType == false) {
+        return false;
+      }
+    }
+    return true;
   }
 
   /// Determine whether the current instance is a Map.
@@ -120,6 +138,24 @@ extension ThrioObject on Object {
     }
   }
 
+  /// Determine whether the current instance is a simple Map.
+  ///
+  /// Can be called in the following ways,
+  /// `{ 'k': 2 }.isMap`
+  ///
+  bool get isSimpleMap {
+    final ts = this;
+    if (ts is! Map) {
+      return false;
+    }
+    for (final it in ts.values) {
+      if (it is Object && it.isSimpleType == false) {
+        return false;
+      }
+    }
+    return true;
+  }
+
   /// Determine whether the current instance is a Set.
   ///
   /// Can be called in the following ways,
@@ -132,6 +168,24 @@ extension ThrioObject on Object {
     } else {
       return this is Set;
     }
+  }
+
+  /// Determine whether the current instance is a simple Set.
+  ///
+  /// Can be called in the following ways,
+  /// `{ 'k' }.isSet`
+  ///
+  bool get isSimpleSet {
+    final ts = this;
+    if (ts is! Set) {
+      return false;
+    }
+    for (final it in ts) {
+      if (it is Object && it.isSimpleType == false) {
+        return false;
+      }
+    }
+    return true;
   }
 
   /// Determine whether the current instance is a primitive type,
@@ -154,16 +208,14 @@ extension ThrioObject on Object {
   ///
   /// Can be called in the following ways,
   /// `2.isSimpleType`
-  /// `2.runtimeType.isSimpleType`
   ///
-  bool get isSimpleType => isPrimitiveType || isList || isMap || isSet;
+  bool get isSimpleType => isPrimitiveType || isSimpleList || isSimpleMap || isSimpleSet;
 
   /// Determine whether the current instance is a complex type,
   /// not bool, int, double, String, Map, List, Set.
   ///
   /// Can be called in the following ways,
   /// `2.isComplexType`
-  /// `2.runtimeType.isComplexType`
   ///
   bool get isComplexType => !isSimpleType;
 }
