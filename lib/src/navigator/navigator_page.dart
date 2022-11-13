@@ -39,4 +39,36 @@ abstract class NavigatorPage extends StatefulWidget {
   final String? url;
 
   final int index;
+
+  /// Get parameter from params, throw ArgumentError when`key`'s value  not found .
+  ///
+  T getParam<T>(final String key) {
+    final param = getParamOrNull<T>(key);
+    if (param != null) {
+      return param;
+    }
+    throw ArgumentError.notNull(key);
+  }
+
+  /// Get parameter from params, return `defaultValue` when`key`'s value  not found .
+  ///
+  T getParamOrDefault<T>(final String key, final T defaultValue) {
+    final param = getParamOrNull<T>(key);
+    if (param != null) {
+      return param;
+    }
+    return defaultValue;
+  }
+
+  /// Get parameter from params.
+  ///
+  T? getParamOrNull<T>(final String key) {
+    if (params is Map) {
+      final value = params[key];
+      if (value is T) {
+        return value;
+      }
+    }
+    return null;
+  }
 }
