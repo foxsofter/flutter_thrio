@@ -36,7 +36,9 @@ class NavigatorPageRoute extends MaterialPageRoute<bool> {
     required final RouteSettings settings,
     super.maintainState,
     super.fullscreenDialog,
-  }) : super(builder: (final _) => builder(settings), settings: settings);
+    final bool opaque = true,
+  })  : _opaque = opaque,
+        super(builder: (final _) => builder(settings), settings: settings);
 
   NavigatorRouteAction? routeAction;
 
@@ -45,6 +47,11 @@ class NavigatorPageRoute extends MaterialPageRoute<bool> {
   final _popDisableds = <String, bool>{};
 
   final _popDisabledFutures = <String, Future<dynamic>>{};
+
+  final bool _opaque;
+
+  @override
+  bool get opaque => _opaque;
 
   @override
   void addScopedWillPopCallback(final WillPopCallback callback) {
