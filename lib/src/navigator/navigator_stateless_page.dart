@@ -19,46 +19,29 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
+import 'package:flutter/widgets.dart';
+
 import '../module/thrio_module.dart';
+import 'navigator_page.dart';
 
-mixin NavigatorPage {
-  ModuleContext get moduleContext;
+abstract class NavigatorStatelessPage extends StatelessWidget with NavigatorPage {
+  const NavigatorStatelessPage({
+    super.key,
+    required this.moduleContext,
+    this.params,
+    this.url,
+    this.index = 0,
+  });
 
-  dynamic get params;
+  @override
+  final ModuleContext moduleContext;
 
-  String? get url;
+  @override
+  final dynamic params;
 
-  int get index;
+  @override
+  final String? url;
 
-  /// Get parameter from params, throw ArgumentError when`key`'s value  not found .
-  ///
-  T getParam<T>(final String key) {
-    final param = getParamOrNull<T>(key);
-    if (param != null) {
-      return param;
-    }
-    throw ArgumentError.notNull(key);
-  }
-
-  /// Get parameter from params, return `defaultValue` when`key`'s value  not found .
-  ///
-  T getParamOrDefault<T>(final String key, final T defaultValue) {
-    final param = getParamOrNull<T>(key);
-    if (param != null) {
-      return param;
-    }
-    return defaultValue;
-  }
-
-  /// Get parameter from params.
-  ///
-  T? getParamOrNull<T>(final String key) {
-    if (params is Map) {
-      final value = params[key];
-      if (value is T) {
-        return value;
-      }
-    }
-    return null;
-  }
+  @override
+  final int index;
 }

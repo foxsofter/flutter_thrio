@@ -14,7 +14,7 @@ import '../notifies/flutter1_notify.dart';
 part 'home.state.dart';
 part 'home.context.dart';
 
-class HomePage extends NavigatorPage {
+class HomePage extends NavigatorStatefulPage {
   const HomePage({
     super.key,
     required super.moduleContext,

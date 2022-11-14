@@ -11,7 +11,7 @@ import '../../types/people.dart';
 part 'flutter2.state.dart';
 part 'flutter2.context.dart';
 
-class Flutter2Page extends NavigatorPage {
+class Flutter2Page extends NavigatorStatefulPage {
   const Flutter2Page({
     super.key,
     required super.moduleContext,

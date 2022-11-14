@@ -11,7 +11,7 @@ import '../../types/people.dart';
 part 'flutter4.state.dart';
 part 'flutter4.context.dart';
 
-class Flutter4Page extends NavigatorPage {
+class Flutter4Page extends NavigatorStatefulPage {
   const Flutter4Page({
     super.key,
     required super.moduleContext,

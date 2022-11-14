@@ -11,7 +11,7 @@ import '../../types/people.dart';
 part 'flutter3.context.dart';
 part 'flutter3.state.dart';
 
-class Flutter3Page extends NavigatorPage {
+class Flutter3Page extends NavigatorStatefulPage {
   const Flutter3Page({
     super.key,
     required super.moduleContext,

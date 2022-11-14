@@ -32,6 +32,8 @@ abstract class ThrioNavigator {
   /// If a native page builder exists for the `url`, open the native page,
   /// otherwise open the flutter page.
   ///
+  /// `poppedResult` will only be call when popped
+  ///
   static Future<int> push<TParams>({
     required final String url,
     final TParams? params,
@@ -45,10 +47,12 @@ abstract class ThrioNavigator {
         poppedResult: poppedResult,
       );
 
-  /// Push the page onto the navigation stack, and remove all
+  /// Push the page onto the navigation stack, and remove all old page.
   ///
   /// If a native page builder exists for the `url`, open the native page,
   /// otherwise open the flutter page.
+  ///
+  /// `poppedResult` will only be call when popped
   ///
   static Future<int> pushSingle<TParams>({
     required final String url,
