@@ -165,6 +165,22 @@ class ThrioNavigatorImplement {
   }) =>
       _sendChannel.remove(url: url, index: index, animated: animated);
 
+  Future<int> removeAll({required final String url, final int excludeIndex = 0}) async {
+    var total = 0;
+    var isMatch = false;
+    final all = (await allRoutes(url: url)).skipWhile((final it) => it.index == excludeIndex);
+    for (final r in all) {
+      if (r.url == null) {
+        continue;
+      }
+      isMatch = await _sendChannel.remove(url: r.url!, index: r.index);
+      if (isMatch) {
+        total += 1;
+      }
+    }
+    return total;
+  }
+
   Future<int> replace({
     required final String url,
     final int index = 0,

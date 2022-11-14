@@ -100,6 +100,11 @@ abstract class ThrioNavigator {
         animated: animated,
       );
 
+  /// Remove all pages with `url` in the navigation stack, except the one with index equals to `excludeIndex`.
+  ///
+  static Future<int> removeAll({required final String url, final int excludeIndex = 0}) =>
+      ThrioNavigatorImplement.shared().removeAll(url: url, excludeIndex: excludeIndex);
+
   /// Replace the flutter page with `newUrl` in the navigation stack.
   ///
   /// Both `url` and `newUrl` must be flutter page.
