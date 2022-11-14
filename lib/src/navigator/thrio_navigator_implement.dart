@@ -137,6 +137,32 @@ class ThrioNavigatorImplement {
         return index;
       });
 
+  Future<int> pushSingle<TParams>({
+    required final String url,
+    final TParams? params,
+    final bool animated = true,
+    final NavigatorParamsCallback? poppedResult,
+  }) async {
+    final index = await _sendChannel
+        .push<TParams>(url: url, params: params, animated: animated)
+        .then<int>((final index) {
+      if (poppedResult != null && index > 0) {
+        final routeName = '$index $url';
+        final routeHistory = ThrioNavigatorImplement.shared().navigatorState?.history;
+        final route = routeHistory?.lastWhereOrNull((final it) => it.settings.name == routeName);
+        if (route != null && route is NavigatorPageRoute) {
+          route.poppedResult = poppedResult;
+        } else {
+          // 不在当前页面栈上，则通过name来缓存
+          poppedResults[routeName] = poppedResult;
+        }
+      }
+      return index;
+    });
+    await removeAll(url: url, excludeIndex: index);
+    return index;
+  }
+
   Future<bool> notify<TParams>({
     final String? url,
     final int index = 0,

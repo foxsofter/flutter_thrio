@@ -45,6 +45,24 @@ abstract class ThrioNavigator {
         poppedResult: poppedResult,
       );
 
+  /// Push the page onto the navigation stack, and remove all
+  ///
+  /// If a native page builder exists for the `url`, open the native page,
+  /// otherwise open the flutter page.
+  ///
+  static Future<int> pushSingle<TParams>({
+    required final String url,
+    final TParams? params,
+    final bool animated = true,
+    final NavigatorParamsCallback? poppedResult,
+  }) =>
+      ThrioNavigatorImplement.shared().pushSingle<TParams>(
+        url: url,
+        params: params,
+        animated: animated,
+        poppedResult: poppedResult,
+      );
+
   /// Send a notification to the page.
   ///
   /// Notifications will be triggered when the page enters the foreground.
