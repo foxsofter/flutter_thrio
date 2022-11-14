@@ -39,7 +39,7 @@ class NavigatorRouteSendChannel {
     final bool animated = true,
   }) {
     final arguments = <String, dynamic>{
-      'url': url.replaceAll('/home', ''),
+      'url': url,
       'animated': animated,
       'params': _serializeParams<TParams>(url: url, params: params),
     };
@@ -53,7 +53,7 @@ class NavigatorRouteSendChannel {
     final TParams? params,
   }) {
     final arguments = <String, dynamic>{
-      'url': url?.replaceAll('/home', ''),
+      'url': url,
       'index': index,
       'name': name,
       'params': _serializeParams<TParams>(url: url, params: params),
@@ -77,17 +77,13 @@ class NavigatorRouteSendChannel {
   }
 
   Future<bool> popTo({required final String url, final int? index, final bool animated = true}) {
-    final arguments = <String, dynamic>{
-      'url': url.replaceAll('/home', ''),
-      'index': index,
-      'animated': animated
-    };
+    final arguments = <String, dynamic>{'url': url, 'index': index, 'animated': animated};
     return _channel.invokeMethod<bool>('popTo', arguments).then((final it) => it ?? false);
   }
 
   Future<bool> remove({required final String url, final int? index, final bool animated = true}) {
     final arguments = <String, dynamic>{
-      'url': url.replaceAll('/home', ''),
+      'url': url,
       'index': index,
       'animated': animated,
     };
@@ -101,9 +97,9 @@ class NavigatorRouteSendChannel {
     final bool replaceOnly = false,
   }) {
     final arguments = <String, dynamic>{
-      'url': url.replaceAll('/home', ''),
+      'url': url,
       'index': index,
-      'newUrl': newUrl.replaceAll('/home', ''),
+      'newUrl': newUrl,
       'replaceOnly': replaceOnly,
     };
     return _channel.invokeMethod<int>('replace', arguments).then((final it) => it ?? 0);
