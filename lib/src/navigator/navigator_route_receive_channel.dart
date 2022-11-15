@@ -49,8 +49,7 @@ class NavigatorRouteReceiveChannel {
           'index->${routeSettings.index}',
         );
         routeSettings.params = _deserializeParams(routeSettings.url!, routeSettings.params);
-        final animatedValue = arguments != null ? arguments['animated'] : null;
-        final animated = (animatedValue != null && animatedValue is bool) && animatedValue;
+        final animated = arguments?['animated'] == true;
         final callback = anchor.get<NavigatorRoutePushCallback>(url: routeSettings.url!);
         if (callback != null) {
           final result = await callback(routeSettings, animated: animated);
@@ -73,8 +72,7 @@ class NavigatorRouteReceiveChannel {
         if (routeSettings == null) {
           return false;
         }
-        final animatedValue = arguments != null ? arguments['animated'] : null;
-        final animated = (animatedValue != null && animatedValue is bool) && animatedValue;
+        final animated = arguments?['animated'] == true;
         final inRootValue = arguments != null ? arguments['inRoot'] : null;
         final inRoot = (inRootValue != null && inRootValue is bool) && inRootValue;
         return await ThrioNavigatorImplement.shared()
@@ -92,8 +90,7 @@ class NavigatorRouteReceiveChannel {
         if (routeSettings == null) {
           return false;
         }
-        final animatedValue = arguments != null ? arguments['animated'] : null;
-        final animated = (animatedValue != null && animatedValue is bool) && animatedValue;
+        final animated = arguments?['animated'] == true;
         return ThrioNavigatorImplement.shared()
                 .navigatorState
                 ?.popTo(routeSettings, animated: animated)
@@ -109,8 +106,7 @@ class NavigatorRouteReceiveChannel {
         if (routeSettings == null) {
           return false;
         }
-        final animatedValue = arguments != null ? arguments['animated'] : null;
-        final animated = (animatedValue != null && animatedValue is bool) && animatedValue;
+        final animated = arguments?['animated'] == true;
         return ThrioNavigatorImplement.shared()
                 .navigatorState
                 ?.remove(routeSettings, animated: animated)
@@ -132,7 +128,6 @@ class NavigatorRouteReceiveChannel {
         }
 
         final replaceOnly = arguments?['replaceOnly'] == true;
-
         return ThrioNavigatorImplement.shared()
                 .navigatorState
                 ?.replace(routeSettings, newRouteSettings, replaceOnly: replaceOnly) ??

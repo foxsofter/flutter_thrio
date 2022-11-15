@@ -30,15 +30,17 @@ enum NavigatorRouteAction { push, pop, popTo, remove, replace }
 
 /// A route managed by the `ThrioNavigatorImplement`.
 ///
-class NavigatorPageRoute extends MaterialPageRoute<bool> {
+class NavigatorPageRoute extends PageRouteBuilder<bool> {
   NavigatorPageRoute({
     required final NavigatorPageBuilder builder,
     required final RouteSettings settings,
+    super.barrierDismissible = false,
+    super.barrierColor,
+    super.barrierLabel,
     super.maintainState,
     super.fullscreenDialog,
-    final bool opaque = true,
-  })  : _opaque = opaque,
-        super(builder: (final _) => builder(settings), settings: settings);
+    super.opaque,
+  }) : super(pageBuilder: (final _, final __, final ___) => builder(settings), settings: settings);
 
   NavigatorRouteAction? routeAction;
 
@@ -47,11 +49,6 @@ class NavigatorPageRoute extends MaterialPageRoute<bool> {
   final _popDisableds = <String, bool>{};
 
   final _popDisabledFutures = <String, Future<dynamic>>{};
-
-  final bool _opaque;
-
-  @override
-  bool get opaque => _opaque;
 
   @override
   void addScopedWillPopCallback(final WillPopCallback callback) {

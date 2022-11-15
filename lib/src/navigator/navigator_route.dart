@@ -66,7 +66,7 @@ void _initUrl(final NavigatorRouteNode routeNode) {
       }
       parentRoute = parentRoute.parent;
     }
-    routeNode._url = pathComs.reversed.join('');
+    routeNode._url = pathComs.reversed.join();
   }
 }
 
