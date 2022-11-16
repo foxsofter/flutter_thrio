@@ -31,6 +31,7 @@
 #import "ThrioModule+PageObservers.h"
 #import "ThrioModule+RouteObservers.h"
 #import "ThrioModule+JsonSerializers.h"
+#import "ThrioModule+private.h"
 #import "ThrioModuleJsonDeserializer.h"
 #import "ThrioModuleJsonSerializer.h"
 #import "ThrioModulePageBuilder.h"
@@ -38,25 +39,27 @@
 #import "ThrioModuleRouteObserver.h"
 #import "NSObject+Thrio.h"
 
-@interface ThrioModule ()
-
-@property (nonatomic, readwrite) ThrioModuleContext *moduleContext;
-
-@end
-
 @implementation ThrioModule
 
 static NSMutableDictionary *modules;
 
-+ (void)init:(ThrioModule *)rootModule {
+static ThrioModule *_module;
+
++ (void)init:(ThrioModule *)module preboot:(BOOL)preboot {
+    NavigatorFlutterEngineFactory.shared.mainEnginePreboot = preboot;
     ThrioModuleContext *moduleContext = [[ThrioModuleContext alloc] init];
-    [rootModule registerModule:rootModule withModuleContext:moduleContext];
-    [rootModule initModule];
+    _module = module;
+    [_module registerModule:module withModuleContext:moduleContext];
+    [_module initModule];
 }
 
-+ (void)init:(ThrioModule *)rootModule multiEngineEnabled:(BOOL)enabled {
-    NavigatorFlutterEngineFactory.shared.multiEngineEnabled = enabled;
-    [ThrioModule init:rootModule];
++ (void)initMultiEngine:(ThrioModule *)module {
+    NavigatorFlutterEngineFactory.shared.multiEngineEnabled = YES;
+    [ThrioModule init:module preboot:NO];
+}
+
++ (ThrioModule*)rootModule {
+    return _module;
 }
 
 - (void)registerModule:(ThrioModule *)module
@@ -110,9 +113,9 @@ static NSMutableDictionary *modules;
         }
     }
     
-    // 单引擎模式下，提前启动，默认 `entrypoint` 为 main
-    if (!NavigatorFlutterEngineFactory.shared.multiEngineEnabled) {
-        [self startupFlutterEngineWithEntrypoint:kNavigatorDefaultEntrypoint];
+    // 单引擎模式下是否提前启动，默认 `entrypoint` 为 main
+    if (NavigatorFlutterEngineFactory.shared.mainEnginePreboot) {
+        [self startupFlutterEngineWithEntrypoint:kNavigatorDefaultEntrypoint readyBlock:nil];
     }
 }
 
@@ -125,7 +128,8 @@ static NSMutableDictionary *modules;
 - (void)onModuleAsyncInit:(ThrioModuleContext *)moduleContext {
 }
 
-- (void)startupFlutterEngineWithEntrypoint:(NSString *)entrypoint {
+- (NavigatorFlutterEngine *)startupFlutterEngineWithEntrypoint:(NSString *)entrypoint
+                                                    readyBlock:(ThrioEngineReadyCallback _Nullable)block  {
     __weak typeof(self) weakself = self;
     ThrioEngineReadyCallback readyBlock = ^(NavigatorFlutterEngine *engine) {
         __strong typeof(weakself) strongSelf = weakself;
@@ -140,9 +144,12 @@ static NSMutableDictionary *modules;
         if (canTransParams.count > 0) {
             [engine.moduleContextChannel invokeMethod:@"set" arguments:canTransParams];
         }
+        if (block) {
+            block(engine);
+        }
     };
-    [NavigatorFlutterEngineFactory.shared startupWithEntrypoint:entrypoint
-                                                     readyBlock:readyBlock];
+    return [NavigatorFlutterEngineFactory.shared startupWithEntrypoint:entrypoint
+                                                            readyBlock:readyBlock];
 }
 
 @end

@@ -51,7 +51,6 @@ NS_ASSUME_NONNULL_BEGIN
     _warpEngine = engine;
     _pageId = [self hash];
     engine.pageId = _pageId;
-    
     self = [super initWithEngine:engine.flutterEngine nibName:nil bundle:nil];
     if (self) {
         self.thrio_hidesNavigationBar_ = @YES;

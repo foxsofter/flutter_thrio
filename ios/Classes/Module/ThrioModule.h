@@ -34,9 +34,9 @@ NS_ASSUME_NONNULL_BEGIN
 ///
 /// Should only be called once when the app startups.
 ///
-+ (void)init:(ThrioModule *)rootModule;
++ (void)init:(ThrioModule *)module preboot:(BOOL)preboot;
 
-+ (void)init:(ThrioModule *)rootModule multiEngineEnabled:(BOOL)enabled;
++ (void)initMultiEngine:(ThrioModule *)module;
 
 /// A function for registering a module.
 ///
@@ -56,14 +56,6 @@ NS_ASSUME_NONNULL_BEGIN
 /// A function for module asynchronous initialization.
 ///
 - (void)onModuleAsyncInit:(ThrioModuleContext *)moduleContext;
-
-/// Startup the flutter engine with `entrypoint`.
-///
-/// Should be called in `onModuleAsyncInit:`. Subsequent calls will return immediately if the entrypoint is the same.
-///
-/// Do not override this method.
-///
-- (void)startupFlutterEngineWithEntrypoint:(NSString *)entrypoint;
 
 @end
 

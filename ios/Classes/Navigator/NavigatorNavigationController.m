@@ -24,6 +24,7 @@
 #import "NavigatorFlutterViewController.h"
 #import "NavigatorNavigationController.h"
 #import "ThrioModule+PageBuilders.h"
+#import "ThrioModule+private.h"
 #import "FlutterThrioTypes.h"
 #import "UIViewController+Internal.h"
 #import "UIViewController+Navigator.h"
@@ -57,20 +58,10 @@ NS_ASSUME_NONNULL_BEGIN
         if (NavigatorFlutterEngineFactory.shared.multiEngineEnabled) {
             entrypoint = [url componentsSeparatedByString:@"/"][1];
         }
-        NavigatorFlutterEngine *engine =
-        [NavigatorFlutterEngineFactory.shared startupWithEntrypoint:entrypoint readyBlock:nil];
-        NavigatorFlutterPageBuilder flutterBuilder = [ThrioModule flutterPageBuilder];
-        if (flutterBuilder) {
-            viewController = flutterBuilder(engine);
-        } else {
-            viewController = [[NavigatorFlutterViewController alloc] initWithEngine:engine];
-        }
-        // 调用一次让 engine 状态变成被使用
-        NSUInteger pageId = [(NavigatorFlutterViewController *)viewController pageId];
-        [NavigatorFlutterEngineFactory.shared getEngineByPageId:pageId withEntrypoint:entrypoint];
-        __weak typeof(self) weakSelf = self;
-        [(NavigatorFlutterViewController *)viewController setFlutterViewDidRenderCallback:^{
-            __strong typeof(weakSelf) strongSelf = weakSelf;
+        __weak typeof(self) weakself = self;
+        __block ThrioEngineReadyCallback readyBlock = ^(NavigatorFlutterEngine *engine) {
+            __strong typeof(weakself) strongSelf = weakself;
+            NSUInteger pageId = [(NavigatorFlutterViewController *)strongSelf.topViewController pageId];
             [strongSelf.topViewController thrio_pushUrl:strongSelf.initialUrl
                                                   index:@1
                                                  params:strongSelf.initialParams
@@ -79,7 +70,16 @@ NS_ASSUME_NONNULL_BEGIN
                                              fromPageId:pageId
                                                  result:nil
                                            poppedResult:nil];
-        }];
+        };
+        
+        NavigatorFlutterEngine *engine =
+        [ThrioModule.rootModule startupFlutterEngineWithEntrypoint:entrypoint readyBlock:readyBlock];
+        NavigatorFlutterPageBuilder flutterBuilder = [ThrioModule flutterPageBuilder];
+        if (flutterBuilder) {
+            viewController = flutterBuilder(engine);
+        } else {
+            viewController = [[NavigatorFlutterViewController alloc] initWithEngine:engine];
+        }
     } else {
         __weak typeof(self) weakSelf = self;
         [viewController registerInjectionBlock:^(UIViewController *vc, BOOL animated) {

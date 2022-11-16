@@ -32,7 +32,7 @@ enum NavigatorRouteAction { push, pop, popTo, remove, replace }
 ///
 /// Overriding the buidPage method will make pageBuilder useless.
 ///
-class NavigatorPageRoute extends PageRouteBuilder<bool> {
+class NavigatorPageRoute extends PageRouteBuilder<bool> with MaterialRouteTransitionMixin<bool> {
   NavigatorPageRoute({
     required final NavigatorPageBuilder pageBuilder,
     required final RouteSettings settings,
@@ -87,6 +87,13 @@ class NavigatorPageRoute extends PageRouteBuilder<bool> {
   }
 
   @override
+  Widget buildContent(final BuildContext context) => pageBuilder(
+        context,
+        super.animation!,
+        super.secondaryAnimation!,
+      );
+
+  @override
   Widget buildTransitions(
     final BuildContext context,
     final Animation<double> animation,
@@ -98,7 +105,8 @@ class NavigatorPageRoute extends PageRouteBuilder<bool> {
       if (builder != null) {
         return builder(context, animation, secondaryAnimation, child);
       }
-      return super.buildTransitions(context, animation, secondaryAnimation, child);
+      final theme = Theme.of(context).pageTransitionsTheme;
+      return theme.buildTransitions<bool>(this, context, animation, secondaryAnimation, child);
     }
     return child;
   }

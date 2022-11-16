@@ -22,6 +22,7 @@
 #import "NavigatorConsts.h"
 #import "NavigatorLogger.h"
 #import "NavigatorFlutterEngineGroup.h"
+#import "NavigatorFlutterEngineFactory.h"
 
 @interface NavigatorFlutterEngineGroup ()
 

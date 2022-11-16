@@ -37,6 +37,8 @@ NavigatorRouteObserverProtocol
 
 @property (nonatomic) BOOL multiEngineEnabled;
 
+@property (nonatomic) BOOL mainEnginePreboot;
+
 + (instancetype)shared;
 - (instancetype)init NS_UNAVAILABLE;
 
