@@ -24,7 +24,7 @@ import 'package:flutter/widgets.dart';
 import '../extension/thrio_build_context.dart';
 import '../module/module_anchor.dart';
 import 'navigator_page_observer.dart';
-import 'navigator_page_route.dart';
+import 'navigator_route.dart';
 import 'navigator_route_settings.dart';
 import 'navigator_types.dart';
 import 'navigator_widget.dart';
@@ -50,7 +50,7 @@ class NavigatorPageLifecycle extends StatefulWidget {
 }
 
 class _NavigatorPageLifecycleState extends State<NavigatorPageLifecycle> {
-  NavigatorPageRoute? _route;
+  NavigatorRoute? _route;
 
   VoidCallback? _pageObserverCallback;
 
@@ -67,7 +67,7 @@ class _NavigatorPageLifecycleState extends State<NavigatorPageLifecycle> {
     if (mounted) {
       final state = context.tryStateOf<NavigatorWidgetState>();
       final route = state?.history.last;
-      if (route != null && route is NavigatorPageRoute) {
+      if (route != null && route is NavigatorRoute) {
         widget.willAppear?.call(route.settings);
         widget.didAppear?.call(route.settings);
       }
@@ -83,7 +83,7 @@ class _NavigatorPageLifecycleState extends State<NavigatorPageLifecycle> {
     if (shouldObserver) {
       final state = context.stateOf<NavigatorWidgetState>();
       final route = state.history.last;
-      if (route is NavigatorPageRoute) {
+      if (route is NavigatorRoute) {
         _route = route;
 
         _pageObserverCallback = anchor.pageLifecycleObservers.registry(

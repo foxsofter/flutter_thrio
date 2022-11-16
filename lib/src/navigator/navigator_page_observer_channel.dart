@@ -24,7 +24,7 @@ import 'package:flutter/widgets.dart';
 import '../channel/thrio_channel.dart';
 import '../module/thrio_module.dart';
 import 'navigator_page_observer.dart';
-import 'navigator_page_route.dart';
+import 'navigator_route.dart';
 import 'navigator_route_settings.dart';
 
 typedef NavigatorPageObserverCallback = void Function(

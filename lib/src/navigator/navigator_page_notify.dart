@@ -27,7 +27,7 @@ import '../extension/thrio_build_context.dart';
 import '../module/module_anchor.dart';
 import '../module/module_types.dart';
 import '../module/thrio_module.dart';
-import 'navigator_page_route.dart';
+import 'navigator_route.dart';
 import 'navigator_route_settings.dart';
 import 'navigator_types.dart';
 import 'navigator_widget.dart';
@@ -72,7 +72,7 @@ class _NavigatorPageNotifyState extends State<NavigatorPageNotify> {
     _notifySubscription?.cancel();
     final state = context.stateOf<NavigatorWidgetState>();
     final route = state.history.last;
-    if (route is NavigatorPageRoute) {
+    if (route is NavigatorRoute) {
       _notifySubscription = ThrioNavigatorImplement.shared()
           .onPageNotify(url: route.settings.url!, index: route.settings.index, name: widget.name)
           .listen(_listen);

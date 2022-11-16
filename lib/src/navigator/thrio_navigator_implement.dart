@@ -30,7 +30,7 @@ import '../module/thrio_module.dart';
 import 'navigator_logger.dart';
 import 'navigator_observer_manager.dart';
 import 'navigator_page_observer_channel.dart';
-import 'navigator_page_route.dart';
+import 'navigator_route.dart';
 import 'navigator_route_observer_channel.dart';
 import 'navigator_route_receive_channel.dart';
 import 'navigator_route_send_channel.dart';
@@ -127,7 +127,7 @@ class ThrioNavigatorImplement {
           final routeName = '$index $url';
           final routeHistory = ThrioNavigatorImplement.shared().navigatorState?.history;
           final route = routeHistory?.lastWhereOrNull((final it) => it.settings.name == routeName);
-          if (route != null && route is NavigatorPageRoute) {
+          if (route != null && route is NavigatorRoute) {
             route.poppedResult = poppedResult;
           } else {
             // 不在当前页面栈上，则通过name来缓存
@@ -150,7 +150,7 @@ class ThrioNavigatorImplement {
         final routeName = '$index $url';
         final routeHistory = ThrioNavigatorImplement.shared().navigatorState?.history;
         final route = routeHistory?.lastWhereOrNull((final it) => it.settings.name == routeName);
-        if (route != null && route is NavigatorPageRoute) {
+        if (route != null && route is NavigatorRoute) {
           route.poppedResult = poppedResult;
         } else {
           // 不在当前页面栈上，则通过name来缓存
@@ -227,35 +227,35 @@ class ThrioNavigatorImplement {
       return navigatorState?.history.lastOrNull?.settings;
     }
     return navigatorState?.history
-        .lastWhereOrNull((final it) => it is NavigatorPageRoute && it.settings.url == url)
+        .lastWhereOrNull((final it) => it is NavigatorRoute && it.settings.url == url)
         ?.settings;
   }
 
   List<RouteSettings> allFlutterRoutes({final String? url}) {
     if (url == null || url.isEmpty) {
       return navigatorState?.history
-              .whereType<NavigatorPageRoute>()
+              .whereType<NavigatorRoute>()
               .map<RouteSettings>((final it) => it.settings)
               .toList() ??
           <RouteSettings>[];
     }
     return navigatorState?.history
-            .where((final it) => it is NavigatorPageRoute && it.settings.url == url)
+            .where((final it) => it is NavigatorRoute && it.settings.url == url)
             .map((final it) => it.settings)
             .toList() ??
         <RouteSettings>[];
   }
 
   bool isContainsInnerRoute({required final String url}) {
-    final routes = navigatorState?.history ?? <NavigatorPageRoute>[];
+    final routes = navigatorState?.history ?? <NavigatorRoute>[];
     final index = url.isEmpty
-        ? routes.lastIndexWhere((final route) => route is NavigatorPageRoute)
-        : routes.lastIndexWhere(
-            (final route) => route is NavigatorPageRoute && route.settings.url == url);
+        ? routes.lastIndexWhere((final route) => route is NavigatorRoute)
+        : routes
+            .lastIndexWhere((final route) => route is NavigatorRoute && route.settings.url == url);
     if (index < 0 || routes.length <= index + 1) {
       return false;
     }
-    return routes[index + 1] is! NavigatorPageRoute;
+    return routes[index + 1] is! NavigatorRoute;
   }
 
   Future<bool> setPopDisabled({

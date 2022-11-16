@@ -21,7 +21,7 @@
 
 import 'package:flutter/widgets.dart';
 
-import 'navigator_page_route.dart';
+import 'navigator_route.dart';
 
 /// Signature of page builder with RouteSettings.
 ///
@@ -29,7 +29,7 @@ typedef NavigatorPageBuilder = Widget Function(RouteSettings settings);
 
 /// Signature of route builder with NavigatorPageBuilder and RouteSettings.
 ///
-typedef NavigatorRouteBuilder = NavigatorPageRoute Function(
+typedef NavigatorRouteBuilder = NavigatorRoute Function(
   NavigatorPageBuilder pageBuilder,
   RouteSettings settings,
 );

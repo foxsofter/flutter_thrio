@@ -24,7 +24,7 @@
 import 'package:flutter/widgets.dart';
 
 import '../navigator/navigator_page_observer.dart';
-import '../navigator/navigator_page_route.dart';
+import '../navigator/navigator_route.dart';
 import '../navigator/navigator_route_observer.dart';
 import '../navigator/navigator_route_settings.dart';
 import '../navigator/navigator_types.dart';
@@ -80,7 +80,7 @@ class ModuleAnchor
     }
   }
 
-  Future<dynamic> unloading(final Iterable<NavigatorPageRoute> allRoutes) async {
+  Future<dynamic> unloading(final Iterable<NavigatorRoute> allRoutes) async {
     final urls = allRoutes.map<String>((final it) => it.settings.url!).toSet();
     final notPushedUrls = allUrls.where((final it) => !urls.contains(it)).toList();
     // 需要过滤掉不带 home 的 url

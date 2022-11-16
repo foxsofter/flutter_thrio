@@ -1,6 +1,6 @@
 // The MIT License (MIT)
 //
-// Copyright (c) 2022 foxsofter.
+// Copyright (c) 2019 foxsofter
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
 // copy of this software and associated documentation files (the "Software"),
@@ -19,96 +19,48 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-import 'thrio_navigator.dart';
+import 'package:flutter/material.dart';
 
-class NavigatorRouteNode {
-  NavigatorRouteNode(this.parent);
+import 'navigator_route_settings.dart';
+import 'navigator_types.dart';
+import 'thrio_navigator_implement.dart';
 
-  NavigatorRouteNode.home() : this(_emptyRouteNode);
+enum NavigatorRouteAction { push, pop, popTo, remove, replace }
 
-  /// parent route node
-  ///
-  late final NavigatorRouteNode parent;
+/// A route managed by the `ThrioNavigatorImplement`.
+///
+mixin NavigatorRoute on PageRoute<bool> {
+  NavigatorRouteAction? routeAction;
 
-  /// Current route node name
-  ///
-  String get name => '';
+  @override
+  RouteSettings get settings;
 
-  String? _url;
+  NavigatorParamsCallback? poppedResult;
 
-  /// Get route url by join all route node's name.
-  ///
-  String get url {
-    _initUrl(this);
-    return _url!;
-  }
+  final _popDisableds = <String, bool>{};
 
-  Future<bool> notify<TParams>(
-    final String name, {
-    final TParams? params,
-    final int index = 0,
-  }) =>
-      ThrioNavigator.notify(
-        url: url,
-        index: index,
-        name: name,
-        params: params,
-      );
-}
+  final _popDisabledFutures = <String, Future<dynamic>>{};
 
-void _initUrl(final NavigatorRouteNode routeNode) {
-  if (routeNode._url == null) {
-    final pathComs = <String>['/${routeNode.name}'];
-    var parentRoute = routeNode.parent;
-    while (parentRoute != _emptyRouteNode) {
-      if (parentRoute.name.isNotEmpty) {
-        pathComs.add('/${parentRoute.name}');
+  @protected
+  void setPopDisabled({final bool disabled = false}) {
+    _popDisableds[settings.name!] = disabled;
+
+    // 延迟300ms执行，避免因为WillPopScope依赖变更导致发送过多的Channel消息
+    _popDisabledFutures[settings.name!] ??= Future.delayed(const Duration(milliseconds: 300), () {
+      _popDisabledFutures.remove(settings.name); // ignore: unawaited_futures
+      final disabled = _popDisableds.remove(settings.name);
+      if (disabled != null) {
+        ThrioNavigatorImplement.shared().setPopDisabled(
+          url: settings.url!,
+          index: settings.index,
+          disabled: disabled,
+        );
       }
-      parentRoute = parentRoute.parent;
-    }
-    routeNode._url = pathComs.reversed.join();
+    });
   }
-}
 
-class NavigatorRouteLeaf extends NavigatorRouteNode {
-  NavigatorRouteLeaf(super.parent);
-
-  Future<bool> popTo({final bool animated = true}) =>
-      ThrioNavigator.popTo(url: url, animated: animated);
-
-  Future<bool> remove({final bool animated = true}) =>
-      ThrioNavigator.remove(url: url, animated: animated);
-
-  Future<int> replace({required final String newUrl, final int index = 0}) =>
-      ThrioNavigator.replace(url: url, index: index, newUrl: newUrl);
-}
-
-final EmptyNavigatorRoute _emptyRouteNode = EmptyNavigatorRoute._();
-
-class EmptyNavigatorRoute implements NavigatorRouteNode {
-  EmptyNavigatorRoute._();
-
-  @override
-  NavigatorRouteNode get parent =>
-      throw UnimplementedError('Methods of this instance should not be called');
-  @override
-  set parent(final NavigatorRouteNode parent) =>
-      throw UnimplementedError('Methods of this instance should not be called');
-
-  @override
-  String get name => throw UnimplementedError('Methods of this instance should not be called');
-
-  @override
-  String? _url;
-
-  @override
-  Future<bool> notify<TParams>(
-    final String name, {
-    final TParams? params,
-    final int index = 0,
-  }) =>
-      throw UnimplementedError('Methods of this instance should not be called');
-
-  @override
-  String get url => throw UnimplementedError('Methods of this instance should not be called');
+  @protected
+  void clearPopDisabledFutures() {
+    _popDisabledFutures.clear();
+  }
 }

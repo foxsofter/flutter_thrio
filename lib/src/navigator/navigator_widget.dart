@@ -30,6 +30,7 @@ import '../module/thrio_module.dart';
 import 'navigator_logger.dart';
 import 'navigator_observer_manager.dart';
 import 'navigator_page_route.dart';
+import 'navigator_route.dart';
 import 'navigator_route_settings.dart';
 import 'navigator_types.dart';
 import 'thrio_navigator_implement.dart';
@@ -74,7 +75,7 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
     // 加载模块
     await anchor.loading(settings.url!);
 
-    NavigatorPageRoute route;
+    NavigatorRoute route;
     final routeBuilder = ThrioModule.get<NavigatorRouteBuilder>(url: settings.url);
     if (routeBuilder == null) {
       route = NavigatorPageRoute(pageBuilder: pageBuilder, settings: settings);
@@ -148,7 +149,7 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
     }
 
     // 在原生端处于容器的根部，且当前 Flutter 页面栈上不超过 3，则不能再 pop
-    if (inRoot && history.whereType<NavigatorPageRoute>().length < 3) {
+    if (inRoot && history.whereType<NavigatorRoute>().length < 3) {
       return false;
     }
 
@@ -158,7 +159,7 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
     );
 
     // ignore: avoid_as
-    final route = history.last as NavigatorPageRoute;
+    final route = history.last as NavigatorRoute;
     // The route has been closed.
     if (route.routeAction == NavigatorRouteAction.pop) {
       return false;
@@ -209,7 +210,7 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
         );
 
     // ignore: avoid_as
-    (route as NavigatorPageRoute).routeAction = NavigatorRouteAction.popTo;
+    (route as NavigatorRoute).routeAction = NavigatorRouteAction.popTo;
     if (animated) {
       navigatorState.popUntil((final it) => it.settings.name == settings.name);
     } else {
@@ -242,7 +243,7 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
     );
 
     // ignore: avoid_as
-    (route as NavigatorPageRoute).routeAction = NavigatorRouteAction.remove;
+    (route as NavigatorRoute).routeAction = NavigatorRouteAction.remove;
 
     if (settings.name == history.last.settings.name) {
       if (WidgetsBinding.instance.lifecycleState == AppLifecycleState.resumed) {
@@ -283,7 +284,13 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
     // 加载模块
     await anchor.loading(newSettings.url!);
 
-    final newRoute = NavigatorPageRoute(pageBuilder: pageBuilder, settings: newSettings);
+    NavigatorRoute newRoute;
+    final routeBuilder = ThrioModule.get<NavigatorRouteBuilder>(url: settings.url);
+    if (routeBuilder == null) {
+      newRoute = NavigatorPageRoute(pageBuilder: pageBuilder, settings: settings);
+    } else {
+      newRoute = routeBuilder(pageBuilder, settings);
+    }
 
     verbose(
       'replace: url->${route.settings.url} index->${route.settings.index}\n'
@@ -291,7 +298,7 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
     );
 
     // ignore: avoid_as
-    (route as NavigatorPageRoute).routeAction = NavigatorRouteAction.replace;
+    (route as NavigatorRoute).routeAction = NavigatorRouteAction.replace;
 
     if (settings.name == history.last.settings.name) {
       if (WidgetsBinding.instance.lifecycleState == AppLifecycleState.resumed) {

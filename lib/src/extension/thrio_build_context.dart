@@ -21,7 +21,7 @@
 
 import 'package:flutter/widgets.dart';
 
-import '../navigator/navigator_page_route.dart';
+import '../navigator/navigator_route.dart';
 import '../navigator/navigator_route_settings.dart';
 import '../navigator/navigator_widget.dart';
 import '../navigator/thrio_navigator_implement.dart';
@@ -86,7 +86,7 @@ extension ThrioBuildContext on BuildContext {
   Future<bool> _isInitialRoute() {
     final state = stateOf<NavigatorWidgetState>();
     final route = state.history.last;
-    return route is NavigatorPageRoute
+    return route is NavigatorRoute
         ? ThrioNavigatorImplement.shared()
             .isInitialRoute(url: route.settings.url!, index: route.settings.index)
         : Future<bool>.value(false);

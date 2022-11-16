@@ -45,7 +45,7 @@ class NavigatorRoutePush extends StatefulWidget {
 }
 
 class _NavigatorRoutePushState extends State<NavigatorRoutePush> {
-  NavigatorPageRoute? _route;
+  NavigatorRoute? _route;
 
   VoidCallback? _registry;
 
@@ -59,7 +59,7 @@ class _NavigatorRoutePushState extends State<NavigatorRoutePush> {
   void didChangeDependencies() {
     final state = context.stateOf<NavigatorWidgetState>();
     final route = state.history.last;
-    if (route is NavigatorPageRoute) {
+    if (route is NavigatorRoute) {
       _route = route;
     }
     super.didChangeDependencies();

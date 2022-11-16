@@ -28,13 +28,22 @@ import 'navigator_types.dart';
 
 /// A route managed by the `ThrioNavigatorImplement`.
 ///
-class NavigatorPageRoute extends MaterialPageRoute<bool> with NavigatorRoute {
-  NavigatorPageRoute({
+class NavigatorDialogRoute extends PageRouteBuilder<bool> with NavigatorRoute {
+  NavigatorDialogRoute({
     required final NavigatorPageBuilder pageBuilder,
     required final RouteSettings settings,
+    super.transitionDuration,
+    super.reverseTransitionDuration,
+    super.opaque,
+    super.barrierDismissible = false,
+    super.barrierColor,
+    super.barrierLabel,
     super.maintainState,
     super.fullscreenDialog,
-  }) : super(builder: (final _) => pageBuilder(settings), settings: settings);
+  }) : super(
+          pageBuilder: (final _, final __, final ___) => pageBuilder(settings),
+          settings: settings,
+        );
 
   @override
   void addScopedWillPopCallback(final WillPopCallback callback) {

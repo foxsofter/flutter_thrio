@@ -27,13 +27,14 @@ import 'navigator_home.dart';
 import 'navigator_logger.dart';
 import 'navigator_page_observer.dart';
 import 'navigator_page_route.dart';
+import 'navigator_route.dart';
 import 'navigator_route_settings.dart';
 import 'thrio_navigator_implement.dart';
 
 class NavigatorObserverManager extends NavigatorObserver {
-  final _currentPopRoutes = <NavigatorPageRoute>[];
+  final _currentPopRoutes = <NavigatorRoute>[];
 
-  final _currentRemoveRoutes = <NavigatorPageRoute>[];
+  final _currentRemoveRoutes = <NavigatorRoute>[];
 
   final pageRoutes = <Route<dynamic>>[
     NavigatorPageRoute(
@@ -43,7 +44,7 @@ class NavigatorObserverManager extends NavigatorObserver {
 
   @override
   void didPush(final Route<dynamic> route, final Route<dynamic>? previousRoute) {
-    if (route is NavigatorPageRoute) {
+    if (route is NavigatorRoute) {
       verbose(
         'didPush: url->${route.settings.url} '
         'index->${route.settings.index} ',
@@ -56,7 +57,7 @@ class NavigatorObserverManager extends NavigatorObserver {
       if (!route.isFirst) {
         final lastRoute = pageRoutes.last;
         pageRoutes.add(route);
-        if (route is! PopupRoute && lastRoute is NavigatorPageRoute) {
+        if (route is! PopupRoute && lastRoute is NavigatorRoute) {
           final observers = ThrioModule.gets<NavigatorPageObserver>(url: lastRoute.settings.url!);
           for (final observer in observers) {
             observer.didDisappear(lastRoute.settings);
@@ -68,15 +69,15 @@ class NavigatorObserverManager extends NavigatorObserver {
 
   @override
   void didPop(final Route<dynamic> route, final Route<dynamic>? previousRoute) {
-    if (route is NavigatorPageRoute) {
+    if (route is NavigatorRoute) {
       pageRoutes.remove(route);
       _currentPopRoutes.add(route);
       if (_currentPopRoutes.length == 1) {
         Future(() {
           if (_currentPopRoutes.length == 1) {
-            if (pageRoutes.last is NavigatorPageRoute &&
+            if (pageRoutes.last is NavigatorRoute &&
                 // ignore: avoid_as
-                (pageRoutes.last as NavigatorPageRoute).routeAction == NavigatorRouteAction.popTo) {
+                (pageRoutes.last as NavigatorRoute).routeAction == NavigatorRouteAction.popTo) {
               if (pageRoutes.last.settings.url != '/') {
                 verbose('didPopTo: url->${pageRoutes.last.settings.url} '
                     'index->${pageRoutes.last.settings.index}');
@@ -85,7 +86,7 @@ class NavigatorObserverManager extends NavigatorObserver {
                   ..pageChannel.didAppear(pageRoutes.last.settings, NavigatorRouteAction.popTo);
               }
               // ignore: avoid_as
-              (pageRoutes.last as NavigatorPageRoute).routeAction = null;
+              (pageRoutes.last as NavigatorRoute).routeAction = null;
             } else if (route.routeAction == NavigatorRouteAction.pop || route.routeAction == null) {
               // 这里需要判断 routeAction == null 的场景，处理滑动返回需要
               verbose('didPop: url->${route.settings.url} '
@@ -115,16 +116,16 @@ class NavigatorObserverManager extends NavigatorObserver {
                 ..pageChannel.didAppear(pageRoutes.last.settings, NavigatorRouteAction.popTo);
             }
             // ignore: avoid_as
-            (pageRoutes.last as NavigatorPageRoute).routeAction = null;
+            (pageRoutes.last as NavigatorRoute).routeAction = null;
           }
           _currentPopRoutes.clear();
 
-          anchor.unloading(pageRoutes.whereType<NavigatorPageRoute>());
+          anchor.unloading(pageRoutes.whereType<NavigatorRoute>());
         });
       }
     } else {
       pageRoutes.remove(route);
-      if (route is! PopupRoute && pageRoutes.last is NavigatorPageRoute) {
+      if (route is! PopupRoute && pageRoutes.last is NavigatorRoute) {
         final observers =
             ThrioModule.gets<NavigatorPageObserver>(url: pageRoutes.last.settings.url!);
         for (final observer in observers) {
@@ -136,14 +137,14 @@ class NavigatorObserverManager extends NavigatorObserver {
 
   @override
   void didRemove(final Route<dynamic> route, final Route<dynamic>? previousRoute) {
-    if (route is NavigatorPageRoute) {
+    if (route is NavigatorRoute) {
       pageRoutes.remove(route);
       _currentRemoveRoutes.add(route);
       if (_currentRemoveRoutes.length == 1) {
         Future(() {
           if (_currentRemoveRoutes.length == 1) {
             // ignore: avoid_as
-            final lastRoute = pageRoutes.last as NavigatorPageRoute;
+            final lastRoute = pageRoutes.last as NavigatorRoute;
             if (lastRoute.routeAction == NavigatorRouteAction.popTo) {
               if (pageRoutes.last.settings.url != '/') {
                 verbose('didPopTo: url->${pageRoutes.last.settings.url} '
@@ -170,11 +171,11 @@ class NavigatorObserverManager extends NavigatorObserver {
                 ..pageChannel.didAppear(pageRoutes.last.settings, NavigatorRouteAction.popTo);
             }
             // ignore: avoid_as
-            (pageRoutes.last as NavigatorPageRoute).routeAction = null;
+            (pageRoutes.last as NavigatorRoute).routeAction = null;
           }
           _currentRemoveRoutes.clear();
 
-          anchor.unloading(pageRoutes.whereType<NavigatorPageRoute>());
+          anchor.unloading(pageRoutes.whereType<NavigatorRoute>());
         });
       }
     }
@@ -182,7 +183,7 @@ class NavigatorObserverManager extends NavigatorObserver {
 
   @override
   void didReplace({final Route<dynamic>? newRoute, final Route<dynamic>? oldRoute}) {
-    if (newRoute is NavigatorPageRoute && oldRoute is NavigatorPageRoute) {
+    if (newRoute is NavigatorRoute && oldRoute is NavigatorRoute) {
       verbose(
         'didReplace: url->${oldRoute.settings.url} index->${oldRoute.settings.index} '
         'newUrl->${newRoute.settings.url} newIndex->${newRoute.settings.index}',
