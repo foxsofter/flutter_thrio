@@ -77,7 +77,7 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
     NavigatorPageRoute route;
     final routeBuilder = ThrioModule.get<NavigatorRouteBuilder>(url: settings.url);
     if (routeBuilder == null) {
-      route = NavigatorPageRoute(builder: pageBuilder, settings: settings);
+      route = NavigatorPageRoute(pageBuilder: pageBuilder, settings: settings);
     } else {
       route = routeBuilder(pageBuilder, settings);
     }
@@ -283,7 +283,7 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
     // 加载模块
     await anchor.loading(newSettings.url!);
 
-    final newRoute = NavigatorPageRoute(builder: pageBuilder, settings: newSettings);
+    final newRoute = NavigatorPageRoute(pageBuilder: pageBuilder, settings: newSettings);
 
     verbose(
       'replace: url->${route.settings.url} index->${route.settings.index}\n'

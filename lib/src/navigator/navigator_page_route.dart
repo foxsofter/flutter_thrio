@@ -30,17 +30,24 @@ enum NavigatorRouteAction { push, pop, popTo, remove, replace }
 
 /// A route managed by the `ThrioNavigatorImplement`.
 ///
+/// Overriding the buidPage method will make pageBuilder useless.
+///
 class NavigatorPageRoute extends PageRouteBuilder<bool> {
   NavigatorPageRoute({
-    required final NavigatorPageBuilder builder,
+    required final NavigatorPageBuilder pageBuilder,
     required final RouteSettings settings,
+    super.transitionDuration,
+    super.reverseTransitionDuration,
+    super.opaque,
     super.barrierDismissible = false,
     super.barrierColor,
     super.barrierLabel,
     super.maintainState,
     super.fullscreenDialog,
-    super.opaque,
-  }) : super(pageBuilder: (final _, final __, final ___) => builder(settings), settings: settings);
+  }) : super(
+          pageBuilder: (final _, final __, final ___) => pageBuilder(settings),
+          settings: settings,
+        );
 
   NavigatorRouteAction? routeAction;
 

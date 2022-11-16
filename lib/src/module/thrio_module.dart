@@ -178,7 +178,7 @@ mixin ThrioModule {
       if (kDebugMode) {
         final sw = Stopwatch()..start();
         module.onModuleInit(module._moduleContext);
-        ThrioLogger.v('init: ${module.key} = ${sw.elapsedMicroseconds} ms');
+        ThrioLogger.v('init: ${module.key} = ${sw.elapsedMicroseconds} µs');
         sw.stop();
       } else {
         module.onModuleInit(module._moduleContext);

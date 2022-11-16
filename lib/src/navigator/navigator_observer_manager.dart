@@ -37,7 +37,7 @@ class NavigatorObserverManager extends NavigatorObserver {
 
   final pageRoutes = <Route<dynamic>>[
     NavigatorPageRoute(
-        builder: (final settings) => const NavigatorHome(),
+        pageBuilder: (final settings) => const NavigatorHome(),
         settings: const RouteSettings(name: '1 /'))
   ];
 
