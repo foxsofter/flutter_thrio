@@ -215,6 +215,14 @@ class ThrioNavigatorImplement {
   }) =>
       _sendChannel.replace(url: url, index: index, newUrl: newUrl, replaceOnly: replaceOnly);
 
+  Widget? build<TParams>({required final String url, final TParams? params}) {
+    final pageBuilder = ThrioModule.get<NavigatorPageBuilder>(url: url);
+    return pageBuilder?.call(RouteSettings(
+      name: '0 $url',
+      arguments: <String, dynamic>{'params': params},
+    ));
+  }
+
   Future<bool> isInitialRoute({required final String url, final int index = 0}) =>
       _sendChannel.isInitialRoute(url: url, index: index);
 

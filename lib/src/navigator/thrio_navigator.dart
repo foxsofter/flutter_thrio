@@ -142,6 +142,11 @@ abstract class ThrioNavigator {
         newUrl: newUrl,
       );
 
+  /// Build widget with `url` and `params`.
+  ///
+  static Widget? build<TParams>({required final String url, final TParams? params}) =>
+      ThrioNavigatorImplement.shared().build(url: url, params: params);
+
   /// Returns the route of the page that was last pushed to the navigation
   /// stack.
   ///
