@@ -45,7 +45,7 @@ class ThrioNavigatorImplement {
 
   static final ThrioNavigatorImplement _default = ThrioNavigatorImplement._();
 
-  void init(final ModuleContext moduleContext) {
+  Future<void> init(final ModuleContext moduleContext) async {
     _channel = ThrioChannel(channel: '__thrio_app__${moduleContext.entrypoint}');
     ThrioChannel(channel: '__thrio_module_context__${moduleContext.entrypoint}')
         .registryMethodCall('set', ([final arguments]) async {

@@ -67,7 +67,7 @@ class ModuleAnchor
   final allUrls = <String>[];
 
   @override
-  void onModuleInit(final ModuleContext moduleContext) =>
+  Future<void> onModuleInit(final ModuleContext moduleContext) =>
       ThrioNavigatorImplement.shared().init(moduleContext);
 
   Future<dynamic> loading(final String url) async {

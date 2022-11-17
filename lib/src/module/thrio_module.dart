@@ -140,7 +140,7 @@ mixin ThrioModule {
   /// methods of all modules.
   ///
   @protected
-  void initModule() {
+  Future<void> initModule() async {
     final values = modules.values;
     for (final module in values) {
       if (module is ModuleParamScheme) {
@@ -177,18 +177,18 @@ mixin ThrioModule {
     for (final module in values) {
       if (kDebugMode) {
         final sw = Stopwatch()..start();
-        module.onModuleInit(module._moduleContext);
+        await module.onModuleInit(module._moduleContext);
         ThrioLogger.v('init: ${module.key} = ${sw.elapsedMicroseconds} µs');
         sw.stop();
       } else {
-        module.onModuleInit(module._moduleContext);
+        await module.onModuleInit(module._moduleContext);
       }
-      module.initModule();
+      await module.initModule();
     }
     for (final module in values) {
-      Future(() {
+      unawaited(Future(() {
         module.onModuleAsyncInit(module._moduleContext);
-      });
+      }));
     }
   }
 
@@ -200,7 +200,7 @@ mixin ThrioModule {
   /// A function for module initialization.
   ///
   @protected
-  void onModuleInit(final ModuleContext moduleContext) {}
+  Future<void> onModuleInit(final ModuleContext moduleContext) async {}
 
   /// Returns whether the module is loaded.
   ///
@@ -210,13 +210,13 @@ mixin ThrioModule {
   /// Called when the first page in the module is about to be pushed.
   ///
   @protected
-  Future<dynamic> onModuleLoading(final ModuleContext moduleContext) async =>
+  Future<void> onModuleLoading(final ModuleContext moduleContext) async =>
       verbose('onModuleLoading: $key');
 
   /// Called when the last page in the module is closed.
   ///
   @protected
-  Future<dynamic> onModuleUnloading(final ModuleContext moduleContext) async =>
+  Future<void> onModuleUnloading(final ModuleContext moduleContext) async =>
       verbose('onModuleUnloading: $key');
 
   /// A function for module asynchronous initialization.
