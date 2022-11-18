@@ -45,7 +45,7 @@ part 'module_context.dart';
 mixin ThrioModule {
   /// Modular initialization function, needs to be called once during App initialization.
   ///
-  static void init(final ThrioModule rootModule, {final String? entrypoint}) {
+  static Future<void> init(final ThrioModule rootModule, {final String? entrypoint}) async {
     if (anchor.modules.length == 1) {
       throw ThrioException('init method can only be called once.');
     } else {
@@ -54,9 +54,9 @@ mixin ThrioModule {
       moduleOf[moduleContext] = anchor;
       anchor
         .._moduleContext = moduleContext
-        ..registerModule(rootModule, moduleContext)
-        ..onModuleInit(moduleContext)
-        ..initModule();
+        ..registerModule(rootModule, moduleContext);
+      await anchor.onModuleInit(moduleContext);
+      await anchor.initModule();
     }
   }
 
