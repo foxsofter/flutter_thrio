@@ -186,9 +186,7 @@ mixin ThrioModule {
       await module.initModule();
     }
     for (final module in values) {
-      unawaited(Future(() {
-        module.onModuleAsyncInit(module._moduleContext);
-      }));
+      unawaited(module.onModuleAsyncInit(module._moduleContext));
     }
   }
 
@@ -222,7 +220,7 @@ mixin ThrioModule {
   /// A function for module asynchronous initialization.
   ///
   @protected
-  void onModuleAsyncInit(final ModuleContext moduleContext) {}
+  Future<void> onModuleAsyncInit(final ModuleContext moduleContext) async {}
 
   @protected
   bool get navigatorLogEnabled => navigatorLogging;
