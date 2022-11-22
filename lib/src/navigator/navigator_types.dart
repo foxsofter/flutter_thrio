@@ -45,7 +45,6 @@ typedef NavigatorPageObserverCallback = void Function(RouteSettings settings);
 enum NavigatorRoutePushHandleType {
   none, // Do not prevent routing actions from continuing
   prevention, // Prevent routing behavior from continuing
-  replacement, // Do not prevent routing actions from continuing, but will replace the current route
 }
 
 /// Signature of route push handler callbacks with RouteSettings.
