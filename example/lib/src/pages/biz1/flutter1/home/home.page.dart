@@ -40,10 +40,10 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(final BuildContext context) => NavigatorRoutePush(
         url: root.biz2.flutter2.url,
-        onPush: (final settings, {final animated = true}) {
+        onPush: (final settings, {final animated = true}) async {
           // root.biz1.flutter1.home.replace(newUrl: root.biz2.flutter2.url);
           ThrioLogger.d('page2 onPush');
-          return Future.value(false);
+          return NavigatorRoutePushHandleType.prevention;
         },
         child: NavigatorPageNotify(
             name: 'all_page_notify',

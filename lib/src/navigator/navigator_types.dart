@@ -42,9 +42,15 @@ typedef NavigatorParamsCallback = void Function(dynamic params);
 ///
 typedef NavigatorPageObserverCallback = void Function(RouteSettings settings);
 
+enum NavigatorRoutePushHandleType {
+  none, // Do not prevent routing actions from continuing
+  prevention, // Prevent routing behavior from continuing
+  replacement, // Do not prevent routing actions from continuing, but will replace the current route
+}
+
 /// Signature of route push handler callbacks with RouteSettings.
 ///
-typedef NavigatorRoutePushCallback = Future<bool?> Function(
+typedef NavigatorRoutePushCallback = Future<NavigatorRoutePushHandleType> Function(
   RouteSettings settings, {
   bool animated,
 });

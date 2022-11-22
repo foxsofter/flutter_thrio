@@ -53,7 +53,7 @@ class NavigatorRouteReceiveChannel {
         final callback = anchor.get<NavigatorRoutePushCallback>(url: routeSettings.url!);
         if (callback != null) {
           final result = await callback(routeSettings, animated: animated);
-          if (result == true) {
+          if (result == NavigatorRoutePushHandleType.prevention) {
             return false;
           }
         }

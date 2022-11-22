@@ -74,7 +74,7 @@ class _NavigatorRoutePushState extends State<NavigatorRoutePush> {
           final animated = true,
         }) async {
           final r = await widget.onPush(settings, animated: animated);
-          if (true == r && _route != null) {
+          if (r == NavigatorRoutePushHandleType.replacement && _route != null) {
             final route = _route!;
             // 只是替换 url，不触发真正的 replace 操作，因为在 onPush 中已经让用户自行处理了
             unawaited(ThrioNavigatorImplement.shared().replace(
