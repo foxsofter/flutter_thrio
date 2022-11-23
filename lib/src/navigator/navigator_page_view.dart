@@ -93,18 +93,28 @@ class _NavigatorPageViewState extends State<NavigatorPageView> {
       final oldUrl = current;
       current = url;
       widget.onPageChanged?.call(url);
-      if (isAppeared) {
-        final oldObs = anchor.pageLifecycleObservers[oldUrl];
-        for (final ob in oldObs) {
-          if (ob is! _PageViewPageObserver) {
-            ob.didDisappear(RouteSettings(name: '0 $oldUrl'));
-          }
+      _changedToAppear(url);
+      _changedToDisappear(oldUrl);
+    }
+  }
+
+  void _changedToAppear(final String url) {
+    if (isAppeared) {
+      final obs = anchor.pageLifecycleObservers[url];
+      for (final ob in obs) {
+        if (ob is! _PageViewPageObserver) {
+          ob.didAppear(RouteSettings(name: '0 $url'));
         }
-        final obs = anchor.pageLifecycleObservers[url];
-        for (final ob in obs) {
-          if (ob is! _PageViewPageObserver) {
-            ob.didAppear(RouteSettings(name: '0 $url'));
-          }
+      }
+    }
+  }
+
+  void _changedToDisappear(final String url) {
+    if (isAppeared) {
+      final obs = anchor.pageLifecycleObservers[url];
+      for (final ob in obs) {
+        if (ob is! _PageViewPageObserver) {
+          ob.didDisappear(RouteSettings(name: '0 $url'));
         }
       }
     }
@@ -180,11 +190,15 @@ class _PageViewPageObserver with NavigatorPageObserver {
 
   @override
   void didAppear(final RouteSettings routeSettings) {
-    lifecycleState.isAppeared = true;
+    lifecycleState
+      ..isAppeared = true
+      .._changedToAppear(lifecycleState.current);
   }
 
   @override
   void didDisappear(final RouteSettings routeSettings) {
-    lifecycleState.isAppeared = false;
+    lifecycleState
+      .._changedToDisappear(lifecycleState.current)
+      ..isAppeared = false;
   }
 }

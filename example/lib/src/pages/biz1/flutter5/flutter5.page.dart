@@ -27,7 +27,6 @@ class _Flutter5PageState extends State<Flutter5Page> {
   @override
   void dispose() {
     ThrioLogger.d('page5 dispose');
-    Tab();
     super.dispose();
   }
 
@@ -35,7 +34,7 @@ class _Flutter5PageState extends State<Flutter5Page> {
   Widget build(final BuildContext context) => Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
-        title: const Text('thrio_example', style: TextStyle(color: Colors.black)),
+        title: const Text('page view example', style: TextStyle(color: Colors.black)),
         leading: context.shouldCanPop(const IconButton(
           color: Colors.black,
           tooltip: 'back',

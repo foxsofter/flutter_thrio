@@ -29,7 +29,6 @@ class _Flutter7PageState extends State<Flutter7Page> with SingleTickerProviderSt
   @override
   void dispose() {
     ThrioLogger.d('page7 dispose');
-    Tab();
     super.dispose();
   }
 
@@ -37,7 +36,7 @@ class _Flutter7PageState extends State<Flutter7Page> with SingleTickerProviderSt
   Widget build(final BuildContext context) => Scaffold(
       resizeToAvoidBottomInset: true,
       appBar: AppBar(
-        title: const Text('thrio_example', style: TextStyle(color: Colors.black)),
+        title: const Text('TabBarView example', style: TextStyle(color: Colors.black)),
         leading: context.shouldCanPop(const IconButton(
           color: Colors.black,
           tooltip: 'back',
@@ -69,13 +68,27 @@ class _Flutter7PageState extends State<Flutter7Page> with SingleTickerProviderSt
           didDisappear: (final settings) {
             ThrioLogger.v('lifecycle didDisappear -> $settings');
           },
-          child: NavigatorTabBarView(
-            controller: controller,
-            urls: <String>[
-              root.biz1.flutter1.home.url,
-              root.biz1.flutter3.url,
-              root.biz2.flutter2.url,
-              root.biz2.flutter4.url,
-            ],
-          )));
+          child: NavigatorPageLifecycle(
+              url: root.biz2.flutter2.url,
+              willAppear: (final settings) {
+                ThrioLogger.v('lifecycle willAppear -> $settings');
+              },
+              didAppear: (final settings) {
+                ThrioLogger.v('lifecycle didAppear -> $settings');
+              },
+              willDisappear: (final settings) {
+                ThrioLogger.v('lifecycle willDisappear -> $settings');
+              },
+              didDisappear: (final settings) {
+                ThrioLogger.v('lifecycle didDisappear -> $settings');
+              },
+              child: NavigatorTabBarView(
+                controller: controller,
+                urls: <String>[
+                  root.biz1.flutter1.home.url,
+                  root.biz1.flutter3.url,
+                  root.biz2.flutter2.url,
+                  root.biz2.flutter4.url,
+                ],
+              ))));
 }
