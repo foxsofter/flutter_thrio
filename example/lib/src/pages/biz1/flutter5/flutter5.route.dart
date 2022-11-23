@@ -5,15 +5,15 @@
 
 import 'package:flutter_thrio/flutter_thrio.dart';
 
-class Flutter2Route extends NavigatorRouteLeaf {
-  factory Flutter2Route(final NavigatorRouteNode parent) => _instance ??= Flutter2Route._(parent);
+class Flutter5Route extends NavigatorRouteLeaf {
+  factory Flutter5Route(final NavigatorRouteNode parent) => _instance ??= Flutter5Route._(parent);
 
-  Flutter2Route._(super.parent);
+  Flutter5Route._(super.parent);
 
-  static Flutter2Route? _instance;
+  static Flutter5Route? _instance;
 
   @override
-  String get name => 'flutter2';
+  String get name => 'flutter5';
 
   Future<int> push<TParams>({
     final TParams? params,

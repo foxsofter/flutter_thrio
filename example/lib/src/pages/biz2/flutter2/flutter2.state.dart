@@ -1,4 +1,4 @@
-// Copyright (c) 2022 bybit.
+// Copyright (c) 2022 foxsofter.
 //
 // ignore_for_file: avoid_as
 

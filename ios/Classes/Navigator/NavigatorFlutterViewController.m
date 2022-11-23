@@ -54,8 +54,8 @@ NS_ASSUME_NONNULL_BEGIN
     self = [super initWithEngine:engine.flutterEngine nibName:nil bundle:nil];
     if (self) {
         self.thrio_hidesNavigationBar_ = @YES;
+        self.hidesBottomBarWhenPushed = YES;
     }
-    self.hidesBottomBarWhenPushed = YES;
     return self;
 }
 

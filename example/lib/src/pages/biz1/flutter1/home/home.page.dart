@@ -1,4 +1,4 @@
-// Copyright (c) 2022 bybit.
+// Copyright (c) 2022 foxsofter.
 //
 
 import 'dart:io';
@@ -43,7 +43,7 @@ class _HomePageState extends State<HomePage> {
         onPush: (final settings, {final animated = true}) async {
           // root.biz1.flutter1.home.replace(newUrl: root.biz2.flutter2.url);
           ThrioLogger.d('page2 onPush');
-          return NavigatorRoutePushHandleType.prevention;
+          return NavigatorRoutePushHandleType.none;
         },
         child: NavigatorPageNotify(
             name: 'all_page_notify',

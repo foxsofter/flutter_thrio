@@ -34,7 +34,9 @@ class NavigatorPageObserverChannel {
   NavigatorPageObserverChannel(final String entrypoint)
       : _channel = ThrioChannel(channel: '__thrio_page_channel__$entrypoint') {
     _on('willAppear', (final observer, final routeSettings) => observer.willAppear(routeSettings));
-    _on('didAppear', (final observer, final routeSettings) => observer.didAppear(routeSettings));
+    _on('didAppear', (final observer, final routeSettings) {
+      observer.didAppear(routeSettings);
+    });
     _on('willDisappear',
         (final observer, final routeSettings) => observer.willDisappear(routeSettings));
     _on('didDisappear',

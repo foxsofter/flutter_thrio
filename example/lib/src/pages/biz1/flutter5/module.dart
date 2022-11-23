@@ -5,7 +5,7 @@
 
 import 'package:flutter_thrio/flutter_thrio.dart';
 
-import 'flutter2.page.dart';
+import 'flutter5.page.dart';
 
 class Module with ThrioModule, ModulePageBuilder {
   factory Module() => _instance;
@@ -15,11 +15,11 @@ class Module with ThrioModule, ModulePageBuilder {
   static final _instance = Module._();
 
   @override
-  String get key => 'flutter2';
+  String get key => 'flutter5';
 
   @override
   void onPageBuilderSetting(final ModuleContext moduleContext) =>
-      pageBuilder = (final settings) => Flutter2Page(
+      pageBuilder = (final settings) => Flutter5Page(
             moduleContext: moduleContext,
             params: settings.params,
             url: settings.url,

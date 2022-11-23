@@ -1,4 +1,4 @@
-// Copyright (c) 2022 bybit.
+// Copyright (c) 2022 foxsofter.
 //
 
 import 'package:flutter/material.dart';

@@ -22,6 +22,7 @@
 import 'package:flutter/widgets.dart';
 
 import '../extension/thrio_build_context.dart';
+import '../extension/thrio_iterable.dart';
 import '../module/module_anchor.dart';
 import 'navigator_page_observer.dart';
 import 'navigator_route.dart';
@@ -32,6 +33,7 @@ import 'navigator_widget.dart';
 class NavigatorPageLifecycle extends StatefulWidget {
   const NavigatorPageLifecycle({
     super.key,
+    this.url,
     this.willAppear,
     this.didAppear,
     this.willDisappear,
@@ -39,6 +41,7 @@ class NavigatorPageLifecycle extends StatefulWidget {
     required this.child,
   });
 
+  final String? url;
   final NavigatorPageObserverCallback? willAppear;
   final NavigatorPageObserverCallback? didAppear;
   final NavigatorPageObserverCallback? willDisappear;
@@ -63,14 +66,19 @@ class _NavigatorPageLifecycleState extends State<NavigatorPageLifecycle> {
   @override
   void initState() {
     super.initState();
+  }
 
-    if (mounted) {
-      final state = context.tryStateOf<NavigatorWidgetState>();
-      final route = state?.history.last;
-      if (route != null && route is NavigatorRoute) {
-        widget.willAppear?.call(route.settings);
-        widget.didAppear?.call(route.settings);
-      }
+  @override
+  void activate() {
+    super.activate();
+    final state = context.tryStateOf<NavigatorWidgetState>();
+    final route = widget.url == null
+        ? state?.history.last
+        : state?.history
+            .lastWhereOrNull((final it) => it is NavigatorRoute && it.settings.url == widget.url);
+    if (route != null && route is NavigatorRoute) {
+      widget.willAppear?.call(route.settings);
+      widget.didAppear?.call(route.settings);
     }
   }
 
@@ -80,17 +88,24 @@ class _NavigatorPageLifecycleState extends State<NavigatorPageLifecycle> {
       _pageObserverCallback?.call();
       _pageObserverCallback = null;
     }
-    if (shouldObserver) {
-      final state = context.stateOf<NavigatorWidgetState>();
-      final route = state.history.last;
-      if (route is NavigatorRoute) {
-        _route = route;
+    if (widget.url == null) {
+      if (shouldObserver) {
+        final state = context.stateOf<NavigatorWidgetState>();
+        final route = state.history.last;
+        if (route is NavigatorRoute) {
+          _route = route;
 
-        _pageObserverCallback = anchor.pageLifecycleObservers.registry(
-          route.settings.url!,
-          _PageLifecyclePageObserver(this),
-        );
+          _pageObserverCallback = anchor.pageLifecycleObservers.registry(
+            route.settings.url!,
+            _PageLifecyclePageObserver(this),
+          );
+        }
       }
+    } else {
+      _pageObserverCallback = anchor.pageLifecycleObservers.registry(
+        widget.url!,
+        _PageLifecyclePageObserver(this),
+      );
     }
 
     super.didChangeDependencies();
@@ -140,9 +155,13 @@ class _PageLifecyclePageObserver with NavigatorPageObserver {
     final RouteSettings routeSettings,
   ) {
     if (callback != null) {
-      final route = lifecycleState._route;
-      if (route != null && route.settings.name == routeSettings.name) {
-        callback(route.settings);
+      if (lifecycleState.widget.url == null) {
+        final route = lifecycleState._route;
+        if (route != null && route.settings.name == routeSettings.name) {
+          callback(route.settings);
+        }
+      } else {
+        callback(routeSettings);
       }
     }
   }
