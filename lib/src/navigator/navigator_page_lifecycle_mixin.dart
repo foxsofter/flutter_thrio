@@ -30,52 +30,29 @@ import 'navigator_route_settings.dart';
 import 'navigator_types.dart';
 import 'navigator_widget.dart';
 
-class NavigatorPageLifecycle extends StatefulWidget {
-  const NavigatorPageLifecycle({
-    super.key,
-    this.url,
-    this.willAppear,
-    this.didAppear,
-    this.willDisappear,
-    this.didDisappear,
-    required this.child,
-  });
-
-  final String? url;
-  final NavigatorPageObserverCallback? willAppear;
-  final NavigatorPageObserverCallback? didAppear;
-  final NavigatorPageObserverCallback? willDisappear;
-  final NavigatorPageObserverCallback? didDisappear;
-  final Widget child;
-
-  @override
-  _NavigatorPageLifecycleState createState() => _NavigatorPageLifecycleState();
-}
-
-class _NavigatorPageLifecycleState extends State<NavigatorPageLifecycle> {
+mixin NavigatorPageLifecycleMixin<T extends StatefulWidget> on State<T> {
   NavigatorRoute? _route;
-
   VoidCallback? _pageObserverCallback;
 
-  bool get shouldObserver =>
-      widget.willAppear != null ||
-      widget.didAppear != null ||
-      widget.willDisappear != null ||
-      widget.didDisappear != null;
+  String? get url => null;
 
   @override
   void initState() {
     super.initState();
+
     final state = context.tryStateOf<NavigatorWidgetState>();
-    final route = widget.url == null
+    final route = url == null
         ? state?.history.last
         : state?.history
-            .lastWhereOrNull((final it) => it is NavigatorRoute && it.settings.url == widget.url);
+            .lastWhereOrNull((final it) => it is NavigatorRoute && it.settings.url == url);
     if (route != null && route is NavigatorRoute) {
-      widget.willAppear?.call(route.settings);
-      widget.didAppear?.call(route.settings);
+      didAppear(route.settings);
     }
   }
+
+  void didAppear(final RouteSettings settings) {}
+
+  void didDisappear(final RouteSettings settings) {}
 
   @override
   void didChangeDependencies() {
@@ -83,22 +60,20 @@ class _NavigatorPageLifecycleState extends State<NavigatorPageLifecycle> {
       _pageObserverCallback?.call();
       _pageObserverCallback = null;
     }
-    if (widget.url == null) {
-      if (shouldObserver) {
-        final state = context.stateOf<NavigatorWidgetState>();
-        final route = state.history.last;
-        if (route is NavigatorRoute) {
-          _route = route;
+    if (url == null) {
+      final state = context.stateOf<NavigatorWidgetState>();
+      final route = state.history.last;
+      if (route is NavigatorRoute) {
+        _route = route;
 
-          _pageObserverCallback = anchor.pageLifecycleObservers.registry(
-            route.settings.url!,
-            _PageLifecyclePageObserver(this),
-          );
-        }
+        _pageObserverCallback = anchor.pageLifecycleObservers.registry(
+          route.settings.url!,
+          _PageLifecyclePageObserver(this),
+        );
       }
     } else {
       _pageObserverCallback = anchor.pageLifecycleObservers.registry(
-        widget.url!,
+        url!,
         _PageLifecyclePageObserver(this),
       );
     }
@@ -111,37 +86,22 @@ class _NavigatorPageLifecycleState extends State<NavigatorPageLifecycle> {
     _pageObserverCallback?.call();
     super.dispose();
   }
-
-  @override
-  Widget build(final BuildContext context) => widget.child;
 }
 
 class _PageLifecyclePageObserver with NavigatorPageObserver {
-  const _PageLifecyclePageObserver(this.lifecycleState);
+  const _PageLifecyclePageObserver(this.delegate);
 
-  final _NavigatorPageLifecycleState lifecycleState;
-
-  @override
-  void willAppear(final RouteSettings routeSettings) {
-    final callback = lifecycleState.widget.willAppear;
-    _lifecycleCallback(callback, routeSettings);
-  }
+  final NavigatorPageLifecycleMixin delegate;
 
   @override
   void didAppear(final RouteSettings routeSettings) {
-    final callback = lifecycleState.widget.didAppear;
-    _lifecycleCallback(callback, routeSettings);
-  }
-
-  @override
-  void willDisappear(final RouteSettings routeSettings) {
-    final callback = lifecycleState.widget.willDisappear;
+    final callback = delegate.didAppear;
     _lifecycleCallback(callback, routeSettings);
   }
 
   @override
   void didDisappear(final RouteSettings routeSettings) {
-    final callback = lifecycleState.widget.didDisappear;
+    final callback = delegate.didDisappear;
     _lifecycleCallback(callback, routeSettings);
   }
 
@@ -150,8 +110,8 @@ class _PageLifecyclePageObserver with NavigatorPageObserver {
     final RouteSettings routeSettings,
   ) {
     if (callback != null) {
-      if (lifecycleState.widget.url == null) {
-        final route = lifecycleState._route;
+      if (delegate.url == null) {
+        final route = delegate._route;
         if (route != null && route.settings.name == routeSettings.name) {
           callback(route.settings);
         }

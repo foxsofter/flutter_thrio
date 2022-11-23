@@ -42,6 +42,7 @@ export 'src/navigator/navigator_hot_restart_button.dart';
 export 'src/navigator/navigator_material_app.dart';
 export 'src/navigator/navigator_page.dart';
 export 'src/navigator/navigator_page_lifecycle.dart';
+export 'src/navigator/navigator_page_lifecycle_mixin.dart';
 export 'src/navigator/navigator_page_notify.dart';
 export 'src/navigator/navigator_page_observer.dart';
 export 'src/navigator/navigator_page_route.dart';
