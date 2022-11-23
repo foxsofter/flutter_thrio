@@ -8,6 +8,7 @@ import 'package:flutter_thrio/flutter_thrio.dart';
 import 'flutter1/module.dart' as flutter1;
 import 'flutter3/module.dart' as flutter3;
 import 'flutter5/module.dart' as flutter5;
+import 'flutter7/module.dart' as flutter7;
 
 class Module with ThrioModule, ModuleParamScheme {
   factory Module() => _instance;
@@ -24,6 +25,7 @@ class Module with ThrioModule, ModuleParamScheme {
     registerModule(flutter1.Module(), moduleContext);
     registerModule(flutter3.Module(), moduleContext);
     registerModule(flutter5.Module(), moduleContext);
+    registerModule(flutter7.Module(), moduleContext);
   }
 
   @override

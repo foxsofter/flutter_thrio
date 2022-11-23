@@ -4,4 +4,4 @@
 
 part of 'flutter5.page.dart';
 
-extension Flutter5 on _Flutter3PageState {}
+extension Flutter5 on _Flutter5PageState {}

@@ -170,6 +170,17 @@ class _Flutter3PageState extends State<Flutter3Page> {
                         style: TextStyle(fontSize: 22, color: Colors.black),
                       )),
                 ),
+                InkWell(
+                  onTap: root.biz1.flutter7.push,
+                  child: Container(
+                      padding: const EdgeInsets.all(8),
+                      margin: const EdgeInsets.all(8),
+                      color: Colors.yellow,
+                      child: const Text(
+                        'push flutter7',
+                        style: TextStyle(fontSize: 22, color: Colors.black),
+                      )),
+                ),
               ]),
             ),
           )));

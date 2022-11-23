@@ -8,6 +8,7 @@ import 'package:flutter_thrio/flutter_thrio.dart';
 import 'flutter1/flutter1.route.dart';
 import 'flutter3/flutter3.route.dart';
 import 'flutter5/flutter5.route.dart';
+import 'flutter7/flutter7.route.dart';
 
 class Biz1Route extends NavigatorRouteNode {
   factory Biz1Route(final NavigatorRouteNode parent) => _instance ??= Biz1Route._(parent);
@@ -21,6 +22,8 @@ class Biz1Route extends NavigatorRouteNode {
   late final flutter3 = Flutter3Route(this);
 
   late final flutter5 = Flutter5Route(this);
+
+  late final flutter7 = Flutter7Route(this);
 
   @override
   String get name => 'biz1';

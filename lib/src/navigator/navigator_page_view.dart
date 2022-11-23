@@ -1,6 +1,6 @@
 // The MIT License (MIT)
 //
-// Copyright (c) 2019 foxsofter
+// Copyright (c) 2022 foxsofter
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
 // copy of this software and associated documentation files (the "Software"),
@@ -96,13 +96,13 @@ class _NavigatorPageViewState extends State<NavigatorPageView> {
       if (isAppeared) {
         final oldObs = anchor.pageLifecycleObservers[oldUrl];
         for (final ob in oldObs) {
-          if (ob is! _PageObserver) {
+          if (ob is! _PageViewPageObserver) {
             ob.didDisappear(RouteSettings(name: '0 $oldUrl'));
           }
         }
         final obs = anchor.pageLifecycleObservers[url];
         for (final ob in obs) {
-          if (ob is! _PageObserver) {
+          if (ob is! _PageViewPageObserver) {
             ob.didAppear(RouteSettings(name: '0 $url'));
           }
         }
@@ -116,7 +116,7 @@ class _NavigatorPageViewState extends State<NavigatorPageView> {
     if (mounted) {
       final obs = anchor.pageLifecycleObservers[current];
       for (final ob in obs) {
-        if (ob is! _PageObserver) {
+        if (ob is! _PageViewPageObserver) {
           ob.didAppear(RouteSettings(name: '0 $current'));
         }
       }
@@ -141,7 +141,7 @@ class _NavigatorPageViewState extends State<NavigatorPageView> {
     if (route is NavigatorRoute) {
       _pageObserverCallback = anchor.pageLifecycleObservers.registry(
         route.settings.url!,
-        _PageObserver(this),
+        _PageViewPageObserver(this),
       );
     }
 
@@ -173,8 +173,8 @@ class _NavigatorPageViewState extends State<NavigatorPageView> {
       );
 }
 
-class _PageObserver with NavigatorPageObserver {
-  const _PageObserver(this.lifecycleState);
+class _PageViewPageObserver with NavigatorPageObserver {
+  const _PageViewPageObserver(this.lifecycleState);
 
   final _NavigatorPageViewState lifecycleState;
 
