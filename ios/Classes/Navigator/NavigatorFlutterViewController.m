@@ -55,6 +55,27 @@ NS_ASSUME_NONNULL_BEGIN
     if (self) {
         self.thrio_hidesNavigationBar_ = @YES;
         self.hidesBottomBarWhenPushed = YES;
+        if (@available(iOS 13.0, *)) {
+            [[NSNotificationCenter defaultCenter] addObserver:self
+                                                     selector:@selector(viewDidAppear:)
+                                                         name:UISceneDidActivateNotification
+                                                       object:nil];
+            [[NSNotificationCenter defaultCenter] addObserver:self
+                                                     selector:@selector(viewDidDisappear:)
+                                                         name:UISceneDidEnterBackgroundNotification
+                                                       object:nil];
+
+        } else {
+            [[NSNotificationCenter defaultCenter] addObserver:self
+                                                     selector:@selector(viewDidAppear:)
+                                                         name:UIApplicationDidBecomeActiveNotification
+                                                       object:nil];
+            [[NSNotificationCenter defaultCenter] addObserver:self
+                                                     selector:@selector(viewDidDisappear:)
+                                                         name:UIApplicationDidEnterBackgroundNotification
+                                                       object:nil];
+        }
+
     }
     return self;
 }
@@ -95,12 +116,13 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)viewDidDisappear:(BOOL)animated {
     [super viewDidDisappear:animated];
     
-    if ([self.navigationController thrio_getAllRoutesByUrl:nil].count > 1) {
+    if ([self.navigationController thrio_getAllRoutesByUrl:nil].count > 0) {
         [ThrioModule.pageObservers didDisappear:self.thrio_lastRoute.settings];
     }
 }
 
 - (void)dealloc {
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
     NavigatorVerbose(@"NavigatorFlutterViewController dealloc: %@", self);
     [NavigatorFlutterEngineFactory.shared destroyEngineByPageId:_pageId withEntrypoint:self.entrypoint];
 }
