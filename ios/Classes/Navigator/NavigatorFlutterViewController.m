@@ -57,25 +57,25 @@ NS_ASSUME_NONNULL_BEGIN
         self.hidesBottomBarWhenPushed = YES;
         if (@available(iOS 13.0, *)) {
             [[NSNotificationCenter defaultCenter] addObserver:self
-                                                     selector:@selector(viewDidAppear:)
+                                                     selector:@selector(viewDidAppearFromBackgroud)
                                                          name:UISceneDidActivateNotification
                                                        object:nil];
             [[NSNotificationCenter defaultCenter] addObserver:self
-                                                     selector:@selector(viewDidDisappear:)
+                                                     selector:@selector(viewDidDisappearFromForeground)
                                                          name:UISceneDidEnterBackgroundNotification
                                                        object:nil];
-
+            
         } else {
             [[NSNotificationCenter defaultCenter] addObserver:self
-                                                     selector:@selector(viewDidAppear:)
+                                                     selector:@selector(viewDidAppearFromBackgroud)
                                                          name:UIApplicationDidBecomeActiveNotification
                                                        object:nil];
             [[NSNotificationCenter defaultCenter] addObserver:self
-                                                     selector:@selector(viewDidDisappear:)
+                                                     selector:@selector(viewDidDisappearFromForeground)
                                                          name:UIApplicationDidEnterBackgroundNotification
                                                        object:nil];
         }
-
+        
     }
     return self;
 }
@@ -126,6 +126,19 @@ NS_ASSUME_NONNULL_BEGIN
     NavigatorVerbose(@"NavigatorFlutterViewController dealloc: %@", self);
     [NavigatorFlutterEngineFactory.shared destroyEngineByPageId:_pageId withEntrypoint:self.entrypoint];
 }
+
+- (void)viewDidAppearFromBackgroud {
+    if (self == self.navigationController.viewControllers.lastObject) {
+        [ThrioModule.pageObservers didAppear:self.thrio_lastRoute.settings];
+    }
+}
+
+- (void)viewDidDisappearFromForeground {
+    if (self == self.navigationController.viewControllers.lastObject) {
+        [ThrioModule.pageObservers didDisappear:self.thrio_lastRoute.settings];
+    }
+}
+
 
 @end
 #pragma clang diagnostic pop
