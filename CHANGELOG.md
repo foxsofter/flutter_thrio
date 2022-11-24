@@ -359,3 +359,13 @@
 ## 3.0.2
 
 - feat: Support custom route builder.
+
+## 3.1.0
+
+- feat: NavigatorRoutePush support given url
+- feat: ios didAppear and didDisappear call when from background and enter foreground
+- feat: add NavigatorTabBarView and NavigatorPageView
+- feat: add NavigatorPageLifecycleMixin
+- feat: onModuleInit change to async method
+- feat: add build method for ThrioNavigator
+- feat: add NavigatorDialogRoute
