@@ -33,7 +33,6 @@ class NavigatorMaterialApp extends MaterialApp {
     super.title,
     final Widget? home,
     super.onGenerateTitle,
-    super.onGenerateRoute,
     super.color,
     super.theme,
     super.darkTheme,
