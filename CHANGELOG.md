@@ -373,3 +373,7 @@
 ## 3.1.1
 
 - feat: add thrio_dynamic extension method
+
+## 3.1.2
+
+- feat: export thrio_dynamic
