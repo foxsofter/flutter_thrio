@@ -369,3 +369,7 @@
 - feat: onModuleInit change to async method
 - feat: add build method for ThrioNavigator
 - feat: add NavigatorDialogRoute
+
+## 3.1.1
+
+- feat: add thrio_dynamic extension method

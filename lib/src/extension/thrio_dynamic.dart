@@ -19,28 +19,34 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-import '../extension/thrio_dynamic.dart';
-import '../module/thrio_module.dart';
+/// Get value from params, throw ArgumentError when`key`'s value  not found .
+///
+T getValue<T>(final dynamic params, final String key) {
+  final val = getValueOrNull<T>(params, key);
+  if (val != null) {
+    return val;
+  }
+  throw ArgumentError.notNull(key);
+}
 
-mixin NavigatorPage {
-  ModuleContext get moduleContext;
+/// Get value from params, return `defaultValue` when`key`'s value  not found .
+///
+T getValueOrDefault<T>(final dynamic params, final String key, final T defaultValue) {
+  final val = getValueOrNull<T>(params, key);
+  if (val != null) {
+    return val;
+  }
+  return defaultValue;
+}
 
-  dynamic get params;
-
-  String? get url;
-
-  int get index;
-
-  /// Get parameter from params, throw ArgumentError when`key`'s value  not found .
-  ///
-  T getParam<T>(final String key) => getValue(params, key);
-
-  /// Get parameter from params, return `defaultValue` when`key`'s value  not found .
-  ///
-  T getParamOrDefault<T>(final String key, final T defaultValue) =>
-      getValueOrDefault(params, key, defaultValue);
-
-  /// Get parameter from params.
-  ///
-  T? getParamOrNull<T>(final String key) => getValueOrNull(params, key);
+/// Get value from params.
+///
+T? getValueOrNull<T>(final dynamic params, final String key) {
+  if (params is Map) {
+    final val = params[key];
+    if (val is T) {
+      return val;
+    }
+  }
+  return null;
 }
