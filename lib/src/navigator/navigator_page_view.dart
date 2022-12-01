@@ -78,7 +78,8 @@ class NavigatorPageView extends StatefulWidget {
   State<NavigatorPageView> createState() => _NavigatorPageViewState();
 }
 
-class _NavigatorPageViewState extends State<NavigatorPageView> {
+// ignore: prefer_mixin
+class _NavigatorPageViewState extends State<NavigatorPageView> with WidgetsBindingObserver {
   VoidCallback? _pageObserverCallback;
 
   late final controller = widget.controller ?? PageController();
@@ -86,6 +87,10 @@ class _NavigatorPageViewState extends State<NavigatorPageView> {
   bool isAppeared = true;
 
   late RouteSettings current = widget.routeSettings[controller.initialPage];
+
+  Future<void>? appearFuture;
+
+  Future<void>? disappearFuture;
 
   void onPageChanged(final int idx) {
     final routeSettings = widget.routeSettings[idx];
@@ -100,23 +105,29 @@ class _NavigatorPageViewState extends State<NavigatorPageView> {
 
   void _changedToAppear(final RouteSettings routeSettings) {
     if (isAppeared) {
-      final obs = anchor.pageLifecycleObservers[routeSettings.url!];
-      for (final ob in obs) {
-        if (ob is! _PageViewPageObserver) {
-          ob.didAppear(routeSettings);
+      appearFuture ??= Future.delayed(const Duration(milliseconds: 10), () {
+        final obs = anchor.pageLifecycleObservers[routeSettings.url!];
+        for (final ob in obs) {
+          if (ob is! _PageViewPageObserver) {
+            ob.didAppear(routeSettings);
+          }
         }
-      }
+        appearFuture = null;
+      });
     }
   }
 
   void _changedToDisappear(final RouteSettings routeSettings) {
     if (isAppeared) {
-      final obs = anchor.pageLifecycleObservers[routeSettings.url!];
-      for (final ob in obs) {
-        if (ob is! _PageViewPageObserver) {
-          ob.didDisappear(routeSettings);
+      disappearFuture ??= Future.delayed(const Duration(milliseconds: 10), () {
+        final obs = anchor.pageLifecycleObservers[routeSettings.url!];
+        for (final ob in obs) {
+          if (ob is! _PageViewPageObserver) {
+            ob.didDisappear(routeSettings);
+          }
         }
-      }
+        disappearFuture = null;
+      });
     }
   }
 
@@ -124,12 +135,18 @@ class _NavigatorPageViewState extends State<NavigatorPageView> {
   void initState() {
     super.initState();
     if (mounted) {
-      final obs = anchor.pageLifecycleObservers[current.url!];
-      for (final ob in obs) {
-        if (ob is! _PageViewPageObserver) {
-          Future(() => ob.didAppear(current));
-        }
-      }
+      _changedToAppear(current);
+    }
+  }
+
+  @override
+  void didChangeAppLifecycleState(final AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      isAppeared = true;
+      _changedToAppear(current);
+    } else if (state == AppLifecycleState.inactive) {
+      isAppeared = false;
+      _changedToDisappear(current);
     }
   }
 

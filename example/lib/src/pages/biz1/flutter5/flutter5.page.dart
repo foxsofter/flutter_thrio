@@ -46,23 +46,23 @@ class _Flutter5PageState extends State<Flutter5Page> {
       body: NavigatorPageLifecycle(
           url: root.biz1.flutter1.home.url,
           willAppear: (final settings) {
-            ThrioLogger.v('lifecycle willAppear -> $settings');
+            ThrioLogger.v('page5 willAppear -> $settings');
           },
           didAppear: (final settings) {
-            ThrioLogger.v('lifecycle didAppear -> $settings');
+            ThrioLogger.v('page5 didAppear -> $settings');
           },
           willDisappear: (final settings) {
-            ThrioLogger.v('lifecycle willDisappear -> $settings');
+            ThrioLogger.v('page5 willDisappear -> $settings');
           },
           didDisappear: (final settings) {
-            ThrioLogger.v('lifecycle didDisappear -> $settings');
+            ThrioLogger.v('page5 didDisappear -> $settings');
           },
           child: NavigatorPageView(
-            urls: [
-              root.biz1.flutter1.home.url,
-              root.biz1.flutter3.url,
-              root.biz2.flutter2.url,
-              root.biz2.flutter4.url,
+            routeSettings: <RouteSettings>[
+              NavigatorRouteSettings.settingsWith(url: root.biz1.flutter1.home.url, index: 1),
+              NavigatorRouteSettings.settingsWith(url: root.biz1.flutter3.url, index: 2),
+              NavigatorRouteSettings.settingsWith(url: root.biz2.flutter2.url, index: 3),
+              NavigatorRouteSettings.settingsWith(url: root.biz2.flutter4.url, index: 4),
             ],
           )));
 }

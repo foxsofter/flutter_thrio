@@ -229,16 +229,16 @@ class _HomePageState extends State<HomePage> {
                           ),
                           NavigatorPageLifecycle(
                               willAppear: (final settings) {
-                                ThrioLogger.v('lifecycle willAppear -> $settings');
+                                ThrioLogger.v('home willAppear -> $settings');
                               },
                               didAppear: (final settings) {
-                                ThrioLogger.v('lifecycle didAppear -> $settings');
+                                ThrioLogger.v('home  didAppear -> $settings');
                               },
                               willDisappear: (final settings) {
-                                ThrioLogger.v('lifecycle willDisappear -> $settings');
+                                ThrioLogger.v('home  willDisappear -> $settings');
                               },
                               didDisappear: (final settings) {
-                                ThrioLogger.v('lifecycle didDisappear -> $settings');
+                                ThrioLogger.v('home  didDisappear -> $settings');
                               },
                               child: StreamBuilder<Object>(
                                   stream: widget.moduleContext.on('stringKeyBiz1'),

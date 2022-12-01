@@ -64,8 +64,7 @@ class _NavigatorPageLifecycleState extends State<NavigatorPageLifecycle> {
       widget.didDisappear != null;
 
   @override
-  void initState() {
-    super.initState();
+  void activate() {
     final state = context.tryStateOf<NavigatorWidgetState>();
     final route = widget.url == null
         ? state?.history.last
@@ -75,6 +74,7 @@ class _NavigatorPageLifecycleState extends State<NavigatorPageLifecycle> {
       widget.willAppear?.call(route.settings);
       widget.didAppear?.call(route.settings);
     }
+    super.activate();
   }
 
   @override

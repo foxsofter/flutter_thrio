@@ -381,3 +381,7 @@
 ## 3.1.3
 
 - refactor: NavigatorTabBarView and NavigatorPageView
+
+## 3.1.4
+
+- feat:  NavigatorTabBarView, NavigatorPageView support nesting
