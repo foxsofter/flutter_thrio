@@ -30,7 +30,7 @@ mixin NavigatorPageObserver {
   ///
   void willAppear(final RouteSettings routeSettings) {}
 
-  /// The `route` has been activated.
+  /// The `route` has been appeared.
   ///
   void didAppear(final RouteSettings routeSettings) {}
 
@@ -38,7 +38,7 @@ mixin NavigatorPageObserver {
   ///
   void willDisappear(final RouteSettings routeSettings) {}
 
-  /// The `route` is has disappeared.
+  /// The `route` has been disappeared.
   ///
   void didDisappear(final RouteSettings routeSettings) {}
 }

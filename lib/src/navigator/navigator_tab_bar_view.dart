@@ -24,7 +24,7 @@ class NavigatorTabBarView extends StatefulWidget {
   /// The length of [children] must be the same as the [controller]'s length.
   const NavigatorTabBarView({
     super.key,
-    required this.urls,
+    required this.routeSettings,
     this.controller,
     this.physics,
     this.dragStartBehavior = DragStartBehavior.start,
@@ -38,11 +38,11 @@ class NavigatorTabBarView extends StatefulWidget {
   /// will be used.
   final TabController? controller;
 
-  /// One url per tab.
+  /// One RouteSettings per tab.
   ///
   /// Its length must match the length of the [TabBar.tabs]
   /// list, as well as the [controller]'s [TabController.length].
-  final List<String> urls;
+  final List<RouteSettings> routeSettings;
 
   /// How the page view should respond to user input.
   ///
@@ -237,10 +237,10 @@ class _NavigatorTabBarViewState extends State<NavigatorTabBarView> {
         return;
       }
       assert(() {
-        if (_controller!.length != widget.urls.length) {
+        if (_controller!.length != widget.routeSettings.length) {
           throw FlutterError(
             "Controller's length property (${_controller!.length}) does not match the "
-            "number of children (${widget.urls.length}) present in TabBarView's children property.",
+            "number of children (${widget.routeSettings.length}) present in TabBarView's children property.",
           );
         }
         return true;
@@ -263,7 +263,7 @@ class _NavigatorTabBarViewState extends State<NavigatorTabBarView> {
         physics: widget.physics == null
             ? const PageScrollPhysics().applyTo(const ClampingScrollPhysics())
             : const PageScrollPhysics().applyTo(widget.physics),
-        urls: widget.urls,
+        routeSettings: widget.routeSettings,
       ),
     );
   }

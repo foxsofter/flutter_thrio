@@ -377,3 +377,7 @@
 ## 3.1.2
 
 - feat: export thrio_dynamic
+
+## 3.1.3
+
+- refactor: NavigatorTabBarView and NavigatorPageView

@@ -24,6 +24,15 @@
 import 'package:flutter/widgets.dart';
 
 extension NavigatorRouteSettings on RouteSettings {
+  /// Construct RouteSettings with url, index, params.
+  ///
+  static RouteSettings settingsWith({
+    required final String url,
+    final int index = 0,
+    final dynamic params,
+  }) =>
+      RouteSettings(name: '$index $url', arguments: <String, dynamic>{'params': params});
+
   /// Converting arguments to route settings.
   ///
   static RouteSettings? fromArguments(final Map<String, dynamic>? arguments) {

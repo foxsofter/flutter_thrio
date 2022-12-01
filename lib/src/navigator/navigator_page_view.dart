@@ -39,7 +39,7 @@ class NavigatorPageView extends StatefulWidget {
     this.physics,
     this.pageSnapping = true,
     this.onPageChanged,
-    this.urls = const <String>[],
+    this.routeSettings = const <RouteSettings>[],
     this.dragStartBehavior = DragStartBehavior.start,
     this.allowImplicitScrolling = false,
     this.restorationId,
@@ -58,9 +58,9 @@ class NavigatorPageView extends StatefulWidget {
 
   final bool pageSnapping;
 
-  final void Function(String)? onPageChanged;
+  final void Function(RouteSettings)? onPageChanged;
 
-  final List<String> urls;
+  final List<RouteSettings> routeSettings;
 
   final DragStartBehavior dragStartBehavior;
 
@@ -85,36 +85,36 @@ class _NavigatorPageViewState extends State<NavigatorPageView> {
 
   bool isAppeared = true;
 
-  late String current = widget.urls[controller.initialPage];
+  late RouteSettings current = widget.routeSettings[controller.initialPage];
 
   void onPageChanged(final int idx) {
-    final url = widget.urls[idx];
-    if (url != current) {
-      final oldUrl = current;
-      current = url;
-      widget.onPageChanged?.call(url);
-      _changedToAppear(url);
-      _changedToDisappear(oldUrl);
+    final routeSettings = widget.routeSettings[idx];
+    if (routeSettings != current) {
+      final oldRouteSettings = current;
+      current = routeSettings;
+      widget.onPageChanged?.call(routeSettings);
+      _changedToAppear(routeSettings);
+      _changedToDisappear(oldRouteSettings);
     }
   }
 
-  void _changedToAppear(final String url) {
+  void _changedToAppear(final RouteSettings routeSettings) {
     if (isAppeared) {
-      final obs = anchor.pageLifecycleObservers[url];
+      final obs = anchor.pageLifecycleObservers[routeSettings.url!];
       for (final ob in obs) {
         if (ob is! _PageViewPageObserver) {
-          ob.didAppear(RouteSettings(name: '0 $url'));
+          ob.didAppear(routeSettings);
         }
       }
     }
   }
 
-  void _changedToDisappear(final String url) {
+  void _changedToDisappear(final RouteSettings routeSettings) {
     if (isAppeared) {
-      final obs = anchor.pageLifecycleObservers[url];
+      final obs = anchor.pageLifecycleObservers[routeSettings.url!];
       for (final ob in obs) {
         if (ob is! _PageViewPageObserver) {
-          ob.didDisappear(RouteSettings(name: '0 $url'));
+          ob.didDisappear(routeSettings);
         }
       }
     }
@@ -124,10 +124,10 @@ class _NavigatorPageViewState extends State<NavigatorPageView> {
   void initState() {
     super.initState();
     if (mounted) {
-      final obs = anchor.pageLifecycleObservers[current];
+      final obs = anchor.pageLifecycleObservers[current.url!];
       for (final ob in obs) {
         if (ob is! _PageViewPageObserver) {
-          ob.didAppear(RouteSettings(name: '0 $current'));
+          Future(() => ob.didAppear(current));
         }
       }
     }
@@ -173,10 +173,10 @@ class _NavigatorPageViewState extends State<NavigatorPageView> {
         clipBehavior: widget.clipBehavior,
         scrollBehavior: widget.scrollBehavior,
         padEnds: widget.padEnds,
-        children: widget.urls.map((final url) {
-          final w = ThrioNavigator.build(url: url);
+        children: widget.routeSettings.map((final it) {
+          final w = ThrioNavigator.build(url: it.url!, params: it.params);
           if (w == null) {
-            throw ArgumentError.value(url, 'url', 'invalid url');
+            throw ArgumentError.value(it, 'routeSettings', 'invalid routeSettings');
           }
           return w;
         }).toList(),
