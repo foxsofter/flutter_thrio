@@ -113,5 +113,16 @@
     }];
 }
 
+- (void)canPop:(id)arguments result:(ThrioBoolCallback _Nullable)result {
+    [_channel invokeMethod:@"canPop" arguments:arguments result:^(id _Nullable r) {
+        if (result) {
+            if (r && [r isKindOfClass:NSNumber.class]) {
+                result([r boolValue]);
+            } else {
+                result(NO);
+            }
+        }
+    }];
+}
 
 @end

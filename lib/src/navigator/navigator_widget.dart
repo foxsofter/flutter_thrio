@@ -102,6 +102,21 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
     return true;
   }
 
+  Future<bool> canPop(final RouteSettings settings, {final bool inRoot = false}) async {
+    final navigatorState = widget.child.tryStateOf<NavigatorState>();
+    if (navigatorState == null) {
+      return false;
+    }
+    if (await history.last.willPop() != RoutePopDisposition.pop) {
+      return false;
+    }
+    // 在原生端处于容器的根部，且当前 Flutter 页面栈上不超过 3，则不能再 pop
+    if (inRoot && history.whereType<NavigatorRoute>().length < 3) {
+      return false;
+    }
+    return true;
+  }
+
   Future<bool> maybePop(
     final RouteSettings settings, {
     final bool animated = true,

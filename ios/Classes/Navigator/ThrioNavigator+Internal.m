@@ -32,6 +32,7 @@
 #import "UINavigationController+Navigator.h"
 #import "UINavigationController+PopDisabled.h"
 #import "UINavigationController+PopGesture.h"
+#import "UIViewController+Navigator.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -155,9 +156,21 @@ NS_ASSUME_NONNULL_BEGIN
             result(@0);
         }
     }
-
 }
 
++ (void)_canPop:(ThrioBoolCallback _Nullable)result {
+    UINavigationController *nvc = self.navigationController;
+    UIViewController *topVC = [[UIApplication sharedApplication] topmostViewController];
+    UIViewController *curVC = nvc.viewControllers.lastObject;
+    if (topVC != curVC) {
+        if (result) {
+            result(NO);
+        }
+        return;
+    }
+    BOOL inRoot = topVC == nvc.viewControllers.firstObject;
+    [topVC thrio_canPopInRoot:inRoot result:result];
+}
 
 + (NSArray *)_getAllRoutesByUrl:(NSString *_Nullable)url {
     NSMutableArray *allRoutes = [NSMutableArray array];

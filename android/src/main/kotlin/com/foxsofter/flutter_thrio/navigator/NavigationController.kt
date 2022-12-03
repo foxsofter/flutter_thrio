@@ -325,6 +325,16 @@ internal object NavigationController : Application.ActivityLifecycleCallbacks {
                 }
             }
         }
+
+        fun canPop(result: BooleanCallback? = null) {
+            val lastHolder = PageRoutes.lastRouteHolder()
+            if (lastHolder == null) {
+                result?.invoke(false)
+                return
+            }
+            val inRoot = lastHolder == PageRoutes.firstRouteHolder
+            lastHolder.canPop(inRoot, result)
+        }
     }
 
     object PopTo {

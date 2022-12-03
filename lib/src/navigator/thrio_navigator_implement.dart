@@ -215,6 +215,8 @@ class ThrioNavigatorImplement {
   }) =>
       _sendChannel.replace(url: url, index: index, newUrl: newUrl, replaceOnly: replaceOnly);
 
+  Future<bool> canPop() => _sendChannel.canPop();
+
   Widget? build<TParams>({required final String url, final TParams? params}) {
     final pageBuilder = ThrioModule.get<NavigatorPageBuilder>(url: url);
     return pageBuilder?.call(RouteSettings(

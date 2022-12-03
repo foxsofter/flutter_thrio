@@ -55,6 +55,8 @@ NS_ASSUME_NONNULL_BEGIN
         [self _onRemove];
         [self _onReplace];
         
+        [self _onCanPop];
+        
         [self _onLastRoute];
         [self _onGetAllRoutes];
         [self _onIsInitialRoute];
@@ -246,6 +248,20 @@ NS_ASSUME_NONNULL_BEGIN
                 result(r);
             }
         } replaceOnly:replaceOnly];
+    }];
+}
+
+- (void)_onCanPop {
+    [_channel registryMethod:@"canPop"
+                     handler:
+     ^void (NSDictionary<NSString *, id> *arguments,
+            ThrioIdCallback _Nullable result) {
+        NavigatorVerbose(@"on canPop");
+        [ThrioNavigator _canPop:^(BOOL r) {
+            if (result) {
+                result(@(r));
+            }
+        }];
     }];
 }
 

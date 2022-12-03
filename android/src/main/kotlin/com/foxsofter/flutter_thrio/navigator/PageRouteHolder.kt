@@ -25,7 +25,6 @@ package com.foxsofter.flutter_thrio.navigator
 
 import android.app.Activity
 import com.foxsofter.flutter_thrio.BooleanCallback
-import com.foxsofter.flutter_thrio.NullableBooleanCallback
 import com.foxsofter.flutter_thrio.NullableIntCallback
 import com.foxsofter.flutter_thrio.module.ModuleJsonDeserializers
 import com.foxsofter.flutter_thrio.module.ModuleJsonSerializers
@@ -113,7 +112,7 @@ internal data class PageRouteHolder(
         params: T?,
         animated: Boolean,
         inRoot: Boolean = false,
-        result: NullableBooleanCallback
+        result: BooleanCallback
     ) {
         val lastRoute = lastRoute()
         if (lastRoute == null) {
@@ -131,13 +130,13 @@ internal data class PageRouteHolder(
                     args["inRoot"] = inRoot
                 }
                 activity.onPop(arguments) { r ->
-                    if (r == true) {
+                    if (r) {
                         routes.remove(lastRoute)
                     }
                     result(r)
-                    if (r == true) {
-                        lastRoute.poppedResult?.let { callback ->
-                            callback(ModuleJsonDeserializers.deserializeParams(params))
+                    if (r) {
+                        lastRoute.poppedResult?.let { poppedCallback ->
+                            poppedCallback(ModuleJsonDeserializers.deserializeParams(params))
                         }
                         lastRoute.poppedResult = null
                         if (lastRoute.fromEntrypoint != NAVIGATION_NATIVE_ENTRYPOINT &&
@@ -282,6 +281,41 @@ internal data class PageRouteHolder(
             }
         } else {
             result(null)
+        }
+    }
+
+    fun canPop(
+        inRoot: Boolean = false,
+        result: BooleanCallback?
+    ) {
+        val lastRoute = lastRoute()
+        if (lastRoute == null) {
+            result?.invoke(false)
+            return;
+        }
+        if (inRoot) {
+            val firstRoute = firstRoute()
+            if (lastRoute == firstRoute) {
+                result?.invoke(false)
+                return;
+            }
+        }
+        val activity = activity?.get()
+        if (activity == null) {
+            result?.invoke(false)
+            return;
+        }
+        if (activity is ThrioFlutterActivity) {
+            var arguments = lastRoute.settings.toArguments()
+            arguments = mutableMapOf<String, Any?>().also { args ->
+                args.putAll(arguments)
+                args["inRoot"] = inRoot
+            }
+            activity.onCanPop(arguments){
+                result?.invoke(it)
+            }
+        } else {
+            result?.invoke(true)
         }
     }
 

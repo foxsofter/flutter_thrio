@@ -142,6 +142,10 @@ abstract class ThrioNavigator {
         newUrl: newUrl,
       );
 
+  /// Whether the navigator can be popped.
+  ///
+  static Future<bool> canPop() => ThrioNavigatorImplement.shared().canPop();
+
   /// Build widget with `url` and `params`.
   ///
   static Widget? build<TParams>({required final String url, final TParams? params}) =>

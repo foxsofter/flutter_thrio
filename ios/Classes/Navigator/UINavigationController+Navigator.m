@@ -319,14 +319,12 @@ NS_ASSUME_NONNULL_BEGIN
                 result(r ? newIndex : @0);
             }
         } replaceOnly:replaceOnly];
-        
     } else {
         if (result) {
             result(@0);
         }
     }
 }
-
 
 - (void)thrio_didPushUrl:(NSString *)url index:(NSNumber *)index {
     UIViewController *vc = [self getViewControllerByUrl:url index:index];

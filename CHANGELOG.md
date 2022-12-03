@@ -385,3 +385,7 @@
 ## 3.1.4
 
 - feat:  NavigatorTabBarView, NavigatorPageView support nesting
+
+## 3.1.5
+
+- feat:  flutter support canPop

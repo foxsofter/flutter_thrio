@@ -35,6 +35,7 @@ class NavigatorRouteReceiveChannel {
     _onPopTo();
     _onRemove();
     _onReplace();
+    _onCanPop();
   }
 
   final ThrioChannel _channel;
@@ -82,6 +83,18 @@ class NavigatorRouteReceiveChannel {
               _syncPagePoppedResults();
               return value;
             }) ??
+            false;
+      });
+
+  void _onCanPop() => _channel.registryMethodCall('canPop', ([final arguments]) async {
+        final routeSettings = NavigatorRouteSettings.fromArguments(arguments);
+        if (routeSettings == null) {
+          return false;
+        }
+        final inRoot = arguments?['inRoot'] == true;
+        return ThrioNavigatorImplement.shared()
+                .navigatorState
+                ?.canPop(routeSettings, inRoot: inRoot) ??
             false;
       });
 

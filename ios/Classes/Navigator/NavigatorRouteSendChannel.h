@@ -43,6 +43,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)replace:(id)arguments result:(ThrioBoolCallback _Nullable)result;
 
+- (void)canPop:(id)arguments result:(ThrioBoolCallback _Nullable)result;
+
 @end
 
 NS_ASSUME_NONNULL_END

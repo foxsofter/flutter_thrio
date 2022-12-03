@@ -66,6 +66,8 @@ NS_ASSUME_NONNULL_BEGIN
              result:(ThrioNumberCallback _Nullable)result
         replaceOnly:(BOOL)replaceOnly;
 
++ (void)_canPop:(ThrioBoolCallback _Nullable)result;
+
 + (NSArray *)_getAllRoutesByUrl:(NSString *_Nullable)url;
 
 + (void)_setPopDisabledUrl:(NSString *)url

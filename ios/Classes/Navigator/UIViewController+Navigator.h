@@ -68,6 +68,8 @@ NS_ASSUME_NONNULL_BEGIN
                   result:(ThrioBoolCallback _Nullable)result
              replaceOnly:(BOOL)replaceOnly;
 
+- (void)thrio_canPopInRoot:(BOOL)inRoot result:(ThrioBoolCallback _Nullable)result;
+
 - (void)thrio_didPushUrl:(NSString *)url index:(NSNumber *)index;
 
 - (void)thrio_didPopUrl:(NSString *)url index:(NSNumber *)index;

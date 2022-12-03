@@ -227,6 +227,20 @@ class _HomePageState extends State<HomePage> {
                                   style: TextStyle(fontSize: 22, color: Colors.black),
                                 )),
                           ),
+                          InkWell(
+                            onTap: () async {
+                              final canPop = await ThrioNavigator.canPop();
+                              debugPrint('canPop: $canPop');
+                            },
+                            child: Container(
+                                padding: const EdgeInsets.all(8),
+                                margin: const EdgeInsets.all(8),
+                                color: Colors.grey,
+                                child: const Text(
+                                  'canPop',
+                                  style: TextStyle(fontSize: 22, color: Colors.black),
+                                )),
+                          ),
                           NavigatorPageLifecycle(
                               willAppear: (final settings) {
                                 ThrioLogger.v('home willAppear -> $settings');

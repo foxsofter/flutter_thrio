@@ -27,7 +27,6 @@ import android.app.Activity
 import android.app.Application
 import android.os.Bundle
 import com.foxsofter.flutter_thrio.BooleanCallback
-import com.foxsofter.flutter_thrio.NullableBooleanCallback
 import com.foxsofter.flutter_thrio.NullableIntCallback
 import com.foxsofter.flutter_thrio.extension.getEntrypoint
 import com.foxsofter.flutter_thrio.extension.getPageId
@@ -150,7 +149,7 @@ internal object PageRoutes : Application.ActivityLifecycleCallbacks {
         params: T?,
         animated: Boolean,
         inRoot: Boolean = false,
-        result: NullableBooleanCallback
+        result: BooleanCallback
     ) {
         val holder = routeHolders.lastOrNull()
         if (holder == null) {
@@ -168,7 +167,7 @@ internal object PageRoutes : Application.ActivityLifecycleCallbacks {
                 if (routeHolders.count() > 1) routeHolders[routeHolders.count() - 2] else null
 
             holder.pop<T>(params, animated, inRoot) { it ->
-                if (it == true) {
+                if (it) {
                     if (!holder.hasRoute()) {
                         willAppearPageId =
                             if (secondTopHolder == null || secondTopHolder.entrypoint == NAVIGATION_NATIVE_ENTRYPOINT) 0

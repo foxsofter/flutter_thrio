@@ -38,6 +38,8 @@ internal class RouteReceiveChannel(
         onPopTo()
         onRemove()
         onReplace()
+        onCanPop()
+
         onLastRoute()
         onGetAllRoutes()
         isInitialRoute()
@@ -123,6 +125,12 @@ internal class RouteReceiveChannel(
             val newUrl = arguments["newUrl"] as String
             val replaceOnly = arguments["replaceOnly"] == true
             NavigationController.Replace.replace(url, index, newUrl, replaceOnly, result)
+        }
+    }
+
+    private fun onCanPop() {
+        channel.registryMethod("canPop") { _, result ->
+            NavigationController.Pop.canPop(result)
         }
     }
 

@@ -26,7 +26,6 @@ package io.flutter.embedding.android
 import android.content.Context
 import android.content.pm.PackageManager
 import com.foxsofter.flutter_thrio.BooleanCallback
-import com.foxsofter.flutter_thrio.NullableBooleanCallback
 import com.foxsofter.flutter_thrio.extension.getEntrypoint
 import com.foxsofter.flutter_thrio.extension.getPageId
 import com.foxsofter.flutter_thrio.navigator.FlutterEngineFactory
@@ -103,7 +102,7 @@ open class ThrioFlutterActivity : FlutterActivity() {
         engine.sendChannel.onNotify(arguments, result)
     }
 
-    fun onPop(arguments: Map<String, Any?>?, result: NullableBooleanCallback) {
+    fun onPop(arguments: Map<String, Any?>?, result: BooleanCallback) {
         val pageId = intent.getPageId()
         if (pageId == NAVIGATION_ROUTE_PAGE_ID_NONE) throw IllegalStateException("pageId must not be null")
         val entrypoint = intent.getEntrypoint()
@@ -137,6 +136,15 @@ open class ThrioFlutterActivity : FlutterActivity() {
         val engine = FlutterEngineFactory.getEngine(pageId, entrypoint)
             ?: throw IllegalStateException("engine must not be null")
         engine.sendChannel.onReplace(arguments, result)
+    }
+
+    fun onCanPop(arguments: Map<String, Any?>?, result: BooleanCallback) {
+        val pageId = intent.getPageId()
+        if (pageId == NAVIGATION_ROUTE_PAGE_ID_NONE) throw IllegalStateException("pageId must not be null")
+        val entrypoint = intent.getEntrypoint()
+        val engine = FlutterEngineFactory.getEngine(pageId, entrypoint)
+            ?: throw IllegalStateException("engine must not be null")
+        engine.sendChannel.onCanPop(arguments, result)
     }
 
     private fun readInitialUrl() {

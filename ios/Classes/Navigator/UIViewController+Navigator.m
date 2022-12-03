@@ -372,6 +372,26 @@ NS_ASSUME_NONNULL_BEGIN
     }
 }
 
+- (void)thrio_canPopInRoot:(BOOL)inRoot result:(ThrioBoolCallback _Nullable)result {
+    NavigatorPageRoute *lastRoute = [self thrio_lastRoute];
+    if (inRoot) {
+        NavigatorPageRoute *firstRoute = [self thrio_firstRoute];
+        if (lastRoute == firstRoute) {
+            if (result) {
+                result(NO);
+                return;
+            }
+        }
+    }
+    NSMutableDictionary *arguments =
+    [NSMutableDictionary dictionaryWithDictionary:[lastRoute.settings toArguments]];
+    [arguments setObject:[NSNumber numberWithBool:inRoot] forKey:@"inRoot"];
+    NSString *entrypoint = [(NavigatorFlutterViewController *)self entrypoint];
+    NSUInteger pageId = [(NavigatorFlutterViewController *)self pageId];
+    NavigatorRouteSendChannel *channel =
+    [NavigatorFlutterEngineFactory.shared getSendChannelByPageId:pageId withEntrypoint:entrypoint];
+    [channel canPop:arguments result:result];
+}
 
 - (void)thrio_didPushUrl:(NSString *)url index:(NSNumber *)index {
     NavigatorPageRoute *route = [self thrio_getRouteByUrl:url index:index];

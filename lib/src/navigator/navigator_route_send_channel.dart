@@ -61,6 +61,9 @@ class NavigatorRouteSendChannel {
     return _channel.invokeMethod<bool>('notify', arguments).then((final it) => it ?? false);
   }
 
+  Future<bool> canPop<TParams>() =>
+      _channel.invokeMethod<bool>('canPop').then((final it) => it ?? false);
+
   Future<bool> pop<TParams>({final TParams? params, final bool animated = true}) async {
     final settings = await lastRoute();
     final url = settings?.url;
