@@ -19,6 +19,8 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
@@ -114,53 +116,73 @@ class ThrioNavigatorImplement {
 
   void ready() => _channel.invokeMethod<bool>('ready');
 
-  Future<int> push<TParams>({
+  Future<TPopParams> push<TParams, TPopParams>({
     required final String url,
     final TParams? params,
     final bool animated = true,
-    final NavigatorParamsCallback? poppedResult,
-  }) =>
-      _sendChannel
-          .push<TParams>(url: url, params: params, animated: animated)
-          .then<int>((final index) {
-        if (poppedResult != null && index > 0) {
-          final routeName = '$index $url';
-          final routeHistory = ThrioNavigatorImplement.shared().navigatorState?.history;
-          final route = routeHistory?.lastWhereOrNull((final it) => it.settings.name == routeName);
-          if (route != null && route is NavigatorRoute) {
-            route.poppedResult = poppedResult;
-          } else {
-            // 不在当前页面栈上，则通过name来缓存
-            poppedResults[routeName] = poppedResult;
-          }
-        }
-        return index;
-      });
-
-  Future<int> pushSingle<TParams>({
-    required final String url,
-    final TParams? params,
-    final bool animated = true,
-    final NavigatorParamsCallback? poppedResult,
-  }) async {
-    final index = await _sendChannel
-        .push<TParams>(url: url, params: params, animated: animated)
-        .then<int>((final index) {
-      if (poppedResult != null && index > 0) {
+    final NavigatorIntCallback? result,
+  }) {
+    final completer = Completer<TPopParams>();
+    _sendChannel.push<TParams>(url: url, params: params, animated: animated).then((final index) {
+      if (index > 0) {
         final routeName = '$index $url';
         final routeHistory = ThrioNavigatorImplement.shared().navigatorState?.history;
         final route = routeHistory?.lastWhereOrNull((final it) => it.settings.name == routeName);
         if (route != null && route is NavigatorRoute) {
-          route.poppedResult = poppedResult;
+          route.poppedResult = (final params) => poppedResult<TPopParams>(completer, params);
         } else {
           // 不在当前页面栈上，则通过name来缓存
-          poppedResults[routeName] = poppedResult;
+          poppedResults[routeName] = (final params) => poppedResult<TPopParams>(completer, params);
         }
       }
-      return index;
+      result?.call(index);
     });
-    await removeAll(url: url, excludeIndex: index);
-    return index;
+    return completer.future;
+  }
+
+  Future<TPopParams> pushSingle<TParams, TPopParams>({
+    required final String url,
+    final TParams? params,
+    final bool animated = true,
+    final NavigatorIntCallback? result,
+  }) {
+    final completer = Completer<TPopParams>();
+
+    _sendChannel
+        .push<TParams>(url: url, params: params, animated: animated)
+        .then((final index) async {
+      if (index > 0) {
+        final routeName = '$index $url';
+        final routeHistory = ThrioNavigatorImplement.shared().navigatorState?.history;
+        final route = routeHistory?.lastWhereOrNull((final it) => it.settings.name == routeName);
+        if (route != null && route is NavigatorRoute) {
+          route.poppedResult = (final params) => poppedResult<TPopParams>(completer, params);
+        } else {
+          // 不在当前页面栈上，则通过name来缓存
+          poppedResults[routeName] = (final params) => poppedResult<TPopParams>(completer, params);
+        }
+        await removeAll(url: url, excludeIndex: index);
+      }
+    });
+    return completer.future;
+  }
+
+  void poppedResult<TPopParams>(final Completer<TPopParams> completer, final dynamic params) {
+    if (completer.isCompleted) {
+      return;
+    }
+    if (params == null) {
+      final ts = TPopParams.toString();
+      if (ts == 'dynamic' || ts.contains('?')) {
+        completer.complete(null);
+      } else {
+        completer.completeError(ArgumentError('invalid params: $params', 'params'));
+      }
+    } else if (params is TPopParams) {
+      completer.complete(params);
+    } else {
+      completer.completeError(ArgumentError('invalid params: $params', 'params'));
+    }
   }
 
   Future<bool> notify<TParams>({

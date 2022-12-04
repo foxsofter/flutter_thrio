@@ -15,15 +15,15 @@ class Flutter2Route extends NavigatorRouteLeaf {
   @override
   String get name => 'flutter2';
 
-  Future<int> push<TParams>({
+  Future<TPopParams> push<TParams, TPopParams>({
     final TParams? params,
     final bool animated = true,
-    final NavigatorParamsCallback? poppedResult,
+    final NavigatorIntCallback? result,
   }) =>
       ThrioNavigator.push(
         url: url,
         params: params,
         animated: animated,
-        poppedResult: poppedResult,
+        result: result,
       );
 }

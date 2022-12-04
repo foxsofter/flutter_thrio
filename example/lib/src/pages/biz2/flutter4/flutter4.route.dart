@@ -19,15 +19,15 @@ class Flutter4Route extends NavigatorRouteLeaf {
 
   /// 打开 people 页面
   ///
-  Future<int> push(
+  Future<TPopParams> push<TPopParams>(
     final People people, {
     final bool animated = true,
-    final NavigatorParamsCallback? poppedResult,
+    final NavigatorIntCallback? result,
   }) =>
-      ThrioNavigator.push<People>(
+      ThrioNavigator.push<People, TPopParams>(
         url: url,
         params: people,
         animated: animated,
-        poppedResult: poppedResult,
+        result: result,
       );
 }

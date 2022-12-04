@@ -57,7 +57,7 @@ class _Flutter4PageState extends State<Flutter4Page> {
               ),
             ),
             InkWell(
-              onTap: () => root.biz1.flutter1.push(params: {
+              onTap: () => root.biz1.flutter1.home.push(params: {
                 '1': {'2': '3'}
               }),
               child: Container(

@@ -107,13 +107,12 @@ class _Flutter2PageState extends State<Flutter2Page> {
                       )),
                 ),
                 InkWell(
-                  onTap: () => ThrioNavigator.push(
-                      url: '/biz2/native2',
-                      params: {
-                        '1': {'2': '3'}
-                      },
-                      poppedResult: (final params) =>
-                          ThrioLogger.v('/biz1/native1 popped:$params')),
+                  onTap: () async {
+                    final params = await ThrioNavigator.push(url: '/biz2/native2', params: {
+                      '1': {'2': '3'}
+                    });
+                    ThrioLogger.v('/biz1/native1 popped:$params');
+                  },
                   child: Container(
                       padding: const EdgeInsets.all(8),
                       margin: const EdgeInsets.all(8),

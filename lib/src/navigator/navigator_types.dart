@@ -34,7 +34,11 @@ typedef NavigatorRouteBuilder = NavigatorRoute Function(
   RouteSettings settings,
 );
 
-/// Signature of callbacks with generic parameters with type `T`.
+/// Signature of callbacks with int parameter.
+///
+typedef NavigatorIntCallback = void Function(int index);
+
+/// Signature of callbacks with dynamic parameter.
 ///
 typedef NavigatorParamsCallback = void Function(dynamic params);
 

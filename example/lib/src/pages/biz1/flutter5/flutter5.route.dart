@@ -15,15 +15,15 @@ class Flutter5Route extends NavigatorRouteLeaf {
   @override
   String get name => 'flutter5';
 
-  Future<int> push<TParams>({
+  Future<TPopParams> push<TParams, TPopParams>({
     final TParams? params,
     final bool animated = true,
-    final NavigatorParamsCallback? poppedResult,
+    final NavigatorIntCallback? result,
   }) =>
-      ThrioNavigator.push(
+      ThrioNavigator.push<TParams, TPopParams>(
         url: url,
         params: params,
         animated: animated,
-        poppedResult: poppedResult,
+        result: result,
       );
 }

@@ -389,3 +389,7 @@
 ## 3.1.5
 
 - feat:  flutter support canPop
+
+## 3.2.0
+
+- feat: The return value of the push method is changed to be consistent with Flutter's push method

@@ -194,9 +194,14 @@ class NavigatorRouteReceiveChannel {
     final routes = await ThrioNavigatorImplement.shared().allRoutes();
     if (routes.isEmpty) {
       ThrioNavigatorImplement.shared().poppedResults.clear();
+    } else {
+      ThrioNavigatorImplement.shared().poppedResults.removeWhere((final name, final poppedResult) {
+        if (!routes.any((final it) => it.name == name)) {
+          Future(() => poppedResult.call(null));
+          return true;
+        }
+        return false;
+      });
     }
-    ThrioNavigatorImplement.shared()
-        .poppedResults
-        .removeWhere((final name, final _) => !routes.any((final it) => it.name == name));
   }
 }

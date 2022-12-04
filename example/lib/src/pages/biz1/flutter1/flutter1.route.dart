@@ -21,18 +21,6 @@ class Flutter1Route extends NavigatorRouteNode {
   @override
   String get name => 'flutter1';
 
-  Future<int> push<TParams>({
-    final TParams? params,
-    final bool animated = true,
-    final NavigatorParamsCallback? poppedResult,
-  }) =>
-      ThrioNavigator.push(
-        url: url,
-        params: params,
-        animated: animated,
-        poppedResult: poppedResult,
-      );
-
   /// 通知 flutter1
   ///
   Future<bool> flutter1({
