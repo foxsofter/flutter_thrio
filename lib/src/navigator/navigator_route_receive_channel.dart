@@ -51,7 +51,7 @@ class NavigatorRouteReceiveChannel {
         );
         routeSettings.params = _deserializeParams(routeSettings.url!, routeSettings.params);
         final animated = arguments?['animated'] == true;
-        final callback = anchor.get<NavigatorRoutePushCallback>(url: routeSettings.url!);
+        final callback = anchor.get<NavigatorRoutePushHandle>(url: routeSettings.url!);
         if (callback != null) {
           final result = await callback(routeSettings, animated: animated);
           if (result == NavigatorRoutePushHandleType.prevention) {

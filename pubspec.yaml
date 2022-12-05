@@ -1,6 +1,6 @@
 name: flutter_thrio
 description: Thrio makes it easy and fast to add flutter to existing mobile applications, and provide a simple and consistent navigator APIs.
-version: 3.2.0
+version: 3.3.0
 homepage: https://github.com/flutter-thrio/flutter_thrio
 
 environment:
@@ -12,6 +12,7 @@ dependencies:
     sdk: flutter
 
   plugin_platform_interface: ^2.0.2
+  uri: ^1.0.0
 
 dev_dependencies:
   flutter_test:

@@ -23,6 +23,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:uri/uri.dart';
 
 import '../channel/thrio_channel.dart';
 import '../extension/thrio_iterable.dart';
@@ -122,6 +123,16 @@ class ThrioNavigatorImplement {
     final bool animated = true,
     final NavigatorIntCallback? result,
   }) {
+    final match = matchRouteCustomHandle(url);
+    if (match != null) {
+      return onRouteCustomHandle<TPopParams>(
+        handler: match.value,
+        uri: match.key,
+        animated: animated,
+        result: result,
+      );
+    }
+
     final completer = Completer<TPopParams>();
     _sendChannel.push<TParams>(url: url, params: params, animated: animated).then((final index) {
       if (index > 0) {
@@ -139,6 +150,31 @@ class ThrioNavigatorImplement {
     });
     return completer.future;
   }
+
+  MapEntry<Uri, NavigatorRouteCustomHandler>? matchRouteCustomHandle(final String url) {
+    for (final key in anchor.customHandlers.keys) {
+      final uri = Uri.parse(url);
+      if (key.scheme == uri.scheme && key.host == uri.host && key.parser.matches(uri)) {
+        return MapEntry(uri, anchor.customHandlers[key]!);
+      }
+    }
+    return null;
+  }
+
+  Future<TPopParams> onRouteCustomHandle<TPopParams>({
+    required final NavigatorRouteCustomHandler handler,
+    required final Uri uri,
+    final bool animated = true,
+    final NavigatorIntCallback? result,
+  }) =>
+      handler<TPopParams>(
+        uri.scheme,
+        uri.host,
+        uri.path,
+        uri.queryParametersAll,
+        animated: animated,
+        result: result,
+      );
 
   Future<TPopParams> pushSingle<TParams, TPopParams>({
     required final String url,

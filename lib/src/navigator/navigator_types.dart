@@ -51,9 +51,9 @@ enum NavigatorRoutePushHandleType {
   prevention, // Prevent routing behavior from continuing
 }
 
-/// Signature of route push handler callbacks with RouteSettings.
+/// Signature of route push handler with RouteSettings.
 ///
-typedef NavigatorRoutePushCallback = Future<NavigatorRoutePushHandleType> Function(
+typedef NavigatorRoutePushHandle = Future<NavigatorRoutePushHandleType> Function(
   RouteSettings settings, {
   bool animated,
 });

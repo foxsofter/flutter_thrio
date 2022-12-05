@@ -33,6 +33,7 @@ export 'src/module/module_page_builder.dart';
 export 'src/module/module_page_observer.dart';
 export 'src/module/module_param_scheme.dart';
 export 'src/module/module_route_builder.dart';
+export 'src/module/module_route_custom_handler.dart';
 export 'src/module/module_route_observer.dart';
 export 'src/module/module_route_transitions_builder.dart';
 export 'src/module/module_types.dart';

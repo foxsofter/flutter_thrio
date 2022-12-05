@@ -393,3 +393,7 @@
 ## 3.2.0
 
 - feat: The return value of the push method is changed to be consistent with Flutter's push method
+
+## 3.3.0
+
+- feat: add ModuleRouteCustomHandler

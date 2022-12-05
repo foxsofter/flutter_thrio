@@ -204,6 +204,17 @@ class _Flutter2PageState extends State<Flutter2Page> {
                         style: TextStyle(fontSize: 22, color: Colors.black),
                       )),
                 ),
+                InkWell(
+                  onTap: root.biz2.flutter6.push,
+                  child: Container(
+                      padding: const EdgeInsets.all(8),
+                      margin: const EdgeInsets.all(8),
+                      color: Colors.grey,
+                      child: const Text(
+                        'push flutter6',
+                        style: TextStyle(fontSize: 22, color: Colors.black),
+                      )),
+                ),
               ]),
             ),
           )));

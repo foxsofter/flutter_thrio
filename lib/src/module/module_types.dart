@@ -19,6 +19,8 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
+import '../navigator/navigator_types.dart';
+
 /// Signature of callbacks for json serializer.
 ///
 typedef JsonSerializer = Map<String, dynamic> Function(T Function<T>() factory);
@@ -26,3 +28,16 @@ typedef JsonSerializer = Map<String, dynamic> Function(T Function<T>() factory);
 /// Signature of callbacks for json deserializer.
 ///
 typedef JsonDeserializer<T> = T? Function(Map<String, dynamic> params);
+
+/// Signature of route custom handler.
+///
+/// Can be used to handle deeplink or route redirection.
+///
+typedef NavigatorRouteCustomHandler = Future<TPopParams> Function<TPopParams>(
+  String scheme,
+  String host,
+  String path,
+  Map<String, List<String>> queryParams, {
+  bool animated,
+  NavigatorIntCallback? result,
+});

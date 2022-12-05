@@ -85,7 +85,7 @@ class _Flutter3PageState extends State<Flutter3Page> {
                       )),
                 ),
                 InkWell(
-                  onTap: ThrioNavigator.pop,
+                  onTap: () => ThrioNavigator.pop(params: 'goodman'),
                   child: Container(
                       padding: const EdgeInsets.all(8),
                       margin: const EdgeInsets.all(8),

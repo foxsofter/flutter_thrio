@@ -1,6 +1,6 @@
 // The MIT License (MIT)
 //
-// Copyright (c) 2022 foxsofter.
+// Copyright (c) 2022 foxsofter
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
 // copy of this software and associated documentation files (the "Software"),
@@ -19,46 +19,32 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
+import 'package:uri/uri.dart';
 
-import '../../flutter_thrio.dart';
-import '../module/module_anchor.dart';
-
-class NavigatorRoutePush extends StatefulWidget {
-  const NavigatorRoutePush({
-    super.key,
-    required this.url,
-    required this.onPush,
-    required this.child,
+@immutable
+class NavigatorUrlTemplate {
+  const NavigatorUrlTemplate({
+    required this.scheme,
+    required this.host,
+    required this.parser,
   });
 
-  final String url;
-  final NavigatorRoutePushHandle onPush;
-  final Widget child;
+  final String scheme;
+  final String host;
+  final UriParser parser;
 
   @override
-  _NavigatorRoutePushState createState() => _NavigatorRoutePushState();
-}
-
-class _NavigatorRoutePushState extends State<NavigatorRoutePush> {
-  VoidCallback? _registry;
-
-  @override
-  void dispose() {
-    _registry?.call();
-    super.dispose();
+  bool operator ==(final Object other) {
+    if (identical(this, other)) {
+      return true;
+    }
+    return other is NavigatorUrlTemplate &&
+        scheme == other.scheme &&
+        host == other.host &&
+        parser.template == other.parser.template;
   }
 
   @override
-  Widget build(final BuildContext context) => NavigatorPageLifecycle(
-        didAppear: (final _) {
-          _registry?.call();
-          _registry = anchor.pushHandlers.registry(widget.url, widget.onPush);
-        },
-        didDisappear: (final _) {
-          _registry?.call();
-          _registry = null;
-        },
-        child: widget.child,
-      );
+  int get hashCode => Object.hash(scheme, host, parser.template);
 }

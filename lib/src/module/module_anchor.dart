@@ -22,12 +22,14 @@
 // ignore_for_file: avoid_as
 
 import 'package:flutter/widgets.dart';
+import 'package:uri/uri.dart';
 
 import '../navigator/navigator_page_observer.dart';
 import '../navigator/navigator_route.dart';
 import '../navigator/navigator_route_observer.dart';
 import '../navigator/navigator_route_settings.dart';
 import '../navigator/navigator_types.dart';
+import '../navigator/navigator_url_template.dart';
 import '../navigator/thrio_navigator_implement.dart';
 import '../registry/registry_map.dart';
 import '../registry/registry_set_map.dart';
@@ -60,7 +62,11 @@ class ModuleAnchor
 
   /// Holds PushHandler registered by `NavigatorRoutePush` .
   ///
-  final pushHandlers = RegistryMap<String, NavigatorRoutePushCallback>();
+  final pushHandlers = RegistryMap<String, NavigatorRoutePushHandle>();
+
+  /// A collection of route handlers for matching the key's pattern.
+  ///
+  final customHandlers = RegistryMap<NavigatorUrlTemplate, NavigatorRouteCustomHandler>();
 
   /// All registered urls.
   ///
@@ -132,7 +138,7 @@ class ModuleAnchor
     var modules = <ThrioModule>[];
     if (url != null && url.isNotEmpty) {
       final typeString = T.toString();
-      if (typeString == (NavigatorRoutePushCallback).toString()) {
+      if (typeString == (NavigatorRoutePushHandle).toString()) {
         final handler = pushHandlers[url];
         if (handler != null) {
           return handler as T;
