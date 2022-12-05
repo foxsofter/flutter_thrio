@@ -42,7 +42,7 @@ class _Flutter3PageState extends State<Flutter3Page> {
           appBar: AppBar(
             backgroundColor: Colors.white,
             title: const Text('thrio_example', style: TextStyle(color: Colors.black)),
-            leading: context.shouldCanPop(const IconButton(
+            leading: context.showPopAwareWidget(const IconButton(
               color: Colors.black,
               tooltip: 'back',
               icon: Icon(Icons.arrow_back_ios),

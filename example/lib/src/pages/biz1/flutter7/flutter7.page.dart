@@ -36,7 +36,7 @@ class _Flutter7PageState extends State<Flutter7Page> with SingleTickerProviderSt
       resizeToAvoidBottomInset: true,
       appBar: AppBar(
         title: const Text('TabBarView example', style: TextStyle(color: Colors.black)),
-        leading: context.shouldCanPop(const IconButton(
+        leading: context.showPopAwareWidget(const IconButton(
           color: Colors.black,
           tooltip: 'back',
           icon: Icon(Icons.arrow_back_ios),

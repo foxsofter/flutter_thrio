@@ -67,15 +67,15 @@ extension ThrioBuildContext on BuildContext {
   /// ))
   /// ```
   ///
-  Widget shouldCanPop(
+  Widget showPopAwareWidget(
     final Widget trueWidget, {
     final Widget falseWidget = const SizedBox(),
-    final void Function(bool)? shoulCanPopResult,
+    final void Function(bool)? canPopResult,
   }) =>
       FutureBuilder<bool>(
           future: _isInitialRoute(),
           builder: (final context, final snapshot) {
-            shoulCanPopResult?.call(snapshot.data != true);
+            canPopResult?.call(snapshot.data != true);
             if (snapshot.data == true) {
               return falseWidget;
             } else {
@@ -87,8 +87,10 @@ extension ThrioBuildContext on BuildContext {
     final state = stateOf<NavigatorWidgetState>();
     final route = state.history.last;
     return route is NavigatorRoute
-        ? ThrioNavigatorImplement.shared()
-            .isInitialRoute(url: route.settings.url!, index: route.settings.index)
+        ? ThrioNavigatorImplement.shared().isInitialRoute(
+            url: route.settings.url!,
+            index: route.settings.index,
+          )
         : Future<bool>.value(false);
   }
 }
