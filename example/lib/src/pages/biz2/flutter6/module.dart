@@ -36,10 +36,16 @@ class Module with ThrioModule, ModulePageBuilder, ModuleRouteCustomHandler {
           final host,
           final path,
           final queryParams, {
+          final params,
           final animated = true,
           final result,
         }) async =>
-            ThrioNavigator.push<dynamic, Void>(url: root.biz1.flutter3.url));
+            ThrioNavigator.push(
+              url: root.biz1.flutter3.url,
+              params: params,
+              animated: animated,
+              result: result,
+            ));
     registerRouteCustomHandler(
         'anotherScheme://leaderboard/home{?hashId,product}',
         <Void>(
@@ -47,9 +53,15 @@ class Module with ThrioModule, ModulePageBuilder, ModuleRouteCustomHandler {
           final host,
           final path,
           final queryParams, {
+          final params,
           final animated = true,
           final result,
         }) async =>
-            ThrioNavigator.push<dynamic, Void>(url: root.biz1.flutter3.url));
+            ThrioNavigator.push(
+              url: root.biz1.flutter3.url,
+              params: params,
+              animated: animated,
+              result: result,
+            ));
   }
 }

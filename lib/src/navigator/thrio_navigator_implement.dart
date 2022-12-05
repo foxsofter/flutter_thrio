@@ -128,6 +128,7 @@ class ThrioNavigatorImplement {
       return onRouteCustomHandle<TPopParams>(
         handler: match.value,
         uri: match.key,
+        params: params,
         animated: animated,
         result: result,
       );
@@ -164,6 +165,7 @@ class ThrioNavigatorImplement {
   Future<TPopParams> onRouteCustomHandle<TPopParams>({
     required final NavigatorRouteCustomHandler handler,
     required final Uri uri,
+    final dynamic params,
     final bool animated = true,
     final NavigatorIntCallback? result,
   }) =>
@@ -172,6 +174,7 @@ class ThrioNavigatorImplement {
         uri.host,
         uri.path,
         uri.queryParametersAll,
+        params: params,
         animated: animated,
         result: result,
       );

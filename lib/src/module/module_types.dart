@@ -38,6 +38,7 @@ typedef NavigatorRouteCustomHandler = Future<TPopParams> Function<TPopParams>(
   String host,
   String path,
   Map<String, List<String>> queryParams, {
+  dynamic params,
   bool animated,
   NavigatorIntCallback? result,
 });
