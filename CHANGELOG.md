@@ -397,3 +397,9 @@
 ## 3.3.0
 
 - feat: add ModuleRouteCustomHandler
+
+## 3.4.0
+
+- feat: custom route handle with params
+- refactor: rename shouldCanPop to showPopAwareWidget
+  
