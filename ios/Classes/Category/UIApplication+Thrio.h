@@ -33,6 +33,9 @@ NS_ASSUME_NONNULL_BEGIN
 ///
 - (UINavigationController *_Nullable)topmostNavigationController;
 
+/// Get keyWindow (fit iOS13 UIScene)
+- (UIWindow *)getKeyWindow;
+
 @end
 
 NS_ASSUME_NONNULL_END

@@ -32,6 +32,7 @@
 #import "UIViewController+HidesNavigationBar.h"
 #import "UIViewController+Internal.h"
 #import "UIViewController+Navigator.h"
+#import "UIApplication+Thrio.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -110,7 +111,7 @@ NS_ASSUME_NONNULL_BEGIN
     
     [ThrioModule.pageObservers willDisappear:self.thrio_lastRoute.settings];
     
-    [[UIApplication sharedApplication].delegate.window endEditing:YES];
+    [[UIApplication sharedApplication].getKeyWindow endEditing:YES];
 }
 
 - (void)viewDidDisappear:(BOOL)animated {
