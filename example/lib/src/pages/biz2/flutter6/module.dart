@@ -32,9 +32,7 @@ class Module with ThrioModule, ModulePageBuilder, ModuleRouteCustomHandler {
     registerRouteCustomHandler(
         'justascheme://open/home{?tab}',
         <Void>(
-          final scheme,
-          final host,
-          final path,
+          final url,
           final queryParams, {
           final params,
           final animated = true,
@@ -49,9 +47,7 @@ class Module with ThrioModule, ModulePageBuilder, ModuleRouteCustomHandler {
     registerRouteCustomHandler(
         'anotherScheme://leaderboard/home{?hashId,product}',
         <Void>(
-          final scheme,
-          final host,
-          final path,
+          final url,
           final queryParams, {
           final params,
           final animated = true,

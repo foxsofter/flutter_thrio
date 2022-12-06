@@ -170,9 +170,7 @@ class ThrioNavigatorImplement {
     final NavigatorIntCallback? result,
   }) =>
       handler<TPopParams>(
-        uri.scheme,
-        uri.host,
-        uri.path,
+        '${uri.scheme}://${uri.host}${uri.path}',
         uri.queryParametersAll,
         params: params,
         animated: animated,
