@@ -123,8 +123,7 @@ internal class RouteReceiveChannel(
             val url = arguments["url"] as String
             val index = if (arguments["index"] != null) arguments["index"] as Int else 0
             val newUrl = arguments["newUrl"] as String
-            val replaceOnly = arguments["replaceOnly"] == true
-            NavigationController.Replace.replace(url, index, newUrl, replaceOnly, result)
+            NavigationController.Replace.replace(url, index, newUrl, result)
         }
     }
 

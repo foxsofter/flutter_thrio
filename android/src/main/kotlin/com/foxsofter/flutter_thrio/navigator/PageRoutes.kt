@@ -260,14 +260,14 @@ internal object PageRoutes : Application.ActivityLifecycleCallbacks {
         }
     }
 
-    fun replace(url: String, index: Int?, newUrl: String, newIndex: Int, replaceOnly: Boolean, result: NullableIntCallback) {
+    fun replace(url: String, index: Int?, newUrl: String, newIndex: Int, result: NullableIntCallback) {
         val holder = routeHolders.lastOrNull { it.lastRoute(url, index) != null }
         if (holder == null) {
             result(null)
             return
         }
 
-        holder.replace(url, index, newUrl, newIndex, replaceOnly, result)
+        holder.replace(url, index, newUrl, newIndex, result)
     }
 
     fun didPop(routeSettings: RouteSettings) {

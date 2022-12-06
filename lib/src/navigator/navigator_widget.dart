@@ -277,23 +277,15 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
     return true;
   }
 
-  Future<bool> replace(
-    final RouteSettings settings,
-    final RouteSettings newSettings, {
-    final bool replaceOnly = false,
-  }) async {
+  Future<bool> replace(final RouteSettings settings, final RouteSettings newSettings) async {
     final navigatorState = widget.child.tryStateOf<NavigatorState>();
     if (navigatorState == null) {
       return false;
     }
-    final route = history.firstWhereOrNull((final it) => it.settings.name == settings.name);
+    final route = history.lastWhereOrNull((final it) => it.settings.name == settings.name);
     if (route == null) {
       return false;
     }
-    if (replaceOnly) {
-      return true;
-    }
-
     final pageBuilder = ThrioModule.get<NavigatorPageBuilder>(url: newSettings.url);
     if (pageBuilder == null) {
       return false;

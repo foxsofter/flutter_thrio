@@ -58,12 +58,12 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 + (void)_pushUrl:(NSString *)url
-            params:(id _Nullable)params
-          animated:(BOOL)animated
-    fromEntrypoint:fromEntrypoint
-        fromPageId:(NSUInteger)fromPageId
-            result:(ThrioNumberCallback _Nullable)result
-      poppedResult:(ThrioIdCallback _Nullable)poppedResult
+          params:(id _Nullable)params
+        animated:(BOOL)animated
+  fromEntrypoint:fromEntrypoint
+      fromPageId:(NSUInteger)fromPageId
+          result:(ThrioNumberCallback _Nullable)result
+    poppedResult:(ThrioIdCallback _Nullable)poppedResult
 {
     UINavigationController *nvc = self.navigationController;
     [self.navigationControllers addAndRemoveObject:nvc];
@@ -140,15 +140,17 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (void)_replaceUrl:(NSString *)url
               index:(NSNumber *_Nullable)index
-         withNewUrl:(NSString *)newUrl
-             result:(ThrioNumberCallback _Nullable)result
-        replaceOnly:(BOOL)replaceOnly {
+             newUrl:(NSString *)newUrl
+             result:(ThrioNumberCallback _Nullable)result {
     NSArray *allNvcs = [self.navigationControllers.allObjects.reverseObjectEnumerator allObjects];
     BOOL contains = NO;
     for (UINavigationController *nvc in allNvcs) {
         if ([nvc thrio_containsUrl:url index:index]) {
             contains = YES;
-            [nvc thrio_replaceUrl:url index:index withNewUrl:newUrl result:result replaceOnly:replaceOnly];
+            [nvc thrio_replaceUrl:url
+                            index:index
+                           newUrl:newUrl
+                           result:result];
         }
     }
     if (!contains) {

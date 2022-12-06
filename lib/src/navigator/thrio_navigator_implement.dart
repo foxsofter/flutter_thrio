@@ -270,9 +270,8 @@ class ThrioNavigatorImplement {
     required final String url,
     final int index = 0,
     required final String newUrl,
-    final bool replaceOnly = false,
   }) =>
-      _sendChannel.replace(url: url, index: index, newUrl: newUrl, replaceOnly: replaceOnly);
+      _sendChannel.replace(url: url, index: index, newUrl: newUrl);
 
   Future<bool> canPop() => _sendChannel.canPop();
 

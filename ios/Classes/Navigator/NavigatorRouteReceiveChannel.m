@@ -236,18 +236,17 @@ NS_ASSUME_NONNULL_BEGIN
         ? nil
         : arguments[@"index"];
         NSString *newUrl = arguments[@"newUrl"];
-        BOOL replaceOnly = [arguments[@"replaceOnly"] boolValue];
         
-        NavigatorVerbose(@"on replace: %@.%@ => %@", oldUrl, oldIndex, newUrl);
+        NavigatorVerbose(@"on replace: %@ %@ => %@", index, url, newUrl);
         
         [ThrioNavigator _replaceUrl:url
                               index:index
-                         withNewUrl:newUrl
+                             newUrl:newUrl
                              result:^(NSNumber *r) {
             if (result) {
                 result(r);
             }
-        } replaceOnly:replaceOnly];
+        }];
     }];
 }
 

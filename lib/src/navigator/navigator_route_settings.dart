@@ -43,12 +43,12 @@ extension NavigatorRouteSettings on RouteSettings {
       final url = urlValue is String ? urlValue : null;
       final indexValue = arguments['index'];
       final index = indexValue is int ? indexValue : null;
-      final isNestedValue = arguments['isNested'];
-      final isNested = isNestedValue != null && isNestedValue is bool && isNestedValue;
+      final isNested = arguments['isNested'] == true;
       final params = arguments['params'];
       return RouteSettings(
-          name: '$index $url',
-          arguments: <String, dynamic>{'isNested': isNested, 'params': params});
+        name: '$index $url',
+        arguments: <String, dynamic>{'isNested': isNested, 'params': params},
+      );
     }
     return null;
   }
@@ -61,8 +61,7 @@ extension NavigatorRouteSettings on RouteSettings {
       final url = urlValue is String ? urlValue : null;
       final indexValue = arguments['newIndex'];
       final index = indexValue is int ? indexValue : null;
-      final isNestedValue = arguments['isNested'];
-      final isNested = isNestedValue != null && isNestedValue is bool && isNestedValue;
+      final isNested = arguments['isNested'] == true;
       return RouteSettings(name: '$index $url', arguments: <String, dynamic>{'isNested': isNested});
     }
     return null;
@@ -89,22 +88,21 @@ extension NavigatorRouteSettings on RouteSettings {
   }
 
   bool get isNested {
-    if (arguments != null && arguments is Map<String, dynamic>) {
-      final isNestedValue = (arguments as Map<String, dynamic>)['isNested'];
-      return isNestedValue != null && isNestedValue is bool && isNestedValue;
+    if (arguments != null && arguments is Map) {
+      return (arguments as Map<String, dynamic>)['isNested'] == true;
     }
     return false;
   }
 
   dynamic get params {
-    if (arguments != null && arguments is Map<String, dynamic>) {
+    if (arguments != null && arguments is Map) {
       return (arguments as Map<String, dynamic>)['params'];
     }
     return null;
   }
 
   set params(final dynamic value) {
-    if (arguments != null && arguments is Map<String, dynamic>) {
+    if (arguments != null && arguments is Map) {
       (arguments as Map<String, dynamic>)['params'] = value;
     }
   }

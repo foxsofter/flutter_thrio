@@ -108,15 +108,6 @@ object ThrioNavigator {
 
     @JvmStatic
     @JvmOverloads
-    fun replace(
-        url: String,
-        index: Int = 0,
-        newUrl: String,
-        result: NullableIntCallback = {}
-    ) = NavigationController.Replace.replace(url, index, newUrl, false, result)
-
-    @JvmStatic
-    @JvmOverloads
     fun lastRoute(url: String? = null): PageRoute? = PageRoutes.lastRoute(url)
 
     @JvmStatic

@@ -397,39 +397,6 @@ NS_ASSUME_NONNULL_BEGIN
          animated:(BOOL)animated
            result:(ThrioBoolCallback)result;
 
-#pragma mark - replace methods
-
-/// Replace the page with `newIrl` in the navigation stack.
-///
-/// Both `url` and `newUrl` must be flutter page.
-///
-+ (void)replaceUrl:(NSString *)url withNewUrl:(NSString *)newUrl;
-
-/// Replace the page with `newIrl` in the navigation stack.
-///
-/// Both `url` and `newUrl` must be flutter page.
-///
-+ (void)replaceUrl:(NSString *)url
-        withNewUrl:(NSString *)newUrl
-            result:(ThrioNumberCallback)result;
-
-/// Replace the page with `newUrl` in the navigation stack.
-///
-/// Both `url` and `newUrl` must be flutter page.
-///
-+ (void)replaceUrl:(NSString *)url
-             index:(NSNumber *)index
-        withNewUrl:(NSString *)newUrl;
-
-/// Replace the page with `newUrl` in the navigation stack.
-///
-/// Both `url` and `newUrl` must be flutter page.
-///
-+ (void)replaceUrl:(NSString *)url
-             index:(NSNumber *)index
-        withNewUrl:(NSString *)newUrl
-            result:(ThrioNumberCallback)result;
-
 #pragma mark - get route methods
 
 /// Returns the route of the page that was last pushed to the navigation

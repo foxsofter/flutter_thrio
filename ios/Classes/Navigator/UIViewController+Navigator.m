@@ -333,21 +333,18 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)thrio_replaceUrl:(NSString *)url
                    index:(NSNumber *_Nullable)index
-              withNewUrl:(NSString *)newUrl
-                newIndex:(NSNumber *_Nullable)newIndex
-                  result:(ThrioBoolCallback _Nullable)result
-             replaceOnly:(BOOL)replaceOnly{
-    NavigatorPageRoute *route = [self thrio_getRouteByUrl:url index:index];
-    if (!route) {
+                  newUrl:(NSString *)newUrl
+                newIndex:(NSNumber *)newIndex
+                  result:(ThrioBoolCallback _Nullable)result {
+    NavigatorPageRoute *oldRoute = [self thrio_getRouteByUrl:url index:index];
+    if (!oldRoute) {
         if (result) {
             result(NO);
         }
         return;
     }
     if ([self isKindOfClass:NavigatorFlutterViewController.class]) {
-        NSMutableDictionary *arguments = [NSMutableDictionary dictionaryWithDictionary:
-                                          [route.settings toArgumentsWithNewUrl:newUrl newIndex:newIndex]];
-        [arguments setObject:@(replaceOnly) forKey:@"replaceOnly"];
+        NSDictionary *arguments = [oldRoute.settings toArgumentsWithNewUrl:newUrl newIndex:newIndex];
         NSString *entrypoint = [(NavigatorFlutterViewController *)self entrypoint];
         NSUInteger pageId = [(NavigatorFlutterViewController *)self pageId];
         NavigatorRouteSendChannel *channel =
@@ -357,9 +354,9 @@ NS_ASSUME_NONNULL_BEGIN
             if (r) {
                 NavigatorRouteSettings *newSettings = [NavigatorRouteSettings settingsWithUrl:newUrl
                                                                                         index:newIndex
-                                                                                       nested:route.settings.nested
+                                                                                       nested:oldRoute.settings.nested
                                                                                        params:nil];
-                [[route initWithSettings:newSettings] removeNotify];
+                [[oldRoute initWithSettings:newSettings] removeNotify];
             }
             if (result) {
                 result(r);

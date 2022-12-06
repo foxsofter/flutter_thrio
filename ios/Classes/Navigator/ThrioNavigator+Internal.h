@@ -62,9 +62,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (void)_replaceUrl:(NSString *)url
               index:(NSNumber *_Nullable)index
-         withNewUrl:(NSString *)newUrl
-             result:(ThrioNumberCallback _Nullable)result
-        replaceOnly:(BOOL)replaceOnly;
+             newUrl:(NSString *)newUrl
+             result:(ThrioNumberCallback _Nullable)result;
 
 + (void)_canPop:(ThrioBoolCallback _Nullable)result;
 

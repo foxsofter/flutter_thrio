@@ -139,11 +139,9 @@ class NavigatorRouteReceiveChannel {
         if (newRouteSettings == null) {
           return false;
         }
-
-        final replaceOnly = arguments?['replaceOnly'] == true;
         return ThrioNavigatorImplement.shared()
                 .navigatorState
-                ?.replace(routeSettings, newRouteSettings, replaceOnly: replaceOnly) ??
+                ?.replace(routeSettings, newRouteSettings) ??
             false;
       });
 

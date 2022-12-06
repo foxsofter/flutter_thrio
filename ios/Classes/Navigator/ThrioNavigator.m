@@ -410,31 +410,6 @@ NS_ASSUME_NONNULL_BEGIN
     [self _removeUrl:url index:index animated:animated result:result];
 }
 
-#pragma mark - replace methods
-
-+ (void)replaceUrl:(NSString *)url withNewUrl:(NSString *)newUrl {
-    [self _replaceUrl:url index:nil withNewUrl:newUrl result:nil  replaceOnly: false];
-}
-
-+ (void)replaceUrl:(NSString *)url
-        withNewUrl:(NSString *)newUrl
-            result:(ThrioNumberCallback)result {
-    [self _replaceUrl:url index:nil withNewUrl:newUrl result:result  replaceOnly: false];
-}
-
-+ (void)replaceUrl:(NSString *)url
-             index:(NSNumber *)index
-        withNewUrl:(NSString *)newUrl {
-    [self _replaceUrl:url index:index withNewUrl:newUrl result:nil replaceOnly: false];
-}
-
-+ (void)replaceUrl:(NSString *)url
-             index:(NSNumber *)index
-        withNewUrl:(NSString *)newUrl
-            result:(ThrioNumberCallback)result {
-    [self _replaceUrl:url index:index withNewUrl:newUrl result:result replaceOnly: false];
-}
-
 #pragma mark - get index methods
 
 + (NavigatorPageRoute *_Nullable)lastRoute {

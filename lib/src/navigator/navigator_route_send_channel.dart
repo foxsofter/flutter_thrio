@@ -95,15 +95,13 @@ class NavigatorRouteSendChannel {
 
   Future<int> replace({
     required final String url,
-    final int? index,
+    final int index = 0,
     required final String newUrl,
-    final bool replaceOnly = false,
   }) {
     final arguments = <String, dynamic>{
       'url': url,
       'index': index,
       'newUrl': newUrl,
-      'replaceOnly': replaceOnly,
     };
     return _channel.invokeMethod<int>('replace', arguments).then((final it) => it ?? 0);
   }
