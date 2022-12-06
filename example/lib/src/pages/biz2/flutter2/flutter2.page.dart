@@ -182,14 +182,14 @@ class _Flutter2PageState extends State<Flutter2Page> {
                 ),
                 InkWell(
                   onTap: () {
-                    root.biz1.flutter1.home.replace(newUrl: root.biz2.flutter2.url);
+                    ThrioNavigator.pushReplace(url: root.biz1.flutter1.home.url);
                   },
                   child: Container(
                       padding: const EdgeInsets.all(8),
                       margin: const EdgeInsets.all(8),
                       color: Colors.grey,
                       child: const Text(
-                        'replace flutter1 with flutter2',
+                        'pushReplace flutter1',
                         style: TextStyle(fontSize: 22, color: Colors.black),
                       )),
                 ),

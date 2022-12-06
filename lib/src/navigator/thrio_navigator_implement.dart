@@ -26,6 +26,7 @@ import 'package:flutter/widgets.dart';
 import 'package:uri/uri.dart';
 
 import '../channel/thrio_channel.dart';
+import '../exception/thrio_exception.dart';
 import '../extension/thrio_iterable.dart';
 import '../module/module_anchor.dart';
 import '../module/module_types.dart';
@@ -201,6 +202,50 @@ class ThrioNavigatorImplement {
         await removeAll(url: url, excludeIndex: index);
       }
     });
+    return completer.future;
+  }
+
+  Future<TPopParams> pushReplace<TParams, TPopParams>({
+    required final String url,
+    final TParams? params,
+    final bool animated = true,
+    final NavigatorIntCallback? result,
+  }) async {
+    final lastSetting = await lastRoute();
+    if (lastSetting == null) {
+      throw ThrioException('no route to replace');
+    }
+    final match = matchRouteCustomHandle(url);
+    if (match != null) {
+      final poppedResult = await onRouteCustomHandle<TPopParams>(
+        handler: match.value,
+        uri: match.key,
+        params: params,
+        animated: animated,
+        result: result,
+      );
+      await remove(url: lastSetting.url!, index: lastSetting.index);
+      return poppedResult;
+    }
+
+    final completer = Completer<TPopParams>();
+    unawaited(_sendChannel
+        .push<TParams>(url: url, params: params, animated: animated)
+        .then((final index) async {
+      if (index > 0) {
+        final routeName = '$index $url';
+        final routeHistory = ThrioNavigatorImplement.shared().navigatorState?.history;
+        final route = routeHistory?.lastWhereOrNull((final it) => it.settings.name == routeName);
+        if (route != null && route is NavigatorRoute) {
+          route.poppedResult = (final params) => poppedResult<TPopParams>(completer, params);
+        } else {
+          // 不在当前页面栈上，则通过name来缓存
+          poppedResults[routeName] = (final params) => poppedResult<TPopParams>(completer, params);
+        }
+        await remove(url: lastSetting.url!, index: lastSetting.index);
+      }
+      result?.call(index);
+    }));
     return completer.future;
   }
 
