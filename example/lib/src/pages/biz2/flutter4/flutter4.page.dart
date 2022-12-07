@@ -92,6 +92,17 @@ class _Flutter4PageState extends State<Flutter4Page> {
                   )),
             ),
             InkWell(
+              onTap: ThrioNavigator.popToRoot,
+              child: Container(
+                  padding: const EdgeInsets.all(8),
+                  margin: const EdgeInsets.all(8),
+                  color: Colors.yellow,
+                  child: const Text(
+                    'popToRoot',
+                    style: TextStyle(fontSize: 22, color: Colors.black),
+                  )),
+            ),
+            InkWell(
               onTap: () => ThrioNavigator.popTo(
                 url: '/biz2/flutter2',
               ),

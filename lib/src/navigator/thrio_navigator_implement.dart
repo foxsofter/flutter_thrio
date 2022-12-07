@@ -287,6 +287,17 @@ class ThrioNavigatorImplement {
   }) =>
       _sendChannel.pop<TParams>(params: params, animated: animated);
 
+  Future<bool> popToRoot({
+    final int index = 0,
+    final bool animated = true,
+  }) async {
+    final rootRoute = await firstRoute();
+    if (rootRoute == null) {
+      return false;
+    }
+    return _sendChannel.popTo(url: rootRoute.url!, index: rootRoute.index, animated: animated);
+  }
+
   Future<bool> popTo({
     required final String url,
     final int index = 0,
@@ -336,6 +347,11 @@ class ThrioNavigatorImplement {
 
   Future<bool> isInitialRoute({required final String url, final int index = 0}) =>
       _sendChannel.isInitialRoute(url: url, index: index);
+
+  Future<RouteSettings?> firstRoute({final String? url}) async {
+    final all = await allRoutes(url: url);
+    return all.firstOrNull;
+  }
 
   Future<RouteSettings?> lastRoute({final String? url}) => _sendChannel.lastRoute(url: url);
 

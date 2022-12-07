@@ -121,6 +121,17 @@ abstract class ThrioNavigator {
         animated: animated,
       );
 
+  /// Pop the page in the navigation stack until the first page.
+  ///
+  static Future<bool> popToRoot({
+    final int index = 0,
+    final bool animated = true,
+  }) =>
+      ThrioNavigatorImplement.shared().popToRoot(
+        index: index,
+        animated: animated,
+      );
+
   /// Pop the page in the navigation stack until the page with `url`.
   ///
   static Future<bool> popTo({
