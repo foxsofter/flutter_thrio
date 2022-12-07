@@ -413,3 +413,7 @@
 - feat: add maybePop
 - feat: add pushReplace
 - refactor: rm replaceOnly
+
+## 3.5.1
+
+- feat: url template support optional params
