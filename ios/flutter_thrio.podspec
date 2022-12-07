@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name = "flutter_thrio"
-  s.version = "3.4.1"
+  s.version = "3.5.0"
   s.summary = "Thrio makes it easy and fast to add flutter to existing mobile applications, and provide a simple and consistent navigator API."
   s.description = <<-DESC
 A flutter plugin which enables hybrid integration of flutter for existing ios or android apps.

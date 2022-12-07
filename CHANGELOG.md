@@ -406,3 +406,10 @@
 ## 3.4.1
 
 - refactor: Reduce the parameters of ModuleRouteCustomHandler
+
+## 3.5.0
+
+- feat: add popToRoot
+- feat: add maybePop
+- feat: add pushReplace
+- refactor: rm replaceOnly
