@@ -72,7 +72,7 @@ class _Flutter4PageState extends State<Flutter6Page> {
             InkWell(
               onTap: () async {
                 final result = await ThrioNavigator.push(
-                    url: 'anotherScheme://leaderboard/home?hashId=13131973173&product=good');
+                    url: 'anotherScheme://leaderboard/home?hashId=13131973173');
                 debugPrint(result.toString());
               },
               child: Container(

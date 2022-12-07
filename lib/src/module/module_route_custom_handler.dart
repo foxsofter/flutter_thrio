@@ -36,8 +36,9 @@ mixin ModuleRouteCustomHandler on ThrioModule {
   @protected
   VoidCallback registerRouteCustomHandler(
     final String template,
-    final NavigatorRouteCustomHandler handler,
-  ) {
+    final NavigatorRouteCustomHandler handler, {
+    final bool queryParamsAreOptional = false,
+  }) {
     var scheme = '';
     var host = '';
     var tem = template;
@@ -53,7 +54,7 @@ mixin ModuleRouteCustomHandler on ThrioModule {
       host = subParts[0];
       tem = '/${subParts[1]}';
     }
-    final parser = UriParser(UriTemplate(tem));
+    final parser = UriParser(UriTemplate(tem), queryParamsAreOptional: queryParamsAreOptional);
     final key = NavigatorUrlTemplate(scheme: scheme, host: host, parser: parser);
     if (anchor.customHandlers.keys.contains(key)) {
       throw ThrioException('duplicate url template: $template');

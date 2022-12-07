@@ -58,6 +58,7 @@ class Module with ThrioModule, ModulePageBuilder, ModuleRouteCustomHandler {
               params: params,
               animated: animated,
               result: result,
-            ));
+            ),
+        queryParamsAreOptional: true);
   }
 }
