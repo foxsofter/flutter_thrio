@@ -34,6 +34,7 @@ internal class RouteReceiveChannel(
         onReady()
         onPush()
         onNotify()
+        onMaybePop()
         onPop()
         onPopTo()
         onRemove()
@@ -60,8 +61,7 @@ internal class RouteReceiveChannel(
             if (arguments == null) return@registryMethod
             val url = arguments["url"] as String
             val params = arguments["params"]
-            val animated =
-                if (arguments["animated"] != null) arguments["animated"] as Boolean else true
+            val animated = arguments["animated"] == true
             NavigationController.Push.push(
                 url,
                 params,
@@ -85,12 +85,20 @@ internal class RouteReceiveChannel(
         }
     }
 
+    private fun onMaybePop() {
+        channel.registryMethod("maybePop") { arguments, result ->
+            if (arguments == null) return@registryMethod
+            val params = arguments["params"]
+            val animated = arguments["animated"] == true
+            NavigationController.Pop.maybePop(params, animated, result)
+        }
+    }
+
     private fun onPop() {
         channel.registryMethod("pop") { arguments, result ->
             if (arguments == null) return@registryMethod
             val params = arguments["params"]
-            val animated =
-                if (arguments["animated"] != null) arguments["animated"] as Boolean else true
+            val animated = arguments["animated"] == true
             NavigationController.Pop.pop(params, animated, result)
         }
     }
@@ -100,8 +108,7 @@ internal class RouteReceiveChannel(
             if (arguments == null) return@registryMethod
             val url = arguments["url"] as String
             val index = if (arguments["index"] != null) arguments["index"] as Int else 0
-            val animated =
-                if (arguments["animated"] != null) arguments["animated"] as Boolean else true
+            val animated = arguments["animated"] == true
             NavigationController.PopTo.popTo(url, index, animated, result)
         }
     }
@@ -111,8 +118,7 @@ internal class RouteReceiveChannel(
             if (arguments == null) return@registryMethod
             val url = arguments["url"] as String
             val index = if (arguments["index"] != null) arguments["index"] as Int else 0
-            val animated =
-                if (arguments["animated"] != null) arguments["animated"] as Boolean else true
+            val animated = arguments["animated"] == true
             NavigationController.Remove.remove(url, index, animated, result)
         }
     }

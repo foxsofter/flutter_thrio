@@ -105,6 +105,15 @@ NS_ASSUME_NONNULL_BEGIN
                                         result:result];
 }
 
++ (void)_maybePopParams:(id _Nullable)params
+          animated:(BOOL)animated
+            result:(ThrioBoolCallback _Nullable)result {
+    [self.navigationController thrio_maybePopParams:params
+                                           animated:animated
+                                             result:result];
+}
+
+
 + (void)_popToUrl:(NSString *)url
             index:(NSNumber *_Nullable)index
          animated:(BOOL)animated

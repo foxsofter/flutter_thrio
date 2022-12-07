@@ -26,6 +26,7 @@ package io.flutter.embedding.android
 import android.content.Context
 import android.content.pm.PackageManager
 import com.foxsofter.flutter_thrio.BooleanCallback
+import com.foxsofter.flutter_thrio.IntCallback
 import com.foxsofter.flutter_thrio.extension.getEntrypoint
 import com.foxsofter.flutter_thrio.extension.getPageId
 import com.foxsofter.flutter_thrio.navigator.FlutterEngineFactory
@@ -100,6 +101,15 @@ open class ThrioFlutterActivity : FlutterActivity() {
         val engine = FlutterEngineFactory.getEngine(pageId, entrypoint)
             ?: throw IllegalStateException("engine must not be null")
         engine.sendChannel.onNotify(arguments, result)
+    }
+
+    fun onMaybePop(arguments: Map<String, Any?>?, result: IntCallback) {
+        val pageId = intent.getPageId()
+        if (pageId == NAVIGATION_ROUTE_PAGE_ID_NONE) throw IllegalStateException("pageId must not be null")
+        val entrypoint = intent.getEntrypoint()
+        val engine = FlutterEngineFactory.getEngine(pageId, entrypoint)
+            ?: throw IllegalStateException("engine must not be null")
+        engine.sendChannel.onMaybePop(arguments, result)
     }
 
     fun onPop(arguments: Map<String, Any?>?, result: BooleanCallback) {

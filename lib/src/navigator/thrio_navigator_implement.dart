@@ -275,6 +275,12 @@ class ThrioNavigatorImplement {
   }) =>
       _sendChannel.notify<TParams>(name: name, url: url, index: index, params: params);
 
+  Future<bool> maybePop<TParams>({
+    final TParams? params,
+    final bool animated = true,
+  }) =>
+      _sendChannel.maybePop<TParams>(params: params, animated: animated);
+
   Future<bool> pop<TParams>({
     final TParams? params,
     final bool animated = true,

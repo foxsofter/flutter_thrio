@@ -46,6 +46,10 @@ NS_ASSUME_NONNULL_BEGIN
             params:(id _Nullable)params
             result:(ThrioBoolCallback _Nullable)result;
 
++ (void)_maybePopParams:(id _Nullable)params
+               animated:(BOOL)animated
+                 result:(ThrioBoolCallback _Nullable)result;
+
 + (void)_popParams:(id _Nullable)params
           animated:(BOOL)animated
             result:(ThrioBoolCallback _Nullable)result;

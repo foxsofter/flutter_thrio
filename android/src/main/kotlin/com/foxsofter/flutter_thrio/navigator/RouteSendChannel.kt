@@ -24,6 +24,7 @@
 package com.foxsofter.flutter_thrio.navigator
 
 import com.foxsofter.flutter_thrio.BooleanCallback
+import com.foxsofter.flutter_thrio.IntCallback
 import com.foxsofter.flutter_thrio.channel.ThrioChannel
 
 internal class RouteSendChannel constructor(internal val channel: ThrioChannel) {
@@ -38,6 +39,13 @@ internal class RouteSendChannel constructor(internal val channel: ThrioChannel) 
         Log.i("Thrio", "onNotify channel data $arguments")
         channel.sendEvent("__onNotify__", arguments)
         result(true)
+    }
+
+    fun onMaybePop(arguments: Map<String, Any?>?, result: IntCallback) {
+        channel.invokeMethod("maybePop", arguments) {
+            val r = if (it != null) it as Int else 0
+            result(r)
+        }
     }
 
     fun onPop(arguments: Map<String, Any?>?, result: BooleanCallback) {

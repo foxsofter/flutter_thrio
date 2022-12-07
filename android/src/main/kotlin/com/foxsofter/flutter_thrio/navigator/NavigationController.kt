@@ -34,6 +34,7 @@ import com.foxsofter.flutter_thrio.extension.*
 import com.foxsofter.flutter_thrio.module.ModuleIntentBuilders
 import com.foxsofter.flutter_thrio.module.ModuleJsonSerializers
 import com.foxsofter.flutter_thrio.module.ModuleRouteObservers
+import com.foxsofter.flutter_thrio.navigator.NavigationController.routeAction
 import io.flutter.embedding.android.ThrioFlutterActivity
 import java.lang.ref.WeakReference
 
@@ -286,6 +287,29 @@ internal object NavigationController : Application.ActivityLifecycleCallbacks {
     }
 
     object Pop {
+        fun <T> maybePop(
+            params: T? = null,
+            animated: Boolean = true,
+            result: BooleanCallback? = null
+        ) {
+            val firstHolder = PageRoutes.firstRouteHolder!!
+            if (PageRoutes.routeHolders.count() == 1 && firstHolder.allRoute().count() < 2) {
+                val activity = firstHolder.activity?.get() ?: return
+                if (activity !is ThrioFlutterActivity) {
+                    activity.onBackPressed()
+                }
+                routeAction = RouteAction.NONE
+                return
+            }
+            PageRoutes.maybePop<T>(params, animated, true) {
+                if (it == 1) {
+                    pop(params, animated, result)
+                } else {
+                    result?.invoke(it != 0)
+                }
+            }
+        }
+
         fun <T> pop(
             params: T? = null,
             animated: Boolean = true,
@@ -301,18 +325,17 @@ internal object NavigationController : Application.ActivityLifecycleCallbacks {
 
             val firstHolder = PageRoutes.firstRouteHolder!!
             if (PageRoutes.routeHolders.count() == 1 && firstHolder.allRoute().count() < 2) {
-                val activity = firstHolder.activity?.get() ?: return
+                val activity = firstHolder.activity?.get() ?: return // 不应该会走到这
                 if (activity is ThrioFlutterActivity) {
                     PageRoutes.pop<T>(params, animated, true) {
-                        if (it == false) {
+                        if (!it) {
                             firstHolder.activity?.get()?.apply {
                                 if (this is ThrioFlutterActivity && this.shouldMoveToBack()) {
                                     moveTaskToBack(false)
                                 }
                             }
-                        } else {
-                            result?.invoke(it == true)
                         }
+                        result?.invoke(it)
                     }
                 } else {
                     activity.onBackPressed()
@@ -320,7 +343,7 @@ internal object NavigationController : Application.ActivityLifecycleCallbacks {
                 routeAction = RouteAction.NONE
             } else {
                 PageRoutes.pop<T>(params, animated) {
-                    result?.invoke(it == true)
+                    result?.invoke(it)
                     routeAction = RouteAction.NONE
                 }
             }

@@ -35,7 +35,8 @@ class _Flutter3PageState extends State<Flutter3Page> {
   @override
   Widget build(final BuildContext context) => WillPopScope(
       onWillPop: () async {
-        ThrioLogger.i('page3 WillPopScope');
+        final r = await ThrioNavigator.push(url: '/biz2/flutter2');
+        ThrioLogger.i('page3 WillPopScope: $r');
         return true;
       },
       child: Scaffold(
@@ -46,7 +47,7 @@ class _Flutter3PageState extends State<Flutter3Page> {
               color: Colors.black,
               tooltip: 'back',
               icon: Icon(Icons.arrow_back_ios),
-              onPressed: ThrioNavigator.pop,
+              onPressed: ThrioNavigator.maybePop,
             )),
             systemOverlayStyle: SystemUiOverlayStyle.dark,
           ),

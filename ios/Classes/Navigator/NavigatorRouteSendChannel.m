@@ -65,6 +65,18 @@
     [_channel sendEvent:@"__onNotify__" arguments:arguments];
 }
 
+- (void)maybePop:(id)arguments result:(ThrioNumberCallback _Nullable)result {
+    [_channel invokeMethod:@"maybePop" arguments:arguments result:^(id _Nullable r) {
+        if (result) {
+            if (r && [r isKindOfClass:NSNumber.class]) {
+                result(r);
+            } else {
+                result(@0);
+            }
+        }
+    }];
+}
+
 - (void)pop:(id)arguments result:(ThrioBoolCallback _Nullable)result {
     [_channel invokeMethod:@"pop" arguments:arguments result:^(id _Nullable r) {
         if (result) {

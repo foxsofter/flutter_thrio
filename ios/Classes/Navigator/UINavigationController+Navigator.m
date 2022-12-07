@@ -145,6 +145,57 @@ NS_ASSUME_NONNULL_BEGIN
     return isMatch;
 }
 
+- (void)thrio_maybePopParams:(id _Nullable)params
+                    animated:(BOOL)animated
+                      result:(ThrioBoolCallback _Nullable)result {
+    UIViewController *vc = self.topViewController;
+    if (!vc) {
+        if (result) {
+            result(NO);
+        }
+        return;
+    }
+    if (!vc.thrio_firstRoute) { // 不存在表示页面未经过thrio打开，直接关闭即可
+        if (self.viewControllers.count > 1) {
+            id vc = [self popViewControllerAnimated:animated];
+            if (result) {
+                result(vc != nil);
+            }
+        } else {
+            if (result) {
+                result(NO);
+            }
+        }
+        return;
+    }
+    // 仅剩最后一个页面，如果不是 FlutterViewController，则不允许继续 pop
+    if (vc.thrio_firstRoute == vc.thrio_lastRoute && self.viewControllers.count < 2) {
+        if (![vc isKindOfClass:NavigatorFlutterViewController.class]) {
+            if (result) {
+                result(NO);
+            }
+        }
+        return;
+    }
+    __weak typeof(self) weakself = self;
+    [vc thrio_maybePopParams:params animated:animated inRoot:YES result:^(NSNumber *r) {
+        // 回调值：
+        // -1 表示关闭了一个 Flutter 自己打开的页面
+        // 0 表示不允许关闭
+        // 1 表示允许关闭
+        __strong typeof(weakself) strongSelf = weakself;
+        if (r.integerValue == 1) {
+            // 允许关闭，则继续 pop
+            [strongSelf thrio_popParams:params animated:animated result:result];
+        } else {
+            if (result) {
+                result(r.integerValue != 0);
+            }
+        }
+    }];
+}
+
+
 - (void)thrio_popParams:(id _Nullable)params
                animated:(BOOL)animated
                  result:(ThrioBoolCallback _Nullable)result {
@@ -170,25 +221,7 @@ NS_ASSUME_NONNULL_BEGIN
     }
     // 仅剩最后一个页面，如果不是 FlutterViewController，则不允许继续 pop
     if (vc.thrio_firstRoute == vc.thrio_lastRoute && self.viewControllers.count < 2) {
-        if ([vc isKindOfClass:NavigatorFlutterViewController.class]) {
-            __weak typeof(self) weakself = self;
-            [vc thrio_popParams:params animated:animated inRoot:YES result:^(BOOL r) {
-                __strong typeof(weakself) strongSelf = weakself;
-                if (r) {
-                    // 只有 FlutterViewController 才能满足条件
-                    if (vc.thrio_lastRoute != vc.thrio_firstRoute) {
-                        vc.thrio_lastRoute.prev.next = nil;
-                        // 只剩一个 route 的时候，需要添加侧滑返回手势
-                        if (vc.thrio_firstRoute == vc.thrio_lastRoute) {
-                            [strongSelf thrio_addPopGesture];
-                        }
-                    }
-                }
-                if (result) {
-                    result(r);
-                }
-            }];
-        } else {
+        if (![vc isKindOfClass:NavigatorFlutterViewController.class]) {
             if (result) {
                 result(NO);
             }
@@ -196,7 +229,7 @@ NS_ASSUME_NONNULL_BEGIN
         return;
     }
     __weak typeof(self) weakself = self;
-    [vc thrio_popParams:params animated:animated inRoot:NO result:^(BOOL r) {
+    [vc thrio_popParams:params animated:animated inRoot:YES result:^(BOOL r) {
         __strong typeof(weakself) strongSelf = weakself;
         if (r) {
             // 只有 FlutterViewController 才能满足条件
@@ -208,8 +241,6 @@ NS_ASSUME_NONNULL_BEGIN
                 }
             }
         }
-        // 原生页面返回YES不代表已经 pop 掉页面
-        // 如果存在 willPop 拦截的情况的，视用户决策决定页面是否关闭
         if (result) {
             result(r);
         }

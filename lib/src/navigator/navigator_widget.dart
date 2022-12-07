@@ -119,29 +119,35 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
     return true;
   }
 
-  Future<bool> maybePop(
+  Future<int> maybePop(
     final RouteSettings settings, {
     final bool animated = true,
     final bool inRoot = false,
   }) async {
     final navigatorState = widget.child.tryStateOf<NavigatorState>();
     if (navigatorState == null) {
-      return false;
+      return 0;
+    }
+    // 关闭非体系内的顶部 route，同时 return false，避免原生端清栈
+    if (history.last is! NavigatorRoute) {
+      final result = await navigatorState.maybePop(settings.params);
+      if (result) {
+        history.removeLast();
+      }
+      // 返回 -1 表示关闭非体系内的顶部 route
+      return result ? -1 : 0;
     }
     if (settings.name != history.last.settings.name) {
-      final poppedResults = ThrioNavigatorImplement.shared().poppedResults;
-      if (poppedResults.containsKey(settings.name)) {
-        // 不匹配的时候表示这里是非当前引擎触发的，调用 poppedResult 回调
-        final poppedResult = poppedResults.remove(settings.name);
-        _poppedResultCallback(poppedResult, settings.url!, settings.params);
-
-        return false;
-      }
+      return 0;
+    }
+    // 在原生端处于容器的根部，且当前 Flutter 页面栈上不超过 3，则不能再 pop
+    if (inRoot && history.whereType<NavigatorRoute>().length < 3) {
+      return 0;
     }
     if (await history.last.willPop() != RoutePopDisposition.pop) {
-      return false;
+      return 0;
     }
-    return pop(settings, animated: animated, inRoot: inRoot);
+    return 1;
   }
 
   Future<bool> pop(
@@ -156,16 +162,21 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
 
     // 关闭非体系内的顶部 route，同时 return false，避免原生端清栈
     if (history.last is! NavigatorRoute) {
-      unawaited(navigatorState.maybePop(settings.params).then((final _) => history.removeLast()));
+      navigatorState.pop(settings.params);
+      history.removeLast();
       return false;
     }
 
-    // 不管成功与否都 return false，避免原生端清栈
-    // 理论上不可能出现这种情况
     if (settings.name != history.last.settings.name) {
+      final poppedResults = ThrioNavigatorImplement.shared().poppedResults;
+      if (poppedResults.containsKey(settings.name)) {
+        // 不匹配的时候表示这里是非当前引擎触发的，调用 poppedResult 回调
+        final poppedResult = poppedResults.remove(settings.name);
+        _poppedResultCallback(poppedResult, settings.url!, settings.params);
+      }
+      // return false，避免原生端清栈，如果仅仅是为了触发 poppedResult 回调原生端也不会清栈
       return false;
     }
-
     // 在原生端处于容器的根部，且当前 Flutter 页面栈上不超过 3，则不能再 pop
     if (inRoot && history.whereType<NavigatorRoute>().length < 3) {
       return false;

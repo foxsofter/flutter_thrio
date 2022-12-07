@@ -40,6 +40,10 @@ NS_ASSUME_NONNULL_BEGIN
                    name:(NSString *)name
                  params:(id _Nullable)params;
 
+- (void)thrio_maybePopParams:(id _Nullable)params
+                    animated:(BOOL)animated
+                      result:(ThrioBoolCallback _Nullable)result;
+
 - (void)thrio_popParams:(id _Nullable)params
                animated:(BOOL)animated
                  result:(ThrioBoolCallback _Nullable)result;

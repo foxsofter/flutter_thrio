@@ -25,6 +25,7 @@ package com.foxsofter.flutter_thrio.navigator
 
 import android.app.Activity
 import com.foxsofter.flutter_thrio.BooleanCallback
+import com.foxsofter.flutter_thrio.IntCallback
 import com.foxsofter.flutter_thrio.NullableIntCallback
 import com.foxsofter.flutter_thrio.module.ModuleJsonDeserializers
 import com.foxsofter.flutter_thrio.module.ModuleJsonSerializers
@@ -106,6 +107,36 @@ internal data class PageRouteHolder(
             }
         }
         result(isMatch)
+    }
+
+    fun <T> maybePop(
+        params: T?,
+        animated: Boolean,
+        inRoot: Boolean = false,
+        result: IntCallback
+    ) {
+        val lastRoute = lastRoute()
+        if (lastRoute == null) {
+            result(0)
+            return
+        }
+        val activity = activity?.get()
+        if (activity != null && !activity.isDestroyed) {
+            if (activity is ThrioFlutterActivity) {
+                lastRoute.settings.params = ModuleJsonSerializers.serializeParams(params)
+                lastRoute.settings.animated = animated
+                var arguments = lastRoute.settings.toArguments()
+                arguments = mutableMapOf<String, Any?>().also { args ->
+                    args.putAll(arguments)
+                    args["inRoot"] = inRoot
+                }
+                activity.onMaybePop(arguments, result)
+            } else {
+                result(1)
+            }
+        } else {
+            result(0)
+        }
     }
 
     fun <T> pop(

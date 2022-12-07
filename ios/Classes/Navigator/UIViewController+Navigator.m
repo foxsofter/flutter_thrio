@@ -147,6 +147,39 @@ NS_ASSUME_NONNULL_BEGIN
     return isMatch;
 }
 
+- (void)thrio_maybePopParams:(id _Nullable)params
+                    animated:(BOOL)animated
+                      inRoot:(BOOL)inRoot
+                      result:(ThrioNumberCallback _Nullable)result {
+    NavigatorPageRoute *route = self.thrio_lastRoute;
+    if (!route) {
+        if (result) {
+            result(@0);
+        }
+        return;
+    }
+    id serializeParams = [ThrioModule serializeParams:params];
+    NSMutableDictionary *arguments =
+    [NSMutableDictionary dictionaryWithDictionary:[route.settings
+                                                   toArgumentsWithParams:serializeParams]];
+    [arguments setObject:[NSNumber numberWithBool:animated] forKey:@"animated"];
+    [arguments setObject:[NSNumber numberWithBool:inRoot] forKey:@"inRoot"];
+    
+    if ([self isKindOfClass:NavigatorFlutterViewController.class]) {
+        NSString *entrypoint = [(NavigatorFlutterViewController *)self entrypoint];
+        NSUInteger pageId = [(NavigatorFlutterViewController *)self pageId];
+        NavigatorRouteSendChannel *channel = [NavigatorFlutterEngineFactory.shared getSendChannelByPageId:pageId
+                                                                                           withEntrypoint:entrypoint];
+        // 发送给需要关闭页面的引擎
+        [channel maybePop:arguments result:result];
+    } else {
+        if (result) {
+            // TODO: 原生页面也需要判断 willPop
+            result(@1);
+        }
+    }
+}
+
 - (void)thrio_popParams:(id _Nullable)params
                animated:(BOOL)animated
                  inRoot:(BOOL)inRoot

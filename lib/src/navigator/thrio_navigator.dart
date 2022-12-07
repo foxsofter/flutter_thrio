@@ -99,6 +99,17 @@ abstract class ThrioNavigator {
         params: params,
       );
 
+  /// Maybe pop a page from the navigation stack.
+  ///
+  static Future<bool> maybePop<TParams>({
+    final TParams? params,
+    final bool animated = true,
+  }) =>
+      ThrioNavigatorImplement.shared().maybePop<TParams>(
+        params: params,
+        animated: animated,
+      );
+
   /// Pop a page from the navigation stack.
   ///
   static Future<bool> pop<TParams>({

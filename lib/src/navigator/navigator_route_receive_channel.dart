@@ -31,6 +31,7 @@ import 'thrio_navigator_implement.dart';
 class NavigatorRouteReceiveChannel {
   NavigatorRouteReceiveChannel(final ThrioChannel channel) : _channel = channel {
     _onPush();
+    _onMaybePop();
     _onPop();
     _onPopTo();
     _onRemove();
@@ -68,6 +69,19 @@ class NavigatorRouteReceiveChannel {
             false;
       });
 
+  void _onMaybePop() => _channel.registryMethodCall('maybePop', ([final arguments]) async {
+        final routeSettings = NavigatorRouteSettings.fromArguments(arguments);
+        if (routeSettings == null) {
+          return 0;
+        }
+        final animated = arguments?['animated'] == true;
+        final inRoot = arguments?['inRoot'] == true;
+        return await ThrioNavigatorImplement.shared()
+                .navigatorState
+                ?.maybePop(routeSettings, animated: animated, inRoot: inRoot) ??
+            0;
+      });
+
   void _onPop() => _channel.registryMethodCall('pop', ([final arguments]) async {
         final routeSettings = NavigatorRouteSettings.fromArguments(arguments);
         if (routeSettings == null) {
@@ -78,7 +92,7 @@ class NavigatorRouteReceiveChannel {
         final inRoot = (inRootValue != null && inRootValue is bool) && inRootValue;
         return await ThrioNavigatorImplement.shared()
                 .navigatorState
-                ?.maybePop(routeSettings, animated: animated, inRoot: inRoot)
+                ?.pop(routeSettings, animated: animated, inRoot: inRoot)
                 .then((final value) {
               _syncPagePoppedResults();
               return value;

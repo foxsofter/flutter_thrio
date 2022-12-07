@@ -35,6 +35,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)notify:(id)arguments;
 
+- (void)maybePop:(id)arguments result:(ThrioNumberCallback _Nullable)result;
+
 - (void)pop:(id)arguments result:(ThrioBoolCallback _Nullable)result;
 
 - (void)popTo:(id)arguments result:(ThrioBoolCallback _Nullable)result;
