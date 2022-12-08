@@ -2,6 +2,7 @@ package com.foxsofter.flutter_thrio_example
 
 import android.app.Activity
 import com.foxsofter.flutter_thrio.module.*
+import com.foxsofter.flutter_thrio.navigator.FlutterIntentBuilder
 import com.foxsofter.flutter_thrio.navigator.IntentBuilder
 
 object MainModule : ThrioModule(), ModuleIntentBuilder, ModuleJsonSerializer,
@@ -26,6 +27,10 @@ object MainModule : ThrioModule(), ModuleIntentBuilder, ModuleJsonSerializer,
     }
 
     override fun onIntentBuilderRegister(moduleContext: ModuleContext) {
+        setFlutterIntentBuilder(object : FlutterIntentBuilder() {
+            override fun getActivityClz(): Class<out Activity> = MainActivity::class.java
+        })
+
         registerIntentBuilder("/biz1/native1", object : IntentBuilder {
             override fun getActivityClz(): Class<out Activity> {
                 return Native1Activity::class.java

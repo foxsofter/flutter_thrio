@@ -219,17 +219,18 @@ NS_ASSUME_NONNULL_BEGIN
         }
         return;
     }
+    BOOL inRoot = vc.thrio_firstRoute == vc.thrio_lastRoute && self.viewControllers.count < 2;
     // 仅剩最后一个页面，如果不是 FlutterViewController，则不允许继续 pop
-    if (vc.thrio_firstRoute == vc.thrio_lastRoute && self.viewControllers.count < 2) {
+    if (inRoot) {
         if (![vc isKindOfClass:NavigatorFlutterViewController.class]) {
             if (result) {
                 result(NO);
             }
+            return;
         }
-        return;
     }
     __weak typeof(self) weakself = self;
-    [vc thrio_popParams:params animated:animated inRoot:YES result:^(BOOL r) {
+    [vc thrio_popParams:params animated:animated inRoot:inRoot result:^(BOOL r) {
         __strong typeof(weakself) strongSelf = weakself;
         if (r) {
             // 只有 FlutterViewController 才能满足条件

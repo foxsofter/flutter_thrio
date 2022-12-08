@@ -51,8 +51,7 @@ object FlutterEngineFactory : PageObserver, RouteObserver {
     // 仅用于让 ThrioFlutterActivity 调用
     fun provideEngine(activity: ThrioFlutterActivity): io.flutter.embedding.engine.FlutterEngine {
         val entrypoint = getEntrypoint(activity.intent.getEntrypoint())
-        val pageId = activity.intent.getPageId()
-        return engineGroups[entrypoint]?.provideEngine(pageId)
+        return engineGroups[entrypoint]?.provideEngine(activity)
             ?: throw RuntimeException("FlutterEngine not exists")
     }
 

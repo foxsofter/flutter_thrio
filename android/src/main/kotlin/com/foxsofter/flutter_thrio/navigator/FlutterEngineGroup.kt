@@ -1,6 +1,8 @@
 package com.foxsofter.flutter_thrio.navigator
 
 import android.content.Context
+import com.foxsofter.flutter_thrio.extension.getPageId
+import io.flutter.embedding.android.ThrioFlutterActivity
 import io.flutter.embedding.engine.ThrioFlutterEngine
 
 /// 管理主引擎及其fork出来的引擎，这里用 entrypoint 来标识，不同的 entrypoint 尽用来支持运行不同的编译产物
@@ -28,9 +30,13 @@ open class FlutterEngineGroup constructor(private var entrypoint: String) {
     }
 
     // 仅用于让 ThrioFlutterActivity 调用
-    fun provideEngine(pageId: Int): ThrioFlutterEngine {
+    fun provideEngine(activity: ThrioFlutterActivity): ThrioFlutterEngine {
+        val pageId = activity.intent.getPageId()
         if (engineMap.contains(pageId)) {
             return engineMap[pageId]?.engine ?: throw RuntimeException("FlutterEngine not exists")
+        }
+        if (currentEngine == null) {
+            currentEngine = startup(activity)
         }
         // 被获取后，放到 engines 中并清空
         currentEngine?.let { engine ->
@@ -44,11 +50,12 @@ open class FlutterEngineGroup constructor(private var entrypoint: String) {
 
     // 仅用于让 ThrioFlutterActivity 调用
     fun cleanUpFlutterEngine(pageId: Int) {
-        val engine = engineMap.remove(pageId)
-        if (engine?.isMainEngine == true) {
+        val engine = engineMap[pageId]
+        if (engine == mainEngine) {
             mainEngine?.pageId = NAVIGATION_ROUTE_PAGE_ID_NONE
         } else {
             engine?.destroy()
+            engineMap.remove(pageId)
         }
     }
 
@@ -68,7 +75,7 @@ open class FlutterEngineGroup constructor(private var entrypoint: String) {
     fun startup(
         context: Context,
         readyListener: FlutterEngineReadyListener? = null
-    ) {
+    ): FlutterEngine {
         if (isRunning) { // 正在启动引擎中，抛出异常
             throw UnsupportedOperationException("There is an engine starting and cannot continue")
         }
@@ -78,7 +85,7 @@ open class FlutterEngineGroup constructor(private var entrypoint: String) {
             readyListener?.onReady(mainEngine!!)
             currentEngine = mainEngine
             isRunning = false
-            return
+            return mainEngine!!
         }
         val flutterEngine =
             mainEngine?.engine?.fork(context, entrypoint, null, null)
@@ -95,5 +102,6 @@ open class FlutterEngineGroup constructor(private var entrypoint: String) {
                     }
                 })
         mainEngine = mainEngine ?: currentEngine
+        return mainEngine!!
     }
 }

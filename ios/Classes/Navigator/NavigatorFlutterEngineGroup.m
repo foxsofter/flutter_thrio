@@ -117,15 +117,15 @@
 }
 
 - (void)destroyEngineByPageId:(NSUInteger)pageId {
-    NSNumber *key = @(pageId);
-    NavigatorFlutterEngine *engine = _engineMap[key];
-    if (engine) {
-        [_engineMap removeObjectForKey:key];
-    }
     if (_mainEngine.pageId == pageId) {
         _mainEngine.pageId = kNavigatorRoutePageIdNone;
     } else {
+        NSNumber *key = @(pageId);
+        NavigatorFlutterEngine *engine = _engineMap[key];
         [engine destroyContext];
+        if (engine) {
+            [_engineMap removeObjectForKey:key];
+        }
     }
 }
 

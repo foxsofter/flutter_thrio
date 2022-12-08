@@ -13,7 +13,7 @@
         <!-- android:theme="@style/Theme.AppCompat.DayNight" -->
         <!-- android:windowSoftInputMode="adjustResize"> -->
         <activity
-            android:name="io.flutter.embedding.android.ThrioFlutterActivity"
+            android:name=".MainActivity"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
             android:exported="true"
             android:hardwareAccelerated="true"
