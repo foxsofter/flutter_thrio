@@ -417,3 +417,8 @@
 ## 3.5.1
 
 - feat: url template support optional params
+
+## 3.5.2
+
+- feat: 优化 Android 引擎释放的逻辑
+- fix: 修复 iOS 在混合栈的场景只有一个页面时无法 pop 的问题
