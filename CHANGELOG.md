@@ -426,3 +426,7 @@
 ## 3.5.3
 
 - fix: 修复 NavigatorRoutePush 在首页时不生效的问题
+
+## 3.6.0
+
+- feat: NavigatorRoutePush handle with multiple url
