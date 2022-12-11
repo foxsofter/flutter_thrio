@@ -422,3 +422,7 @@
 
 - feat: 优化 Android 引擎释放的逻辑
 - fix: 修复 iOS 在混合栈的场景只有一个页面时无法 pop 的问题
+
+## 3.5.3
+
+- fix: 修复 NavigatorRoutePush 在首页时不生效的问题

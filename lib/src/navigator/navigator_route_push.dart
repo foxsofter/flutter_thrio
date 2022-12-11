@@ -44,6 +44,15 @@ class _NavigatorRoutePushState extends State<NavigatorRoutePush> {
   VoidCallback? _registry;
 
   @override
+  void initState() {
+    super.initState();
+    if (mounted) {
+      _registry?.call();
+      _registry = anchor.pushHandlers.registry(widget.url, widget.onPush);
+    }
+  }
+
+  @override
   void dispose() {
     _registry?.call();
     super.dispose();
