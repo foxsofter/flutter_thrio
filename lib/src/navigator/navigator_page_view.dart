@@ -39,6 +39,7 @@ class NavigatorPageView extends StatefulWidget {
     this.physics,
     this.pageSnapping = true,
     this.onPageChanged,
+    this.parentUrl,
     this.routeSettings = const <RouteSettings>[],
     this.dragStartBehavior = DragStartBehavior.start,
     this.allowImplicitScrolling = false,
@@ -61,6 +62,8 @@ class NavigatorPageView extends StatefulWidget {
   final void Function(RouteSettings)? onPageChanged;
 
   final List<RouteSettings> routeSettings;
+
+  final String? parentUrl;
 
   final DragStartBehavior dragStartBehavior;
 
@@ -164,13 +167,15 @@ class _NavigatorPageViewState extends State<NavigatorPageView> with WidgetsBindi
     }
 
     final state = context.stateOf<NavigatorWidgetState>();
+    var parentUrl = widget.parentUrl;
     final route = state.history.last;
     if (route is NavigatorRoute) {
-      _pageObserverCallback = anchor.pageLifecycleObservers.registry(
-        route.settings.url!,
-        _PageViewPageObserver(this),
-      );
+      parentUrl = route.settings.url;
     }
+    _pageObserverCallback = anchor.pageLifecycleObservers.registry(
+      parentUrl!,
+      _PageViewPageObserver(this),
+    );
 
     super.didChangeDependencies();
   }

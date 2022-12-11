@@ -58,6 +58,7 @@ class _Flutter5PageState extends State<Flutter5Page> {
             ThrioLogger.v('page5 didDisappear -> $settings');
           },
           child: NavigatorPageView(
+            parentUrl: root.biz1.flutter7.url,
             routeSettings: <RouteSettings>[
               NavigatorRouteSettings.settingsWith(url: root.biz1.flutter1.home.url, index: 1),
               NavigatorRouteSettings.settingsWith(url: root.biz1.flutter3.url, index: 2),

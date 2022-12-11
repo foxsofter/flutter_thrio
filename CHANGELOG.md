@@ -430,3 +430,7 @@
 ## 3.6.0
 
 - feat: NavigatorRoutePush handle with multiple url
+
+## 3.6.1
+
+- fix: 修复 NavigatorPageView 互相嵌套内部的 didAppear 不触发的问题
