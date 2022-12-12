@@ -30,7 +30,17 @@ class Module with ThrioModule, ModulePageBuilder, ModuleRouteCustomHandler {
   @override
   void onRouteCustomHandlerRegister(final ModuleContext moduleContext) {
     registerRouteCustomHandler(
-        'justascheme://open/home{?tab}',
+        'https://',
+        <Void>(
+          final url,
+          final queryParams, {
+          final params,
+          final animated = true,
+          final result,
+        }) =>
+            Future.value());
+    registerRouteCustomHandler(
+        'justascheme://open/biz2/home{?tab}',
         <Void>(
           final url,
           final queryParams, {

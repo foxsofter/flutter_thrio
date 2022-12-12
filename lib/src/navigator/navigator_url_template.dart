@@ -32,7 +32,7 @@ class NavigatorUrlTemplate {
 
   final String scheme;
   final String host;
-  final UriParser parser;
+  final UriParser? parser;
 
   @override
   bool operator ==(final Object other) {
@@ -42,9 +42,9 @@ class NavigatorUrlTemplate {
     return other is NavigatorUrlTemplate &&
         scheme == other.scheme &&
         host == other.host &&
-        parser.template == other.parser.template;
+        parser?.template == other.parser?.template;
   }
 
   @override
-  int get hashCode => Object.hash(scheme, host, parser.template);
+  int get hashCode => Object.hash(scheme, host, parser?.template);
 }

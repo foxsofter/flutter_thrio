@@ -156,7 +156,9 @@ class ThrioNavigatorImplement {
   MapEntry<Uri, NavigatorRouteCustomHandler>? matchRouteCustomHandle(final String url) {
     for (final key in anchor.customHandlers.keys) {
       final uri = Uri.parse(url);
-      if (key.scheme == uri.scheme && key.host == uri.host && key.parser.matches(uri)) {
+      if ((key.scheme.isEmpty || key.scheme == uri.scheme) &&
+          (key.host.isEmpty || key.host == uri.host) &&
+          (key.parser == null || key.parser!.matches(uri))) {
         return MapEntry(uri, anchor.customHandlers[key]!);
       }
     }
