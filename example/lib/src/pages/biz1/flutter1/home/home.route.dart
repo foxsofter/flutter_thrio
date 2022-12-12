@@ -15,7 +15,7 @@ class HomeRoute extends NavigatorRouteLeaf {
   @override
   String get name => 'home';
 
-  Future<TPopParams> push<TParams, TPopParams>({
+  Future<TPopParams?> push<TParams, TPopParams>({
     final TParams? params,
     final bool animated = true,
     final NavigatorIntCallback? result,

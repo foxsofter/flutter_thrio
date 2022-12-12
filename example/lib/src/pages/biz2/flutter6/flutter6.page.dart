@@ -5,8 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_thrio/flutter_thrio.dart';
 
-import '../../route.dart';
-
 part 'flutter6.context.dart';
 part 'flutter6.state.dart';
 

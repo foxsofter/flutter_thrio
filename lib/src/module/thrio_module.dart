@@ -25,7 +25,6 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 
-import '../../flutter_thrio.dart';
 import '../exception/thrio_exception.dart';
 import '../logger/thrio_logger.dart';
 import '../navigator/navigator_logger.dart';
@@ -38,6 +37,7 @@ import 'module_page_builder.dart';
 import 'module_page_observer.dart';
 import 'module_param_scheme.dart';
 import 'module_route_builder.dart';
+import 'module_route_custom_handler.dart';
 import 'module_route_observer.dart';
 import 'module_route_transitions_builder.dart';
 

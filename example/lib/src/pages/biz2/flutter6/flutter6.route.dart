@@ -5,8 +5,6 @@
 
 import 'package:flutter_thrio/flutter_thrio.dart';
 
-import '../../types/people.dart';
-
 class Flutter6Route extends NavigatorRouteLeaf {
   factory Flutter6Route(final NavigatorRouteNode parent) => _instance ??= Flutter6Route._(parent);
 
@@ -17,12 +15,12 @@ class Flutter6Route extends NavigatorRouteLeaf {
   @override
   String get name => 'flutter6';
 
-  Future<TPopParams> push<TParams, TPopParams>({
+  Future<TPopParams?> push<TParams, TPopParams>({
     final TParams? params,
     final bool animated = true,
     final NavigatorIntCallback? result,
   }) =>
-      ThrioNavigator.push(
+      ThrioNavigator.push<TParams, TPopParams>(
         url: url,
         params: params,
         animated: animated,

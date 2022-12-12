@@ -22,7 +22,6 @@
 // ignore_for_file: avoid_as
 
 import 'package:flutter/widgets.dart';
-import 'package:uri/uri.dart';
 
 import '../navigator/navigator_page_observer.dart';
 import '../navigator/navigator_route.dart';

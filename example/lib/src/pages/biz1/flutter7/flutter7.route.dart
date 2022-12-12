@@ -15,12 +15,12 @@ class Flutter7Route extends NavigatorRouteLeaf {
   @override
   String get name => 'flutter7';
 
-  Future<TPopParams> push<TParams, TPopParams>({
+  Future<TPopParams?> push<TParams, TPopParams>({
     final TParams? params,
     final bool animated = true,
     final NavigatorIntCallback? result,
   }) =>
-      ThrioNavigator.push(
+      ThrioNavigator.push<TParams, TPopParams>(
         url: url,
         params: params,
         animated: animated,

@@ -32,7 +32,7 @@ abstract class ThrioNavigator {
   /// If a native page builder exists for the `url`, open the native page,
   /// otherwise open the flutter page.
   ///
-  static Future<TPopParams> push<TParams, TPopParams>({
+  static Future<TPopParams?> push<TParams, TPopParams>({
     required final String url,
     final TParams? params,
     final bool animated = true,
@@ -50,7 +50,7 @@ abstract class ThrioNavigator {
   /// If a native page builder exists for the `url`, open the native page,
   /// otherwise open the flutter page.
   ///
-  static Future<TPopParams> pushSingle<TParams, TPopParams>({
+  static Future<TPopParams?> pushSingle<TParams, TPopParams>({
     required final String url,
     final TParams? params,
     final bool animated = true,
@@ -68,7 +68,7 @@ abstract class ThrioNavigator {
   /// If a native page builder exists for the `url`, open the native page,
   /// otherwise open the flutter page.
   ///
-  static Future<TPopParams> pushReplace<TParams, TPopParams>({
+  static Future<TPopParams?> pushReplace<TParams, TPopParams>({
     required final String url,
     final TParams? params,
     final bool animated = true,

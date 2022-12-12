@@ -19,7 +19,7 @@ class Flutter4Route extends NavigatorRouteLeaf {
 
   /// 打开 people 页面
   ///
-  Future<TPopParams> push<TPopParams>(
+  Future<TPopParams?> push<TPopParams>(
     final People people, {
     final bool animated = true,
     final NavigatorIntCallback? result,

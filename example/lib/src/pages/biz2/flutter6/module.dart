@@ -30,25 +30,15 @@ class Module with ThrioModule, ModulePageBuilder, ModuleRouteCustomHandler {
   @override
   void onRouteCustomHandlerRegister(final ModuleContext moduleContext) {
     registerRouteCustomHandler(
-        'https://',
-        <Void>(
-          final url,
-          final queryParams, {
-          final params,
-          final animated = true,
-          final result,
-        }) =>
-            Future.value());
-    registerRouteCustomHandler(
         'justascheme://open/biz2/home{?tab}',
-        <Void>(
+        <TPopParams>(
           final url,
           final queryParams, {
           final params,
           final animated = true,
           final result,
         }) async =>
-            ThrioNavigator.push(
+            ThrioNavigator.push<dynamic, TPopParams>(
               url: root.biz1.flutter3.url,
               params: params,
               animated: animated,
@@ -56,14 +46,14 @@ class Module with ThrioModule, ModulePageBuilder, ModuleRouteCustomHandler {
             ));
     registerRouteCustomHandler(
         'anotherScheme://leaderboard/home{?hashId,product}',
-        <Void>(
+        <TPopParams>(
           final url,
           final queryParams, {
           final params,
           final animated = true,
           final result,
         }) async =>
-            ThrioNavigator.push(
+            ThrioNavigator.push<dynamic, TPopParams>(
               url: root.biz1.flutter3.url,
               params: params,
               animated: animated,
