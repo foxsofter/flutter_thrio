@@ -41,6 +41,7 @@ class NavigatorPageView extends StatefulWidget {
     this.onPageChanged,
     this.parentUrl,
     this.routeSettings = const <RouteSettings>[],
+    this.childBuilder,
     this.dragStartBehavior = DragStartBehavior.start,
     this.allowImplicitScrolling = false,
     this.restorationId,
@@ -62,6 +63,8 @@ class NavigatorPageView extends StatefulWidget {
   final void Function(RouteSettings)? onPageChanged;
 
   final List<RouteSettings> routeSettings;
+
+  final Widget Function(BuildContext context, RouteSettings settings, Widget child)? childBuilder;
 
   final String? parentUrl;
 
@@ -196,9 +199,12 @@ class _NavigatorPageViewState extends State<NavigatorPageView> with WidgetsBindi
         scrollBehavior: widget.scrollBehavior,
         padEnds: widget.padEnds,
         children: widget.routeSettings.map((final it) {
-          final w = ThrioNavigator.build(url: it.url!, params: it.params);
+          var w = ThrioNavigator.build(url: it.url!, params: it.params);
           if (w == null) {
             throw ArgumentError.value(it, 'routeSettings', 'invalid routeSettings');
+          }
+          if(widget.childBuilder != null){
+            w = widget.childBuilder!(context, it ,w);
           }
           return w;
         }).toList(),

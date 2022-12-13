@@ -460,3 +460,7 @@
 - feat: add  notifyAll, notifyFrist, notifyFirstWher, notifyWhere, notifyLastWhere, 
 - feat: add removeFirst, removeAll
 - feat: add replaceFirst
+
+## 3.8.1
+
+- tabview支持child定制

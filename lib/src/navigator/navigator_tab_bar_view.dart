@@ -26,6 +26,7 @@ class NavigatorTabBarView extends StatefulWidget {
     super.key,
     this.parentUrl,
     required this.routeSettings,
+    this.childBuilder,
     this.controller,
     this.physics,
     this.dragStartBehavior = DragStartBehavior.start,
@@ -46,6 +47,8 @@ class NavigatorTabBarView extends StatefulWidget {
   /// Its length must match the length of the [TabBar.tabs]
   /// list, as well as the [controller]'s [TabController.length].
   final List<RouteSettings> routeSettings;
+
+  final Widget Function(BuildContext context, RouteSettings settings, Widget child)? childBuilder;
 
   /// How the page view should respond to user input.
   ///
@@ -268,6 +271,7 @@ class _NavigatorTabBarViewState extends State<NavigatorTabBarView> {
             : const PageScrollPhysics().applyTo(widget.physics),
         parentUrl: widget.parentUrl,
         routeSettings: widget.routeSettings,
+        childBuilder: widget.childBuilder,
       ),
     );
   }
