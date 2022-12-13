@@ -81,6 +81,26 @@ abstract class ThrioNavigator {
         result: result,
       );
 
+  /// Push the page onto the navigation stack, and remove until the page.
+  ///
+  /// If a native page builder exists for the `url`, open the native page,
+  /// otherwise open the flutter page.
+  ///
+  static Future<TPopParams?> pushAndRemoveTo<TParams, TPopParams>({
+    required final String url,
+    required final String toUrl,
+    final TParams? params,
+    final bool animated = true,
+    final NavigatorIntCallback? result,
+  }) =>
+      ThrioNavigatorImplement.shared().pushAndRemoveTo<TParams, TPopParams>(
+        url: url,
+        toUrl: toUrl,
+        params: params,
+        animated: animated,
+        result: result,
+      );
+
   /// Send a notification to the page.
   ///
   /// Notifications will be triggered when the page enters the foreground.

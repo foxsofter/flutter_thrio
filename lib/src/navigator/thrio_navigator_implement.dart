@@ -250,6 +250,62 @@ class ThrioNavigatorImplement {
     return completer.future;
   }
 
+  Future<TPopParams?> pushAndRemoveTo<TParams, TPopParams>({
+    required final String url,
+    required final String toUrl,
+    final TParams? params,
+    final bool animated = true,
+    final NavigatorIntCallback? result,
+  }) async {
+    final allSettings = (await allRoutes()).reversed;
+    if (allSettings.firstWhereOrNull((final it) => it.url == toUrl) == null) {
+      result?.call(0);
+      return null;
+    }
+    final match = matchRouteCustomHandle(url);
+    if (match != null) {
+      final poppedResult = await onRouteCustomHandle<TPopParams>(
+        handler: match.value,
+        uri: match.key,
+        params: params,
+        animated: animated,
+        result: result,
+      );
+      for (final setting in allSettings) {
+        if (setting.url == toUrl) {
+          break;
+        }
+        await remove(url: setting.url!, index: setting.index);
+      }
+      return poppedResult;
+    }
+
+    final completer = Completer<TPopParams>();
+    unawaited(_sendChannel
+        .push<TParams>(url: url, params: params, animated: animated)
+        .then((final index) async {
+      if (index > 0) {
+        final routeName = '$index $url';
+        final routeHistory = ThrioNavigatorImplement.shared().navigatorState?.history;
+        final route = routeHistory?.lastWhereOrNull((final it) => it.settings.name == routeName);
+        if (route != null && route is NavigatorRoute) {
+          route.poppedResult = (final params) => poppedResult<TPopParams>(completer, params);
+        } else {
+          // 不在当前页面栈上，则通过name来缓存
+          poppedResults[routeName] = (final params) => poppedResult<TPopParams>(completer, params);
+        }
+        for (final setting in allSettings) {
+          if (setting.url == toUrl) {
+            break;
+          }
+          await remove(url: setting.url!, index: setting.index);
+        }
+      }
+      result?.call(index);
+    }));
+    return completer.future;
+  }
+
   void poppedResult<TPopParams>(final Completer<TPopParams?> completer, final dynamic params) {
     if (completer.isCompleted) {
       return;
