@@ -23,7 +23,6 @@ import 'package:flutter/widgets.dart';
 
 import '../../flutter_thrio.dart';
 import '../module/module_anchor.dart';
-import 'navigator_logger.dart';
 import 'thrio_navigator_implement.dart';
 
 class NavigatorRoutePush extends StatefulWidget {

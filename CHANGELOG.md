@@ -444,3 +444,7 @@
 - feat: add pushAndRemoveTo
 - refactor: push return type nullable
 - fix: NavigatorRoutePush not working when enter foreground
+
+## 3.7.1
+
+- feat: add popToFirst

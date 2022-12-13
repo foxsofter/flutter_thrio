@@ -357,6 +357,17 @@ class ThrioNavigatorImplement {
   }) =>
       _sendChannel.popTo(url: url, index: index, animated: animated);
 
+  Future<bool> popToFirst({
+    required final String url,
+    final bool animated = true,
+  }) async {
+    final route = await firstRoute(url: url);
+    if (route == null) {
+      return false;
+    }
+    return _sendChannel.popTo(url: route.url!, index: route.index, animated: animated);
+  }
+
   Future<bool> remove({
     required final String url,
     final int index = 0,
