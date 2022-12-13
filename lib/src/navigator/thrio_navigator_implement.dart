@@ -368,12 +368,78 @@ class ThrioNavigatorImplement {
     return _sendChannel.popTo(url: route.url!, index: route.index, animated: animated);
   }
 
+  Future<bool> popUntil({
+    required final bool Function(String url) predicate,
+    final bool animated = true,
+  }) async {
+    final routes = await allRoutes();
+    final route =
+        routes.lastWhereOrNull((final it) => it.url?.isNotEmpty == true && predicate(it.url!));
+    if (route == null) {
+      return false;
+    }
+    return _sendChannel.popTo(url: route.url!, index: route.index, animated: animated);
+  }
+
+  Future<bool> popUntilFirst({
+    required final bool Function(String url) predicate,
+    final bool animated = true,
+  }) async {
+    final routes = await allRoutes();
+    final route =
+        routes.firstWhereOrNull((final it) => it.url?.isNotEmpty == true && predicate(it.url!));
+    if (route == null) {
+      return false;
+    }
+    return _sendChannel.popTo(url: route.url!, index: route.index, animated: animated);
+  }
+
   Future<bool> remove({
     required final String url,
     final int index = 0,
     final bool animated = true,
   }) =>
       _sendChannel.remove(url: url, index: index, animated: animated);
+
+  Future<bool> removeBlowUntil({
+    required final bool Function(String url) predicate,
+    final bool animated = true,
+  }) async {
+    final routes = await allRoutes();
+    final route =
+        routes.lastWhereOrNull((final it) => it.url?.isNotEmpty == true && predicate(it.url!));
+    if (route == null) {
+      return false;
+    }
+    final index = routes.indexOf(route);
+    final all = routes.getRange(index + 1, routes.length - 1);
+    for (final r in all) {
+      if (r.url != null) {
+        await _sendChannel.remove(url: r.url!, index: r.index);
+      }
+    }
+    return true;
+  }
+
+  Future<bool> removeBlowUntilFirst({
+    required final bool Function(String url) predicate,
+    final bool animated = true,
+  }) async {
+    final routes = await allRoutes();
+    final route =
+        routes.firstWhereOrNull((final it) => it.url?.isNotEmpty == true && predicate(it.url!));
+    if (route == null) {
+      return false;
+    }
+    final index = routes.indexOf(route);
+    final all = routes.getRange(index + 1, routes.length - 1);
+    for (final r in all) {
+      if (r.url != null) {
+        await _sendChannel.remove(url: r.url!, index: r.index);
+      }
+    }
+    return true;
+  }
 
   Future<int> removeAll({required final String url, final int excludeIndex = 0}) async {
     var total = 0;
