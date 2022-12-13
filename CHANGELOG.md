@@ -438,3 +438,9 @@
 ## 3.6.2
 
 - feat: url template support only scheme
+
+## 3.7.0
+
+- feat: add pushAndRemoveTo
+- refactor: push return type nullable
+- fix: NavigatorRoutePush not working when enter foreground

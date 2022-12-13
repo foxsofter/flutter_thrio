@@ -23,6 +23,8 @@ import 'package:flutter/widgets.dart';
 
 import '../../flutter_thrio.dart';
 import '../module/module_anchor.dart';
+import 'navigator_logger.dart';
+import 'thrio_navigator_implement.dart';
 
 class NavigatorRoutePush extends StatefulWidget {
   const NavigatorRoutePush({
@@ -42,6 +44,7 @@ class NavigatorRoutePush extends StatefulWidget {
 
 class _NavigatorRoutePushState extends State<NavigatorRoutePush> {
   VoidCallback? _registry;
+  RouteSettings? _lastRouteSettings;
   final _handles = <String, NavigatorRoutePushHandle>{};
 
   @override
@@ -66,12 +69,22 @@ class _NavigatorRoutePushState extends State<NavigatorRoutePush> {
   @override
   Widget build(final BuildContext context) => NavigatorPageLifecycle(
         didAppear: (final _) {
+          _lastRouteSettings = null;
           _registry?.call();
           _registry = anchor.pushHandlers.registryAll(_handles);
         },
-        didDisappear: (final _) {
+        didDisappear: (final _) async {
+          _lastRouteSettings = await ThrioNavigatorImplement.shared().lastRoute();
           _registry?.call();
           _registry = null;
+          // 延迟 100ms，如果是被上层页面覆盖引起的，则顶部路由会变，如果是推到后台则不会变
+          Future.delayed(const Duration(milliseconds: 100), () async {
+            final routeSettings = await ThrioNavigatorImplement.shared().lastRoute();
+            if (routeSettings != null && routeSettings.name == _lastRouteSettings?.name) {
+              _registry?.call();
+              _registry = anchor.pushHandlers.registryAll(_handles);
+            }
+          });
         },
         child: widget.child,
       );
