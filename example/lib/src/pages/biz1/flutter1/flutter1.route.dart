@@ -25,7 +25,6 @@ class Flutter1Route extends NavigatorRouteNode {
   ///
   Future<bool> flutter1({
     required final int intValue,
-    final int index = 0,
   }) =>
       ThrioNavigator.notify(
         url: url,
@@ -33,6 +32,5 @@ class Flutter1Route extends NavigatorRouteNode {
         params: {
           'intValue': intValue,
         },
-        index: index,
       );
 }

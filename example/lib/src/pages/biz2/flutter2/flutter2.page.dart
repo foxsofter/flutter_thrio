@@ -167,7 +167,7 @@ class _Flutter2PageState extends State<Flutter2Page> {
                 ),
                 InkWell(
                   onTap: () {
-                    ThrioNavigator.notify(
+                    ThrioNavigator.notifyAll(
                         name: 'all_page_notify_from_flutter2',
                         params: People(name: '大宝剑', age: 2, sex: 'x'));
                   },

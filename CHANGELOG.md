@@ -453,3 +453,10 @@
 
 - feat: add popUntil, popUntilFirst
 - feat: add removeBelowUntil, removeBelowUntilFirst
+
+## 3.8.0
+
+- feat: add pushAndRemoveToFirst, pushAndRemoveUntil, pushAndRemoveUntilFirst
+- feat: add  notifyAll, notifyFrist, notifyFirstWher, notifyWhere, notifyLastWhere, 
+- feat: add removeFirst, removeAll
+- feat: add replaceFirst

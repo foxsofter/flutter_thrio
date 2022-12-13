@@ -48,7 +48,7 @@ class NavigatorRouteSendChannel {
 
   Future<bool> notify<TParams>({
     final String? url,
-    final int? index,
+    final int index = 0,
     required final String name,
     final TParams? params,
   }) {
@@ -89,12 +89,16 @@ class NavigatorRouteSendChannel {
     return _channel.invokeMethod<bool>('isInitialRoute', arguments).then((final it) => it ?? false);
   }
 
-  Future<bool> popTo({required final String url, final int? index, final bool animated = true}) {
+  Future<bool> popTo({required final String url, final int index = 0, final bool animated = true}) {
     final arguments = <String, dynamic>{'url': url, 'index': index, 'animated': animated};
     return _channel.invokeMethod<bool>('popTo', arguments).then((final it) => it ?? false);
   }
 
-  Future<bool> remove({required final String url, final int? index, final bool animated = true}) {
+  Future<bool> remove({
+    required final String url,
+    final int index = 0,
+    final bool animated = true,
+  }) {
     final arguments = <String, dynamic>{
       'url': url,
       'index': index,
@@ -133,8 +137,11 @@ class NavigatorRouteSendChannel {
             : values.map<RouteSettings>((final value) => RouteSettings(name: value)).toList());
   }
 
-  Future<bool> setPopDisabled(
-      {required final String url, required final int index, final bool disabled = true}) {
+  Future<bool> setPopDisabled({
+    required final String url,
+    required final int index,
+    final bool disabled = true,
+  }) {
     final arguments = <String, dynamic>{'url': url, 'index': index, 'disabled': disabled};
     return _channel.invokeMethod<bool>('setPopDisabled', arguments).then((final it) => it ?? false);
   }

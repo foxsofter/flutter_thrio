@@ -133,22 +133,11 @@ class ThrioNavigatorImplement {
         result: result,
       );
     }
-
     final completer = Completer<TPopParams?>();
-    _sendChannel.push<TParams>(url: url, params: params, animated: animated).then((final index) {
-      if (index > 0) {
-        final routeName = '$index $url';
-        final routeHistory = ThrioNavigatorImplement.shared().navigatorState?.history;
-        final route = routeHistory?.lastWhereOrNull((final it) => it.settings.name == routeName);
-        if (route != null && route is NavigatorRoute) {
-          route.poppedResult = (final params) => poppedResult<TPopParams?>(completer, params);
-        } else {
-          // 不在当前页面栈上，则通过name来缓存
-          poppedResults[routeName] = (final params) => poppedResult<TPopParams?>(completer, params);
-        }
-      }
+    unawaited(_pushToNative<TParams, TPopParams>(url, params, animated, completer, result)
+        .then((final index) async {
       result?.call(index);
-    });
+    }));
     return completer.future;
   }
 
@@ -186,23 +175,13 @@ class ThrioNavigatorImplement {
     final NavigatorIntCallback? result,
   }) {
     final completer = Completer<TPopParams?>();
-
-    _sendChannel
-        .push<TParams>(url: url, params: params, animated: animated)
+    unawaited(_pushToNative<TParams, TPopParams>(url, params, animated, completer, result)
         .then((final index) async {
       if (index > 0) {
-        final routeName = '$index $url';
-        final routeHistory = ThrioNavigatorImplement.shared().navigatorState?.history;
-        final route = routeHistory?.lastWhereOrNull((final it) => it.settings.name == routeName);
-        if (route != null && route is NavigatorRoute) {
-          route.poppedResult = (final params) => poppedResult<TPopParams>(completer, params);
-        } else {
-          // 不在当前页面栈上，则通过name来缓存
-          poppedResults[routeName] = (final params) => poppedResult<TPopParams>(completer, params);
-        }
         await removeAll(url: url, excludeIndex: index);
       }
-    });
+      result?.call(index);
+    }));
     return completer.future;
   }
 
@@ -230,19 +209,9 @@ class ThrioNavigatorImplement {
     }
 
     final completer = Completer<TPopParams>();
-    unawaited(_sendChannel
-        .push<TParams>(url: url, params: params, animated: animated)
+    unawaited(_pushToNative<TParams, TPopParams>(url, params, animated, completer, result)
         .then((final index) async {
       if (index > 0) {
-        final routeName = '$index $url';
-        final routeHistory = ThrioNavigatorImplement.shared().navigatorState?.history;
-        final route = routeHistory?.lastWhereOrNull((final it) => it.settings.name == routeName);
-        if (route != null && route is NavigatorRoute) {
-          route.poppedResult = (final params) => poppedResult<TPopParams>(completer, params);
-        } else {
-          // 不在当前页面栈上，则通过name来缓存
-          poppedResults[routeName] = (final params) => poppedResult<TPopParams>(completer, params);
-        }
         await remove(url: lastSetting.url!, index: lastSetting.index);
       }
       result?.call(index);
@@ -257,8 +226,9 @@ class ThrioNavigatorImplement {
     final bool animated = true,
     final NavigatorIntCallback? result,
   }) async {
-    final allSettings = (await allRoutes()).reversed;
-    if (allSettings.firstWhereOrNull((final it) => it.url == toUrl) == null) {
+    final routes = await allRoutes();
+    final route = routes.lastWhereOrNull((final it) => it.url == toUrl);
+    if (route == null) {
       result?.call(0);
       return null;
     }
@@ -271,40 +241,156 @@ class ThrioNavigatorImplement {
         animated: animated,
         result: result,
       );
-      for (final setting in allSettings) {
-        if (setting.url == toUrl) {
-          break;
-        }
-        await remove(url: setting.url!, index: setting.index);
-      }
+      await removeBlowUntil(predicate: (final url) => url == toUrl);
       return poppedResult;
     }
 
     final completer = Completer<TPopParams>();
-    unawaited(_sendChannel
-        .push<TParams>(url: url, params: params, animated: animated)
+    unawaited(_pushToNative<TParams, TPopParams>(url, params, animated, completer, result)
         .then((final index) async {
       if (index > 0) {
-        final routeName = '$index $url';
-        final routeHistory = ThrioNavigatorImplement.shared().navigatorState?.history;
-        final route = routeHistory?.lastWhereOrNull((final it) => it.settings.name == routeName);
-        if (route != null && route is NavigatorRoute) {
-          route.poppedResult = (final params) => poppedResult<TPopParams>(completer, params);
-        } else {
-          // 不在当前页面栈上，则通过name来缓存
-          poppedResults[routeName] = (final params) => poppedResult<TPopParams>(completer, params);
-        }
-        for (final setting in allSettings) {
-          if (setting.url == toUrl) {
-            break;
-          }
-          await remove(url: setting.url!, index: setting.index);
-        }
+        await removeBlowUntil(predicate: (final url) => url == toUrl);
       }
       result?.call(index);
     }));
     return completer.future;
   }
+
+  Future<TPopParams?> pushAndRemoveToFirst<TParams, TPopParams>({
+    required final String url,
+    required final String toUrl,
+    final TParams? params,
+    final bool animated = true,
+    final NavigatorIntCallback? result,
+  }) async {
+    final routes = await allRoutes();
+    final route = routes.firstWhereOrNull((final it) => it.url == toUrl);
+    if (route == null) {
+      result?.call(0);
+      return null;
+    }
+    final match = matchRouteCustomHandle(url);
+    if (match != null) {
+      final poppedResult = await onRouteCustomHandle<TPopParams>(
+        handler: match.value,
+        uri: match.key,
+        params: params,
+        animated: animated,
+        result: result,
+      );
+      await removeBlowUntilFirst(predicate: (final url) => url == toUrl);
+      return poppedResult;
+    }
+
+    final completer = Completer<TPopParams>();
+    unawaited(_pushToNative<TParams, TPopParams>(url, params, animated, completer, result)
+        .then((final index) async {
+      if (index > 0) {
+        await removeBlowUntilFirst(predicate: (final url) => url == toUrl);
+      }
+      result?.call(index);
+    }));
+    return completer.future;
+  }
+
+  Future<TPopParams?> pushAndRemoveUntil<TParams, TPopParams>({
+    required final String url,
+    required final bool Function(String url) predicate,
+    final TParams? params,
+    final bool animated = true,
+    final NavigatorIntCallback? result,
+  }) async {
+    final routes = await allRoutes();
+    final route =
+        routes.lastWhereOrNull((final it) => it.url?.isNotEmpty == true && predicate(it.url!));
+    if (route == null) {
+      result?.call(0);
+      return null;
+    }
+    final match = matchRouteCustomHandle(url);
+    if (match != null) {
+      final poppedResult = await onRouteCustomHandle<TPopParams>(
+        handler: match.value,
+        uri: match.key,
+        params: params,
+        animated: animated,
+        result: result,
+      );
+      await removeBlowUntil(predicate: predicate);
+      return poppedResult;
+    }
+
+    final completer = Completer<TPopParams>();
+    unawaited(_pushToNative<TParams, TPopParams>(url, params, animated, completer, result)
+        .then((final index) async {
+      if (index > 0) {
+        await removeBlowUntil(predicate: predicate);
+      }
+      result?.call(index);
+    }));
+    return completer.future;
+  }
+
+  Future<TPopParams?> pushAndRemoveUntilFirst<TParams, TPopParams>({
+    required final String url,
+    required final bool Function(String url) predicate,
+    final TParams? params,
+    final bool animated = true,
+    final NavigatorIntCallback? result,
+  }) async {
+    final routes = await allRoutes();
+    final route =
+        routes.firstWhereOrNull((final it) => it.url?.isNotEmpty == true && predicate(it.url!));
+    if (route == null) {
+      result?.call(0);
+      return null;
+    }
+    final match = matchRouteCustomHandle(url);
+    if (match != null) {
+      final poppedResult = await onRouteCustomHandle<TPopParams>(
+        handler: match.value,
+        uri: match.key,
+        params: params,
+        animated: animated,
+        result: result,
+      );
+      await removeBlowUntilFirst(predicate: predicate);
+      return poppedResult;
+    }
+
+    final completer = Completer<TPopParams>();
+    unawaited(_pushToNative<TParams, TPopParams>(url, params, animated, completer, result)
+        .then((final index) async {
+      if (index > 0) {
+        await removeBlowUntilFirst(predicate: predicate);
+      }
+      result?.call(index);
+    }));
+    return completer.future;
+  }
+
+  Future<int> _pushToNative<TParams, TPopParams>(
+    final String url,
+    final TParams? params,
+    final bool animated,
+    final Completer<TPopParams?> completer,
+    final NavigatorIntCallback? result,
+  ) =>
+      _sendChannel.push<TParams>(url: url, params: params, animated: animated).then((final index) {
+        if (index > 0) {
+          final routeName = '$index $url';
+          final routeHistory = ThrioNavigatorImplement.shared().navigatorState?.history;
+          final route = routeHistory?.lastWhereOrNull((final it) => it.settings.name == routeName);
+          if (route != null && route is NavigatorRoute) {
+            route.poppedResult = (final params) => poppedResult<TPopParams>(completer, params);
+          } else {
+            // 不在当前页面栈上，则通过name来缓存
+            poppedResults[routeName] =
+                (final params) => poppedResult<TPopParams>(completer, params);
+          }
+        }
+        return index;
+      });
 
   void poppedResult<TPopParams>(final Completer<TPopParams?> completer, final dynamic params) {
     if (completer.isCompleted) {
@@ -319,13 +405,121 @@ class ThrioNavigatorImplement {
     }
   }
 
-  Future<bool> notify<TParams>({
-    final String? url,
-    final int index = 0,
+  Future<bool> notifyAll<TParams>({
     required final String name,
     final TParams? params,
-  }) =>
-      _sendChannel.notify<TParams>(name: name, url: url, index: index, params: params);
+  }) async {
+    final all = await allRoutes();
+    if (all.isEmpty) {
+      return false;
+    }
+    for (final route in all) {
+      if (route.url != null) {
+        await _sendChannel.notify<TParams>(
+          name: name,
+          url: route.url,
+          index: route.index,
+          params: params,
+        );
+      }
+    }
+    return true;
+  }
+
+  Future<bool> notifyFirstWhere<TParams>({
+    required final bool Function(String url) predicate,
+    required final String name,
+    final TParams? params,
+  }) async {
+    final routes = await allRoutes();
+    final route = routes.firstWhereOrNull((final it) => it.url != null && predicate(it.url!));
+    if (route == null) {
+      return false;
+    }
+    await _sendChannel.notify<TParams>(
+      name: name,
+      url: route.url,
+      index: route.index,
+      params: params,
+    );
+    return true;
+  }
+
+  Future<bool> notifyWhere<TParams>({
+    required final bool Function(String url) predicate,
+    required final String name,
+    final TParams? params,
+  }) async {
+    final routes = await allRoutes();
+    final all = routes.where((final it) => it.url != null && predicate(it.url!));
+    if (all.isEmpty) {
+      return false;
+    }
+    for (final route in all) {
+      if (route.url != null) {
+        await _sendChannel.notify<TParams>(
+          name: name,
+          url: route.url,
+          index: route.index,
+          params: params,
+        );
+      }
+    }
+    return true;
+  }
+
+  Future<bool> notifyLastWhere<TParams>({
+    required final bool Function(String url) predicate,
+    required final String name,
+    final TParams? params,
+  }) async {
+    final routes = await allRoutes();
+    final route = routes.lastWhereOrNull((final it) => it.url != null && predicate(it.url!));
+    if (route == null) {
+      return false;
+    }
+    await _sendChannel.notify<TParams>(
+      name: name,
+      url: route.url,
+      index: route.index,
+      params: params,
+    );
+    return true;
+  }
+
+  Future<bool> notifyFirst<TParams>({
+    required final String url,
+    required final String name,
+    final TParams? params,
+  }) async {
+    final route = await firstRoute(url: url);
+    if (route == null) {
+      return false;
+    }
+    return _sendChannel.notify<TParams>(
+      name: name,
+      url: route.url,
+      index: route.index,
+      params: params,
+    );
+  }
+
+  Future<bool> notifyLast<TParams>({
+    required final String url,
+    required final String name,
+    final TParams? params,
+  }) async {
+    final route = await lastRoute(url: url);
+    if (route == null) {
+      return false;
+    }
+    return _sendChannel.notify<TParams>(
+      name: name,
+      url: route.url,
+      index: route.index,
+      params: params,
+    );
+  }
 
   Future<bool> maybePop<TParams>({
     final TParams? params,
@@ -340,7 +534,6 @@ class ThrioNavigatorImplement {
       _sendChannel.pop<TParams>(params: params, animated: animated);
 
   Future<bool> popToRoot({
-    final int index = 0,
     final bool animated = true,
   }) async {
     final rootRoute = await firstRoute();
@@ -352,10 +545,9 @@ class ThrioNavigatorImplement {
 
   Future<bool> popTo({
     required final String url,
-    final int index = 0,
     final bool animated = true,
   }) =>
-      _sendChannel.popTo(url: url, index: index, animated: animated);
+      _sendChannel.popTo(url: url, animated: animated);
 
   Future<bool> popToFirst({
     required final String url,
@@ -394,12 +586,39 @@ class ThrioNavigatorImplement {
     return _sendChannel.popTo(url: route.url!, index: route.index, animated: animated);
   }
 
+  Future<int> removeAll({required final String url, final int excludeIndex = 0}) async {
+    var total = 0;
+    var isMatch = false;
+    final all = (await allRoutes(url: url)).skipWhile((final it) => it.index == excludeIndex);
+    for (final r in all) {
+      if (r.url == null) {
+        continue;
+      }
+      isMatch = await _sendChannel.remove(url: r.url!, index: r.index);
+      if (isMatch) {
+        total += 1;
+      }
+    }
+    return total;
+  }
+
   Future<bool> remove({
     required final String url,
     final int index = 0,
     final bool animated = true,
   }) =>
       _sendChannel.remove(url: url, index: index, animated: animated);
+
+  Future<bool> removeFirst({
+    required final String url,
+    final bool animated = true,
+  }) async {
+    final route = await firstRoute(url: url);
+    if (route == null) {
+      return false;
+    }
+    return _sendChannel.remove(url: route.url!, index: route.index, animated: animated);
+  }
 
   Future<bool> removeBlowUntil({
     required final bool Function(String url) predicate,
@@ -441,28 +660,22 @@ class ThrioNavigatorImplement {
     return true;
   }
 
-  Future<int> removeAll({required final String url, final int excludeIndex = 0}) async {
-    var total = 0;
-    var isMatch = false;
-    final all = (await allRoutes(url: url)).skipWhile((final it) => it.index == excludeIndex);
-    for (final r in all) {
-      if (r.url == null) {
-        continue;
-      }
-      isMatch = await _sendChannel.remove(url: r.url!, index: r.index);
-      if (isMatch) {
-        total += 1;
-      }
-    }
-    return total;
-  }
-
   Future<int> replace({
     required final String url,
-    final int index = 0,
     required final String newUrl,
   }) =>
-      _sendChannel.replace(url: url, index: index, newUrl: newUrl);
+      _sendChannel.replace(url: url, newUrl: newUrl);
+
+  Future<int> replaceFirst({
+    required final String url,
+    required final String newUrl,
+  }) async {
+    final route = await firstRoute(url: url);
+    if (route == null) {
+      return 0;
+    }
+    return _sendChannel.replace(url: route.url!, index: route.index, newUrl: newUrl);
+  }
 
   Future<bool> canPop() => _sendChannel.canPop();
 

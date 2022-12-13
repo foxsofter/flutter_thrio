@@ -32,7 +32,6 @@ class _Route extends NavigatorRouteNode {
     final int? uid,
     required final String userName,
     final String userToken = 'good token',
-    final int index = 0,
   }) =>
       ThrioNavigator.notify(
         url: url,
@@ -42,12 +41,10 @@ class _Route extends NavigatorRouteNode {
           'userName': userName,
           'userToken': userToken,
         },
-        index: index,
       );
 
-  Future<bool> logout({final int index = 0}) => ThrioNavigator.notify(
+  Future<bool> logout() => ThrioNavigator.notify(
         url: url,
         name: 'logout',
-        index: index,
       );
 }

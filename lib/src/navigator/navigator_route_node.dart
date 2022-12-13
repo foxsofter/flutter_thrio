@@ -46,11 +46,9 @@ class NavigatorRouteNode {
   Future<bool> notify<TParams>(
     final String name, {
     final TParams? params,
-    final int index = 0,
   }) =>
       ThrioNavigator.notify(
         url: url,
-        index: index,
         name: name,
         params: params,
       );
@@ -80,12 +78,10 @@ class NavigatorRouteLeaf extends NavigatorRouteNode {
       ThrioNavigator.remove(url: url, animated: animated);
 
   Future<int> replace({
-    final int index = 0,
     required final String newUrl,
   }) =>
       ThrioNavigator.replace(
         url: url,
-        index: index,
         newUrl: newUrl,
       );
 }

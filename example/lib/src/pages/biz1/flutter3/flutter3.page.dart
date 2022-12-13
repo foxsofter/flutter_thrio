@@ -108,10 +108,7 @@ class _Flutter3PageState extends State<Flutter3Page> {
                       )),
                 ),
                 InkWell(
-                  onTap: () => ThrioNavigator.popTo(
-                    url: '/biz1/native1',
-                    index: 1,
-                  ),
+                  onTap: () => ThrioNavigator.popToFirst(url: '/biz1/native1'),
                   child: Container(
                       padding: const EdgeInsets.all(8),
                       margin: const EdgeInsets.all(8),
