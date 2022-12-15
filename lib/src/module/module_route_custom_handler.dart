@@ -41,6 +41,7 @@ mixin ModuleRouteCustomHandler on ThrioModule {
   }) {
     var scheme = '';
     var host = '';
+    var path = '';
     var tem = template;
     final parts = template.split('://');
     if (parts.length > 2) {
@@ -51,6 +52,7 @@ mixin ModuleRouteCustomHandler on ThrioModule {
       host = subParts[0];
       if (subParts.length > 1) {
         tem = '/${subParts.getRange(1, subParts.length).join('/')}';
+        path = tem.split('{')[0];
       } else {
         tem = '';
       }
@@ -58,7 +60,7 @@ mixin ModuleRouteCustomHandler on ThrioModule {
     final parser = tem.isEmpty
         ? null
         : UriParser(UriTemplate(tem), queryParamsAreOptional: queryParamsAreOptional);
-    final key = NavigatorUrlTemplate(scheme: scheme, host: host, parser: parser);
+    final key = NavigatorUrlTemplate(scheme: scheme, host: host, path: path, parser: parser);
     if (anchor.customHandlers.keys.contains(key)) {
       throw ThrioException('duplicate url template: $template');
     }

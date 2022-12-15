@@ -476,3 +476,7 @@
 ## 3.8.4
 
 - feat: android onBackPressed = maybePop 
+
+## 3.8.5
+
+- fix: url template requires a path match

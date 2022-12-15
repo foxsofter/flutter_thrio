@@ -27,11 +27,13 @@ class NavigatorUrlTemplate {
   const NavigatorUrlTemplate({
     required this.scheme,
     required this.host,
+    required this.path,
     required this.parser,
   });
 
   final String scheme;
   final String host;
+  final String path;
   final UriParser? parser;
 
   @override
@@ -42,9 +44,10 @@ class NavigatorUrlTemplate {
     return other is NavigatorUrlTemplate &&
         scheme == other.scheme &&
         host == other.host &&
+        path == other.path &&
         parser?.template == other.parser?.template;
   }
 
   @override
-  int get hashCode => Object.hash(scheme, host, parser?.template);
+  int get hashCode => Object.hash(scheme, host, path, parser?.template);
 }

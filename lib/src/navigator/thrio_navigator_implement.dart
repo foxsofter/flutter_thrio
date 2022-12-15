@@ -146,6 +146,7 @@ class ThrioNavigatorImplement {
       final uri = Uri.parse(url);
       if ((key.scheme.isEmpty || key.scheme == uri.scheme) &&
           (key.host.isEmpty || key.host == uri.host) &&
+          (key.path.isEmpty || key.path == uri.path) &&
           (key.parser == null || key.parser!.matches(uri))) {
         return MapEntry(uri, anchor.customHandlers[key]!);
       }
