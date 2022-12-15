@@ -46,12 +46,14 @@ part 'module_context.dart';
 mixin ThrioModule {
   /// Modular initialization function, needs to be called once during App initialization.
   ///
-  static Future<void> init(final ThrioModule rootModule, {final String? entrypoint}) async {
+  static Future<void> init(final ThrioModule rootModule,
+      {final String? entrypoint}) async {
     if (anchor.modules.length == 1) {
       throw ThrioException('init method can only be called once.');
     } else {
-      final moduleContext =
-          entrypoint == null ? ModuleContext() : ModuleContext(entrypoint: entrypoint);
+      final moduleContext = entrypoint == null
+          ? ModuleContext()
+          : ModuleContext(entrypoint: entrypoint);
       moduleOf[moduleContext] = anchor;
       anchor
         .._moduleContext = moduleContext
@@ -76,11 +78,13 @@ mixin ThrioModule {
   /// `NavigatorPageBuilder`, and `url` is null or empty, find instance of `T`
   /// in all modules.
   ///
-  static T? get<T>({final String? url, final String? key}) => anchor.get<T>(url: url, key: key);
+  static T? get<T>({final String? url, final String? key}) =>
+      anchor.get<T>(url: url, key: key);
 
   /// Returns true if the `url` has been registered.
   ///
-  static bool contains(final String url) => anchor.get<NavigatorPageBuilder>(url: url) != null;
+  static bool contains(final String url) =>
+      anchor.get<NavigatorPageBuilder>(url: url) != null;
 
   /// Get instances by `T` and `url`.
   ///
@@ -93,7 +97,8 @@ mixin ThrioModule {
   /// If `T` is `NavigatorRouteObserver`, returns all route observers
   /// matched by `url`.
   ///
-  static Iterable<T> gets<T>({required final String url}) => anchor.gets<T>(url);
+  static Iterable<T> gets<T>({required final String url}) =>
+      anchor.gets<T>(url);
 
   @protected
   final modules = <String, ThrioModule>{};
@@ -118,11 +123,14 @@ mixin ThrioModule {
   /// the `onModuleRegister` function of the `module`.
   ///
   @protected
-  void registerModule(final ThrioModule module, final ModuleContext moduleContext) {
+  void registerModule(
+      final ThrioModule module, final ModuleContext moduleContext) {
     if (modules.containsKey(module.key)) {
-      throw ThrioException('A module with the same key ${module.key} already exists');
+      throw ThrioException(
+          'A module with the same key ${module.key} already exists');
     } else {
-      final submoduleContext = ModuleContext(entrypoint: moduleContext.entrypoint);
+      final submoduleContext =
+          ModuleContext(entrypoint: moduleContext.entrypoint);
       moduleOf[submoduleContext] = module;
       modules[module.key] = module;
       parentOf[module] = this;

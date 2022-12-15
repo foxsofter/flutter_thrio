@@ -42,7 +42,8 @@ class _Flutter3PageState extends State<Flutter3Page> {
       child: Scaffold(
           appBar: AppBar(
             backgroundColor: Colors.white,
-            title: const Text('thrio_example', style: TextStyle(color: Colors.black)),
+            title: const Text('thrio_example',
+                style: TextStyle(color: Colors.black)),
             leading: context.showPopAwareWidget(const IconButton(
               color: Colors.black,
               tooltip: 'back',
@@ -64,7 +65,8 @@ class _Flutter3PageState extends State<Flutter3Page> {
                   ),
                 ),
                 InkWell(
-                  onTap: () => root.biz2.flutter4.push(People(age: 10, name: 'goodman', sex: '女')),
+                  onTap: () => root.biz2.flutter4
+                      .push(People(age: 10, name: 'goodman', sex: '女')),
                   child: Container(
                       padding: const EdgeInsets.all(8),
                       margin: const EdgeInsets.all(8),
@@ -158,7 +160,9 @@ class _Flutter3PageState extends State<Flutter3Page> {
                 ),
                 InkWell(
                   onTap: () => Navigator.push(
-                      context, MaterialPageRoute(builder: (final context) => const TestPage())),
+                      context,
+                      MaterialPageRoute(
+                          builder: (final context) => const TestPage())),
                   child: Container(
                       padding: const EdgeInsets.all(8),
                       margin: const EdgeInsets.all(8),
@@ -218,7 +222,9 @@ class _TestPageState extends State<TestPage> {
               Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: ElevatedButton(
-                  style: ButtonStyle(foregroundColor: MaterialStateProperty.all(Colors.indigo)),
+                  style: ButtonStyle(
+                      foregroundColor:
+                          MaterialStateProperty.all(Colors.indigo)),
                   onPressed: () {
                     Navigator.of(context).pop();
                   },

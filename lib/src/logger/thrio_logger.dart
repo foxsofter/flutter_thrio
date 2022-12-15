@@ -44,5 +44,6 @@ abstract class ThrioLogger {
   ///
   static void e(final dynamic message) => _print('E', message);
 
-  static void _print(final String level, final dynamic message) => debugPrint('[$level] $message');
+  static void _print(final String level, final dynamic message) =>
+      debugPrint('[$level] $message');
 }

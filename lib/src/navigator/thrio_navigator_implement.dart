@@ -49,7 +49,8 @@ class ThrioNavigatorImplement {
   static final ThrioNavigatorImplement _default = ThrioNavigatorImplement._();
 
   Future<void> init(final ModuleContext moduleContext) async {
-    _channel = ThrioChannel(channel: '__thrio_app__${moduleContext.entrypoint}');
+    _channel =
+        ThrioChannel(channel: '__thrio_app__${moduleContext.entrypoint}');
     ThrioChannel(channel: '__thrio_module_context__${moduleContext.entrypoint}')
         .registryMethodCall('set', ([final arguments]) async {
       if (arguments == null || arguments.isEmpty) {
@@ -134,14 +135,16 @@ class ThrioNavigatorImplement {
       );
     }
     final completer = Completer<TPopParams?>();
-    unawaited(_pushToNative<TParams, TPopParams>(url, params, animated, completer, result)
+    unawaited(_pushToNative<TParams, TPopParams>(
+            url, params, animated, completer, result)
         .then((final index) async {
       result?.call(index);
     }));
     return completer.future;
   }
 
-  MapEntry<Uri, NavigatorRouteCustomHandler>? matchRouteCustomHandle(final String url) {
+  MapEntry<Uri, NavigatorRouteCustomHandler>? matchRouteCustomHandle(
+      final String url) {
     for (final key in anchor.customHandlers.keys) {
       final uri = Uri.parse(url);
       if ((key.scheme.isEmpty || key.scheme == uri.scheme) &&
@@ -176,7 +179,8 @@ class ThrioNavigatorImplement {
     final NavigatorIntCallback? result,
   }) {
     final completer = Completer<TPopParams?>();
-    unawaited(_pushToNative<TParams, TPopParams>(url, params, animated, completer, result)
+    unawaited(_pushToNative<TParams, TPopParams>(
+            url, params, animated, completer, result)
         .then((final index) async {
       if (index > 0) {
         await removeAll(url: url, excludeIndex: index);
@@ -210,7 +214,8 @@ class ThrioNavigatorImplement {
     }
 
     final completer = Completer<TPopParams>();
-    unawaited(_pushToNative<TParams, TPopParams>(url, params, animated, completer, result)
+    unawaited(_pushToNative<TParams, TPopParams>(
+            url, params, animated, completer, result)
         .then((final index) async {
       if (index > 0) {
         await remove(url: lastSetting.url!, index: lastSetting.index);
@@ -247,7 +252,8 @@ class ThrioNavigatorImplement {
     }
 
     final completer = Completer<TPopParams>();
-    unawaited(_pushToNative<TParams, TPopParams>(url, params, animated, completer, result)
+    unawaited(_pushToNative<TParams, TPopParams>(
+            url, params, animated, completer, result)
         .then((final index) async {
       if (index > 0) {
         await removeBlowUntil(predicate: (final url) => url == toUrl);
@@ -284,7 +290,8 @@ class ThrioNavigatorImplement {
     }
 
     final completer = Completer<TPopParams>();
-    unawaited(_pushToNative<TParams, TPopParams>(url, params, animated, completer, result)
+    unawaited(_pushToNative<TParams, TPopParams>(
+            url, params, animated, completer, result)
         .then((final index) async {
       if (index > 0) {
         await removeBlowUntilFirst(predicate: (final url) => url == toUrl);
@@ -302,8 +309,8 @@ class ThrioNavigatorImplement {
     final NavigatorIntCallback? result,
   }) async {
     final routes = await allRoutes();
-    final route =
-        routes.lastWhereOrNull((final it) => it.url?.isNotEmpty == true && predicate(it.url!));
+    final route = routes.lastWhereOrNull(
+        (final it) => it.url?.isNotEmpty == true && predicate(it.url!));
     if (route == null) {
       result?.call(0);
       return null;
@@ -322,7 +329,8 @@ class ThrioNavigatorImplement {
     }
 
     final completer = Completer<TPopParams>();
-    unawaited(_pushToNative<TParams, TPopParams>(url, params, animated, completer, result)
+    unawaited(_pushToNative<TParams, TPopParams>(
+            url, params, animated, completer, result)
         .then((final index) async {
       if (index > 0) {
         await removeBlowUntil(predicate: predicate);
@@ -340,8 +348,8 @@ class ThrioNavigatorImplement {
     final NavigatorIntCallback? result,
   }) async {
     final routes = await allRoutes();
-    final route =
-        routes.firstWhereOrNull((final it) => it.url?.isNotEmpty == true && predicate(it.url!));
+    final route = routes.firstWhereOrNull(
+        (final it) => it.url?.isNotEmpty == true && predicate(it.url!));
     if (route == null) {
       result?.call(0);
       return null;
@@ -360,7 +368,8 @@ class ThrioNavigatorImplement {
     }
 
     final completer = Completer<TPopParams>();
-    unawaited(_pushToNative<TParams, TPopParams>(url, params, animated, completer, result)
+    unawaited(_pushToNative<TParams, TPopParams>(
+            url, params, animated, completer, result)
         .then((final index) async {
       if (index > 0) {
         await removeBlowUntilFirst(predicate: predicate);
@@ -377,13 +386,18 @@ class ThrioNavigatorImplement {
     final Completer<TPopParams?> completer,
     final NavigatorIntCallback? result,
   ) =>
-      _sendChannel.push<TParams>(url: url, params: params, animated: animated).then((final index) {
+      _sendChannel
+          .push<TParams>(url: url, params: params, animated: animated)
+          .then((final index) {
         if (index > 0) {
           final routeName = '$index $url';
-          final routeHistory = ThrioNavigatorImplement.shared().navigatorState?.history;
-          final route = routeHistory?.lastWhereOrNull((final it) => it.settings.name == routeName);
+          final routeHistory =
+              ThrioNavigatorImplement.shared().navigatorState?.history;
+          final route = routeHistory
+              ?.lastWhereOrNull((final it) => it.settings.name == routeName);
           if (route != null && route is NavigatorRoute) {
-            route.poppedResult = (final params) => poppedResult<TPopParams>(completer, params);
+            route.poppedResult =
+                (final params) => poppedResult<TPopParams>(completer, params);
           } else {
             // 不在当前页面栈上，则通过name来缓存
             poppedResults[routeName] =
@@ -393,7 +407,8 @@ class ThrioNavigatorImplement {
         return index;
       });
 
-  void poppedResult<TPopParams>(final Completer<TPopParams?> completer, final dynamic params) {
+  void poppedResult<TPopParams>(
+      final Completer<TPopParams?> completer, final dynamic params) {
     if (completer.isCompleted) {
       return;
     }
@@ -402,7 +417,8 @@ class ThrioNavigatorImplement {
     } else if (params is TPopParams) {
       completer.complete(params);
     } else {
-      completer.completeError(ArgumentError('invalid params: $params', 'params'));
+      completer
+          .completeError(ArgumentError('invalid params: $params', 'params'));
     }
   }
 
@@ -433,7 +449,8 @@ class ThrioNavigatorImplement {
     final TParams? params,
   }) async {
     final routes = await allRoutes();
-    final route = routes.firstWhereOrNull((final it) => it.url != null && predicate(it.url!));
+    final route = routes
+        .firstWhereOrNull((final it) => it.url != null && predicate(it.url!));
     if (route == null) {
       return false;
     }
@@ -452,7 +469,8 @@ class ThrioNavigatorImplement {
     final TParams? params,
   }) async {
     final routes = await allRoutes();
-    final all = routes.where((final it) => it.url != null && predicate(it.url!));
+    final all =
+        routes.where((final it) => it.url != null && predicate(it.url!));
     if (all.isEmpty) {
       return false;
     }
@@ -475,7 +493,8 @@ class ThrioNavigatorImplement {
     final TParams? params,
   }) async {
     final routes = await allRoutes();
-    final route = routes.lastWhereOrNull((final it) => it.url != null && predicate(it.url!));
+    final route = routes
+        .lastWhereOrNull((final it) => it.url != null && predicate(it.url!));
     if (route == null) {
       return false;
     }
@@ -541,7 +560,8 @@ class ThrioNavigatorImplement {
     if (rootRoute == null) {
       return false;
     }
-    return _sendChannel.popTo(url: rootRoute.url!, index: rootRoute.index, animated: animated);
+    return _sendChannel.popTo(
+        url: rootRoute.url!, index: rootRoute.index, animated: animated);
   }
 
   Future<bool> popTo({
@@ -558,7 +578,8 @@ class ThrioNavigatorImplement {
     if (route == null) {
       return false;
     }
-    return _sendChannel.popTo(url: route.url!, index: route.index, animated: animated);
+    return _sendChannel.popTo(
+        url: route.url!, index: route.index, animated: animated);
   }
 
   Future<bool> popUntil({
@@ -566,12 +587,13 @@ class ThrioNavigatorImplement {
     final bool animated = true,
   }) async {
     final routes = await allRoutes();
-    final route =
-        routes.lastWhereOrNull((final it) => it.url?.isNotEmpty == true && predicate(it.url!));
+    final route = routes.lastWhereOrNull(
+        (final it) => it.url?.isNotEmpty == true && predicate(it.url!));
     if (route == null) {
       return false;
     }
-    return _sendChannel.popTo(url: route.url!, index: route.index, animated: animated);
+    return _sendChannel.popTo(
+        url: route.url!, index: route.index, animated: animated);
   }
 
   Future<bool> popUntilFirst({
@@ -579,18 +601,21 @@ class ThrioNavigatorImplement {
     final bool animated = true,
   }) async {
     final routes = await allRoutes();
-    final route =
-        routes.firstWhereOrNull((final it) => it.url?.isNotEmpty == true && predicate(it.url!));
+    final route = routes.firstWhereOrNull(
+        (final it) => it.url?.isNotEmpty == true && predicate(it.url!));
     if (route == null) {
       return false;
     }
-    return _sendChannel.popTo(url: route.url!, index: route.index, animated: animated);
+    return _sendChannel.popTo(
+        url: route.url!, index: route.index, animated: animated);
   }
 
-  Future<int> removeAll({required final String url, final int excludeIndex = 0}) async {
+  Future<int> removeAll(
+      {required final String url, final int excludeIndex = 0}) async {
     var total = 0;
     var isMatch = false;
-    final all = (await allRoutes(url: url)).skipWhile((final it) => it.index == excludeIndex);
+    final all = (await allRoutes(url: url))
+        .skipWhile((final it) => it.index == excludeIndex);
     for (final r in all) {
       if (r.url == null) {
         continue;
@@ -618,7 +643,8 @@ class ThrioNavigatorImplement {
     if (route == null) {
       return false;
     }
-    return _sendChannel.remove(url: route.url!, index: route.index, animated: animated);
+    return _sendChannel.remove(
+        url: route.url!, index: route.index, animated: animated);
   }
 
   Future<bool> removeBlowUntil({
@@ -626,8 +652,8 @@ class ThrioNavigatorImplement {
     final bool animated = true,
   }) async {
     final routes = await allRoutes();
-    final route =
-        routes.lastWhereOrNull((final it) => it.url?.isNotEmpty == true && predicate(it.url!));
+    final route = routes.lastWhereOrNull(
+        (final it) => it.url?.isNotEmpty == true && predicate(it.url!));
     if (route == null) {
       return false;
     }
@@ -646,8 +672,8 @@ class ThrioNavigatorImplement {
     final bool animated = true,
   }) async {
     final routes = await allRoutes();
-    final route =
-        routes.firstWhereOrNull((final it) => it.url?.isNotEmpty == true && predicate(it.url!));
+    final route = routes.firstWhereOrNull(
+        (final it) => it.url?.isNotEmpty == true && predicate(it.url!));
     if (route == null) {
       return false;
     }
@@ -675,7 +701,8 @@ class ThrioNavigatorImplement {
     if (route == null) {
       return 0;
     }
-    return _sendChannel.replace(url: route.url!, index: route.index, newUrl: newUrl);
+    return _sendChannel.replace(
+        url: route.url!, index: route.index, newUrl: newUrl);
   }
 
   Future<bool> canPop() => _sendChannel.canPop();
@@ -688,7 +715,8 @@ class ThrioNavigatorImplement {
     ));
   }
 
-  Future<bool> isInitialRoute({required final String url, final int index = 0}) =>
+  Future<bool> isInitialRoute(
+          {required final String url, final int index = 0}) =>
       _sendChannel.isInitialRoute(url: url, index: index);
 
   Future<RouteSettings?> firstRoute({final String? url}) async {
@@ -696,16 +724,19 @@ class ThrioNavigatorImplement {
     return all.firstOrNull;
   }
 
-  Future<RouteSettings?> lastRoute({final String? url}) => _sendChannel.lastRoute(url: url);
+  Future<RouteSettings?> lastRoute({final String? url}) =>
+      _sendChannel.lastRoute(url: url);
 
-  Future<List<RouteSettings>> allRoutes({final String? url}) => _sendChannel.allRoutes(url: url);
+  Future<List<RouteSettings>> allRoutes({final String? url}) =>
+      _sendChannel.allRoutes(url: url);
 
   RouteSettings? lastFlutterRoute({final String? url}) {
     if (url == null || url.isEmpty) {
       return navigatorState?.history.lastOrNull?.settings;
     }
     return navigatorState?.history
-        .lastWhereOrNull((final it) => it is NavigatorRoute && it.settings.url == url)
+        .lastWhereOrNull(
+            (final it) => it is NavigatorRoute && it.settings.url == url)
         ?.settings;
   }
 
@@ -728,8 +759,8 @@ class ThrioNavigatorImplement {
     final routes = navigatorState?.history ?? <NavigatorRoute>[];
     final index = url.isEmpty
         ? routes.lastIndexWhere((final route) => route is NavigatorRoute)
-        : routes
-            .lastIndexWhere((final route) => route is NavigatorRoute && route.settings.url == url);
+        : routes.lastIndexWhere((final route) =>
+            route is NavigatorRoute && route.settings.url == url);
     if (index < 0 || routes.length <= index + 1) {
       return false;
     }
@@ -763,8 +794,9 @@ class ThrioNavigatorImplement {
       // ignore: avoid_as
       final typeString = params['__thrio_TParams__'] as String;
       if (typeString.isNotEmpty) {
-        final paramsObj = ThrioModule.get<JsonDeserializer<dynamic>>(key: typeString)
-            ?.call(params.cast<String, dynamic>());
+        final paramsObj =
+            ThrioModule.get<JsonDeserializer<dynamic>>(key: typeString)
+                ?.call(params.cast<String, dynamic>());
         if (paramsObj != null) {
           return paramsObj;
         }

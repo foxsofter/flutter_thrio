@@ -29,7 +29,8 @@ import 'navigator_types.dart';
 import 'thrio_navigator_implement.dart';
 
 class NavigatorRouteReceiveChannel {
-  NavigatorRouteReceiveChannel(final ThrioChannel channel) : _channel = channel {
+  NavigatorRouteReceiveChannel(final ThrioChannel channel)
+      : _channel = channel {
     _onPush();
     _onMaybePop();
     _onPop();
@@ -41,7 +42,8 @@ class NavigatorRouteReceiveChannel {
 
   final ThrioChannel _channel;
 
-  void _onPush() => _channel.registryMethodCall('push', ([final arguments]) async {
+  void _onPush() =>
+      _channel.registryMethodCall('push', ([final arguments]) async {
         final routeSettings = NavigatorRouteSettings.fromArguments(arguments);
         if (routeSettings == null) {
           return false;
@@ -50,9 +52,11 @@ class NavigatorRouteReceiveChannel {
           'push: url->${routeSettings.url} '
           'index->${routeSettings.index}',
         );
-        routeSettings.params = _deserializeParams(routeSettings.url!, routeSettings.params);
+        routeSettings.params =
+            _deserializeParams(routeSettings.url!, routeSettings.params);
         final animated = arguments?['animated'] == true;
-        final callback = anchor.get<NavigatorRoutePushHandle>(url: routeSettings.url!);
+        final callback =
+            anchor.get<NavigatorRoutePushHandle>(url: routeSettings.url!);
         if (callback != null) {
           final result = await callback(routeSettings, animated: animated);
           if (result == NavigatorRoutePushHandleType.prevention) {
@@ -69,7 +73,8 @@ class NavigatorRouteReceiveChannel {
             false;
       });
 
-  void _onMaybePop() => _channel.registryMethodCall('maybePop', ([final arguments]) async {
+  void _onMaybePop() =>
+      _channel.registryMethodCall('maybePop', ([final arguments]) async {
         final routeSettings = NavigatorRouteSettings.fromArguments(arguments);
         if (routeSettings == null) {
           return 0;
@@ -82,14 +87,16 @@ class NavigatorRouteReceiveChannel {
             0;
       });
 
-  void _onPop() => _channel.registryMethodCall('pop', ([final arguments]) async {
+  void _onPop() =>
+      _channel.registryMethodCall('pop', ([final arguments]) async {
         final routeSettings = NavigatorRouteSettings.fromArguments(arguments);
         if (routeSettings == null) {
           return false;
         }
         final animated = arguments?['animated'] == true;
         final inRootValue = arguments != null ? arguments['inRoot'] : null;
-        final inRoot = (inRootValue != null && inRootValue is bool) && inRootValue;
+        final inRoot =
+            (inRootValue != null && inRootValue is bool) && inRootValue;
         return await ThrioNavigatorImplement.shared()
                 .navigatorState
                 ?.pop(routeSettings, animated: animated, inRoot: inRoot)
@@ -100,7 +107,8 @@ class NavigatorRouteReceiveChannel {
             false;
       });
 
-  void _onCanPop() => _channel.registryMethodCall('canPop', ([final arguments]) async {
+  void _onCanPop() =>
+      _channel.registryMethodCall('canPop', ([final arguments]) async {
         final routeSettings = NavigatorRouteSettings.fromArguments(arguments);
         if (routeSettings == null) {
           return false;
@@ -112,7 +120,8 @@ class NavigatorRouteReceiveChannel {
             false;
       });
 
-  void _onPopTo() => _channel.registryMethodCall('popTo', ([final arguments]) async {
+  void _onPopTo() =>
+      _channel.registryMethodCall('popTo', ([final arguments]) async {
         final routeSettings = NavigatorRouteSettings.fromArguments(arguments);
         if (routeSettings == null) {
           return false;
@@ -128,7 +137,8 @@ class NavigatorRouteReceiveChannel {
             false;
       });
 
-  void _onRemove() => _channel.registryMethodCall('remove', ([final arguments]) async {
+  void _onRemove() =>
+      _channel.registryMethodCall('remove', ([final arguments]) async {
         final routeSettings = NavigatorRouteSettings.fromArguments(arguments);
         if (routeSettings == null) {
           return false;
@@ -144,12 +154,14 @@ class NavigatorRouteReceiveChannel {
             false;
       });
 
-  void _onReplace() => _channel.registryMethodCall('replace', ([final arguments]) async {
+  void _onReplace() =>
+      _channel.registryMethodCall('replace', ([final arguments]) async {
         final routeSettings = NavigatorRouteSettings.fromArguments(arguments);
         if (routeSettings == null) {
           return false;
         }
-        final newRouteSettings = NavigatorRouteSettings.fromNewUrlArguments(arguments);
+        final newRouteSettings =
+            NavigatorRouteSettings.fromNewUrlArguments(arguments);
         if (newRouteSettings == null) {
           return false;
         }
@@ -180,14 +192,16 @@ class NavigatorRouteReceiveChannel {
     if (params is Map) {
       if (params.containsKey('__thrio_Params_HashCode__')) {
         // ignore: avoid_as
-        return anchor.removeParam<dynamic>(params['__thrio_Params_HashCode__'] as int);
+        return anchor
+            .removeParam<dynamic>(params['__thrio_Params_HashCode__'] as int);
       }
 
       if (params.containsKey('__thrio_TParams__')) {
         // ignore: avoid_as
         final typeString = params['__thrio_TParams__'] as String;
         if (typeString.isNotEmpty) {
-          final paramsObj = ThrioModule.get<JsonDeserializer<dynamic>>(url: url, key: typeString)
+          final paramsObj = ThrioModule.get<JsonDeserializer<dynamic>>(
+                  url: url, key: typeString)
               ?.call(params.cast<String, dynamic>());
           if (paramsObj != null) {
             return paramsObj;
@@ -207,7 +221,9 @@ class NavigatorRouteReceiveChannel {
     if (routes.isEmpty) {
       ThrioNavigatorImplement.shared().poppedResults.clear();
     } else {
-      ThrioNavigatorImplement.shared().poppedResults.removeWhere((final name, final poppedResult) {
+      ThrioNavigatorImplement.shared()
+          .poppedResults
+          .removeWhere((final name, final poppedResult) {
         if (!routes.any((final it) => it.name == name)) {
           Future(() => poppedResult.call(null));
           return true;

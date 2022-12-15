@@ -16,6 +16,7 @@ class Flutter1Notify extends NavigatorPageNotify {
     required super.child,
   }) : super(
             name: 'flutter1',
-            onPageNotify: (final params) => onNotify(intValue: params['intValue'] as int),
+            onPageNotify: (final params) =>
+                onNotify(intValue: params['intValue'] as int),
             initialParams: intValue == null ? null : {'intValue': intValue});
 }

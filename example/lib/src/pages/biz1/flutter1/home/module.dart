@@ -44,7 +44,8 @@ class Module
   }
 
   @override
-  void didReplace(final RouteSettings newRouteSettings, final RouteSettings oldRouteSettings) {
+  void didReplace(final RouteSettings newRouteSettings,
+      final RouteSettings oldRouteSettings) {
     debugPrint('didReplace: $newRouteSettings old: $oldRouteSettings');
   }
 }

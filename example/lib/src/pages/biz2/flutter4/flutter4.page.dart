@@ -35,7 +35,8 @@ class _Flutter4PageState extends State<Flutter4Page> {
   Widget build(final BuildContext context) => Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
-        title: const Text('thrio_example', style: TextStyle(color: Colors.black)),
+        title:
+            const Text('thrio_example', style: TextStyle(color: Colors.black)),
         leading: context.showPopAwareWidget(const IconButton(
           color: Colors.black,
           tooltip: 'back',
@@ -145,7 +146,8 @@ class _Flutter4PageState extends State<Flutter4Page> {
             InkWell(
               onTap: () async {
                 if (!await root.biz1.flutter1.flutter1(intValue: 33)) {
-                  await ThrioNavigator.push(url: '/biz1/flutter1', params: {'page1Notify': {}});
+                  await ThrioNavigator.push(
+                      url: '/biz1/flutter1', params: {'page1Notify': {}});
                 }
               },
               child: Container(

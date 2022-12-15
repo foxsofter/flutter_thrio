@@ -44,7 +44,8 @@ class _NavigatorHomeState extends State<NavigatorHome> {
         body: Center(
             child: SingleChildScrollView(
                 child: Column(children: <Widget>[
-          const SizedBox(width: 60, height: 60, child: CircularProgressIndicator()),
+          const SizedBox(
+              width: 60, height: 60, child: CircularProgressIndicator()),
           if (widget.showRestartButton)
             InkWell(
               onTap: () => ThrioNavigatorImplement.shared().hotRestart(),
@@ -53,7 +54,9 @@ class _NavigatorHomeState extends State<NavigatorHome> {
                   child: const Text(
                     'hot restart',
                     style: TextStyle(
-                        fontSize: 22, color: Colors.blue, decoration: TextDecoration.underline),
+                        fontSize: 22,
+                        color: Colors.blue,
+                        decoration: TextDecoration.underline),
                   )),
             ),
         ]))),

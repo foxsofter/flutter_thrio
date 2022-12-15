@@ -6,7 +6,8 @@
 import 'package:flutter_thrio/flutter_thrio.dart';
 
 class HomeRoute extends NavigatorRouteLeaf {
-  factory HomeRoute(final NavigatorRouteNode parent) => _instance ??= HomeRoute._(parent);
+  factory HomeRoute(final NavigatorRouteNode parent) =>
+      _instance ??= HomeRoute._(parent);
 
   HomeRoute._(super.parent);
 

@@ -34,7 +34,8 @@ class _Flutter5PageState extends State<Flutter5Page> {
   Widget build(final BuildContext context) => Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
-        title: const Text('page view example', style: TextStyle(color: Colors.black)),
+        title: const Text('page view example',
+            style: TextStyle(color: Colors.black)),
         leading: context.showPopAwareWidget(const IconButton(
           color: Colors.black,
           tooltip: 'back',
@@ -60,10 +61,14 @@ class _Flutter5PageState extends State<Flutter5Page> {
           child: NavigatorPageView(
             parentUrl: root.biz1.flutter7.url,
             routeSettings: <RouteSettings>[
-              NavigatorRouteSettings.settingsWith(url: root.biz1.flutter1.home.url, index: 1),
-              NavigatorRouteSettings.settingsWith(url: root.biz1.flutter3.url, index: 2),
-              NavigatorRouteSettings.settingsWith(url: root.biz2.flutter2.url, index: 3),
-              NavigatorRouteSettings.settingsWith(url: root.biz2.flutter4.url, index: 4),
+              NavigatorRouteSettings.settingsWith(
+                  url: root.biz1.flutter1.home.url, index: 1),
+              NavigatorRouteSettings.settingsWith(
+                  url: root.biz1.flutter3.url, index: 2),
+              NavigatorRouteSettings.settingsWith(
+                  url: root.biz2.flutter2.url, index: 3),
+              NavigatorRouteSettings.settingsWith(
+                  url: root.biz2.flutter4.url, index: 4),
             ],
           )));
 }

@@ -6,7 +6,8 @@
 import 'package:flutter_thrio/flutter_thrio.dart';
 
 class Flutter5Route extends NavigatorRouteLeaf {
-  factory Flutter5Route(final NavigatorRouteNode parent) => _instance ??= Flutter5Route._(parent);
+  factory Flutter5Route(final NavigatorRouteNode parent) =>
+      _instance ??= Flutter5Route._(parent);
 
   Flutter5Route._(super.parent);
 

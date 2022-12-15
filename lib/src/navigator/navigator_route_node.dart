@@ -99,7 +99,8 @@ class EmptyNavigatorRoute implements NavigatorRouteNode {
       throw UnimplementedError('Methods of this instance should not be called');
 
   @override
-  String get name => throw UnimplementedError('Methods of this instance should not be called');
+  String get name =>
+      throw UnimplementedError('Methods of this instance should not be called');
 
   @override
   String? _url;
@@ -113,5 +114,6 @@ class EmptyNavigatorRoute implements NavigatorRouteNode {
       throw UnimplementedError('Methods of this instance should not be called');
 
   @override
-  String get url => throw UnimplementedError('Methods of this instance should not be called');
+  String get url =>
+      throw UnimplementedError('Methods of this instance should not be called');
 }

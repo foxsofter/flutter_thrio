@@ -51,21 +51,25 @@ class ThrioChannel {
   Future<List<T>?> invokeListMethod<T>(final String method,
       [final Map<String, dynamic>? arguments]) {
     _setupMethodChannelIfNeeded();
-    return _methodChannel?.invokeListMethod<T>(method, arguments) ?? Future.value();
+    return _methodChannel?.invokeListMethod<T>(method, arguments) ??
+        Future.value();
   }
 
   Future<Map<K, V>?> invokeMapMethod<K, V>(final String method,
       [final Map<String, dynamic>? arguments]) {
     _setupMethodChannelIfNeeded();
-    return _methodChannel?.invokeMapMethod<K, V>(method, arguments) ?? Future.value();
+    return _methodChannel?.invokeMapMethod<K, V>(method, arguments) ??
+        Future.value();
   }
 
-  Future<T?> invokeMethod<T>(final String method, [final Map<String, dynamic>? arguments]) {
+  Future<T?> invokeMethod<T>(final String method,
+      [final Map<String, dynamic>? arguments]) {
     _setupMethodChannelIfNeeded();
     return _methodChannel?.invokeMethod<T>(method, arguments) ?? Future.value();
   }
 
-  VoidCallback registryMethodCall(final String method, final MethodHandler handler) {
+  VoidCallback registryMethodCall(
+      final String method, final MethodHandler handler) {
     _setupMethodChannelIfNeeded();
     return _methodHandlers.registry(method, handler);
   }
@@ -75,8 +79,10 @@ class ThrioChannel {
     final controllers = _eventControllers[name];
     if (controllers != null && controllers.isNotEmpty) {
       for (final controller in controllers) {
-        controller
-            .add(<String, dynamic>{if (arguments != null) ...arguments, _kEventNameKey: name});
+        controller.add(<String, dynamic>{
+          if (arguments != null) ...arguments,
+          _kEventNameKey: name
+        });
       }
     }
   }
@@ -122,8 +128,8 @@ class ThrioChannel {
     }
     _eventChannel = EventChannel('_event_$_channel')
       ..receiveBroadcastStream()
-          .map<Map<String, dynamic>>(
-              (final data) => data is Map ? data.cast<String, dynamic>() : <String, dynamic>{})
+          .map<Map<String, dynamic>>((final data) =>
+              data is Map ? data.cast<String, dynamic>() : <String, dynamic>{})
           .where((final data) => data.containsKey(_kEventNameKey))
           .listen((final data) {
         verbose('Notify on $_channel $data');

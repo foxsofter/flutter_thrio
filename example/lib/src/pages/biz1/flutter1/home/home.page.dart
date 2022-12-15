@@ -54,11 +54,13 @@ class _HomePageState extends State<HomePage> {
                     ThrioLogger.v('flutter1 receive notify:$intValue'),
                 child: Scaffold(
                     appBar: PreferredSize(
-                        preferredSize:
-                            Platform.isIOS ? const Size.fromHeight(44) : const Size.fromHeight(56),
+                        preferredSize: Platform.isIOS
+                            ? const Size.fromHeight(44)
+                            : const Size.fromHeight(56),
                         child: AppBar(
                           backgroundColor: Colors.blue,
-                          title: const Text('thrio_example', style: TextStyle(color: Colors.black)),
+                          title: const Text('thrio_example',
+                              style: TextStyle(color: Colors.black)),
                           leading: context.showPopAwareWidget(const IconButton(
                             color: Colors.black,
                             tooltip: 'back',
@@ -76,7 +78,8 @@ class _HomePageState extends State<HomePage> {
                             alignment: AlignmentDirectional.center,
                             child: Text(
                               'flutter1: index is ${widget.index}',
-                              style: const TextStyle(fontSize: 28, color: Colors.blue),
+                              style: const TextStyle(
+                                  fontSize: 28, color: Colors.blue),
                             ),
                           ),
                           SizedBox(
@@ -94,17 +97,24 @@ class _HomePageState extends State<HomePage> {
                                   onChanged: print)),
                           InkWell(
                             onTap: () {
-                              if (widget.moduleContext.setStringKeyBiz1(_inputController.text)) {
-                                final value = widget.moduleContext.stringKeyBiz1;
+                              if (widget.moduleContext
+                                  .setStringKeyBiz1(_inputController.text)) {
+                                final value =
+                                    widget.moduleContext.stringKeyBiz1;
                                 ThrioLogger.v('stringKeyBiz1 value is $value');
                               }
-                              if (widget.moduleContext.setIntKeyRootModule(10000)) {
-                                final value = widget.moduleContext.intKeyRootModule;
-                                ThrioLogger.v('intKeyRootModule value is $value');
+                              if (widget.moduleContext
+                                  .setIntKeyRootModule(10000)) {
+                                final value =
+                                    widget.moduleContext.intKeyRootModule;
+                                ThrioLogger.v(
+                                    'intKeyRootModule value is $value');
                               }
 
-                              final value = widget.moduleContext.get('people_from_native');
-                              ThrioLogger.v('people_from_native value is $value');
+                              final value = widget.moduleContext
+                                  .get('people_from_native');
+                              ThrioLogger.v(
+                                  'people_from_native value is $value');
                             },
                             child: Container(
                                 padding: const EdgeInsets.all(8),
@@ -112,13 +122,15 @@ class _HomePageState extends State<HomePage> {
                                 color: Colors.yellow,
                                 child: const Text(
                                   'set module context',
-                                  style: TextStyle(fontSize: 22, color: Colors.black),
+                                  style: TextStyle(
+                                      fontSize: 22, color: Colors.black),
                                 )),
                           ),
                           InkWell(
                             onTap: () async {
                               final params = await root.biz1.flutter1.home.push(
-                                params: People(name: 'foxsofter', age: 100, sex: '男性'),
+                                params: People(
+                                    name: 'foxsofter', age: 100, sex: '男性'),
                               );
                               ThrioLogger.v('/biz1/flutter1 popped:$params');
                             },
@@ -128,7 +140,8 @@ class _HomePageState extends State<HomePage> {
                                 color: Colors.yellow,
                                 child: const Text(
                                   'push flutter1',
-                                  style: TextStyle(fontSize: 22, color: Colors.black),
+                                  style: TextStyle(
+                                      fontSize: 22, color: Colors.black),
                                 )),
                           ),
                           InkWell(
@@ -139,7 +152,8 @@ class _HomePageState extends State<HomePage> {
                                 color: Colors.yellow,
                                 child: const Text(
                                   'remove flutter1',
-                                  style: TextStyle(fontSize: 22, color: Colors.black),
+                                  style: TextStyle(
+                                      fontSize: 22, color: Colors.black),
                                 )),
                           ),
                           InkWell(
@@ -156,19 +170,21 @@ class _HomePageState extends State<HomePage> {
                                 color: Colors.yellow,
                                 child: const Text(
                                   'push flutter2',
-                                  style: TextStyle(fontSize: 22, color: Colors.black),
+                                  style: TextStyle(
+                                      fontSize: 22, color: Colors.black),
                                 )),
                           ),
                           InkWell(
-                            onTap: () =>
-                                ThrioNavigator.pop(params: People(name: '大宝剑', age: 0, sex: 'x')),
+                            onTap: () => ThrioNavigator.pop(
+                                params: People(name: '大宝剑', age: 0, sex: 'x')),
                             child: Container(
                                 padding: const EdgeInsets.all(8),
                                 margin: const EdgeInsets.all(8),
                                 color: Colors.yellow,
                                 child: const Text(
                                   'pop',
-                                  style: TextStyle(fontSize: 22, color: Colors.black),
+                                  style: TextStyle(
+                                      fontSize: 22, color: Colors.black),
                                 )),
                           ),
                           InkWell(
@@ -177,7 +193,8 @@ class _HomePageState extends State<HomePage> {
                                 url: '/biz1/native1',
                                 params: People(name: '大宝剑', age: 10, sex: 'x'),
                               );
-                              ThrioLogger.v('/biz1/native1 poppedResult call params:$params');
+                              ThrioLogger.v(
+                                  '/biz1/native1 poppedResult call params:$params');
                             },
                             child: Container(
                                 padding: const EdgeInsets.all(8),
@@ -185,7 +202,8 @@ class _HomePageState extends State<HomePage> {
                                 color: Colors.grey,
                                 child: const Text(
                                   'push native1',
-                                  style: TextStyle(fontSize: 22, color: Colors.black),
+                                  style: TextStyle(
+                                      fontSize: 22, color: Colors.black),
                                 )),
                           ),
                           InkWell(
@@ -202,18 +220,21 @@ class _HomePageState extends State<HomePage> {
                                 color: Colors.grey,
                                 child: const Text(
                                   'notify native1',
-                                  style: TextStyle(fontSize: 22, color: Colors.black),
+                                  style: TextStyle(
+                                      fontSize: 22, color: Colors.black),
                                 )),
                           ),
                           InkWell(
-                            onTap: () => ThrioNavigator.remove(url: '/biz1/native1'),
+                            onTap: () =>
+                                ThrioNavigator.remove(url: '/biz1/native1'),
                             child: Container(
                                 padding: const EdgeInsets.all(8),
                                 margin: const EdgeInsets.all(8),
                                 color: Colors.grey,
                                 child: const Text(
                                   'remove native1',
-                                  style: TextStyle(fontSize: 22, color: Colors.black),
+                                  style: TextStyle(
+                                      fontSize: 22, color: Colors.black),
                                 )),
                           ),
                           InkWell(
@@ -227,7 +248,8 @@ class _HomePageState extends State<HomePage> {
                                 color: Colors.grey,
                                 child: const Text(
                                   'replace flutter2',
-                                  style: TextStyle(fontSize: 22, color: Colors.black),
+                                  style: TextStyle(
+                                      fontSize: 22, color: Colors.black),
                                 )),
                           ),
                           InkWell(
@@ -241,7 +263,8 @@ class _HomePageState extends State<HomePage> {
                                 color: Colors.grey,
                                 child: const Text(
                                   'canPop',
-                                  style: TextStyle(fontSize: 22, color: Colors.black),
+                                  style: TextStyle(
+                                      fontSize: 22, color: Colors.black),
                                 )),
                           ),
                           NavigatorPageLifecycle(
@@ -252,21 +275,27 @@ class _HomePageState extends State<HomePage> {
                                 ThrioLogger.v('home  didAppear -> $settings');
                               },
                               willDisappear: (final settings) {
-                                ThrioLogger.v('home  willDisappear -> $settings');
+                                ThrioLogger.v(
+                                    'home  willDisappear -> $settings');
                               },
                               didDisappear: (final settings) {
-                                ThrioLogger.v('home  didDisappear -> $settings');
+                                ThrioLogger.v(
+                                    'home  didDisappear -> $settings');
                               },
                               child: StreamBuilder<Object>(
-                                  stream: widget.moduleContext.on('stringKeyBiz1'),
-                                  builder: (final context, final snapshot) => Container(
-                                      padding: const EdgeInsets.all(8),
-                                      margin: const EdgeInsets.all(8),
-                                      color: Colors.grey,
-                                      child: Text(
-                                        '${snapshot.data}',
-                                        style: const TextStyle(fontSize: 22, color: Colors.black),
-                                      ))))
+                                  stream:
+                                      widget.moduleContext.on('stringKeyBiz1'),
+                                  builder: (final context, final snapshot) =>
+                                      Container(
+                                          padding: const EdgeInsets.all(8),
+                                          margin: const EdgeInsets.all(8),
+                                          color: Colors.grey,
+                                          child: Text(
+                                            '${snapshot.data}',
+                                            style: const TextStyle(
+                                                fontSize: 22,
+                                                color: Colors.black),
+                                          ))))
                         ]),
                       ),
                     )))),

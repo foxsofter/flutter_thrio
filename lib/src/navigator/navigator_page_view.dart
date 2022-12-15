@@ -64,7 +64,8 @@ class NavigatorPageView extends StatefulWidget {
 
   final List<RouteSettings> routeSettings;
 
-  final Widget Function(BuildContext context, RouteSettings settings, Widget child)? childBuilder;
+  final Widget Function(
+      BuildContext context, RouteSettings settings, Widget child)? childBuilder;
 
   final String? parentUrl;
 
@@ -85,7 +86,8 @@ class NavigatorPageView extends StatefulWidget {
 }
 
 // ignore: prefer_mixin
-class _NavigatorPageViewState extends State<NavigatorPageView> with WidgetsBindingObserver {
+class _NavigatorPageViewState extends State<NavigatorPageView>
+    with WidgetsBindingObserver {
   VoidCallback? _pageObserverCallback;
 
   late final controller = widget.controller ?? PageController();
@@ -201,10 +203,11 @@ class _NavigatorPageViewState extends State<NavigatorPageView> with WidgetsBindi
         children: widget.routeSettings.map((final it) {
           var w = ThrioNavigator.build(url: it.url!, params: it.params);
           if (w == null) {
-            throw ArgumentError.value(it, 'routeSettings', 'invalid routeSettings');
+            throw ArgumentError.value(
+                it, 'routeSettings', 'invalid routeSettings');
           }
-          if(widget.childBuilder != null){
-            w = widget.childBuilder!(context, it ,w);
+          if (widget.childBuilder != null) {
+            w = widget.childBuilder!(context, it, w);
           }
           return w;
         }).toList(),

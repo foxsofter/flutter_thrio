@@ -48,7 +48,8 @@ class NavigatorTabBarView extends StatefulWidget {
   /// list, as well as the [controller]'s [TabController.length].
   final List<RouteSettings> routeSettings;
 
-  final Widget Function(BuildContext context, RouteSettings settings, Widget child)? childBuilder;
+  final Widget Function(
+      BuildContext context, RouteSettings settings, Widget child)? childBuilder;
 
   /// How the page view should respond to user input.
   ///
@@ -178,13 +179,16 @@ class _NavigatorTabBarViewState extends State<NavigatorTabBarView> {
         return Future<void>.value();
       }
       _warpUnderwayCount += 1;
-      await _pageController.animateToPage(_currentIndex!, duration: duration, curve: Curves.ease);
+      await _pageController.animateToPage(_currentIndex!,
+          duration: duration, curve: Curves.ease);
       _warpUnderwayCount -= 1;
       return Future<void>.value();
     }
 
     assert((_currentIndex! - previousIndex).abs() > 1);
-    final initialPage = _currentIndex! > previousIndex ? _currentIndex! - 1 : _currentIndex! + 1;
+    final initialPage = _currentIndex! > previousIndex
+        ? _currentIndex! - 1
+        : _currentIndex! + 1;
     setState(() {
       _warpUnderwayCount += 1;
     });
@@ -195,7 +199,8 @@ class _NavigatorTabBarViewState extends State<NavigatorTabBarView> {
       return Future<void>.value();
     }
 
-    await _pageController.animateToPage(_currentIndex!, duration: duration, curve: Curves.ease);
+    await _pageController.animateToPage(_currentIndex!,
+        duration: duration, curve: Curves.ease);
     if (!mounted) {
       return Future<void>.value();
     }
@@ -215,17 +220,20 @@ class _NavigatorTabBarViewState extends State<NavigatorTabBarView> {
     }
 
     _warpUnderwayCount += 1;
-    if (notification is ScrollUpdateNotification && !_controller!.indexIsChanging) {
+    if (notification is ScrollUpdateNotification &&
+        !_controller!.indexIsChanging) {
       if ((_pageController.page! - _controller!.index).abs() > 1.0) {
         _controller!.index = _pageController.page!.round();
         _currentIndex = _controller!.index;
       }
-      _controller!.offset = clampDouble(_pageController.page! - _controller!.index, -1.0, 1.0);
+      _controller!.offset =
+          clampDouble(_pageController.page! - _controller!.index, -1.0, 1.0);
     } else if (notification is ScrollEndNotification) {
       _controller!.index = _pageController.page!.round();
       _currentIndex = _controller!.index;
       if (!_controller!.indexIsChanging) {
-        _controller!.offset = clampDouble(_pageController.page! - _controller!.index, -1.0, 1.0);
+        _controller!.offset =
+            clampDouble(_pageController.page! - _controller!.index, -1.0, 1.0);
       }
     }
     _warpUnderwayCount -= 1;

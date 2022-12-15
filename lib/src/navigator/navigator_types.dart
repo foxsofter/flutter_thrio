@@ -53,7 +53,8 @@ enum NavigatorRoutePushHandleType {
 
 /// Signature of route push handler with RouteSettings.
 ///
-typedef NavigatorRoutePushHandle = Future<NavigatorRoutePushHandleType> Function(
+typedef NavigatorRoutePushHandle = Future<NavigatorRoutePushHandleType>
+    Function(
   RouteSettings settings, {
   bool animated,
 });

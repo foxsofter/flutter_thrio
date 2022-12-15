@@ -46,7 +46,8 @@ mixin NavigatorRoute on PageRoute<bool> {
     _popDisableds[settings.name!] = disabled;
 
     // 延迟300ms执行，避免因为WillPopScope依赖变更导致发送过多的Channel消息
-    _popDisabledFutures[settings.name!] ??= Future.delayed(const Duration(milliseconds: 300), () {
+    _popDisabledFutures[settings.name!] ??=
+        Future.delayed(const Duration(milliseconds: 300), () {
       _popDisabledFutures.remove(settings.name); // ignore: unawaited_futures
       final disabled = _popDisableds.remove(settings.name);
       if (disabled != null) {

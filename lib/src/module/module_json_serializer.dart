@@ -35,7 +35,8 @@ mixin ModuleJsonSerializer on ThrioModule {
   @protected
   JsonSerializer? getJsonSerializer(final String typeString) {
     final type = _jsonSerializers.keys.lastWhere(
-        (final it) => it.toString() == typeString || typeString.endsWith(it.toString()),
+        (final it) =>
+            it.toString() == typeString || typeString.endsWith(it.toString()),
         orElse: () => Null);
     return _jsonSerializers[type];
   }

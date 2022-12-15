@@ -13,8 +13,10 @@ class People {
     required this.sex,
   });
 
-  factory People.fromMap(final Map<String, dynamic> json) =>
-      People(name: json['name'] as String, age: json['age'] as int, sex: json['sex'] as String);
+  factory People.fromMap(final Map<String, dynamic> json) => People(
+      name: json['name'] as String,
+      age: json['age'] as int,
+      sex: json['sex'] as String);
 
   final String name;
 

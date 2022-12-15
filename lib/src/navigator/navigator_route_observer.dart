@@ -44,5 +44,6 @@ mixin NavigatorRouteObserver {
 
   /// The [ThrioNavigator] replace `route` .
   ///
-  void didReplace(final RouteSettings newRouteSettings, final RouteSettings oldRouteSettings) {}
+  void didReplace(final RouteSettings newRouteSettings,
+      final RouteSettings oldRouteSettings) {}
 }

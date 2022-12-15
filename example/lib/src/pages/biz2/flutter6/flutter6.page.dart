@@ -34,7 +34,8 @@ class _Flutter4PageState extends State<Flutter6Page> {
   Widget build(final BuildContext context) => Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
-        title: const Text('thrio_deeplink_example', style: TextStyle(color: Colors.black)),
+        title: const Text('thrio_deeplink_example',
+            style: TextStyle(color: Colors.black)),
         leading: context.showPopAwareWidget(const IconButton(
           color: Colors.black,
           tooltip: 'back',
@@ -57,7 +58,8 @@ class _Flutter4PageState extends State<Flutter6Page> {
             ),
             InkWell(
               onTap: () async {
-                final result = await ThrioNavigator.push(url: 'justascheme://open/biz2/home?tab=0');
+                final result = await ThrioNavigator.push(
+                    url: 'justascheme://open/biz2/home?tab=0');
                 debugPrint(result.toString());
               },
               child: Container(
@@ -86,7 +88,8 @@ class _Flutter4PageState extends State<Flutter6Page> {
             ),
             InkWell(
               onTap: () async {
-                final result = await ThrioNavigator.push(url: 'https://www.google.com');
+                final result =
+                    await ThrioNavigator.push(url: 'https://www.google.com');
                 debugPrint(result.toString());
               },
               child: Container(

@@ -43,11 +43,13 @@ class _Flutter2PageState extends State<Flutter2Page> {
   @override
   Widget build(final BuildContext context) => NavigatorPageNotify(
       name: 'page2Notify',
-      onPageNotify: (final params) => ThrioLogger.v('flutter2 receive notify:$params'),
+      onPageNotify: (final params) =>
+          ThrioLogger.v('flutter2 receive notify:$params'),
       child: Scaffold(
           appBar: AppBar(
             backgroundColor: Colors.white,
-            title: const Text('thrio_example', style: TextStyle(color: Colors.black)),
+            title: const Text('thrio_example',
+                style: TextStyle(color: Colors.black)),
             leading: context.showPopAwareWidget(const IconButton(
               color: Colors.black,
               tooltip: 'back',
@@ -96,7 +98,8 @@ class _Flutter2PageState extends State<Flutter2Page> {
                       )),
                 ),
                 InkWell(
-                  onTap: () => ThrioNavigator.pop(params: People(name: '大宝剑', age: 0, sex: 'x')),
+                  onTap: () => ThrioNavigator.pop(
+                      params: People(name: '大宝剑', age: 0, sex: 'x')),
                   child: Container(
                       padding: const EdgeInsets.all(8),
                       margin: const EdgeInsets.all(8),
@@ -108,9 +111,11 @@ class _Flutter2PageState extends State<Flutter2Page> {
                 ),
                 InkWell(
                   onTap: () async {
-                    final params = await ThrioNavigator.push(url: '/biz2/native2', params: {
-                      '1': {'2': '3'}
-                    });
+                    final params = await ThrioNavigator.push(
+                        url: '/biz2/native2',
+                        params: {
+                          '1': {'2': '3'}
+                        });
                     ThrioLogger.v('/biz1/native1 popped:$params');
                   },
                   child: Container(
@@ -182,7 +187,8 @@ class _Flutter2PageState extends State<Flutter2Page> {
                 ),
                 InkWell(
                   onTap: () {
-                    ThrioNavigator.pushReplace(url: root.biz1.flutter1.home.url);
+                    ThrioNavigator.pushReplace(
+                        url: root.biz1.flutter1.home.url);
                   },
                   child: Container(
                       padding: const EdgeInsets.all(8),

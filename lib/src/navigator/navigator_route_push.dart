@@ -43,7 +43,8 @@ class NavigatorRoutePush extends StatefulWidget {
 }
 
 // ignore: prefer_mixin
-class _NavigatorRoutePushState extends State<NavigatorRoutePush> with WidgetsBindingObserver {
+class _NavigatorRoutePushState extends State<NavigatorRoutePush>
+    with WidgetsBindingObserver {
   VoidCallback? _registry;
   RouteSettings? _lastRouteSettings;
   final _handles = <String, NavigatorRoutePushHandle>{};
@@ -74,7 +75,8 @@ class _NavigatorRoutePushState extends State<NavigatorRoutePush> with WidgetsBin
     super.didChangeAppLifecycleState(state);
     if (state == AppLifecycleState.inactive) {
       final routeSettings = ThrioNavigatorImplement.shared().lastFlutterRoute();
-      if (routeSettings != null && routeSettings.name == _lastRouteSettings?.name) {
+      if (routeSettings != null &&
+          routeSettings.name == _lastRouteSettings?.name) {
         _registry?.call();
         _registry = anchor.pushHandlers.registryAll(_handles);
       }

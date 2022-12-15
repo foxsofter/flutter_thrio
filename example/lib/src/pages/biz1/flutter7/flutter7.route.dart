@@ -6,7 +6,8 @@
 import 'package:flutter_thrio/flutter_thrio.dart';
 
 class Flutter7Route extends NavigatorRouteLeaf {
-  factory Flutter7Route(final NavigatorRouteNode parent) => _instance ??= Flutter7Route._(parent);
+  factory Flutter7Route(final NavigatorRouteNode parent) =>
+      _instance ??= Flutter7Route._(parent);
 
   Flutter7Route._(super.parent);
 

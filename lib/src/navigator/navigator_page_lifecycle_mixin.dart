@@ -43,8 +43,8 @@ mixin NavigatorPageLifecycleMixin<T extends StatefulWidget> on State<T> {
     final state = context.tryStateOf<NavigatorWidgetState>();
     final route = url == null
         ? state?.history.last
-        : state?.history
-            .lastWhereOrNull((final it) => it is NavigatorRoute && it.settings.url == url);
+        : state?.history.lastWhereOrNull(
+            (final it) => it is NavigatorRoute && it.settings.url == url);
     if (route != null && route is NavigatorRoute) {
       Future(() => didAppear(route.settings));
     }

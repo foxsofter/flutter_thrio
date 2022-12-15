@@ -51,7 +51,8 @@ mixin ModulePageBuilder on ThrioModule {
     }
     // 处理存在 home 的 url
     if (key == kNavigatorPageDefaultUrl) {
-      final url = (StringBuffer()..writeAll(urlComponents..removeLast())).toString();
+      final url =
+          (StringBuffer()..writeAll(urlComponents..removeLast())).toString();
       if (builder == null) {
         anchor.allUrls.remove(url);
       } else {

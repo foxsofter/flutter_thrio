@@ -70,8 +70,8 @@ class _NavigatorPageLifecycleState extends State<NavigatorPageLifecycle> {
       final state = context.tryStateOf<NavigatorWidgetState>();
       final route = widget.url == null
           ? state?.history.last
-          : state?.history
-              .lastWhereOrNull((final it) => it is NavigatorRoute && it.settings.url == widget.url);
+          : state?.history.lastWhereOrNull((final it) =>
+              it is NavigatorRoute && it.settings.url == widget.url);
       if (route != null && route is NavigatorRoute) {
         widget.willAppear?.call(route.settings);
         widget.didAppear?.call(route.settings);

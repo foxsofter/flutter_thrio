@@ -11,7 +11,8 @@ class NavigatorHotRestartButton extends StatefulWidget {
   final ButtonStyle? style;
 
   @override
-  State<NavigatorHotRestartButton> createState() => _NavigatorHotRestartButtonState();
+  State<NavigatorHotRestartButton> createState() =>
+      _NavigatorHotRestartButtonState();
 }
 
 class _NavigatorHotRestartButtonState extends State<NavigatorHotRestartButton> {

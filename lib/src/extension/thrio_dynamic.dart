@@ -31,7 +31,8 @@ T getValue<T>(final dynamic params, final String key) {
 
 /// Get value from params, return `defaultValue` when`key`'s value  not found .
 ///
-T getValueOrDefault<T>(final dynamic params, final String key, final T defaultValue) {
+T getValueOrDefault<T>(
+    final dynamic params, final String key, final T defaultValue) {
   final val = getValueOrNull<T>(params, key);
   if (val != null) {
     return val;

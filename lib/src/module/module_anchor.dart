@@ -57,7 +57,8 @@ class ModuleAnchor
         ModuleRouteTransitionsBuilder {
   /// Holds PageObserver registered by `NavigatorPageLifecycle`.
   ///
-  final pageLifecycleObservers = RegistrySetMap<String, NavigatorPageObserver>();
+  final pageLifecycleObservers =
+      RegistrySetMap<String, NavigatorPageObserver>();
 
   /// Holds PushHandler registered by `NavigatorRoutePush` .
   ///
@@ -65,7 +66,8 @@ class ModuleAnchor
 
   /// A collection of route handlers for matching the key's pattern.
   ///
-  final customHandlers = RegistryMap<NavigatorUrlTemplate, NavigatorRouteCustomHandler>();
+  final customHandlers =
+      RegistryMap<NavigatorUrlTemplate, NavigatorRouteCustomHandler>();
 
   /// All registered urls.
   ///
@@ -87,7 +89,8 @@ class ModuleAnchor
 
   Future<dynamic> unloading(final Iterable<NavigatorRoute> allRoutes) async {
     final urls = allRoutes.map<String>((final it) => it.settings.url!).toSet();
-    final notPushedUrls = allUrls.where((final it) => !urls.contains(it)).toList();
+    final notPushedUrls =
+        allUrls.where((final it) => !urls.contains(it)).toList();
     // 需要过滤掉不带 home 的 url
     for (var i = notPushedUrls.length - 1; i >= 0; i--) {
       final url = notPushedUrls[i];
@@ -104,8 +107,9 @@ class ModuleAnchor
     for (final url in notPushedUrls) {
       modules.addAll(_getModules(url: url));
     }
-    final notPushedModules =
-        modules.where((final it) => it is ModulePageBuilder && it.pageBuilder != null).toSet();
+    final notPushedModules = modules
+        .where((final it) => it is ModulePageBuilder && it.pageBuilder != null)
+        .toSet();
     for (final module in notPushedModules) {
       // 页 Module onModuleUnloading
       if (module.isLoaded) {
@@ -178,7 +182,8 @@ class ModuleAnchor
             if (it.routeTransitionsDisabled) {
               return null;
             }
-            if (!it.routeTransitionsDisabled && it.routeTransitionsBuilder != null) {
+            if (!it.routeTransitionsDisabled &&
+                it.routeTransitionsBuilder != null) {
               return it.routeTransitionsBuilder as T;
             }
           }
@@ -186,7 +191,8 @@ class ModuleAnchor
         return null;
       }
     }
-    if (modules.isEmpty && (url == null || url.isEmpty || !ThrioModule.contains(url))) {
+    if (modules.isEmpty &&
+        (url == null || url.isEmpty || !ThrioModule.contains(url))) {
       modules = _getModules();
     }
 
@@ -223,7 +229,8 @@ class ModuleAnchor
     return <T>[];
   }
 
-  void set<T>(final Comparable<dynamic> key, final T value) => setParam(key, value);
+  void set<T>(final Comparable<dynamic> key, final T value) =>
+      setParam(key, value);
 
   T remove<T>(final Comparable<dynamic> key) => removeParam(key);
 
@@ -239,7 +246,8 @@ class ModuleAnchor
       return allModules..addAll(_getAllModules(firstModule));
     }
 
-    final components = url.isEmpty ? <String>[] : url.replaceAll('/', ' ').trim().split(' ');
+    final components =
+        url.isEmpty ? <String>[] : url.replaceAll('/', ' ').trim().split(' ');
     final length = components.length;
     ThrioModule? module = firstModule;
     // 确定根节点，根部允许连续的空节点

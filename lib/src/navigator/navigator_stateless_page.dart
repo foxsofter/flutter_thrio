@@ -24,7 +24,8 @@ import 'package:flutter/widgets.dart';
 import '../module/thrio_module.dart';
 import 'navigator_page.dart';
 
-abstract class NavigatorStatelessPage extends StatelessWidget with NavigatorPage {
+abstract class NavigatorStatelessPage extends StatelessWidget
+    with NavigatorPage {
   const NavigatorStatelessPage({
     super.key,
     required this.moduleContext,

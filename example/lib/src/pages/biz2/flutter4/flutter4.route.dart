@@ -8,7 +8,8 @@ import 'package:flutter_thrio/flutter_thrio.dart';
 import '../../types/people.dart';
 
 class Flutter4Route extends NavigatorRouteLeaf {
-  factory Flutter4Route(final NavigatorRouteNode parent) => _instance ??= Flutter4Route._(parent);
+  factory Flutter4Route(final NavigatorRouteNode parent) =>
+      _instance ??= Flutter4Route._(parent);
 
   Flutter4Route._(super.parent);
 

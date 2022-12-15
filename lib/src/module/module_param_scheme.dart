@@ -45,7 +45,8 @@ mixin ModuleParamScheme on ThrioModule {
   }
 
   @protected
-  final paramStreamCtrls = <Comparable<dynamic>, Set<StreamController<dynamic>>>{};
+  final paramStreamCtrls =
+      <Comparable<dynamic>, Set<StreamController<dynamic>>>{};
 
   /// Subscribe to a series of param by `key`.
   ///
@@ -88,7 +89,8 @@ mixin ModuleParamScheme on ThrioModule {
       return null;
     }
     if (T != dynamic && T != Object && value is! T) {
-      throw ThrioException('$T does not match the param scheme type: ${value.runtimeType}');
+      throw ThrioException(
+          '$T does not match the param scheme type: ${value.runtimeType}');
     }
     return value as T; // ignore: avoid_as
   }
@@ -156,7 +158,8 @@ mixin ModuleParamScheme on ThrioModule {
         T != Object &&
         _paramSchemes.keys.contains(key) &&
         _paramSchemes[key] != T) {
-      throw ThrioException('$T does not match the param scheme type: ${_paramSchemes[key]}');
+      throw ThrioException(
+          '$T does not match the param scheme type: ${_paramSchemes[key]}');
     }
     return _params.remove(key) as T; // ignore: avoid_as
   }
@@ -175,7 +178,8 @@ mixin ModuleParamScheme on ThrioModule {
   @protected
   VoidCallback registerParamScheme<T>(final Comparable<dynamic> key) {
     if (_paramSchemes.keys.contains(key)) {
-      throw ThrioException('$T is already registered for key ${_paramSchemes[key]}');
+      throw ThrioException(
+          '$T is already registered for key ${_paramSchemes[key]}');
     }
     final callback = _paramSchemes.registry(key, T);
     return () {

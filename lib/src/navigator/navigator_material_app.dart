@@ -28,7 +28,8 @@ class NavigatorMaterialApp extends MaterialApp {
   NavigatorMaterialApp({
     super.key,
     super.navigatorKey,
-    final List<NavigatorObserver> navigatorObservers = const <NavigatorObserver>[],
+    final List<NavigatorObserver> navigatorObservers =
+        const <NavigatorObserver>[],
     final TransitionBuilder? builder,
     super.title,
     final Widget? home,
@@ -54,7 +55,8 @@ class NavigatorMaterialApp extends MaterialApp {
   }) : super(
           builder: (final context, final child) {
             if (builder != null) {
-              return builder(context, ThrioNavigatorImplement.shared().builder(context, child));
+              return builder(context,
+                  ThrioNavigatorImplement.shared().builder(context, child));
             } else {
               return ThrioNavigatorImplement.shared().builder(context, child);
             }
