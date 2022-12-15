@@ -78,6 +78,18 @@ object ThrioNavigator {
 
     @JvmStatic
     @JvmOverloads
+    fun <T> maybePop(
+        params: T? = null,
+        animated: Boolean = true,
+        result: BooleanCallback = {}
+    ) = NavigationController.Pop.maybePop<T>(params, animated, result)
+
+    @JvmStatic
+    fun maybePop(animated: Boolean = true, result: BooleanCallback = {}) =
+        NavigationController.Pop.maybePop(null, animated, result)
+        
+    @JvmStatic
+    @JvmOverloads
     fun <T> pop(
         params: T? = null,
         animated: Boolean = true,

@@ -19,8 +19,6 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-import 'dart:async';
-
 import 'package:flutter/widgets.dart';
 
 import '../../flutter_thrio.dart';
@@ -77,7 +75,6 @@ class _NavigatorRoutePushState extends State<NavigatorRoutePush> with WidgetsBin
     if (state == AppLifecycleState.inactive) {
       final routeSettings = ThrioNavigatorImplement.shared().lastFlutterRoute();
       if (routeSettings != null && routeSettings.name == _lastRouteSettings?.name) {
-        debugPrint('==== delayed');
         _registry?.call();
         _registry = anchor.pushHandlers.registryAll(_handles);
       }

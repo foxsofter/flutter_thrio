@@ -80,7 +80,7 @@ open class ThrioFlutterActivity : FlutterActivity() {
         return !FlutterEngineFactory.isMainEngine(pageId, entrypoint)
     }
 
-    override fun onBackPressed() = ThrioNavigator.pop()
+    override fun onBackPressed() = ThrioNavigator.maybePop()
 
     // 重写这个方法，拦截是否隐藏到后台
     open fun shouldMoveToBack(): Boolean = false
