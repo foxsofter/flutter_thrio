@@ -463,4 +463,8 @@
 
 ## 3.8.1
 
-- tabview支持child定制
+- feat: tabview支持child定制
+
+## 3.8.2
+
+- feat: 支持多个根部 module 为空的 key 的情况

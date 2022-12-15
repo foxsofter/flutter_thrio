@@ -241,7 +241,31 @@ class ModuleAnchor
 
     final components = url.isEmpty ? <String>[] : url.replaceAll('/', ' ').trim().split(' ');
     final length = components.length;
-    late ThrioModule? module = firstModule;
+    ThrioModule? module = firstModule;
+    // 确定根节点，根部允许连续的空节点
+    if (components.isNotEmpty) {
+      final key = components.removeAt(0);
+      var m = module.modules[key];
+      if (m == null) {
+        m = module.modules[''];
+        while (m != null) {
+          allModules.add(m);
+          final m0 = m.modules[key];
+          if (m0 == null) {
+            m = m.modules[''];
+          } else {
+            m = m0;
+            break;
+          }
+        }
+      }
+      if (m == null) {
+        return allModules;
+      }
+      module = m;
+      allModules.add(module);
+    }
+    // 寻找剩余的节点
     while (components.isNotEmpty) {
       final key = components.removeAt(0);
       module = module?.modules[key];
@@ -251,7 +275,7 @@ class ModuleAnchor
     }
 
     // url 不能完全匹配到 module，可能是原生的 url 或者不存在的 url
-    if (allModules.length != length + 1) {
+    if (allModules.where((final it) => it.key.isNotEmpty).length != length) {
       return <ThrioModule>[];
     }
 
