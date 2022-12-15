@@ -19,10 +19,13 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
+import 'dart:async';
+
 import 'package:flutter/widgets.dart';
 
 import '../../flutter_thrio.dart';
 import '../module/module_anchor.dart';
+import 'navigator_widget.dart';
 import 'thrio_navigator_implement.dart';
 
 class NavigatorRoutePush extends StatefulWidget {
@@ -41,7 +44,8 @@ class NavigatorRoutePush extends StatefulWidget {
   _NavigatorRoutePushState createState() => _NavigatorRoutePushState();
 }
 
-class _NavigatorRoutePushState extends State<NavigatorRoutePush> {
+// ignore: prefer_mixin
+class _NavigatorRoutePushState extends State<NavigatorRoutePush> with WidgetsBindingObserver {
   VoidCallback? _registry;
   RouteSettings? _lastRouteSettings;
   final _handles = <String, NavigatorRoutePushHandle>{};
@@ -50,6 +54,7 @@ class _NavigatorRoutePushState extends State<NavigatorRoutePush> {
   void initState() {
     super.initState();
     if (mounted) {
+      WidgetsBinding.instance.addObserver(this);
       _registry?.call();
       _handles.clear();
       for (final url in widget.urls) {
@@ -61,29 +66,48 @@ class _NavigatorRoutePushState extends State<NavigatorRoutePush> {
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _registry?.call();
     super.dispose();
   }
 
   @override
+  void didChangeAppLifecycleState(final AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    if (state == AppLifecycleState.inactive) {
+      final routeSettings = ThrioNavigatorImplement.shared().lastFlutterRoute();
+      if (routeSettings != null && routeSettings.name == _lastRouteSettings?.name) {
+        debugPrint('==== delayed');
+        _registry?.call();
+        _registry = anchor.pushHandlers.registryAll(_handles);
+      }
+    }
+  }
+
+  @override
   Widget build(final BuildContext context) => NavigatorPageLifecycle(
         didAppear: (final _) {
-          _lastRouteSettings = null;
+          if (_lastRouteSettings == null) {
+            final state = context.stateOf<NavigatorWidgetState>();
+            final route = state.history.last;
+            if (route is NavigatorRoute) {
+              _lastRouteSettings = route.settings;
+            }
+          }
           _registry?.call();
           _registry = anchor.pushHandlers.registryAll(_handles);
         },
         didDisappear: (final _) async {
-          _lastRouteSettings = await ThrioNavigatorImplement.shared().lastRoute();
           _registry?.call();
           _registry = null;
-          // 延迟 100ms，如果是被上层页面覆盖引起的，则顶部路由会变，如果是推到后台则不会变
-          Future.delayed(const Duration(milliseconds: 100), () async {
-            final routeSettings = await ThrioNavigatorImplement.shared().lastRoute();
-            if (routeSettings != null && routeSettings.name == _lastRouteSettings?.name) {
-              _registry?.call();
-              _registry = anchor.pushHandlers.registryAll(_handles);
-            }
-          });
+          // 如果是被上层页面覆盖引起的，则顶部路由会变，如果是推到后台则不会变
+          // unawaited(Future.microtask(() async {
+          // final routeSettings = await ThrioNavigatorImplement.shared().lastRoute();
+          // if (routeSettings != null && routeSettings.name == _lastRouteSettings?.name) {
+          //   debugPrint('==== delayed');
+          //   _registry?.call();
+          //   _registry = anchor.pushHandlers.registryAll(_handles);
+          // }
         },
         child: widget.child,
       );

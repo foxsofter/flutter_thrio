@@ -468,3 +468,7 @@
 ## 3.8.2
 
 - feat: 支持多个根部 module 为空的 key 的情况
+
+## 3.8.3
+
+- fix: 修复 NavigatorRoutePush 在首页时进入后台再回来的偶发不生效的问题
