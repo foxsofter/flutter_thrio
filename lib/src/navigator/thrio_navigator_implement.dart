@@ -136,10 +136,11 @@ class ThrioNavigatorImplement {
     }
     final completer = Completer<TPopParams?>();
     unawaited(_pushToNative<TParams, TPopParams>(
-            url, params, animated, completer, result)
-        .then((final index) async {
-      result?.call(index);
-    }));
+      url,
+      params,
+      animated,
+      completer,
+    ));
     return completer.future;
   }
 
@@ -177,11 +178,31 @@ class ThrioNavigatorImplement {
     final TParams? params,
     final bool animated = true,
     final NavigatorIntCallback? result,
-  }) {
+  }) async {
+    final lastSetting = await lastRoute();
+    if (lastSetting == null) {
+      throw ThrioException('no route to replace');
+    }
+    final match = matchRouteCustomHandle(url);
+    if (match != null) {
+      final poppedResult = await onRouteCustomHandle<TPopParams>(
+        handler: match.value,
+        uri: match.key,
+        params: params,
+        animated: animated,
+        result: (final index) async {
+          if (index > 0) {
+            await removeAll(url: url, excludeIndex: index);
+          }
+          result?.call(index);
+        },
+      );
+      return poppedResult;
+    }
     final completer = Completer<TPopParams?>();
-    unawaited(_pushToNative<TParams, TPopParams>(
-            url, params, animated, completer, result)
-        .then((final index) async {
+    unawaited(
+        _pushToNative<TParams, TPopParams>(url, params, animated, completer)
+            .then((final index) async {
       if (index > 0) {
         await removeAll(url: url, excludeIndex: index);
       }
@@ -207,16 +228,20 @@ class ThrioNavigatorImplement {
         uri: match.key,
         params: params,
         animated: animated,
-        result: result,
+        result: (final index) async {
+          if (index > 0) {
+            await remove(url: lastSetting.url!, index: lastSetting.index);
+          }
+          result?.call(index);
+        },
       );
-      await remove(url: lastSetting.url!, index: lastSetting.index);
       return poppedResult;
     }
 
     final completer = Completer<TPopParams>();
-    unawaited(_pushToNative<TParams, TPopParams>(
-            url, params, animated, completer, result)
-        .then((final index) async {
+    unawaited(
+        _pushToNative<TParams, TPopParams>(url, params, animated, completer)
+            .then((final index) async {
       if (index > 0) {
         await remove(url: lastSetting.url!, index: lastSetting.index);
       }
@@ -245,16 +270,20 @@ class ThrioNavigatorImplement {
         uri: match.key,
         params: params,
         animated: animated,
-        result: result,
+        result: (final index) async {
+          if (index > 0) {
+            await removeBlowUntil(predicate: (final url) => url == toUrl);
+          }
+          result?.call(index);
+        },
       );
-      await removeBlowUntil(predicate: (final url) => url == toUrl);
       return poppedResult;
     }
 
     final completer = Completer<TPopParams>();
-    unawaited(_pushToNative<TParams, TPopParams>(
-            url, params, animated, completer, result)
-        .then((final index) async {
+    unawaited(
+        _pushToNative<TParams, TPopParams>(url, params, animated, completer)
+            .then((final index) async {
       if (index > 0) {
         await removeBlowUntil(predicate: (final url) => url == toUrl);
       }
@@ -283,16 +312,20 @@ class ThrioNavigatorImplement {
         uri: match.key,
         params: params,
         animated: animated,
-        result: result,
+        result: (final index) async {
+          if (index > 0) {
+            await removeBlowUntilFirst(predicate: (final url) => url == toUrl);
+          }
+          result?.call(index);
+        },
       );
-      await removeBlowUntilFirst(predicate: (final url) => url == toUrl);
       return poppedResult;
     }
 
     final completer = Completer<TPopParams>();
-    unawaited(_pushToNative<TParams, TPopParams>(
-            url, params, animated, completer, result)
-        .then((final index) async {
+    unawaited(
+        _pushToNative<TParams, TPopParams>(url, params, animated, completer)
+            .then((final index) async {
       if (index > 0) {
         await removeBlowUntilFirst(predicate: (final url) => url == toUrl);
       }
@@ -322,16 +355,20 @@ class ThrioNavigatorImplement {
         uri: match.key,
         params: params,
         animated: animated,
-        result: result,
+        result: (final index) async {
+          if (index > 0) {
+            await removeBlowUntil(predicate: predicate);
+          }
+          result?.call(index);
+        },
       );
-      await removeBlowUntil(predicate: predicate);
       return poppedResult;
     }
 
     final completer = Completer<TPopParams>();
-    unawaited(_pushToNative<TParams, TPopParams>(
-            url, params, animated, completer, result)
-        .then((final index) async {
+    unawaited(
+        _pushToNative<TParams, TPopParams>(url, params, animated, completer)
+            .then((final index) async {
       if (index > 0) {
         await removeBlowUntil(predicate: predicate);
       }
@@ -361,16 +398,20 @@ class ThrioNavigatorImplement {
         uri: match.key,
         params: params,
         animated: animated,
-        result: result,
+        result: (final index) async {
+          if (index > 0) {
+            await removeBlowUntilFirst(predicate: predicate);
+          }
+          result?.call(index);
+        },
       );
-      await removeBlowUntilFirst(predicate: predicate);
       return poppedResult;
     }
 
     final completer = Completer<TPopParams>();
-    unawaited(_pushToNative<TParams, TPopParams>(
-            url, params, animated, completer, result)
-        .then((final index) async {
+    unawaited(
+        _pushToNative<TParams, TPopParams>(url, params, animated, completer)
+            .then((final index) async {
       if (index > 0) {
         await removeBlowUntilFirst(predicate: predicate);
       }
@@ -384,7 +425,6 @@ class ThrioNavigatorImplement {
     final TParams? params,
     final bool animated,
     final Completer<TPopParams?> completer,
-    final NavigatorIntCallback? result,
   ) =>
       _sendChannel
           .push<TParams>(url: url, params: params, animated: animated)

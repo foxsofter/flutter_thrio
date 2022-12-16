@@ -484,3 +484,7 @@
 ## 3.8.6
 
 - fix: url template match only path
+
+## 3.8.7
+
+- fix: pushReplace not working with custom route handler 
