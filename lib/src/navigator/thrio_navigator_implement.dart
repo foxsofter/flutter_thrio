@@ -655,7 +655,7 @@ class ThrioNavigatorImplement {
     var total = 0;
     var isMatch = false;
     final all = (await allRoutes(url: url))
-        .skipWhile((final it) => it.index == excludeIndex);
+        .where((final it) => it.index != excludeIndex);
     for (final r in all) {
       if (r.url == null) {
         continue;

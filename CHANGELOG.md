@@ -488,3 +488,7 @@
 ## 3.8.7
 
 - fix: pushReplace not working with custom route handler 
+
+## 3.8.8
+
+- fix: remove callback invalid

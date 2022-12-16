@@ -118,6 +118,22 @@ class _Flutter4PageState extends State<Flutter6Page> {
                     style: TextStyle(fontSize: 22, color: Colors.black),
                   )),
             ),
+            InkWell(
+              onTap: () async {
+                final result = await ThrioNavigator.pushSingle(
+                  url: root.biz1.flutter3.url,
+                );
+                debugPrint(result.toString());
+              },
+              child: Container(
+                  padding: const EdgeInsets.all(8),
+                  margin: const EdgeInsets.all(8),
+                  color: Colors.yellow,
+                  child: const Text(
+                    'push single flutter3',
+                    style: TextStyle(fontSize: 22, color: Colors.black),
+                  )),
+            ),
           ]),
         ),
       ));

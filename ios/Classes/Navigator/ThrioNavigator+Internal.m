@@ -85,11 +85,11 @@ NS_ASSUME_NONNULL_BEGIN
             params:(id _Nullable)params
             result:(ThrioBoolCallback _Nullable)result {
     // 给所有的 UINavigationController 发通知
-    BOOL canNotify = NO;
+    BOOL canNotify = YES;
     NSArray *allNvcs = [self.navigationControllers.allObjects.reverseObjectEnumerator allObjects];
     for (UINavigationController *nvc in allNvcs) {
-        if ([nvc thrio_notifyUrl:url index:index name:name params:params]) {
-            canNotify = YES;
+        if (![nvc thrio_notifyUrl:url index:index name:name params:params]) {
+            canNotify = NO;
         }
     }
     if (result) {
@@ -138,6 +138,7 @@ NS_ASSUME_NONNULL_BEGIN
         if ([nvc thrio_containsUrl:url index:index]) {
             contains = YES;
             [nvc thrio_removeUrl:url index:index animated:animated result:result];
+            break;
         }
     }
     if (!contains) {
@@ -160,6 +161,7 @@ NS_ASSUME_NONNULL_BEGIN
                             index:index
                            newUrl:newUrl
                            result:result];
+            break;
         }
     }
     if (!contains) {

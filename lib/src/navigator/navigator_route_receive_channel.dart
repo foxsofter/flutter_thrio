@@ -114,7 +114,7 @@ class NavigatorRouteReceiveChannel {
           return false;
         }
         final inRoot = arguments?['inRoot'] == true;
-        return ThrioNavigatorImplement.shared()
+        return await ThrioNavigatorImplement.shared()
                 .navigatorState
                 ?.canPop(routeSettings, inRoot: inRoot) ??
             false;
@@ -127,7 +127,7 @@ class NavigatorRouteReceiveChannel {
           return false;
         }
         final animated = arguments?['animated'] == true;
-        return ThrioNavigatorImplement.shared()
+        return await ThrioNavigatorImplement.shared()
                 .navigatorState
                 ?.popTo(routeSettings, animated: animated)
                 .then((final value) {
@@ -144,7 +144,7 @@ class NavigatorRouteReceiveChannel {
           return false;
         }
         final animated = arguments?['animated'] == true;
-        return ThrioNavigatorImplement.shared()
+        return await ThrioNavigatorImplement.shared()
                 .navigatorState
                 ?.remove(routeSettings, animated: animated)
                 .then((final value) {
@@ -165,7 +165,7 @@ class NavigatorRouteReceiveChannel {
         if (newRouteSettings == null) {
           return false;
         }
-        return ThrioNavigatorImplement.shared()
+        return await ThrioNavigatorImplement.shared()
                 .navigatorState
                 ?.replace(routeSettings, newRouteSettings) ??
             false;
