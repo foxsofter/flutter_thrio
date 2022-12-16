@@ -296,8 +296,8 @@ internal object PageRoutes : Application.ActivityLifecycleCallbacks {
         }
     }
 
-    fun willAppear(routeSettings: RouteSettings, routeAction: RouteAction) {
-        if (routeAction == RouteAction.PUSH) {
+    fun willAppear(routeSettings: RouteSettings, routeType: RouteType) {
+        if (routeType == RouteType.PUSH) {
             val holder = lastRouteHolder()
             val activity = holder?.activity?.get()
             if (holder == null
@@ -313,7 +313,7 @@ internal object PageRoutes : Application.ActivityLifecycleCallbacks {
                     ModulePageObservers.willDisappear(route.settings)
                 }
             }
-        } else if (routeAction == RouteAction.POP_TO) {
+        } else if (routeType == RouteType.POP_TO) {
             val route = lastRoute(routeSettings.url, routeSettings.index)
             if (route != null && route != lastRoute) {
                 ModulePageObservers.willAppear(routeSettings)
@@ -324,8 +324,8 @@ internal object PageRoutes : Application.ActivityLifecycleCallbacks {
         }
     }
 
-    fun didAppear(routeSettings: RouteSettings, routeAction: RouteAction) {
-        if (routeAction == RouteAction.PUSH) {
+    fun didAppear(routeSettings: RouteSettings, routeType: RouteType) {
+        if (routeType == RouteType.PUSH) {
             val holder = lastRouteHolder()
             val activity = holder?.activity?.get()
             if (holder == null
@@ -341,7 +341,7 @@ internal object PageRoutes : Application.ActivityLifecycleCallbacks {
                     ModulePageObservers.didDisappear(it.settings)
                 }
             }
-        } else if (routeAction == RouteAction.POP_TO) {
+        } else if (routeType == RouteType.POP_TO) {
             val route = lastRoute(routeSettings.url, routeSettings.index)
             if (route != null && route != prevLastRoute) {
                 ModulePageObservers.didAppear(routeSettings)
@@ -352,8 +352,8 @@ internal object PageRoutes : Application.ActivityLifecycleCallbacks {
         }
     }
 
-    fun willDisappear(routeSettings: RouteSettings, routeAction: RouteAction) {
-        if (routeAction == RouteAction.POP || routeAction == RouteAction.REMOVE) {
+    fun willDisappear(routeSettings: RouteSettings, routeType: RouteType) {
+        if (routeType == RouteType.POP || routeType == RouteType.REMOVE) {
             if (lastRoute == null || lastRoute?.settings == routeSettings) {
                 val holder = lastRouteHolder(routeSettings.url, routeSettings.index)
                 if (holder != null && holder.routes.count() < 2) {
@@ -369,8 +369,8 @@ internal object PageRoutes : Application.ActivityLifecycleCallbacks {
         }
     }
 
-    fun didDisappear(routeSettings: RouteSettings, routeAction: RouteAction) {
-        if (routeAction == RouteAction.POP || routeAction == RouteAction.REMOVE) {
+    fun didDisappear(routeSettings: RouteSettings, routeType: RouteType) {
+        if (routeType == RouteType.POP || routeType == RouteType.REMOVE) {
             if (lastRoute == null || prevLastRoute?.settings == routeSettings) {
                 val holder = lastRouteHolder()
                 val activity = holder?.activity?.get()
@@ -429,7 +429,7 @@ internal object PageRoutes : Application.ActivityLifecycleCallbacks {
 
     override fun onActivityPreResumed(activity: Activity) {
         val pageId = activity.intent.getPageId()
-        if (pageId != NAVIGATION_ROUTE_PAGE_ID_NONE && NavigationController.routeAction != RouteAction.POP_TO) {
+        if (pageId != NAVIGATION_ROUTE_PAGE_ID_NONE && NavigationController.routeType != RouteType.POP_TO) {
             routeHolders.lastOrNull { it.pageId == pageId }?.let {
                 activity.intent.getRouteSettings()?.let {
                     ModulePageObservers.willAppear(it)
@@ -447,7 +447,7 @@ internal object PageRoutes : Application.ActivityLifecycleCallbacks {
 
     override fun onActivityResumed(activity: Activity) {
         val pageId = activity.intent.getPageId()
-        if (pageId != NAVIGATION_ROUTE_PAGE_ID_NONE && NavigationController.routeAction != RouteAction.POP_TO) {
+        if (pageId != NAVIGATION_ROUTE_PAGE_ID_NONE && NavigationController.routeType != RouteType.POP_TO) {
             val holder = routeHolders.lastOrNull { it.pageId == pageId }
             holder?.activity = WeakReference(activity)
             lastRoute = holder?.lastRoute()
@@ -461,7 +461,7 @@ internal object PageRoutes : Application.ActivityLifecycleCallbacks {
 
     override fun onActivityPrePaused(activity: Activity) {
         val pageId = activity.intent.getPageId()
-        if (pageId != NAVIGATION_ROUTE_PAGE_ID_NONE && NavigationController.routeAction != RouteAction.POP_TO) {
+        if (pageId != NAVIGATION_ROUTE_PAGE_ID_NONE && NavigationController.routeType != RouteType.POP_TO) {
             activity.intent.getRouteSettings()?.let {
                 ModulePageObservers.willDisappear(it)
             }
@@ -470,7 +470,7 @@ internal object PageRoutes : Application.ActivityLifecycleCallbacks {
 
     override fun onActivityPaused(activity: Activity) {
         val pageId = activity.intent.getPageId()
-        if (pageId != NAVIGATION_ROUTE_PAGE_ID_NONE && NavigationController.routeAction != RouteAction.POP_TO) {
+        if (pageId != NAVIGATION_ROUTE_PAGE_ID_NONE && NavigationController.routeType != RouteType.POP_TO) {
             activity.intent.getRouteSettings()?.let {
                 ModulePageObservers.didDisappear(it)
             }

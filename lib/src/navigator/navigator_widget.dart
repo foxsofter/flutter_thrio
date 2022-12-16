@@ -90,7 +90,7 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
 
     ThrioNavigatorImplement.shared()
         .pageChannel
-        .willAppear(route.settings, NavigatorRouteAction.push);
+        .willAppear(route.settings, NavigatorRouteType.push);
 
     verbose(
       'push: url->${route.settings.url} '
@@ -194,15 +194,15 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
     // ignore: avoid_as
     final route = history.last as NavigatorRoute;
     // The route has been closed.
-    if (route.routeAction == NavigatorRouteAction.pop) {
+    if (route.routeType == NavigatorRouteType.pop) {
       return false;
     }
 
     ThrioNavigatorImplement.shared()
         .pageChannel
-        .willDisappear(route.settings, NavigatorRouteAction.pop);
+        .willDisappear(route.settings, NavigatorRouteType.pop);
 
-    route.routeAction = NavigatorRouteAction.pop;
+    route.routeType = NavigatorRouteType.pop;
     if (animated) {
       navigatorState.pop();
     } else {
@@ -242,11 +242,11 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
 
     ThrioNavigatorImplement.shared().pageChannel.willAppear(
           route.settings,
-          NavigatorRouteAction.popTo,
+          NavigatorRouteType.popTo,
         );
 
     // ignore: avoid_as
-    (route as NavigatorRoute).routeAction = NavigatorRouteAction.popTo;
+    (route as NavigatorRoute).routeType = NavigatorRouteType.popTo;
     if (animated) {
       navigatorState.popUntil((final it) => it.settings.name == settings.name);
     } else {
@@ -281,13 +281,13 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
     );
 
     // ignore: avoid_as
-    (route as NavigatorRoute).routeAction = NavigatorRouteAction.remove;
+    (route as NavigatorRoute).routeType = NavigatorRouteType.remove;
 
     if (settings.name == history.last.settings.name) {
       if (WidgetsBinding.instance.lifecycleState == AppLifecycleState.resumed) {
         ThrioNavigatorImplement.shared()
             .pageChannel
-            .willDisappear(route.settings, NavigatorRouteAction.remove);
+            .willDisappear(route.settings, NavigatorRouteType.remove);
       }
       navigatorState.pop();
       return true;
@@ -333,16 +333,16 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
     );
 
     // ignore: avoid_as
-    (route as NavigatorRoute).routeAction = NavigatorRouteAction.replace;
+    (route as NavigatorRoute).routeType = NavigatorRouteType.replace;
 
     if (settings.name == history.last.settings.name) {
       if (WidgetsBinding.instance.lifecycleState == AppLifecycleState.resumed) {
         ThrioNavigatorImplement.shared()
             .pageChannel
-            .willDisappear(route.settings, NavigatorRouteAction.replace);
+            .willDisappear(route.settings, NavigatorRouteType.replace);
         ThrioNavigatorImplement.shared()
             .pageChannel
-            .willAppear(newRoute.settings, NavigatorRouteAction.replace);
+            .willAppear(newRoute.settings, NavigatorRouteType.replace);
       }
       navigatorState.replace(oldRoute: route, newRoute: newRoute);
     } else {

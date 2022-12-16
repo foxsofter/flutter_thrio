@@ -30,22 +30,22 @@ NS_ASSUME_NONNULL_BEGIN
 /// 处理来自 FlutterEngine 的`willAppear`调用
 ///
 - (void)thrio_willAppear:(NavigatorRouteSettings *)routeSettings
-             routeAction:(NavigatorRouteAction)routeAction;
+             routeType:(NavigatorRouteType)routeType;
 
 /// 处理来自 FlutterEngine 的`didAppear`调用
 ///
 - (void)thrio_didAppear:(NavigatorRouteSettings *)routeSettings
-            routeAction:(NavigatorRouteAction)routeAction;
+            routeType:(NavigatorRouteType)routeType;
 
 /// 处理来自 FlutterEngine 的`willDisappear`调用
 ///
 - (void)thrio_willDisappear:(NavigatorRouteSettings *)routeSettings
-                routeAction:(NavigatorRouteAction)routeAction;
+                routeType:(NavigatorRouteType)routeType;
 
 /// 处理来自 FlutterEngine 的`didDisappear`调用
 ///
 - (void)thrio_didDisappear:(NavigatorRouteSettings *)routeSettings
-               routeAction:(NavigatorRouteAction)routeAction;
+               routeType:(NavigatorRouteType)routeType;
 
 @end
 

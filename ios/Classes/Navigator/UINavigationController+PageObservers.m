@@ -27,14 +27,14 @@
 @implementation UINavigationController (PageObservers)
 
 - (void)thrio_willAppear:(NavigatorRouteSettings *)routeSettings
-             routeAction:(NavigatorRouteAction)routeAction {
+             routeType:(NavigatorRouteType)routeType {
     NavigatorPageRoute *route = [self.topViewController thrio_getRouteByUrl:routeSettings.url
                                                                       index:routeSettings.index];
     if (!route) {
         return;
     }
     // popTo 才会进到这里
-    if (routeAction == NavigatorRouteActionPopTo) {
+    if (routeType == NavigatorRouteTypePopTo) {
         NavigatorPageRoute *lastRoute = [self.topViewController thrio_lastRoute];
         if (route == lastRoute) {
             return;
@@ -49,14 +49,14 @@
 }
 
 - (void)thrio_didAppear:(NavigatorRouteSettings *)routeSettings
-            routeAction:(NavigatorRouteAction)routeAction {
+            routeType:(NavigatorRouteType)routeType {
     NavigatorPageRoute *route = [self.topViewController thrio_getRouteByUrl:routeSettings.url
                                                                       index:routeSettings.index];
     if (!route) {
         return;
     }
     // popTo 才会进到这里
-    if (routeAction == NavigatorRouteActionPopTo) {
+    if (routeType == NavigatorRouteTypePopTo) {
         NavigatorPageRoute *preLastRoute = ThrioModule.pageObservers.prevLastRoute;
         if (route == preLastRoute) {
             return;
@@ -72,7 +72,7 @@
 }
 
 - (void)thrio_willDisappear:(NavigatorRouteSettings *)routeSettings
-                routeAction:(NavigatorRouteAction)routeAction {
+                routeType:(NavigatorRouteType)routeType {
     NavigatorPageRoute *route = [self.topViewController thrio_getRouteByUrl:routeSettings.url
                                                                       index:routeSettings.index];
     if (!route) {
@@ -82,7 +82,7 @@
 }
 
 - (void)thrio_didDisappear:(NavigatorRouteSettings *)routeSettings
-               routeAction:(NavigatorRouteAction)routeAction {
+               routeType:(NavigatorRouteType)routeType {
     NavigatorPageRoute *route = [self.topViewController thrio_getRouteByUrl:routeSettings.url
                                                                       index:routeSettings.index];
     if (!route) {

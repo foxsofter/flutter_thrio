@@ -53,24 +53,24 @@ internal class PageObserverChannel constructor(
         channel.registryMethod(method) { arguments, _ ->
             if (arguments == null) return@registryMethod
             val routeSettings = RouteSettings.fromArguments(arguments) ?: return@registryMethod
-            val routeActionString = arguments["routeAction"] as String
+            val routeTypeString = arguments["routeType"] as String
 
             when (method) {
                 "willAppear" -> PageRoutes.willAppear(
                     routeSettings,
-                    RouteAction.from(routeActionString)
+                    RouteType.from(routeTypeString)
                 )
                 "didAppear" -> PageRoutes.didAppear(
                     routeSettings,
-                    RouteAction.from(routeActionString)
+                    RouteType.from(routeTypeString)
                 )
                 "willDisappear" -> PageRoutes.willDisappear(
                     routeSettings,
-                    RouteAction.from(routeActionString)
+                    RouteType.from(routeTypeString)
                 )
                 "didDisappear" -> PageRoutes.didDisappear(
                     routeSettings,
-                    RouteAction.from(routeActionString)
+                    RouteType.from(routeTypeString)
                 )
             }
         }

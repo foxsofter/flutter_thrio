@@ -32,16 +32,16 @@ NS_ASSUME_NONNULL_BEGIN
 + (NavigatorPageObservers *)pageObservers;
 
 + (void)willAppear:(NavigatorRouteSettings *)routeSettings
-       routeAction:(NSString *)routeAction;
+       routeType:(NSString *)routeType;
 
 + (void)didAppear:(NavigatorRouteSettings *)routeSettings
-      routeAction:(NSString *)routeAction;
+      routeType:(NSString *)routeType;
 
 + (void)willDisappear:(NavigatorRouteSettings *)routeSettings
-          routeAction:(NSString *)routeAction;
+          routeType:(NSString *)routeType;
 
 + (void)didDisappear:(NavigatorRouteSettings *)routeSettings
-         routeAction:(NSString *)routeAction;
+         routeType:(NSString *)routeType;
 
 @end
 

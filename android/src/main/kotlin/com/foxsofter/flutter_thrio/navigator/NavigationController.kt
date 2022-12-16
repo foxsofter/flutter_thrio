@@ -34,7 +34,6 @@ import com.foxsofter.flutter_thrio.extension.*
 import com.foxsofter.flutter_thrio.module.ModuleIntentBuilders
 import com.foxsofter.flutter_thrio.module.ModuleJsonSerializers
 import com.foxsofter.flutter_thrio.module.ModuleRouteObservers
-import com.foxsofter.flutter_thrio.navigator.NavigationController.routeAction
 import io.flutter.embedding.android.ThrioFlutterActivity
 import java.lang.ref.WeakReference
 
@@ -84,7 +83,7 @@ internal object NavigationController : Application.ActivityLifecycleCallbacks {
 
     private var context: WeakReference<out Activity>? = null
 
-    var routeAction = RouteAction.NONE
+    var routeType = RouteType.NONE
 
     object Push {
 
@@ -100,12 +99,12 @@ internal object NavigationController : Application.ActivityLifecycleCallbacks {
             poppedResult: NullableAnyCallback? = null,
             result: NullableIntCallback?
         ) {
-            if (routeAction != RouteAction.NONE) {
+            if (routeType != RouteType.NONE) {
                 result?.invoke(null)
                 return
             }
 
-            routeAction = RouteAction.PUSH
+            routeType = RouteType.PUSH
             PageRoutes.willAppearPageId = 0
 
             // 获取 lastActivity & lastEntrypoint & lastPageId
@@ -113,7 +112,7 @@ internal object NavigationController : Application.ActivityLifecycleCallbacks {
             val lastActivity = lastHolder?.activity?.get() ?: context?.get()
             if (lastActivity == null) {
                 result?.invoke(null)
-                routeAction = RouteAction.NONE
+                routeType = RouteType.NONE
                 return
             }
             val lastEntrypoint = lastHolder?.entrypoint
@@ -185,18 +184,18 @@ internal object NavigationController : Application.ActivityLifecycleCallbacks {
         }
 
         internal fun doPush(activity: Activity, routeSettings: RouteSettings? = null) {
-            if (routeAction != RouteAction.PUSH) {
+            if (routeType != RouteType.PUSH) {
                 return
             }
             val settings = routeSettings ?: activity.intent.getRouteSettings()
             if (settings == null) {
                 result?.invoke(null)
                 result = null
-                routeAction = RouteAction.NONE
+                routeType = RouteType.NONE
                 return
             }
             // 开始 push Flutter 页面
-            routeAction = RouteAction.PUSHING
+            routeType = RouteType.PUSHING
 
             val entrypoint = activity.intent.getEntrypoint()
             val fromEntryPoint = activity.intent.getFromEntrypoint()
@@ -227,7 +226,7 @@ internal object NavigationController : Application.ActivityLifecycleCallbacks {
                 }
                 result?.invoke(index)
                 result = null
-                routeAction = RouteAction.NONE
+                routeType = RouteType.NONE
             }
         }
     }
@@ -298,7 +297,7 @@ internal object NavigationController : Application.ActivityLifecycleCallbacks {
                 if (activity !is ThrioFlutterActivity) {
                     activity.onBackPressed()
                 }
-                routeAction = RouteAction.NONE
+                routeType = RouteType.NONE
                 return
             }
             PageRoutes.maybePop<T>(params, animated, true) {
@@ -315,12 +314,12 @@ internal object NavigationController : Application.ActivityLifecycleCallbacks {
             animated: Boolean = true,
             result: BooleanCallback? = null
         ) {
-            if (routeAction != RouteAction.NONE) {
+            if (routeType != RouteType.NONE) {
                 result?.invoke(false)
                 return
             }
 
-            routeAction = RouteAction.POP
+            routeType = RouteType.POP
             PageRoutes.willAppearPageId = 0
 
             val firstHolder = PageRoutes.firstRouteHolder!!
@@ -340,11 +339,11 @@ internal object NavigationController : Application.ActivityLifecycleCallbacks {
                 } else {
                     activity.onBackPressed()
                 }
-                routeAction = RouteAction.NONE
+                routeType = RouteType.NONE
             } else {
                 PageRoutes.pop<T>(params, animated) {
                     result?.invoke(it)
-                    routeAction = RouteAction.NONE
+                    routeType = RouteType.NONE
                 }
             }
         }
@@ -370,19 +369,19 @@ internal object NavigationController : Application.ActivityLifecycleCallbacks {
         private val destroyingHolders by lazy { mutableListOf<PageRouteHolder>() }
 
         fun popTo(url: String, index: Int?, animated: Boolean, result: BooleanCallback? = null) {
-            if (routeAction != RouteAction.NONE || (index != null && index < 0)) {
+            if (routeType != RouteType.NONE || (index != null && index < 0)) {
                 result?.invoke(false)
-                routeAction = RouteAction.NONE
+                routeType = RouteType.NONE
                 return
             }
 
             val poppedToRoute = PageRoutes.lastRoute(url, index)
             if (poppedToRoute == null || poppedToRoute == PageRoutes.lastRoute()) {
                 result?.invoke(false)
-                routeAction = RouteAction.NONE
+                routeType = RouteType.NONE
                 return
             }
-            routeAction = RouteAction.POPPING_TO
+            routeType = RouteType.POPPING_TO
             // 表示当前正在 popTo，在 onResume 中的处理逻辑不一样
             PageRoutes.willAppearPageId = -1
 
@@ -398,7 +397,7 @@ internal object NavigationController : Application.ActivityLifecycleCallbacks {
                     // 顶上不存在其它的 Activity
                     if (poppedToHolders.isEmpty()) {
                         result?.invoke(true)
-                        routeAction = RouteAction.NONE
+                        routeType = RouteType.NONE
                     } else { // 顶上存在其它的 Activity
                         this.result = result
                         this.poppedToRoute = poppedToRoute
@@ -413,13 +412,13 @@ internal object NavigationController : Application.ActivityLifecycleCallbacks {
                     }
                 } else {
                     result?.invoke(false)
-                    routeAction = RouteAction.NONE
+                    routeType = RouteType.NONE
                 }
             }
         }
 
         internal fun doPopTo(activity: Activity) {
-            if (routeAction != RouteAction.POPPING_TO) {
+            if (routeType != RouteType.POPPING_TO) {
                 return
             }
             val pageId = activity.intent.getPageId()
@@ -442,7 +441,7 @@ internal object NavigationController : Application.ActivityLifecycleCallbacks {
         }
 
         internal fun didPopTo(activity: Activity) {
-            if (routeAction != RouteAction.POPPING_TO) {
+            if (routeType != RouteType.POPPING_TO) {
                 return
             }
             val pageId = activity.intent.getPageId()
@@ -454,7 +453,7 @@ internal object NavigationController : Application.ActivityLifecycleCallbacks {
                 ) {
                     result?.invoke(true)
                     result = null
-                    routeAction = RouteAction.NONE
+                    routeType = RouteType.NONE
                     poppedToRoute = null
                     poppedToHolderCount = 0
                     poppingToHolders.clear()
@@ -472,17 +471,17 @@ internal object NavigationController : Application.ActivityLifecycleCallbacks {
             animated: Boolean = true,
             result: BooleanCallback? = null
         ) {
-            if (routeAction != RouteAction.NONE) {
+            if (routeType != RouteType.NONE) {
                 result?.invoke(false)
                 return
             }
 
-            routeAction = RouteAction.REMOVING
+            routeType = RouteType.REMOVING
             PageRoutes.willAppearPageId = 0
 
             PageRoutes.remove(url, index, animated) {
                 result?.invoke(it)
-                routeAction = RouteAction.NONE
+                routeType = RouteType.NONE
             }
         }
 
@@ -506,18 +505,18 @@ internal object NavigationController : Application.ActivityLifecycleCallbacks {
             newUrl: String,
             result: NullableIntCallback? = null
         ) {
-            if (routeAction != RouteAction.NONE) {
+            if (routeType != RouteType.NONE) {
                 result?.invoke(null)
                 return
             }
-            routeAction = RouteAction.REPLACE
+            routeType = RouteType.REPLACE
 
             val lastNewRoute = PageRoutes.lastRoute(newUrl)
             val newIndex = (lastNewRoute?.settings?.index?.plus(1)) ?: 1
             // 目前只实现 Flutter 页面之间的 replace，可以不考虑 Activity 被杀掉的情况
             PageRoutes.replace(url, index, newUrl, newIndex) {
                 result?.invoke(it)
-                routeAction = RouteAction.NONE
+                routeType = RouteType.NONE
             }
         }
     }

@@ -28,7 +28,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @protocol ThrioModuleRouteObserver <NSObject>
 
-/// Register observers for route action of native pages and Dart pages.
+/// Register observers for route routeType of native pages and Dart pages.
 ///
 /// Do not override this method.
 ///

@@ -23,7 +23,7 @@
 
 package com.foxsofter.flutter_thrio.navigator
 
-internal enum class RouteAction(val value: String) {
+internal enum class RouteType(val value: String) {
     NONE(""),
     PUSH("push"),
     PUSHING("pushing"),
@@ -37,7 +37,7 @@ internal enum class RouteAction(val value: String) {
     REPLACING("replacing");
 
     companion object {
-        fun from(value: String): RouteAction = when (value) {
+        fun from(value: String): RouteType = when (value) {
             "push" -> PUSH
             "pushing" -> PUSHING
             "pop" -> POP

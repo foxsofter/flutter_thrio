@@ -94,11 +94,11 @@ NS_ASSUME_NONNULL_BEGIN
      ^void (NSDictionary<NSString *, id> *arguments,
             ThrioIdCallback _Nullable result) {
         NavigatorRouteSettings *settings = [NavigatorRouteSettings settingsFromArguments:arguments];
-        NSString *routeActionString = arguments[@"routeAction"];
+        NSString *routeTypeString = arguments[@"routeType"];
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Warc-performSelector-leaks"
-        SEL selector = NSSelectorFromString([NSString stringWithFormat:@"%@:routeAction:", method]);
-        [ThrioModule performSelector:selector withObject:settings withObject:routeActionString];
+        SEL selector = NSSelectorFromString([NSString stringWithFormat:@"%@:routeType:", method]);
+        [ThrioModule performSelector:selector withObject:settings withObject:routeTypeString];
 #pragma clang diagnostic pop
     }];
 }

@@ -26,13 +26,13 @@
 NS_ASSUME_NONNULL_BEGIN
 
 typedef enum : NSUInteger {
-    NavigatorRouteActionNone,
-    NavigatorRouteActionPush,
-    NavigatorRouteActionPop,
-    NavigatorRouteActionPopTo,
-    NavigatorRouteActionRemove,
-    NavigatorRouteActionReplace,
-} NavigatorRouteAction;
+    NavigatorRouteTypeNone,
+    NavigatorRouteTypePush,
+    NavigatorRouteTypePop,
+    NavigatorRouteTypePopTo,
+    NavigatorRouteTypeRemove,
+    NavigatorRouteTypeReplace,
+} NavigatorRouteType;
 
 @interface NavigatorPageRoute : NSObject
 

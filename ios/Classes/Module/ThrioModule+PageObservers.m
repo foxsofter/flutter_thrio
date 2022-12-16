@@ -40,87 +40,87 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 + (void)willAppear:(NavigatorRouteSettings *)routeSettings
-       routeAction:(NSString *)routeAction {
-    NavigatorRouteAction action = [self routeActionFromString:routeAction];
+       routeType:(NSString *)routeTypeString {
+    NavigatorRouteType routeType = [self routeTypeFromString:routeTypeString];
     UINavigationController *nvc = ThrioNavigator.navigationController;
-    if (action == NavigatorRouteActionPush) {
+    if (routeType == NavigatorRouteTypePush) {
         [ThrioModule.pageObservers willAppear:routeSettings];
         NavigatorPageRoute *lastRoute = nvc.thrio_lastRoute;
         if ([[nvc thrio_getAllRoutesByUrl:nil] count] > 0 &&
             ![lastRoute.settings isEqualToRouteSettings:routeSettings]) {
             [ThrioModule.pageObservers willDisappear:lastRoute.settings];
         }
-    } else if (action == NavigatorRouteActionReplace) {
+    } else if (routeType == NavigatorRouteTypeReplace) {
         [ThrioModule.pageObservers willAppear:routeSettings];
     } else if ([nvc thrio_containsUrl:routeSettings.url index:routeSettings.index]) {
-        [nvc thrio_willAppear:routeSettings routeAction:action];
+        [nvc thrio_willAppear:routeSettings routeType:routeType];
     }
 }
 
 + (void)didAppear:(NavigatorRouteSettings *)routeSettings
-      routeAction:(NSString *)routeAction {
-    NavigatorRouteAction action = [self routeActionFromString:routeAction];
+      routeType:(NSString *)routeTypeString {
+    NavigatorRouteType routeType = [self routeTypeFromString:routeTypeString];
     UINavigationController *nvc = ThrioNavigator.navigationController;
-    if (action == NavigatorRouteActionPush) {
+    if (routeType == NavigatorRouteTypePush) {
         [ThrioModule.pageObservers didAppear:routeSettings];
         if ([[nvc thrio_getAllRoutesByUrl:nil] count] > 0) {
             NavigatorPageRoute *lastRoute = nvc.thrio_lastRoute;
             [ThrioModule.pageObservers didDisappear:lastRoute.settings];
         }
-    } else if (action == NavigatorRouteActionReplace) {
+    } else if (routeType == NavigatorRouteTypeReplace) {
         [ThrioModule.pageObservers didAppear:routeSettings];
     } else if ([nvc thrio_containsUrl:routeSettings.url index:routeSettings.index]) {
-        [nvc thrio_didAppear:routeSettings routeAction:action];
+        [nvc thrio_didAppear:routeSettings routeType:routeType];
     }
 }
 
 + (void)willDisappear:(NavigatorRouteSettings *)routeSettings
-          routeAction:(NSString *)routeAction {
-    NavigatorRouteAction action = [self routeActionFromString:routeAction];
+          routeType:(NSString *)routeTypeString {
+    NavigatorRouteType routeType = [self routeTypeFromString:routeTypeString];
     UINavigationController *nvc = ThrioNavigator.navigationController;
-    if (action == NavigatorRouteActionPop || action == NavigatorRouteActionRemove) {
+    if (routeType == NavigatorRouteTypePop || routeType == NavigatorRouteTypeRemove) {
         NavigatorPageRoute *lastRoute = nvc.thrio_lastRoute;
         if ([lastRoute.settings isEqualToRouteSettings:routeSettings]) {
             [ThrioModule.pageObservers willDisappear:routeSettings];
             [ThrioModule.pageObservers willAppear:lastRoute.prev.settings];
         }
-    } else if (action == NavigatorRouteActionReplace) {
+    } else if (routeType == NavigatorRouteTypeReplace) {
         [ThrioModule.pageObservers willDisappear:routeSettings];
     } else if ([nvc thrio_containsUrl:routeSettings.url index:routeSettings.index]) {
-        [nvc thrio_willDisappear:routeSettings routeAction:action];
+        [nvc thrio_willDisappear:routeSettings routeType:routeType];
     }
 }
 
 + (void)didDisappear:(NavigatorRouteSettings *)routeSettings
-         routeAction:(NSString *)routeAction {
-    NavigatorRouteAction action = [self routeActionFromString:routeAction];
+         routeType:(NSString *)routeTypeString {
+    NavigatorRouteType routeType = [self routeTypeFromString:routeTypeString];
     UINavigationController *nvc = ThrioNavigator.navigationController;
-    if (action == NavigatorRouteActionPop || action == NavigatorRouteActionRemove) {
+    if (routeType == NavigatorRouteTypePop || routeType == NavigatorRouteTypeRemove) {
         NavigatorPageRoute *prevLastRoute = ThrioModule.pageObservers.prevLastRoute;
         if ([prevLastRoute.settings isEqualToRouteSettings:routeSettings]) {
             [ThrioModule.pageObservers didDisappear:routeSettings];
             [ThrioModule.pageObservers didAppear:prevLastRoute.prev.settings];
         }
-    } else if (action == NavigatorRouteActionReplace) {
+    } else if (routeType == NavigatorRouteTypeReplace) {
         [ThrioModule.pageObservers didDisappear:routeSettings];
     } else if ([nvc thrio_containsUrl:routeSettings.url index:routeSettings.index]) {
-        [nvc thrio_didDisappear:routeSettings routeAction:action];
+        [nvc thrio_didDisappear:routeSettings routeType:routeType];
     }
 }
 
-+ (NavigatorRouteAction)routeActionFromString:(NSString *)routeActionString {
-    if ([routeActionString isEqualToString:@"push"]) {
-        return NavigatorRouteActionPush;
-    } else if ([routeActionString isEqualToString:@"pop"]) {
-        return NavigatorRouteActionPop;
-    } else if ([routeActionString isEqualToString:@"popTo"]) {
-        return NavigatorRouteActionPopTo;
-    } else if ([routeActionString isEqualToString:@"remove"]) {
-        return NavigatorRouteActionRemove;
-    } else if ([routeActionString isEqualToString:@"replace"]) {
-        return NavigatorRouteActionReplace;
++ (NavigatorRouteType)routeTypeFromString:(NSString *)routeTypeString {
+    if ([routeTypeString isEqualToString:@"push"]) {
+        return NavigatorRouteTypePush;
+    } else if ([routeTypeString isEqualToString:@"pop"]) {
+        return NavigatorRouteTypePop;
+    } else if ([routeTypeString isEqualToString:@"popTo"]) {
+        return NavigatorRouteTypePopTo;
+    } else if ([routeTypeString isEqualToString:@"remove"]) {
+        return NavigatorRouteTypeRemove;
+    } else if ([routeTypeString isEqualToString:@"replace"]) {
+        return NavigatorRouteTypeReplace;
     }
-    return NavigatorRouteActionNone;
+    return NavigatorRouteTypeNone;
 }
 
 @end
