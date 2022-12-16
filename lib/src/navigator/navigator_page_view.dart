@@ -85,9 +85,9 @@ class NavigatorPageView extends StatefulWidget {
   State<NavigatorPageView> createState() => _NavigatorPageViewState();
 }
 
-// ignore: prefer_mixin
 class _NavigatorPageViewState extends State<NavigatorPageView>
-    with WidgetsBindingObserver {
+    with WidgetsBindingObserver // ignore: prefer_mixin
+{
   VoidCallback? _pageObserverCallback;
 
   late final controller = widget.controller ?? PageController();

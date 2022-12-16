@@ -56,13 +56,13 @@ mixin ModuleRouteCustomHandler on ThrioModule {
       } else {
         tem = '';
       }
+    } else {
+      path = template.split('{')[0];
     }
     final parser = tem.isEmpty
         ? null
-        : UriParser(UriTemplate(tem),
-            queryParamsAreOptional: queryParamsAreOptional);
-    final key = NavigatorUrlTemplate(
-        scheme: scheme, host: host, path: path, parser: parser);
+        : UriParser(UriTemplate(tem), queryParamsAreOptional: queryParamsAreOptional);
+    final key = NavigatorUrlTemplate(scheme: scheme, host: host, path: path, parser: parser);
     if (anchor.customHandlers.keys.contains(key)) {
       throw ThrioException('duplicate url template: $template');
     }

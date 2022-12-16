@@ -480,3 +480,7 @@
 ## 3.8.5
 
 - fix: url template requires a path match
+
+## 3.8.6
+
+- fix: url template match only path

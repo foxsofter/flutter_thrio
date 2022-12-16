@@ -42,9 +42,9 @@ class NavigatorRoutePush extends StatefulWidget {
   _NavigatorRoutePushState createState() => _NavigatorRoutePushState();
 }
 
-// ignore: prefer_mixin
 class _NavigatorRoutePushState extends State<NavigatorRoutePush>
-    with WidgetsBindingObserver {
+    with WidgetsBindingObserver // ignore: prefer_mixin
+{
   VoidCallback? _registry;
   RouteSettings? _lastRouteSettings;
   final _handles = <String, NavigatorRoutePushHandle>{};
