@@ -30,7 +30,7 @@ import 'thrio_module.dart';
 mixin ModuleRouteCustomHandler on ThrioModule {
   /// Register a route custom handler.
   ///
-  /// format of `template` is 'scheme://foxsofter.com/login{?userName,password}'
+  /// format of `template` is 'scheme://foxsofter.com/login{userName?,password}'
   ///
   /// Unregistry by calling the return value `VoidCallback`.
   ///

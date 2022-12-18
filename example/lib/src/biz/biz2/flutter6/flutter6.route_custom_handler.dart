@@ -10,7 +10,7 @@ Future<void> on$RouteCustomHandlerRegister(
   final void Function(String, NavigatorRouteCustomHandler) registerFunc,
 ) async {
   registerFunc(
-      'justascheme://open/biz2/home{?tab}',
+      'justascheme://open/biz2/home{tab?}',
       <TParams, TPopParams>(
         final url,
         final queryParams, {
