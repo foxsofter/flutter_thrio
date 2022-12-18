@@ -36,6 +36,7 @@ import 'module_json_serializer.dart';
 import 'module_page_builder.dart';
 import 'module_page_observer.dart';
 import 'module_param_scheme.dart';
+import 'module_route_action.dart';
 import 'module_route_builder.dart';
 import 'module_route_custom_handler.dart';
 import 'module_route_observer.dart';
@@ -157,6 +158,9 @@ mixin ThrioModule {
       }
     }
     for (final module in values) {
+      if (module is ModuleRouteAction) {
+        module.onRouteActionRegister(module._moduleContext);
+      }
       if (module is ModuleRouteCustomHandler) {
         module.onRouteCustomHandlerRegister(module._moduleContext);
       }

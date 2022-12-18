@@ -21,6 +21,8 @@
 
 // ignore_for_file: avoid_classes_with_only_static_members
 
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import 'navigator_types.dart';
@@ -254,6 +256,14 @@ abstract class ThrioNavigator {
         name: name,
         params: params,
       );
+
+  static Future<TResult?> act<TParams, TResult>({
+    required final String url,
+    required final String action,
+    final TParams? params,
+  }) =>
+      ThrioNavigatorImplement.shared()
+          .act<TParams, TResult>(url: url, action: action, params: params);
 
   /// Maybe pop a page from the navigation stack.
   ///

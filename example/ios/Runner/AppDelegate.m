@@ -15,7 +15,7 @@
     [ThrioModule init:[MainModule new] preboot:NO];
 //    [ThrioModule init:[MainModule new] multiEngineEnabled:YES];
     
-    UINavigationController *nvc = [[NavigatorNavigationController alloc] initWithUrl:@"/biz1/flutter1" params:nil];
+    UINavigationController *nvc = [[NavigatorNavigationController alloc] initWithUrl:@"/biz/biz1/flutter1/home" params:nil];
     self.window.rootViewController = nvc;
     [self.window makeKeyAndVisible];
 

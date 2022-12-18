@@ -1,0 +1,17 @@
+author: foxsofter
+
+pageRoot: biz
+
+pages:
+  - biz1:
+      - flutter1:
+          - home
+      - flutter3:
+      - flutter5:
+      - flutter7:
+  - biz2:
+      - flutter2:
+      - flutter4:
+      - flutter6:
+
+language:

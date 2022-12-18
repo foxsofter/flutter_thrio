@@ -20,34 +20,69 @@
 // IN THE SOFTWARE.
 
 import 'package:flutter/material.dart';
-import 'package:uri/uri.dart';
+
+import '../exception/thrio_exception.dart';
 
 @immutable
 class NavigatorUrlTemplate {
-  const NavigatorUrlTemplate({
-    required this.scheme,
-    required this.host,
-    required this.path,
-    required this.parser,
-  });
+  NavigatorUrlTemplate({required this.template}) {
+    var tem = template;
+    final paramsStr = RegExp(r'\{(.*?)\}').stringMatch(tem);
+    if (paramsStr != null) {
+      tem = tem.replaceAll(paramsStr, '');
+    }
+    final parts = tem.split('://');
+    if (parts.length > 2) {
+      throw ThrioException('inivalid template: $template');
+    } else if (parts.length == 2) {
+      scheme = parts[0].toLowerCase();
+      host = parts[1].split('/')[0];
+      path = parts[1].replaceAll(host, '');
+    } else {
+      scheme = '';
+      host = '';
+      path = tem;
+    }
+    if (paramsStr != null) {
+      final paramsKeys = paramsStr
+          .replaceAll(' ', '')
+          .replaceAll('{', '')
+          .replaceAll('}', '')
+          .split(',');
+      requiredParamKeys.addAll(paramsKeys
+          .where((final it) => !it.endsWith('?'))
+          .map((final it) => it.replaceAll('?', '')));
+    }
+  }
 
-  final String scheme;
-  final String host;
-  final String path;
-  final UriParser? parser;
+  final String template;
+
+  late final String scheme;
+  late final String host;
+  late final String path;
+  final List<String> requiredParamKeys = <String>[];
 
   @override
   bool operator ==(final Object other) {
     if (identical(this, other)) {
       return true;
     }
-    return other is NavigatorUrlTemplate &&
-        scheme == other.scheme &&
-        host == other.host &&
-        path == other.path &&
-        parser?.template == other.parser?.template;
+    return other is NavigatorUrlTemplate && template == other.template;
+  }
+
+  bool match(final Uri uri) {
+    if (scheme == uri.scheme && host == uri.host && path == uri.path) {
+      if (requiredParamKeys.isEmpty) {
+        return true;
+      }
+      final paramsKeys = uri.queryParametersAll.keys;
+      if (!requiredParamKeys.any((final k) => !paramsKeys.contains(k))) {
+        return true;
+      }
+    }
+    return false;
   }
 
   @override
-  int get hashCode => Object.hash(scheme, host, path, parser?.template);
+  int get hashCode => template.hashCode;
 }

@@ -42,14 +42,14 @@ Navigator 中的 API 几乎都可以通过组合以上方法实现，`replace` �
 1. dart 端打开页面
 
 ```dart
-ThrioNavigator.push(url: '/biz1/flutter1');
+ThrioNavigator.push(url: '/biz/biz1/flutter1');
 // 传入参数
 ThrioNavigator.push(url: '/biz1/native1', params: { '1': {'2': '3'}});
 // 是否动画，目前在内嵌的dart页面中动画无法取消，原生iOS页面有效果
 ThrioNavigator.push(url: '/biz1/native1', animated:true);
 // 接收锁打开页面的关闭回调
 ThrioNavigator.push(
-    url: '/biz2/flutter2',
+    url: '/biz/biz2/flutter2',
     params: {'1': {'2': '3'}},
     poppedResult: (params) => verbose('/biz2/flutter2 popped: $params'),
 );
@@ -58,9 +58,9 @@ ThrioNavigator.push(
 2. iOS 端打开页面
 
 ```objc
-[ThrioNavigator pushUrl:@"/biz1/flutter1"];
+[ThrioNavigator pushUrl:@"/biz/biz1/flutter1"];
 // 接收所打开页面的关闭回调
-[ThrioNavigator pushUrl:@"/biz2/flutter2" poppedResult:^(id _Nonnull params) {
+[ThrioNavigator pushUrl:@"/biz/biz2/flutter2" poppedResult:^(id _Nonnull params) {
     ThrioLogV(@"/biz2/flutter2 popped: %@", params);
 }];
 ```
@@ -68,7 +68,7 @@ ThrioNavigator.push(
 3. Android 端打开页面
 
 ```kotlin
-ThrioNavigator.push("/biz1/flutter1",
+ThrioNavigator.push("/biz/biz1/flutter1",
         mapOf("k1" to 1),
         false,
         poppedResult = {
@@ -122,18 +122,18 @@ ThrioNavigator.pop(params, animated)
 
 ```dart
 // 默认动画开启
-ThrioNavigator.popTo(url: '/biz1/flutter1');
+ThrioNavigator.popTo(url: '/biz/biz1/flutter1');
 // 不开启动画，原生和dart页面都生效
-ThrioNavigator.popTo(url: '/biz1/flutter1', animated: false);
+ThrioNavigator.popTo(url: '/biz/biz1/flutter1', animated: false);
 ```
 
 2. iOS 端关闭到页面
 
 ```objc
 // 默认动画开启
-[ThrioNavigator popToUrl:@"/biz1/flutter1"];
+[ThrioNavigator popToUrl:@"/biz/biz1/flutter1"];
 // 关闭动画
-[ThrioNavigator popToUrl:@"/biz1/flutter1" animated:NO];
+[ThrioNavigator popToUrl:@"/biz/biz1/flutter1" animated:NO];
 ```
 
 3. Android 端关闭到页面
@@ -147,17 +147,17 @@ ThrioNavigator.popTo(url, index)
 1. dart 端关闭特定页面
 
 ```dart
-ThrioNavigator.remove(url: '/biz1/flutter1');
+ThrioNavigator.remove(url: '/biz/biz1/flutter1');
 // 只有当页面是顶层页面时，animated参数才会生效
-ThrioNavigator.remove(url: '/biz1/flutter1', animated: true);
+ThrioNavigator.remove(url: '/biz/biz1/flutter1', animated: true);
 ```
 
 2. iOS 端关闭特定页面
 
 ```objc
-[ThrioNavigator removeUrl:@"/biz1/flutter1"];
+[ThrioNavigator removeUrl:@"/biz/biz1/flutter1"];
 // 只有当页面是顶层页面时，animated参数才会生效
-[ThrioNavigator removeUrl:@"/biz1/flutter1" animated:NO];
+[ThrioNavigator removeUrl:@"/biz/biz1/flutter1" animated:NO];
 ```
 
 3. Android 端关闭特定页面
@@ -179,13 +179,13 @@ ThrioNavigator.remove(url, index)
 1. dart 端给特定页面发通知
 
 ```dart
-ThrioNavigator.notify(url: '/biz1/flutter1', name: 'reload');
+ThrioNavigator.notify(url: '/biz/biz1/flutter1', name: 'reload');
 ```
 
 2. iOS 端给特定页面发通知
 
 ```objc
-[ThrioNavigator notifyUrl:@"/biz1/flutter1" name:@"reload"];
+[ThrioNavigator notifyUrl:@"/biz/biz1/flutter1" name:@"reload"];
 ```
 
 3. Android 端给特定页面发通知

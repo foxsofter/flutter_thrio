@@ -25,7 +25,7 @@ class Native2Activity : AppCompatActivity(), PageNotifyListener {
         binding.tvNative.text = getString(R.string.native2)
 
         binding.btn10.setOnClickListener {
-            ThrioNavigator.push("/biz2/flutter2",
+            ThrioNavigator.push("/biz/biz2/flutter2",
                 params = mapOf("k1" to 1),
                 result = {
                     Log.i("Thrio", "push result data $it")
@@ -37,7 +37,7 @@ class Native2Activity : AppCompatActivity(), PageNotifyListener {
         }
 
         binding.btn11.setOnClickListener {
-            ThrioNavigator.remove("/biz2/flutter2") {
+            ThrioNavigator.remove("/biz/biz2/flutter2") {
                 Log.i("Thrio", "push result data $it")
             }
         }

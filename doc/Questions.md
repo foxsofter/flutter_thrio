@@ -38,11 +38,11 @@ thrio 暂时不支持 present，因为很难保持三端路由 API 的一致性�
 InkWell(
     onTap: () async {
     if (!await ThrioNavigator.notify(
-        url: '/biz1/flutter1',
+        url: '/biz/biz1/flutter1',
         name: 'page1Notify',
     )) {
         await ThrioNavigator.push(
-            url: '/biz1/flutter1', params: {'page1Notify': {}});
+            url: '/biz/biz1/flutter1', params: {'page1Notify': {}});
     }
     },
     child: Container(

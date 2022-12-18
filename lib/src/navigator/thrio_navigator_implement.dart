@@ -126,7 +126,7 @@ class ThrioNavigatorImplement {
   }) {
     final match = matchRouteCustomHandle(url);
     if (match != null) {
-      return onRouteCustomHandle<TPopParams>(
+      return onRouteCustomHandle<TParams, TPopParams>(
         handler: match.value,
         uri: match.key,
         params: params,
@@ -145,27 +145,26 @@ class ThrioNavigatorImplement {
   }
 
   MapEntry<Uri, NavigatorRouteCustomHandler>? matchRouteCustomHandle(
-      final String url) {
-    for (final key in anchor.customHandlers.keys) {
-      final uri = Uri.parse(url);
-      if ((key.scheme.isEmpty || key.scheme == uri.scheme) &&
-          (key.host.isEmpty || key.host == uri.host) &&
-          (key.path.isEmpty || key.path == uri.path) &&
-          (key.parser == null || key.parser!.matches(uri))) {
-        return MapEntry(uri, anchor.customHandlers[key]!);
-      }
+    final String url,
+  ) {
+    // 优先匹配后入的
+    final uri = Uri.parse(url);
+    final handle =
+        anchor.routeCustomHandlers.lastWhereOrNull((final it) => it.match(uri));
+    if (handle == null) {
+      return null;
     }
-    return null;
+    return MapEntry(uri, handle);
   }
 
-  Future<TPopParams?> onRouteCustomHandle<TPopParams>({
+  Future<TPopParams?> onRouteCustomHandle<TParams, TPopParams>({
     required final NavigatorRouteCustomHandler handler,
     required final Uri uri,
-    final dynamic params,
+    final TParams? params,
     final bool animated = true,
     final NavigatorIntCallback? result,
-  }) =>
-      handler<TPopParams>(
+  }) async =>
+      handler<TParams, TPopParams>(
         '${uri.scheme}://${uri.host}${uri.path}',
         uri.queryParametersAll,
         params: params,
@@ -185,7 +184,7 @@ class ThrioNavigatorImplement {
     }
     final match = matchRouteCustomHandle(url);
     if (match != null) {
-      final poppedResult = await onRouteCustomHandle<TPopParams>(
+      final poppedResult = await onRouteCustomHandle<TParams, TPopParams>(
         handler: match.value,
         uri: match.key,
         params: params,
@@ -223,7 +222,7 @@ class ThrioNavigatorImplement {
     }
     final match = matchRouteCustomHandle(url);
     if (match != null) {
-      final poppedResult = await onRouteCustomHandle<TPopParams>(
+      final poppedResult = await onRouteCustomHandle<TParams, TPopParams>(
         handler: match.value,
         uri: match.key,
         params: params,
@@ -265,7 +264,7 @@ class ThrioNavigatorImplement {
     }
     final match = matchRouteCustomHandle(url);
     if (match != null) {
-      final poppedResult = await onRouteCustomHandle<TPopParams>(
+      final poppedResult = await onRouteCustomHandle<TParams, TPopParams>(
         handler: match.value,
         uri: match.key,
         params: params,
@@ -307,7 +306,7 @@ class ThrioNavigatorImplement {
     }
     final match = matchRouteCustomHandle(url);
     if (match != null) {
-      final poppedResult = await onRouteCustomHandle<TPopParams>(
+      final poppedResult = await onRouteCustomHandle<TParams, TPopParams>(
         handler: match.value,
         uri: match.key,
         params: params,
@@ -350,7 +349,7 @@ class ThrioNavigatorImplement {
     }
     final match = matchRouteCustomHandle(url);
     if (match != null) {
-      final poppedResult = await onRouteCustomHandle<TPopParams>(
+      final poppedResult = await onRouteCustomHandle<TParams, TPopParams>(
         handler: match.value,
         uri: match.key,
         params: params,
@@ -393,7 +392,7 @@ class ThrioNavigatorImplement {
     }
     final match = matchRouteCustomHandle(url);
     if (match != null) {
-      final poppedResult = await onRouteCustomHandle<TPopParams>(
+      final poppedResult = await onRouteCustomHandle<TParams, TPopParams>(
         handler: match.value,
         uri: match.key,
         params: params,
@@ -577,6 +576,24 @@ class ThrioNavigatorImplement {
       name: name,
       url: route.url,
       index: route.index,
+      params: params,
+    );
+  }
+
+  Future<TResult?> act<TParams, TResult>({
+    required final String url,
+    required final String action,
+    final TParams? params,
+  }) async {
+    final routeAction = anchor.get<NavigatorRouteAction>(url: url, key: action);
+    if (routeAction == null) {
+      return null;
+    }
+    final actionUri = Uri.parse(action);
+    return routeAction<TParams, TResult>(
+      url,
+      actionUri.path,
+      actionUri.queryParametersAll,
       params: params,
     );
   }

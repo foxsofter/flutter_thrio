@@ -1,0 +1,19 @@
+type:
+
+module:
+
+context:
+  declaration:
+    - intValue:
+        type: int
+
+  definition:
+    - intValue:
+        type: int
+        method:
+          get: "get an int value."
+          set:
+          remove: "remove an int value.remove an int value.remove an int value."
+          on:
+
+notify:

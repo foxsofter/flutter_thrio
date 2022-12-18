@@ -31,12 +31,14 @@ import '../navigator/navigator_types.dart';
 import '../navigator/navigator_url_template.dart';
 import '../navigator/thrio_navigator_implement.dart';
 import '../registry/registry_map.dart';
+import '../registry/registry_order_map.dart';
 import '../registry/registry_set_map.dart';
 import 'module_json_deserializer.dart';
 import 'module_json_serializer.dart';
 import 'module_page_builder.dart';
 import 'module_page_observer.dart';
 import 'module_param_scheme.dart';
+import 'module_route_action.dart';
 import 'module_route_builder.dart';
 import 'module_route_observer.dart';
 import 'module_route_transitions_builder.dart';
@@ -66,8 +68,8 @@ class ModuleAnchor
 
   /// A collection of route handlers for matching the key's pattern.
   ///
-  final customHandlers =
-      RegistryMap<NavigatorUrlTemplate, NavigatorRouteCustomHandler>();
+  final routeCustomHandlers =
+      RegistryOrderMap<NavigatorUrlTemplate, NavigatorRouteCustomHandler>();
 
   /// All registered urls.
   ///
@@ -185,6 +187,19 @@ class ModuleAnchor
             if (!it.routeTransitionsDisabled &&
                 it.routeTransitionsBuilder != null) {
               return it.routeTransitionsBuilder as T;
+            }
+          }
+        }
+        return null;
+      } else if (typeString == (NavigatorRouteAction).toString()) {
+        if (modules.isEmpty || key == null) {
+          return null;
+        }
+        for (final it in modules.reversed) {
+          if (it is ModuleRouteAction) {
+            final routeAction = it.getRouteAction(key);
+            if (routeAction != null) {
+              return routeAction as T;
             }
           }
         }

@@ -34,6 +34,10 @@ typedef NavigatorRouteBuilder = NavigatorRoute Function(
   RouteSettings settings,
 );
 
+/// Signature of callbacks with bool parameter.
+///
+typedef NavigatorBoolCallback = void Function(bool result);
+
 /// Signature of callbacks with int parameter.
 ///
 typedef NavigatorIntCallback = void Function(int index);

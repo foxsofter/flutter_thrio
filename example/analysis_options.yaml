@@ -124,7 +124,7 @@ linter:
     # prefer_null_aware_operators: true # 推荐使用 ?. 空检查
     prefer_single_quotes: true # 在不需要转义是使用单引号
     # prefer_spread_collections: true
-    prefer_relative_imports: true # 同一个lib下使用相对路径import
+    prefer_relative_imports: false # 同一个lib下使用相对路径import
     # prefer_typing_uninitialized_variables: true # 为未初始化变量指定类型
     # prefer_void_to_null: true # 推荐使用 void 而不是 Null
     # provide_deprecation_message: true # 在 Deprecation 说明弃用内容

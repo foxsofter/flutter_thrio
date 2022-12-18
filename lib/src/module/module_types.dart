@@ -19,6 +19,8 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
+import 'dart:async';
+
 import '../navigator/navigator_types.dart';
 
 /// Signature of callbacks for json serializer.
@@ -33,10 +35,22 @@ typedef JsonDeserializer<T> = T? Function(Map<String, dynamic> params);
 ///
 /// Can be used to handle deeplink or route redirection.
 ///
-typedef NavigatorRouteCustomHandler = Future<TPopParams?> Function<TPopParams>(
+typedef NavigatorRouteCustomHandler = FutureOr<TPopParams?>
+    Function<TParams, TPopParams>(
   String url,
   Map<String, List<String>> queryParams, {
-  dynamic params,
+  TParams? params,
   bool animated,
   NavigatorIntCallback? result,
+});
+
+/// Signature of route action.
+///
+/// Can be used to handle route action.
+///
+typedef NavigatorRouteAction = FutureOr<TResult?> Function<TParams, TResult>(
+  String url,
+  String action,
+  Map<String, List<String>> queryParams, {
+  TParams? params,
 });

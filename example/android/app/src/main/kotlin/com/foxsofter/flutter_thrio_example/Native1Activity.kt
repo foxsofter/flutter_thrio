@@ -17,7 +17,7 @@ class Native1Activity : AppCompatActivity(), PageNotifyListener {
         binding.tvNative.text = getString(R.string.native1)
 
         binding.btn10.setOnClickListener {
-            ThrioNavigator.push("/biz1/flutter1",
+            ThrioNavigator.push("/biz/biz1/flutter1",
                 params = People(
                     mapOf(
                         "name" to "foxsofter",
@@ -35,13 +35,13 @@ class Native1Activity : AppCompatActivity(), PageNotifyListener {
         }
 
         binding.btn11.setOnClickListener {
-            ThrioNavigator.remove("/biz1/flutter1") {
+            ThrioNavigator.remove("/biz/biz1/flutter1") {
                 Log.i("Thrio", "push result data $it")
             }
         }
 
         binding.btn12.setOnClickListener {
-            ThrioNavigator.push("/biz2/flutter2",
+            ThrioNavigator.push("/biz/biz2/flutter2",
                 params = mapOf("k1" to 1),
                 result = {
                     Log.i("Thrio", "push result data $it")
@@ -53,7 +53,7 @@ class Native1Activity : AppCompatActivity(), PageNotifyListener {
         }
 
         binding.btn13.setOnClickListener {
-            ThrioNavigator.remove("/biz2/flutter2") {
+            ThrioNavigator.remove("/biz/biz2/flutter2") {
                 Log.i("Thrio", "push result data $it")
             }
         }

@@ -1,0 +1,22 @@
+type:
+
+context:
+    declaration:
+        - stringKeyBiz1:
+
+    definition:
+        - stringKeyBiz1:
+              type: String
+              method:
+                  get:
+                  set:
+                  on:
+        - intKeyRootModule:
+              type: int
+              method:
+                  get:
+                  set:
+
+notify:
+
+push:

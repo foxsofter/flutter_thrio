@@ -20,7 +20,6 @@
 // IN THE SOFTWARE.
 
 import 'package:flutter/foundation.dart';
-import 'package:uri/uri.dart';
 
 import '../exception/thrio_exception.dart';
 import '../navigator/navigator_url_template.dart';
@@ -31,44 +30,20 @@ import 'thrio_module.dart';
 mixin ModuleRouteCustomHandler on ThrioModule {
   /// Register a route custom handler.
   ///
+  /// format of `template` is 'scheme://foxsofter.com/login{?userName,password}'
+  ///
   /// Unregistry by calling the return value `VoidCallback`.
   ///
   @protected
   VoidCallback registerRouteCustomHandler(
     final String template,
-    final NavigatorRouteCustomHandler handler, {
-    final bool queryParamsAreOptional = false,
-  }) {
-    var scheme = '';
-    var host = '';
-    var path = '';
-    var tem = template;
-    final parts = template.split('://');
-    if (parts.length > 2) {
-      throw ThrioException('inivalid template: $template');
-    } else if (parts.length == 2) {
-      scheme = parts[0].toLowerCase();
-      final subParts = parts[1].split('/');
-      host = subParts[0];
-      if (subParts.length > 1) {
-        tem = '/${subParts.getRange(1, subParts.length).join('/')}';
-        path = tem.split('{')[0];
-      } else {
-        tem = '';
-      }
-    } else {
-      path = template.split('{')[0];
-    }
-    final parser = tem.isEmpty
-        ? null
-        : UriParser(UriTemplate(tem),
-            queryParamsAreOptional: queryParamsAreOptional);
-    final key = NavigatorUrlTemplate(
-        scheme: scheme, host: host, path: path, parser: parser);
-    if (anchor.customHandlers.keys.contains(key)) {
+    final NavigatorRouteCustomHandler handler,
+  ) {
+    final key = NavigatorUrlTemplate(template: template);
+    if (anchor.routeCustomHandlers.keys.contains(key)) {
       throw ThrioException('duplicate url template: $template');
     }
-    return anchor.customHandlers.registry(key, handler);
+    return anchor.routeCustomHandlers.registry(key, handler);
   }
 
   /// A function for register a `NavigatorRouteCustomHandler` .
