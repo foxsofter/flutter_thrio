@@ -492,3 +492,8 @@
 ## 3.8.8
 
 - fix: remove callback invalid
+
+## 3.9.0
+
+- feat: add NavigatorRouteAction and remove uri.dart
+- feat: support route-action code generate
