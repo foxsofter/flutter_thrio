@@ -50,7 +50,7 @@ class NavigatorUrlTemplate {
           .replaceAll('}', '')
           .split(',');
       requiredParamKeys.addAll(paramsKeys
-          .where((final it) => !it.endsWith('?'))
+          .where((final it) => it.isNotEmpty && !it.endsWith('?'))
           .map((final it) => it.replaceAll('?', '')));
     }
   }

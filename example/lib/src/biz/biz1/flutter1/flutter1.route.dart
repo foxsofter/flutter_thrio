@@ -31,12 +31,19 @@ class Flutter1Route extends NavigatorRouteNode {
 
   /// get people
   ///
-  Future<People?> getPeople({required final int intValue}) =>
+  Future<People?> getPeople({final int? intValue}) =>
       ThrioNavigator.act<Map<String, dynamic>, People>(
         url: url,
         action: 'getPeople',
         params: {
           'intValue': intValue,
         },
+      );
+
+  /// get string
+  ///
+  Future<String?> getString() => ThrioNavigator.act(
+        url: url,
+        action: 'getString',
       );
 }

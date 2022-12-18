@@ -167,6 +167,20 @@ class _Flutter6PageState extends State<Flutter6Page> {
                     style: TextStyle(fontSize: 22, color: Colors.black),
                   )),
             ),
+            InkWell(
+              onTap: () async {
+                final result = await biz.biz1.flutter1.getString();
+                debugPrint(result);
+              },
+              child: Container(
+                  padding: const EdgeInsets.all(8),
+                  margin: const EdgeInsets.all(8),
+                  color: Colors.yellow,
+                  child: const Text(
+                    'act flutter1 get void',
+                    style: TextStyle(fontSize: 22, color: Colors.black),
+                  )),
+            ),
           ]),
         ),
       ));

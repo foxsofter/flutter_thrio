@@ -17,8 +17,15 @@ notify:
 action:
   - getPeople:
       doc: get people
+      return: People
       parameter:
         - intValue:
-            type: int
+            type: int?
+
+  - getString:
+      doc: get string
+      return: String
+      parameter:
+
 
 push:
