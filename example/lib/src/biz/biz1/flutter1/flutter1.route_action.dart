@@ -1,24 +1,6 @@
 // Copyright (c) 2022 foxsofter.
 //
 
-// Copyright (c) 2022 foxsofter.
-//
-
-// Copyright (c) 2022 foxsofter.
-//
-
-// Copyright (c) 2022 foxsofter.
-//
-
-// Copyright (c) 2022 foxsofter.
-//
-
-// Copyright (c) 2022 foxsofter.
-//
-
-// Copyright (c) 2022 foxsofter.
-//
-
 import 'dart:async';
 
 import 'package:example/src/biz/types/people.dart';
