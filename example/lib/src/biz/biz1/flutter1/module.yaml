@@ -26,6 +26,7 @@ action:
       doc: get string
       return: String
       parameter:
-
+        - boolValue:
+            type: bool
 
 push:

@@ -34,7 +34,7 @@ class Flutter1Route extends NavigatorRouteNode {
   Future<People?> getPeople({final int? intValue}) =>
       ThrioNavigator.act<Map<String, dynamic>, People>(
         url: url,
-        action: 'getPeople',
+        action: 'getPeople{intValue?}',
         params: {
           'intValue': intValue,
         },
@@ -42,8 +42,12 @@ class Flutter1Route extends NavigatorRouteNode {
 
   /// get string
   ///
-  Future<String?> getString() => ThrioNavigator.act(
+  Future<String?> getString({required final bool boolValue}) =>
+      ThrioNavigator.act<Map<String, dynamic>, String>(
         url: url,
-        action: 'getString',
+        action: 'getString{boolValue}',
+        params: {
+          'boolValue': boolValue,
+        },
       );
 }

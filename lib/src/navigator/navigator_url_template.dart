@@ -44,11 +44,8 @@ class NavigatorUrlTemplate {
       path = tem;
     }
     if (paramsStr != null) {
-      final paramsKeys = paramsStr
-          .replaceAll(' ', '')
-          .replaceAll('{', '')
-          .replaceAll('}', '')
-          .split(',');
+      final paramsKeys =
+          paramsStr.replaceAll(' ', '').replaceAll('{', '').replaceAll('}', '').split(',');
       requiredParamKeys.addAll(paramsKeys
           .where((final it) => it.isNotEmpty && !it.endsWith('?'))
           .map((final it) => it.replaceAll('?', '')));
@@ -71,12 +68,18 @@ class NavigatorUrlTemplate {
   }
 
   bool match(final Uri uri) {
-    if (scheme == uri.scheme && host == uri.host && path == uri.path) {
+    // url 允许通过传入模板来表明使用者已经正常传入参数
+    var uriPath = Uri.decodeFull(uri.path);
+    var uriParamsKeys = uri.queryParametersAll.keys;
+    if (uriPath.contains('{')) {
+      uriParamsKeys = uriPath.split('{')[1].replaceAll('}', '').split(',');
+      uriPath = uriPath.split('{')[0];
+    }
+    if (scheme == uri.scheme && host == uri.host && path == uriPath) {
       if (requiredParamKeys.isEmpty) {
         return true;
       }
-      final paramsKeys = uri.queryParametersAll.keys;
-      if (!requiredParamKeys.any((final k) => !paramsKeys.contains(k))) {
+      if (!requiredParamKeys.any((final k) => !uriParamsKeys.contains(k))) {
         return true;
       }
     }

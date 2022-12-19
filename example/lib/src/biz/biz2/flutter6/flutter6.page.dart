@@ -34,8 +34,7 @@ class _Flutter6PageState extends State<Flutter6Page> {
   Widget build(final BuildContext context) => Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
-        title: const Text('thrio_deeplink_example',
-            style: TextStyle(color: Colors.black)),
+        title: const Text('thrio_deeplink_example', style: TextStyle(color: Colors.black)),
         leading: context.showPopAwareWidget(const IconButton(
           color: Colors.black,
           tooltip: 'back',
@@ -58,8 +57,7 @@ class _Flutter6PageState extends State<Flutter6Page> {
             ),
             InkWell(
               onTap: () async {
-                final result = await ThrioNavigator.push(
-                    url: 'justascheme://open/biz2/home?tab=0');
+                final result = await ThrioNavigator.push(url: 'justascheme://open/biz2/home?tab=0');
                 debugPrint(result.toString());
               },
               child: Container(
@@ -73,8 +71,7 @@ class _Flutter6PageState extends State<Flutter6Page> {
             ),
             InkWell(
               onTap: () async {
-                final result = await ThrioNavigator.push(
-                    url: 'justascheme://open/biz2/home');
+                final result = await ThrioNavigator.push(url: 'justascheme://open/biz2/home');
                 debugPrint(result.toString());
               },
               child: Container(
@@ -89,8 +86,7 @@ class _Flutter6PageState extends State<Flutter6Page> {
             InkWell(
               onTap: () async {
                 final result = await ThrioNavigator.push(
-                    url:
-                        'anotherScheme://leaderboard/home?hashId=13131973173&product=31fefq');
+                    url: 'anotherScheme://leaderboard/home?hashId=13131973173&product=31fefq');
                 debugPrint(result.toString());
               },
               child: Container(
@@ -169,7 +165,7 @@ class _Flutter6PageState extends State<Flutter6Page> {
             ),
             InkWell(
               onTap: () async {
-                final result = await biz.biz1.flutter1.getString();
+                final result = await biz.biz1.flutter1.getString(boolValue: true);
                 debugPrint(result);
               },
               child: Container(

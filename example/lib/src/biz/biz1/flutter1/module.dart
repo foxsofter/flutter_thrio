@@ -32,7 +32,7 @@ class Module with ThrioModule, ModuleRouteAction {
       return null;
     });
 
-    registerRouteAction('getString{}', <TParams, TResult>(
+    registerRouteAction('getString{boolValue}', <TParams, TResult>(
       final url,
       final action,
       final queryParams, {
@@ -43,6 +43,7 @@ class Module with ThrioModule, ModuleRouteAction {
         url,
         action,
         queryParams,
+        boolValue: getValue<bool>(params, 'boolValue'),
       );
       if (result is Future<TResult?>) {
         return result as Future<TResult?>;
