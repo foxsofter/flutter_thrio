@@ -30,10 +30,12 @@ import 'thrio_module.dart';
 mixin ModuleRouteAction on ThrioModule {
   /// A collection of route action.
   ///
-  final _routeActionHandlers = RegistryOrderMap<NavigatorUrlTemplate, NavigatorRouteAction>();
+  final _routeActionHandlers =
+      RegistryOrderMap<NavigatorUrlTemplate, NavigatorRouteAction>();
 
   NavigatorRouteAction? getRouteAction(final String action) =>
-      _routeActionHandlers.lastWhereOrNull((final k) => k.match(Uri.parse(action)));
+      _routeActionHandlers
+          .lastWhereOrNull((final k) => k.match(Uri.parse(action)));
 
   /// Register a route action.
   ///

@@ -501,3 +501,7 @@
 ## 3.9.1
 
 - feat: route-action 支持通过传入模板来表明参数已正确传入
+
+## 3.9.2
+
+- feat: route-custom-handler support domain name wildcard

@@ -10,6 +10,16 @@ Future<void> on$RouteCustomHandlerRegister(
   final void Function(String, NavigatorRouteCustomHandler) registerFunc,
 ) async {
   registerFunc(
+      'https://*',
+      <TParams, TPopParams>(
+        final url,
+        final queryParams, {
+        final params,
+        final animated = true,
+        final result,
+      }) =>
+          'good' as TPopParams);
+  registerFunc(
       'justascheme://open/biz2/home{tab?}',
       <TParams, TPopParams>(
         final url,

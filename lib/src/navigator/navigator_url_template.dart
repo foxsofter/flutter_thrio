@@ -44,8 +44,11 @@ class NavigatorUrlTemplate {
       path = tem;
     }
     if (paramsStr != null) {
-      final paramsKeys =
-          paramsStr.replaceAll(' ', '').replaceAll('{', '').replaceAll('}', '').split(',');
+      final paramsKeys = paramsStr
+          .replaceAll(' ', '')
+          .replaceAll('{', '')
+          .replaceAll('}', '')
+          .split(',');
       requiredParamKeys.addAll(paramsKeys
           .where((final it) => it.isNotEmpty && !it.endsWith('?'))
           .map((final it) => it.replaceAll('?', '')));
@@ -75,7 +78,11 @@ class NavigatorUrlTemplate {
       uriParamsKeys = uriPath.split('{')[1].replaceAll('}', '').split(',');
       uriPath = uriPath.split('{')[0];
     }
-    if (scheme == uri.scheme && host == uri.host && path == uriPath) {
+    if (scheme == uri.scheme &&
+        ((host.contains('*') &&
+                RegExp(host.replaceFirst('*', '.*')).hasMatch(uri.host)) ||
+            host == uri.host) &&
+        (path.isEmpty || path == uriPath)) {
       if (requiredParamKeys.isEmpty) {
         return true;
       }

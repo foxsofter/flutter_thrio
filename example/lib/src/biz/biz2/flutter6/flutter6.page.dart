@@ -34,7 +34,8 @@ class _Flutter6PageState extends State<Flutter6Page> {
   Widget build(final BuildContext context) => Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
-        title: const Text('thrio_deeplink_example', style: TextStyle(color: Colors.black)),
+        title: const Text('thrio_deeplink_example',
+            style: TextStyle(color: Colors.black)),
         leading: context.showPopAwareWidget(const IconButton(
           color: Colors.black,
           tooltip: 'back',
@@ -57,7 +58,8 @@ class _Flutter6PageState extends State<Flutter6Page> {
             ),
             InkWell(
               onTap: () async {
-                final result = await ThrioNavigator.push(url: 'justascheme://open/biz2/home?tab=0');
+                final result = await ThrioNavigator.push(
+                    url: 'justascheme://open/biz2/home?tab=0');
                 debugPrint(result.toString());
               },
               child: Container(
@@ -71,7 +73,8 @@ class _Flutter6PageState extends State<Flutter6Page> {
             ),
             InkWell(
               onTap: () async {
-                final result = await ThrioNavigator.push(url: 'justascheme://open/biz2/home');
+                final result = await ThrioNavigator.push(
+                    url: 'justascheme://open/biz2/home');
                 debugPrint(result.toString());
               },
               child: Container(
@@ -86,7 +89,8 @@ class _Flutter6PageState extends State<Flutter6Page> {
             InkWell(
               onTap: () async {
                 final result = await ThrioNavigator.push(
-                    url: 'anotherScheme://leaderboard/home?hashId=13131973173&product=31fefq');
+                    url:
+                        'anotherScheme://leaderboard/home?hashId=13131973173&product=31fefq');
                 debugPrint(result.toString());
               },
               child: Container(
@@ -110,6 +114,21 @@ class _Flutter6PageState extends State<Flutter6Page> {
                   color: Colors.yellow,
                   child: const Text(
                     'deeplink optional parameter',
+                    style: TextStyle(fontSize: 22, color: Colors.black),
+                  )),
+            ),
+            InkWell(
+              onTap: () async {
+                final result =
+                    await ThrioNavigator.push(url: 'https://www.google.com');
+                debugPrint(result.toString());
+              },
+              child: Container(
+                  padding: const EdgeInsets.all(8),
+                  margin: const EdgeInsets.all(8),
+                  color: Colors.yellow,
+                  child: const Text(
+                    'deeplink with http',
                     style: TextStyle(fontSize: 22, color: Colors.black),
                   )),
             ),
@@ -165,7 +184,8 @@ class _Flutter6PageState extends State<Flutter6Page> {
             ),
             InkWell(
               onTap: () async {
-                final result = await biz.biz1.flutter1.getString(boolValue: true);
+                final result =
+                    await biz.biz1.flutter1.getString(boolValue: true);
                 debugPrint(result);
               },
               child: Container(
