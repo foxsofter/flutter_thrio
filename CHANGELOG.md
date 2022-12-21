@@ -505,3 +505,7 @@
 ## 3.9.2
 
 - feat: route-custom-handler support domain name wildcard
+
+## 3.9.3
+
+- feat: add method [NavigatorPage.of]

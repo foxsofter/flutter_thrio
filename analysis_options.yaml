@@ -165,5 +165,6 @@ linter:
     use_setters_to_change_properties: true # 使用 setter 进行属性修改
     use_string_buffers: true # 使用 StringBuffer 拼接字符
     use_to_and_as_if_applicable: true # 使用 toXXX asXXX进行类型转换
+    use_super_parameters: true
     valid_regexps: true # 校验正则
     void_checks: true # 检查 void 无效使用

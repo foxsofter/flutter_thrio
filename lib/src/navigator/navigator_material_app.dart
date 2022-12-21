@@ -32,7 +32,7 @@ class NavigatorMaterialApp extends MaterialApp {
         const <NavigatorObserver>[],
     final TransitionBuilder? builder,
     super.title,
-    final Widget? home,
+    super.home,
     super.onGenerateTitle,
     super.color,
     super.theme,
@@ -62,7 +62,6 @@ class NavigatorMaterialApp extends MaterialApp {
             }
           },
           navigatorObservers: [...navigatorObservers],
-          home: home,
           initialRoute: '1 /',
           routes: {'1 /': (final _) => home ?? const NavigatorHome()},
         );

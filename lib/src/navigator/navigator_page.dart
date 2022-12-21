@@ -19,6 +19,8 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
+import 'package:flutter/widgets.dart';
+
 import '../extension/thrio_dynamic.dart';
 import '../module/thrio_module.dart';
 
@@ -43,4 +45,20 @@ mixin NavigatorPage {
   /// Get parameter from params.
   ///
   T? getParamOrNull<T>(final String key) => getValueOrNull(params, key);
+
+  /// This method should not be called from [State.deactivate] or [State.dispose]
+  /// because the element tree is no longer stable at that time.
+  ///
+  static NavigatorPage? of(final BuildContext context) {
+    NavigatorPage? page;
+    context.visitAncestorElements((final it) {
+      final widget = it.widget;
+      if (widget is NavigatorPage) {
+        page = widget as NavigatorPage;
+        return false;
+      }
+      return true;
+    });
+    return page;
+  }
 }
