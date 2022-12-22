@@ -77,12 +77,12 @@ extension NavigatorRouteSettings on RouteSettings {
         'params': params,
       };
 
-  String? get url {
+  String get url {
     final settingsName = name;
     return settingsName == null ||
             settingsName.isEmpty ||
             !settingsName.contains(' ')
-        ? null
+        ? ''
         : settingsName.split(' ').last;
   }
 

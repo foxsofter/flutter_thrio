@@ -91,7 +91,7 @@ class NavigatorRouteObserverChannel with NavigatorRouteObserver {
         final routeSettings = NavigatorRouteSettings.fromArguments(arguments);
         if (routeSettings != null) {
           final observers =
-              ThrioModule.gets<NavigatorRouteObserver>(url: routeSettings.url!);
+              ThrioModule.gets<NavigatorRouteObserver>(url: routeSettings.url);
           for (final observer in observers) {
             callback(observer, routeSettings);
           }
@@ -110,9 +110,9 @@ class NavigatorRouteObserverChannel with NavigatorRouteObserver {
         if (newRouteSettings != null && oldRouteSettings != null) {
           final observers = <NavigatorRouteObserver>[
             ...ThrioModule.gets<NavigatorRouteObserver>(
-                url: newRouteSettings.url!),
+                url: newRouteSettings.url),
             ...ThrioModule.gets<NavigatorRouteObserver>(
-                url: oldRouteSettings.url!),
+                url: oldRouteSettings.url),
           ];
           for (final observer in observers) {
             observer.didReplace(newRouteSettings, oldRouteSettings);

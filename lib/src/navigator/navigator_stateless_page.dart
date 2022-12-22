@@ -30,7 +30,7 @@ abstract class NavigatorStatelessPage extends StatelessWidget
     super.key,
     required this.moduleContext,
     this.params,
-    this.url,
+    required this.url,
     this.index = 0,
   });
 
@@ -41,7 +41,7 @@ abstract class NavigatorStatelessPage extends StatelessWidget
   final dynamic params;
 
   @override
-  final String? url;
+  final String url;
 
   @override
   final int index;

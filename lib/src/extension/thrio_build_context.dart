@@ -88,7 +88,7 @@ extension ThrioBuildContext on BuildContext {
     final route = state.history.last;
     return route is NavigatorRoute
         ? ThrioNavigatorImplement.shared().isInitialRoute(
-            url: route.settings.url!,
+            url: route.settings.url,
             index: route.settings.index,
           )
         : Future<bool>.value(false);

@@ -21,15 +21,18 @@
 
 import 'package:flutter/widgets.dart';
 
+import '../exception/thrio_exception.dart';
 import '../extension/thrio_dynamic.dart';
 import '../module/thrio_module.dart';
+import 'navigator_route_settings.dart';
+import 'thrio_navigator_implement.dart';
 
 mixin NavigatorPage {
   ModuleContext get moduleContext;
 
   dynamic get params;
 
-  String? get url;
+  String get url;
 
   int get index;
 
@@ -46,19 +49,86 @@ mixin NavigatorPage {
   ///
   T? getParamOrNull<T>(final String key) => getValueOrNull(params, key);
 
+  /// Get moduleContext from current page.
+  ///
   /// This method should not be called from [State.deactivate] or [State.dispose]
   /// because the element tree is no longer stable at that time.
   ///
-  static NavigatorPage? of(final BuildContext context) {
+  static ModuleContext moduleContextOf(
+    final BuildContext context, {
+    final bool rootModuleContext = false,
+  }) =>
+      NavigatorPage._of(context, rootModuleContext: rootModuleContext)
+          .moduleContext;
+
+  /// Get params of current page.
+  ///
+  /// This method should not be called from [State.deactivate] or [State.dispose]
+  /// because the element tree is no longer stable at that time.
+  ///
+  static dynamic paramsOf(
+    final BuildContext context, {
+    final bool rootModuleContext = false,
+  }) =>
+      NavigatorPage._of(context, rootModuleContext: rootModuleContext).params;
+
+  /// Get url of current page.
+  ///
+  /// This method should not be called from [State.deactivate] or [State.dispose]
+  /// because the element tree is no longer stable at that time.
+  ///
+  static String urlOf(
+    final BuildContext context, {
+    final bool rootModuleContext = false,
+  }) =>
+      NavigatorPage._of(context, rootModuleContext: rootModuleContext).url;
+
+  /// Get index of current page.
+  ///
+  /// This method should not be called from [State.deactivate] or [State.dispose]
+  /// because the element tree is no longer stable at that time.
+  ///
+  static int indexOf(
+    final BuildContext context, {
+    final bool rootModuleContext = false,
+  }) =>
+      NavigatorPage._of(context, rootModuleContext: rootModuleContext).index;
+
+  static NavigatorPage _of(
+    final BuildContext context, {
+    final bool rootModuleContext = false,
+  }) {
+    String? lastUrl;
+    if (rootModuleContext) {
+      lastUrl = ThrioNavigatorImplement.shared().lastFlutterRoute()?.url;
+    }
     NavigatorPage? page;
+    final widget = context.widget;
+    if (widget is NavigatorPage) {
+      page = widget as NavigatorPage;
+      if (rootModuleContext) {
+        if (page.url == lastUrl) {
+          return page;
+        }
+      } else {
+        return page;
+      }
+      page = null;
+    }
     context.visitAncestorElements((final it) {
       final widget = it.widget;
       if (widget is NavigatorPage) {
         page = widget as NavigatorPage;
+        if (rootModuleContext) {
+          return page?.url != lastUrl;
+        }
         return false;
       }
       return true;
     });
-    return page;
+    if (page == null) {
+      throw ThrioException('no module context on the page');
+    }
+    return page!;
   }
 }

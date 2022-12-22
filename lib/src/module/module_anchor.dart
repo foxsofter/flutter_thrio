@@ -90,7 +90,7 @@ class ModuleAnchor
   }
 
   Future<dynamic> unloading(final Iterable<NavigatorRoute> allRoutes) async {
-    final urls = allRoutes.map<String>((final it) => it.settings.url!).toSet();
+    final urls = allRoutes.map<String>((final it) => it.settings.url).toSet();
     final notPushedUrls =
         allUrls.where((final it) => !urls.contains(it)).toList();
     // 需要过滤掉不带 home 的 url

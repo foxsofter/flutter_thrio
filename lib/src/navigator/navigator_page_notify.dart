@@ -75,7 +75,7 @@ class _NavigatorPageNotifyState extends State<NavigatorPageNotify> {
     if (route is NavigatorRoute) {
       _notifySubscription = ThrioNavigatorImplement.shared()
           .onPageNotify(
-              url: route.settings.url!,
+              url: route.settings.url,
               index: route.settings.index,
               name: widget.name)
           .listen(_listen);

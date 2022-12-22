@@ -77,7 +77,7 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
     }
 
     // 加载模块
-    await anchor.loading(settings.url!);
+    await anchor.loading(settings.url);
 
     NavigatorRoute route;
     final routeBuilder =
@@ -176,7 +176,7 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
       if (poppedResults.containsKey(settings.name)) {
         // 不匹配的时候表示这里是非当前引擎触发的，调用 poppedResult 回调
         final poppedResult = poppedResults.remove(settings.name);
-        _poppedResultCallback(poppedResult, settings.url!, settings.params);
+        _poppedResultCallback(poppedResult, settings.url, settings.params);
       }
       // return false，避免原生端清栈，如果仅仅是为了触发 poppedResult 回调原生端也不会清栈
       return false;
@@ -315,7 +315,7 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
     }
 
     // 加载模块
-    await anchor.loading(newSettings.url!);
+    await anchor.loading(newSettings.url);
 
     NavigatorRoute newRoute;
     final routeBuilder =

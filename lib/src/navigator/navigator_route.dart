@@ -52,7 +52,7 @@ mixin NavigatorRoute on PageRoute<bool> {
       final disabled = _popDisableds.remove(settings.name);
       if (disabled != null) {
         ThrioNavigatorImplement.shared().setPopDisabled(
-          url: settings.url!,
+          url: settings.url,
           index: settings.index,
           disabled: disabled,
         );

@@ -60,7 +60,7 @@ class NavigatorObserverManager extends NavigatorObserver {
         pageRoutes.add(route);
         if (route is! PopupRoute && lastRoute is NavigatorRoute) {
           final observers = ThrioModule.gets<NavigatorPageObserver>(
-              url: lastRoute.settings.url!);
+              url: lastRoute.settings.url);
           for (final observer in observers) {
             observer.didDisappear(lastRoute.settings);
           }
@@ -136,7 +136,7 @@ class NavigatorObserverManager extends NavigatorObserver {
       pageRoutes.remove(route);
       if (route is! PopupRoute && pageRoutes.last is NavigatorRoute) {
         final observers = ThrioModule.gets<NavigatorPageObserver>(
-            url: pageRoutes.last.settings.url!);
+            url: pageRoutes.last.settings.url);
         for (final observer in observers) {
           observer.didAppear(pageRoutes.last.settings);
         }

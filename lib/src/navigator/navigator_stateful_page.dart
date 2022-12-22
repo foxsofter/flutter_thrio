@@ -29,7 +29,7 @@ abstract class NavigatorStatefulPage extends StatefulWidget with NavigatorPage {
     super.key,
     required this.moduleContext,
     this.params,
-    this.url,
+    required this.url,
     this.index = 0,
   });
 
@@ -40,7 +40,7 @@ abstract class NavigatorStatefulPage extends StatefulWidget with NavigatorPage {
   final dynamic params;
 
   @override
-  final String? url;
+  final String url;
 
   @override
   final int index;

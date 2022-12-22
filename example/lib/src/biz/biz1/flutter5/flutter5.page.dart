@@ -15,7 +15,7 @@ class Flutter5Page extends NavigatorStatefulPage {
     super.key,
     required super.moduleContext,
     super.params,
-    super.url,
+    required super.url,
     super.index,
   });
 

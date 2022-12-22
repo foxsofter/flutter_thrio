@@ -19,7 +19,7 @@ class HomePage extends NavigatorStatefulPage {
     super.key,
     required super.moduleContext,
     super.params,
-    super.url,
+    required super.url,
     super.index,
   });
 
@@ -97,6 +97,18 @@ class _HomePageState extends State<HomePage> {
                                   onChanged: print)),
                           InkWell(
                             onTap: () {
+                              final mtx =
+                                  NavigatorPage.moduleContextOf(context);
+                              ThrioLogger.v('$mtx');
+                              final murl = NavigatorPage.urlOf(context);
+                              ThrioLogger.v(murl);
+                              final rmtx = NavigatorPage.moduleContextOf(
+                                  context,
+                                  rootModuleContext: true);
+                              ThrioLogger.v('$rmtx');
+                              final rmurl = NavigatorPage.urlOf(context,
+                                  rootModuleContext: true);
+                              ThrioLogger.v(rmurl);
                               if (widget.moduleContext
                                   .setStringKeyBiz1(_inputController.text)) {
                                 final value =

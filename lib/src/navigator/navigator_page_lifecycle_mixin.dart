@@ -67,7 +67,7 @@ mixin NavigatorPageLifecycleMixin<T extends StatefulWidget> on State<T> {
         _route = route;
 
         _pageObserverCallback = anchor.pageLifecycleObservers.registry(
-          route.settings.url!,
+          route.settings.url,
           _PageLifecyclePageObserver(this),
         );
       }
