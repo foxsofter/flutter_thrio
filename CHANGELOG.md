@@ -514,3 +514,7 @@
 
 - feat: add [NavigatorPage.moduleOf],[NavigatorPage.paramsOf],[NavigatorPage.urlOf],[NavigatorPage.indexOf].
 - refactor: RouteSettings.url to not nullable property.
+
+## 3.9.5
+
+- feat: public method [NavigatorPage.of]

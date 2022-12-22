@@ -58,7 +58,7 @@ mixin NavigatorPage {
     final BuildContext context, {
     final bool rootModuleContext = false,
   }) =>
-      NavigatorPage._of(context, rootModuleContext: rootModuleContext)
+      NavigatorPage.of(context, rootModuleContext: rootModuleContext)
           .moduleContext;
 
   /// Get params of current page.
@@ -70,7 +70,7 @@ mixin NavigatorPage {
     final BuildContext context, {
     final bool rootModuleContext = false,
   }) =>
-      NavigatorPage._of(context, rootModuleContext: rootModuleContext).params;
+      NavigatorPage.of(context, rootModuleContext: rootModuleContext).params;
 
   /// Get url of current page.
   ///
@@ -81,7 +81,7 @@ mixin NavigatorPage {
     final BuildContext context, {
     final bool rootModuleContext = false,
   }) =>
-      NavigatorPage._of(context, rootModuleContext: rootModuleContext).url;
+      NavigatorPage.of(context, rootModuleContext: rootModuleContext).url;
 
   /// Get index of current page.
   ///
@@ -92,9 +92,9 @@ mixin NavigatorPage {
     final BuildContext context, {
     final bool rootModuleContext = false,
   }) =>
-      NavigatorPage._of(context, rootModuleContext: rootModuleContext).index;
+      NavigatorPage.of(context, rootModuleContext: rootModuleContext).index;
 
-  static NavigatorPage _of(
+  static NavigatorPage of(
     final BuildContext context, {
     final bool rootModuleContext = false,
   }) {
