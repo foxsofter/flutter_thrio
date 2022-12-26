@@ -83,19 +83,19 @@ class ModuleContext {
 
   /// Subscribe to a series of param by `key`.
   ///
-  Stream<T>? on<T>(final String key) {
+  Stream<T>? on<T>(final String key, {final T? initialValue}) {
     if (module == anchor) {
-      return anchor.onParam(key);
+      return anchor.onParam(key, initialValue: initialValue);
     }
 
     if (module is ModuleParamScheme) {
       final paramModule = module as ModuleParamScheme;
       if (paramModule.hasParamScheme<T>(key)) {
-        return paramModule.onParam(key);
+        return paramModule.onParam(key, initialValue: initialValue);
       }
     }
 
-    return module.parent?._moduleContext.on(key);
+    return module.parent?._moduleContext.on(key, initialValue: initialValue);
   }
 
   @override

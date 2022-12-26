@@ -185,8 +185,10 @@ class NavigatorRouteSendChannel {
         .then((final it) => it ?? false);
   }
 
-  dynamic _serializeParams<TParams>(
-      {final String? url, final TParams? params}) {
+  dynamic _serializeParams<TParams>({
+    final String? url,
+    final TParams? params,
+  }) {
     if (params == null) {
       return null;
     }

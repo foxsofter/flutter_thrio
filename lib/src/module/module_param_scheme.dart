@@ -51,7 +51,7 @@ mixin ModuleParamScheme on ThrioModule {
   /// Subscribe to a series of param by `key`.
   ///
   @protected
-  Stream<T> onParam<T>(final Comparable<dynamic> key) {
+  Stream<T> onParam<T>(final Comparable<dynamic> key, {final T? initialValue}) {
     final sc = StreamController<T>();
     sc
       ..onListen = () {
@@ -61,6 +61,8 @@ mixin ModuleParamScheme on ThrioModule {
         final value = getParam<T>(key);
         if (value != null) {
           sc.add(value);
+        } else if (initialValue != null) {
+          sc.add(initialValue);
         }
       }
       ..onCancel = () {
