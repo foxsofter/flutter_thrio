@@ -518,3 +518,7 @@
 ## 3.9.5
 
 - feat: public method [NavigatorPage.of]
+
+## 3.9.6
+
+- feat: feat: set default value for context on

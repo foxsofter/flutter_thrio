@@ -1,6 +1,6 @@
 /* groovylint-disable-next-line CompileStatic */
 group 'com.foxsofter.flutter_thrio'
-version '3.9.5'
+version '3.9.6'
 
 buildscript {
     ext.kotlin_version = '1.7.10'
