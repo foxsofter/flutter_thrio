@@ -113,9 +113,6 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
     if (navigatorState == null) {
       return false;
     }
-    if (await history.last.willPop() != RoutePopDisposition.pop) {
-      return false;
-    }
     // 在原生端处于容器的根部，且当前 Flutter 页面栈上不超过 3，则不能再 pop
     if (inRoot && history.whereType<NavigatorRoute>().length < 3) {
       return false;

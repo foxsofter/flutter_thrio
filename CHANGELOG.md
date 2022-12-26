@@ -522,3 +522,7 @@
 ## 3.9.6
 
 - feat: feat: set default value for context on
+
+## 3.9.7
+
+- fix: canPop should not call willPop
