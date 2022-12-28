@@ -4,4 +4,13 @@
 
 part of 'home.page.dart';
 
-extension Home on _HomePageState {}
+extension Home on _HomePageState {
+  /// hello, this is a list.
+  ///
+  List<String> get strList => widget.getListParam<String>('strList');
+
+  /// hello, this is a map.
+  ///
+  Map<String, dynamic> get goodMap =>
+      widget.getMapParam<String, dynamic>('goodMap');
+}

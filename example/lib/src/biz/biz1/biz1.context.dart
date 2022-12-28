@@ -8,7 +8,8 @@ import 'package:flutter_thrio/flutter_thrio.dart';
 extension Biz1Context on ModuleContext {
   /// get an int value.
   ///
-  int? get intValue => get<int>('intValue');
+  int get intValue =>
+      get<int>('intValue') ?? (throw ArgumentError('intValue cannot be null'));
 
   bool setIntValue(final int value) => set<int>('intValue', value);
 
@@ -16,5 +17,7 @@ extension Biz1Context on ModuleContext {
   ///
   int? removeIntValue() => remove<int>('intValue');
 
-  Stream<int>? get onIntValue => on<int>('intValue');
+  Stream<int> get onIntValue =>
+      on<int>('intValue') ??
+      (throw ArgumentError('intValue stream cannot be null'));
 }

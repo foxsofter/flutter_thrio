@@ -16,14 +16,25 @@ class HomeRoute extends NavigatorRouteLeaf {
   @override
   String get name => 'home';
 
-  Future<TPopParams?> push<TParams, TPopParams>({
-    final TParams? params,
+  /// `strList` hello, this is a list.
+  ///
+  /// `goodMap` hello, this is a map.
+  ///
+
+  /// 测试 集合 传参
+  ///
+  Future<TPopParams?> push<TPopParams>({
+    final List<String> strList = const <String>[],
+    final Map<String, dynamic> goodMap = const <String, dynamic>{},
     final bool animated = true,
     final NavigatorIntCallback? result,
   }) =>
-      ThrioNavigator.push<TParams, TPopParams>(
+      ThrioNavigator.push<Map<String, dynamic>, TPopParams>(
         url: url,
-        params: params,
+        params: <String, dynamic>{
+          'strList': strList,
+          'goodMap': goodMap,
+        },
         animated: animated,
         result: result,
       );

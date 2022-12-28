@@ -1,5 +1,5 @@
 type:
-
+    - Goodman: "package:gooadman/ggodman.dart"
 context:
     declaration:
         - stringKeyBiz1:
@@ -20,3 +20,13 @@ context:
 notify:
 
 push:
+    doc: 测试 集合 传参
+    parameter:
+        - strList:
+              type: List<String>
+              default: const <String>[]
+              doc: "hello, this is a list."
+        - goodMap:
+              type: Map<String, dynamic>
+              default: const <String, dynamic>{}
+              doc: "hello, this is a map."

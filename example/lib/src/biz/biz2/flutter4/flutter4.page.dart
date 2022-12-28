@@ -58,9 +58,8 @@ class _Flutter4PageState extends State<Flutter4Page> {
               ),
             ),
             InkWell(
-              onTap: () => biz.biz1.flutter1.home.push(params: {
-                '1': {'2': '3'}
-              }),
+              onTap: () =>
+                  biz.biz1.flutter1.home.push(strList: <String>['1', '2', '3']),
               child: Container(
                   padding: const EdgeInsets.all(8),
                   margin: const EdgeInsets.all(8),

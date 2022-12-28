@@ -526,3 +526,7 @@
 ## 3.9.7
 
 - fix: canPop should not call willPop
+
+## 3.9.8
+
+- feat: add getListParam, getMapParam

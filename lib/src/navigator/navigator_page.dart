@@ -49,6 +49,11 @@ mixin NavigatorPage {
   ///
   T? getParamOrNull<T>(final String key) => getValueOrNull(params, key);
 
+  List<E> getListParam<E>(final String key) => getListValue<E>(params, key);
+
+  Map<K, V> getMapParam<K, V>(final String key) =>
+      getMapValue<K, V>(params, key);
+
   /// Get moduleContext from current page.
   ///
   /// This method should not be called from [State.deactivate] or [State.dispose]

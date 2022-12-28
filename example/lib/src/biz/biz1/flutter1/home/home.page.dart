@@ -141,9 +141,11 @@ class _HomePageState extends State<HomePage> {
                           InkWell(
                             onTap: () async {
                               final params = await biz.biz1.flutter1.home.push(
-                                params: People(
-                                    name: 'foxsofter', age: 100, sex: '男性'),
-                              );
+                                  strList: <String>['foxsofter', 'sex', '男性'],
+                                  goodMap: <String, dynamic>{'good': 'man'});
+                              ThrioLogger.v('/biz1/flutter1 strList:$strList');
+                              ThrioLogger.v('/biz1/flutter1 goodMap:$goodMap');
+
                               ThrioLogger.v('/biz1/flutter1 popped:$params');
                             },
                             child: Container(
