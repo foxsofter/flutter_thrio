@@ -75,7 +75,11 @@ class NavigatorUrlTemplate {
     var uriPath = Uri.decodeFull(uri.path);
     var uriParamsKeys = uri.queryParametersAll.keys;
     if (uriPath.contains('{')) {
-      uriParamsKeys = uriPath.split('{')[1].replaceAll('}', '').split(',');
+      uriParamsKeys = uriPath
+          .split('{')[1]
+          .replaceAll('}', '')
+          .replaceAll('=', '?')
+          .split(',');
       uriPath = uriPath.split('{')[0];
     }
     if (scheme == uri.scheme &&

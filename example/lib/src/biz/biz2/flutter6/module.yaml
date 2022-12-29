@@ -1,12 +1,31 @@
 type:
-
+    - BuildContext: package:flutter/widgets.dart
 module:
     routeCustomHandler:
 
 context:
     definition:
 
+action:
+    - sendEmailCode:
+          doc: "发送邮箱验证码"
+          return: bool
+          parameter:
+              - context:
+                    type: BuildContext?
+              - email:
+                    type: String
+              - currentFrom:
+                    type: int?
+              - coin:
+                    type: String?
+              - amount:
+                    type: String?
+              - address:
+                    type: String?
+              - tag:
+                    type: String?
+
 notify:
 
 push:
-

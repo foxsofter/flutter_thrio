@@ -119,9 +119,11 @@ class _Flutter6PageState extends State<Flutter6Page> {
             ),
             InkWell(
               onTap: () async {
-                final result =
-                    await ThrioNavigator.push(url: 'https://www.google.com');
-                debugPrint(result.toString());
+                // final result =
+                //     await ThrioNavigator.push(url: 'https://www.google.com');
+                // debugPrint(result.toString());
+                final s = biz.biz2.flutter6.sendEmailCode(email: 'email');
+                debugPrint(s.toString());
               },
               child: Container(
                   padding: const EdgeInsets.all(8),
