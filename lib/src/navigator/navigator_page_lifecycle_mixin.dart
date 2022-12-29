@@ -56,28 +56,25 @@ mixin NavigatorPageLifecycleMixin<T extends StatefulWidget> on State<T> {
 
   @override
   void didChangeDependencies() {
-    if (_pageObserverCallback != null) {
-      _pageObserverCallback?.call();
-      _pageObserverCallback = null;
-    }
     if (url == null) {
-      final state = context.stateOf<NavigatorWidgetState>();
-      final route = state.history.last;
-      if (route is NavigatorRoute) {
-        _route = route;
-
-        _pageObserverCallback = anchor.pageLifecycleObservers.registry(
-          route.settings.url,
-          _PageLifecyclePageObserver(this),
-        );
+      if (_route == null) {
+        final state = context.stateOf<NavigatorWidgetState>();
+        final route = state.history.last;
+        if (route is NavigatorRoute) {
+          _route = route;
+          _pageObserverCallback = anchor.pageLifecycleObservers.registry(
+            route.settings.url,
+            _PageLifecyclePageObserver(this),
+          );
+        }
       }
     } else {
+      _pageObserverCallback?.call();
       _pageObserverCallback = anchor.pageLifecycleObservers.registry(
         url!,
         _PageLifecyclePageObserver(this),
       );
     }
-
     super.didChangeDependencies();
   }
 

@@ -22,4 +22,5 @@ FutureOr<bool?> onSendEmailCode(
   final String? tag,
 }) async {
   debugPrint('onSendEmail:$email');
+  return null;
 }

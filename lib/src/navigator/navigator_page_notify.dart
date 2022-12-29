@@ -55,6 +55,7 @@ class NavigatorPageNotify extends StatefulWidget {
 }
 
 class _NavigatorPageNotifyState extends State<NavigatorPageNotify> {
+  NavigatorRoute? _route;
   StreamSubscription<dynamic>? _notifySubscription;
 
   @override
@@ -69,16 +70,18 @@ class _NavigatorPageNotifyState extends State<NavigatorPageNotify> {
 
   @override
   void didChangeDependencies() {
-    _notifySubscription?.cancel();
-    final state = context.stateOf<NavigatorWidgetState>();
-    final route = state.history.last;
-    if (route is NavigatorRoute) {
-      _notifySubscription = ThrioNavigatorImplement.shared()
-          .onPageNotify(
-              url: route.settings.url,
-              index: route.settings.index,
-              name: widget.name)
-          .listen(_listen);
+    if (_route == null) {
+      final state = context.stateOf<NavigatorWidgetState>();
+      final route = state.history.last;
+      if (route is NavigatorRoute) {
+        _route = route;
+        _notifySubscription = ThrioNavigatorImplement.shared()
+            .onPageNotify(
+                url: route.settings.url,
+                index: route.settings.index,
+                name: widget.name)
+            .listen(_listen);
+      }
     }
 
     super.didChangeDependencies();

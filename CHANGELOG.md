@@ -534,3 +534,7 @@
 ## 3.9.9
 
 - fix: route-action miss match
+
+## 3.9.10
+
+- fix: page life cycle 错误

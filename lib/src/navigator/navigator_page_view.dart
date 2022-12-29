@@ -22,12 +22,10 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
-import '../extension/thrio_build_context.dart';
 import '../module/module_anchor.dart';
+import 'navigator_page.dart';
 import 'navigator_page_observer.dart';
-import 'navigator_route.dart';
 import 'navigator_route_settings.dart';
-import 'navigator_widget.dart';
 import 'thrio_navigator.dart';
 
 class NavigatorPageView extends StatefulWidget {
@@ -166,21 +164,14 @@ class _NavigatorPageViewState extends State<NavigatorPageView>
 
   @override
   void didChangeDependencies() {
-    if (_pageObserverCallback != null) {
-      _pageObserverCallback?.call();
-      _pageObserverCallback = null;
+    if (_pageObserverCallback == null) {
+      var parentUrl = widget.parentUrl;
+      parentUrl ??= NavigatorPage.urlOf(context);
+      _pageObserverCallback = anchor.pageLifecycleObservers.registry(
+        parentUrl,
+        _PageViewPageObserver(this),
+      );
     }
-
-    final state = context.stateOf<NavigatorWidgetState>();
-    var parentUrl = widget.parentUrl;
-    final route = state.history.last;
-    if (route is NavigatorRoute) {
-      parentUrl = route.settings.url;
-    }
-    _pageObserverCallback = anchor.pageLifecycleObservers.registry(
-      parentUrl!,
-      _PageViewPageObserver(this),
-    );
 
     super.didChangeDependencies();
   }
