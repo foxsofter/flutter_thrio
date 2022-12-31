@@ -24,9 +24,11 @@ import 'dart:async';
 import 'package:flutter/widgets.dart';
 
 import '../extension/thrio_build_context.dart';
+import '../extension/thrio_iterable.dart';
 import '../module/module_anchor.dart';
 import '../module/module_types.dart';
 import '../module/thrio_module.dart';
+import 'navigator_page.dart';
 import 'navigator_route.dart';
 import 'navigator_route_settings.dart';
 import 'navigator_types.dart';
@@ -56,6 +58,9 @@ class NavigatorPageNotify extends StatefulWidget {
 
 class _NavigatorPageNotifyState extends State<NavigatorPageNotify> {
   NavigatorRoute? _route;
+
+  late final String url = NavigatorPage.urlOf(context);
+
   StreamSubscription<dynamic>? _notifySubscription;
 
   @override
@@ -72,7 +77,9 @@ class _NavigatorPageNotifyState extends State<NavigatorPageNotify> {
   void didChangeDependencies() {
     if (_route == null) {
       final state = context.stateOf<NavigatorWidgetState>();
-      final route = state.history.last;
+      final route = state.history.lastWhereOrNull(
+        (final it) => it is NavigatorRoute && it.settings.url == url,
+      );
       if (route is NavigatorRoute) {
         _route = route;
         _notifySubscription = ThrioNavigatorImplement.shared()

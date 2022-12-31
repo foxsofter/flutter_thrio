@@ -24,6 +24,7 @@ import 'package:flutter/widgets.dart';
 import '../extension/thrio_build_context.dart';
 import '../extension/thrio_iterable.dart';
 import '../module/module_anchor.dart';
+import 'navigator_page.dart';
 import 'navigator_page_observer.dart';
 import 'navigator_route.dart';
 import 'navigator_route_settings.dart';
@@ -55,6 +56,8 @@ class NavigatorPageLifecycle extends StatefulWidget {
 class _NavigatorPageLifecycleState extends State<NavigatorPageLifecycle> {
   NavigatorRoute? _route;
 
+  late final String url = widget.url ?? NavigatorPage.urlOf(context);
+
   VoidCallback? _pageObserverCallback;
 
   bool get shouldObserver =>
@@ -68,11 +71,11 @@ class _NavigatorPageLifecycleState extends State<NavigatorPageLifecycle> {
     super.initState();
     if (mounted) {
       final state = context.tryStateOf<NavigatorWidgetState>();
-      final route = widget.url == null
-          ? state?.history.last
-          : state?.history.lastWhereOrNull((final it) =>
-              it is NavigatorRoute && it.settings.url == widget.url);
+      final route = state?.history.lastWhereOrNull(
+        (final it) => it is NavigatorRoute && it.settings.url == url,
+      );
       if (route != null && route is NavigatorRoute) {
+        _route = route;
         widget.willAppear?.call(route.settings);
         widget.didAppear?.call(route.settings);
       }
@@ -81,26 +84,11 @@ class _NavigatorPageLifecycleState extends State<NavigatorPageLifecycle> {
 
   @override
   void didChangeDependencies() {
-    if (shouldObserver) {
-      if (widget.url == null) {
-        if (_route == null) {
-          final state = context.stateOf<NavigatorWidgetState>();
-          final route = state.history.last;
-          if (route is NavigatorRoute) {
-            _route = route;
-            _pageObserverCallback = anchor.pageLifecycleObservers.registry(
-              route.settings.url,
-              _PageLifecyclePageObserver(this),
-            );
-          }
-        }
-      } else {
-        _pageObserverCallback?.call();
-        _pageObserverCallback = anchor.pageLifecycleObservers.registry(
-          widget.url!,
-          _PageLifecyclePageObserver(this),
-        );
-      }
+    if (_pageObserverCallback == null && shouldObserver) {
+      _pageObserverCallback = anchor.pageLifecycleObservers.registry(
+        url,
+        _PageLifecyclePageObserver(this),
+      );
     }
     super.didChangeDependencies();
   }
@@ -116,31 +104,31 @@ class _NavigatorPageLifecycleState extends State<NavigatorPageLifecycle> {
 }
 
 class _PageLifecyclePageObserver with NavigatorPageObserver {
-  const _PageLifecyclePageObserver(this.lifecycleState);
+  const _PageLifecyclePageObserver(this.delegate);
 
-  final _NavigatorPageLifecycleState lifecycleState;
+  final _NavigatorPageLifecycleState delegate;
 
   @override
   void willAppear(final RouteSettings routeSettings) {
-    final callback = lifecycleState.widget.willAppear;
+    final callback = delegate.widget.willAppear;
     _lifecycleCallback(callback, routeSettings);
   }
 
   @override
   void didAppear(final RouteSettings routeSettings) {
-    final callback = lifecycleState.widget.didAppear;
+    final callback = delegate.widget.didAppear;
     _lifecycleCallback(callback, routeSettings);
   }
 
   @override
   void willDisappear(final RouteSettings routeSettings) {
-    final callback = lifecycleState.widget.willDisappear;
+    final callback = delegate.widget.willDisappear;
     _lifecycleCallback(callback, routeSettings);
   }
 
   @override
   void didDisappear(final RouteSettings routeSettings) {
-    final callback = lifecycleState.widget.didDisappear;
+    final callback = delegate.widget.didDisappear;
     _lifecycleCallback(callback, routeSettings);
   }
 
@@ -148,15 +136,10 @@ class _PageLifecyclePageObserver with NavigatorPageObserver {
     final NavigatorPageObserverCallback? callback,
     final RouteSettings routeSettings,
   ) {
-    if (callback != null) {
-      if (lifecycleState.widget.url == null) {
-        final route = lifecycleState._route;
-        if (route != null && route.settings.name == routeSettings.name) {
-          callback(route.settings);
-        }
-      } else {
-        callback(routeSettings);
-      }
+    // url 相同，但只通知 name 相等的
+    final route = delegate._route;
+    if (route != null && route.settings.name == routeSettings.name) {
+      callback?.call(route.settings);
     }
   }
 }

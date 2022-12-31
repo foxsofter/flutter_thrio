@@ -24,6 +24,7 @@ import 'package:flutter/widgets.dart';
 import '../extension/thrio_build_context.dart';
 import '../extension/thrio_iterable.dart';
 import '../module/module_anchor.dart';
+import 'navigator_page.dart';
 import 'navigator_page_observer.dart';
 import 'navigator_route.dart';
 import 'navigator_route_settings.dart';
@@ -34,19 +35,19 @@ mixin NavigatorPageLifecycleMixin<T extends StatefulWidget> on State<T> {
   NavigatorRoute? _route;
   VoidCallback? _pageObserverCallback;
 
-  String? get url => null;
+  String get url => NavigatorPage.urlOf(context);
 
   @override
   void initState() {
     super.initState();
-
-    final state = context.tryStateOf<NavigatorWidgetState>();
-    final route = url == null
-        ? state?.history.last
-        : state?.history.lastWhereOrNull(
-            (final it) => it is NavigatorRoute && it.settings.url == url);
-    if (route != null && route is NavigatorRoute) {
-      Future(() => didAppear(route.settings));
+    if (mounted) {
+      final state = context.tryStateOf<NavigatorWidgetState>();
+      final route = state?.history.lastWhereOrNull(
+          (final it) => it is NavigatorRoute && it.settings.url == url);
+      if (route != null && route is NavigatorRoute) {
+        _route = route;
+        Future(() => didAppear(route.settings));
+      }
     }
   }
 
@@ -56,22 +57,9 @@ mixin NavigatorPageLifecycleMixin<T extends StatefulWidget> on State<T> {
 
   @override
   void didChangeDependencies() {
-    if (url == null) {
-      if (_route == null) {
-        final state = context.stateOf<NavigatorWidgetState>();
-        final route = state.history.last;
-        if (route is NavigatorRoute) {
-          _route = route;
-          _pageObserverCallback = anchor.pageLifecycleObservers.registry(
-            route.settings.url,
-            _PageLifecyclePageObserver(this),
-          );
-        }
-      }
-    } else {
-      _pageObserverCallback?.call();
+    if (_pageObserverCallback == null && _route != null) {
       _pageObserverCallback = anchor.pageLifecycleObservers.registry(
-        url!,
+        _route!.settings.url,
         _PageLifecyclePageObserver(this),
       );
     }
@@ -106,15 +94,9 @@ class _PageLifecyclePageObserver with NavigatorPageObserver {
     final NavigatorPageObserverCallback? callback,
     final RouteSettings routeSettings,
   ) {
-    if (callback != null) {
-      if (delegate.url == null) {
-        final route = delegate._route;
-        if (route != null && route.settings.name == routeSettings.name) {
-          callback(route.settings);
-        }
-      } else {
-        callback(routeSettings);
-      }
+    final route = delegate._route;
+    if (route != null && route.settings.name == routeSettings.name) {
+      callback?.call(route.settings);
     }
   }
 }
