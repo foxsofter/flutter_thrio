@@ -538,3 +538,7 @@
 ## 3.9.10
 
 - fix: page life cycle 错误
+
+## 3.9.11
+
+- feat: page lifecycle observer default to be NavigatorPage.urlOf
