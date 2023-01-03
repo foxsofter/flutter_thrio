@@ -759,10 +759,14 @@ class ThrioNavigatorImplement {
 
   Future<bool> canPop() => _sendChannel.canPop();
 
-  Widget? build<TParams>({required final String url, final TParams? params}) {
+  Widget? build<TParams>({
+    required final String url,
+    final int index = 0,
+    final TParams? params,
+  }) {
     final pageBuilder = ThrioModule.get<NavigatorPageBuilder>(url: url);
     return pageBuilder?.call(RouteSettings(
-      name: '0 $url',
+      name: '$index $url',
       arguments: <String, dynamic>{'params': params},
     ));
   }

@@ -37,7 +37,6 @@ class NavigatorPageView extends StatefulWidget {
     this.physics,
     this.pageSnapping = true,
     this.onPageChanged,
-    this.parentUrl,
     this.routeSettings = const <RouteSettings>[],
     this.childBuilder,
     this.dragStartBehavior = DragStartBehavior.start,
@@ -68,8 +67,6 @@ class NavigatorPageView extends StatefulWidget {
     Widget child,
   )? childBuilder;
 
-  final String? parentUrl;
-
   final DragStartBehavior dragStartBehavior;
 
   final bool allowImplicitScrolling;
@@ -95,50 +92,53 @@ class _NavigatorPageViewState extends State<NavigatorPageView>
 
   late final controller = widget.controller ?? PageController();
 
-  bool isAppeared = true;
+  late RouteSettings parent;
+
+  bool isAppeared = false;
 
   late RouteSettings current = widget.routeSettings[controller.initialPage];
 
-  Future<void>? appearFuture;
+  late int currentIndex = controller.initialPage;
 
-  Future<void>? disappearFuture;
+  Future<void>? onPageChangedFuture;
 
   void onPageChanged(final int idx) {
-    final routeSettings = widget.routeSettings[idx];
-    if (routeSettings.name != current.name) {
-      final oldRouteSettings = current;
-      current = routeSettings;
-      widget.onPageChanged?.call(routeSettings);
-      _changedToAppear(routeSettings);
-      _changedToDisappear(oldRouteSettings);
-    }
+    currentIndex = idx;
+    onPageChangedFuture ??=
+        Future.delayed(const Duration(milliseconds: 100), () {
+      final routeSettings = widget.routeSettings[currentIndex];
+      if (routeSettings.name != current.name) {
+        final oldRouteSettings = current;
+        current = routeSettings;
+        widget.onPageChanged?.call(routeSettings);
+        _changedToAppear(routeSettings);
+        _changedToDisappear(oldRouteSettings);
+      }
+      onPageChangedFuture = null;
+    });
   }
 
   void _changedToAppear(final RouteSettings routeSettings) {
-    if (isAppeared) {
-      appearFuture ??= Future.delayed(const Duration(milliseconds: 10), () {
-        final obs = anchor.pageLifecycleObservers[routeSettings.url];
-        for (final ob in obs) {
-          if (ob != _observer) {
-            ob.didAppear(routeSettings);
-          }
+    if (!isAppeared) {
+      isAppeared = true;
+      final obs = anchor.pageLifecycleObservers[routeSettings.url];
+      for (final ob in obs) {
+        if (ob != _observer) {
+          Future(() => ob.didAppear(routeSettings));
         }
-        appearFuture = null;
-      });
+      }
     }
   }
 
   void _changedToDisappear(final RouteSettings routeSettings) {
     if (isAppeared) {
-      disappearFuture ??= Future.delayed(const Duration(milliseconds: 10), () {
-        final obs = anchor.pageLifecycleObservers[routeSettings.url];
-        for (final ob in obs) {
-          if (ob != _observer) {
-            ob.didDisappear(routeSettings);
-          }
+      isAppeared = false;
+      final obs = anchor.pageLifecycleObservers[routeSettings.url];
+      for (final ob in obs) {
+        if (ob != _observer) {
+          Future(() => ob.didDisappear(routeSettings));
         }
-        disappearFuture = null;
-      });
+      }
     }
   }
 
@@ -146,17 +146,21 @@ class _NavigatorPageViewState extends State<NavigatorPageView>
   void initState() {
     super.initState();
     if (mounted) {
-      _changedToAppear(current);
+      parent = NavigatorRouteSettings.settingsWith(
+          url: NavigatorPage.urlOf(context),
+          index: NavigatorPage.indexOf(context));
+      _pageObserverCallback =
+          anchor.pageLifecycleObservers.registry(parent.url, _observer);
+
+      Future(() => _changedToAppear(current));
     }
   }
 
   @override
   void didChangeAppLifecycleState(final AppLifecycleState state) {
     if (state == AppLifecycleState.resumed) {
-      isAppeared = true;
       _changedToAppear(current);
     } else if (state == AppLifecycleState.paused) {
-      isAppeared = false;
       _changedToDisappear(current);
     }
   }
@@ -165,18 +169,6 @@ class _NavigatorPageViewState extends State<NavigatorPageView>
   void dispose() {
     _pageObserverCallback?.call();
     super.dispose();
-  }
-
-  @override
-  void didChangeDependencies() {
-    if (_pageObserverCallback == null) {
-      var parentUrl = widget.parentUrl;
-      parentUrl ??= NavigatorPage.urlOf(context);
-      _pageObserverCallback =
-          anchor.pageLifecycleObservers.registry(parentUrl, _observer);
-    }
-
-    super.didChangeDependencies();
   }
 
   @override
@@ -195,7 +187,11 @@ class _NavigatorPageViewState extends State<NavigatorPageView>
         scrollBehavior: widget.scrollBehavior,
         padEnds: widget.padEnds,
         children: widget.routeSettings.map((final it) {
-          var w = ThrioNavigator.build(url: it.url, params: it.params);
+          var w = ThrioNavigator.build(
+            url: it.url,
+            index: it.index,
+            params: it.params,
+          );
           if (w == null) {
             throw ArgumentError.value(
                 it, 'routeSettings', 'invalid routeSettings');
@@ -215,15 +211,15 @@ class _PageViewPageObserver with NavigatorPageObserver {
 
   @override
   void didAppear(final RouteSettings routeSettings) {
-    lifecycleState
-      ..isAppeared = true
-      .._changedToAppear(lifecycleState.current);
+    if (routeSettings.name == lifecycleState.parent.name) {
+      lifecycleState._changedToAppear(lifecycleState.current);
+    }
   }
 
   @override
   void didDisappear(final RouteSettings routeSettings) {
-    lifecycleState
-      .._changedToDisappear(lifecycleState.current)
-      ..isAppeared = false;
+    if (routeSettings.name == lifecycleState.parent.name) {
+      lifecycleState._changedToDisappear(lifecycleState.current);
+    }
   }
 }

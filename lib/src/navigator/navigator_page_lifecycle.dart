@@ -26,7 +26,6 @@ import '../extension/thrio_iterable.dart';
 import '../module/module_anchor.dart';
 import 'navigator_page.dart';
 import 'navigator_page_observer.dart';
-import 'navigator_route.dart';
 import 'navigator_route_settings.dart';
 import 'navigator_types.dart';
 import 'navigator_widget.dart';
@@ -34,7 +33,6 @@ import 'navigator_widget.dart';
 class NavigatorPageLifecycle extends StatefulWidget {
   const NavigatorPageLifecycle({
     super.key,
-    this.url,
     this.willAppear,
     this.didAppear,
     this.willDisappear,
@@ -42,7 +40,6 @@ class NavigatorPageLifecycle extends StatefulWidget {
     required this.child,
   });
 
-  final String? url;
   final NavigatorPageObserverCallback? willAppear;
   final NavigatorPageObserverCallback? didAppear;
   final NavigatorPageObserverCallback? willDisappear;
@@ -56,8 +53,6 @@ class NavigatorPageLifecycle extends StatefulWidget {
 class _NavigatorPageLifecycleState extends State<NavigatorPageLifecycle> {
   RouteSettings? _settings;
 
-  late final String url = widget.url ?? NavigatorPage.urlOf(context);
-
   VoidCallback? _pageObserverCallback;
 
   bool get shouldObserver =>
@@ -70,29 +65,23 @@ class _NavigatorPageLifecycleState extends State<NavigatorPageLifecycle> {
   void initState() {
     super.initState();
     if (mounted) {
-      final state = context.tryStateOf<NavigatorWidgetState>();
-      final route = state?.history.lastWhereOrNull(
-        (final it) => it is NavigatorRoute && it.settings.url == url,
+      _settings = NavigatorRouteSettings.settingsWith(
+        url: NavigatorPage.urlOf(context),
+        index: NavigatorPage.indexOf(context),
       );
-      if (route != null && route is NavigatorRoute) {
-        _settings = route.settings;
-      } else {
-        // 特殊情形，url 不在栈上，但也要触发 didAppear
-        _settings = NavigatorRouteSettings.settingsWith(url: url);
+      if (_pageObserverCallback == null && shouldObserver) {
+        _pageObserverCallback = anchor.pageLifecycleObservers.registry(
+          _settings!.url,
+          _PageLifecyclePageObserver(this),
+        );
       }
-      Future(() => widget.didAppear?.call(_settings!));
+      final state = context.tryStateOf<NavigatorWidgetState>();
+      if (state?.history.lastWhereOrNull(
+              (final it) => it.settings.name == _settings?.name) !=
+          null) {
+        Future(() => widget.didAppear?.call(_settings!));
+      }
     }
-  }
-
-  @override
-  void didChangeDependencies() {
-    if (_pageObserverCallback == null && shouldObserver) {
-      _pageObserverCallback = anchor.pageLifecycleObservers.registry(
-        url,
-        _PageLifecyclePageObserver(this),
-      );
-    }
-    super.didChangeDependencies();
   }
 
   @override

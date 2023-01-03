@@ -24,7 +24,6 @@ class NavigatorTabBarView extends StatefulWidget {
   /// The length of [children] must be the same as the [controller]'s length.
   const NavigatorTabBarView({
     super.key,
-    this.parentUrl,
     required this.routeSettings,
     this.childBuilder,
     this.controller,
@@ -39,8 +38,6 @@ class NavigatorTabBarView extends StatefulWidget {
   /// If [TabController] is not provided, then the value of [DefaultTabController.of]
   /// will be used.
   final TabController? controller;
-
-  final String? parentUrl;
 
   /// One RouteSettings per tab.
   ///
@@ -277,7 +274,6 @@ class _NavigatorTabBarViewState extends State<NavigatorTabBarView> {
         physics: widget.physics == null
             ? const PageScrollPhysics().applyTo(const ClampingScrollPhysics())
             : const PageScrollPhysics().applyTo(widget.physics),
-        parentUrl: widget.parentUrl,
         routeSettings: widget.routeSettings,
         childBuilder: widget.childBuilder,
       ),

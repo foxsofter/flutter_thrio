@@ -28,7 +28,7 @@ class _Flutter7PageState extends State<Flutter7Page>
 
   @override
   void dispose() {
-    ThrioLogger.d('page7 dispose');
+    ThrioLogger.d('page7 dispose: ${widget.index}');
     super.dispose();
   }
 
@@ -56,7 +56,6 @@ class _Flutter7PageState extends State<Flutter7Page>
         ),
       ),
       body: NavigatorPageLifecycle(
-          url: biz.biz1.flutter1.home.url,
           willAppear: (final settings) {
             ThrioLogger.v('page7 willAppear -> $settings');
           },
@@ -70,7 +69,6 @@ class _Flutter7PageState extends State<Flutter7Page>
             ThrioLogger.v('page7 didDisappear -> $settings');
           },
           child: NavigatorPageLifecycle(
-              url: biz.biz2.flutter2.url,
               willAppear: (final settings) {
                 ThrioLogger.v('page7 willAppear -> $settings');
               },
@@ -87,13 +85,13 @@ class _Flutter7PageState extends State<Flutter7Page>
                 controller: controller,
                 routeSettings: <RouteSettings>[
                   NavigatorRouteSettings.settingsWith(
-                      url: biz.biz1.flutter1.home.url, index: 1),
+                      url: biz.biz1.flutter1.home.url),
                   NavigatorRouteSettings.settingsWith(
-                      url: biz.biz1.flutter5.url, index: 1),
+                      url: biz.biz1.flutter5.url),
                   NavigatorRouteSettings.settingsWith(
-                      url: biz.biz2.flutter2.url, index: 1),
+                      url: biz.biz2.flutter2.url),
                   NavigatorRouteSettings.settingsWith(
-                      url: biz.biz2.flutter4.url, index: 1, params: {}),
+                      url: biz.biz2.flutter4.url, params: {}),
                 ],
               ))));
 }

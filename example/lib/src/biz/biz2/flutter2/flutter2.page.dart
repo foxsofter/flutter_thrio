@@ -36,7 +36,7 @@ class _Flutter2PageState extends State<Flutter2Page> {
 
   @override
   void dispose() {
-    ThrioLogger.d('page2 dispose');
+    ThrioLogger.d('page2 dispose: ${widget.index}');
     super.dispose();
   }
 

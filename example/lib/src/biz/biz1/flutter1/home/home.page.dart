@@ -32,7 +32,7 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void dispose() {
-    ThrioLogger.d('page1 dispose');
+    ThrioLogger.d('page1 dispose: ${widget.index}');
     _inputController.dispose();
     super.dispose();
   }

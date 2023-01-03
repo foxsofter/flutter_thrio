@@ -26,7 +26,6 @@ import '../extension/thrio_iterable.dart';
 import '../module/module_anchor.dart';
 import 'navigator_page.dart';
 import 'navigator_page_observer.dart';
-import 'navigator_route.dart';
 import 'navigator_route_settings.dart';
 import 'navigator_types.dart';
 import 'navigator_widget.dart';
@@ -35,37 +34,30 @@ mixin NavigatorPageLifecycleMixin<T extends StatefulWidget> on State<T> {
   RouteSettings? _settings;
   VoidCallback? _pageObserverCallback;
 
-  String get url => NavigatorPage.urlOf(context);
-
   @override
   void initState() {
     super.initState();
     if (mounted) {
+      _settings = NavigatorRouteSettings.settingsWith(
+        url: NavigatorPage.urlOf(context),
+        index: NavigatorPage.indexOf(context),
+      );
+      _pageObserverCallback ??= anchor.pageLifecycleObservers.registry(
+        _settings!.url,
+        _PageLifecyclePageObserver(this),
+      );
       final state = context.tryStateOf<NavigatorWidgetState>();
-      final route = state?.history.lastWhereOrNull(
-          (final it) => it is NavigatorRoute && it.settings.url == url);
-      if (route != null && route is NavigatorRoute) {
-        _settings = route.settings;
-      } else {
-        // 特殊情形，url 不在栈上，但也要触发 didAppear
-        _settings = NavigatorRouteSettings.settingsWith(url: url);
+      if (state?.history.lastWhereOrNull(
+              (final it) => it.settings.name == _settings?.name) !=
+          null) {
+        Future(() => didAppear(_settings!));
       }
-      Future(() => didAppear(_settings!));
     }
   }
 
   void didAppear(final RouteSettings settings) {}
 
   void didDisappear(final RouteSettings settings) {}
-
-  @override
-  void didChangeDependencies() {
-    _pageObserverCallback ??= anchor.pageLifecycleObservers.registry(
-      _settings!.url,
-      _PageLifecyclePageObserver(this),
-    );
-    super.didChangeDependencies();
-  }
 
   @override
   void dispose() {

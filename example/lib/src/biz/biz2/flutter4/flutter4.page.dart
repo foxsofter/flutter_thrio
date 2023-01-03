@@ -27,7 +27,7 @@ class Flutter4Page extends NavigatorStatefulPage {
 class _Flutter4PageState extends State<Flutter4Page> {
   @override
   void dispose() {
-    ThrioLogger.d('page4 dispose');
+    ThrioLogger.d('page4 dispose: ${widget.index}');
     super.dispose();
   }
 

@@ -27,7 +27,7 @@ class Flutter3Page extends NavigatorStatefulPage {
 class _Flutter3PageState extends State<Flutter3Page> {
   @override
   void dispose() {
-    ThrioLogger.d('page3 dispose');
+    ThrioLogger.d('page3 dispose: ${widget.index}');
 
     super.dispose();
   }

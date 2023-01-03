@@ -26,7 +26,7 @@ class Flutter5Page extends NavigatorStatefulPage {
 class _Flutter5PageState extends State<Flutter5Page> {
   @override
   void dispose() {
-    ThrioLogger.d('page5 dispose');
+    ThrioLogger.d('page5 dispose: ${widget.index}');
     super.dispose();
   }
 
@@ -45,7 +45,6 @@ class _Flutter5PageState extends State<Flutter5Page> {
         systemOverlayStyle: SystemUiOverlayStyle.dark,
       ),
       body: NavigatorPageLifecycle(
-          url: biz.biz1.flutter1.home.url,
           willAppear: (final settings) {
             ThrioLogger.v('page5 willAppear -> $settings');
           },
@@ -59,7 +58,6 @@ class _Flutter5PageState extends State<Flutter5Page> {
             ThrioLogger.v('page5 didDisappear -> $settings');
           },
           child: NavigatorPageView(
-            parentUrl: biz.biz1.flutter7.url,
             routeSettings: <RouteSettings>[
               NavigatorRouteSettings.settingsWith(
                   url: biz.biz1.flutter1.home.url),

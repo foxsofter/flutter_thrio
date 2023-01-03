@@ -546,3 +546,7 @@
 ## 3.9.12
 
 - fix: 修复 NavigatorPageLifecycle 在 NavigatorPageView 情形下首次不触发的问题
+
+## 3.10.0
+
+- refactor: NavigatorPageLifecycle, NavigatorPageLifecycleMixin, NavigatorPageView
