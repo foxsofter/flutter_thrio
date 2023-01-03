@@ -20,11 +20,14 @@
 // IN THE SOFTWARE.
 
 import 'package:flutter/widgets.dart';
+import 'package:flutter_thrio/src/extension/thrio_iterable.dart';
 
 import '../channel/thrio_channel.dart';
 import '../module/thrio_module.dart';
+import 'navigator_route.dart';
 import 'navigator_route_observer.dart';
 import 'navigator_route_settings.dart';
+import 'thrio_navigator_implement.dart';
 
 typedef NavigatorRouteObserverCallback = void Function(
   NavigatorRouteObserver observer,
@@ -94,6 +97,15 @@ class NavigatorRouteObserverChannel with NavigatorRouteObserver {
               ThrioModule.gets<NavigatorRouteObserver>(url: routeSettings.url);
           for (final observer in observers) {
             callback(observer, routeSettings);
+          }
+          if (method == 'didPop') {
+            final currentPopRoutes =
+                ThrioNavigatorImplement.shared().currentPopRoutes;
+            if (currentPopRoutes.length == 1 &&
+                currentPopRoutes.first.settings.name == routeSettings.name) {
+              currentPopRoutes.first.poppedResult?.call(null);
+            }
+            ThrioNavigatorImplement.shared().currentPopRoutes.clear();
           }
         }
         return Future.value();

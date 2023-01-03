@@ -208,7 +208,11 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
 
     return Future.value(true).then((final value) {
       _poppedResultCallback(
-          route.poppedResult, route.settings.url, settings.params);
+        route.poppedResult,
+        route.settings.url,
+        settings.params,
+      );
+      route.poppedResult = null;
       return value;
     });
   }

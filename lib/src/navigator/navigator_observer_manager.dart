@@ -32,7 +32,7 @@ import 'navigator_route_settings.dart';
 import 'thrio_navigator_implement.dart';
 
 class NavigatorObserverManager extends NavigatorObserver {
-  final _currentPopRoutes = <NavigatorRoute>[];
+  final currentPopRoutes = <NavigatorRoute>[];
 
   final _currentRemoveRoutes = <NavigatorRoute>[];
 
@@ -69,17 +69,16 @@ class NavigatorObserverManager extends NavigatorObserver {
         }
       }
     }
-    ThrioNavigatorImplement.shared().syncPagePoppedResults();
   }
 
   @override
   void didPop(final Route<dynamic> route, final Route<dynamic>? previousRoute) {
     if (route is NavigatorRoute) {
       pageRoutes.remove(route);
-      _currentPopRoutes.add(route);
-      if (_currentPopRoutes.length == 1) {
+      currentPopRoutes.add(route);
+      if (currentPopRoutes.length == 1) {
         Future(() {
-          if (_currentPopRoutes.length == 1) {
+          if (currentPopRoutes.length == 1) {
             if (pageRoutes.last is NavigatorRoute &&
                 // ignore: avoid_as
                 (pageRoutes.last as NavigatorRoute).routeType ==
@@ -94,6 +93,7 @@ class NavigatorObserverManager extends NavigatorObserver {
               }
               // ignore: avoid_as
               (pageRoutes.last as NavigatorRoute).routeType = null;
+              currentPopRoutes.clear();
             } else if (route.routeType == NavigatorRouteType.pop ||
                 route.routeType == null) {
               // 这里需要判断 routeType == null 的场景，处理滑动返回需要
@@ -116,9 +116,10 @@ class NavigatorObserverManager extends NavigatorObserver {
                   ..pageChannel
                       .didDisappear(route.settings, NavigatorRouteType.remove);
               }
+              currentPopRoutes.clear();
               route.routeType = null;
             }
-          } else if (_currentPopRoutes.length > 1) {
+          } else if (currentPopRoutes.length > 1) {
             if (pageRoutes.last.settings.url != '/') {
               verbose('didPopTo: url->${pageRoutes.last.settings.url} '
                   'index->${pageRoutes.last.settings.index}');
@@ -129,13 +130,12 @@ class NavigatorObserverManager extends NavigatorObserver {
             }
             // ignore: avoid_as
             (pageRoutes.last as NavigatorRoute).routeType = null;
+            currentPopRoutes.clear();
           }
-          _currentPopRoutes.clear();
 
           anchor.unloading(pageRoutes.whereType<NavigatorRoute>());
         });
       }
-      ThrioNavigatorImplement.shared().syncPagePoppedResults(route: route);
     } else {
       pageRoutes.remove(route);
       if (route is! PopupRoute && pageRoutes.last is NavigatorRoute) {
@@ -196,7 +196,6 @@ class NavigatorObserverManager extends NavigatorObserver {
         });
       }
     }
-    ThrioNavigatorImplement.shared().syncPagePoppedResults();
   }
 
   @override
@@ -221,6 +220,5 @@ class NavigatorObserverManager extends NavigatorObserver {
             .didAppear(newRoute.settings, NavigatorRouteType.replace);
       }
     }
-    ThrioNavigatorImplement.shared().syncPagePoppedResults();
   }
 }

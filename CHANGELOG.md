@@ -562,3 +562,7 @@
 ## 3.10.3
 
 - fix: 调整 NavigatorPageView 触发 disappear 和 appear 的顺序
+
+## 3.10.4
+
+- fix: 修复 poppedResult 返回值都为 null 的问题

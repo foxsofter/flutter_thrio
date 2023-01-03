@@ -104,6 +104,9 @@ class ThrioNavigatorImplement {
 
   final poppedResults = <String, NavigatorParamsCallback>{};
 
+  List<NavigatorRoute> get currentPopRoutes =>
+      _observerManager.currentPopRoutes;
+
   late final ThrioChannel _channel;
 
   late final NavigatorRouteSendChannel _sendChannel;
