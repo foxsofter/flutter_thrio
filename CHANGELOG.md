@@ -550,3 +550,7 @@
 ## 3.10.0
 
 - refactor: NavigatorPageLifecycle, NavigatorPageLifecycleMixin, NavigatorPageView
+
+## 3.10.1
+
+- fix: NavigatorRouteSettings settingsWith index 参数改为可空

@@ -30,10 +30,10 @@ extension NavigatorRouteSettings on RouteSettings {
   ///
   static RouteSettings settingsWith({
     required final String url,
-    final int index = 0,
+    final int? index,
     final dynamic params,
   }) {
-    final idx = index == 0 ? _fakeIndex-- : index;
+    final idx = index ?? _fakeIndex--;
     return RouteSettings(
       name: '$idx $url',
       arguments: <String, dynamic>{'params': params},
