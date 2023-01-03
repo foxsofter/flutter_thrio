@@ -102,46 +102,6 @@ class _NavigatorPageViewState extends State<NavigatorPageView>
 
   Future<void>? onPageChangedFuture;
 
-  void onPageChanged(final int idx) {
-    currentIndex = idx;
-    onPageChangedFuture ??=
-        Future.delayed(const Duration(milliseconds: 100), () {
-      final routeSettings = widget.routeSettings[currentIndex];
-      if (routeSettings.name != current.name) {
-        final oldRouteSettings = current;
-        current = routeSettings;
-        widget.onPageChanged?.call(routeSettings);
-        _changedToAppear(routeSettings);
-        _changedToDisappear(oldRouteSettings);
-      }
-      onPageChangedFuture = null;
-    });
-  }
-
-  void _changedToAppear(final RouteSettings routeSettings) {
-    if (!isAppeared) {
-      isAppeared = true;
-      final obs = anchor.pageLifecycleObservers[routeSettings.url];
-      for (final ob in obs) {
-        if (ob != _observer) {
-          Future(() => ob.didAppear(routeSettings));
-        }
-      }
-    }
-  }
-
-  void _changedToDisappear(final RouteSettings routeSettings) {
-    if (isAppeared) {
-      isAppeared = false;
-      final obs = anchor.pageLifecycleObservers[routeSettings.url];
-      for (final ob in obs) {
-        if (ob != _observer) {
-          Future(() => ob.didDisappear(routeSettings));
-        }
-      }
-    }
-  }
-
   @override
   void initState() {
     super.initState();
@@ -152,7 +112,9 @@ class _NavigatorPageViewState extends State<NavigatorPageView>
       _pageObserverCallback =
           anchor.pageLifecycleObservers.registry(parent.url, _observer);
 
-      Future(() => _changedToAppear(current));
+      Future(() {
+        _changedToAppear(current);
+      });
     }
   }
 
@@ -202,6 +164,46 @@ class _NavigatorPageViewState extends State<NavigatorPageView>
           return w;
         }).toList(),
       );
+
+  void onPageChanged(final int idx) {
+    currentIndex = idx;
+    onPageChangedFuture ??=
+        Future.delayed(const Duration(milliseconds: 100), () {
+      final routeSettings = widget.routeSettings[currentIndex];
+      if (routeSettings.name != current.name) {
+        final oldRouteSettings = current;
+        current = routeSettings;
+        widget.onPageChanged?.call(routeSettings);
+        _changedToDisappear(oldRouteSettings);
+        _changedToAppear(routeSettings);
+      }
+      onPageChangedFuture = null;
+    });
+  }
+
+  void _changedToAppear(final RouteSettings routeSettings) {
+    if (!isAppeared) {
+      isAppeared = true;
+      final obs = anchor.pageLifecycleObservers[routeSettings.url];
+      for (final ob in obs) {
+        if (ob != _observer) {
+          Future(() => ob.didAppear(routeSettings));
+        }
+      }
+    }
+  }
+
+  void _changedToDisappear(final RouteSettings routeSettings) {
+    if (isAppeared) {
+      isAppeared = false;
+      final obs = anchor.pageLifecycleObservers[routeSettings.url];
+      for (final ob in obs) {
+        if (ob != _observer) {
+          Future(() => ob.didDisappear(routeSettings));
+        }
+      }
+    }
+  }
 }
 
 class _PageViewPageObserver with NavigatorPageObserver {

@@ -558,3 +558,7 @@
 ## 3.10.2
 
 - fix: 侧滑返回不触发 poppedResult
+
+## 3.10.3
+
+- fix: 调整 NavigatorPageView 触发 disappear 和 appear 的顺序
