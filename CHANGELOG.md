@@ -554,3 +554,7 @@
 ## 3.10.1
 
 - fix: NavigatorRouteSettings settingsWith index 参数改为可空
+
+## 3.10.2
+
+- fix: 侧滑返回不触发 poppedResult

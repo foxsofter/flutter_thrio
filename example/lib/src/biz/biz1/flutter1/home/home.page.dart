@@ -27,7 +27,7 @@ class HomePage extends NavigatorStatefulPage {
   _HomePageState createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends State<HomePage> with NavigatorPageLifecycleMixin {
   late final TextEditingController _inputController = TextEditingController();
 
   @override
@@ -35,6 +35,11 @@ class _HomePageState extends State<HomePage> {
     ThrioLogger.d('page1 dispose: ${widget.index}');
     _inputController.dispose();
     super.dispose();
+  }
+
+  @override
+  void didAppear(final RouteSettings routeSettings) {
+    ThrioLogger.d('flutter1 didAppear: $routeSettings');
   }
 
   @override

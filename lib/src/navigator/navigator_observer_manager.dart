@@ -44,7 +44,9 @@ class NavigatorObserverManager extends NavigatorObserver {
 
   @override
   void didPush(
-      final Route<dynamic> route, final Route<dynamic>? previousRoute) {
+    final Route<dynamic> route,
+    final Route<dynamic>? previousRoute,
+  ) {
     if (route is NavigatorRoute) {
       verbose(
         'didPush: url->${route.settings.url} '
@@ -67,6 +69,7 @@ class NavigatorObserverManager extends NavigatorObserver {
         }
       }
     }
+    ThrioNavigatorImplement.shared().syncPagePoppedResults();
   }
 
   @override
@@ -132,6 +135,7 @@ class NavigatorObserverManager extends NavigatorObserver {
           anchor.unloading(pageRoutes.whereType<NavigatorRoute>());
         });
       }
+      ThrioNavigatorImplement.shared().syncPagePoppedResults(route: route);
     } else {
       pageRoutes.remove(route);
       if (route is! PopupRoute && pageRoutes.last is NavigatorRoute) {
@@ -192,6 +196,7 @@ class NavigatorObserverManager extends NavigatorObserver {
         });
       }
     }
+    ThrioNavigatorImplement.shared().syncPagePoppedResults();
   }
 
   @override
@@ -216,5 +221,6 @@ class NavigatorObserverManager extends NavigatorObserver {
             .didAppear(newRoute.settings, NavigatorRouteType.replace);
       }
     }
+    ThrioNavigatorImplement.shared().syncPagePoppedResults();
   }
 }

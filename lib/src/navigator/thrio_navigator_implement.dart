@@ -861,4 +861,23 @@ class ThrioNavigatorImplement {
 
     return params;
   }
+
+  Future<void> syncPagePoppedResults({final NavigatorRoute? route}) async {
+    route?.poppedResult?.call(null);
+    if (poppedResults.isEmpty) {
+      return;
+    }
+    final routes = await allRoutes();
+    if (routes.isEmpty) {
+      poppedResults.clear();
+    } else {
+      poppedResults.removeWhere((final name, final poppedResult) {
+        if (!routes.any((final it) => it.name == name)) {
+          Future(() => poppedResult.call(null));
+          return true;
+        }
+        return false;
+      });
+    }
+  }
 }

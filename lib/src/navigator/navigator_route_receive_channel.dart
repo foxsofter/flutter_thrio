@@ -67,7 +67,7 @@ class NavigatorRouteReceiveChannel {
                 .navigatorState
                 ?.push(routeSettings, animated: animated)
                 .then((final value) {
-              _syncPagePoppedResults();
+              ThrioNavigatorImplement.shared().syncPagePoppedResults();
               return value;
             }) ??
             false;
@@ -83,7 +83,11 @@ class NavigatorRouteReceiveChannel {
         final inRoot = arguments?['inRoot'] == true;
         return await ThrioNavigatorImplement.shared()
                 .navigatorState
-                ?.maybePop(routeSettings, animated: animated, inRoot: inRoot) ??
+                ?.maybePop(routeSettings, animated: animated, inRoot: inRoot)
+                .then((final value) {
+              ThrioNavigatorImplement.shared().syncPagePoppedResults();
+              return value;
+            }) ??
             0;
       });
 
@@ -101,7 +105,7 @@ class NavigatorRouteReceiveChannel {
                 .navigatorState
                 ?.pop(routeSettings, animated: animated, inRoot: inRoot)
                 .then((final value) {
-              _syncPagePoppedResults();
+              ThrioNavigatorImplement.shared().syncPagePoppedResults();
               return value;
             }) ??
             false;
@@ -131,7 +135,7 @@ class NavigatorRouteReceiveChannel {
                 .navigatorState
                 ?.popTo(routeSettings, animated: animated)
                 .then((final value) {
-              _syncPagePoppedResults();
+              ThrioNavigatorImplement.shared().syncPagePoppedResults();
               return value;
             }) ??
             false;
@@ -148,7 +152,7 @@ class NavigatorRouteReceiveChannel {
                 .navigatorState
                 ?.remove(routeSettings, animated: animated)
                 .then((final value) {
-              _syncPagePoppedResults();
+              ThrioNavigatorImplement.shared().syncPagePoppedResults();
               return value;
             }) ??
             false;
@@ -167,7 +171,11 @@ class NavigatorRouteReceiveChannel {
         }
         return await ThrioNavigatorImplement.shared()
                 .navigatorState
-                ?.replace(routeSettings, newRouteSettings) ??
+                ?.replace(routeSettings, newRouteSettings)
+                .then((final value) {
+              ThrioNavigatorImplement.shared().syncPagePoppedResults();
+              return value;
+            }) ??
             false;
       });
 
@@ -211,25 +219,5 @@ class NavigatorRouteReceiveChannel {
     }
 
     return params;
-  }
-
-  Future<void> _syncPagePoppedResults() async {
-    if (ThrioNavigatorImplement.shared().poppedResults.isEmpty) {
-      return;
-    }
-    final routes = await ThrioNavigatorImplement.shared().allRoutes();
-    if (routes.isEmpty) {
-      ThrioNavigatorImplement.shared().poppedResults.clear();
-    } else {
-      ThrioNavigatorImplement.shared()
-          .poppedResults
-          .removeWhere((final name, final poppedResult) {
-        if (!routes.any((final it) => it.name == name)) {
-          Future(() => poppedResult.call(null));
-          return true;
-        }
-        return false;
-      });
-    }
   }
 }
