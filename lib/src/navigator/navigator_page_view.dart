@@ -63,7 +63,10 @@ class NavigatorPageView extends StatefulWidget {
   final List<RouteSettings> routeSettings;
 
   final Widget Function(
-      BuildContext context, RouteSettings settings, Widget child)? childBuilder;
+    BuildContext context,
+    RouteSettings settings,
+    Widget child,
+  )? childBuilder;
 
   final String? parentUrl;
 
@@ -88,6 +91,8 @@ class _NavigatorPageViewState extends State<NavigatorPageView>
 {
   VoidCallback? _pageObserverCallback;
 
+  late final _observer = _PageViewPageObserver(this);
+
   late final controller = widget.controller ?? PageController();
 
   bool isAppeared = true;
@@ -100,7 +105,7 @@ class _NavigatorPageViewState extends State<NavigatorPageView>
 
   void onPageChanged(final int idx) {
     final routeSettings = widget.routeSettings[idx];
-    if (routeSettings != current) {
+    if (routeSettings.name != current.name) {
       final oldRouteSettings = current;
       current = routeSettings;
       widget.onPageChanged?.call(routeSettings);
@@ -114,7 +119,7 @@ class _NavigatorPageViewState extends State<NavigatorPageView>
       appearFuture ??= Future.delayed(const Duration(milliseconds: 10), () {
         final obs = anchor.pageLifecycleObservers[routeSettings.url];
         for (final ob in obs) {
-          if (ob is! _PageViewPageObserver) {
+          if (ob != _observer) {
             ob.didAppear(routeSettings);
           }
         }
@@ -128,7 +133,7 @@ class _NavigatorPageViewState extends State<NavigatorPageView>
       disappearFuture ??= Future.delayed(const Duration(milliseconds: 10), () {
         final obs = anchor.pageLifecycleObservers[routeSettings.url];
         for (final ob in obs) {
-          if (ob is! _PageViewPageObserver) {
+          if (ob != _observer) {
             ob.didDisappear(routeSettings);
           }
         }
@@ -150,7 +155,7 @@ class _NavigatorPageViewState extends State<NavigatorPageView>
     if (state == AppLifecycleState.resumed) {
       isAppeared = true;
       _changedToAppear(current);
-    } else if (state == AppLifecycleState.inactive) {
+    } else if (state == AppLifecycleState.paused) {
       isAppeared = false;
       _changedToDisappear(current);
     }
@@ -167,10 +172,8 @@ class _NavigatorPageViewState extends State<NavigatorPageView>
     if (_pageObserverCallback == null) {
       var parentUrl = widget.parentUrl;
       parentUrl ??= NavigatorPage.urlOf(context);
-      _pageObserverCallback = anchor.pageLifecycleObservers.registry(
-        parentUrl,
-        _PageViewPageObserver(this),
-      );
+      _pageObserverCallback =
+          anchor.pageLifecycleObservers.registry(parentUrl, _observer);
     }
 
     super.didChangeDependencies();

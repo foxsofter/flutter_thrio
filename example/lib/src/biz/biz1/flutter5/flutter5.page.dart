@@ -62,13 +62,10 @@ class _Flutter5PageState extends State<Flutter5Page> {
             parentUrl: biz.biz1.flutter7.url,
             routeSettings: <RouteSettings>[
               NavigatorRouteSettings.settingsWith(
-                  url: biz.biz1.flutter1.home.url, index: 1),
-              NavigatorRouteSettings.settingsWith(
-                  url: biz.biz1.flutter3.url, index: 2),
-              NavigatorRouteSettings.settingsWith(
-                  url: biz.biz2.flutter2.url, index: 3),
-              NavigatorRouteSettings.settingsWith(
-                  url: biz.biz2.flutter4.url, index: 4),
+                  url: biz.biz1.flutter1.home.url),
+              NavigatorRouteSettings.settingsWith(url: biz.biz1.flutter3.url),
+              NavigatorRouteSettings.settingsWith(url: biz.biz2.flutter2.url),
+              NavigatorRouteSettings.settingsWith(url: biz.biz2.flutter4.url),
             ],
           )));
 }

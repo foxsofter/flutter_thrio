@@ -542,3 +542,7 @@
 ## 3.9.11
 
 - feat: page lifecycle observer default to be NavigatorPage.urlOf
+
+## 3.9.12
+
+- fix: 修复 NavigatorPageLifecycle 在 NavigatorPageView 情形下首次不触发的问题

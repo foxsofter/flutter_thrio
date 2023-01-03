@@ -54,7 +54,7 @@ class NavigatorPageLifecycle extends StatefulWidget {
 }
 
 class _NavigatorPageLifecycleState extends State<NavigatorPageLifecycle> {
-  NavigatorRoute? _route;
+  RouteSettings? _settings;
 
   late final String url = widget.url ?? NavigatorPage.urlOf(context);
 
@@ -75,10 +75,12 @@ class _NavigatorPageLifecycleState extends State<NavigatorPageLifecycle> {
         (final it) => it is NavigatorRoute && it.settings.url == url,
       );
       if (route != null && route is NavigatorRoute) {
-        _route = route;
-        widget.willAppear?.call(route.settings);
-        widget.didAppear?.call(route.settings);
+        _settings = route.settings;
+      } else {
+        // 特殊情形，url 不在栈上，但也要触发 didAppear
+        _settings = NavigatorRouteSettings.settingsWith(url: url);
       }
+      Future(() => widget.didAppear?.call(_settings!));
     }
   }
 
@@ -137,9 +139,9 @@ class _PageLifecyclePageObserver with NavigatorPageObserver {
     final RouteSettings routeSettings,
   ) {
     // url 相同，但只通知 name 相等的
-    final route = delegate._route;
-    if (route != null && route.settings.name == routeSettings.name) {
-      callback?.call(route.settings);
+    final settings = delegate._settings;
+    if (settings != null && settings.name == routeSettings.name) {
+      callback?.call(settings);
     }
   }
 }

@@ -32,7 +32,7 @@ import 'navigator_types.dart';
 import 'navigator_widget.dart';
 
 mixin NavigatorPageLifecycleMixin<T extends StatefulWidget> on State<T> {
-  NavigatorRoute? _route;
+  RouteSettings? _settings;
   VoidCallback? _pageObserverCallback;
 
   String get url => NavigatorPage.urlOf(context);
@@ -45,9 +45,12 @@ mixin NavigatorPageLifecycleMixin<T extends StatefulWidget> on State<T> {
       final route = state?.history.lastWhereOrNull(
           (final it) => it is NavigatorRoute && it.settings.url == url);
       if (route != null && route is NavigatorRoute) {
-        _route = route;
-        Future(() => didAppear(route.settings));
+        _settings = route.settings;
+      } else {
+        // 特殊情形，url 不在栈上，但也要触发 didAppear
+        _settings = NavigatorRouteSettings.settingsWith(url: url);
       }
+      Future(() => didAppear(_settings!));
     }
   }
 
@@ -57,12 +60,10 @@ mixin NavigatorPageLifecycleMixin<T extends StatefulWidget> on State<T> {
 
   @override
   void didChangeDependencies() {
-    if (_pageObserverCallback == null && _route != null) {
-      _pageObserverCallback = anchor.pageLifecycleObservers.registry(
-        _route!.settings.url,
-        _PageLifecyclePageObserver(this),
-      );
-    }
+    _pageObserverCallback ??= anchor.pageLifecycleObservers.registry(
+      _settings!.url,
+      _PageLifecyclePageObserver(this),
+    );
     super.didChangeDependencies();
   }
 
@@ -94,9 +95,9 @@ class _PageLifecyclePageObserver with NavigatorPageObserver {
     final NavigatorPageObserverCallback? callback,
     final RouteSettings routeSettings,
   ) {
-    final route = delegate._route;
-    if (route != null && route.settings.name == routeSettings.name) {
-      callback?.call(route.settings);
+    final settings = delegate._settings;
+    if (settings != null && settings.name == routeSettings.name) {
+      callback?.call(settings);
     }
   }
 }

@@ -24,15 +24,21 @@
 import 'package:flutter/widgets.dart';
 
 extension NavigatorRouteSettings on RouteSettings {
+  static int _fakeIndex = 0x7fffffff;
+
   /// Construct RouteSettings with url, index, params.
   ///
   static RouteSettings settingsWith({
     required final String url,
     final int index = 0,
     final dynamic params,
-  }) =>
-      RouteSettings(
-          name: '$index $url', arguments: <String, dynamic>{'params': params});
+  }) {
+    final idx = index == 0 ? _fakeIndex-- : index;
+    return RouteSettings(
+      name: '$idx $url',
+      arguments: <String, dynamic>{'params': params},
+    );
+  }
 
   /// Converting arguments to route settings.
   ///
