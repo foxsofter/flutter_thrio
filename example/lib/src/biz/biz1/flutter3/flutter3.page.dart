@@ -233,6 +233,22 @@ class _TestPageState extends State<TestPage> {
                     style: TextStyle(color: Colors.white),
                   ),
                 ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: ElevatedButton(
+                  style: ButtonStyle(
+                      foregroundColor:
+                          MaterialStateProperty.all(Colors.indigo)),
+                  onPressed: () {
+                    final mctx = NavigatorPage.moduleContextOf(context);
+                    ThrioLogger.v(mctx.toString());
+                  },
+                  child: const Text(
+                    'Get ModuleContext',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
               )
             ],
           ),

@@ -566,3 +566,7 @@
 ## 3.10.4
 
 - fix: 修复 poppedResult 返回值都为 null 的问题
+
+## 3.10.5
+
+- feat: NavigatorPage.moduleContextOf return rootModuleContext if none

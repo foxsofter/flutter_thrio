@@ -75,6 +75,8 @@ class ModuleAnchor
   ///
   final allUrls = <String>[];
 
+  ModuleContext get rootModuleContext => modules.values.first.moduleContext;
+
   @override
   Future<void> onModuleInit(final ModuleContext moduleContext) =>
       ThrioNavigatorImplement.shared().init(moduleContext);

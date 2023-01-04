@@ -21,6 +21,8 @@
 
 import 'package:flutter/material.dart';
 
+import '../module/module_anchor.dart';
+import '../module/thrio_module.dart';
 import 'navigator_home.dart';
 import 'thrio_navigator_implement.dart';
 
@@ -65,4 +67,8 @@ class NavigatorMaterialApp extends MaterialApp {
           initialRoute: '1 /',
           routes: {'1 /': (final _) => home ?? const NavigatorHome()},
         );
+
+  /// Get moduleContext of root module.
+  ///
+  ModuleContext get moduleContext => anchor.rootModuleContext;
 }

@@ -23,7 +23,9 @@ import 'package:flutter/widgets.dart';
 
 import '../exception/thrio_exception.dart';
 import '../extension/thrio_dynamic.dart';
+import '../extension/thrio_iterable.dart';
 import '../module/thrio_module.dart';
+import 'navigator_material_app.dart';
 import 'navigator_route_settings.dart';
 import 'thrio_navigator_implement.dart';
 
@@ -62,9 +64,30 @@ mixin NavigatorPage {
   static ModuleContext moduleContextOf(
     final BuildContext context, {
     final bool rootModuleContext = false,
-  }) =>
-      NavigatorPage.of(context, rootModuleContext: rootModuleContext)
-          .moduleContext;
+  }) {
+    final page = of(context, rootModuleContext: rootModuleContext);
+    if (page != null) {
+      return page.moduleContext;
+    }
+    // 触发兜底逻辑
+    final widget = context.widget;
+    if (widget is NavigatorMaterialApp) {
+      return widget.moduleContext;
+    }
+    NavigatorMaterialApp? app;
+    context.visitAncestorElements((final it) {
+      final widget = it.widget;
+      if (widget is NavigatorMaterialApp) {
+        app = widget;
+        return false;
+      }
+      return true;
+    });
+    if (app == null) {
+      throw ThrioException('no moduleContext on the app');
+    }
+    return app!.moduleContext;
+  }
 
   /// Get params of current page.
   ///
@@ -75,7 +98,8 @@ mixin NavigatorPage {
     final BuildContext context, {
     final bool rootModuleContext = false,
   }) =>
-      NavigatorPage.of(context, rootModuleContext: rootModuleContext).params;
+      of(context, rootModuleContext: rootModuleContext)?.params ??
+      (throw ThrioException('no params on the page'));
 
   /// Get url of current page.
   ///
@@ -86,7 +110,8 @@ mixin NavigatorPage {
     final BuildContext context, {
     final bool rootModuleContext = false,
   }) =>
-      NavigatorPage.of(context, rootModuleContext: rootModuleContext).url;
+      of(context, rootModuleContext: rootModuleContext)?.url ??
+      (throw ThrioException('no url on the page'));
 
   /// Get index of current page.
   ///
@@ -97,22 +122,22 @@ mixin NavigatorPage {
     final BuildContext context, {
     final bool rootModuleContext = false,
   }) =>
-      NavigatorPage.of(context, rootModuleContext: rootModuleContext).index;
+      of(context, rootModuleContext: rootModuleContext)?.index ??
+      (throw ThrioException('no index on the page'));
 
-  static NavigatorPage of(
+  static NavigatorPage? of(
     final BuildContext context, {
     final bool rootModuleContext = false,
   }) {
-    String? lastUrl;
-    if (rootModuleContext) {
-      lastUrl = ThrioNavigatorImplement.shared().lastFlutterRoute()?.url;
-    }
+    final allRoutes = ThrioNavigatorImplement.shared().allFlutterRoutes();
     NavigatorPage? page;
     final widget = context.widget;
     if (widget is NavigatorPage) {
       page = widget as NavigatorPage;
       if (rootModuleContext) {
-        if (page.url == lastUrl) {
+        if (allRoutes.lastWhereOrNull(
+                (final it) => it.url == page?.url && it.index == page?.index) !=
+            null) {
           return page;
         }
       } else {
@@ -125,15 +150,14 @@ mixin NavigatorPage {
       if (widget is NavigatorPage) {
         page = widget as NavigatorPage;
         if (rootModuleContext) {
-          return page?.url != lastUrl;
+          return allRoutes.lastWhereOrNull((final it) =>
+                  it.url == page?.url && it.index == page?.index) !=
+              null;
         }
         return false;
       }
       return true;
     });
-    if (page == null) {
-      throw ThrioException('no module context on the page');
-    }
-    return page!;
+    return page;
   }
 }
