@@ -83,7 +83,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)thrio_didRemoveUrl:(NSString *)url index:(NSNumber *)index;
 
 - (NavigatorPageRoute *_Nullable)thrio_getRouteByUrl:(NSString *)url
-                                               index:(NSNumber *_Nullable)index;
+                                               index:(NSNumber *)index;
 
 - (NavigatorPageRoute *_Nullable)thrio_getLastRouteByUrl:(NSString *)url;
 

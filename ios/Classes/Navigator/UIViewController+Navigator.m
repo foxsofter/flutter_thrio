@@ -470,7 +470,7 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 - (NavigatorPageRoute *_Nullable)thrio_getRouteByUrl:(NSString *)url
-                                               index:(NSNumber *_Nullable)index {
+                                               index:(NSNumber *)index {
     NavigatorPageRoute *last = self.thrio_lastRoute;
     if (url.length < 1) {
         return last;
@@ -485,8 +485,16 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 - (NavigatorPageRoute *_Nullable)thrio_getLastRouteByUrl:(NSString *)url {
-    NavigatorPageRoute *route = [self thrio_getRouteByUrl:url index:nil];
-    return route;
+    NavigatorPageRoute *last = self.thrio_lastRoute;
+    if (url.length < 1) {
+        return last;
+    }
+    do {
+        if ([last.settings.url isEqualToString:url]) {
+            return last;
+        }
+    } while ((last = last.prev));
+    return nil;
 }
 
 - (NSArray *)thrio_getAllRoutesByUrl:(NSString *_Nullable)url {

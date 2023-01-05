@@ -63,8 +63,10 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
   List<Route<dynamic>> get history => widget._observerManager.pageRoutes;
 
   /// 还无法实现animated=false
-  Future<bool> push(final RouteSettings settings,
-      {final bool animated = true}) async {
+  Future<bool> push(
+    final RouteSettings settings, {
+    final bool animated = true,
+  }) async {
     final navigatorState = widget.child.tryStateOf<NavigatorState>();
     if (navigatorState == null) {
       return false;
@@ -107,8 +109,10 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
     return true;
   }
 
-  Future<bool> canPop(final RouteSettings settings,
-      {final bool inRoot = false}) async {
+  Future<bool> canPop(
+    final RouteSettings settings, {
+    final bool inRoot = false,
+  }) async {
     final navigatorState = widget.child.tryStateOf<NavigatorState>();
     if (navigatorState == null) {
       return false;
@@ -217,8 +221,10 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
     });
   }
 
-  Future<bool> popTo(final RouteSettings settings,
-      {final bool animated = true}) async {
+  Future<bool> popTo(
+    final RouteSettings settings, {
+    final bool animated = true,
+  }) async {
     final navigatorState = widget.child.tryStateOf<NavigatorState>();
     if (navigatorState == null || history.length < 2) {
       return false;
@@ -264,8 +270,10 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
     return true;
   }
 
-  Future<bool> remove(final RouteSettings settings,
-      {final bool animated = false}) async {
+  Future<bool> remove(
+    final RouteSettings settings, {
+    final bool animated = false,
+  }) async {
     final navigatorState = widget.child.tryStateOf<NavigatorState>();
     if (navigatorState == null) {
       return false;
@@ -299,7 +307,9 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
   }
 
   Future<bool> replace(
-      final RouteSettings settings, final RouteSettings newSettings) async {
+    final RouteSettings settings,
+    final RouteSettings newSettings,
+  ) async {
     final navigatorState = widget.child.tryStateOf<NavigatorState>();
     if (navigatorState == null) {
       return false;
@@ -320,12 +330,12 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
 
     NavigatorRoute newRoute;
     final routeBuilder =
-        ThrioModule.get<NavigatorRouteBuilder>(url: settings.url);
+        ThrioModule.get<NavigatorRouteBuilder>(url: newSettings.url);
     if (routeBuilder == null) {
       newRoute =
-          NavigatorPageRoute(pageBuilder: pageBuilder, settings: settings);
+          NavigatorPageRoute(pageBuilder: pageBuilder, settings: newSettings);
     } else {
-      newRoute = routeBuilder(pageBuilder, settings);
+      newRoute = routeBuilder(pageBuilder, newSettings);
     }
 
     verbose(

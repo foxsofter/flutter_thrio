@@ -280,7 +280,13 @@ internal object PageRoutes : Application.ActivityLifecycleCallbacks {
         }
     }
 
-    fun replace(url: String, index: Int?, newUrl: String, newIndex: Int, result: NullableIntCallback) {
+    fun replace(
+        url: String,
+        index: Int?,
+        newUrl: String,
+        newIndex: Int,
+        result: NullableIntCallback
+    ) {
         val holder = routeHolders.lastOrNull { it.lastRoute(url, index) != null }
         if (holder == null) {
             result(null)
@@ -308,11 +314,17 @@ internal object PageRoutes : Application.ActivityLifecycleCallbacks {
                 return
             }
             ModulePageObservers.willAppear(routeSettings)
-            lastRoute?.let { route ->
-                if (route.settings != routeSettings) {
-                    ModulePageObservers.willDisappear(route.settings)
+            lastRoute?.let {
+                if (it.settings == routeSettings) {
+                    if (prevLastRoute != null) {
+                        ModulePageObservers.willDisappear(prevLastRoute!!.settings)
+                    }
+                } else {
+                    ModulePageObservers.willDisappear(it.settings)
                 }
             }
+        } else if (routeType == RouteType.REPLACE) {
+            ModulePageObservers.willAppear(routeSettings)
         } else if (routeType == RouteType.POP_TO) {
             val route = lastRoute(routeSettings.url, routeSettings.index)
             if (route != null && route != lastRoute) {
@@ -337,10 +349,16 @@ internal object PageRoutes : Application.ActivityLifecycleCallbacks {
             }
             ModulePageObservers.didAppear(routeSettings)
             lastRoute?.let {
-                if (it.settings != routeSettings) {
+                if (it.settings == routeSettings) {
+                    if (prevLastRoute != null) {
+                        ModulePageObservers.didDisappear(prevLastRoute!!.settings)
+                    }
+                } else {
                     ModulePageObservers.didDisappear(it.settings)
                 }
             }
+        } else if (routeType == RouteType.REPLACE) {
+            ModulePageObservers.didAppear(routeSettings)
         } else if (routeType == RouteType.POP_TO) {
             val route = lastRoute(routeSettings.url, routeSettings.index)
             if (route != null && route != prevLastRoute) {
@@ -364,6 +382,16 @@ internal object PageRoutes : Application.ActivityLifecycleCallbacks {
                     if (it.routes.count() > 1) {
                         ModulePageObservers.willAppear(it.routes[it.routes.count() - 2].settings)
                     }
+                }
+            }
+        } else if (routeType == RouteType.REPLACE) {
+            ModulePageObservers.willDisappear(routeSettings)
+        } else if (routeType == RouteType.POP_TO) {
+            val route = lastRoute(routeSettings.url, routeSettings.index)
+            if (route != null && route != prevLastRoute) {
+                ModulePageObservers.willDisappear(routeSettings)
+                prevLastRoute?.let {
+                    ModulePageObservers.didDisappear(it.settings)
                 }
             }
         }

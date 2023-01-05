@@ -410,6 +410,11 @@ NS_ASSUME_NONNULL_BEGIN
     return self.topViewController.thrio_lastRoute;
 }
 
+- (NavigatorPageRoute *_Nullable)thrio_getRouteByUrl:(NSString *)url index:(NSNumber *)index {
+    UIViewController *vc = [self getViewControllerByUrl:url index:index];
+    return [vc thrio_getRouteByUrl:url index:index];
+}
+
 - (NavigatorPageRoute *_Nullable)thrio_getLastRouteByUrl:(NSString *)url {
     UIViewController *vc = [self getViewControllerByUrl:url index:nil];
     return [vc thrio_getLastRouteByUrl:url];

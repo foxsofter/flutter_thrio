@@ -105,16 +105,18 @@ class NavigatorObserverManager extends NavigatorObserver {
                     .didDisappear(route.settings, NavigatorRouteType.pop);
               route.routeType = null;
             } else if (route.routeType == NavigatorRouteType.remove) {
+              ThrioNavigatorImplement.shared()
+                  .routeChannel
+                  .didRemove(route.settings);
+              verbose(
+                'didRemove: url->${route.settings.url} '
+                'index->${route.settings.index} ',
+              );
               if (WidgetsBinding.instance.lifecycleState ==
                   AppLifecycleState.resumed) {
-                verbose(
-                  'didRemove: url->${route.settings.url} '
-                  'index->${route.settings.index} ',
-                );
                 ThrioNavigatorImplement.shared()
-                  ..routeChannel.didRemove(route.settings)
-                  ..pageChannel
-                      .didDisappear(route.settings, NavigatorRouteType.remove);
+                    .pageChannel
+                    .didDisappear(route.settings, NavigatorRouteType.remove);
               }
               currentPopRoutes.clear();
               route.routeType = null;
@@ -173,9 +175,8 @@ class NavigatorObserverManager extends NavigatorObserver {
               verbose('didRemove: url->${route.settings.url} '
                   'index->${route.settings.index}');
               ThrioNavigatorImplement.shared()
-                ..routeChannel.didRemove(route.settings)
-                ..pageChannel.didDisappear(
-                    pageRoutes.last.settings, NavigatorRouteType.remove);
+                  .routeChannel
+                  .didRemove(route.settings);
             }
           } else if (_currentRemoveRoutes.length > 1) {
             if (pageRoutes.last.settings.url != '/') {
