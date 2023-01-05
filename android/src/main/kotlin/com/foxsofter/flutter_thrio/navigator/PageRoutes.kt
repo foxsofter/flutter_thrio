@@ -31,7 +31,6 @@ import com.foxsofter.flutter_thrio.IntCallback
 import com.foxsofter.flutter_thrio.NullableIntCallback
 import com.foxsofter.flutter_thrio.extension.getEntrypoint
 import com.foxsofter.flutter_thrio.extension.getPageId
-import com.foxsofter.flutter_thrio.extension.getRouteSettings
 import com.foxsofter.flutter_thrio.module.ModulePageObservers
 import io.flutter.embedding.android.ThrioFlutterActivity
 import java.lang.ref.WeakReference
@@ -458,8 +457,8 @@ internal object PageRoutes : Application.ActivityLifecycleCallbacks {
     override fun onActivityPreResumed(activity: Activity) {
         val pageId = activity.intent.getPageId()
         if (pageId != NAVIGATION_ROUTE_PAGE_ID_NONE && NavigationController.routeType != RouteType.POP_TO) {
-            routeHolders.lastOrNull { it.pageId == pageId }?.let {
-                activity.intent.getRouteSettings()?.let {
+            routeHolders.lastOrNull { it.pageId == pageId }?.let { holder ->
+                holder.lastRoute()?.settings?.let {
                     ModulePageObservers.willAppear(it)
                 }
             }
@@ -479,10 +478,8 @@ internal object PageRoutes : Application.ActivityLifecycleCallbacks {
             val holder = routeHolders.lastOrNull { it.pageId == pageId }
             holder?.activity = WeakReference(activity)
             lastRoute = holder?.lastRoute()
-            routeHolders.lastOrNull { it.pageId == pageId }?.let {
-                activity.intent.getRouteSettings()?.let {
-                    ModulePageObservers.didAppear(it)
-                }
+            if (lastRoute != null) {
+                ModulePageObservers.didAppear(lastRoute!!.settings)
             }
         }
     }
@@ -490,8 +487,10 @@ internal object PageRoutes : Application.ActivityLifecycleCallbacks {
     override fun onActivityPrePaused(activity: Activity) {
         val pageId = activity.intent.getPageId()
         if (pageId != NAVIGATION_ROUTE_PAGE_ID_NONE && NavigationController.routeType != RouteType.POP_TO) {
-            activity.intent.getRouteSettings()?.let {
-                ModulePageObservers.willDisappear(it)
+            routeHolders.lastOrNull { it.pageId == pageId }?.let { holder ->
+                holder.lastRoute()?.settings?.let {
+                    ModulePageObservers.willDisappear(it)
+                }
             }
         }
     }
@@ -499,8 +498,10 @@ internal object PageRoutes : Application.ActivityLifecycleCallbacks {
     override fun onActivityPaused(activity: Activity) {
         val pageId = activity.intent.getPageId()
         if (pageId != NAVIGATION_ROUTE_PAGE_ID_NONE && NavigationController.routeType != RouteType.POP_TO) {
-            activity.intent.getRouteSettings()?.let {
-                ModulePageObservers.didDisappear(it)
+            routeHolders.lastOrNull { it.pageId == pageId }?.let { holder ->
+                holder.lastRoute()?.settings?.let {
+                    ModulePageObservers.didDisappear(it)
+                }
             }
         }
     }
