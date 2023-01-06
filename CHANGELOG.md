@@ -570,3 +570,7 @@
 ## 3.10.5
 
 - feat: NavigatorPage.moduleContextOf return rootModuleContext if none
+
+## 3.10.6
+
+- fix: FlutterActivity 在混合栈场景下可能出现的页面生命周期混乱
