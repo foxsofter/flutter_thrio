@@ -54,7 +54,8 @@ extension ThrioIterable<E> on Iterable<E> {
   E? lastWhereOrNull(final bool Function(E it) predicate) {
     late E result;
     var foundMatching = false;
-    for (final it in this) {
+    final reversed = toList().reversed;
+    for (final it in reversed) {
       if (predicate(it)) {
         result = it;
         foundMatching = true;
