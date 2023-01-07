@@ -14,56 +14,67 @@ class Flutter5Page extends NavigatorStatefulPage {
   const Flutter5Page({
     super.key,
     required super.moduleContext,
-    super.params,
-    required super.url,
-    super.index,
+    required super.settings,
   });
 
   @override
   _Flutter5PageState createState() => _Flutter5PageState();
 }
 
-class _Flutter5PageState extends State<Flutter5Page> {
+class _Flutter5PageState extends State<Flutter5Page>
+    with NavigatorPageLifecycleMixin, AutomaticKeepAliveClientMixin {
   @override
   void dispose() {
-    ThrioLogger.d('page5 dispose: ${widget.index}');
+    ThrioLogger.d('page5 dispose: ${widget.settings.index}');
     super.dispose();
   }
 
   @override
-  Widget build(final BuildContext context) => Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        title: const Text('page view example',
-            style: TextStyle(color: Colors.black)),
-        leading: context.showPopAwareWidget(const IconButton(
-          color: Colors.black,
-          tooltip: 'back',
-          icon: Icon(Icons.arrow_back_ios),
-          onPressed: ThrioNavigator.pop,
-        )),
-        systemOverlayStyle: SystemUiOverlayStyle.dark,
-      ),
-      body: NavigatorPageLifecycle(
-          willAppear: (final settings) {
-            ThrioLogger.v('page5 willAppear -> $settings');
-          },
-          didAppear: (final settings) {
-            ThrioLogger.v('page5 didAppear -> $settings');
-          },
-          willDisappear: (final settings) {
-            ThrioLogger.v('page5 willDisappear -> $settings');
-          },
-          didDisappear: (final settings) {
-            ThrioLogger.v('page5 didDisappear -> $settings');
-          },
-          child: NavigatorPageView(
-            routeSettings: <RouteSettings>[
-              NavigatorRouteSettings.settingsWith(
-                  url: biz.biz1.flutter1.home.url),
-              NavigatorRouteSettings.settingsWith(url: biz.biz1.flutter3.url),
-              NavigatorRouteSettings.settingsWith(url: biz.biz2.flutter2.url),
-              NavigatorRouteSettings.settingsWith(url: biz.biz2.flutter4.url),
-            ],
-          )));
+  bool get wantKeepAlive => true;
+
+  @override
+  void didAppear(final RouteSettings routeSettings) {
+    ThrioLogger.d('flutter5 didAppear: $routeSettings');
+  }
+
+  @override
+  void didDisappear(final RouteSettings routeSettings) {
+    ThrioLogger.d('flutter5 didDisappear: $routeSettings');
+  }
+
+  @override
+  Widget build(final BuildContext context) {
+    super.build(context);
+    return Scaffold(
+        appBar: AppBar(
+          backgroundColor: Colors.white,
+          title: const Text('page view example',
+              style: TextStyle(color: Colors.black)),
+          leading: context.showPopAwareWidget(const IconButton(
+            color: Colors.black,
+            tooltip: 'back',
+            icon: Icon(Icons.arrow_back_ios),
+            onPressed: ThrioNavigator.pop,
+          )),
+          systemOverlayStyle: SystemUiOverlayStyle.dark,
+        ),
+        body:
+            // NavigatorPageLifecycle(
+            //     didAppear: (final settings) {
+            //       ThrioLogger.v('page5 didAppear -> $settings');
+            //     },
+            //     didDisappear: (final settings) {
+            //       ThrioLogger.v('page5 didDisappear -> $settings');
+            //     },
+            // child:
+            NavigatorPageView(
+          routeSettings: <RouteSettings>[
+            NavigatorRouteSettings.settingsWith(
+                url: biz.biz1.flutter1.home.url),
+            NavigatorRouteSettings.settingsWith(url: biz.biz1.flutter3.url),
+            NavigatorRouteSettings.settingsWith(url: biz.biz2.flutter2.url),
+            NavigatorRouteSettings.settingsWith(url: biz.biz2.flutter4.url),
+          ],
+        ));
+  }
 }

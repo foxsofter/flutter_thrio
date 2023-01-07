@@ -59,7 +59,7 @@ ThrioNavigator.push(url: '/biz1/native1', animated:true);
 ThrioNavigator.push(
     url: '/biz/biz2/flutter2',
     params: {'1': {'2': '3'}},
-    poppedResult: (params) => ThrioLogger.v('/biz2/flutter2 popped: $params'),
+    poppedResult: (params) => verbose('/biz2/flutter2 popped: $params'),
 );
 ```
 
@@ -180,7 +180,7 @@ ThrioNavigator.notify(url, index, params)
 NavigatorPageNotify(
       name: 'page1Notify',
       onPageNotify: (params) =>
-          ThrioLogger.v('flutter1 receive notify: $params'),
+          verbose('flutter1 receive notify: $params'),
       child: Xxxx());
 ```
 

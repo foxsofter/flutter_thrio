@@ -26,7 +26,6 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 
 import '../exception/thrio_exception.dart';
-import '../logger/thrio_logger.dart';
 import '../navigator/navigator_logger.dart';
 import '../navigator/navigator_types.dart';
 import 'module_anchor.dart';
@@ -200,7 +199,7 @@ mixin ThrioModule {
       if (kDebugMode) {
         final sw = Stopwatch()..start();
         await module.onModuleInit(module._moduleContext);
-        ThrioLogger.v('init: ${module.key} = ${sw.elapsedMicroseconds} µs');
+        verbose('init: ${module.key} = ${sw.elapsedMicroseconds} µs');
         sw.stop();
       } else {
         await module.onModuleInit(module._moduleContext);

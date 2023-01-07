@@ -32,6 +32,7 @@ import '../module/module_types.dart';
 import '../module/thrio_module.dart';
 import 'navigator_logger.dart';
 import 'navigator_observer_manager.dart';
+import 'navigator_page.dart';
 import 'navigator_page_observer_channel.dart';
 import 'navigator_route.dart';
 import 'navigator_route_observer_channel.dart';
@@ -763,15 +764,36 @@ class ThrioNavigatorImplement {
   Future<bool> canPop() => _sendChannel.canPop();
 
   Widget? build<TParams>({
+    required final BuildContext context,
     required final String url,
-    final int index = 0,
+    final int? index,
     final TParams? params,
   }) {
-    final pageBuilder = ThrioModule.get<NavigatorPageBuilder>(url: url);
-    return pageBuilder?.call(RouteSettings(
-      name: '$index $url',
-      arguments: <String, dynamic>{'params': params},
-    ));
+    final settings = NavigatorRouteSettings.settingsWith(
+      url: url,
+      index: index,
+      params: params,
+    );
+    return buildWithSettings(
+      context: context,
+      settings: settings,
+    );
+  }
+
+  Widget? buildWithSettings<TParams>({
+    required final BuildContext context,
+    required final RouteSettings settings,
+    final bool? isSelected,
+  }) {
+    final pageBuilder =
+        ThrioModule.get<NavigatorPageBuilder>(url: settings.url);
+    if (pageBuilder == null) {
+      return null;
+    }
+    settings
+      ..parent = NavigatorPage.routeSettingsOf(context)
+      ..isSelected = isSelected;
+    return pageBuilder(settings);
   }
 
   Future<bool> isInitialRoute(

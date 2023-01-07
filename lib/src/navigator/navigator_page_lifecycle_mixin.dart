@@ -21,53 +21,68 @@
 
 import 'package:flutter/widgets.dart';
 
-import '../extension/thrio_build_context.dart';
-import '../extension/thrio_iterable.dart';
 import '../module/module_anchor.dart';
+import 'navigator_logger.dart';
 import 'navigator_page.dart';
 import 'navigator_page_observer.dart';
 import 'navigator_route_settings.dart';
 import 'navigator_types.dart';
-import 'navigator_widget.dart';
 
 mixin NavigatorPageLifecycleMixin<T extends StatefulWidget> on State<T> {
-  RouteSettings? _settings;
+  RouteSettings? _pageSettings;
   VoidCallback? _pageObserverCallback;
+
+  late RouteSettings _widgetSettings;
+  VoidCallback? _widgetObserverCallback;
+
+  bool _isInPage = false;
+
+  late final _widgetPageObserver = _WidgetLifecyclePageObserver(this);
 
   @override
   void initState() {
     super.initState();
     if (mounted) {
-      _settings = NavigatorRouteSettings.settingsWith(
-        url: NavigatorPage.urlOf(context),
-        index: NavigatorPage.indexOf(context),
+      _widgetSettings = NavigatorPage.routeSettingsOf(context);
+      _isInPage = _widgetSettings.parent != null;
+      if (_isInPage) {
+        _pageSettings = NavigatorPage.routeSettingsOf(
+          context,
+          pageModuleContext: true,
+        );
+        _pageObserverCallback = anchor.pageLifecycleObservers.registry(
+          _pageSettings!.url,
+          _PageLifecyclePageObserver(this),
+        );
+      }
+      _widgetObserverCallback = anchor.pageLifecycleObservers.registry(
+        _widgetSettings.url,
+        _widgetPageObserver,
       );
-      _pageObserverCallback ??= anchor.pageLifecycleObservers.registry(
-        _settings!.url,
-        _PageLifecyclePageObserver(this),
-      );
-      final state = context.tryStateOf<NavigatorWidgetState>();
-      if (state?.history.lastWhereOrNull(
-              (final it) => it.settings.name == _settings?.name) !=
-          null) {
-        Future(() => didAppear(_settings!));
+      if (!_isInPage) {
+        Future(() => didAppear(_widgetSettings));
       }
     }
   }
 
-  void didAppear(final RouteSettings settings) {}
+  void didAppear(final RouteSettings settings) {
+    verbose('NavigatorPageLifecycleMixin didAppear: $settings');
+  }
 
-  void didDisappear(final RouteSettings settings) {}
+  void didDisappear(final RouteSettings settings) {
+    verbose('NavigatorPageLifecycleMixin didDisappear: $settings');
+  }
 
   @override
   void dispose() {
     _pageObserverCallback?.call();
+    _widgetObserverCallback?.call();
     super.dispose();
   }
 }
 
-class _PageLifecyclePageObserver with NavigatorPageObserver {
-  const _PageLifecyclePageObserver(this.delegate);
+class _WidgetLifecyclePageObserver with NavigatorPageObserver {
+  const _WidgetLifecyclePageObserver(this.delegate);
 
   final NavigatorPageLifecycleMixin delegate;
 
@@ -87,9 +102,38 @@ class _PageLifecyclePageObserver with NavigatorPageObserver {
     final NavigatorPageObserverCallback? callback,
     final RouteSettings routeSettings,
   ) {
-    final settings = delegate._settings;
-    if (settings != null && settings.name == routeSettings.name) {
+    final settings = delegate._widgetSettings;
+    if (settings.name == routeSettings.name) {
       callback?.call(settings);
+    }
+  }
+}
+
+class _PageLifecyclePageObserver with NavigatorPageObserver {
+  const _PageLifecyclePageObserver(this.delegate);
+
+  final NavigatorPageLifecycleMixin delegate;
+
+  @override
+  void didAppear(final RouteSettings routeSettings) {
+    final callback = delegate._widgetPageObserver.didAppear;
+    _lifecycleCallback(callback, routeSettings);
+  }
+
+  @override
+  void didDisappear(final RouteSettings routeSettings) {
+    final callback = delegate._widgetPageObserver.didDisappear;
+    _lifecycleCallback(callback, routeSettings);
+  }
+
+  void _lifecycleCallback(
+    final NavigatorPageObserverCallback? callback,
+    final RouteSettings routeSettings,
+  ) {
+    final settings = delegate._pageSettings;
+    if (settings?.name == routeSettings.name &&
+        delegate._widgetSettings.isSelected != false) {
+      callback?.call(delegate._widgetSettings);
     }
   }
 }

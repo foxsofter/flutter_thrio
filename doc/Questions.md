@@ -63,7 +63,7 @@ NavigatorPageNotify(
       name: 'page1Notify',
       initialParams: widget.params['page1Notify'],
       onPageNotify: (params) =>
-          ThrioLogger.v('flutter1 receive notify:$params'),
+          verbose('flutter1 receive notify:$params'),
       …
 );
 ```

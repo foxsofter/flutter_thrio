@@ -29,20 +29,12 @@ abstract class NavigatorStatelessPage extends StatelessWidget
   const NavigatorStatelessPage({
     super.key,
     required this.moduleContext,
-    this.params,
-    required this.url,
-    this.index = 0,
+    required this.settings,
   });
 
   @override
   final ModuleContext moduleContext;
 
   @override
-  final dynamic params;
-
-  @override
-  final String url;
-
-  @override
-  final int index;
+  final RouteSettings settings;
 }

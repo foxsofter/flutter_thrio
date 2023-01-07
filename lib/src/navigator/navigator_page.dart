@@ -23,7 +23,6 @@ import 'package:flutter/widgets.dart';
 
 import '../exception/thrio_exception.dart';
 import '../extension/thrio_dynamic.dart';
-import '../extension/thrio_iterable.dart';
 import '../module/thrio_module.dart';
 import 'navigator_material_app.dart';
 import 'navigator_route_settings.dart';
@@ -32,29 +31,27 @@ import 'thrio_navigator_implement.dart';
 mixin NavigatorPage {
   ModuleContext get moduleContext;
 
-  dynamic get params;
-
-  String get url;
-
-  int get index;
+  RouteSettings get settings;
 
   /// Get parameter from params, throw ArgumentError when`key`'s value  not found .
   ///
-  T getParam<T>(final String key) => getValue(params, key);
+  T getParam<T>(final String key) => getValue(settings.params, key);
 
   /// Get parameter from params, return `defaultValue` when`key`'s value  not found .
   ///
   T getParamOrDefault<T>(final String key, final T defaultValue) =>
-      getValueOrDefault(params, key, defaultValue);
+      getValueOrDefault(settings.params, key, defaultValue);
 
   /// Get parameter from params.
   ///
-  T? getParamOrNull<T>(final String key) => getValueOrNull(params, key);
+  T? getParamOrNull<T>(final String key) =>
+      getValueOrNull(settings.params, key);
 
-  List<E> getListParam<E>(final String key) => getListValue<E>(params, key);
+  List<E> getListParam<E>(final String key) =>
+      getListValue<E>(settings.params, key);
 
   Map<K, V> getMapParam<K, V>(final String key) =>
-      getMapValue<K, V>(params, key);
+      getMapValue<K, V>(settings.params, key);
 
   /// Get moduleContext from current page.
   ///
@@ -63,9 +60,9 @@ mixin NavigatorPage {
   ///
   static ModuleContext moduleContextOf(
     final BuildContext context, {
-    final bool rootModuleContext = false,
+    final bool pageModuleContext = false,
   }) {
-    final page = of(context, rootModuleContext: rootModuleContext);
+    final page = of(context, pageModuleContext: pageModuleContext);
     if (page != null) {
       return page.moduleContext;
     }
@@ -96,10 +93,21 @@ mixin NavigatorPage {
   ///
   static dynamic paramsOf(
     final BuildContext context, {
-    final bool rootModuleContext = false,
+    final bool pageModuleContext = false,
   }) =>
-      of(context, rootModuleContext: rootModuleContext)?.params ??
-      (throw ThrioException('no params on the page'));
+      routeSettingsOf(context, pageModuleContext: pageModuleContext).params;
+
+  /// Get RouteSettings of current page.
+  ///
+  /// This method should not be called from [State.deactivate] or [State.dispose]
+  /// because the element tree is no longer stable at that time.
+  ///
+  static RouteSettings routeSettingsOf(
+    final BuildContext context, {
+    final bool pageModuleContext = false,
+  }) =>
+      of(context, pageModuleContext: pageModuleContext)?.settings ??
+      (throw ThrioException('no RouteSettings on the page'));
 
   /// Get url of current page.
   ///
@@ -108,10 +116,9 @@ mixin NavigatorPage {
   ///
   static String urlOf(
     final BuildContext context, {
-    final bool rootModuleContext = false,
+    final bool pageModuleContext = false,
   }) =>
-      of(context, rootModuleContext: rootModuleContext)?.url ??
-      (throw ThrioException('no url on the page'));
+      routeSettingsOf(context, pageModuleContext: pageModuleContext).url;
 
   /// Get index of current page.
   ///
@@ -120,24 +127,21 @@ mixin NavigatorPage {
   ///
   static int indexOf(
     final BuildContext context, {
-    final bool rootModuleContext = false,
+    final bool pageModuleContext = false,
   }) =>
-      of(context, rootModuleContext: rootModuleContext)?.index ??
-      (throw ThrioException('no index on the page'));
+      routeSettingsOf(context, pageModuleContext: pageModuleContext).index;
 
   static NavigatorPage? of(
     final BuildContext context, {
-    final bool rootModuleContext = false,
+    final bool pageModuleContext = false,
   }) {
     final allRoutes = ThrioNavigatorImplement.shared().allFlutterRoutes();
     NavigatorPage? page;
     final widget = context.widget;
     if (widget is NavigatorPage) {
       page = widget as NavigatorPage;
-      if (rootModuleContext) {
-        if (allRoutes.lastWhereOrNull(
-                (final it) => it.url == page?.url && it.index == page?.index) !=
-            null) {
+      if (pageModuleContext) {
+        if (allRoutes.any((final it) => it.name == page?.settings.name)) {
           return page;
         }
       } else {
@@ -149,10 +153,10 @@ mixin NavigatorPage {
       final widget = it.widget;
       if (widget is NavigatorPage) {
         page = widget as NavigatorPage;
-        if (rootModuleContext) {
-          return allRoutes.lastWhereOrNull((final it) =>
-                  it.url == page?.url && it.index == page?.index) !=
-              null;
+        if (pageModuleContext) {
+          if (allRoutes.any((final it) => it.name == page?.settings.name)) {
+            return false;
+          }
         }
         return false;
       }

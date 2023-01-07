@@ -14,9 +14,7 @@ class Flutter6Page extends NavigatorStatefulPage {
   const Flutter6Page({
     super.key,
     required super.moduleContext,
-    super.params,
-    required super.url,
-    super.index,
+    required super.settings,
   });
 
   @override
@@ -26,7 +24,7 @@ class Flutter6Page extends NavigatorStatefulPage {
 class _Flutter6PageState extends State<Flutter6Page> {
   @override
   void dispose() {
-    ThrioLogger.d('page6 dispose: ${widget.index}');
+    ThrioLogger.d('page6 dispose: ${widget.settings.index}');
     super.dispose();
   }
 
@@ -52,7 +50,7 @@ class _Flutter6PageState extends State<Flutter6Page> {
               margin: const EdgeInsets.only(top: 10, bottom: 20),
               alignment: AlignmentDirectional.center,
               child: Text(
-                'flutter6: index is ${widget.index}',
+                'flutter6: index is ${widget.settings.index}',
                 style: const TextStyle(fontSize: 28, color: Colors.blue),
               ),
             ),

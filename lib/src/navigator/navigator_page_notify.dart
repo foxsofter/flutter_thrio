@@ -23,16 +23,12 @@ import 'dart:async';
 
 import 'package:flutter/widgets.dart';
 
-import '../extension/thrio_build_context.dart';
-import '../extension/thrio_iterable.dart';
 import '../module/module_anchor.dart';
 import '../module/module_types.dart';
 import '../module/thrio_module.dart';
 import 'navigator_page.dart';
-import 'navigator_route.dart';
 import 'navigator_route_settings.dart';
 import 'navigator_types.dart';
-import 'navigator_widget.dart';
 import 'thrio_navigator_implement.dart';
 
 class NavigatorPageNotify extends StatefulWidget {
@@ -57,9 +53,10 @@ class NavigatorPageNotify extends StatefulWidget {
 }
 
 class _NavigatorPageNotifyState extends State<NavigatorPageNotify> {
-  NavigatorRoute? _route;
-
-  late final String url = NavigatorPage.urlOf(context);
+  late final RouteSettings settings = NavigatorPage.routeSettingsOf(
+    context,
+    pageModuleContext: true,
+  );
 
   StreamSubscription<dynamic>? _notifySubscription;
 
@@ -70,28 +67,14 @@ class _NavigatorPageNotifyState extends State<NavigatorPageNotify> {
       if (widget.initialParams != null) {
         widget.onPageNotify(widget.initialParams);
       }
+      _notifySubscription = ThrioNavigatorImplement.shared()
+          .onPageNotify(
+            url: settings.url,
+            index: settings.index,
+            name: widget.name,
+          )
+          .listen(_listen);
     }
-  }
-
-  @override
-  void didChangeDependencies() {
-    if (_route == null) {
-      final state = context.stateOf<NavigatorWidgetState>();
-      final route = state.history.lastWhereOrNull(
-        (final it) => it is NavigatorRoute && it.settings.url == url,
-      );
-      if (route is NavigatorRoute) {
-        _route = route;
-        _notifySubscription = ThrioNavigatorImplement.shared()
-            .onPageNotify(
-                url: route.settings.url,
-                index: route.settings.index,
-                name: widget.name)
-            .listen(_listen);
-      }
-    }
-
-    super.didChangeDependencies();
   }
 
   void _listen(final dynamic params) {

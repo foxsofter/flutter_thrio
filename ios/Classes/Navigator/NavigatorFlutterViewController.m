@@ -56,26 +56,16 @@ NS_ASSUME_NONNULL_BEGIN
     if (self) {
         self.thrio_hidesNavigationBar_ = @YES;
         self.hidesBottomBarWhenPushed = YES;
-        if (@available(iOS 13.0, *)) {
-            [[NSNotificationCenter defaultCenter] addObserver:self
-                                                     selector:@selector(viewDidAppearFromBackgroud)
-                                                         name:UISceneDidActivateNotification
-                                                       object:nil];
-            [[NSNotificationCenter defaultCenter] addObserver:self
-                                                     selector:@selector(viewDidDisappearFromForeground)
-                                                         name:UISceneDidEnterBackgroundNotification
-                                                       object:nil];
-            
-        } else {
-            [[NSNotificationCenter defaultCenter] addObserver:self
-                                                     selector:@selector(viewDidAppearFromBackgroud)
-                                                         name:UIApplicationDidBecomeActiveNotification
-                                                       object:nil];
-            [[NSNotificationCenter defaultCenter] addObserver:self
-                                                     selector:@selector(viewDidDisappearFromForeground)
-                                                         name:UIApplicationDidEnterBackgroundNotification
-                                                       object:nil];
-        }
+        
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(viewDidAppearFromBackgroud)
+                                                     name:UIApplicationDidBecomeActiveNotification
+                                                   object:nil];
+        [[NSNotificationCenter defaultCenter] addObserver:self
+                                                 selector:@selector(viewDidDisappearFromForeground)
+                                                     name:UIApplicationDidEnterBackgroundNotification
+                                                   object:nil];
+        
         
     }
     return self;

@@ -13,5 +13,7 @@ pages:
       - flutter2:
       - flutter4:
       - flutter6:
+      - flutter8:
+      - flutter10:
 
 language:

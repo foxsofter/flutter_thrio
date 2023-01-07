@@ -21,28 +21,18 @@
 
 import 'package:flutter/widgets.dart';
 
-import '../extension/thrio_build_context.dart';
-import '../extension/thrio_iterable.dart';
-import '../module/module_anchor.dart';
-import 'navigator_page.dart';
-import 'navigator_page_observer.dart';
-import 'navigator_route_settings.dart';
+import 'navigator_page_lifecycle_mixin.dart';
 import 'navigator_types.dart';
-import 'navigator_widget.dart';
 
 class NavigatorPageLifecycle extends StatefulWidget {
   const NavigatorPageLifecycle({
     super.key,
-    this.willAppear,
     this.didAppear,
-    this.willDisappear,
     this.didDisappear,
     required this.child,
   });
 
-  final NavigatorPageObserverCallback? willAppear;
   final NavigatorPageObserverCallback? didAppear;
-  final NavigatorPageObserverCallback? willDisappear;
   final NavigatorPageObserverCallback? didDisappear;
   final Widget child;
 
@@ -50,87 +40,18 @@ class NavigatorPageLifecycle extends StatefulWidget {
   _NavigatorPageLifecycleState createState() => _NavigatorPageLifecycleState();
 }
 
-class _NavigatorPageLifecycleState extends State<NavigatorPageLifecycle> {
-  RouteSettings? _settings;
-
-  VoidCallback? _pageObserverCallback;
-
-  bool get shouldObserver =>
-      widget.willAppear != null ||
-      widget.didAppear != null ||
-      widget.willDisappear != null ||
-      widget.didDisappear != null;
-
-  @override
-  void initState() {
-    super.initState();
-    if (mounted) {
-      _settings = NavigatorRouteSettings.settingsWith(
-        url: NavigatorPage.urlOf(context),
-        index: NavigatorPage.indexOf(context),
-      );
-      if (_pageObserverCallback == null && shouldObserver) {
-        _pageObserverCallback = anchor.pageLifecycleObservers.registry(
-          _settings!.url,
-          _PageLifecyclePageObserver(this),
-        );
-      }
-      final state = context.tryStateOf<NavigatorWidgetState>();
-      if (state?.history.lastWhereOrNull(
-              (final it) => it.settings.name == _settings?.name) !=
-          null) {
-        Future(() => widget.didAppear?.call(_settings!));
-      }
-    }
-  }
-
-  @override
-  void dispose() {
-    _pageObserverCallback?.call();
-    super.dispose();
-  }
-
+class _NavigatorPageLifecycleState extends State<NavigatorPageLifecycle>
+    with NavigatorPageLifecycleMixin {
   @override
   Widget build(final BuildContext context) => widget.child;
-}
-
-class _PageLifecyclePageObserver with NavigatorPageObserver {
-  const _PageLifecyclePageObserver(this.delegate);
-
-  final _NavigatorPageLifecycleState delegate;
 
   @override
-  void willAppear(final RouteSettings routeSettings) {
-    final callback = delegate.widget.willAppear;
-    _lifecycleCallback(callback, routeSettings);
+  void didAppear(final RouteSettings settings) {
+    widget.didAppear?.call(settings);
   }
 
   @override
-  void didAppear(final RouteSettings routeSettings) {
-    final callback = delegate.widget.didAppear;
-    _lifecycleCallback(callback, routeSettings);
-  }
-
-  @override
-  void willDisappear(final RouteSettings routeSettings) {
-    final callback = delegate.widget.willDisappear;
-    _lifecycleCallback(callback, routeSettings);
-  }
-
-  @override
-  void didDisappear(final RouteSettings routeSettings) {
-    final callback = delegate.widget.didDisappear;
-    _lifecycleCallback(callback, routeSettings);
-  }
-
-  void _lifecycleCallback(
-    final NavigatorPageObserverCallback? callback,
-    final RouteSettings routeSettings,
-  ) {
-    // url 相同，但只通知 name 相等的
-    final settings = delegate._settings;
-    if (settings != null && settings.name == routeSettings.name) {
-      callback?.call(settings);
-    }
+  void didDisappear(final RouteSettings settings) {
+    widget.didDisappear?.call(settings);
   }
 }

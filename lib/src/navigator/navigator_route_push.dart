@@ -21,8 +21,9 @@
 
 import 'package:flutter/widgets.dart';
 
-import '../../flutter_thrio.dart';
 import '../module/module_anchor.dart';
+import 'navigator_page_lifecycle_mixin.dart';
+import 'navigator_types.dart';
 
 class NavigatorRoutePush extends StatefulWidget {
   const NavigatorRoutePush({
@@ -47,7 +48,8 @@ class NavigatorRoutePush extends StatefulWidget {
   _NavigatorRoutePushState createState() => _NavigatorRoutePushState();
 }
 
-class _NavigatorRoutePushState extends State<NavigatorRoutePush> {
+class _NavigatorRoutePushState extends State<NavigatorRoutePush>
+    with NavigatorPageLifecycleMixin {
   VoidCallback? _registry;
   final _handles = <String, NavigatorRoutePushHandle>{};
 
@@ -69,17 +71,23 @@ class _NavigatorRoutePushState extends State<NavigatorRoutePush> {
   }
 
   @override
-  Widget build(final BuildContext context) => widget.alwaysTakeEffect
-      ? widget.child
-      : NavigatorPageLifecycle(
-          didAppear: (final _) {
-            _registry?.call();
-            _registry = anchor.pushHandlers.registryAll(_handles);
-          },
-          didDisappear: (final _) async {
-            _registry?.call();
-            _registry = null;
-          },
-          child: widget.child,
-        );
+  void didAppear(final RouteSettings settings) {
+    if (widget.alwaysTakeEffect) {
+      return;
+    }
+    _registry?.call();
+    _registry = anchor.pushHandlers.registryAll(_handles);
+  }
+
+  @override
+  void didDisappear(final RouteSettings settings) {
+    if (widget.alwaysTakeEffect) {
+      return;
+    }
+    _registry?.call();
+    _registry = null;
+  }
+
+  @override
+  Widget build(final BuildContext context) => widget.child;
 }
