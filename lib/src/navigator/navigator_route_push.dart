@@ -23,8 +23,6 @@ import 'package:flutter/widgets.dart';
 
 import '../../flutter_thrio.dart';
 import '../module/module_anchor.dart';
-import 'navigator_widget.dart';
-import 'thrio_navigator_implement.dart';
 
 class NavigatorRoutePush extends StatefulWidget {
   const NavigatorRoutePush({
@@ -32,30 +30,31 @@ class NavigatorRoutePush extends StatefulWidget {
     required this.urls,
     required this.onPush,
     required this.child,
+    this.alwaysTakeEffect = false,
   });
 
   final List<String> urls;
   final NavigatorRoutePushHandle onPush;
   final Widget child;
 
+  /// 表示是否总是拦截
+  ///
+  /// 默认为 false，表示在页面 disappear 后将不会生效
+  ///
+  final bool alwaysTakeEffect;
+
   @override
   _NavigatorRoutePushState createState() => _NavigatorRoutePushState();
 }
 
-class _NavigatorRoutePushState extends State<NavigatorRoutePush>
-    with WidgetsBindingObserver // ignore: prefer_mixin
-{
+class _NavigatorRoutePushState extends State<NavigatorRoutePush> {
   VoidCallback? _registry;
-  RouteSettings? _lastRouteSettings;
   final _handles = <String, NavigatorRoutePushHandle>{};
 
   @override
   void initState() {
     super.initState();
     if (mounted) {
-      WidgetsBinding.instance.addObserver(this);
-      _registry?.call();
-      _handles.clear();
       for (final url in widget.urls) {
         _handles[url] = widget.onPush;
       }
@@ -65,49 +64,22 @@ class _NavigatorRoutePushState extends State<NavigatorRoutePush>
 
   @override
   void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
     _registry?.call();
     super.dispose();
   }
 
   @override
-  void didChangeAppLifecycleState(final AppLifecycleState state) {
-    super.didChangeAppLifecycleState(state);
-    if (state == AppLifecycleState.inactive) {
-      final routeSettings = ThrioNavigatorImplement.shared().lastFlutterRoute();
-      if (routeSettings != null &&
-          routeSettings.name == _lastRouteSettings?.name) {
-        _registry?.call();
-        _registry = anchor.pushHandlers.registryAll(_handles);
-      }
-    }
-  }
-
-  @override
-  Widget build(final BuildContext context) => NavigatorPageLifecycle(
-        didAppear: (final _) {
-          if (_lastRouteSettings == null) {
-            final state = context.stateOf<NavigatorWidgetState>();
-            final route = state.history.last;
-            if (route is NavigatorRoute) {
-              _lastRouteSettings = route.settings;
-            }
-          }
-          _registry?.call();
-          _registry = anchor.pushHandlers.registryAll(_handles);
-        },
-        didDisappear: (final _) async {
-          _registry?.call();
-          _registry = null;
-          // 如果是被上层页面覆盖引起的，则顶部路由会变，如果是推到后台则不会变
-          // unawaited(Future.microtask(() async {
-          // final routeSettings = await ThrioNavigatorImplement.shared().lastRoute();
-          // if (routeSettings != null && routeSettings.name == _lastRouteSettings?.name) {
-          //   debugPrint('==== delayed');
-          //   _registry?.call();
-          //   _registry = anchor.pushHandlers.registryAll(_handles);
-          // }
-        },
-        child: widget.child,
-      );
+  Widget build(final BuildContext context) => widget.alwaysTakeEffect
+      ? widget.child
+      : NavigatorPageLifecycle(
+          didAppear: (final _) {
+            _registry?.call();
+            _registry = anchor.pushHandlers.registryAll(_handles);
+          },
+          didDisappear: (final _) async {
+            _registry?.call();
+            _registry = null;
+          },
+          child: widget.child,
+        );
 }
