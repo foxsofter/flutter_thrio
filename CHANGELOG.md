@@ -579,3 +579,7 @@
 
 - fix: lastWhereOrNull not reversed
 - feat: add alwaysTakeEffect for NavigatorRoutePush
+
+## 3.10.8
+
+- fix: revert lastWhereOrNull not reversed
