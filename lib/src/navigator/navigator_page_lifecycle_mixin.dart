@@ -132,13 +132,6 @@ class _PageLifecyclePageObserver with NavigatorPageObserver {
     final RouteSettings routeSettings,
   ) {
     final settings = delegate._pageSettings;
-    verbose('_pageSettings: ${delegate._pageSettings}');
-    verbose('_widgetSettings: ${delegate._widgetSettings}');
-    verbose(
-        '_widgetSettings.isSelected: ${delegate._widgetSettings.isSelected}');
-    verbose(
-        '_widgetSettings.isAppeared: ${delegate._widgetSettings.isAppeared}');
-
     if (settings.name == routeSettings.name &&
         delegate._widgetSettings.isSelected != false) {
       callback?.call(delegate._widgetSettings);
