@@ -208,12 +208,12 @@ class _Flutter3PageState extends State<Flutter3Page>
 
   @override
   void didAppear(final RouteSettings settings) {
-    ThrioLogger.v('flutter3 didAppear: $settings');
+    ThrioLogger.d('flutter3 didAppear: $settings');
   }
 
   @override
   void didDisappear(final RouteSettings settings) {
-    ThrioLogger.v('flutter3 didDisappear: $settings');
+    ThrioLogger.d('flutter3 didDisappear: $settings');
   }
 }
 

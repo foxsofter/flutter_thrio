@@ -43,11 +43,11 @@ class _Flutter10PageState extends State<Flutter10Page>
 
   @override
   void didAppear(final RouteSettings settings) {
-    ThrioLogger.v('flutter10 didAppear: $settings');
+    ThrioLogger.d('flutter10 didAppear: $settings');
   }
 
   @override
   void didDisappear(final RouteSettings settings) {
-    ThrioLogger.v('flutter10 didDisappear: $settings');
+    ThrioLogger.d('flutter10 didDisappear: $settings');
   }
 }

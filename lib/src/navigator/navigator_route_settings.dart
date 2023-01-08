@@ -29,6 +29,8 @@ final _parentOf = Expando<RouteSettings>();
 
 final _isSelectedOf = Expando<bool>();
 
+final _isAppearedOf = Expando<bool>();
+
 extension NavigatorRouteSettings on RouteSettings {
   static int _fakeIndex = 0x7fffffff;
 
@@ -50,6 +52,20 @@ extension NavigatorRouteSettings on RouteSettings {
       return;
     }
     _isSelectedOf[this] = selected;
+  }
+
+  bool? get isAppeared {
+    if (parent == null) {
+      return null;
+    }
+    return _isAppearedOf[this];
+  }
+
+  set isAppeared(final bool? appeared) {
+    if (parent == null) {
+      return;
+    }
+    _isAppearedOf[this] = appeared;
   }
 
   /// Construct RouteSettings with url, index, params.

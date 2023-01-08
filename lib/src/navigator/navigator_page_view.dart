@@ -23,6 +23,8 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 import '../module/module_anchor.dart';
+import 'navigator_page.dart';
+import 'navigator_page_observer.dart';
 import 'navigator_route_settings.dart';
 import 'thrio_navigator_implement.dart';
 
@@ -81,7 +83,8 @@ class NavigatorPageView extends StatefulWidget {
   State<NavigatorPageView> createState() => _NavigatorPageViewState();
 }
 
-class _NavigatorPageViewState extends State<NavigatorPageView> {
+class _NavigatorPageViewState extends State<NavigatorPageView>
+    with NavigatorPageObserver {
   late final controller = widget.controller ?? PageController();
 
   late RouteSettings current = widget.routeSettings[controller.initialPage];
@@ -90,13 +93,32 @@ class _NavigatorPageViewState extends State<NavigatorPageView> {
 
   Future<void>? onPageChangedFuture;
 
+  VoidCallback? _parentPageObserverCallback;
+  late RouteSettings _parentPageSettings;
+
+  @override
+  void didAppear(final RouteSettings routeSettings) {
+    if (routeSettings.name == _parentPageSettings.name) {
+      _changedToAppear(current);
+    }
+  }
+
+  @override
+  void didDisappear(final RouteSettings routeSettings) {
+    if (routeSettings.name == _parentPageSettings.name) {
+      _changedToDisappear(current);
+    }
+  }
+
   @override
   void initState() {
     super.initState();
     if (mounted) {
-      Future(() {
-        _changedToAppear(current);
-      });
+      _parentPageSettings = NavigatorPage.routeSettingsOf(context);
+      if (_parentPageSettings.parent != null) {
+        _parentPageObserverCallback = anchor.pageLifecycleObservers
+            .registry(_parentPageSettings.url, this);
+      }
     }
   }
 
@@ -105,6 +127,7 @@ class _NavigatorPageViewState extends State<NavigatorPageView> {
     if (widget.controller == null) {
       controller.dispose();
     }
+    _parentPageObserverCallback?.call();
     super.dispose();
   }
 
@@ -151,8 +174,13 @@ class _NavigatorPageViewState extends State<NavigatorPageView> {
         Future.delayed(const Duration(milliseconds: 120), () {
       final routeSettings = widget.routeSettings[currentIndex];
       if (routeSettings.name != current.name) {
-        final oldRouteSettings = current..isSelected = false;
+        final oldRouteSettings = current;
         current = routeSettings..isSelected = true;
+        for (final it in widget.routeSettings) {
+          if (it.name != current.name) {
+            it.isSelected = false;
+          }
+        }
         widget.onPageChanged?.call(routeSettings);
         _changedToDisappear(oldRouteSettings);
         _changedToAppear(routeSettings);
@@ -164,14 +192,16 @@ class _NavigatorPageViewState extends State<NavigatorPageView> {
   void _changedToAppear(final RouteSettings routeSettings) {
     final obs = anchor.pageLifecycleObservers[routeSettings.url];
     for (final ob in obs) {
-      Future(() => ob.didAppear(routeSettings));
+      if (ob != this) {
+        ob.didAppear(routeSettings);
+      }
     }
   }
 
   void _changedToDisappear(final RouteSettings routeSettings) {
     final obs = anchor.pageLifecycleObservers[routeSettings.url];
     for (final ob in obs) {
-      Future(() => ob.didDisappear(routeSettings));
+      ob.didDisappear(routeSettings);
     }
   }
 }

@@ -26,7 +26,6 @@ import '../extension/thrio_dynamic.dart';
 import '../module/thrio_module.dart';
 import 'navigator_material_app.dart';
 import 'navigator_route_settings.dart';
-import 'thrio_navigator_implement.dart';
 
 mixin NavigatorPage {
   ModuleContext get moduleContext;
@@ -135,13 +134,12 @@ mixin NavigatorPage {
     final BuildContext context, {
     final bool pageModuleContext = false,
   }) {
-    final allRoutes = ThrioNavigatorImplement.shared().allFlutterRoutes();
     NavigatorPage? page;
     final widget = context.widget;
     if (widget is NavigatorPage) {
       page = widget as NavigatorPage;
       if (pageModuleContext) {
-        if (allRoutes.any((final it) => it.name == page?.settings.name)) {
+        if (page.settings.parent == null) {
           return page;
         }
       } else {
@@ -154,9 +152,7 @@ mixin NavigatorPage {
       if (widget is NavigatorPage) {
         page = widget as NavigatorPage;
         if (pageModuleContext) {
-          if (allRoutes.any((final it) => it.name == page?.settings.name)) {
-            return false;
-          }
+            return page?.settings.parent != null;
         }
         return false;
       }

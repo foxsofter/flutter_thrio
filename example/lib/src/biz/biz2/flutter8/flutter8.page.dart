@@ -21,7 +21,18 @@ class Flutter8Page extends NavigatorStatefulPage {
   _Flutter8PageState createState() => _Flutter8PageState();
 }
 
-class _Flutter8PageState extends State<Flutter8Page> {
+class _Flutter8PageState extends State<Flutter8Page>
+    with NavigatorPageLifecycleMixin {
+  @override
+  void didAppear(final RouteSettings settings) {
+    ThrioLogger.d('flutter8 didAppear: $settings');
+  }
+
+  @override
+  void didDisappear(final RouteSettings settings) {
+    ThrioLogger.d('flutter8 didDisappear: $settings');
+  }
+
   @override
   Widget build(final BuildContext context) => Scaffold(
         appBar: AppBar(
