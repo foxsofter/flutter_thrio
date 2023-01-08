@@ -37,6 +37,8 @@ mixin NavigatorPageLifecycleMixin<T extends StatefulWidget> on State<T> {
 
   bool _isInPage = false;
 
+  bool? _isAppeared;
+
   late final _widgetPageObserver = _WidgetLifecyclePageObserver(this);
 
   @override
@@ -62,7 +64,7 @@ mixin NavigatorPageLifecycleMixin<T extends StatefulWidget> on State<T> {
       if (!_isInPage || (_isInPage && _widgetSettings.isSelected != false)) {
         Future(() {
           didAppear(_widgetSettings);
-          _widgetSettings.isAppeared = true;
+          _isAppeared = true;
         });
       }
     }
@@ -92,20 +94,20 @@ class _WidgetLifecyclePageObserver with NavigatorPageObserver {
   @override
   void didAppear(final RouteSettings routeSettings) {
     final settings = delegate._widgetSettings;
-    if (settings.name == routeSettings.name &&
-        delegate._widgetSettings.isAppeared != true) {
-      delegate.didAppear(settings);
-      delegate._widgetSettings.isAppeared = true;
+    if (settings.name == routeSettings.name && delegate._isAppeared != true) {
+      delegate
+        ..didAppear(settings)
+        .._isAppeared = true;
     }
   }
 
   @override
   void didDisappear(final RouteSettings routeSettings) {
     final settings = delegate._widgetSettings;
-    if (settings.name == routeSettings.name &&
-        delegate._widgetSettings.isAppeared != false) {
-      delegate.didDisappear(settings);
-      delegate._widgetSettings.isAppeared = false;
+    if (settings.name == routeSettings.name && delegate._isAppeared != false) {
+      delegate
+        ..didDisappear(settings)
+        .._isAppeared = false;
     }
   }
 }

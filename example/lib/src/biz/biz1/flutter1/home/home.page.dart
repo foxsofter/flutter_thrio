@@ -291,27 +291,27 @@ class _HomePageState extends State<HomePage>
                                     fontSize: 22, color: Colors.black),
                               )),
                         ),
-                        // NavigatorPageLifecycle(
-                        //     didAppear: (final settings) {
-                        //       ThrioLogger.v('home  didAppear -> $settings');
-                        //     },
-                        //     didDisappear: (final settings) {
-                        //       ThrioLogger.v(
-                        //           'home  didDisappear -> $settings');
-                        //     },
-                        //     child:
-                        StreamBuilder<Object>(
-                            stream: widget.moduleContext.on('stringKeyBiz1'),
-                            builder: (final context, final snapshot) =>
-                                Container(
-                                    padding: const EdgeInsets.all(8),
-                                    margin: const EdgeInsets.all(8),
-                                    color: Colors.grey,
-                                    child: Text(
-                                      '${snapshot.data}',
-                                      style: const TextStyle(
-                                          fontSize: 22, color: Colors.black),
-                                    )))
+                        NavigatorPageLifecycle(
+                            didAppear: (final settings) {
+                              ThrioLogger.v('home  didAppear -> $settings');
+                            },
+                            didDisappear: (final settings) {
+                              ThrioLogger.v('home  didDisappear -> $settings');
+                            },
+                            child: StreamBuilder<Object>(
+                                stream:
+                                    widget.moduleContext.on('stringKeyBiz1'),
+                                builder: (final context, final snapshot) =>
+                                    Container(
+                                        padding: const EdgeInsets.all(8),
+                                        margin: const EdgeInsets.all(8),
+                                        color: Colors.grey,
+                                        child: Text(
+                                          '${snapshot.data}',
+                                          style: const TextStyle(
+                                              fontSize: 22,
+                                              color: Colors.black),
+                                        ))))
                       ]),
                     ),
                   )))),

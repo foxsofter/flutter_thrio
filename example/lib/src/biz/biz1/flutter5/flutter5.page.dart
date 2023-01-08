@@ -58,23 +58,21 @@ class _Flutter5PageState extends State<Flutter5Page>
           )),
           systemOverlayStyle: SystemUiOverlayStyle.dark,
         ),
-        body:
-            // NavigatorPageLifecycle(
-            //     didAppear: (final settings) {
-            //       ThrioLogger.v('page5 didAppear -> $settings');
-            //     },
-            //     didDisappear: (final settings) {
-            //       ThrioLogger.v('page5 didDisappear -> $settings');
-            //     },
-            // child:
-            NavigatorPageView(
-          routeSettings: <RouteSettings>[
-            NavigatorRouteSettings.settingsWith(
-                url: biz.biz1.flutter1.home.url),
-            NavigatorRouteSettings.settingsWith(url: biz.biz1.flutter3.url),
-            NavigatorRouteSettings.settingsWith(url: biz.biz2.flutter2.url),
-            NavigatorRouteSettings.settingsWith(url: biz.biz2.flutter4.url),
-          ],
-        ));
+        body: NavigatorPageLifecycle(
+            didAppear: (final settings) {
+              ThrioLogger.v('page5 didAppear -> $settings');
+            },
+            didDisappear: (final settings) {
+              ThrioLogger.v('page5 didDisappear -> $settings');
+            },
+            child: NavigatorPageView(
+              routeSettings: <RouteSettings>[
+                NavigatorRouteSettings.settingsWith(
+                    url: biz.biz1.flutter1.home.url),
+                NavigatorRouteSettings.settingsWith(url: biz.biz1.flutter3.url),
+                NavigatorRouteSettings.settingsWith(url: biz.biz2.flutter2.url),
+                NavigatorRouteSettings.settingsWith(url: biz.biz2.flutter4.url),
+              ],
+            )));
   }
 }

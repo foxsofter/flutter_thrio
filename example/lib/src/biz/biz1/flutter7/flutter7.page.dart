@@ -25,7 +25,7 @@ class _Flutter7PageState extends State<Flutter7Page>
         SingleTickerProviderStateMixin,
         NavigatorPageLifecycleMixin,
         AutomaticKeepAliveClientMixin {
-  late final controller = TabController(length: 4, vsync: this);
+  late final controller = TabController(length: 5, vsync: this);
 
   @override
   void dispose() {
@@ -59,35 +59,34 @@ class _Flutter7PageState extends State<Flutter7Page>
           )),
           bottom: TabBar(
             controller: controller,
-            indicatorColor: Colors.black,
+            indicatorColor: Colors.white,
             tabs: const <Tab>[
-              Tab(text: 'flutter1'),
               Tab(text: 'flutter5'),
+              Tab(text: 'flutter1'),
               Tab(text: 'flutter2'),
+              Tab(text: 'flutter3'),
               Tab(text: 'flutter4'),
             ],
           ),
         ),
-        body:
-            //  NavigatorPageLifecycle(
-            //     didAppear: (final settings) {
-            //       ThrioLogger.v('page7 didAppear -> $settings');
-            //     },
-            //     didDisappear: (final settings) {
-            //       ThrioLogger.v('page7 didDisappear -> $settings');
-            //     },
-            //     child:
-            NavigatorTabBarView(
-          controller: controller,
-          routeSettings: <RouteSettings>[
-            NavigatorRouteSettings.settingsWith(
-                url: biz.biz1.flutter1.home.url),
-            NavigatorRouteSettings.settingsWith(url: biz.biz1.flutter5.url),
-            NavigatorRouteSettings.settingsWith(url: biz.biz2.flutter2.url),
-            NavigatorRouteSettings.settingsWith(
-                url: biz.biz2.flutter4.url, params: {}),
-          ],
-        ));
+        body: NavigatorPageLifecycle(
+            didAppear: (final settings) {
+              ThrioLogger.v('page7 didAppear -> $settings');
+            },
+            didDisappear: (final settings) {
+              ThrioLogger.v('page7 didDisappear -> $settings');
+            },
+            child: NavigatorTabBarView(
+              controller: controller,
+              routeSettings: <RouteSettings>[
+                NavigatorRouteSettings.settingsWith(url: biz.biz1.flutter5.url),
+                NavigatorRouteSettings.settingsWith(
+                    url: biz.biz1.flutter1.home.url),
+                NavigatorRouteSettings.settingsWith(url: biz.biz2.flutter2.url),
+                NavigatorRouteSettings.settingsWith(url: biz.biz1.flutter3.url),
+                NavigatorRouteSettings.settingsWith(url: biz.biz2.flutter4.url),
+              ],
+            )));
   }
 
   @override

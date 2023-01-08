@@ -37,7 +37,7 @@ class _Flutter10PageState extends State<Flutter10Page>
         ),
         body: const SizedBox(
           height: 100,
-          child: Text('url not found'),
+          child: Text('flutter 10'),
         ),
       );
 
