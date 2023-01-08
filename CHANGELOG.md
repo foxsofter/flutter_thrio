@@ -583,3 +583,8 @@
 ## 3.10.8
 
 - fix: revert lastWhereOrNull not reversed
+
+## 3.11.0
+
+- refactor: 重构页面生命周期的实现
+- fix: 修复一些累积bug
