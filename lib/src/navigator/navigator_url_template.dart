@@ -37,7 +37,7 @@ class NavigatorUrlTemplate {
     } else if (parts.length == 2) {
       scheme = parts[0].toLowerCase();
       host = parts[1].split('/')[0];
-      path = parts[1].replaceAll(host, '');
+      path = parts[1].replaceFirst(host, '');
     } else {
       scheme = '';
       host = '';
