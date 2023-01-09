@@ -43,11 +43,6 @@ mixin NavigatorPageLifecycleMixin<T extends StatefulWidget> on State<T> {
     if (mounted) {
       var settings = NavigatorPage.routeSettingsOf(context);
       _current = settings;
-      _currentObserverCallback = anchor.pageLifecycleObservers.registry(
-        _current.url,
-        _currentObserver,
-      );
-
       while (settings.parent != null) {
         settings = settings.parent!;
         if (settings.isSelected != null) {
@@ -59,6 +54,11 @@ mixin NavigatorPageLifecycleMixin<T extends StatefulWidget> on State<T> {
         _anchorObserverCallback = anchor.pageLifecycleObservers.registry(
           _anchor.url,
           _AnchorLifecycleObserver(this),
+        );
+      } else {
+        _currentObserverCallback = anchor.pageLifecycleObservers.registry(
+          _current.url,
+          _currentObserver,
         );
       }
 
