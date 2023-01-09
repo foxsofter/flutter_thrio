@@ -29,43 +29,41 @@ import 'navigator_route_settings.dart';
 import 'navigator_types.dart';
 
 mixin NavigatorPageLifecycleMixin<T extends StatefulWidget> on State<T> {
-  late RouteSettings _pageSettings;
-  VoidCallback? _pageObserverCallback;
+  late RouteSettings _current;
+  VoidCallback? _currentObserverCallback;
 
-  late RouteSettings _widgetSettings;
-  VoidCallback? _widgetObserverCallback;
+  late RouteSettings _anchor;
+  VoidCallback? _anchorObserverCallback;
 
-  bool _isInPage = false;
-
-  bool? _isAppeared;
-
-  late final _widgetPageObserver = _WidgetLifecyclePageObserver(this);
+  late final _currentObserver = _CurrentLifecycleObserver(this);
 
   @override
   void initState() {
     super.initState();
     if (mounted) {
-      _widgetSettings = NavigatorPage.routeSettingsOf(context);
-      _pageSettings = NavigatorPage.routeSettingsOf(
-        context,
-        pageModuleContext: true,
+      var settings = NavigatorPage.routeSettingsOf(context);
+      _current = settings;
+      _currentObserverCallback = anchor.pageLifecycleObservers.registry(
+        _current.url,
+        _currentObserver,
       );
-      _isInPage = _pageSettings.name != _widgetSettings.name;
-      if (_isInPage) {
-        _pageObserverCallback = anchor.pageLifecycleObservers.registry(
-          _pageSettings.url,
-          _PageLifecyclePageObserver(this),
+
+      while (settings.parent != null) {
+        settings = settings.parent!;
+        if (settings.isSelected != null) {
+          break;
+        }
+      }
+      _anchor = settings;
+      if (_current.name != _anchor.name) {
+        _anchorObserverCallback = anchor.pageLifecycleObservers.registry(
+          _anchor.url,
+          _AnchorLifecycleObserver(this),
         );
       }
-      _widgetObserverCallback = anchor.pageLifecycleObservers.registry(
-        _widgetSettings.url,
-        _widgetPageObserver,
-      );
-      if (!_isInPage || (_isInPage && _widgetSettings.isSelected != false)) {
-        Future(() {
-          didAppear(_widgetSettings);
-          _isAppeared = true;
-        });
+
+      if (_current.parent == null || _current.isSelected != false) {
+        Future(() => didAppear(_current));
       }
     }
   }
@@ -80,52 +78,46 @@ mixin NavigatorPageLifecycleMixin<T extends StatefulWidget> on State<T> {
 
   @override
   void dispose() {
-    _pageObserverCallback?.call();
-    _widgetObserverCallback?.call();
+    _currentObserverCallback?.call();
+    _anchorObserverCallback?.call();
     super.dispose();
   }
 }
 
-class _WidgetLifecyclePageObserver with NavigatorPageObserver {
-  const _WidgetLifecyclePageObserver(this.delegate);
+class _CurrentLifecycleObserver with NavigatorPageObserver {
+  _CurrentLifecycleObserver(this.delegate);
 
   final NavigatorPageLifecycleMixin delegate;
 
   @override
   void didAppear(final RouteSettings routeSettings) {
-    final settings = delegate._widgetSettings;
-    if (settings.name == routeSettings.name && delegate._isAppeared != true) {
-      delegate
-        ..didAppear(settings)
-        .._isAppeared = true;
+    if (delegate._current.name == routeSettings.name) {
+      delegate.didAppear(routeSettings);
     }
   }
 
   @override
   void didDisappear(final RouteSettings routeSettings) {
-    final settings = delegate._widgetSettings;
-    if (settings.name == routeSettings.name && delegate._isAppeared != false) {
-      delegate
-        ..didDisappear(settings)
-        .._isAppeared = false;
+    if (delegate._current.name == routeSettings.name) {
+      delegate.didDisappear(routeSettings);
     }
   }
 }
 
-class _PageLifecyclePageObserver with NavigatorPageObserver {
-  const _PageLifecyclePageObserver(this.delegate);
+class _AnchorLifecycleObserver with NavigatorPageObserver {
+  const _AnchorLifecycleObserver(this.delegate);
 
   final NavigatorPageLifecycleMixin delegate;
 
   @override
   void didAppear(final RouteSettings routeSettings) {
-    final callback = delegate._widgetPageObserver.didAppear;
+    final callback = delegate._currentObserver.didAppear;
     _lifecycleCallback(callback, routeSettings);
   }
 
   @override
   void didDisappear(final RouteSettings routeSettings) {
-    final callback = delegate._widgetPageObserver.didDisappear;
+    final callback = delegate._currentObserver.didDisappear;
     _lifecycleCallback(callback, routeSettings);
   }
 
@@ -133,10 +125,10 @@ class _PageLifecyclePageObserver with NavigatorPageObserver {
     final NavigatorPageObserverCallback? callback,
     final RouteSettings routeSettings,
   ) {
-    final settings = delegate._pageSettings;
+    final settings = delegate._anchor;
     if (settings.name == routeSettings.name &&
-        delegate._widgetSettings.isSelected != false) {
-      callback?.call(delegate._widgetSettings);
+        delegate._current.isSelected != false) {
+      callback?.call(delegate._current);
     }
   }
 }

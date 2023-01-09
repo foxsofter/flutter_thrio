@@ -93,19 +93,19 @@ class _NavigatorPageViewState extends State<NavigatorPageView>
 
   Future<void>? onPageChangedFuture;
 
-  VoidCallback? _parentPageObserverCallback;
-  late RouteSettings _parentPageSettings;
+  VoidCallback? _anchorObserverCallback;
+  late RouteSettings _anchor;
 
   @override
   void didAppear(final RouteSettings routeSettings) {
-    if (routeSettings.name == _parentPageSettings.name) {
+    if (routeSettings.name == _anchor.name) {
       _changedToAppear(current);
     }
   }
 
   @override
   void didDisappear(final RouteSettings routeSettings) {
-    if (routeSettings.name == _parentPageSettings.name) {
+    if (routeSettings.name == _anchor.name) {
       _changedToDisappear(current);
     }
   }
@@ -114,11 +114,15 @@ class _NavigatorPageViewState extends State<NavigatorPageView>
   void initState() {
     super.initState();
     if (mounted) {
-      _parentPageSettings = NavigatorPage.routeSettingsOf(context);
-      if (_parentPageSettings.parent != null) {
-        _parentPageObserverCallback = anchor.pageLifecycleObservers
-            .registry(_parentPageSettings.url, this);
+      _anchor = NavigatorPage.routeSettingsOf(context);
+      while (_anchor.parent != null) {
+        _anchor = _anchor.parent!;
+        if (_anchor.isSelected != null) {
+          break;
+        }
       }
+      _anchorObserverCallback =
+          anchor.pageLifecycleObservers.registry(_anchor.url, this);
     }
   }
 
@@ -127,7 +131,7 @@ class _NavigatorPageViewState extends State<NavigatorPageView>
     if (widget.controller == null) {
       controller.dispose();
     }
-    _parentPageObserverCallback?.call();
+    _anchorObserverCallback?.call();
     super.dispose();
   }
 
@@ -201,7 +205,9 @@ class _NavigatorPageViewState extends State<NavigatorPageView>
   void _changedToDisappear(final RouteSettings routeSettings) {
     final obs = anchor.pageLifecycleObservers[routeSettings.url];
     for (final ob in obs) {
-      ob.didDisappear(routeSettings);
+      if (ob != this) {
+        ob.didDisappear(routeSettings);
+      }
     }
   }
 }

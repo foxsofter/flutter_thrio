@@ -65,7 +65,7 @@ class _Flutter7PageState extends State<Flutter7Page>
               Tab(text: 'flutter1'),
               Tab(text: 'flutter2'),
               Tab(text: 'flutter3'),
-              Tab(text: 'flutter4'),
+              Tab(text: 'flutter8'),
             ],
           ),
         ),
@@ -84,7 +84,7 @@ class _Flutter7PageState extends State<Flutter7Page>
                     url: biz.biz1.flutter1.home.url),
                 NavigatorRouteSettings.settingsWith(url: biz.biz2.flutter2.url),
                 NavigatorRouteSettings.settingsWith(url: biz.biz1.flutter3.url),
-                NavigatorRouteSettings.settingsWith(url: biz.biz2.flutter4.url),
+                NavigatorRouteSettings.settingsWith(url: biz.biz2.flutter8.url),
               ],
             )));
   }
