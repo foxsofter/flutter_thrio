@@ -23,8 +23,6 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 import '../module/module_anchor.dart';
-import 'navigator_page.dart';
-import 'navigator_page_observer.dart';
 import 'navigator_route_settings.dart';
 import 'thrio_navigator_implement.dart';
 
@@ -83,8 +81,7 @@ class NavigatorPageView extends StatefulWidget {
   State<NavigatorPageView> createState() => _NavigatorPageViewState();
 }
 
-class _NavigatorPageViewState extends State<NavigatorPageView>
-    with NavigatorPageObserver {
+class _NavigatorPageViewState extends State<NavigatorPageView> {
   late final controller = widget.controller ?? PageController();
 
   late RouteSettings current = widget.routeSettings[controller.initialPage];
@@ -93,36 +90,16 @@ class _NavigatorPageViewState extends State<NavigatorPageView>
 
   Future<void>? onPageChangedFuture;
 
-  VoidCallback? _anchorObserverCallback;
-  late RouteSettings _anchor;
-
-  @override
-  void didAppear(final RouteSettings routeSettings) {
-    if (routeSettings.name == _anchor.name) {
-      _changedToAppear(current);
-    }
-  }
-
-  @override
-  void didDisappear(final RouteSettings routeSettings) {
-    if (routeSettings.name == _anchor.name) {
-      _changedToDisappear(current);
-    }
-  }
-
   @override
   void initState() {
     super.initState();
     if (mounted) {
-      _anchor = NavigatorPage.routeSettingsOf(context);
-      while (_anchor.parent != null) {
-        _anchor = _anchor.parent!;
-        if (_anchor.isSelected != null) {
-          break;
+      current.isSelected = true;
+      for (final it in widget.routeSettings) {
+        if (it.name != current.name) {
+          it.isSelected = false;
         }
       }
-      _anchorObserverCallback =
-          anchor.pageLifecycleObservers.registry(_anchor.url, this);
     }
   }
 
@@ -131,7 +108,6 @@ class _NavigatorPageViewState extends State<NavigatorPageView>
     if (widget.controller == null) {
       controller.dispose();
     }
-    _anchorObserverCallback?.call();
     super.dispose();
   }
 
@@ -151,12 +127,9 @@ class _NavigatorPageViewState extends State<NavigatorPageView>
         scrollBehavior: widget.scrollBehavior,
         padEnds: widget.padEnds,
         children: widget.routeSettings.map((final it) {
-          final isSelected =
-              widget.routeSettings.indexOf(it) == controller.initialPage;
           var w = ThrioNavigatorImplement.shared().buildWithSettings(
             context: context,
             settings: it,
-            isSelected: isSelected,
           );
           if (w == null) {
             throw ArgumentError.value(
@@ -179,15 +152,12 @@ class _NavigatorPageViewState extends State<NavigatorPageView>
       final routeSettings = widget.routeSettings[currentIndex];
       if (routeSettings.name != current.name) {
         final oldRouteSettings = current;
-        current = routeSettings..isSelected = true;
-        for (final it in widget.routeSettings) {
-          if (it.name != current.name) {
-            it.isSelected = false;
-          }
-        }
+        current = routeSettings;
         widget.onPageChanged?.call(routeSettings);
         _changedToDisappear(oldRouteSettings);
-        _changedToAppear(routeSettings);
+        oldRouteSettings.isSelected = false;
+        current.isSelected = true;
+        _changedToAppear(current);
       }
       onPageChangedFuture = null;
     });
@@ -196,7 +166,7 @@ class _NavigatorPageViewState extends State<NavigatorPageView>
   void _changedToAppear(final RouteSettings routeSettings) {
     final obs = anchor.pageLifecycleObservers[routeSettings.url];
     for (final ob in obs) {
-      if (ob != this) {
+      if (ob.settings == null || ob.settings?.name == routeSettings.name) {
         ob.didAppear(routeSettings);
       }
     }
@@ -205,7 +175,7 @@ class _NavigatorPageViewState extends State<NavigatorPageView>
   void _changedToDisappear(final RouteSettings routeSettings) {
     final obs = anchor.pageLifecycleObservers[routeSettings.url];
     for (final ob in obs) {
-      if (ob != this) {
+      if (ob.settings == null || ob.settings?.name == routeSettings.name) {
         ob.didDisappear(routeSettings);
       }
     }

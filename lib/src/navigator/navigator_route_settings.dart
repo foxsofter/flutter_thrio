@@ -23,8 +23,6 @@
 
 import 'package:flutter/widgets.dart';
 
-/// Associate parent RouteSettings to current RouteSettings.
-///
 final _parentOf = Expando<RouteSettings>();
 
 final _isSelectedOf = Expando<bool>();
@@ -32,25 +30,7 @@ final _isSelectedOf = Expando<bool>();
 extension NavigatorRouteSettings on RouteSettings {
   static int _fakeIndex = 0x7fffffff;
 
-  RouteSettings? get parent => _parentOf[this];
-
-  set parent(final RouteSettings? parent) {
-    _parentOf[this] = parent;
-  }
-
-  bool? get isSelected {
-    if (parent == null) {
-      return null;
-    }
-    return _isSelectedOf[this];
-  }
-
-  set isSelected(final bool? selected) {
-    if (parent == null) {
-      return;
-    }
-    _isSelectedOf[this] = selected;
-  }
+  static RouteSettings get nullSettings => const RouteSettings(name: '');
 
   /// Construct RouteSettings with url, index, params.
   ///
@@ -108,6 +88,23 @@ extension NavigatorRouteSettings on RouteSettings {
         'index': index,
         'params': params,
       };
+
+  RouteSettings? get parent => _parentOf[this];
+
+  set parent(final RouteSettings? parent) {
+    _parentOf[this] = parent;
+  }
+
+  bool? get isSelected {
+    if (parent == null) {
+      return null;
+    }
+    return _isSelectedOf[this];
+  }
+
+  set isSelected(final bool? selected) {
+    _isSelectedOf[this] = selected;
+  }
 
   String get url {
     final settingsName = name;

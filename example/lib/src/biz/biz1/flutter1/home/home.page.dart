@@ -41,13 +41,13 @@ class _HomePageState extends State<HomePage>
 
   @override
   void didAppear(final RouteSettings routeSettings) {
-    ThrioLogger.d('flutter1 didAppear: $routeSettings');
+    ThrioLogger.d('flutter1 didAppear: $routeSettings ');
     // \n ${StackTrace.current}
   }
 
   @override
   void didDisappear(final RouteSettings routeSettings) {
-    ThrioLogger.d('flutter1 didDisappear: $routeSettings');
+    ThrioLogger.d('flutter1 didDisappear: $routeSettings ');
   }
 
   @override

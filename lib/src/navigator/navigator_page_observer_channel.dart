@@ -95,7 +95,10 @@ class NavigatorPageObserverChannel {
           final observers =
               ThrioModule.gets<NavigatorPageObserver>(url: routeSettings.url);
           for (final observer in observers) {
-            callback(observer, routeSettings);
+            if (observer.settings == null ||
+                observer.settings?.name == routeSettings.name) {
+              callback(observer, routeSettings);
+            }
           }
         }
         return Future.value();

@@ -22,7 +22,7 @@ class Flutter8Page extends NavigatorStatefulPage {
 }
 
 class _Flutter8PageState extends State<Flutter8Page>
-    with NavigatorPageLifecycleMixin {
+    with NavigatorPageLifecycleMixin, AutomaticKeepAliveClientMixin {
   @override
   void didAppear(final RouteSettings settings) {
     ThrioLogger.d('flutter8 didAppear: $settings');
@@ -34,30 +34,36 @@ class _Flutter8PageState extends State<Flutter8Page>
   }
 
   @override
-  Widget build(final BuildContext context) => Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.white,
-          title: const Text('thrio_build_example',
-              style: TextStyle(color: Colors.black)),
-          leading: context.showPopAwareWidget(const IconButton(
-            color: Colors.black,
-            tooltip: 'back',
-            icon: Icon(Icons.arrow_back_ios),
-            onPressed: ThrioNavigator.pop,
+  Widget build(final BuildContext context) {
+    super.build(context);
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        title: const Text('thrio_build_example',
+            style: TextStyle(color: Colors.black)),
+        leading: context.showPopAwareWidget(const IconButton(
+          color: Colors.black,
+          tooltip: 'back',
+          icon: Icon(Icons.arrow_back_ios),
+          onPressed: ThrioNavigator.pop,
+        )),
+        systemOverlayStyle: SystemUiOverlayStyle.dark,
+      ),
+      body: SizedBox(
+          height: 400,
+          child: Column(
+            children: <Widget>[
+              SizedBox(
+                height: 200,
+                child: ThrioNavigator.build(
+                        context: context, url: biz.biz2.flutter10.url) ??
+                    const Text('url not found'),
+              ),
+            ],
           )),
-          systemOverlayStyle: SystemUiOverlayStyle.dark,
-        ),
-        body: SizedBox(
-            height: 400,
-            child: Column(
-              children: <Widget>[
-                SizedBox(
-                  height: 200,
-                  child: ThrioNavigator.build(
-                          context: context, url: biz.biz2.flutter10.url) ??
-                      const Text('url not found'),
-                ),
-              ],
-            )),
-      );
+    );
+  }
+
+  @override
+  bool get wantKeepAlive => true;
 }

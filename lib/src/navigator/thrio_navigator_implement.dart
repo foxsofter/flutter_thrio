@@ -783,16 +783,13 @@ class ThrioNavigatorImplement {
   Widget? buildWithSettings<TParams>({
     required final BuildContext context,
     required final RouteSettings settings,
-    final bool? isSelected,
   }) {
     final pageBuilder =
         ThrioModule.get<NavigatorPageBuilder>(url: settings.url);
     if (pageBuilder == null) {
       return null;
     }
-    settings
-      ..parent = NavigatorPage.routeSettingsOf(context)
-      ..isSelected = isSelected;
+    settings.parent = NavigatorPage.routeSettingsOf(context);
     return pageBuilder(settings);
   }
 
