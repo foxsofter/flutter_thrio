@@ -18,7 +18,23 @@ class Flutter9Page extends NavigatorStatefulPage {
   _Flutter9PageState createState() => _Flutter9PageState();
 }
 
-class _Flutter9PageState extends State<Flutter9Page> {
+class _Flutter9PageState extends State<Flutter9Page>
+    with AutomaticKeepAliveClientMixin {
   @override
-  Widget build(final BuildContext context) => Container();
+  bool get wantKeepAlive => true;
+
+  Widget get child => widget.getParam<Widget>('child');
+
+  @override
+  Widget build(final BuildContext context) {
+    super.build(context);
+    return NavigatorPageLifecycle(
+        didAppear: (final settings) {
+          ThrioLogger.v('flutter9 didAppear: ${settings.name}');
+        },
+        didDisappear: (final settings) {
+          ThrioLogger.v('flutter9 didDisappear: ${settings.name}');
+        },
+        child: child);
+  }
 }

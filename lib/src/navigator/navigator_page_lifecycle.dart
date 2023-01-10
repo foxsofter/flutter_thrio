@@ -47,11 +47,13 @@ class _NavigatorPageLifecycleState extends State<NavigatorPageLifecycle>
 
   @override
   void didAppear(final RouteSettings settings) {
+    super.didAppear(settings);
     widget.didAppear?.call(settings);
   }
 
   @override
   void didDisappear(final RouteSettings settings) {
+    super.didDisappear(settings);
     widget.didDisappear?.call(settings);
   }
 }

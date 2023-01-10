@@ -40,7 +40,7 @@ mixin NavigatorPageLifecycleMixin<T extends StatefulWidget> on State<T> {
     if (mounted) {
       _init();
 
-      if (_current.parent == null || _current.isSelected == true) {
+      if (_current.parent == null || (_current.isSelected == true)) {
         Future(() => didAppear(_current));
       }
     }
@@ -87,6 +87,7 @@ mixin NavigatorPageLifecycleMixin<T extends StatefulWidget> on State<T> {
     for (final callback in _anchorsObserverCallbacks) {
       callback();
     }
+    _anchorsObserverCallbacks.clear();
     for (final it in _anchors) {
       _anchorsObserverCallbacks.add(anchor.pageLifecycleObservers.registry(
         it.url,

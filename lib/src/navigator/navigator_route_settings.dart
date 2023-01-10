@@ -36,7 +36,7 @@ extension NavigatorRouteSettings on RouteSettings {
   ///
   static RouteSettings settingsWith({
     required final String url,
-    final int? index,
+    final int? index = 0,
     final dynamic params,
   }) {
     final idx = index ?? _fakeIndex--;

@@ -19,6 +19,7 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
@@ -84,8 +85,15 @@ class NavigatorPageView extends StatefulWidget {
 }
 
 class _NavigatorPageViewState extends State<NavigatorPageView> {
+  final _nameSettings = <String, RouteSettings>{};
+
+  List<String> _currentNames = <String>[];
+
+  List<RouteSettings> get routeSettings =>
+      _currentNames.map((final it) => _nameSettings[it]!).toList();
+
   late RouteSettings current =
-      widget.routeSettings[widget._realController.initialPage];
+      routeSettings[widget._realController.initialPage];
 
   late int currentIndex = widget._realController.initialPage;
 
@@ -93,13 +101,48 @@ class _NavigatorPageViewState extends State<NavigatorPageView> {
   void initState() {
     super.initState();
     if (mounted) {
-      _init();
+      _checkRouteSettings(widget.routeSettings);
+      _mapRouteSettings(widget.routeSettings);
+      _initSelectedState();
     }
   }
 
-  void _init() {
+  void _checkRouteSettings(final List<RouteSettings> settings) {
+    final names = settings.map((final it) => it.name).toList();
+    final nameSet = names.toSet();
+    if (nameSet.length != names.length) {
+      nameSet.forEach(names.remove);
+      throw ArgumentError.value(
+        settings,
+        'duplicate RouteSettings',
+        names.join(','),
+      );
+    }
+  }
+
+  bool _mapRouteSettings(final List<RouteSettings> settings) {
+    final newNames = settings.map<String>((final it) => it.name!).toList();
+    if (listEquals(newNames, _currentNames)) {
+      return true;
+    }
+    _currentNames = newNames;
+    for (final it in settings) {
+      if (!_nameSettings.containsKey(it.name)) {
+        final tem = NavigatorRouteSettings.settingsWith(
+          url: it.url,
+          index: null,
+          params: it.params,
+        );
+        _nameSettings[it.name!] = tem;
+      }
+    }
+    return false;
+  }
+
+  void _initSelectedState() {
     current.isSelected = true;
-    for (final it in widget.routeSettings) {
+    final sts = routeSettings;
+    for (final it in sts) {
       if (it.name != current.name) {
         it.isSelected = false;
       }
@@ -116,6 +159,10 @@ class _NavigatorPageViewState extends State<NavigatorPageView> {
 
   @override
   void didUpdateWidget(final NavigatorPageView oldWidget) {
+    _checkRouteSettings(widget.routeSettings);
+    _mapRouteSettings(widget.routeSettings);
+
+    // 重置索引
     currentIndex = widget._realController.initialPage;
     if (widget._realController.positions.isNotEmpty) {
       final idx = widget._realController.page?.round();
@@ -123,8 +170,10 @@ class _NavigatorPageViewState extends State<NavigatorPageView> {
         currentIndex = idx;
       }
     }
-    current = widget.routeSettings[currentIndex];
-    _init();
+    current = routeSettings[currentIndex];
+
+    _initSelectedState();
+
     if (oldWidget.controller == null) {
       oldWidget._realController.dispose();
     }
@@ -146,7 +195,7 @@ class _NavigatorPageViewState extends State<NavigatorPageView> {
         clipBehavior: widget.clipBehavior,
         scrollBehavior: widget.scrollBehavior,
         padEnds: widget.padEnds,
-        children: widget.routeSettings.map((final it) {
+        children: routeSettings.map((final it) {
           var w = ThrioNavigatorImplement.shared().buildWithSettings(
             context: context,
             settings: it,
@@ -167,11 +216,12 @@ class _NavigatorPageViewState extends State<NavigatorPageView> {
 
   void onPageChanged(final int idx) {
     currentIndex = idx;
-    final routeSettings = widget.routeSettings[currentIndex];
-    if (routeSettings.name != current.name) {
+
+    final sts = routeSettings[currentIndex];
+    if (sts.name != current.name) {
       final oldRouteSettings = current;
-      current = routeSettings;
-      widget.onPageChanged?.call(routeSettings);
+      current = sts;
+      widget.onPageChanged?.call(sts);
       _changedToDisappear(oldRouteSettings);
       oldRouteSettings.isSelected = false;
       current.isSelected = true;
