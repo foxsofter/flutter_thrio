@@ -27,7 +27,7 @@ import 'navigator_route_settings.dart';
 import 'thrio_navigator_implement.dart';
 
 class NavigatorPageView extends StatefulWidget {
-  const NavigatorPageView({
+  NavigatorPageView({
     super.key,
     this.scrollDirection = Axis.horizontal,
     this.reverse = false,
@@ -50,6 +50,8 @@ class NavigatorPageView extends StatefulWidget {
   final bool reverse;
 
   final PageController? controller;
+
+  late final PageController _realController = controller ?? PageController();
 
   final ScrollPhysics? physics;
 
@@ -82,11 +84,10 @@ class NavigatorPageView extends StatefulWidget {
 }
 
 class _NavigatorPageViewState extends State<NavigatorPageView> {
-  late final controller = widget.controller ?? PageController();
+  late RouteSettings current =
+      widget.routeSettings[widget._realController.initialPage];
 
-  late RouteSettings current = widget.routeSettings[controller.initialPage];
-
-  late int currentIndex = controller.initialPage;
+  late int currentIndex = widget._realController.initialPage;
 
   Future<void>? onPageChangedFuture;
 
@@ -94,11 +95,15 @@ class _NavigatorPageViewState extends State<NavigatorPageView> {
   void initState() {
     super.initState();
     if (mounted) {
-      current.isSelected = true;
-      for (final it in widget.routeSettings) {
-        if (it.name != current.name) {
-          it.isSelected = false;
-        }
+      _init();
+    }
+  }
+
+  void _init() {
+    current.isSelected = true;
+    for (final it in widget.routeSettings) {
+      if (it.name != current.name) {
+        it.isSelected = false;
       }
     }
   }
@@ -106,9 +111,26 @@ class _NavigatorPageViewState extends State<NavigatorPageView> {
   @override
   void dispose() {
     if (widget.controller == null) {
-      controller.dispose();
+      widget._realController.dispose();
     }
     super.dispose();
+  }
+
+  @override
+  void didUpdateWidget(final NavigatorPageView oldWidget) {
+    currentIndex = widget._realController.initialPage;
+    if (widget._realController.positions.isNotEmpty) {
+      final idx = widget._realController.page?.round();
+      if (idx != null) {
+        currentIndex = idx;
+      }
+    }
+    current = widget.routeSettings[currentIndex];
+    _init();
+    if (oldWidget.controller == null) {
+      oldWidget._realController.dispose();
+    }
+    super.didUpdateWidget(oldWidget);
   }
 
   @override
@@ -116,7 +138,7 @@ class _NavigatorPageViewState extends State<NavigatorPageView> {
         key: widget.key,
         scrollDirection: widget.scrollDirection,
         reverse: widget.reverse,
-        controller: controller,
+        controller: widget._realController,
         physics: widget.physics,
         pageSnapping: widget.pageSnapping,
         onPageChanged: onPageChanged,
@@ -159,8 +181,9 @@ class _NavigatorPageViewState extends State<NavigatorPageView> {
         current.isSelected = true;
         _changedToAppear(current);
       }
-      onPageChangedFuture = null;
-    });
+    })
+          ..whenComplete(() => onPageChangedFuture = null)
+          ..catchError((final e) => onPageChangedFuture = null);
   }
 
   void _changedToAppear(final RouteSettings routeSettings) {

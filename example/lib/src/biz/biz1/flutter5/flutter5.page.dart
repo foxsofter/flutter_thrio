@@ -70,7 +70,7 @@ class _Flutter5PageState extends State<Flutter5Page>
                 NavigatorRouteSettings.settingsWith(
                     url: biz.biz1.flutter1.home.url),
                 NavigatorRouteSettings.settingsWith(url: biz.biz1.flutter3.url),
-                NavigatorRouteSettings.settingsWith(url: biz.biz2.flutter2.url),
+                NavigatorRouteSettings.settingsWith(url: biz.biz1.flutter3.url),
                 NavigatorRouteSettings.settingsWith(url: biz.biz1.flutter5.url),
               ],
             )));

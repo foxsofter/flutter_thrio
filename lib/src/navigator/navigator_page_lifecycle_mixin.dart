@@ -34,33 +34,11 @@ mixin NavigatorPageLifecycleMixin<T extends StatefulWidget> on State<T> {
   final _anchors = <RouteSettings>[];
   final _anchorsObserverCallbacks = <VoidCallback>[];
 
-  late final _currentObserver = _CurrentLifecycleObserver(this);
-
   @override
   void initState() {
     super.initState();
     if (mounted) {
-      var settings = NavigatorPage.routeSettingsOf(context);
-      _current = settings;
-      _currentObserverCallback = anchor.pageLifecycleObservers.registry(
-        _current.url,
-        _currentObserver,
-      );
-
-      while (settings.parent != null) {
-        settings = settings.parent!;
-        if (settings.parent == null || settings.isSelected != null) {
-          _anchors.add(settings);
-        }
-      }
-      if (_anchors.isNotEmpty) {
-        for (final it in _anchors) {
-          _anchorsObserverCallbacks.add(anchor.pageLifecycleObservers.registry(
-            it.url,
-            _AnchorLifecycleObserver(this, it),
-          ));
-        }
-      }
+      _init();
 
       if (_current.parent == null || _current.isSelected == true) {
         Future(() => didAppear(_current));
@@ -68,12 +46,18 @@ mixin NavigatorPageLifecycleMixin<T extends StatefulWidget> on State<T> {
     }
   }
 
+  @override
+  void didUpdateWidget(final T oldWidget) {
+    _init();
+    super.didUpdateWidget(oldWidget);
+  }
+
   void didAppear(final RouteSettings settings) {
-    verbose('NavigatorPageLifecycleMixin didAppear: $settings');
+    verbose('NavigatorPageLifecycleMixin didAppear: ${settings.name}');
   }
 
   void didDisappear(final RouteSettings settings) {
-    verbose('NavigatorPageLifecycleMixin didDisappear: $settings');
+    verbose('NavigatorPageLifecycleMixin didDisappear: ${settings.name}');
   }
 
   @override
@@ -84,6 +68,32 @@ mixin NavigatorPageLifecycleMixin<T extends StatefulWidget> on State<T> {
     }
     super.dispose();
   }
+
+  void _init() {
+    var settings = NavigatorPage.routeSettingsOf(context);
+    _current = settings;
+    _currentObserverCallback?.call();
+    _currentObserverCallback = anchor.pageLifecycleObservers.registry(
+      _current.url,
+      _CurrentLifecycleObserver(this),
+    );
+    _anchors.clear();
+    while (settings.parent != null) {
+      settings = settings.parent!;
+      if (settings.parent == null || settings.isSelected != null) {
+        _anchors.add(settings);
+      }
+    }
+    for (final callback in _anchorsObserverCallbacks) {
+      callback();
+    }
+    for (final it in _anchors) {
+      _anchorsObserverCallbacks.add(anchor.pageLifecycleObservers.registry(
+        it.url,
+        _AnchorLifecycleObserver(this, it),
+      ));
+    }
+  }
 }
 
 class _CurrentLifecycleObserver with NavigatorPageObserver {
@@ -92,10 +102,7 @@ class _CurrentLifecycleObserver with NavigatorPageObserver {
   final NavigatorPageLifecycleMixin _delegate;
 
   @override
-  RouteSettings? get settings => _delegate._current.parent == null ||
-          _delegate._current.isSelected != false
-      ? _delegate._current
-      : NavigatorRouteSettings.nullSettings;
+  RouteSettings? get settings => _delegate._current;
 
   @override
   void didAppear(final RouteSettings routeSettings) {
