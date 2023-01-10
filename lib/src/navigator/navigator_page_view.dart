@@ -89,8 +89,6 @@ class _NavigatorPageViewState extends State<NavigatorPageView> {
 
   late int currentIndex = widget._realController.initialPage;
 
-  Future<void>? onPageChangedFuture;
-
   @override
   void initState() {
     super.initState();
@@ -169,21 +167,16 @@ class _NavigatorPageViewState extends State<NavigatorPageView> {
 
   void onPageChanged(final int idx) {
     currentIndex = idx;
-    onPageChangedFuture ??=
-        Future.delayed(const Duration(milliseconds: 120), () {
-      final routeSettings = widget.routeSettings[currentIndex];
-      if (routeSettings.name != current.name) {
-        final oldRouteSettings = current;
-        current = routeSettings;
-        widget.onPageChanged?.call(routeSettings);
-        _changedToDisappear(oldRouteSettings);
-        oldRouteSettings.isSelected = false;
-        current.isSelected = true;
-        _changedToAppear(current);
-      }
-    })
-          ..whenComplete(() => onPageChangedFuture = null)
-          ..catchError((final e) => onPageChangedFuture = null);
+    final routeSettings = widget.routeSettings[currentIndex];
+    if (routeSettings.name != current.name) {
+      final oldRouteSettings = current;
+      current = routeSettings;
+      widget.onPageChanged?.call(routeSettings);
+      _changedToDisappear(oldRouteSettings);
+      oldRouteSettings.isSelected = false;
+      current.isSelected = true;
+      _changedToAppear(current);
+    }
   }
 
   void _changedToAppear(final RouteSettings routeSettings) {
