@@ -37,6 +37,7 @@ class NavigatorPageView extends StatefulWidget {
     this.pageSnapping = true,
     this.onPageChanged,
     this.routeSettings = const <RouteSettings>[],
+    this.keepIndex = false,
     this.childBuilder,
     this.dragStartBehavior = DragStartBehavior.start,
     this.allowImplicitScrolling = false,
@@ -61,6 +62,8 @@ class NavigatorPageView extends StatefulWidget {
   final void Function(RouteSettings)? onPageChanged;
 
   final List<RouteSettings> routeSettings;
+
+  final bool keepIndex;
 
   final Widget Function(
     BuildContext context,
@@ -130,7 +133,7 @@ class _NavigatorPageViewState extends State<NavigatorPageView> {
       if (!_nameSettings.containsKey(it.name)) {
         final tem = NavigatorRouteSettings.settingsWith(
           url: it.url,
-          index: null,
+          index: widget.keepIndex ? it.index : null,
           params: it.params,
         );
         _nameSettings[it.name!] = tem;
