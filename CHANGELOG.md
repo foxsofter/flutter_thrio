@@ -588,3 +588,15 @@
 
 - refactor: 重构页面生命周期的实现
 - fix: 修复一些累积bug
+
+## 3.12.0
+
+- fix: 进入后台或者前台重复触发的问题
+- fix: page maybePop call popResult
+- feat: rm BuildContext from build
+- feat: add keepIndex for NavigatorPageView
+- fix: PageController.lenght is 0
+- fix: naviagtor page view lifecycle
+- fix: url template parse error
+- feat: NavigatorPageView onPageChanged add index
+- fix: lastWhereOrNull predicate item reversed

@@ -52,14 +52,12 @@ extension ThrioIterable<E> on Iterable<E> {
   /// If no element satisfies [test], return `null`.
   ///
   E? lastWhereOrNull(final bool Function(E it) predicate) {
-    late E result;
-    var foundMatching = false;
-    for (final it in this) {
+    final reversed = toList().reversed;
+    for (final it in reversed) {
       if (predicate(it)) {
-        result = it;
-        foundMatching = true;
+        return it;
       }
     }
-    return foundMatching ? result : null;
+    return null;
   }
 }
