@@ -31,7 +31,7 @@ mixin NavigatorPageLifecycleMixin<T extends StatefulWidget> on State<T> {
   late RouteSettings _current;
   VoidCallback? _currentObserverCallback;
 
-  final _anchors = <RouteSettings>[];
+  late List<RouteSettings> _anchors;
   final _anchorsObserverCallbacks = <VoidCallback>[];
 
   @override
@@ -39,8 +39,7 @@ mixin NavigatorPageLifecycleMixin<T extends StatefulWidget> on State<T> {
     super.initState();
     if (mounted) {
       _init();
-
-      if (_current.parent == null || (_current.isSelected == true)) {
+      if (!_current.isBuilt || (_current.isSelected == true)) {
         Future(() => didAppear(_current));
       }
     }
@@ -70,20 +69,19 @@ mixin NavigatorPageLifecycleMixin<T extends StatefulWidget> on State<T> {
   }
 
   void _init() {
-    var settings = NavigatorPage.routeSettingsOf(context);
-    _current = settings;
+    _current = NavigatorPage.routeSettingsOf(context);
     _currentObserverCallback?.call();
     _currentObserverCallback = anchor.pageLifecycleObservers.registry(
       _current.url,
       _CurrentLifecycleObserver(this),
     );
-    _anchors.clear();
-    while (settings.parent != null) {
-      settings = settings.parent!;
-      if (settings.parent == null || settings.isSelected != null) {
-        _anchors.add(settings);
-      }
+
+    _anchors = NavigatorPage.routeSettingsListOf(context);
+    // 如果第一个刚好是在 PageView 上，需要移除掉
+    if (_anchors.first.name == _current.name) {
+      _anchors.removeAt(0);
     }
+
     for (final callback in _anchorsObserverCallbacks) {
       callback();
     }
@@ -133,21 +131,19 @@ class _AnchorLifecycleObserver with NavigatorPageObserver {
   @override
   void didAppear(final RouteSettings routeSettings) {
     final callback = _delegate.didAppear;
-    if (_anchor.name != routeSettings.name ||
-        _delegate._current.isSelected == false) {
-      return;
-    }
-    final idx = _delegate._anchors
-        .indexWhere((final it) => it.name == routeSettings.name);
-    final ins = _delegate._anchors.sublist(0, idx);
-    if (ins.every((final it) => it.isSelected == true)) {
-      callback(_delegate._current);
-    }
+    _lifecycleCallback(callback, routeSettings);
   }
 
   @override
   void didDisappear(final RouteSettings routeSettings) {
     final callback = _delegate.didDisappear;
+    _lifecycleCallback(callback, routeSettings);
+  }
+
+  void _lifecycleCallback(
+    final void Function(RouteSettings) callback,
+    final RouteSettings routeSettings,
+  ) {
     if (_anchor.name != routeSettings.name ||
         _delegate._current.isSelected == false) {
       return;

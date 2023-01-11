@@ -418,13 +418,11 @@ abstract class ThrioNavigator {
   /// Build widget with `url` and `params`.
   ///
   static Widget? build<TParams>({
-    required final BuildContext context,
     required final String url,
     final int? index,
     final TParams? params,
   }) =>
       ThrioNavigatorImplement.shared().build(
-        context: context,
         url: url,
         index: index,
         params: params,

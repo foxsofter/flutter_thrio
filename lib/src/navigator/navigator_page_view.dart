@@ -200,7 +200,6 @@ class _NavigatorPageViewState extends State<NavigatorPageView> {
         padEnds: widget.padEnds,
         children: routeSettings.map((final it) {
           var w = ThrioNavigatorImplement.shared().buildWithSettings(
-            context: context,
             settings: it,
           );
           if (w == null) {

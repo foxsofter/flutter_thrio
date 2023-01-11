@@ -139,7 +139,7 @@ mixin NavigatorPage {
     if (widget is NavigatorPage) {
       page = widget as NavigatorPage;
       if (pageModuleContext) {
-        if (page.settings.parent == null) {
+        if (!page.settings.isBuilt) {
           return page;
         }
       } else {
@@ -152,12 +152,33 @@ mixin NavigatorPage {
       if (widget is NavigatorPage) {
         page = widget as NavigatorPage;
         if (pageModuleContext) {
-            return page?.settings.parent != null;
+          return !page!.settings.isBuilt;
         }
         return false;
       }
       return true;
     });
     return page;
+  }
+
+  static List<RouteSettings> routeSettingsListOf(final BuildContext context) {
+    final settingsList = <RouteSettings>[];
+    if (context.widget is NavigatorPage) {
+      final settings = (context.widget as NavigatorPage).settings;
+      if (settings.isSelected != null || !settings.isBuilt) {
+        settingsList.add(settings);
+      }
+    }
+    context.visitAncestorElements((final it) {
+      if (it.widget is NavigatorPage) {
+        final settings = (it.widget as NavigatorPage).settings;
+        if (settings.isSelected != null || !settings.isBuilt) {
+          settingsList.add(settings);
+        }
+        return settings.isBuilt;
+      }
+      return true;
+    });
+    return settingsList;
   }
 }

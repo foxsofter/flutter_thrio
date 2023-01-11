@@ -32,7 +32,6 @@ import '../module/module_types.dart';
 import '../module/thrio_module.dart';
 import 'navigator_logger.dart';
 import 'navigator_observer_manager.dart';
-import 'navigator_page.dart';
 import 'navigator_page_observer_channel.dart';
 import 'navigator_route.dart';
 import 'navigator_route_observer_channel.dart';
@@ -764,7 +763,6 @@ class ThrioNavigatorImplement {
   Future<bool> canPop() => _sendChannel.canPop();
 
   Widget? build<TParams>({
-    required final BuildContext context,
     required final String url,
     final int? index,
     final TParams? params,
@@ -774,22 +772,16 @@ class ThrioNavigatorImplement {
       index: index,
       params: params,
     );
-    return buildWithSettings(
-      context: context,
-      settings: settings,
-    );
+    return buildWithSettings(settings: settings);
   }
 
-  Widget? buildWithSettings<TParams>({
-    required final BuildContext context,
-    required final RouteSettings settings,
-  }) {
+  Widget? buildWithSettings<TParams>({required final RouteSettings settings}) {
     final pageBuilder =
         ThrioModule.get<NavigatorPageBuilder>(url: settings.url);
     if (pageBuilder == null) {
       return null;
     }
-    settings.parent = NavigatorPage.routeSettingsOf(context);
+    settings.isBuilt = true;
     return pageBuilder(settings);
   }
 

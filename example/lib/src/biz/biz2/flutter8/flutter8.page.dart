@@ -55,8 +55,7 @@ class _Flutter8PageState extends State<Flutter8Page>
             children: <Widget>[
               SizedBox(
                 height: 200,
-                child: ThrioNavigator.build(
-                        context: context, url: biz.biz2.flutter10.url) ??
+                child: ThrioNavigator.build(url: biz.biz2.flutter10.url) ??
                     const Text('url not found'),
               ),
             ],
