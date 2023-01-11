@@ -59,7 +59,7 @@ class NavigatorPageView extends StatefulWidget {
 
   final bool pageSnapping;
 
-  final void Function(RouteSettings)? onPageChanged;
+  final void Function(int, RouteSettings)? onPageChanged;
 
   final List<RouteSettings> routeSettings;
 
@@ -224,7 +224,7 @@ class _NavigatorPageViewState extends State<NavigatorPageView> {
     if (sts.name != current.name) {
       final oldRouteSettings = current;
       current = sts;
-      widget.onPageChanged?.call(sts);
+      widget.onPageChanged?.call(currentIndex, sts);
       _changedToDisappear(oldRouteSettings);
       oldRouteSettings.isSelected = false;
       current.isSelected = true;
