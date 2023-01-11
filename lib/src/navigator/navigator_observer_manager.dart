@@ -137,6 +137,17 @@ class NavigatorObserverManager extends NavigatorObserver {
 
           anchor.unloading(pageRoutes.whereType<NavigatorRoute>());
         });
+      } else {
+        // maybe pop goes here
+        if (currentPopRoutes.length == 2) {
+          final route = currentPopRoutes.last;
+          verbose('didPop: url->${route.settings.url} '
+              'index->${route.settings.index} ');
+          ThrioNavigatorImplement.shared()
+            ..routeChannel.didPop(route.settings)
+            ..pageChannel.didDisappear(route.settings, NavigatorRouteType.pop);
+          route.routeType = null;
+        }
       }
     } else {
       pageRoutes.remove(route);

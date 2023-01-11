@@ -23,6 +23,7 @@ import 'package:flutter/widgets.dart';
 
 import '../channel/thrio_channel.dart';
 import '../module/thrio_module.dart';
+import 'navigator_logger.dart';
 import 'navigator_route_observer.dart';
 import 'navigator_route_settings.dart';
 import 'thrio_navigator_implement.dart';
@@ -62,8 +63,11 @@ class NavigatorRouteObserverChannel with NavigatorRouteObserver {
           'didPush', routeSettings.toArguments()..remove('params'));
 
   @override
-  void didPop(final RouteSettings routeSettings) => _channel.invokeMethod<bool>(
-      'didPop', routeSettings.toArguments()..remove('params'));
+  void didPop(final RouteSettings routeSettings) {
+    verbose('didPop: ${routeSettings.name}');
+    _channel.invokeMethod<bool>(
+        'didPop', routeSettings.toArguments()..remove('params'));
+  }
 
   @override
   void didPopTo(final RouteSettings routeSettings) =>
