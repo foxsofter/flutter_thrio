@@ -104,6 +104,9 @@ class _NavigatorPageViewState extends State<NavigatorPageView> {
   void initState() {
     super.initState();
     if (mounted) {
+      if (widget.routeSettings.isEmpty) {
+        return;
+      }
       _checkRouteSettings(widget.routeSettings);
       _mapRouteSettings(widget.routeSettings);
       _initSelectedState();
@@ -162,21 +165,22 @@ class _NavigatorPageViewState extends State<NavigatorPageView> {
 
   @override
   void didUpdateWidget(final NavigatorPageView oldWidget) {
-    _checkRouteSettings(widget.routeSettings);
-    _mapRouteSettings(widget.routeSettings);
+    if (widget.routeSettings.isNotEmpty) {
+      _checkRouteSettings(widget.routeSettings);
+      _mapRouteSettings(widget.routeSettings);
 
-    // 重置索引
-    currentIndex = widget._realController.initialPage;
-    if (widget._realController.positions.isNotEmpty) {
-      final idx = widget._realController.page?.round();
-      if (idx != null) {
-        currentIndex = idx;
+      // 重置索引
+      currentIndex = widget._realController.initialPage;
+      if (widget._realController.positions.isNotEmpty) {
+        final idx = widget._realController.page?.round();
+        if (idx != null) {
+          currentIndex = idx;
+        }
       }
+      current = routeSettings[currentIndex];
+
+      _initSelectedState();
     }
-    current = routeSettings[currentIndex];
-
-    _initSelectedState();
-
     if (oldWidget.controller == null) {
       oldWidget._realController.dispose();
     }
