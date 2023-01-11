@@ -139,6 +139,7 @@ class NavigatorObserverManager extends NavigatorObserver {
         });
       } else {
         // maybe pop goes here
+        // 判断 lenght = 2 是因为 currentPopRoutes 还残留上一个页面的 pop rute
         if (currentPopRoutes.length == 2) {
           final route = currentPopRoutes.last;
           verbose('didPop: url->${route.settings.url} '

@@ -103,8 +103,8 @@ class NavigatorRouteObserverChannel with NavigatorRouteObserver {
           if (method == 'didPop') {
             final currentPopRoutes =
                 ThrioNavigatorImplement.shared().currentPopRoutes;
-            if (currentPopRoutes.length == 1 &&
-                currentPopRoutes.first.settings.name == routeSettings.name) {
+            if (currentPopRoutes.isNotEmpty &&
+                currentPopRoutes.last.settings.name == routeSettings.name) {
               currentPopRoutes.first.poppedResult?.call(null);
             }
             ThrioNavigatorImplement.shared().currentPopRoutes.clear();
