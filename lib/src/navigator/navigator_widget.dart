@@ -194,10 +194,6 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
 
     // ignore: avoid_as
     final route = history.last as NavigatorRoute;
-    // The route has been closed.
-    if (route.routeType == NavigatorRouteType.pop) {
-      return false;
-    }
 
     ThrioNavigatorImplement.shared()
         .pageChannel
