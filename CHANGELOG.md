@@ -607,7 +607,9 @@
 - fix: can not pop
 
 ## 3.12.2
-
 - feat: NavigatorPageObserver will call by fileter by settings.name
 - feat: add keepIndex for NavigatorTabBarView
+
+## 3.12.3
+
 - fix: NavigatorPageLifecycleMixin anchors exists duplicate RouteSettings

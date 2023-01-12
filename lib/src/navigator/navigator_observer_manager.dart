@@ -65,7 +65,8 @@ class NavigatorObserverManager extends NavigatorObserver {
             url: lastRoute.settings.url,
           );
           for (final observer in observers) {
-            if (observer.settings == null || observer.settings?.name == lastRoute.settings.name) {
+            if (observer.settings == null ||
+                observer.settings?.name == lastRoute.settings.name) {
               observer.didDisappear(lastRoute.settings);
             }
           }
@@ -84,32 +85,39 @@ class NavigatorObserverManager extends NavigatorObserver {
           if (currentPopRoutes.length == 1) {
             if (pageRoutes.last is NavigatorRoute &&
                 // ignore: avoid_as
-                (pageRoutes.last as NavigatorRoute).routeType == NavigatorRouteType.popTo) {
+                (pageRoutes.last as NavigatorRoute).routeType ==
+                    NavigatorRouteType.popTo) {
               if (pageRoutes.last.settings.url != '/') {
                 verbose('didPopTo: url->${pageRoutes.last.settings.url} '
                     'index->${pageRoutes.last.settings.index}');
                 ThrioNavigatorImplement.shared()
                   ..routeChannel.didPopTo(pageRoutes.last.settings)
-                  ..pageChannel.didAppear(pageRoutes.last.settings, NavigatorRouteType.popTo);
+                  ..pageChannel.didAppear(
+                      pageRoutes.last.settings, NavigatorRouteType.popTo);
               }
               // ignore: avoid_as
               (pageRoutes.last as NavigatorRoute).routeType = null;
               _currenPopRouteCallbackAndClear(currentPopRoutes);
-            } else if (route.routeType == NavigatorRouteType.pop || route.routeType == null) {
+            } else if (route.routeType == NavigatorRouteType.pop ||
+                route.routeType == null) {
               // 这里需要判断 routeType == null 的场景，处理滑动返回需要
               verbose('didPop: url->${route.settings.url} '
                   'index->${route.settings.index} ');
               ThrioNavigatorImplement.shared()
                 ..routeChannel.didPop(route.settings)
-                ..pageChannel.didDisappear(route.settings, NavigatorRouteType.pop);
+                ..pageChannel
+                    .didDisappear(route.settings, NavigatorRouteType.pop);
               route.routeType = null;
             } else if (route.routeType == NavigatorRouteType.remove) {
-              ThrioNavigatorImplement.shared().routeChannel.didRemove(route.settings);
+              ThrioNavigatorImplement.shared()
+                  .routeChannel
+                  .didRemove(route.settings);
               verbose(
                 'didRemove: url->${route.settings.url} '
                 'index->${route.settings.index} ',
               );
-              if (WidgetsBinding.instance.lifecycleState == AppLifecycleState.resumed) {
+              if (WidgetsBinding.instance.lifecycleState ==
+                  AppLifecycleState.resumed) {
                 ThrioNavigatorImplement.shared()
                     .pageChannel
                     .didDisappear(route.settings, NavigatorRouteType.remove);
@@ -123,7 +131,8 @@ class NavigatorObserverManager extends NavigatorObserver {
                   'index->${pageRoutes.last.settings.index}');
               ThrioNavigatorImplement.shared()
                 ..routeChannel.didPopTo(pageRoutes.last.settings)
-                ..pageChannel.didAppear(pageRoutes.last.settings, NavigatorRouteType.popTo);
+                ..pageChannel.didAppear(
+                    pageRoutes.last.settings, NavigatorRouteType.popTo);
             }
             // ignore: avoid_as
             (pageRoutes.last as NavigatorRoute).routeType = null;
@@ -148,8 +157,8 @@ class NavigatorObserverManager extends NavigatorObserver {
     } else {
       pageRoutes.remove(route);
       if (route is! PopupRoute && pageRoutes.last is NavigatorRoute) {
-        final observers =
-            ThrioModule.gets<NavigatorPageObserver>(url: pageRoutes.last.settings.url);
+        final observers = ThrioModule.gets<NavigatorPageObserver>(
+            url: pageRoutes.last.settings.url);
         for (final observer in observers) {
           if (observer.settings == null ||
               observer.settings?.name == pageRoutes.last.settings.name) {
@@ -161,7 +170,8 @@ class NavigatorObserverManager extends NavigatorObserver {
   }
 
   @override
-  void didRemove(final Route<dynamic> route, final Route<dynamic>? previousRoute) {
+  void didRemove(
+      final Route<dynamic> route, final Route<dynamic>? previousRoute) {
     if (route is NavigatorRoute) {
       pageRoutes.remove(route);
       _currentRemoveRoutes.add(route);
@@ -185,7 +195,9 @@ class NavigatorObserverManager extends NavigatorObserver {
             } else {
               verbose('didRemove: url->${route.settings.url} '
                   'index->${route.settings.index}');
-              ThrioNavigatorImplement.shared().routeChannel.didRemove(route.settings);
+              ThrioNavigatorImplement.shared()
+                  .routeChannel
+                  .didRemove(route.settings);
             }
           } else if (_currentRemoveRoutes.length > 1) {
             if (pageRoutes.last.settings.url != '/') {
@@ -212,7 +224,8 @@ class NavigatorObserverManager extends NavigatorObserver {
   }
 
   @override
-  void didReplace({final Route<dynamic>? newRoute, final Route<dynamic>? oldRoute}) {
+  void didReplace(
+      {final Route<dynamic>? newRoute, final Route<dynamic>? oldRoute}) {
     if (newRoute is NavigatorRoute && oldRoute is NavigatorRoute) {
       verbose(
         'didReplace: url->${oldRoute.settings.url} index->${oldRoute.settings.index} '
@@ -223,7 +236,8 @@ class NavigatorObserverManager extends NavigatorObserver {
         ..remove(oldRoute)
         ..insert(idx, newRoute);
       ThrioNavigatorImplement.shared()
-        ..pageChannel.didDisappear(oldRoute.settings, NavigatorRouteType.replace)
+        ..pageChannel
+            .didDisappear(oldRoute.settings, NavigatorRouteType.replace)
         ..routeChannel.didReplace(newRoute.settings, oldRoute.settings);
       if (pageRoutes.last.settings.name == newRoute.settings.name) {
         ThrioNavigatorImplement.shared()

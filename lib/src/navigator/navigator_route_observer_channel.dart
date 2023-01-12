@@ -36,10 +36,22 @@ typedef NavigatorRouteObserverCallback = void Function(
 class NavigatorRouteObserverChannel with NavigatorRouteObserver {
   NavigatorRouteObserverChannel(final String entrypoint)
       : _channel = ThrioChannel(channel: '__thrio_route_channel__$entrypoint') {
-    _on('didPush', (final observer, final routeSettings) => observer.didPush(routeSettings));
-    _on('didPop', (final observer, final routeSettings) => observer.didPop(routeSettings));
-    _on('didPopTo', (final observer, final routeSettings) => observer.didPopTo(routeSettings));
-    _on('didRemove', (final observer, final routeSettings) => observer.didRemove(routeSettings));
+    _on(
+        'didPush',
+        (final observer, final routeSettings) =>
+            observer.didPush(routeSettings));
+    _on(
+        'didPop',
+        (final observer, final routeSettings) =>
+            observer.didPop(routeSettings));
+    _on(
+        'didPopTo',
+        (final observer, final routeSettings) =>
+            observer.didPopTo(routeSettings));
+    _on(
+        'didRemove',
+        (final observer, final routeSettings) =>
+            observer.didRemove(routeSettings));
     _onDidReplace();
   }
 
@@ -47,24 +59,29 @@ class NavigatorRouteObserverChannel with NavigatorRouteObserver {
 
   @override
   void didPush(final RouteSettings routeSettings) =>
-      _channel.invokeMethod<bool>('didPush', routeSettings.toArguments()..remove('params'));
+      _channel.invokeMethod<bool>(
+          'didPush', routeSettings.toArguments()..remove('params'));
 
   @override
   void didPop(final RouteSettings routeSettings) {
     verbose('didPop: ${routeSettings.name}');
-    _channel.invokeMethod<bool>('didPop', routeSettings.toArguments()..remove('params'));
+    _channel.invokeMethod<bool>(
+        'didPop', routeSettings.toArguments()..remove('params'));
   }
 
   @override
   void didPopTo(final RouteSettings routeSettings) =>
-      _channel.invokeMethod<bool>('didPopTo', routeSettings.toArguments()..remove('params'));
+      _channel.invokeMethod<bool>(
+          'didPopTo', routeSettings.toArguments()..remove('params'));
 
   @override
   void didRemove(final RouteSettings routeSettings) =>
-      _channel.invokeMethod<bool>('didRemove', routeSettings.toArguments()..remove('params'));
+      _channel.invokeMethod<bool>(
+          'didRemove', routeSettings.toArguments()..remove('params'));
 
   @override
-  void didReplace(final RouteSettings newRouteSettings, final RouteSettings oldRouteSettings) {
+  void didReplace(final RouteSettings newRouteSettings,
+      final RouteSettings oldRouteSettings) {
     final oldArgs = oldRouteSettings.toArguments()..remove('params');
     final newArgs = newRouteSettings.toArguments()..remove('params');
     _channel.invokeMethod<bool>('didReplace', {
@@ -73,16 +90,19 @@ class NavigatorRouteObserverChannel with NavigatorRouteObserver {
     });
   }
 
-  void _on(final String method, final NavigatorRouteObserverCallback callback) =>
+  void _on(
+          final String method, final NavigatorRouteObserverCallback callback) =>
       _channel.registryMethodCall(method, ([final arguments]) {
         final routeSettings = NavigatorRouteSettings.fromArguments(arguments);
         if (routeSettings != null) {
-          final observers = ThrioModule.gets<NavigatorRouteObserver>(url: routeSettings.url);
+          final observers =
+              ThrioModule.gets<NavigatorRouteObserver>(url: routeSettings.url);
           for (final observer in observers) {
             callback(observer, routeSettings);
           }
           if (method == 'didPop') {
-            final currentPopRoutes = ThrioNavigatorImplement.shared().currentPopRoutes;
+            final currentPopRoutes =
+                ThrioNavigatorImplement.shared().currentPopRoutes;
             if (currentPopRoutes.isNotEmpty &&
                 currentPopRoutes.last.settings.name == routeSettings.name) {
               currentPopRoutes.first.poppedResult?.call(null);
@@ -93,15 +113,20 @@ class NavigatorRouteObserverChannel with NavigatorRouteObserver {
         return Future.value();
       });
 
-  void _onDidReplace() => _channel.registryMethodCall('didReplace', ([final arguments]) {
+  void _onDidReplace() =>
+      _channel.registryMethodCall('didReplace', ([final arguments]) {
         final newRouteSettings = NavigatorRouteSettings.fromArguments(
-            (arguments?['newRouteSettings'] as Map<Object?, Object?>).cast<String, dynamic>());
+            (arguments?['newRouteSettings'] as Map<Object?, Object?>)
+                .cast<String, dynamic>());
         final oldRouteSettings = NavigatorRouteSettings.fromArguments(
-            (arguments?['oldRouteSettings'] as Map<Object?, Object?>).cast<String, dynamic>());
+            (arguments?['oldRouteSettings'] as Map<Object?, Object?>)
+                .cast<String, dynamic>());
         if (newRouteSettings != null && oldRouteSettings != null) {
           final observers = <NavigatorRouteObserver>[
-            ...ThrioModule.gets<NavigatorRouteObserver>(url: newRouteSettings.url),
-            ...ThrioModule.gets<NavigatorRouteObserver>(url: oldRouteSettings.url),
+            ...ThrioModule.gets<NavigatorRouteObserver>(
+                url: newRouteSettings.url),
+            ...ThrioModule.gets<NavigatorRouteObserver>(
+                url: oldRouteSettings.url),
           ];
           for (final observer in observers) {
             observer.didReplace(newRouteSettings, oldRouteSettings);

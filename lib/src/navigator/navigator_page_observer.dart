@@ -27,7 +27,7 @@ import 'thrio_navigator.dart';
 ///
 mixin NavigatorPageObserver {
   /// The `route` to be observed，default to null.
-  /// 
+  ///
   RouteSettings? get settings => null;
 
   /// The `route` is about to be activated.

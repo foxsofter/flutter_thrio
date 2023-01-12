@@ -142,10 +142,12 @@ class _AnchorLifecycleObserver with NavigatorPageObserver {
     final void Function(RouteSettings) callback,
     final RouteSettings routeSettings,
   ) {
-    if (_anchor.name != routeSettings.name || _delegate._current.isSelected == false) {
+    if (_anchor.name != routeSettings.name ||
+        _delegate._current.isSelected == false) {
       return;
     }
-    final idx = _delegate._anchors.indexWhere((final it) => it.name == routeSettings.name);
+    final idx = _delegate._anchors
+        .indexWhere((final it) => it.name == routeSettings.name);
     final ins = _delegate._anchors.sublist(0, idx);
     if (ins.every((final it) => it.isSelected == true)) {
       callback(_delegate._current);

@@ -43,11 +43,14 @@ mixin NavigatorPage {
 
   /// Get parameter from params.
   ///
-  T? getParamOrNull<T>(final String key) => getValueOrNull(settings.params, key);
+  T? getParamOrNull<T>(final String key) =>
+      getValueOrNull(settings.params, key);
 
-  List<E> getListParam<E>(final String key) => getListValue<E>(settings.params, key);
+  List<E> getListParam<E>(final String key) =>
+      getListValue<E>(settings.params, key);
 
-  Map<K, V> getMapParam<K, V>(final String key) => getMapValue<K, V>(settings.params, key);
+  Map<K, V> getMapParam<K, V>(final String key) =>
+      getMapValue<K, V>(settings.params, key);
 
   /// Get moduleContext from current page.
   ///
