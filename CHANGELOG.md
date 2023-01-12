@@ -609,3 +609,4 @@
 ## 3.12.2
 
 - feat: NavigatorPageObserver will call by fileter by settings.name
+- feat: add keepIndex for NavigatorTabBarView
