@@ -600,3 +600,8 @@
 - fix: url template parse error
 - feat: NavigatorPageView onPageChanged add index
 - fix: lastWhereOrNull predicate item reversed
+
+## 3.12.1
+
+- fix: Call popResult after the route is removeed, popped, replaced
+- fix: can not pop
