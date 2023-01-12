@@ -43,14 +43,11 @@ mixin NavigatorPage {
 
   /// Get parameter from params.
   ///
-  T? getParamOrNull<T>(final String key) =>
-      getValueOrNull(settings.params, key);
+  T? getParamOrNull<T>(final String key) => getValueOrNull(settings.params, key);
 
-  List<E> getListParam<E>(final String key) =>
-      getListValue<E>(settings.params, key);
+  List<E> getListParam<E>(final String key) => getListValue<E>(settings.params, key);
 
-  Map<K, V> getMapParam<K, V>(final String key) =>
-      getMapValue<K, V>(settings.params, key);
+  Map<K, V> getMapParam<K, V>(final String key) => getMapValue<K, V>(settings.params, key);
 
   /// Get moduleContext from current page.
   ///
@@ -173,7 +170,10 @@ mixin NavigatorPage {
       if (it.widget is NavigatorPage) {
         final settings = (it.widget as NavigatorPage).settings;
         if (settings.isSelected != null || !settings.isBuilt) {
-          settingsList.add(settings);
+          // 如果已存在，则干掉并新增，因为带相同的 RouteSettings 的 NavigatorPage 会重复出现在链路上
+          settingsList
+            ..removeWhere((final it) => it.name == settings.name)
+            ..add(settings);
         }
         return settings.isBuilt;
       }

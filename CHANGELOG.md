@@ -610,3 +610,4 @@
 
 - feat: NavigatorPageObserver will call by fileter by settings.name
 - feat: add keepIndex for NavigatorTabBarView
+- fix: NavigatorPageLifecycleMixin anchors exists duplicate RouteSettings
