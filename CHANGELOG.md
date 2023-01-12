@@ -605,3 +605,7 @@
 
 - fix: Call popResult after the route is removeed, popped, replaced
 - fix: can not pop
+
+## 3.12.2
+
+- feat: NavigatorPageObserver will call by fileter by settings.name
