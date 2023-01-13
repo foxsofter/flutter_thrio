@@ -821,15 +821,15 @@ class ThrioNavigatorImplement {
     if (ns == null) {
       return <NavigatorRoute>[];
     }
-    if (url?.isEmpty == true) {
-      return ns.history.whereType<NavigatorRoute>().toList();
+    if (url?.isNotEmpty == true) {
+      return ns.history
+          .whereType<NavigatorRoute>()
+          .where((final it) =>
+      it.settings.url == url &&
+          (index == null || it.settings.index == index))
+          .toList();
     }
-    return ns.history
-        .whereType<NavigatorRoute>()
-        .where((final it) =>
-            it.settings.url == url &&
-            (index == null || it.settings.index == index))
-        .toList();
+    return ns.history.whereType<NavigatorRoute>().toList();
   }
 
   bool isDialogAbove({final String? url, final int? index}) {
@@ -837,18 +837,18 @@ class ThrioNavigatorImplement {
     if (ns == null) {
       return false;
     }
-    if (url?.isEmpty == true) {
-      return ns.history.last is NavigatorDialogRoute;
+    if (url?.isNotEmpty == true) {
+      final routes = ns.history;
+      final idx = routes.lastIndexWhere((final it) =>
+      it is NavigatorRoute &&
+          it.settings.url == url &&
+          (index == null || it.settings.index == index));
+      if (idx < 0 || routes.length <= idx + 1) {
+        return false;
+      }
+      return routes[idx + 1] is! NavigatorRoute;
     }
-    final routes = ns.history;
-    final idx = routes.lastIndexWhere((final it) =>
-        it is NavigatorRoute &&
-        it.settings.url == url &&
-        (index == null || it.settings.index == index));
-    if (idx < 0 || routes.length <= idx + 1) {
-      return false;
-    }
-    return routes[idx + 1] is! NavigatorRoute;
+    return ns.history.last is NavigatorDialogRoute;
   }
 
   Future<bool> setPopDisabled({
