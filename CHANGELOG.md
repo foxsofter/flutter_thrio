@@ -613,3 +613,8 @@
 ## 3.12.3
 
 - fix: NavigatorPageLifecycleMixin anchors exists duplicate RouteSettings
+
+## 3.12.4
+
+- refactor: lastFlutterRoute and allFlutterRoutes return type to NavigatorRoute
+- refactor: isContainsInnerRoute to isDialogAbove

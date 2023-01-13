@@ -25,6 +25,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
+import 'navigator_route.dart';
 import 'navigator_types.dart';
 import 'thrio_navigator_implement.dart';
 
@@ -440,18 +441,19 @@ abstract class ThrioNavigator {
       ThrioNavigatorImplement.shared().allRoutes(url: url);
 
   /// Returns the flutter route of the page that was last pushed to the
-  /// navigation stack.
+  /// navigation stack matching `url` and `index`.
   ///
-  static RouteSettings? lastFlutterRoute({final String? url}) =>
-      ThrioNavigatorImplement.shared().lastFlutterRoute(url: url);
+  static NavigatorRoute? lastFlutterRoute(
+          {final String? url, final int? index}) =>
+      ThrioNavigatorImplement.shared().lastFlutterRoute(url: url, index: index);
 
-  /// Returns all flutter route of the page with `url` in the navigation stack.
+  /// Returns all flutter route of the page with `url` and `index` in the navigation stack.
   ///
-  static List<RouteSettings> allFlutterRoutes({final String? url}) =>
-      ThrioNavigatorImplement.shared().allFlutterRoutes(url: url);
+  static List<NavigatorRoute> allFlutterRoutes(
+          {final String? url, final int? index}) =>
+      ThrioNavigatorImplement.shared().allFlutterRoutes(url: url, index: index);
 
-  /// Returns true if there is a route pushed by the Navigator
-  /// on the last matching url.
-  static bool isContainsInnerRoute({required final String url}) =>
-      ThrioNavigatorImplement.shared().isContainsInnerRoute(url: url);
+  /// Returns true if there is a dialog route on the last matching `url` and `index`.
+  static bool isDialogAbove({final String? url, final int? index}) =>
+      ThrioNavigatorImplement.shared().isDialogAbove(url: url, index: index);
 }

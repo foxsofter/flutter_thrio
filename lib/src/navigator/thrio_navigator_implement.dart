@@ -23,6 +23,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_thrio/flutter_thrio.dart';
 
 import '../channel/thrio_channel.dart';
 import '../exception/thrio_exception.dart';
@@ -800,41 +801,54 @@ class ThrioNavigatorImplement {
   Future<List<RouteSettings>> allRoutes({final String? url}) =>
       _sendChannel.allRoutes(url: url);
 
-  RouteSettings? lastFlutterRoute({final String? url}) {
-    if (url == null || url.isEmpty) {
-      return navigatorState?.history.lastOrNull?.settings;
+  NavigatorRoute? lastFlutterRoute({final String? url, final int? index}) {
+    final ns = navigatorState;
+    if (ns == null) {
+      return null;
     }
-    return navigatorState?.history
-        .lastWhereOrNull(
-            (final it) => it is NavigatorRoute && it.settings.url == url)
-        ?.settings;
+    var route = ns.history.lastOrNull;
+    if (url?.isNotEmpty == true) {
+      route = ns.history.lastWhereOrNull((final it) =>
+          it is NavigatorRoute &&
+          it.settings.url == url &&
+          (index == null || it.settings.index == index));
+    }
+    return route is NavigatorRoute ? route : null;
   }
 
-  List<RouteSettings> allFlutterRoutes({final String? url}) {
-    if (url == null || url.isEmpty) {
-      return navigatorState?.history
-              .whereType<NavigatorRoute>()
-              .map<RouteSettings>((final it) => it.settings)
-              .toList() ??
-          <RouteSettings>[];
+  List<NavigatorRoute> allFlutterRoutes({final String? url, final int? index}) {
+    final ns = navigatorState;
+    if (ns == null) {
+      return <NavigatorRoute>[];
     }
-    return navigatorState?.history
-            .where((final it) => it is NavigatorRoute && it.settings.url == url)
-            .map((final it) => it.settings)
-            .toList() ??
-        <RouteSettings>[];
+    if (url?.isEmpty == true) {
+      return ns.history.whereType<NavigatorRoute>().toList();
+    }
+    return ns.history
+        .whereType<NavigatorRoute>()
+        .where((final it) =>
+            it.settings.url == url &&
+            (index == null || it.settings.index == index))
+        .toList();
   }
 
-  bool isContainsInnerRoute({required final String url}) {
-    final routes = navigatorState?.history ?? <NavigatorRoute>[];
-    final index = url.isEmpty
-        ? routes.lastIndexWhere((final route) => route is NavigatorRoute)
-        : routes.lastIndexWhere((final route) =>
-            route is NavigatorRoute && route.settings.url == url);
-    if (index < 0 || routes.length <= index + 1) {
+  bool isDialogAbove({final String? url, final int? index}) {
+    final ns = navigatorState;
+    if (ns == null) {
       return false;
     }
-    return routes[index + 1] is! NavigatorRoute;
+    if (url?.isEmpty == true) {
+      return ns.history.last is NavigatorDialogRoute;
+    }
+    final routes = ns.history;
+    final idx = routes.lastIndexWhere((final it) =>
+        it is NavigatorRoute &&
+        it.settings.url == url &&
+        (index == null || it.settings.index == index));
+    if (idx < 0 || routes.length <= idx + 1) {
+      return false;
+    }
+    return routes[idx + 1] is! NavigatorRoute;
   }
 
   Future<bool> setPopDisabled({
