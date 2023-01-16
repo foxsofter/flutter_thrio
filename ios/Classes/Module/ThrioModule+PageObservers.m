@@ -80,8 +80,8 @@ NS_ASSUME_NONNULL_BEGIN
     UINavigationController *nvc = ThrioNavigator.navigationController;
     if (routeType == NavigatorRouteTypePop || routeType == NavigatorRouteTypeRemove) {
         NavigatorPageRoute *lastRoute = nvc.thrio_lastRoute;
+        [ThrioModule.pageObservers willDisappear:routeSettings];
         if ([lastRoute.settings isEqualToRouteSettings:routeSettings]) {
-            [ThrioModule.pageObservers willDisappear:routeSettings];
             [ThrioModule.pageObservers willAppear:lastRoute.prev.settings];
         }
     } else if (routeType == NavigatorRouteTypeReplace) {

@@ -23,7 +23,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_thrio/flutter_thrio.dart';
 
 import '../channel/thrio_channel.dart';
 import '../exception/thrio_exception.dart';
@@ -31,6 +30,7 @@ import '../extension/thrio_iterable.dart';
 import '../module/module_anchor.dart';
 import '../module/module_types.dart';
 import '../module/thrio_module.dart';
+import 'navigator_dialog_route.dart';
 import 'navigator_logger.dart';
 import 'navigator_observer_manager.dart';
 import 'navigator_page_observer_channel.dart';
@@ -825,8 +825,8 @@ class ThrioNavigatorImplement {
       return ns.history
           .whereType<NavigatorRoute>()
           .where((final it) =>
-      it.settings.url == url &&
-          (index == null || it.settings.index == index))
+              it.settings.url == url &&
+              (index == null || it.settings.index == index))
           .toList();
     }
     return ns.history.whereType<NavigatorRoute>().toList();
@@ -840,7 +840,7 @@ class ThrioNavigatorImplement {
     if (url?.isNotEmpty == true) {
       final routes = ns.history;
       final idx = routes.lastIndexWhere((final it) =>
-      it is NavigatorRoute &&
+          it is NavigatorRoute &&
           it.settings.url == url &&
           (index == null || it.settings.index == index));
       if (idx < 0 || routes.length <= idx + 1) {
