@@ -96,9 +96,9 @@ NS_ASSUME_NONNULL_BEGIN
     NavigatorRouteType routeType = [self routeTypeFromString:routeTypeString];
     UINavigationController *nvc = ThrioNavigator.navigationController;
     if (routeType == NavigatorRouteTypePop || routeType == NavigatorRouteTypeRemove) {
+        [ThrioModule.pageObservers didDisappear:routeSettings];
         NavigatorPageRoute *prevLastRoute = ThrioModule.pageObservers.prevLastRoute;
         if ([prevLastRoute.settings isEqualToRouteSettings:routeSettings]) {
-            [ThrioModule.pageObservers didDisappear:routeSettings];
             [ThrioModule.pageObservers didAppear:prevLastRoute.prev.settings];
         }
     } else if (routeType == NavigatorRouteTypeReplace) {
