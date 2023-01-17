@@ -24,6 +24,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_thrio/src/logger/thrio_logger.dart';
 
 import 'navigator_route.dart';
 import 'navigator_types.dart';
@@ -282,11 +283,15 @@ abstract class ThrioNavigator {
   static Future<bool> pop<TParams>({
     final TParams? params,
     final bool animated = true,
-  }) =>
-      ThrioNavigatorImplement.shared().pop<TParams>(
+  }) async {
+    final startTime = DateTime.now().millisecondsSinceEpoch;
+    final result = await ThrioNavigatorImplement.shared().pop<TParams>(
         params: params,
         animated: animated,
       );
+    ThrioLogger.v('popCostTime=${DateTime.now().millisecondsSinceEpoch - startTime}');
+    return result;
+  }
 
   /// Pop the page in the navigation stack until the first page.
   ///
