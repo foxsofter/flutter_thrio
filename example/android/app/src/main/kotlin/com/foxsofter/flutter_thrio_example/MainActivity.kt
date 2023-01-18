@@ -1,8 +1,8 @@
 package com.foxsofter.flutter_thrio_example
 
-import io.flutter.embedding.android.ThrioFlutterActivity
+import io.flutter.embedding.android.ThrioRootFragmentActivity
 
-class MainActivity: ThrioFlutterActivity() {
+class MainActivity: ThrioRootFragmentActivity() {
     override fun shouldMoveToBack(): Boolean {
         return true
     }

@@ -27,10 +27,11 @@ import android.app.Activity
 import com.foxsofter.flutter_thrio.BooleanCallback
 import com.foxsofter.flutter_thrio.IntCallback
 import com.foxsofter.flutter_thrio.NullableIntCallback
+import com.foxsofter.flutter_thrio.module.ModuleIntentBuilders
 import com.foxsofter.flutter_thrio.module.ModuleJsonDeserializers
 import com.foxsofter.flutter_thrio.module.ModuleJsonSerializers
 import com.foxsofter.flutter_thrio.module.ModuleRouteObservers
-import io.flutter.embedding.android.ThrioFlutterActivity
+import io.flutter.embedding.android.ThrioFlutterActivityBase
 import java.lang.ref.WeakReference
 
 internal data class PageRouteHolder(
@@ -74,7 +75,7 @@ internal data class PageRouteHolder(
     fun push(route: PageRoute, result: NullableIntCallback) {
         val activity = activity?.get()
         if (activity != null) {
-            if (activity is ThrioFlutterActivity) {
+            if (activity is ThrioFlutterActivityBase) {
                 route.settings.params = ModuleJsonSerializers.serializeParams(route.settings.params)
                 activity.onPush(route.settings.toArguments()) { r ->
                     if (r) {
@@ -122,7 +123,7 @@ internal data class PageRouteHolder(
         }
         val activity = activity?.get()
         if (activity != null && !activity.isDestroyed) {
-            if (activity is ThrioFlutterActivity) {
+            if (activity is ThrioFlutterActivityBase) {
                 lastRoute.settings.params = ModuleJsonSerializers.serializeParams(params)
                 lastRoute.settings.animated = animated
                 var arguments = lastRoute.settings.toArguments()
@@ -152,7 +153,7 @@ internal data class PageRouteHolder(
         }
         val activity = activity?.get()
         if (activity != null && !activity.isDestroyed) {
-            if (activity is ThrioFlutterActivity) {
+            if (activity is ThrioFlutterActivityBase) {
                 lastRoute.settings.params = ModuleJsonSerializers.serializeParams(params)
                 lastRoute.settings.animated = animated
                 var arguments = lastRoute.settings.toArguments()
@@ -220,7 +221,7 @@ internal data class PageRouteHolder(
 
         val activity = activity?.get()
         if (activity != null) {
-            if (activity is ThrioFlutterActivity) {
+            if (activity is ThrioFlutterActivityBase) {
                 activity.onPopTo(route.settings.toArguments()) { r ->
                     if (r) {
                         val lastIndex = routes.indexOf(route)
@@ -252,7 +253,7 @@ internal data class PageRouteHolder(
 
         val activity = activity?.get()
         if (activity != null) {
-            if (activity is ThrioFlutterActivity) {
+            if (activity is ThrioFlutterActivityBase) {
                 activity.onRemove(route.settings.toArguments()) {
                     if (it) {
                         routes.remove(route)
@@ -281,11 +282,12 @@ internal data class PageRouteHolder(
         val oldRoute = lastRoute(url, index)
         val lastRoute = PageRoutes.lastRoute(newUrl)
         // 现阶段只实现 Flutter 页面之间的 replace 操作
-        if (oldRoute != null && ThrioFlutterActivity::class.java.isAssignableFrom(oldRoute.clazz) &&
-            (lastRoute == null || ThrioFlutterActivity::class.java.isAssignableFrom(lastRoute.clazz))
+        val clz = ModuleIntentBuilders.flutterIntentBuilder.getActivityClz()
+        if (oldRoute != null && clz.isAssignableFrom(oldRoute.clazz) &&
+            (lastRoute == null || clz.isAssignableFrom(lastRoute.clazz))
         ) {
             val activity = activity?.get()
-            if (activity != null && activity is ThrioFlutterActivity) {
+            if (activity != null && activity is ThrioFlutterActivityBase) {
                 val args = oldRoute.settings.toArgumentsWith(newUrl, newIndex)
                 activity.onReplace(args) {
                     if (it) {
@@ -318,21 +320,21 @@ internal data class PageRouteHolder(
         val lastRoute = lastRoute()
         if (lastRoute == null) {
             result?.invoke(false)
-            return;
+            return
         }
         if (inRoot) {
             val firstRoute = firstRoute()
             if (lastRoute == firstRoute) {
                 result?.invoke(false)
-                return;
+                return
             }
         }
         val activity = activity?.get()
         if (activity == null) {
             result?.invoke(false)
-            return;
+            return
         }
-        if (activity is ThrioFlutterActivity) {
+        if (activity is ThrioFlutterActivityBase) {
             var arguments = lastRoute.settings.toArguments()
             arguments = mutableMapOf<String, Any?>().also { args ->
                 args.putAll(arguments)

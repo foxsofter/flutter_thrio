@@ -23,10 +23,10 @@
 
 package com.foxsofter.flutter_thrio.navigator
 
+import android.app.Activity
 import android.content.Context
 import com.foxsofter.flutter_thrio.extension.getEntrypoint
 import com.foxsofter.flutter_thrio.extension.getPageId
-import io.flutter.embedding.android.ThrioFlutterActivity
 
 object FlutterEngineFactory : PageObserver, RouteObserver {
 
@@ -48,15 +48,15 @@ object FlutterEngineFactory : PageObserver, RouteObserver {
         engineGroup.startup(context, readyListener)
     }
 
-    // 仅用于让 ThrioFlutterActivity 调用
-    fun provideEngine(activity: ThrioFlutterActivity): io.flutter.embedding.engine.FlutterEngine {
+    // 仅用于让 ThrioFlutterActivity 或 ThrioFlutterFragmentActivity 调用
+    fun provideEngine(activity: Activity): io.flutter.embedding.engine.FlutterEngine {
         val entrypoint = getEntrypoint(activity.intent.getEntrypoint())
         return engineGroups[entrypoint]?.provideEngine(activity)
             ?: throw RuntimeException("FlutterEngine not exists")
     }
 
-    // 仅用于让 ThrioFlutterActivity 调用
-    fun cleanUpFlutterEngine(activity: ThrioFlutterActivity) {
+    // 仅用于让 ThrioFlutterActivity 或 ThrioFlutterFragmentActivity 调用
+    fun cleanUpFlutterEngine(activity: Activity) {
         val entrypoint = getEntrypoint(activity.intent.getEntrypoint())
         val pageId = activity.intent.getPageId()
         engineGroups[entrypoint]?.cleanUpFlutterEngine(pageId)

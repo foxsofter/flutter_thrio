@@ -1,7 +1,7 @@
 /**
  * The MIT License (MIT)
  *
- * Copyright (c) 2019 foxsofter
+ * Copyright (c) 2022 foxsofter
  *
  * Permission is hereby granted, free of charge, to any person obtaining a
  * copy of this software and associated documentation files (the "Software"),
@@ -23,18 +23,17 @@
 
 package io.flutter.embedding.android
 
+import android.annotation.SuppressLint
 import android.content.Context
-import android.content.pm.PackageManager
 import com.foxsofter.flutter_thrio.BooleanCallback
 import com.foxsofter.flutter_thrio.IntCallback
-import com.foxsofter.flutter_thrio.navigator.NavigationController
-import com.foxsofter.flutter_thrio.navigator.ThrioNavigator
+import com.foxsofter.flutter_thrio.extension.getPageId
+import com.foxsofter.flutter_thrio.navigator.NAVIGATION_ROUTE_PAGE_ID_NONE
+import com.foxsofter.flutter_thrio.navigator.PageRoutes
+import io.flutter.embedding.android.FlutterActivityLaunchConfigs.BackgroundMode
 import io.flutter.embedding.engine.FlutterEngine
 
-open class ThrioFlutterActivity : FlutterActivity(), ThrioFlutterActivityBase {
-    companion object {
-        var isInitialUrlPushed = false
-    }
+open class ThrioFlutterFragmentActivity : FlutterFragmentActivity(), ThrioFlutterActivityBase {
 
     private val activityDelegate by lazy { ThrioFlutterActivityDelegate(this) }
 
@@ -47,19 +46,8 @@ open class ThrioFlutterActivity : FlutterActivity(), ThrioFlutterActivityBase {
     override fun cleanUpFlutterEngine(flutterEngine: FlutterEngine) =
         activityDelegate.cleanUpFlutterEngine(flutterEngine)
 
-    override fun onFlutterUiDisplayed() {
-        if (!isInitialUrlPushed && initialUrl?.isNotEmpty() == true) {
-            isInitialUrlPushed = true
-            NavigationController.Push.push(initialUrl!!, null, false) {}
-        }
-        super.onFlutterUiDisplayed()
-    }
-
     override fun shouldDestroyEngineWithHost(): Boolean =
         activityDelegate.shouldDestroyEngineWithHost()
-
-    @Deprecated("Deprecated in Java")
-    override fun onBackPressed() = ThrioNavigator.maybePop()
 
     override fun onPush(arguments: Map<String, Any?>?, result: BooleanCallback) =
         activityDelegate.onPush(arguments, result)
@@ -85,21 +73,26 @@ open class ThrioFlutterActivity : FlutterActivity(), ThrioFlutterActivityBase {
     override fun onCanPop(arguments: Map<String, Any?>?, result: BooleanCallback) =
         activityDelegate.onCanPop(arguments, result)
 
-    private fun readInitialUrl() {
-        val activityInfo =
-            packageManager.getActivityInfo(componentName, PackageManager.GET_META_DATA)
-        _initialUrl = if (activityInfo.metaData == null) "" else {
-            activityInfo.metaData.getString("io.flutter.InitialUrl", "")
-        }
+    @SuppressLint("VisibleForTests")
+    override fun createFlutterFragment(): FlutterFragment {
+        val pageId = intent.getPageId()
+        if (pageId == NAVIGATION_ROUTE_PAGE_ID_NONE) throw IllegalStateException("pageId must not be null")
+        val holder = PageRoutes.lastRouteHolder(pageId)
+            ?: throw throw IllegalStateException("holder must not be null")
+
+        val backgroundMode = backgroundMode
+        val renderMode = renderMode
+        val transparencyMode =
+            if (backgroundMode == BackgroundMode.opaque) TransparencyMode.opaque else TransparencyMode.transparent
+        val shouldDelayFirstAndroidViewDraw = renderMode == RenderMode.surface
+        return FlutterFragment.NewEngineFragmentBuilder(ThrioFlutterFragment::class.java)
+            .dartEntrypoint(holder.entrypoint)
+            .handleDeeplinking(shouldHandleDeeplinking())
+            .renderMode(renderMode)
+            .transparencyMode(transparencyMode)
+            .shouldAttachEngineToActivity(shouldAttachEngineToActivity())
+            .shouldDelayFirstAndroidViewDraw(shouldDelayFirstAndroidViewDraw)
+            .build()
     }
 
-    private var _initialUrl: String? = null
-
-    protected open val initialUrl: String?
-        get() {
-            if (_initialUrl == null) {
-                readInitialUrl()
-            }
-            return _initialUrl!!
-        }
 }

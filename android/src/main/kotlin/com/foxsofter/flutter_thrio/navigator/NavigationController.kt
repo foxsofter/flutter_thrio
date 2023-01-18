@@ -34,7 +34,7 @@ import com.foxsofter.flutter_thrio.extension.*
 import com.foxsofter.flutter_thrio.module.ModuleIntentBuilders
 import com.foxsofter.flutter_thrio.module.ModuleJsonSerializers
 import com.foxsofter.flutter_thrio.module.ModuleRouteObservers
-import io.flutter.embedding.android.ThrioFlutterActivity
+import io.flutter.embedding.android.ThrioFlutterActivityBase
 import java.lang.ref.WeakReference
 
 internal object NavigationController : Application.ActivityLifecycleCallbacks {
@@ -141,7 +141,7 @@ internal object NavigationController : Application.ActivityLifecycleCallbacks {
                 it.putAll(settings.toArguments())
             }
             // 准备 intent
-            val intent = if (lastActivity is ThrioFlutterActivity &&
+            val intent = if (lastActivity is ThrioFlutterActivityBase &&
                 (lastEntrypoint == entrypoint || PageRoutes.lastRoute == null)
             ) {
                 lastActivity.intent // 复用 ThrioFlutterActivity
@@ -162,9 +162,9 @@ internal object NavigationController : Application.ActivityLifecycleCallbacks {
             this.poppedResult = poppedResult
 
             if (builder is FlutterIntentBuilder) {
-                if (lastActivity is ThrioFlutterActivity && PageRoutes.lastRoute == null) {
+                if (lastActivity is ThrioFlutterActivityBase && PageRoutes.lastRoute == null) {
                     doPush(lastActivity, routeSettings = settings) // ThrioFlutterActivity 做为首页被打开
-                } else if (lastActivity is ThrioFlutterActivity && lastEntrypoint == entrypoint) {
+                } else if (lastActivity is ThrioFlutterActivityBase && lastEntrypoint == entrypoint) {
                     doPush(lastActivity) // ThrioFlutterActivity 作为最后打开的 Activity，且是同样的 entrypoint
                 } else {
                     // 需要启动新的 ThrioFlutterActivity，则需要先启动引擎，ready 后再启动 ThrioFlutterActivity
@@ -260,7 +260,7 @@ internal object NavigationController : Application.ActivityLifecycleCallbacks {
 
             val notifications = route.removeNotify()
             notifications.forEach {
-                if (activity is ThrioFlutterActivity) {
+                if (activity is ThrioFlutterActivityBase) {
                     val arguments = if (it.value == null) mapOf<String, Any>(
                         "__event_name__" to "__onNotify__",
                         "url" to route.settings.url,
@@ -293,8 +293,12 @@ internal object NavigationController : Application.ActivityLifecycleCallbacks {
         ) {
             val firstHolder = PageRoutes.firstRouteHolder!!
             if (PageRoutes.routeHolders.count() == 1 && firstHolder.allRoute().count() < 2) {
-                val activity = firstHolder.activity?.get() ?: return
-                if (activity !is ThrioFlutterActivity) {
+                val activity = firstHolder.activity?.get() ?: return // 不应该会走到这
+                if (activity is ThrioFlutterActivityBase) {
+                    if (activity.shouldMoveToBack()) {
+                        activity.moveTaskToBack(false)
+                    }
+                } else {
                     activity.onBackPressed()
                 }
                 routeType = RouteType.NONE
@@ -325,11 +329,11 @@ internal object NavigationController : Application.ActivityLifecycleCallbacks {
             val firstHolder = PageRoutes.firstRouteHolder!!
             if (PageRoutes.routeHolders.count() == 1 && firstHolder.allRoute().count() < 2) {
                 val activity = firstHolder.activity?.get() ?: return // 不应该会走到这
-                if (activity is ThrioFlutterActivity) {
+                if (activity is ThrioFlutterActivityBase) {
                     PageRoutes.pop<T>(params, animated, true) {
                         if (!it) {
                             firstHolder.activity?.get()?.apply {
-                                if (this is ThrioFlutterActivity && this.shouldMoveToBack()) {
+                                if (this is ThrioFlutterActivityBase && this.shouldMoveToBack()) {
                                     moveTaskToBack(false)
                                 }
                             }

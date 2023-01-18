@@ -4,14 +4,12 @@ import android.app.Activity
 import com.foxsofter.flutter_thrio.module.*
 import com.foxsofter.flutter_thrio.navigator.FlutterIntentBuilder
 import com.foxsofter.flutter_thrio.navigator.IntentBuilder
+import io.flutter.embedding.android.ThrioFlutterFragmentActivity
 
 object MainModule : ThrioModule(), ModuleIntentBuilder, ModuleJsonSerializer,
     ModuleJsonDeserializer {
 
     override fun onModuleInit(moduleContext: ModuleContext) {
-//        setFlutterIntentBuilder(object : FlutterIntentBuilder() {
-//            override fun getActivityClz(): Class<out Activity> = CustomFlutterActivity::class.java
-//        })
         navigatorLogEnabled = true
 
         val people = People(
@@ -27,8 +25,8 @@ object MainModule : ThrioModule(), ModuleIntentBuilder, ModuleJsonSerializer,
     }
 
     override fun onIntentBuilderRegister(moduleContext: ModuleContext) {
-        setFlutterIntentBuilder(object : FlutterIntentBuilder() {
-            override fun getActivityClz(): Class<out Activity> = MainActivity::class.java
+        setFlutterIntentBuilder(object : FlutterIntentBuilder(){
+            override fun getActivityClz(): Class<out Activity> = ThrioFlutterFragmentActivity::class.java
         })
 
         registerIntentBuilder("/biz1/native1", object : IntentBuilder {

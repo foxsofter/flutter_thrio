@@ -23,7 +23,7 @@ if (flutterVersionName == null) {
 
 def flutterCompileSdkVersion = localProperties.getProperty('flutter.targetSdkVersion')
 if (flutterCompileSdkVersion == null) {
-    flutterCompileSdkVersion = 'android-32'
+    flutterCompileSdkVersion = 'android-33'
 }
 
 def flutterMinSdkVersion = localProperties.getProperty('flutter.minSdkVersion')
@@ -41,7 +41,7 @@ apply plugin: 'kotlin-android'
 apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
 android {
-    compileSdkVersion flutter.compileSdkVersion
+    compileSdkPreview compileSdkVersion
     ndkVersion flutter.ndkVersion
 
     compileOptions {
@@ -79,6 +79,7 @@ android {
             signingConfig signingConfigs.debug
         }
     }
+    buildToolsVersion '33.0.0'
 }
 
 flutter {
@@ -87,7 +88,7 @@ flutter {
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation 'androidx.appcompat:appcompat:1.5.0'
-    implementation 'com.google.android.material:material:1.6.1'
+    implementation 'androidx.appcompat:appcompat:1.6.0'
+    implementation 'com.google.android.material:material:1.7.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
 }

@@ -33,6 +33,7 @@ import com.foxsofter.flutter_thrio.extension.getEntrypoint
 import com.foxsofter.flutter_thrio.extension.getPageId
 import com.foxsofter.flutter_thrio.module.ModulePageObservers
 import io.flutter.embedding.android.ThrioFlutterActivity
+import io.flutter.embedding.android.ThrioFlutterActivityBase
 import java.lang.ref.WeakReference
 
 internal object PageRoutes : Application.ActivityLifecycleCallbacks {
@@ -306,9 +307,9 @@ internal object PageRoutes : Application.ActivityLifecycleCallbacks {
             val holder = lastRouteHolder()
             val activity = holder?.activity?.get()
             if (holder == null
-                || (activity is ThrioFlutterActivity && FlutterEngineFactory.isMultiEngineEnabled)
-                || (activity is ThrioFlutterActivity && holder.routes.isEmpty())
-                || activity !is ThrioFlutterActivity
+                || (activity is ThrioFlutterActivityBase && FlutterEngineFactory.isMultiEngineEnabled)
+                || (activity is ThrioFlutterActivityBase && holder.routes.isEmpty())
+                || activity !is ThrioFlutterActivityBase
             ) {
                 return
             }
@@ -340,9 +341,9 @@ internal object PageRoutes : Application.ActivityLifecycleCallbacks {
             val holder = lastRouteHolder()
             val activity = holder?.activity?.get()
             if (holder == null
-                || (activity is ThrioFlutterActivity && FlutterEngineFactory.isMultiEngineEnabled)
-                || (activity is ThrioFlutterActivity && holder.routes.isEmpty())
-                || activity !is ThrioFlutterActivity
+                || (activity is ThrioFlutterActivityBase && FlutterEngineFactory.isMultiEngineEnabled)
+                || (activity is ThrioFlutterActivityBase && holder.routes.isEmpty())
+                || activity !is ThrioFlutterActivityBase
             ) {
                 return
             }
@@ -402,9 +403,9 @@ internal object PageRoutes : Application.ActivityLifecycleCallbacks {
                 val holder = lastRouteHolder()
                 val activity = holder?.activity?.get()
                 if (holder == null
-                    || (activity is ThrioFlutterActivity && FlutterEngineFactory.isMultiEngineEnabled)
-                    || (activity is ThrioFlutterActivity && holder.routes.isEmpty())
-                    || activity !is ThrioFlutterActivity
+                    || (activity is ThrioFlutterActivityBase && FlutterEngineFactory.isMultiEngineEnabled)
+                    || (activity is ThrioFlutterActivityBase && holder.routes.isEmpty())
+                    || activity !is ThrioFlutterActivityBase
                 ) {
                     return
                 }
@@ -423,7 +424,7 @@ internal object PageRoutes : Application.ActivityLifecycleCallbacks {
                 pageId = activity.hashCode()
                 activity.intent.putExtra(NAVIGATION_ROUTE_PAGE_ID_KEY, pageId)
                 var entrypoint = activity.intent.getEntrypoint()
-                if (activity is ThrioFlutterActivity &&
+                if (activity is ThrioFlutterActivityBase &&
                     !FlutterEngineFactory.isMultiEngineEnabled
                 ) {
                     entrypoint = NAVIGATION_FLUTTER_ENTRYPOINT_DEFAULT
