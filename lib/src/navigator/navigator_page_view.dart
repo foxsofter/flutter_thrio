@@ -22,6 +22,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_thrio/flutter_thrio.dart';
 
 import '../module/module_anchor.dart';
 import 'navigator_route_settings.dart';
@@ -236,7 +237,7 @@ class _NavigatorPageViewState extends State<NavigatorPageView> {
   }
 
   void _changedToAppear(final RouteSettings routeSettings) {
-    final obs = anchor.pageLifecycleObservers[routeSettings.url];
+    final obs = ThrioModule.gets<NavigatorPageObserver>(url: routeSettings.url);
     for (final ob in obs) {
       if (ob.settings == null || ob.settings?.name == routeSettings.name) {
         ob.didAppear(routeSettings);
@@ -245,7 +246,7 @@ class _NavigatorPageViewState extends State<NavigatorPageView> {
   }
 
   void _changedToDisappear(final RouteSettings routeSettings) {
-    final obs = anchor.pageLifecycleObservers[routeSettings.url];
+    final obs = ThrioModule.gets<NavigatorPageObserver>(url: routeSettings.url);
     for (final ob in obs) {
       if (ob.settings == null || ob.settings?.name == routeSettings.name) {
         ob.didDisappear(routeSettings);
