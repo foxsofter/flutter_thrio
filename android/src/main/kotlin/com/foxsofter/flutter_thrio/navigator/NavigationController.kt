@@ -291,9 +291,14 @@ internal object NavigationController : Application.ActivityLifecycleCallbacks {
             animated: Boolean = true,
             result: BooleanCallback? = null
         ) {
-            val firstHolder = PageRoutes.firstRouteHolder!!
-            if (PageRoutes.routeHolders.count() == 1 && firstHolder.allRoute().count() < 2) {
-                val activity = firstHolder.activity?.get() ?: return // 不应该会走到这
+            val lastHolder = PageRoutes.lastRouteHolder()
+            if (lastHolder == null) {
+                result?.invoke(false)
+                return
+            }
+            val inRoot = lastHolder == PageRoutes.firstRouteHolder
+            if (inRoot && lastHolder.allRoute().count() < 2) {
+                val activity = lastHolder.activity?.get() ?: return // 不应该会走到这
                 if (activity is ThrioFlutterActivityBase) {
                     if (activity.shouldMoveToBack()) {
                         activity.moveTaskToBack(false)
@@ -304,7 +309,7 @@ internal object NavigationController : Application.ActivityLifecycleCallbacks {
                 routeType = RouteType.NONE
                 return
             }
-            PageRoutes.maybePop<T>(params, animated, true) {
+            PageRoutes.maybePop<T>(params, animated, inRoot) {
                 if (it == 1) {
                     pop(params, animated, result)
                 } else {
@@ -322,23 +327,21 @@ internal object NavigationController : Application.ActivityLifecycleCallbacks {
                 result?.invoke(false)
                 return
             }
-
+            val lastHolder = PageRoutes.lastRouteHolder()
+            if (lastHolder == null) {
+                result?.invoke(false)
+                return
+            }
             routeType = RouteType.POP
-            PageRoutes.willAppearPageId = 0
 
-            val firstHolder = PageRoutes.firstRouteHolder!!
-            if (PageRoutes.routeHolders.count() == 1 && firstHolder.allRoute().count() < 2) {
-                val activity = firstHolder.activity?.get() ?: return // 不应该会走到这
+            val inRoot = lastHolder == PageRoutes.firstRouteHolder
+
+            PageRoutes.willAppearPageId = 0
+            if (inRoot && lastHolder.allRoute().count() < 2) {
+                val activity = lastHolder.activity?.get() ?: return // 不应该会走到这
                 if (activity is ThrioFlutterActivityBase) {
-                    PageRoutes.pop<T>(params, animated, true) {
-                        if (!it) {
-                            firstHolder.activity?.get()?.apply {
-                                if (this is ThrioFlutterActivityBase && this.shouldMoveToBack()) {
-                                    moveTaskToBack(false)
-                                }
-                            }
-                        }
-                        result?.invoke(it)
+                    if (activity.shouldMoveToBack()) {
+                        activity.moveTaskToBack(false)
                     }
                 } else {
                     activity.onBackPressed()
