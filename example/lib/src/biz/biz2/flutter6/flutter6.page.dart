@@ -136,7 +136,7 @@ class _Flutter6PageState extends State<Flutter6Page> {
               onTap: () async {
                 final result = await ThrioNavigator.pushAndRemoveTo(
                   url: biz.biz1.flutter7.url,
-                  toUrl: biz.biz1.flutter1.url,
+                  toUrl: biz.biz1.flutter1.home.url,
                 );
                 debugPrint(result.toString());
               },
@@ -168,7 +168,7 @@ class _Flutter6PageState extends State<Flutter6Page> {
             InkWell(
               onTap: () async {
                 final result = await ThrioNavigator.act(
-                    url: biz.biz1.flutter1.url,
+                    url: biz.biz1.flutter1.home.url,
                     action: 'getPeople?intValue=12',
                     params: <String, dynamic>{'intValue': 11});
                 debugPrint(result.toString());

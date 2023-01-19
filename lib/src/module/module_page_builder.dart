@@ -25,8 +25,6 @@ import '../navigator/navigator_types.dart';
 import 'module_anchor.dart';
 import 'thrio_module.dart';
 
-const String kNavigatorPageDefaultUrl = 'home';
-
 mixin ModulePageBuilder on ThrioModule {
   NavigatorPageBuilder? _pageBuilder;
 
@@ -48,16 +46,6 @@ mixin ModulePageBuilder on ThrioModule {
       anchor.allUrls.remove(url);
     } else {
       anchor.allUrls.add(url);
-    }
-    // 处理存在 home 的 url
-    if (key == kNavigatorPageDefaultUrl) {
-      final url =
-          (StringBuffer()..writeAll(urlComponents..removeLast())).toString();
-      if (builder == null) {
-        anchor.allUrls.remove(url);
-      } else {
-        anchor.allUrls.add(url);
-      }
     }
   }
 

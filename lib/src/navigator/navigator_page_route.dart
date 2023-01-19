@@ -61,8 +61,12 @@ class NavigatorPageRoute extends MaterialPageRoute<bool> with NavigatorRoute {
       if (builder != null) {
         return builder(context, animation, secondaryAnimation, child);
       }
-      return super
-          .buildTransitions(context, animation, secondaryAnimation, child);
+      return super.buildTransitions(
+        context,
+        animation,
+        secondaryAnimation,
+        child,
+      );
     }
     return child;
   }

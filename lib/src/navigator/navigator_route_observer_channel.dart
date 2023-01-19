@@ -80,8 +80,10 @@ class NavigatorRouteObserverChannel with NavigatorRouteObserver {
           'didRemove', routeSettings.toArguments()..remove('params'));
 
   @override
-  void didReplace(final RouteSettings newRouteSettings,
-      final RouteSettings oldRouteSettings) {
+  void didReplace(
+    final RouteSettings newRouteSettings,
+    final RouteSettings oldRouteSettings,
+  ) {
     final oldArgs = oldRouteSettings.toArguments()..remove('params');
     final newArgs = newRouteSettings.toArguments()..remove('params');
     _channel.invokeMethod<bool>('didReplace', {
@@ -91,7 +93,9 @@ class NavigatorRouteObserverChannel with NavigatorRouteObserver {
   }
 
   void _on(
-          final String method, final NavigatorRouteObserverCallback callback) =>
+    final String method,
+    final NavigatorRouteObserverCallback callback,
+  ) =>
       _channel.registryMethodCall(method, ([final arguments]) {
         final routeSettings = NavigatorRouteSettings.fromArguments(arguments);
         if (routeSettings != null) {

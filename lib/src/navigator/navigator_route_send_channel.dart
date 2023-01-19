@@ -69,8 +69,10 @@ class NavigatorRouteSendChannel {
   Future<bool> canPop<TParams>() =>
       _channel.invokeMethod<bool>('canPop').then((final it) => it ?? false);
 
-  Future<bool> pop<TParams>(
-      {final TParams? params, final bool animated = true}) async {
+  Future<bool> pop<TParams>({
+    final TParams? params,
+    final bool animated = true,
+  }) async {
     final settings = await lastRoute();
     final url = settings?.url;
     final arguments = <String, dynamic>{
@@ -82,8 +84,10 @@ class NavigatorRouteSendChannel {
         .then((final it) => it ?? false);
   }
 
-  Future<bool> maybePop<TParams>(
-      {final TParams? params, final bool animated = true}) async {
+  Future<bool> maybePop<TParams>({
+    final TParams? params,
+    final bool animated = true,
+  }) async {
     final settings = await lastRoute();
     final url = settings?.url;
     final arguments = <String, dynamic>{
@@ -95,18 +99,21 @@ class NavigatorRouteSendChannel {
         .then((final it) => it ?? false);
   }
 
-  Future<bool> isInitialRoute(
-      {required final String url, final int index = 0}) {
+  Future<bool> isInitialRoute({
+    required final String url,
+    final int index = 0,
+  }) {
     final arguments = <String, dynamic>{'url': url, 'index': index};
     return _channel
         .invokeMethod<bool>('isInitialRoute', arguments)
         .then((final it) => it ?? false);
   }
 
-  Future<bool> popTo(
-      {required final String url,
-      final int index = 0,
-      final bool animated = true}) {
+  Future<bool> popTo({
+    required final String url,
+    final int index = 0,
+    final bool animated = true,
+  }) {
     final arguments = <String, dynamic>{
       'url': url,
       'index': index,

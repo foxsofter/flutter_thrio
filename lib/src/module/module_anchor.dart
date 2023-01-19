@@ -95,18 +95,6 @@ class ModuleAnchor
     final urls = allRoutes.map<String>((final it) => it.settings.url).toSet();
     final notPushedUrls =
         allUrls.where((final it) => !urls.contains(it)).toList();
-    // 需要过滤掉不带 home 的 url
-    for (var i = notPushedUrls.length - 1; i >= 0; i--) {
-      final url = notPushedUrls[i];
-      if (url.endsWith('/home')) {
-        final shortUrl = url.replaceRange(url.length - 5, url.length, '');
-        if (!notPushedUrls.remove(shortUrl)) {
-          if (allUrls.contains(shortUrl)) {
-            notPushedUrls.remove(url);
-          }
-        }
-      }
-    }
     final modules = <ThrioModule>{};
     for (final url in notPushedUrls) {
       modules.addAll(_getModules(url: url));
@@ -303,14 +291,6 @@ class ModuleAnchor
     if (allModules.where((final it) => it.key.isNotEmpty).length != length) {
       return <ThrioModule>[];
     }
-
-    if (!url.endsWith(kNavigatorPageDefaultUrl)) {
-      final module = allModules.last.modules[kNavigatorPageDefaultUrl];
-      if (module != null) {
-        allModules.add(module);
-      }
-    }
-
     return allModules;
   }
 

@@ -263,7 +263,7 @@ class _HomePageState extends State<HomePage>
                         ),
                         InkWell(
                           onTap: () => ThrioNavigator.replace(
-                            url: biz.biz1.flutter1.url,
+                            url: biz.biz1.flutter1.home.url,
                             newUrl: biz.biz2.flutter2.url,
                           ),
                           child: Container(
