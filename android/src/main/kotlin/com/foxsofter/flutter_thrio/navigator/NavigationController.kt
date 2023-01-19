@@ -37,6 +37,7 @@ import com.foxsofter.flutter_thrio.module.ModuleRouteObservers
 import io.flutter.embedding.android.ThrioFlutterActivityBase
 import java.lang.ref.WeakReference
 
+
 internal object NavigationController : Application.ActivityLifecycleCallbacks {
 
     fun isInitialRoute(url: String, index: Int?): Boolean {
@@ -45,6 +46,19 @@ internal object NavigationController : Application.ActivityLifecycleCallbacks {
             return settings?.url == url && settings.index == index
         }
         return false
+    }
+
+    fun hotRestart() {
+        val firstFlutterHolder = PageRoutes.firstFlutterRouteHolder ?: return
+        val route = firstFlutterHolder.firstRoute() ?: return
+        PageRoutes.hotRestart()
+        Push.push(
+            route.settings.url,
+            route.settings.params,
+            route.settings.animated,
+            route.fromEntrypoint,
+            route.fromPageId,
+        ) { }
     }
 
     override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {

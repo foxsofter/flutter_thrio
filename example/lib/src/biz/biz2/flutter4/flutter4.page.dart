@@ -160,7 +160,8 @@ class _Flutter4PageState extends State<Flutter4Page>
                 onTap: () async {
                   if (!await biz.biz1.flutter1.flutter1(intValue: 33)) {
                     await ThrioNavigator.push(
-                        url: '/biz/biz1/flutter1', params: {'page1Notify': {}});
+                        url: '/biz/biz1/flutter1/home',
+                        params: {'page1Notify': {}});
                   }
                 },
                 child: Container(

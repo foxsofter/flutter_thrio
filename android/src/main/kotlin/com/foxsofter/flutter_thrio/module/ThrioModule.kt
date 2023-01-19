@@ -33,6 +33,7 @@ open class ThrioModule {
 
     lateinit var moduleContext: ModuleContext private set
 
+
     companion object {
         private val root by lazy { ThrioModule() }
 

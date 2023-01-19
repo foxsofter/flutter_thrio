@@ -159,7 +159,7 @@ class _Flutter2PageState extends State<Flutter2Page>
                   InkWell(
                     onTap: () {
                       ThrioNavigator.notify(
-                          url: '/biz/biz1/flutter1',
+                          url: '/biz/biz1/flutter1/home',
                           name: 'page1Notify',
                           params: People(name: '大宝剑', age: 1, sex: 'x'));
                     },

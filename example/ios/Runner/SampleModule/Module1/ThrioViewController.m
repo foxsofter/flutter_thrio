@@ -25,13 +25,13 @@
         @"age": @100,
         @"sex": @"x"
     }];
-    [ThrioNavigator pushUrl:@"/biz/biz1/flutter1" params:people poppedResult:^(id _Nullable params) {
-        ThrioLogV(@"/biz/biz1/flutter1 popped: %@", params);
+    [ThrioNavigator pushUrl:@"/biz/biz1/flutter1/home" params:people poppedResult:^(id _Nullable params) {
+        ThrioLogV(@"/biz/biz1/flutter1/home popped: %@", params);
     }];
 }
 
 - (IBAction)popFlutter1:(id)sender {
-    [ThrioNavigator removeUrl:@"/biz/biz1/flutter1"];
+    [ThrioNavigator removeUrl:@"/biz/biz1/flutter1/home"];
 }
 
 - (IBAction)pushFlutter2:(id)sender {

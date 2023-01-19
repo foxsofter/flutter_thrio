@@ -172,7 +172,10 @@ internal class RouteReceiveChannel(
     }
 
     private fun onHotRestart() {
-        channel.registryMethod("hotRestart") { _, _ -> }
+        channel.registryMethod("hotRestart") { _, result ->
+            NavigationController.hotRestart()
+            result(null)
+        }
     }
 
 }

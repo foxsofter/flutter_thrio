@@ -34,6 +34,7 @@ import com.foxsofter.flutter_thrio.extension.getPageId
 import com.foxsofter.flutter_thrio.module.ModulePageObservers
 import io.flutter.embedding.android.ThrioFlutterActivity
 import io.flutter.embedding.android.ThrioFlutterActivityBase
+import io.flutter.embedding.android.ThrioRootFragment
 import java.lang.ref.WeakReference
 
 internal object PageRoutes : Application.ActivityLifecycleCallbacks {
@@ -53,7 +54,13 @@ internal object PageRoutes : Application.ActivityLifecycleCallbacks {
     var willAppearPageId = 0
 
     val routeHolders by lazy { mutableListOf<PageRouteHolder>() }
+
     val firstRouteHolder: PageRouteHolder? get() = routeHolders.firstOrNull()
+
+    val firstFlutterRouteHolder: PageRouteHolder?
+        get() = routeHolders.firstOrNull {
+            ThrioFlutterActivityBase::class.java.isAssignableFrom(it.clazz)
+        }
 
     private val removedRouteHolders by lazy { mutableListOf<PageRouteHolder>() }
 
@@ -69,6 +76,21 @@ internal object PageRoutes : Application.ActivityLifecycleCallbacks {
     fun removedByRemoveRouteHolder(pageId: Int): PageRouteHolder? {
         val index = removedRouteHolders.indexOfLast { it.pageId == pageId }
         return if (index != -1) removedRouteHolders.removeAt(index) else null
+    }
+
+    fun hotRestart() {
+        val firstFlutterHolder = firstFlutterRouteHolder ?: return
+        if (routeHolders.size > 1) {
+            val idx = routeHolders.indexOf(firstFlutterHolder)
+            val holders = routeHolders.subList(idx + 1, routeHolders.size)
+            for (holder in holders) {
+                holder.activity?.get()?.let {
+                    it.finish()
+                    routeHolders.remove(holder)
+                }
+            }
+        }
+        firstFlutterHolder.routes.clear()
     }
 
     fun popToRouteHolders(url: String, index: Int?): List<PageRouteHolder> {
@@ -519,6 +541,7 @@ internal object PageRoutes : Application.ActivityLifecycleCallbacks {
                     this.activity = null
                     // 需重置标记位，如果 ThrioFlutterActivity 曾经是首页的话，下次进入的时候才会打开第一个页面
                     if (routeHolders.isEmpty()) {
+                        ThrioRootFragment.isInitialUrlPushed = false
                         ThrioFlutterActivity.isInitialUrlPushed = false
                     }
                 }
