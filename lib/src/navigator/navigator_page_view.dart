@@ -22,9 +22,9 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_thrio/flutter_thrio.dart';
 
-import '../module/module_anchor.dart';
+import '../module/thrio_module.dart';
+import 'navigator_page_observer.dart';
 import 'navigator_route_settings.dart';
 import 'thrio_navigator_implement.dart';
 

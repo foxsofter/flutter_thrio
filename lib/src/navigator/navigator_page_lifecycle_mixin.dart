@@ -19,6 +19,9 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
+import 'dart:async';
+
+import 'package:async/async.dart';
 import 'package:flutter/widgets.dart';
 
 import '../module/module_anchor.dart';
@@ -34,15 +37,17 @@ mixin NavigatorPageLifecycleMixin<T extends StatefulWidget> on State<T> {
   late List<RouteSettings> _anchors;
   final _anchorsObserverCallbacks = <VoidCallback>[];
 
+  final _initAppear = AsyncMemoizer<void>();
+
   @override
-  void initState() {
-    super.initState();
-    if (mounted) {
-      _init();
+  void didChangeDependencies() {
+    _init();
+    _initAppear.runOnce(() {
       if (!_current.isBuilt || (_current.isSelected == true)) {
         Future(() => didAppear(_current));
       }
-    }
+    });
+    super.didChangeDependencies();
   }
 
   @override
