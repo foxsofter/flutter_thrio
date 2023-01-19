@@ -286,10 +286,11 @@ abstract class ThrioNavigator {
   }) async {
     final startTime = DateTime.now().millisecondsSinceEpoch;
     final result = await ThrioNavigatorImplement.shared().pop<TParams>(
-        params: params,
-        animated: animated,
-      );
-    ThrioLogger.v('popCostTime=${DateTime.now().millisecondsSinceEpoch - startTime}');
+      params: params,
+      animated: animated,
+    );
+    ThrioLogger.v(
+        'popCostTime=${DateTime.now().millisecondsSinceEpoch - startTime}');
     return result;
   }
 

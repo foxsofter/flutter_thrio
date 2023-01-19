@@ -127,12 +127,10 @@ class _NavigatorPageViewState extends State<NavigatorPageView> {
     }
   }
 
-  bool _mapRouteSettings(final List<RouteSettings> settings) {
+  void _mapRouteSettings(final List<RouteSettings> settings) {
     final newNames = settings.map<String>((final it) => it.name!).toList();
-    if (listEquals(newNames, _currentNames)) {
-      return true;
-    }
     _currentNames = newNames;
+
     for (final it in settings) {
       if (!_nameSettings.containsKey(it.name)) {
         final tem = NavigatorRouteSettings.settingsWith(
@@ -141,9 +139,15 @@ class _NavigatorPageViewState extends State<NavigatorPageView> {
           params: it.params,
         );
         _nameSettings[it.name!] = tem;
+      } else {
+        final old = _nameSettings[it.name!]!;
+        _nameSettings[it.name!] = NavigatorRouteSettings.settingsWith(
+          url: old.url,
+          index: old.index,
+          params: it.params,
+        );
       }
     }
-    return false;
   }
 
   void _initSelectedState() {
