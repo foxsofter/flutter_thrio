@@ -19,6 +19,7 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
 import '../module/module_anchor.dart';
@@ -57,11 +58,24 @@ class _NavigatorRoutePushState extends State<NavigatorRoutePush>
   void initState() {
     super.initState();
     if (mounted) {
-      for (final url in widget.urls) {
-        _handles[url] = widget.onPush;
-      }
-      _registry = anchor.pushHandlers.registryAll(_handles);
+      _init();
     }
+  }
+
+  @override
+  void didUpdateWidget(covariant final NavigatorRoutePush oldWidget) {
+    if (!listEquals(widget.urls, oldWidget.urls)) {
+      _init();
+    }
+    super.didUpdateWidget(oldWidget);
+  }
+
+  void _init() {
+    for (final url in widget.urls) {
+      _handles[url] = widget.onPush;
+    }
+    _registry?.call();
+    _registry = anchor.pushHandlers.registryAll(_handles);
   }
 
   @override
