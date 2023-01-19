@@ -55,7 +55,9 @@ mixin NavigatorPage {
   /// Get moduleContext from current page.
   ///
   /// This method should not be called from [State.deactivate] or [State.dispose]
-  /// because the element tree is no longer stable at that time.
+  /// because the element tree is no longer stable at that time. To refer to
+  /// an ancestor from one of those methods, save a reference to the ancestor
+  /// by calling [visitAncestorElements] in [State.didChangeDependencies].
   ///
   static ModuleContext moduleContextOf(
     final BuildContext context, {
@@ -88,7 +90,9 @@ mixin NavigatorPage {
   /// Get params of current page.
   ///
   /// This method should not be called from [State.deactivate] or [State.dispose]
-  /// because the element tree is no longer stable at that time.
+  /// because the element tree is no longer stable at that time. To refer to
+  /// an ancestor from one of those methods, save a reference to the ancestor
+  /// by calling [visitAncestorElements] in [State.didChangeDependencies].
   ///
   static dynamic paramsOf(
     final BuildContext context, {
@@ -99,7 +103,9 @@ mixin NavigatorPage {
   /// Get RouteSettings of current page.
   ///
   /// This method should not be called from [State.deactivate] or [State.dispose]
-  /// because the element tree is no longer stable at that time.
+  /// because the element tree is no longer stable at that time. To refer to
+  /// an ancestor from one of those methods, save a reference to the ancestor
+  /// by calling [visitAncestorElements] in [State.didChangeDependencies].
   ///
   static RouteSettings routeSettingsOf(
     final BuildContext context, {
@@ -111,7 +117,9 @@ mixin NavigatorPage {
   /// Get url of current page.
   ///
   /// This method should not be called from [State.deactivate] or [State.dispose]
-  /// because the element tree is no longer stable at that time.
+  /// because the element tree is no longer stable at that time. To refer to
+  /// an ancestor from one of those methods, save a reference to the ancestor
+  /// by calling [visitAncestorElements] in [State.didChangeDependencies].
   ///
   static String urlOf(
     final BuildContext context, {
@@ -122,7 +130,9 @@ mixin NavigatorPage {
   /// Get index of current page.
   ///
   /// This method should not be called from [State.deactivate] or [State.dispose]
-  /// because the element tree is no longer stable at that time.
+  /// because the element tree is no longer stable at that time. To refer to
+  /// an ancestor from one of those methods, save a reference to the ancestor
+  /// by calling [visitAncestorElements] in [State.didChangeDependencies].
   ///
   static int indexOf(
     final BuildContext context, {
@@ -130,6 +140,13 @@ mixin NavigatorPage {
   }) =>
       routeSettingsOf(context, pageModuleContext: pageModuleContext).index;
 
+  /// Get current page.
+  ///
+  /// This method should not be called from [State.deactivate] or [State.dispose]
+  /// because the element tree is no longer stable at that time. To refer to
+  /// an ancestor from one of those methods, save a reference to the ancestor
+  /// by calling [visitAncestorElements] in [State.didChangeDependencies].
+  ///
   static NavigatorPage? of(
     final BuildContext context, {
     final bool pageModuleContext = false,

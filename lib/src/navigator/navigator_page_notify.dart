@@ -53,10 +53,7 @@ class NavigatorPageNotify extends StatefulWidget {
 }
 
 class _NavigatorPageNotifyState extends State<NavigatorPageNotify> {
-  late final RouteSettings settings = NavigatorPage.routeSettingsOf(
-    context,
-    pageModuleContext: true,
-  );
+  RouteSettings? _settings;
 
   StreamSubscription<dynamic>? _notifySubscription;
 
@@ -67,14 +64,43 @@ class _NavigatorPageNotifyState extends State<NavigatorPageNotify> {
       if (widget.initialParams != null) {
         widget.onPageNotify(widget.initialParams);
       }
+    }
+  }
+
+  @override
+  void didChangeDependencies() {
+    final settings = NavigatorPage.routeSettingsOf(context);
+    if (settings.name != _settings?.name) {
+      _settings = settings;
+      _notifySubscription?.cancel();
       _notifySubscription = ThrioNavigatorImplement.shared()
           .onPageNotify(
-            url: settings.url,
-            index: settings.index,
+            url: _settings!.url,
+            index: _settings!.index,
             name: widget.name,
           )
           .listen(_listen);
     }
+    super.didChangeDependencies();
+  }
+
+  @override
+  void didUpdateWidget(covariant final NavigatorPageNotify oldWidget) {
+    if (widget.initialParams != null &&
+        widget.initialParams != oldWidget.initialParams) {
+      widget.onPageNotify(widget.initialParams);
+    }
+    if (widget.name != oldWidget.name) {
+      _notifySubscription?.cancel();
+      _notifySubscription = ThrioNavigatorImplement.shared()
+          .onPageNotify(
+            url: _settings!.url,
+            index: _settings!.index,
+            name: widget.name,
+          )
+          .listen(_listen);
+    }
+    super.didUpdateWidget(oldWidget);
   }
 
   void _listen(final dynamic params) {
