@@ -79,7 +79,7 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
     }
 
     // 加载模块
-    await anchor.loading(settings.url);
+    // await anchor.loading(settings.url);
 
     NavigatorRoute route;
     final routeBuilder =

@@ -32,6 +32,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, strong, readonly, nullable) NavigatorPageRoute *thrio_lastRoute;
 
+/// The current route is popping form navigation stack.
+///
+@property (nonatomic, assign) NavigatorRouteType thrio_routeType;
+
+
 - (void)thrio_pushUrl:(NSString *)url
                 index:(NSNumber *)index
                params:(id _Nullable)params

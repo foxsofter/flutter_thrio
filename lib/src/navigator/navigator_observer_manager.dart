@@ -21,7 +21,6 @@
 
 import 'package:flutter/widgets.dart';
 
-import '../module/module_anchor.dart';
 import '../module/thrio_module.dart';
 import 'navigator_home.dart';
 import 'navigator_logger.dart';
@@ -139,7 +138,7 @@ class NavigatorObserverManager extends NavigatorObserver {
             _currenPopRouteCallbackAndClear(currentPopRoutes);
           }
 
-          anchor.unloading(pageRoutes.whereType<NavigatorRoute>());
+          // anchor.unloading(pageRoutes.whereType<NavigatorRoute>());
         });
       } else {
         // maybe pop goes here
@@ -217,7 +216,7 @@ class NavigatorObserverManager extends NavigatorObserver {
 
           _currenPopRouteCallbackAndClear(_currentRemoveRoutes);
 
-          anchor.unloading(pageRoutes.whereType<NavigatorRoute>());
+          // anchor.unloading(pageRoutes.whereType<NavigatorRoute>());
         });
       }
     }

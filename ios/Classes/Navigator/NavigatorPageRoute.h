@@ -25,14 +25,19 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-typedef enum : NSUInteger {
+typedef NS_ENUM(NSUInteger, NavigatorRouteType) {
     NavigatorRouteTypeNone,
     NavigatorRouteTypePush,
+    NavigatorRouteTypePushing,
     NavigatorRouteTypePop,
+    NavigatorRouteTypePopping,
     NavigatorRouteTypePopTo,
+    NavigatorRouteTypePoppingTo,
     NavigatorRouteTypeRemove,
+    NavigatorRouteTypeRemoving,
     NavigatorRouteTypeReplace,
-} NavigatorRouteType;
+    NavigatorRouteTypeReplacing
+};
 
 @interface NavigatorPageRoute : NSObject
 
@@ -65,7 +70,6 @@ typedef enum : NSUInteger {
 /// The current route was pushed by the engine with `fromPageId`.
 ///
 @property (nonatomic, assign) NSUInteger fromPageId;
-
 
 @end
 
