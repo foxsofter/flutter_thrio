@@ -35,6 +35,19 @@ class NavigatorHome extends StatefulWidget {
 
 class _NavigatorHomeState extends State<NavigatorHome> {
   @override
+  void initState() {
+    super.initState();
+    if (mounted) {
+      Future.delayed(const Duration(milliseconds: 1200), () {
+        final routes = ThrioNavigatorImplement.shared().allFlutterRoutes();
+        if (routes.length < 2) {
+          ThrioNavigatorImplement.shared().hotRestart();
+        }
+      });
+    }
+  }
+
+  @override
   Widget build(final BuildContext context) => Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.white,
