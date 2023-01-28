@@ -24,9 +24,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_thrio/src/logger/thrio_logger.dart';
 
-import 'navigator_logger.dart';
 import 'navigator_route.dart';
 import 'navigator_types.dart';
 import 'thrio_navigator_implement.dart';
