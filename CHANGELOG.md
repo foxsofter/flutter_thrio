@@ -1,3 +1,17 @@
+## 3.13.0
+
+- rm loading/unloading and fix ios push duplicate
+- feat: auto restart
+- feat: support android hot restart
+- fix: maybePop can not pop in some case
+- refactor: rm /home can be optional logic 
+- feat: handle didUpdateWidget for NavigatorRoutePush state 
+- feat: handle didChangeDependencies for NavigatorPageLifecycleMixin
+- feat: handle didUpdateWidget for  NavigatorPageNotify 
+- feat: android support fragment
+- fix: routeSettings for NavigatorPageView not refresh
+- feat: make page view lifecycle work for NavigatorPageObserver 
+
 ## 3.12.5
 
 - fix: ios disappear not trigger
