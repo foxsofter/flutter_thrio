@@ -314,8 +314,14 @@ internal object NavigationController : Application.ActivityLifecycleCallbacks {
             if (inRoot && lastHolder.allRoute().count() < 2) {
                 val activity = lastHolder.activity?.get() ?: return // 不应该会走到这
                 if (activity is ThrioFlutterActivityBase) {
-                    if (activity.shouldMoveToBack()) {
-                        activity.moveTaskToBack(false)
+                    PageRoutes.maybePop<T>(params, animated, true) {
+                        if (it == 1) {
+                            if (activity.shouldMoveToBack()) {
+                                activity.moveTaskToBack(false)
+                            }
+                        } else {
+                            result?.invoke(it != 0)
+                        }
                     }
                 } else {
                     activity.onBackPressed()
@@ -354,9 +360,7 @@ internal object NavigationController : Application.ActivityLifecycleCallbacks {
             if (inRoot && lastHolder.allRoute().count() < 2) {
                 val activity = lastHolder.activity?.get() ?: return // 不应该会走到这
                 if (activity is ThrioFlutterActivityBase) {
-                    if (activity.shouldMoveToBack()) {
-                        activity.moveTaskToBack(false)
-                    }
+                    activity.moveTaskToBack(false)
                 } else {
                     activity.onBackPressed()
                 }
