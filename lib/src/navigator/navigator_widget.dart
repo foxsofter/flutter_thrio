@@ -145,12 +145,16 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
     if (settings.name != history.last.settings.name) {
       return 0;
     }
-    // 在原生端处于容器的根部，且当前 Flutter 页面栈上不超过 3，则不能再 pop
-    if (inRoot && history.whereType<NavigatorRoute>().length < 3) {
+    // 在原生端处于容器的根部，且当前 Flutter 页面栈上不超过 2，则不能再 pop
+    if (inRoot && history.whereType<NavigatorRoute>().length < 2) {
       return 0;
     }
-    if (await history.last.willPop() != RoutePopDisposition.pop) {
-      return 0;
+    if (inRoot && history.whereType<NavigatorRoute>().length == 2) {
+      final notPop =
+          await history.last.willPop() == RoutePopDisposition.doNotPop;
+      if (notPop) {
+        return 0;
+      }
     }
     return 1;
   }
