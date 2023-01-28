@@ -56,7 +56,6 @@ export 'src/navigator/navigator_route_observer.dart';
 export 'src/navigator/navigator_route_push.dart';
 export 'src/navigator/navigator_route_settings.dart';
 export 'src/navigator/navigator_stateful_page.dart';
-export 'src/navigator/navigator_stateful_page.dart';
 export 'src/navigator/navigator_stateless_page.dart';
 export 'src/navigator/navigator_tab_bar_view.dart';
 export 'src/navigator/navigator_types.dart';
