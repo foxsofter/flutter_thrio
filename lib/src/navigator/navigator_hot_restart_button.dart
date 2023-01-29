@@ -38,6 +38,19 @@ class NavigatorHotRestartButton extends StatefulWidget {
 
 class _NavigatorHotRestartButtonState extends State<NavigatorHotRestartButton> {
   @override
+  void initState() {
+    super.initState();
+    if (mounted) {
+      Future.delayed(const Duration(milliseconds: 1000), () {
+        final routes = ThrioNavigatorImplement.shared().allFlutterRoutes();
+        if (routes.length < 2) {
+          ThrioNavigatorImplement.shared().hotRestart();
+        }
+      });
+    }
+  }
+
+  @override
   Widget build(final BuildContext context) => ElevatedButton(
         style: widget.style,
         onPressed: () => ThrioNavigatorImplement.shared().hotRestart(),
