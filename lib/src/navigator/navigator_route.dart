@@ -21,6 +21,7 @@
 
 import 'package:flutter/material.dart';
 
+import '../logger/thrio_logger.dart';
 import 'navigator_route_settings.dart';
 import 'navigator_types.dart';
 import 'thrio_navigator_implement.dart';
@@ -43,6 +44,9 @@ mixin NavigatorRoute on PageRoute<bool> {
 
   @protected
   void setPopDisabled({final bool disabled = false}) {
+    if (_popDisableds[settings.name!] == disabled) {
+      return;
+    }
     _popDisableds[settings.name!] = disabled;
 
     // 延迟300ms执行，避免因为WillPopScope依赖变更导致发送过多的Channel消息

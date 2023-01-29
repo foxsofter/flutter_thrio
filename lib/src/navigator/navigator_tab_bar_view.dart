@@ -49,7 +49,10 @@ class NavigatorTabBarView extends StatefulWidget {
   final bool keepIndex;
 
   final Widget Function(
-      BuildContext context, RouteSettings settings, Widget child)? childBuilder;
+    BuildContext context,
+    RouteSettings settings,
+    Widget child,
+  )? childBuilder;
 
   /// How the page view should respond to user input.
   ///

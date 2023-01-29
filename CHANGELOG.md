@@ -12,6 +12,7 @@
 - fix: routeSettings for NavigatorPageView not refresh
 - feat: make page view lifecycle work for NavigatorPageObserver 
 - feat: support root page WillPopScope
+- fix: kline land not trigger WillPopScope
 
 ## 3.12.5
 
