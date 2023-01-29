@@ -35,13 +35,16 @@ open class ThrioFlutterFragment : FlutterFragment() {
             return activity.engine
         }
 
-    override fun onBackPressed() = ThrioNavigator.maybePop()
-
     override fun shouldDestroyEngineWithHost(): Boolean {
         val activity = requireActivity()
         if (activity !is ThrioFlutterFragmentActivity) {
             throw RuntimeException("ThrioFlutterFragment must be inside ThrioFlutterFragmentActivity")
         }
         return activity.shouldDestroyEngineWithHost()
+    }
+
+    override fun popSystemNavigator(): Boolean {
+        ThrioNavigator.maybePop()
+        return super.popSystemNavigator()
     }
 }

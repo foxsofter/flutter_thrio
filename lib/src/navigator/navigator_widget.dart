@@ -72,7 +72,8 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
       return false;
     }
 
-    final pageBuilder = ThrioModule.get<NavigatorPageBuilder>(url: settings.url);
+    final pageBuilder =
+        ThrioModule.get<NavigatorPageBuilder>(url: settings.url);
     if (pageBuilder == null) {
       return false;
     }
@@ -81,7 +82,8 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
     // await anchor.loading(settings.url);
 
     NavigatorRoute route;
-    final routeBuilder = ThrioModule.get<NavigatorRouteBuilder>(url: settings.url);
+    final routeBuilder =
+        ThrioModule.get<NavigatorRouteBuilder>(url: settings.url);
     if (routeBuilder == null) {
       route = NavigatorPageRoute(pageBuilder: pageBuilder, settings: settings);
     } else {
@@ -148,7 +150,8 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
       return 0;
     }
     if (inRoot && history.whereType<NavigatorRoute>().length == 2) {
-      final notPop = await history.last.willPop() == RoutePopDisposition.doNotPop;
+      final notPop =
+          await history.last.willPop() == RoutePopDisposition.doNotPop;
       if (notPop) {
         return 0;
       }
@@ -228,7 +231,8 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
       return false;
     }
 
-    final index = history.indexWhere((final it) => it.settings.name == settings.name);
+    final index =
+        history.indexWhere((final it) => it.settings.name == settings.name);
     if (index == -1) {
       return false;
     }
@@ -275,7 +279,8 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
     if (navigatorState == null) {
       return false;
     }
-    final route = history.firstWhereOrNull((final it) => it.settings.name == settings.name);
+    final route = history
+        .firstWhereOrNull((final it) => it.settings.name == settings.name);
     if (route == null) {
       return false;
     }
@@ -310,11 +315,13 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
     if (navigatorState == null) {
       return false;
     }
-    final route = history.lastWhereOrNull((final it) => it.settings.name == settings.name);
+    final route = history
+        .lastWhereOrNull((final it) => it.settings.name == settings.name);
     if (route == null) {
       return false;
     }
-    final pageBuilder = ThrioModule.get<NavigatorPageBuilder>(url: newSettings.url);
+    final pageBuilder =
+        ThrioModule.get<NavigatorPageBuilder>(url: newSettings.url);
     if (pageBuilder == null) {
       return false;
     }
@@ -323,9 +330,11 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
     await anchor.loading(newSettings.url);
 
     NavigatorRoute newRoute;
-    final routeBuilder = ThrioModule.get<NavigatorRouteBuilder>(url: newSettings.url);
+    final routeBuilder =
+        ThrioModule.get<NavigatorRouteBuilder>(url: newSettings.url);
     if (routeBuilder == null) {
-      newRoute = NavigatorPageRoute(pageBuilder: pageBuilder, settings: newSettings);
+      newRoute =
+          NavigatorPageRoute(pageBuilder: pageBuilder, settings: newSettings);
     } else {
       newRoute = routeBuilder(pageBuilder, newSettings);
     }
@@ -350,7 +359,8 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
       navigatorState.replace(oldRoute: route, newRoute: newRoute);
     } else {
       final anchorRoute = history[history.indexOf(route) + 1];
-      navigatorState.replaceRouteBelow(anchorRoute: anchorRoute, newRoute: newRoute);
+      navigatorState.replaceRouteBelow(
+          anchorRoute: anchorRoute, newRoute: newRoute);
     }
 
     return true;
@@ -381,15 +391,16 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
       if (params is Map) {
         if (params.containsKey('__thrio_Params_HashCode__')) {
           // ignore: avoid_as
-          final paramsObjs =
-              anchor.removeParam<dynamic>(params['__thrio_Params_HashCode__'] as int);
+          final paramsObjs = anchor
+              .removeParam<dynamic>(params['__thrio_Params_HashCode__'] as int);
           poppedResultCallback(paramsObjs);
           return;
         }
         if (params.containsKey('__thrio_TParams__')) {
           // ignore: avoid_as
           final typeString = params['__thrio_TParams__'] as String;
-          final paramsObjs = ThrioModule.get<JsonDeserializer<dynamic>>(url: url, key: typeString)
+          final paramsObjs = ThrioModule.get<JsonDeserializer<dynamic>>(
+                  url: url, key: typeString)
               ?.call(params.cast<String, dynamic>());
           poppedResultCallback(paramsObjs);
           return;

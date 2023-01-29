@@ -55,11 +55,13 @@ open class ThrioFlutterActivity : FlutterActivity(), ThrioFlutterActivityBase {
         super.onFlutterUiDisplayed()
     }
 
+    override fun popSystemNavigator(): Boolean {
+        ThrioNavigator.maybePop()
+        return super.popSystemNavigator()
+    }
+
     override fun shouldDestroyEngineWithHost(): Boolean =
         activityDelegate.shouldDestroyEngineWithHost()
-
-    @Deprecated("Deprecated in Java")
-    override fun onBackPressed() = ThrioNavigator.maybePop()
 
     override fun onPush(arguments: Map<String, Any?>?, result: BooleanCallback) =
         activityDelegate.onPush(arguments, result)

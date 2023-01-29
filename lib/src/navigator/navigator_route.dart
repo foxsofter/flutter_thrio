@@ -21,7 +21,6 @@
 
 import 'package:flutter/material.dart';
 
-import '../logger/thrio_logger.dart';
 import 'navigator_route_settings.dart';
 import 'navigator_types.dart';
 import 'thrio_navigator_implement.dart';
