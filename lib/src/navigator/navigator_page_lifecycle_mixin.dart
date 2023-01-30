@@ -37,17 +37,13 @@ mixin NavigatorPageLifecycleMixin<T extends StatefulWidget> on State<T> {
   late List<RouteSettings> _anchors;
   final _anchorsObserverCallbacks = <VoidCallback>[];
 
-  final _initAppear = AsyncMemoizer<void>();
-
   @override
-  void didChangeDependencies() {
+  void initState() {
+    super.initState();
     _init();
-    _initAppear.runOnce(() {
-      if (!_current.isBuilt || (_current.isSelected == true)) {
-        Future(() => didAppear(_current));
-      }
-    });
-    super.didChangeDependencies();
+    if (!_current.isBuilt || (_current.isSelected == true)) {
+      Future(() => didAppear(_current));
+    }
   }
 
   @override
