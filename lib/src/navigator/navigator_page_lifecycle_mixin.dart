@@ -21,7 +21,6 @@
 
 import 'dart:async';
 
-import 'package:async/async.dart';
 import 'package:flutter/widgets.dart';
 
 import '../module/module_anchor.dart';
