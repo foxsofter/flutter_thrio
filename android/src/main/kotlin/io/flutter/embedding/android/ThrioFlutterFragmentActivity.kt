@@ -46,6 +46,8 @@ open class ThrioFlutterFragmentActivity : FlutterFragmentActivity(), ThrioFlutte
     override fun cleanUpFlutterEngine(flutterEngine: FlutterEngine) =
         activityDelegate.cleanUpFlutterEngine(flutterEngine)
 
+    override fun onBackPressed() = activityDelegate.onBackPressed()
+
     override fun shouldDestroyEngineWithHost(): Boolean =
         activityDelegate.shouldDestroyEngineWithHost()
 

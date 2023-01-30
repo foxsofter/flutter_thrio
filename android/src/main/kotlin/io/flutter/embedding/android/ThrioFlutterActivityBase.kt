@@ -35,6 +35,8 @@ interface ThrioFlutterActivityBase {
 
     fun cleanUpFlutterEngine(flutterEngine: FlutterEngine)
 
+    fun onBackPressed()
+
     fun shouldMoveToBack(): Boolean = true
 
     fun shouldDestroyEngineWithHost(): Boolean

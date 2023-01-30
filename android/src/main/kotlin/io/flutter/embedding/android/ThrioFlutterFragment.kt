@@ -35,6 +35,14 @@ open class ThrioFlutterFragment : FlutterFragment() {
             return activity.engine
         }
 
+    override fun onBackPressed() {
+        val activity = requireActivity()
+        if (activity !is ThrioFlutterFragmentActivity) {
+            throw RuntimeException("ThrioFlutterFragment must be inside ThrioFlutterFragmentActivity")
+        }
+        return activity.onBackPressed()
+    }
+
     override fun shouldDestroyEngineWithHost(): Boolean {
         val activity = requireActivity()
         if (activity !is ThrioFlutterFragmentActivity) {

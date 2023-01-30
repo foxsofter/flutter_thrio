@@ -1,3 +1,7 @@
+## 3.13.1
+
+- fix: android back click not working
+
 ## 3.13.0
 
 - rm loading/unloading and fix ios push duplicate

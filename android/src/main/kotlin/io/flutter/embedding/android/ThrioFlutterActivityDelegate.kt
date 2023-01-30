@@ -32,6 +32,7 @@ import com.foxsofter.flutter_thrio.extension.getPageId
 import com.foxsofter.flutter_thrio.navigator.FlutterEngineFactory
 import com.foxsofter.flutter_thrio.navigator.NAVIGATION_ROUTE_PAGE_ID_NONE
 import com.foxsofter.flutter_thrio.navigator.PageRoutes
+import com.foxsofter.flutter_thrio.navigator.ThrioNavigator
 import io.flutter.embedding.engine.FlutterEngine
 
 open class ThrioFlutterActivityDelegate(val activity: Activity) : ThrioFlutterActivityBase {
@@ -48,6 +49,24 @@ open class ThrioFlutterActivityDelegate(val activity: Activity) : ThrioFlutterAc
 
     override fun cleanUpFlutterEngine(flutterEngine: FlutterEngine) {
         FlutterEngineFactory.cleanUpFlutterEngine(activity)
+    }
+
+    var lastClickTime = System.currentTimeMillis()
+
+    override fun onBackPressed() {
+        val now = System.currentTimeMillis()
+        if (now - lastClickTime <= 400) {
+            return
+        }
+        lastClickTime = now
+        val pageId = activity.intent.getPageId()
+        if (pageId == NAVIGATION_ROUTE_PAGE_ID_NONE) throw IllegalStateException("pageId must not be null")
+        val holder = PageRoutes.lastRouteHolder(pageId) ?:  throw IllegalStateException("holder must not be null")
+        if (holder.routes.size <= 2) {
+            ThrioNavigator.maybePop()
+        } else {
+            engine?.engine?.navigationChannel?.popRoute()
+        }
     }
 
     override fun shouldDestroyEngineWithHost(): Boolean {

@@ -55,6 +55,8 @@ open class ThrioFlutterActivity : FlutterActivity(), ThrioFlutterActivityBase {
         super.onFlutterUiDisplayed()
     }
 
+    override fun onBackPressed() = activityDelegate.onBackPressed()
+
     override fun popSystemNavigator(): Boolean {
         ThrioNavigator.maybePop()
         return super.popSystemNavigator()
