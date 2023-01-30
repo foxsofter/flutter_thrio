@@ -1,6 +1,8 @@
 // Copyright (c) 2022 foxsofter.
 //
 
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_thrio/flutter_thrio.dart';
 
@@ -25,7 +27,8 @@ class _Flutter7PageState extends State<Flutter7Page>
         SingleTickerProviderStateMixin,
         NavigatorPageLifecycleMixin,
         AutomaticKeepAliveClientMixin {
-  late final controller = TabController(length: 5, vsync: this);
+  late final controller = TabController(
+      initialIndex: Random.secure().nextInt(4), length: 5, vsync: this);
 
   @override
   void dispose() {
@@ -79,9 +82,9 @@ class _Flutter7PageState extends State<Flutter7Page>
             child: NavigatorTabBarView(
               controller: controller,
               routeSettings: <RouteSettings>[
-                NavigatorRouteSettings.settingsWith(url: biz.biz1.flutter5.url),
                 NavigatorRouteSettings.settingsWith(
                     url: biz.biz1.flutter1.home.url),
+                NavigatorRouteSettings.settingsWith(url: biz.biz1.flutter7.url),
                 NavigatorRouteSettings.settingsWith(url: biz.biz2.flutter2.url),
                 NavigatorRouteSettings.settingsWith(url: biz.biz1.flutter3.url),
                 NavigatorRouteSettings.settingsWith(url: biz.biz2.flutter8.url),

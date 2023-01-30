@@ -31,6 +31,7 @@ import 'navigator_route_settings.dart';
 
 mixin NavigatorPageLifecycleMixin<T extends StatefulWidget> on State<T> {
   late RouteSettings _current;
+  late final _currentObserver = _CurrentLifecycleObserver(this);
   VoidCallback? _currentObserverCallback;
 
   late List<RouteSettings> _anchors;
@@ -71,10 +72,8 @@ mixin NavigatorPageLifecycleMixin<T extends StatefulWidget> on State<T> {
   void _init() {
     _current = NavigatorPage.routeSettingsOf(context);
     _currentObserverCallback?.call();
-    _currentObserverCallback = anchor.pageLifecycleObservers.registry(
-      _current.url,
-      _CurrentLifecycleObserver(this),
-    );
+    _currentObserverCallback =
+        anchor.pageLifecycleObservers.registry(_current.url, _currentObserver);
 
     _anchors = NavigatorPage.routeSettingsListOf(context);
     // 链路上重复的 settings 要去掉
@@ -103,14 +102,16 @@ class _CurrentLifecycleObserver with NavigatorPageObserver {
 
   @override
   void didAppear(final RouteSettings routeSettings) {
-    if (_delegate._current.name == routeSettings.name) {
+    if (_delegate._current.name == routeSettings.name &&
+        routeSettings.isSelected != false) {
       _delegate.didAppear(routeSettings);
     }
   }
 
   @override
   void didDisappear(final RouteSettings routeSettings) {
-    if (_delegate._current.name == routeSettings.name) {
+    if (_delegate._current.name == routeSettings.name &&
+        routeSettings.isSelected != false) {
       _delegate.didDisappear(routeSettings);
     }
   }
@@ -128,13 +129,13 @@ class _AnchorLifecycleObserver with NavigatorPageObserver {
 
   @override
   void didAppear(final RouteSettings routeSettings) {
-    final callback = _delegate.didAppear;
+    final callback = _delegate._currentObserver.didAppear;
     _lifecycleCallback(callback, routeSettings);
   }
 
   @override
   void didDisappear(final RouteSettings routeSettings) {
-    final callback = _delegate.didDisappear;
+    final callback = _delegate._currentObserver.didDisappear;
     _lifecycleCallback(callback, routeSettings);
   }
 
