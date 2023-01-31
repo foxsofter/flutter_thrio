@@ -64,10 +64,10 @@ class _NavigatorRoutePushState extends State<NavigatorRoutePush>
 
   @override
   void didUpdateWidget(covariant final NavigatorRoutePush oldWidget) {
+    super.didUpdateWidget(oldWidget);
     if (!listEquals(widget.urls, oldWidget.urls)) {
       _init();
     }
-    super.didUpdateWidget(oldWidget);
   }
 
   void _init() {

@@ -25,7 +25,7 @@ import 'package:flutter/widgets.dart';
 
 final _isBuiltOf = Expando<bool>();
 
-final _isSelectedOf = Expando<bool>();
+final _isSelectedOf = <String, bool?>{};
 
 extension NavigatorRouteSettings on RouteSettings {
   static int _fakeIndex = 0x7fffffff;
@@ -103,11 +103,11 @@ extension NavigatorRouteSettings on RouteSettings {
     if (!isBuilt) {
       return null;
     }
-    return _isSelectedOf[this];
+    return _isSelectedOf[name!];
   }
 
   set isSelected(final bool? selected) {
-    _isSelectedOf[this] = selected;
+    _isSelectedOf[name!] = selected;
   }
 
   String get url {

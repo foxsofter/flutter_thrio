@@ -169,6 +169,8 @@ class _NavigatorPageViewState extends State<NavigatorPageView> {
 
   @override
   void didUpdateWidget(final NavigatorPageView oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
     if (widget.routeSettings.isNotEmpty) {
       _checkRouteSettings(widget.routeSettings);
       _mapRouteSettings(widget.routeSettings);
@@ -188,7 +190,6 @@ class _NavigatorPageViewState extends State<NavigatorPageView> {
     if (oldWidget.controller == null) {
       oldWidget._realController.dispose();
     }
-    super.didUpdateWidget(oldWidget);
   }
 
   @override

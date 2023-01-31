@@ -86,6 +86,7 @@ class _NavigatorPageNotifyState extends State<NavigatorPageNotify> {
 
   @override
   void didUpdateWidget(covariant final NavigatorPageNotify oldWidget) {
+    super.didUpdateWidget(oldWidget);
     if (widget.initialParams != null &&
         widget.initialParams != oldWidget.initialParams) {
       widget.onPageNotify(widget.initialParams);
@@ -100,7 +101,6 @@ class _NavigatorPageNotifyState extends State<NavigatorPageNotify> {
           )
           .listen(_listen);
     }
-    super.didUpdateWidget(oldWidget);
   }
 
   void _listen(final dynamic params) {

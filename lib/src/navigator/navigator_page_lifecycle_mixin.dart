@@ -35,7 +35,7 @@ mixin NavigatorPageLifecycleMixin<T extends StatefulWidget> on State<T> {
   VoidCallback? _currentObserverCallback;
 
   late List<RouteSettings> _anchors;
-  final _anchorsObserverCallbacks = <VoidCallback>[];
+  VoidCallback? _anchorsObserverCallback;
 
   @override
   void initState() {
@@ -48,8 +48,8 @@ mixin NavigatorPageLifecycleMixin<T extends StatefulWidget> on State<T> {
 
   @override
   void didUpdateWidget(final T oldWidget) {
-    _init();
     super.didUpdateWidget(oldWidget);
+    _init();
   }
 
   void didAppear(final RouteSettings settings) {
@@ -63,9 +63,7 @@ mixin NavigatorPageLifecycleMixin<T extends StatefulWidget> on State<T> {
   @override
   void dispose() {
     _currentObserverCallback?.call();
-    for (final callback in _anchorsObserverCallbacks) {
-      callback();
-    }
+    _anchorsObserverCallback?.call();
     super.dispose();
   }
 
@@ -79,15 +77,14 @@ mixin NavigatorPageLifecycleMixin<T extends StatefulWidget> on State<T> {
     // 链路上重复的 settings 要去掉
     _anchors.removeWhere((final it) => it.name == _current.name);
 
-    for (final callback in _anchorsObserverCallbacks) {
-      callback();
-    }
-    _anchorsObserverCallbacks.clear();
+    _anchorsObserverCallback?.call();
+    final observers = <String, NavigatorPageObserver>{};
     for (final it in _anchors) {
-      _anchorsObserverCallbacks.add(anchor.pageLifecycleObservers.registry(
-        it.url,
-        _AnchorLifecycleObserver(this, it),
-      ));
+      observers[it.url] = _AnchorLifecycleObserver(this, it);
+    }
+    if (_anchors.isNotEmpty) {
+      _anchorsObserverCallback =
+          anchor.pageLifecycleObservers.registryAll(observers);
     }
   }
 }
@@ -118,14 +115,12 @@ class _CurrentLifecycleObserver with NavigatorPageObserver {
 }
 
 class _AnchorLifecycleObserver with NavigatorPageObserver {
-  const _AnchorLifecycleObserver(this._delegate, this._anchor);
+  const _AnchorLifecycleObserver(this._delegate, this.settings);
 
   final NavigatorPageLifecycleMixin _delegate;
 
-  final RouteSettings _anchor;
-
   @override
-  RouteSettings? get settings => _anchor;
+  final RouteSettings settings;
 
   @override
   void didAppear(final RouteSettings routeSettings) {
@@ -143,7 +138,7 @@ class _AnchorLifecycleObserver with NavigatorPageObserver {
     final void Function(RouteSettings) callback,
     final RouteSettings routeSettings,
   ) {
-    if (_anchor.name != routeSettings.name ||
+    if (settings.name != routeSettings.name ||
         _delegate._current.isSelected == false) {
       return;
     }
