@@ -45,7 +45,7 @@ mixin NavigatorPageLifecycleMixin<T extends StatefulWidget> on State<T> {
     super.didChangeDependencies();
     _init();
     _initAppear.runOnce(() {
-      if (!_current.isBuilt || (_current.isSelected == true)) {
+      if (!_current.isBuilt || (_current.isSelected != false)) {
         Future(() => didAppear(_current));
       }
     });

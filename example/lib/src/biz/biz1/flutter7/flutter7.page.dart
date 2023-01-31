@@ -82,12 +82,12 @@ class _Flutter7PageState extends State<Flutter7Page>
             child: NavigatorTabBarView(
               controller: controller,
               routeSettings: <RouteSettings>[
+                NavigatorRouteSettings.settingsWith(url: biz.biz2.flutter8.url),
                 NavigatorRouteSettings.settingsWith(
                     url: biz.biz1.flutter1.home.url),
                 NavigatorRouteSettings.settingsWith(url: biz.biz1.flutter7.url),
                 NavigatorRouteSettings.settingsWith(url: biz.biz2.flutter2.url),
                 NavigatorRouteSettings.settingsWith(url: biz.biz1.flutter3.url),
-                NavigatorRouteSettings.settingsWith(url: biz.biz2.flutter8.url),
               ],
             )));
   }
