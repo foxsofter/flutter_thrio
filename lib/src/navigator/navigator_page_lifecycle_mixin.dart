@@ -36,7 +36,7 @@ mixin NavigatorPageLifecycleMixin<T extends StatefulWidget> on State<T> {
   VoidCallback? _currentObserverCallback;
 
   late List<RouteSettings> _anchors;
-  VoidCallback? _anchorsObserverCallback;
+  final _anchorsObserverCallbacks = <VoidCallback>[];
 
   final _initAppear = AsyncMemoizer<void>();
 
@@ -58,17 +58,21 @@ mixin NavigatorPageLifecycleMixin<T extends StatefulWidget> on State<T> {
   }
 
   void didAppear(final RouteSettings settings) {
-    verbose('NavigatorPageLifecycleMixin didAppear: ${settings.name}');
+    verbose(
+        'NavigatorPageLifecycleMixin didAppear: ${settings.name}, $runtimeType, hash: ${settings.hashCode}');
   }
 
   void didDisappear(final RouteSettings settings) {
-    verbose('NavigatorPageLifecycleMixin didDisappear: ${settings.name}');
+    verbose(
+        'NavigatorPageLifecycleMixin didDisappear: ${settings.name}, $runtimeType, hash: ${settings.hashCode}');
   }
 
   @override
   void dispose() {
     _currentObserverCallback?.call();
-    _anchorsObserverCallback?.call();
+    for (final callback in _anchorsObserverCallbacks) {
+      callback();
+    }
     super.dispose();
   }
 
@@ -82,14 +86,20 @@ mixin NavigatorPageLifecycleMixin<T extends StatefulWidget> on State<T> {
     // 链路上重复的 settings 要去掉
     _anchors.removeWhere((final it) => it.name == _current.name);
 
-    _anchorsObserverCallback?.call();
-    final observers = <String, NavigatorPageObserver>{};
-    for (final it in _anchors) {
-      observers[it.url] = _AnchorLifecycleObserver(this, it);
+    verbose(
+        'NavigatorPageLifecycleMixin current: $runtimeType, hash: ${_current.hashCode} ${_current.name} ');
+    verbose(
+        'NavigatorPageLifecycleMixin anchors: ${_anchors.map((final e) => e.name).join(',')} ');
+
+    for (final callback in _anchorsObserverCallbacks) {
+      callback();
     }
-    if (_anchors.isNotEmpty) {
-      _anchorsObserverCallback =
-          anchor.pageLifecycleObservers.registryAll(observers);
+    _anchorsObserverCallbacks.clear();
+    for (final it in _anchors) {
+      _anchorsObserverCallbacks.add(anchor.pageLifecycleObservers.registry(
+        it.url,
+        _AnchorLifecycleObserver(this, it),
+      ));
     }
   }
 }
@@ -104,6 +114,8 @@ class _CurrentLifecycleObserver with NavigatorPageObserver {
 
   @override
   void didAppear(final RouteSettings routeSettings) {
+    verbose(
+        'NavigatorPageLifecycleMixin didAppear ${_delegate._current.name} ==  ${routeSettings.name}');
     if (_delegate._current.name == routeSettings.name &&
         routeSettings.isSelected != false) {
       _delegate.didAppear(routeSettings);
@@ -112,6 +124,8 @@ class _CurrentLifecycleObserver with NavigatorPageObserver {
 
   @override
   void didDisappear(final RouteSettings routeSettings) {
+    verbose(
+        'NavigatorPageLifecycleMixin didDisappear ${_delegate._current.name} ==  ${routeSettings.name}');
     if (_delegate._current.name == routeSettings.name &&
         routeSettings.isSelected != false) {
       _delegate.didDisappear(routeSettings);
@@ -120,12 +134,14 @@ class _CurrentLifecycleObserver with NavigatorPageObserver {
 }
 
 class _AnchorLifecycleObserver with NavigatorPageObserver {
-  const _AnchorLifecycleObserver(this._delegate, this.settings);
+  const _AnchorLifecycleObserver(this._delegate, this._anchor);
 
   final NavigatorPageLifecycleMixin _delegate;
 
+  final RouteSettings _anchor;
+
   @override
-  final RouteSettings settings;
+  RouteSettings? get settings => _anchor;
 
   @override
   void didAppear(final RouteSettings routeSettings) {
@@ -143,7 +159,11 @@ class _AnchorLifecycleObserver with NavigatorPageObserver {
     final void Function(RouteSettings) callback,
     final RouteSettings routeSettings,
   ) {
-    if (settings.name != routeSettings.name ||
+    verbose(
+        'NavigatorPageLifecycleMixin ${_anchor.name} !=  ${routeSettings.name}');
+    verbose('NavigatorPageLifecycleMixin current ${_delegate._current.name}');
+
+    if (_anchor.name != routeSettings.name ||
         _delegate._current.isSelected == false) {
       return;
     }

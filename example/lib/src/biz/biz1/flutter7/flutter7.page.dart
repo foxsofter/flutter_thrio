@@ -31,6 +31,11 @@ class _Flutter7PageState extends State<Flutter7Page>
       initialIndex: Random.secure().nextInt(4), length: 5, vsync: this);
 
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   void dispose() {
     ThrioLogger.d('page7 dispose: ${widget.settings.index}');
     super.dispose();
@@ -38,6 +43,9 @@ class _Flutter7PageState extends State<Flutter7Page>
 
   @override
   void didAppear(final RouteSettings routeSettings) {
+    Future.delayed(const Duration(seconds: 1), () {
+      setState(() {});
+    });
     ThrioLogger.d('flutter7 didAppear: $routeSettings');
   }
 
