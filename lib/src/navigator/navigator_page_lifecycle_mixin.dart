@@ -21,6 +21,7 @@
 
 import 'dart:async';
 
+import 'package:async/async.dart';
 import 'package:flutter/widgets.dart';
 
 import '../module/module_anchor.dart';
@@ -37,13 +38,17 @@ mixin NavigatorPageLifecycleMixin<T extends StatefulWidget> on State<T> {
   late List<RouteSettings> _anchors;
   VoidCallback? _anchorsObserverCallback;
 
+  final _initAppear = AsyncMemoizer<void>();
+
   @override
-  void initState() {
-    super.initState();
+  void didChangeDependencies() {
+    super.didChangeDependencies();
     _init();
-    if (!_current.isBuilt || (_current.isSelected == true)) {
-      Future(() => didAppear(_current));
-    }
+    _initAppear.runOnce(() {
+      if (!_current.isBuilt || (_current.isSelected == true)) {
+        Future(() => didAppear(_current));
+      }
+    });
   }
 
   @override

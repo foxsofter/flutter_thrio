@@ -10,6 +10,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  async: ^2.9.0
 
 dev_dependencies:
   flutter_test:
