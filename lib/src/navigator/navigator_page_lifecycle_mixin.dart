@@ -40,6 +40,10 @@ mixin NavigatorPageLifecycleMixin<T extends StatefulWidget> on State<T> {
 
   final _initAppear = AsyncMemoizer<void>();
 
+  bool _disposed = false;
+
+  bool get disposed => _disposed;
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -69,6 +73,8 @@ mixin NavigatorPageLifecycleMixin<T extends StatefulWidget> on State<T> {
 
   @override
   void dispose() {
+    _disposed = true;
+
     _currentObserverCallback?.call();
     for (final callback in _anchorsObserverCallbacks) {
       callback();
@@ -114,8 +120,13 @@ class _CurrentLifecycleObserver with NavigatorPageObserver {
 
   @override
   void didAppear(final RouteSettings routeSettings) {
-    verbose(
-        'NavigatorPageLifecycleMixin didAppear ${_delegate._current.name} ==  ${routeSettings.name}');
+    // state not mounted, not trigger didAppear
+    if (!_delegate.mounted) {
+      return;
+    }
+    verbose('''NavigatorPageLifecycleMixin didAppear 
+        ${_delegate._current.name} ==  ${routeSettings.name}
+        ''');
     if (_delegate._current.name == routeSettings.name &&
         routeSettings.isSelected != false) {
       _delegate.didAppear(routeSettings);
@@ -124,8 +135,13 @@ class _CurrentLifecycleObserver with NavigatorPageObserver {
 
   @override
   void didDisappear(final RouteSettings routeSettings) {
-    verbose(
-        'NavigatorPageLifecycleMixin didDisappear ${_delegate._current.name} ==  ${routeSettings.name}');
+    // state not disposed and not mounted, not trigger didDisappear
+    if (!_delegate._disposed && !_delegate.mounted) {
+      return;
+    }
+    verbose('''NavigatorPageLifecycleMixin didDisappear 
+        ${_delegate._current.name} ==  ${routeSettings.name}
+        ''');
     if (_delegate._current.name == routeSettings.name &&
         routeSettings.isSelected != false) {
       _delegate.didDisappear(routeSettings);

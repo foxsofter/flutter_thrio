@@ -3,6 +3,7 @@
 - fix: android back click not working
 - fix: NavigatorPageLifecycleMixin not working on const widget
 - fix: NavigatorPageLifecycleMixin first init didAppear 
+- fix: NavigatorPageLifecycleMixin still working when widget not correct dispose
 
 ## 3.13.0
 
