@@ -139,12 +139,12 @@ class ThrioNavigatorImplement {
       );
     }
     final completer = Completer<TPopParams?>();
-    unawaited(_pushToNative<TParams, TPopParams>(
+    _pushToNative<TParams, TPopParams>(
       url,
       params,
       animated,
       completer,
-    ));
+    ).then((final index) => result?.call(index));
     return completer.future;
   }
 
