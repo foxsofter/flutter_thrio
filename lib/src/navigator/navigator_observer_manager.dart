@@ -81,9 +81,11 @@ class NavigatorObserverManager extends NavigatorObserver {
 
   @override
   void didPop(final Route<dynamic> route, final Route<dynamic>? previousRoute) {
-    for (final ob in observers) {
-      ob.didPop(route, previousRoute);
-    }
+    Future(() {
+      for (final ob in observers) {
+        ob.didPop(route, previousRoute);
+      }
+    });
     if (route is NavigatorRoute) {
       pageRoutes.remove(route);
       currentPopRoutes.add(route);
@@ -181,9 +183,11 @@ class NavigatorObserverManager extends NavigatorObserver {
     final Route<dynamic> route,
     final Route<dynamic>? previousRoute,
   ) {
-    for (final ob in observers) {
-      ob.didRemove(route, previousRoute);
-    }
+    Future(() {
+      for (final ob in observers) {
+        ob.didRemove(route, previousRoute);
+      }
+    });
     if (route is NavigatorRoute) {
       pageRoutes.remove(route);
       _currentRemoveRoutes.add(route);
@@ -240,9 +244,11 @@ class NavigatorObserverManager extends NavigatorObserver {
     final Route<dynamic>? newRoute,
     final Route<dynamic>? oldRoute,
   }) {
-    for (final ob in observers) {
-      ob.didReplace(newRoute: newRoute, oldRoute: oldRoute);
-    }
+    Future(() {
+      for (final ob in observers) {
+        ob.didReplace(newRoute: newRoute, oldRoute: oldRoute);
+      }
+    });
     if (newRoute is NavigatorRoute && oldRoute is NavigatorRoute) {
       verbose(
         'didReplace: url->${oldRoute.settings.url} index->${oldRoute.settings.index} '

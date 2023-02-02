@@ -131,7 +131,7 @@ mixin NavigatorPageLifecycleMixin<T extends StatefulWidget> on State<T> {
         .observers
         .remove(_observer);
 
-    _unmounted = false;
+    _unmounted = true;
   }
 }
 
