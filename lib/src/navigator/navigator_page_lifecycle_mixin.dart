@@ -29,6 +29,7 @@ import 'navigator_logger.dart';
 import 'navigator_page.dart';
 import 'navigator_page_observer.dart';
 import 'navigator_route_settings.dart';
+import 'thrio_navigator_implement.dart';
 
 mixin NavigatorPageLifecycleMixin<T extends StatefulWidget> on State<T> {
   late RouteSettings _current;
@@ -40,9 +41,21 @@ mixin NavigatorPageLifecycleMixin<T extends StatefulWidget> on State<T> {
 
   final _initAppear = AsyncMemoizer<void>();
 
+  late final _observer = _NavigatorMountedObserver(this);
+
+  bool _unmounted = false;
+
   bool _disposed = false;
 
   bool get disposed => _disposed;
+
+  @override
+  void initState() {
+    super.initState();
+    if (mounted) {
+      ThrioNavigatorImplement.shared().observerManager.observers.add(_observer);
+    }
+  }
 
   @override
   void didChangeDependencies() {
@@ -79,6 +92,9 @@ mixin NavigatorPageLifecycleMixin<T extends StatefulWidget> on State<T> {
     for (final callback in _anchorsObserverCallbacks) {
       callback();
     }
+
+    _doDispose();
+
     super.dispose();
   }
 
@@ -108,8 +124,18 @@ mixin NavigatorPageLifecycleMixin<T extends StatefulWidget> on State<T> {
       ));
     }
   }
+
+  void _doDispose() {
+    ThrioNavigatorImplement.shared()
+        .observerManager
+        .observers
+        .remove(_observer);
+
+    _unmounted = false;
+  }
 }
 
+// ignore: prefer_mixin
 class _CurrentLifecycleObserver with NavigatorPageObserver {
   _CurrentLifecycleObserver(this._delegate);
 
@@ -121,12 +147,9 @@ class _CurrentLifecycleObserver with NavigatorPageObserver {
   @override
   void didAppear(final RouteSettings routeSettings) {
     // state not mounted, not trigger didAppear
-    if (!_delegate.mounted) {
+    if (_delegate._unmounted) {
       return;
     }
-    verbose('''NavigatorPageLifecycleMixin didAppear 
-        ${_delegate._current.name} ==  ${routeSettings.name}
-        ''');
     if (_delegate._current.name == routeSettings.name &&
         routeSettings.isSelected != false) {
       _delegate.didAppear(routeSettings);
@@ -136,12 +159,9 @@ class _CurrentLifecycleObserver with NavigatorPageObserver {
   @override
   void didDisappear(final RouteSettings routeSettings) {
     // state not disposed and not mounted, not trigger didDisappear
-    if (!_delegate._disposed && !_delegate.mounted) {
+    if (!_delegate._disposed && _delegate._unmounted) {
       return;
     }
-    verbose('''NavigatorPageLifecycleMixin didDisappear 
-        ${_delegate._current.name} ==  ${routeSettings.name}
-        ''');
     if (_delegate._current.name == routeSettings.name &&
         routeSettings.isSelected != false) {
       _delegate.didDisappear(routeSettings);
@@ -150,7 +170,7 @@ class _CurrentLifecycleObserver with NavigatorPageObserver {
 }
 
 class _AnchorLifecycleObserver with NavigatorPageObserver {
-  const _AnchorLifecycleObserver(this._delegate, this._anchor);
+  _AnchorLifecycleObserver(this._delegate, this._anchor);
 
   final NavigatorPageLifecycleMixin _delegate;
 
@@ -175,10 +195,6 @@ class _AnchorLifecycleObserver with NavigatorPageObserver {
     final void Function(RouteSettings) callback,
     final RouteSettings routeSettings,
   ) {
-    verbose(
-        'NavigatorPageLifecycleMixin ${_anchor.name} !=  ${routeSettings.name}');
-    verbose('NavigatorPageLifecycleMixin current ${_delegate._current.name}');
-
     if (_anchor.name != routeSettings.name ||
         _delegate._current.isSelected == false) {
       return;
@@ -188,6 +204,43 @@ class _AnchorLifecycleObserver with NavigatorPageObserver {
     final ins = _delegate._anchors.sublist(0, idx);
     if (ins.every((final it) => it.isSelected == true)) {
       callback(_delegate._current);
+    }
+  }
+}
+
+// ignore: prefer_mixin
+class _NavigatorMountedObserver with NavigatorObserver {
+  _NavigatorMountedObserver(this._delegate);
+
+  final NavigatorPageLifecycleMixin _delegate;
+
+  @override
+  void didPop(
+    final Route<dynamic> route,
+    final Route<dynamic>? previousRoute,
+  ) {
+    if (route.settings.name == _delegate._current.name) {
+      _delegate._doDispose();
+    }
+  }
+
+  @override
+  void didRemove(
+    final Route<dynamic> route,
+    final Route<dynamic>? previousRoute,
+  ) {
+    if (route.settings.name == _delegate._current.name) {
+      _delegate._doDispose();
+    }
+  }
+
+  @override
+  void didReplace({
+    final Route<dynamic>? newRoute,
+    final Route<dynamic>? oldRoute,
+  }) {
+    if (oldRoute?.settings.name == _delegate._current.name) {
+      _delegate._doDispose();
     }
   }
 }

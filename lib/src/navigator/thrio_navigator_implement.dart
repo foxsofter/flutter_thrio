@@ -70,7 +70,7 @@ class ThrioNavigatorImplement {
     _receiveChannel = NavigatorRouteReceiveChannel(_channel);
     pageChannel = NavigatorPageObserverChannel(moduleContext.entrypoint);
     routeChannel = NavigatorRouteObserverChannel(moduleContext.entrypoint);
-    _observerManager = NavigatorObserverManager();
+    observerManager = NavigatorObserverManager();
     _stateKey = GlobalKey<NavigatorWidgetState>();
     _moduleContext = moduleContext;
 
@@ -80,13 +80,13 @@ class ThrioNavigatorImplement {
   TransitionBuilder get builder => (final context, final child) {
         if (child is Navigator) {
           final navigator = child;
-          if (!navigator.observers.contains(_observerManager)) {
-            navigator.observers.add(_observerManager);
+          if (!navigator.observers.contains(observerManager)) {
+            navigator.observers.add(observerManager);
           }
           return NavigatorWidget(
             key: _stateKey,
             moduleContext: _moduleContext,
-            observerManager: _observerManager,
+            observerManager: observerManager,
             child: navigator,
           );
         }
@@ -105,8 +105,7 @@ class ThrioNavigatorImplement {
 
   final poppedResults = <String, NavigatorParamsCallback>{};
 
-  List<NavigatorRoute> get currentPopRoutes =>
-      _observerManager.currentPopRoutes;
+  List<NavigatorRoute> get currentPopRoutes => observerManager.currentPopRoutes;
 
   late final ThrioChannel _channel;
 
@@ -118,7 +117,7 @@ class ThrioNavigatorImplement {
 
   late final NavigatorPageObserverChannel pageChannel;
 
-  late final NavigatorObserverManager _observerManager;
+  late final NavigatorObserverManager observerManager;
 
   void ready() => _channel.invokeMethod<bool>('ready');
 

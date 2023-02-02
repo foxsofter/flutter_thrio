@@ -31,6 +31,8 @@ import 'navigator_route_settings.dart';
 import 'thrio_navigator_implement.dart';
 
 class NavigatorObserverManager extends NavigatorObserver {
+  final observers = <NavigatorObserver>[];
+
   final currentPopRoutes = <NavigatorRoute>[];
 
   final _currentRemoveRoutes = <NavigatorRoute>[];
@@ -46,6 +48,9 @@ class NavigatorObserverManager extends NavigatorObserver {
     final Route<dynamic> route,
     final Route<dynamic>? previousRoute,
   ) {
+    for (final ob in observers) {
+      ob.didPush(route, previousRoute);
+    }
     if (route is NavigatorRoute) {
       verbose(
         'didPush: url->${route.settings.url} '
@@ -76,6 +81,9 @@ class NavigatorObserverManager extends NavigatorObserver {
 
   @override
   void didPop(final Route<dynamic> route, final Route<dynamic>? previousRoute) {
+    for (final ob in observers) {
+      ob.didPop(route, previousRoute);
+    }
     if (route is NavigatorRoute) {
       pageRoutes.remove(route);
       currentPopRoutes.add(route);
@@ -170,7 +178,12 @@ class NavigatorObserverManager extends NavigatorObserver {
 
   @override
   void didRemove(
-      final Route<dynamic> route, final Route<dynamic>? previousRoute) {
+    final Route<dynamic> route,
+    final Route<dynamic>? previousRoute,
+  ) {
+    for (final ob in observers) {
+      ob.didRemove(route, previousRoute);
+    }
     if (route is NavigatorRoute) {
       pageRoutes.remove(route);
       _currentRemoveRoutes.add(route);
@@ -223,8 +236,13 @@ class NavigatorObserverManager extends NavigatorObserver {
   }
 
   @override
-  void didReplace(
-      {final Route<dynamic>? newRoute, final Route<dynamic>? oldRoute}) {
+  void didReplace({
+    final Route<dynamic>? newRoute,
+    final Route<dynamic>? oldRoute,
+  }) {
+    for (final ob in observers) {
+      ob.didReplace(newRoute: newRoute, oldRoute: oldRoute);
+    }
     if (newRoute is NavigatorRoute && oldRoute is NavigatorRoute) {
       verbose(
         'didReplace: url->${oldRoute.settings.url} index->${oldRoute.settings.index} '
