@@ -1,6 +1,7 @@
 // Copyright (c) 2022 foxsofter.
 //
 
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -182,9 +183,19 @@ class _HomePageState extends State<HomePage>
                         ),
                         InkWell(
                           onTap: () async {
+                            // Future.delayed(const Duration(seconds: 10), () {
+                            //   ThrioNavigator.pop(params: 'fsfwfwfw');
+                            // });
+
+                            // unawaited(ThrioNavigator.pop());
+
                             final params = await biz.biz2.flutter2.push(
                               params: People(name: '大宝剑', age: 0, sex: 'x'),
+                              result: (final index) {
+                                ThrioLogger.v('test_async_queue: push $index');
+                              },
                             );
+
                             ThrioLogger.v(
                                 '${biz.biz2.flutter2.url} poppedResult call popped:$params');
                           },

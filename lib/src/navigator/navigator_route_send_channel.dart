@@ -21,6 +21,7 @@
 
 import 'package:flutter/material.dart';
 
+import '../async/async_queue.dart';
 import '../channel/thrio_channel.dart';
 import '../extension/thrio_object.dart';
 import '../module/module_anchor.dart';
@@ -29,24 +30,29 @@ import '../module/thrio_module.dart';
 import 'navigator_route_settings.dart';
 
 class NavigatorRouteSendChannel {
-  const NavigatorRouteSendChannel(final ThrioChannel channel)
-      : _channel = channel;
+  NavigatorRouteSendChannel(final ThrioChannel channel) : _channel = channel;
 
   final ThrioChannel _channel;
+
+  final _taskQueue = AsyncTaskQueue();
 
   Future<int> push<TParams>({
     required final String url,
     final TParams? params,
     final bool animated = true,
   }) {
-    final arguments = <String, dynamic>{
-      'url': url,
-      'animated': animated,
-      'params': _serializeParams<TParams>(url: url, params: params),
-    };
-    return _channel
-        .invokeMethod<int>('push', arguments)
-        .then((final value) => value ?? 0);
+    Future<int> pushFuture() {
+      final arguments = <String, dynamic>{
+        'url': url,
+        'animated': animated,
+        'params': _serializeParams<TParams>(url: url, params: params),
+      };
+      return _channel
+          .invokeMethod<int>('push', arguments)
+          .then((final value) => value ?? 0);
+    }
+
+    return _taskQueue.add(pushFuture).then((final value) => value ?? 0);
   }
 
   Future<bool> notify<TParams>({
@@ -72,16 +78,20 @@ class NavigatorRouteSendChannel {
   Future<bool> pop<TParams>({
     final TParams? params,
     final bool animated = true,
-  }) async {
-    final settings = await lastRoute();
-    final url = settings?.url;
-    final arguments = <String, dynamic>{
-      'params': _serializeParams<TParams>(url: url, params: params),
-      'animated': animated,
-    };
-    return _channel
-        .invokeMethod<bool>('pop', arguments)
-        .then((final it) => it ?? false);
+  }) {
+    Future<bool> popFuture() async {
+      final settings = await lastRoute();
+      final url = settings?.url;
+      final arguments = <String, dynamic>{
+        'params': _serializeParams<TParams>(url: url, params: params),
+        'animated': animated,
+      };
+      return _channel
+          .invokeMethod<bool>('pop', arguments)
+          .then((final it) => it ?? false);
+    }
+
+    return _taskQueue.add(popFuture).then((final value) => value == true);
   }
 
   Future<bool> maybePop<TParams>({
@@ -114,14 +124,18 @@ class NavigatorRouteSendChannel {
     final int index = 0,
     final bool animated = true,
   }) {
-    final arguments = <String, dynamic>{
-      'url': url,
-      'index': index,
-      'animated': animated
-    };
-    return _channel
-        .invokeMethod<bool>('popTo', arguments)
-        .then((final it) => it ?? false);
+    Future<bool> popToFuture() {
+      final arguments = <String, dynamic>{
+        'url': url,
+        'index': index,
+        'animated': animated
+      };
+      return _channel
+          .invokeMethod<bool>('popTo', arguments)
+          .then((final it) => it ?? false);
+    }
+
+    return _taskQueue.add(popToFuture).then((final value) => value == true);
   }
 
   Future<bool> remove({
@@ -129,14 +143,18 @@ class NavigatorRouteSendChannel {
     final int index = 0,
     final bool animated = true,
   }) {
-    final arguments = <String, dynamic>{
-      'url': url,
-      'index': index,
-      'animated': animated,
-    };
-    return _channel
-        .invokeMethod<bool>('remove', arguments)
-        .then((final it) => it ?? false);
+    Future<bool> removeFuture() {
+      final arguments = <String, dynamic>{
+        'url': url,
+        'index': index,
+        'animated': animated,
+      };
+      return _channel
+          .invokeMethod<bool>('remove', arguments)
+          .then((final it) => it ?? false);
+    }
+
+    return _taskQueue.add(removeFuture).then((final value) => value == true);
   }
 
   Future<int> replace({
@@ -144,14 +162,18 @@ class NavigatorRouteSendChannel {
     final int index = 0,
     required final String newUrl,
   }) {
-    final arguments = <String, dynamic>{
-      'url': url,
-      'index': index,
-      'newUrl': newUrl,
-    };
-    return _channel
-        .invokeMethod<int>('replace', arguments)
-        .then((final it) => it ?? 0);
+    Future<int> replaceFuture() {
+      final arguments = <String, dynamic>{
+        'url': url,
+        'index': index,
+        'newUrl': newUrl,
+      };
+      return _channel
+          .invokeMethod<int>('replace', arguments)
+          .then((final it) => it ?? 0);
+    }
+
+    return _taskQueue.add(replaceFuture).then((final value) => value ?? 0);
   }
 
   Future<RouteSettings?> lastRoute({final String? url}) {
