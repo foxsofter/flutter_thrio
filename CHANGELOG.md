@@ -4,6 +4,7 @@
 - fix: NavigatorPageLifecycleMixin not working on const widget
 - fix: NavigatorPageLifecycleMixin first init didAppear 
 - fix: NavigatorPageLifecycleMixin still working when widget not correct dispose
+- fix: observers concurrent modification during iteration
 
 ## 3.13.0
 

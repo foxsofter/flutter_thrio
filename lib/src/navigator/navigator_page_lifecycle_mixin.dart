@@ -126,10 +126,10 @@ mixin NavigatorPageLifecycleMixin<T extends StatefulWidget> on State<T> {
   }
 
   void _doDispose() {
-    ThrioNavigatorImplement.shared()
+    Future(() => ThrioNavigatorImplement.shared()
         .observerManager
         .observers
-        .remove(_observer);
+        .remove(_observer));
 
     _unmounted = true;
   }
