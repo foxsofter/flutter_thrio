@@ -8,6 +8,7 @@
 - feat: support didPopRoute in page
 - feat: add NavigatorWillPopMixin
 - fix: android allRoutes with url return empty collection
+- fix: http uri fragment missing
 
 ## 3.13.0
 
