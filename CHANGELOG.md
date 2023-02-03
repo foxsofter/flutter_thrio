@@ -7,6 +7,7 @@
 - fix: observers concurrent modification during iteration
 - feat: support didPopRoute in page
 - feat: add NavigatorWillPopMixin
+- fix: android allRoutes with url return empty collection
 
 ## 3.13.0
 

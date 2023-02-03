@@ -69,7 +69,7 @@ internal data class PageRouteHolder(
 
     fun allRoute(url: String? = null): List<PageRoute> = when (url) {
         null -> routes
-        else -> routes.takeWhile { it.settings.url == url }
+        else -> routes.filter { it.settings.url == url }
     }
 
     fun push(route: PageRoute, result: NullableIntCallback) {
