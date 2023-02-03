@@ -25,27 +25,37 @@
 
 import 'package:flutter/widgets.dart';
 
+import 'navigator_page_lifecycle_mixin.dart';
+
 /// Handle a callback to veto attempts by the user to dismiss the enclosing
 /// [ModalRoute].
 ///
-mixin NavigatorWillPopMixin<T extends StatefulWidget> on State<T> {
+mixin NavigatorWillPopMixin<T extends StatefulWidget>
+    on NavigatorPageLifecycleMixin<T> {
   /// Called to veto attempts by the user to dismiss the enclosing [ModalRoute].
   ///
   Future<bool> onWillPop() => Future.value(true);
 
-  ModalRoute<dynamic>? _route;
+  late final _didPopObserver = _DidPopObserver(this);
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    _route?.removeScopedWillPopCallback(onWillPop);
-    _route = ModalRoute.of(context);
-    _route?.addScopedWillPopCallback(onWillPop);
+  void didAppear(final RouteSettings settings) {
+    super.didAppear(settings);
+    WidgetsBinding.instance.addObserver(_didPopObserver);
   }
 
   @override
-  void dispose() {
-    _route?.removeScopedWillPopCallback(onWillPop);
-    super.dispose();
+  void didDisappear(final RouteSettings settings) {
+    super.didDisappear(settings);
+    WidgetsBinding.instance.removeObserver(_didPopObserver);
   }
+}
+
+class _DidPopObserver extends WidgetsBindingObserver {
+  _DidPopObserver(this._delegate);
+
+  final NavigatorWillPopMixin _delegate;
+
+  @override
+  Future<bool> didPopRoute() => _delegate.onWillPop();
 }

@@ -5,6 +5,8 @@
 - fix: NavigatorPageLifecycleMixin first init didAppear 
 - fix: NavigatorPageLifecycleMixin still working when widget not correct dispose
 - fix: observers concurrent modification during iteration
+- feat: support didPopRoute in page
+- feat: add NavigatorWillPopMixin
 
 ## 3.13.0
 
