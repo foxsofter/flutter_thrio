@@ -416,7 +416,7 @@ internal object NavigationController : Application.ActivityLifecycleCallbacks {
 
             PageRoutes.popTo(url, index, animated) { ret ->
                 if (ret) {
-                    if (ret && poppedToRoute.entrypoint == NAVIGATION_NATIVE_ENTRYPOINT) {
+                    if (poppedToRoute.entrypoint == NAVIGATION_NATIVE_ENTRYPOINT) {
                         ModuleRouteObservers.didPopTo(poppedToRoute.settings)
                     }
                     // 顶上不存在其它的 Activity
@@ -451,7 +451,10 @@ internal object NavigationController : Application.ActivityLifecycleCallbacks {
                 return
             }
             val index = poppedToHolders.indexOfLast { it.pageId == pageId }
-            if (index == -1 && poppedToHolder != null && poppedToHolder!!.pageId == pageId) {
+            if (index == -1) {
+                return
+            }
+            if ( poppedToHolder != null && poppedToHolder!!.pageId == pageId) {
                 poppedToHolder?.activity?.get()?.let {
                     poppedToHolder = null
                 }
