@@ -53,6 +53,6 @@ open class ThrioFlutterFragment : FlutterFragment() {
 
     override fun popSystemNavigator(): Boolean {
         ThrioNavigator.maybePop()
-        return super.popSystemNavigator()
+        return true
     }
 }

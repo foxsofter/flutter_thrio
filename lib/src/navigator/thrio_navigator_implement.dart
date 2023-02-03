@@ -32,6 +32,7 @@ import '../module/module_types.dart';
 import '../module/thrio_module.dart';
 import 'navigator_dialog_route.dart';
 import 'navigator_logger.dart';
+import 'navigator_material_app.dart';
 import 'navigator_observer_manager.dart';
 import 'navigator_page_observer_channel.dart';
 import 'navigator_route.dart';
@@ -119,7 +120,18 @@ class ThrioNavigatorImplement {
 
   late final NavigatorObserverManager observerManager;
 
-  void ready() => _channel.invokeMethod<bool>('ready');
+  void ready() {
+    // 需要将 WidgetsAppState 中的 `didPopRoute` 去掉，否则后续所有的 `didPopRoute` 都不生效了
+    final appState = NavigatorMaterialApp.appKey.currentState;
+    if (appState != null) {
+      final state = GlobalObjectKey(appState).currentState;
+      if (state is WidgetsBindingObserver) {
+        WidgetsBinding.instance.removeObserver(state as WidgetsBindingObserver);
+      }
+    }
+
+    _channel.invokeMethod<bool>('ready');
+  }
 
   Future<TPopParams?> push<TParams, TPopParams>({
     required final String url,

@@ -1,6 +1,8 @@
 // Copyright (c) 2022 foxsofter.
 //
 
+// ignore_for_file: prefer_mixin
+
 import 'dart:async';
 import 'dart:io';
 
@@ -27,14 +29,32 @@ class HomePage extends NavigatorStatefulPage {
 }
 
 class _HomePageState extends State<HomePage>
-    with NavigatorPageLifecycleMixin, AutomaticKeepAliveClientMixin {
+    with
+        NavigatorPageLifecycleMixin,
+        AutomaticKeepAliveClientMixin,
+        WidgetsBindingObserver {
   late final TextEditingController _inputController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    if (mounted) {
+      WidgetsBinding.instance.addObserver(this);
+    }
+  }
 
   @override
   void dispose() {
     ThrioLogger.d('page1 dispose: ${widget.settings.index}');
     _inputController.dispose();
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
+  }
+
+  @override
+  Future<bool> didPopRoute() async {
+    ThrioLogger.v('didPopRoute: flutter 1');
+    return false;
   }
 
   @override

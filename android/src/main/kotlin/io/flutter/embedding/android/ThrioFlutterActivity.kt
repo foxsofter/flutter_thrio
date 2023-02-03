@@ -59,7 +59,7 @@ open class ThrioFlutterActivity : FlutterActivity(), ThrioFlutterActivityBase {
 
     override fun popSystemNavigator(): Boolean {
         ThrioNavigator.maybePop()
-        return super.popSystemNavigator()
+        return true
     }
 
     override fun shouldDestroyEngineWithHost(): Boolean =
