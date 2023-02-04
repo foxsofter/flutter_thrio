@@ -209,7 +209,9 @@ class _HomePageState extends State<HomePage>
 
                             // unawaited(ThrioNavigator.pop());
 
-                            final params = await biz.biz2.flutter2.push(
+                            final params = await ThrioNavigator.push(
+                              url:
+                                  '${biz.biz2.flutter2.url}?fewfew=2131&fwe=1&&',
                               params: People(name: '大宝剑', age: 0, sex: 'x'),
                               result: (final index) {
                                 ThrioLogger.v('test_async_queue: push $index');

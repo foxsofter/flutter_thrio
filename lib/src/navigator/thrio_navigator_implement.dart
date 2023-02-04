@@ -27,6 +27,7 @@ import 'package:flutter/widgets.dart';
 import '../channel/thrio_channel.dart';
 import '../exception/thrio_exception.dart';
 import '../extension/thrio_iterable.dart';
+import '../extension/thrio_uri_string.dart';
 import '../module/module_anchor.dart';
 import '../module/module_types.dart';
 import '../module/thrio_module.dart';
@@ -178,14 +179,18 @@ class ThrioNavigatorImplement {
     final TParams? params,
     final bool animated = true,
     final NavigatorIntCallback? result,
-  }) async =>
-      handler<TParams, TPopParams>(
-        uri.toString(),
-        uri.queryParametersAll,
-        params: params,
-        animated: animated,
-        result: result,
-      );
+  }) async {
+    final queryParametersAll = handler.queryParamsDecoded
+        ? uri.queryParametersAll
+        : uri.query.rawQueryParametersAll;
+    return handler<TParams, TPopParams>(
+      uri.toString(),
+      queryParametersAll,
+      params: params,
+      animated: animated,
+      result: result,
+    );
+  }
 
   Future<TPopParams?> pushSingle<TParams, TPopParams>({
     required final String url,
@@ -439,27 +444,39 @@ class ThrioNavigatorImplement {
     final TParams? params,
     final bool animated,
     final Completer<TPopParams?> completer,
-  ) =>
-      _sendChannel
-          .push<TParams>(url: url, params: params, animated: animated)
-          .then((final index) {
-        if (index > 0) {
-          final routeName = '$index $url';
-          final routeHistory =
-              ThrioNavigatorImplement.shared().navigatorState?.history;
-          final route = routeHistory
-              ?.lastWhereOrNull((final it) => it.settings.name == routeName);
-          if (route != null && route is NavigatorRoute) {
-            route.poppedResult =
-                (final params) => poppedResult<TPopParams>(completer, params);
-          } else {
-            // 不在当前页面栈上，则通过name来缓存
-            poppedResults[routeName] =
-                (final params) => poppedResult<TPopParams>(completer, params);
-          }
+  ) {
+    final qidx = url.indexOf('?');
+    final ps = params ?? <String, dynamic>{};
+    var noQueryUrl = url;
+    if (qidx != -1) {
+      if (ps is Map) {
+        final query = url.substring(qidx);
+        final qps = query.rawQueryParameters;
+        ps.addAll(qps);
+      }
+      noQueryUrl = url.substring(0, qidx);
+    }
+    return _sendChannel
+        .push(url: noQueryUrl, params: ps, animated: animated)
+        .then((final index) {
+      if (index > 0) {
+        final routeName = '$index $url';
+        final routeHistory =
+            ThrioNavigatorImplement.shared().navigatorState?.history;
+        final route = routeHistory
+            ?.lastWhereOrNull((final it) => it.settings.name == routeName);
+        if (route != null && route is NavigatorRoute) {
+          route.poppedResult =
+              (final params) => poppedResult<TPopParams>(completer, params);
+        } else {
+          // 不在当前页面栈上，则通过name来缓存
+          poppedResults[routeName] =
+              (final params) => poppedResult<TPopParams>(completer, params);
         }
-        return index;
-      });
+      }
+      return index;
+    });
+  }
 
   void poppedResult<TPopParams>(
       final Completer<TPopParams?> completer, final dynamic params) {

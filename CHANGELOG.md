@@ -1,3 +1,10 @@
+## 3.14.1
+
+- fix: ios isEqualToNumber nil crash
+- fix: android ArrayIndexOutOfBoundsException
+- feat: route custom handler support url queryParameter not decode
+- feat: navigator push auto parse query parameters to params when it is null or map
+
 ## 3.14.0
 
 - fix: android back click not working

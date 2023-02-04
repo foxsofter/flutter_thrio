@@ -37,12 +37,14 @@ mixin ModuleRouteCustomHandler on ThrioModule {
   @protected
   VoidCallback registerRouteCustomHandler(
     final String template,
-    final NavigatorRouteCustomHandler handler,
-  ) {
+    final NavigatorRouteCustomHandler handler, {
+    final bool queryParamsDecoded = false,
+  }) {
     final key = NavigatorUrlTemplate(template: template);
     if (anchor.routeCustomHandlers.keys.contains(key)) {
       throw ThrioException('duplicate url template: $template');
     }
+    handler.queryParamsDecoded = queryParamsDecoded;
     return anchor.routeCustomHandlers.registry(key, handler);
   }
 
