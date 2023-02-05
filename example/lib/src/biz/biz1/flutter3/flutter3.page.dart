@@ -37,13 +37,12 @@ class _Flutter3PageState extends State<Flutter3Page>
   @override
   Widget build(final BuildContext context) {
     super.build(context);
-    return NavigatorWillPop(
+    return WillPopScope(
         onWillPop: () async {
           final r = await ThrioNavigator.push(url: '/biz/biz2/flutter2');
           ThrioLogger.i('page3 WillPopScope: $r');
           return true;
         },
-        internalNavigatorCanPop: () => true,
         child: Scaffold(
           appBar: AppBar(
             backgroundColor: Colors.white,

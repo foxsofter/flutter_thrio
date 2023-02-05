@@ -1,3 +1,7 @@
+## 3.14.3
+
+- feat: add NavigatorWillPop and NavigatorWillPopMixin
+  
 ## 3.14.2
 
 - fix: async task queue not working expected when task throw exception
