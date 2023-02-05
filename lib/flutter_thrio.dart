@@ -60,6 +60,8 @@ export 'src/navigator/navigator_stateful_page.dart';
 export 'src/navigator/navigator_stateless_page.dart';
 export 'src/navigator/navigator_tab_bar_view.dart';
 export 'src/navigator/navigator_types.dart';
+export 'src/navigator/navigator_will_pop.dart';
+export 'src/navigator/navigator_will_pop_mixin.dart';
 export 'src/navigator/thrio_navigator.dart';
 export 'src/registry/registry_map.dart';
 export 'src/registry/registry_set.dart';

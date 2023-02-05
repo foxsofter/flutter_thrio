@@ -24,38 +24,54 @@
 // found in the LICENSE file.
 
 import 'package:flutter/widgets.dart';
-
-import 'navigator_page_lifecycle_mixin.dart';
+import 'package:flutter_thrio/flutter_thrio.dart';
 
 /// Handle a callback to veto attempts by the user to dismiss the enclosing
 /// [ModalRoute].
 ///
 mixin NavigatorWillPopMixin<T extends StatefulWidget>
     on NavigatorPageLifecycleMixin<T> {
+  /// Check the internal Navigator canPop or not.
+  ///
+  bool get internalNavigatorCanPop => false;
+
   /// Called to veto attempts by the user to dismiss the enclosing [ModalRoute].
   ///
   Future<bool> onWillPop() => Future.value(true);
 
-  late final _didPopObserver = _DidPopObserver(this);
+  ModalRoute<dynamic>? _route;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _route?.removeScopedWillPopCallback(onWillPop);
+    _route = ModalRoute.of(context);
+    _route?.addScopedWillPopCallback(onWillPop);
+  }
 
   @override
   void didAppear(final RouteSettings settings) {
     super.didAppear(settings);
-    WidgetsBinding.instance.addObserver(_didPopObserver);
+    if (internalNavigatorCanPop) {
+      _route?.addScopedWillPopCallback(onWillPop);
+    } else {
+      _route?.removeScopedWillPopCallback(onWillPop);
+    }
   }
 
   @override
   void didDisappear(final RouteSettings settings) {
     super.didDisappear(settings);
-    WidgetsBinding.instance.removeObserver(_didPopObserver);
+    if (internalNavigatorCanPop) {
+      _route?.addScopedWillPopCallback(onWillPop);
+    } else {
+      _route?.removeScopedWillPopCallback(onWillPop);
+    }
   }
-}
-
-class _DidPopObserver extends WidgetsBindingObserver {
-  _DidPopObserver(this._delegate);
-
-  final NavigatorWillPopMixin _delegate;
 
   @override
-  Future<bool> didPopRoute() => _delegate.onWillPop();
+  void dispose() {
+    _route?.removeScopedWillPopCallback(onWillPop);
+    super.dispose();
+  }
 }
