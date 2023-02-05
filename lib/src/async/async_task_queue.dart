@@ -25,7 +25,13 @@ class AsyncTaskQueue {
   Future<dynamic> _current = Future.value();
 
   Future<T?> add<T>(final Future<T> Function() task) {
-    Future<T?> wrapper(final void _) => task();
-    return _current = _current.then<T?>(wrapper, onError: wrapper);
+    final completer = Completer<T?>();
+    _current.whenComplete(() {
+      task().then<void>(completer.complete).catchError((final _) {
+        completer.complete(null);
+      });
+    });
+    _current = completer.future;
+    return completer.future;
   }
 }

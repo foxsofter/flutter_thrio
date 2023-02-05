@@ -1,3 +1,7 @@
+## 3.14.2
+
+- fix: async task queue not working expected when task throw exception
+
 ## 3.14.1
 
 - fix: ios isEqualToNumber nil crash

@@ -21,7 +21,7 @@
 
 import 'package:flutter/material.dart';
 
-import '../async/async_queue.dart';
+import '../async/async_task_queue.dart';
 import '../channel/thrio_channel.dart';
 import '../extension/thrio_object.dart';
 import '../module/module_anchor.dart';

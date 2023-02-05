@@ -21,6 +21,7 @@
 
 library flutter_thrio;
 
+export 'src/async/async_task_queue.dart';
 export 'src/channel/thrio_channel.dart';
 export 'src/extension/thrio_build_context.dart';
 export 'src/extension/thrio_dynamic.dart';
