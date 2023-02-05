@@ -23,17 +23,16 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+// ignore_for_file: prefer_mixin
+
 import 'package:flutter/widgets.dart';
 import 'package:flutter_thrio/flutter_thrio.dart';
 
 /// Handle a callback to veto attempts by the user to dismiss the enclosing
 /// [ModalRoute].
 ///
-mixin NavigatorWillPopMixin<T extends StatefulWidget>
-    on NavigatorPageLifecycleMixin<T> {
-  /// Check the internal Navigator canPop or not.
-  ///
-  bool get internalNavigatorCanPop => false;
+mixin NavigatorWillPopMixin<T extends StatefulWidget> on State<T> {
+  GlobalKey<NavigatorState> get internalNavigatorKey;
 
   /// Called to veto attempts by the user to dismiss the enclosing [ModalRoute].
   ///
@@ -41,28 +40,46 @@ mixin NavigatorWillPopMixin<T extends StatefulWidget>
 
   ModalRoute<dynamic>? _route;
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    _route?.removeScopedWillPopCallback(onWillPop);
-    _route = ModalRoute.of(context);
-    _route?.addScopedWillPopCallback(onWillPop);
-  }
+  VoidCallback? _callback;
+
+  static final _observerMaps = <GlobalKey<NavigatorState>, NavigatorObserver>{};
+
+  static NavigatorObserver navigatorObserverFor(
+    final GlobalKey<NavigatorState> navigatorStateKey,
+  ) =>
+      _observerMaps[navigatorStateKey] ??
+      (_observerMaps[navigatorStateKey] = _InternalNavigatorObserver());
 
   @override
-  void didAppear(final RouteSettings settings) {
-    super.didAppear(settings);
-    if (internalNavigatorCanPop) {
-      _route?.addScopedWillPopCallback(onWillPop);
-    } else {
-      _route?.removeScopedWillPopCallback(onWillPop);
+  void initState() {
+    super.initState();
+    if (mounted) {
+      _init();
     }
   }
 
   @override
-  void didDisappear(final RouteSettings settings) {
-    super.didDisappear(settings);
-    if (internalNavigatorCanPop) {
+  void didUpdateWidget(covariant final T oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    _init();
+  }
+
+  void _init() {
+    _callback?.call();
+    final observer = navigatorObserverFor(internalNavigatorKey);
+    if (observer is _InternalNavigatorObserver) {
+      _callback = observer.delegates.registry(this);
+    }
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _route = ModalRoute.of(context);
+  }
+
+  void _checkWillPop() {
+    if (internalNavigatorKey.currentState?.canPop() == true) {
       _route?.addScopedWillPopCallback(onWillPop);
     } else {
       _route?.removeScopedWillPopCallback(onWillPop);
@@ -72,6 +89,41 @@ mixin NavigatorWillPopMixin<T extends StatefulWidget>
   @override
   void dispose() {
     _route?.removeScopedWillPopCallback(onWillPop);
+    _callback?.call();
     super.dispose();
+  }
+}
+
+class _InternalNavigatorObserver with NavigatorObserver {
+  final delegates = RegistrySet<NavigatorWillPopMixin>();
+
+  @override
+  void didPush(
+    final Route<dynamic> route,
+    final Route<dynamic>? previousRoute,
+  ) {
+    for (final it in delegates) {
+      it._checkWillPop();
+    }
+  }
+
+  @override
+  void didPop(
+    final Route<dynamic> route,
+    final Route<dynamic>? previousRoute,
+  ) {
+    for (final it in delegates) {
+      it._checkWillPop();
+    }
+  }
+
+  @override
+  void didRemove(
+    final Route<dynamic> route,
+    final Route<dynamic>? previousRoute,
+  ) {
+    for (final it in delegates) {
+      it._checkWillPop();
+    }
   }
 }

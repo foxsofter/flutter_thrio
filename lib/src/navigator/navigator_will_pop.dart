@@ -20,28 +20,32 @@
 // IN THE SOFTWARE.
 
 import 'package:flutter/widgets.dart';
-import 'package:flutter_thrio/src/navigator/navigator_will_pop_mixin.dart';
 
-import 'navigator_page_lifecycle_mixin.dart';
+import 'navigator_will_pop_mixin.dart';
 
 class NavigatorWillPop extends StatefulWidget {
   const NavigatorWillPop({
     super.key,
     required this.onWillPop,
-    this.internalNavigatorCanPop,
+    required this.internalNavigatorKey,
     required this.child,
   });
 
   final Future<bool> Function() onWillPop;
-  final bool Function()? internalNavigatorCanPop;
+  final GlobalKey<NavigatorState> internalNavigatorKey;
   final Widget child;
+
+  static NavigatorObserver navigatorObserverFor(
+    final GlobalKey<NavigatorState> navigatorStateKey,
+  ) =>
+      NavigatorWillPopMixin.navigatorObserverFor(navigatorStateKey);
 
   @override
   _NavigatorWillPopState createState() => _NavigatorWillPopState();
 }
 
 class _NavigatorWillPopState extends State<NavigatorWillPop>
-    with NavigatorPageLifecycleMixin, NavigatorWillPopMixin {
+    with NavigatorWillPopMixin {
   @override
   Widget build(final BuildContext context) => widget.child;
 
@@ -49,6 +53,6 @@ class _NavigatorWillPopState extends State<NavigatorWillPop>
   Future<bool> onWillPop() => widget.onWillPop();
 
   @override
-  bool get internalNavigatorCanPop =>
-      widget.internalNavigatorCanPop?.call() ?? false;
+  GlobalKey<NavigatorState> get internalNavigatorKey =>
+      widget.internalNavigatorKey;
 }
