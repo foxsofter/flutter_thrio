@@ -108,8 +108,8 @@ open class ThrioFlutterFragmentActivity : FlutterFragmentActivity(), ThrioFlutte
             .build()
     }
 
-    override fun setIntent(intent: Intent) {
-        Throwable().printStackTrace()
+    override fun setIntent(intent: Intent?) {
+        intent ?: return
         val pageId = this.intent.getPageId()
         intent.putExtra(NAVIGATION_ROUTE_PAGE_ID_KEY, pageId)
         val fromPageId = this.intent.getFromPageId()

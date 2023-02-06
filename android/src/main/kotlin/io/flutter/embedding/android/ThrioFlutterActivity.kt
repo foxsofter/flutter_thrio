@@ -115,7 +115,8 @@ open class ThrioFlutterActivity : FlutterActivity(), ThrioFlutterActivityBase {
         }
 
 
-    override fun setIntent(intent: Intent) {
+    override fun setIntent(intent: Intent?) {
+        intent ?: return
         val pageId = this.intent.getPageId()
         intent.putExtra(NAVIGATION_ROUTE_PAGE_ID_KEY, pageId)
         val fromPageId = this.intent.getFromPageId()
