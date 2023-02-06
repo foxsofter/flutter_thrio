@@ -448,16 +448,25 @@ internal object NavigationController : Application.ActivityLifecycleCallbacks {
             }
             val pageId = activity.intent.getPageId()
             if (pageId == NAVIGATION_ROUTE_PAGE_ID_NONE) {
+                result?.invoke(false)
+                result = null
+                routeType = RouteType.NONE
                 return
             }
             val index = poppedToHolders.indexOfLast { it.pageId == pageId }
             if (index == -1) {
+                result?.invoke(false)
+                result = null
+                routeType = RouteType.NONE
                 return
             }
             if ( poppedToHolder != null && poppedToHolder!!.pageId == pageId) {
                 poppedToHolder?.activity?.get()?.let {
                     poppedToHolder = null
                 }
+                result?.invoke(false)
+                result = null
+                routeType = RouteType.NONE
                 return
             }
             val holder = poppedToHolders[index]
