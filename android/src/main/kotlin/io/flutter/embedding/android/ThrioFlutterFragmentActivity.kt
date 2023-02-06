@@ -25,10 +25,21 @@ package io.flutter.embedding.android
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
+import android.os.Bundle
 import com.foxsofter.flutter_thrio.BooleanCallback
 import com.foxsofter.flutter_thrio.IntCallback
+import com.foxsofter.flutter_thrio.extension.getEntrypoint
+import com.foxsofter.flutter_thrio.extension.getFromEntrypoint
+import com.foxsofter.flutter_thrio.extension.getFromPageId
 import com.foxsofter.flutter_thrio.extension.getPageId
+import com.foxsofter.flutter_thrio.navigator.*
+import com.foxsofter.flutter_thrio.navigator.NAVIGATION_ROUTE_ENTRYPOINT_KEY
+import com.foxsofter.flutter_thrio.navigator.NAVIGATION_ROUTE_FROM_ENTRYPOINT_KEY
+import com.foxsofter.flutter_thrio.navigator.NAVIGATION_ROUTE_FROM_PAGE_ID_KEY
+import com.foxsofter.flutter_thrio.navigator.NAVIGATION_ROUTE_PAGE_ID_KEY
 import com.foxsofter.flutter_thrio.navigator.NAVIGATION_ROUTE_PAGE_ID_NONE
+import com.foxsofter.flutter_thrio.navigator.NAVIGATION_ROUTE_SETTINGS_KEY
 import com.foxsofter.flutter_thrio.navigator.PageRoutes
 import io.flutter.embedding.android.FlutterActivityLaunchConfigs.BackgroundMode
 import io.flutter.embedding.engine.FlutterEngine
@@ -96,5 +107,21 @@ open class ThrioFlutterFragmentActivity : FlutterFragmentActivity(), ThrioFlutte
             .shouldDelayFirstAndroidViewDraw(shouldDelayFirstAndroidViewDraw)
             .build()
     }
+
+    override fun setIntent(intent: Intent?) {
+        intent ?: return
+        val pageId = this.intent.getPageId()
+        intent.putExtra(NAVIGATION_ROUTE_PAGE_ID_KEY, pageId)
+        val fromPageId = this.intent.getFromPageId()
+        intent.putExtra(NAVIGATION_ROUTE_FROM_PAGE_ID_KEY, fromPageId)
+        val entrypoint = this.intent.getEntrypoint()
+        intent.putExtra(NAVIGATION_ROUTE_ENTRYPOINT_KEY, entrypoint)
+        val fromEntrypoint = this.intent.getFromEntrypoint()
+        intent.putExtra(NAVIGATION_ROUTE_FROM_ENTRYPOINT_KEY, fromEntrypoint)
+        val settingsData = this.intent.getSerializableExtra(NAVIGATION_ROUTE_SETTINGS_KEY)
+        intent.putExtra(NAVIGATION_ROUTE_SETTINGS_KEY, settingsData)
+        super.setIntent(intent)
+    }
+
 
 }
