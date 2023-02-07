@@ -22,24 +22,15 @@
 import 'dart:async';
 
 class AsyncTaskQueue {
-  Future<dynamic>? _current;
+  Future<dynamic> _current = Future.value();
 
   Future<T?> add<T>(final Future<T> Function() task) {
     final completer = Completer<T?>();
-
-    void executing() => task().then<void>((final value) {
-          completer.complete(value);
-          _current = null;
-        }).catchError((final _) {
-          completer.complete(null);
-          _current = null;
-        });
-
-    if (_current == null) {
-      executing();
-    } else {
-      _current!.whenComplete(executing);
-    }
+    _current.whenComplete(() {
+      task().then<void>(completer.complete).catchError((final _) {
+        completer.complete(null);
+      });
+    });
     _current = completer.future;
     return completer.future;
   }
