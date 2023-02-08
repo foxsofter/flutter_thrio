@@ -38,8 +38,8 @@ open class ThrioFlutterActivityDelegate(val activity: Activity) : ThrioFlutterAc
     override val engine: com.foxsofter.flutter_thrio.navigator.FlutterEngine?
         get() {
             val pageId = activity.intent.getPageId()
-            val holder = PageRoutes.lastRouteHolder(pageId)
-            return FlutterEngineFactory.getEngine(pageId, holder!!.entrypoint)
+            val holder = PageRoutes.lastRouteHolder(pageId) ?: return null
+            return FlutterEngineFactory.getEngine(pageId, holder.entrypoint)
         }
 
     override fun provideFlutterEngine(context: Context): FlutterEngine? {
