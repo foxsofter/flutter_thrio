@@ -184,6 +184,12 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
         final poppedResult = poppedResults.remove(settings.name);
         _poppedResultCallback(poppedResult, settings.url, settings.params);
       }
+      // 在原生端处于容器的根部，或者当前 Flutter 页面栈上超过 2，则 pop
+      // 解决目前单引擎下偶现的无法 pop 的问题
+      if (!inRoot || history.whereType<NavigatorRoute>().length > 2) {
+        navigatorState.pop();
+      }
+
       // return false，避免原生端清栈，如果仅仅是为了触发 poppedResult 回调原生端也不会清栈
       return false;
     }
