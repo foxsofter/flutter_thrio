@@ -327,7 +327,7 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
     }
 
     // 加载模块
-    await anchor.loading(newSettings.url);
+    // await anchor.loading(newSettings.url);
 
     NavigatorRoute newRoute;
     final routeBuilder =
