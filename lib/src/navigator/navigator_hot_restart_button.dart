@@ -19,6 +19,7 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
+import 'package:async/async.dart';
 import 'package:flutter/material.dart';
 
 import 'thrio_navigator_implement.dart';
@@ -37,16 +38,20 @@ class NavigatorHotRestartButton extends StatefulWidget {
 }
 
 class _NavigatorHotRestartButtonState extends State<NavigatorHotRestartButton> {
+  final _initAppear = AsyncMemoizer<void>();
+
   @override
   void initState() {
     super.initState();
     if (mounted) {
-      Future.delayed(const Duration(milliseconds: 1000), () {
-        final routes = ThrioNavigatorImplement.shared().allFlutterRoutes();
-        if (routes.length < 2) {
-          ThrioNavigatorImplement.shared().hotRestart();
-        }
-      });
+      _initAppear
+          .runOnce(() => Future.delayed(const Duration(milliseconds: 1000), () {
+                final routes =
+                    ThrioNavigatorImplement.shared().allFlutterRoutes();
+                if (routes.length < 2) {
+                  ThrioNavigatorImplement.shared().hotRestart();
+                }
+              }));
     }
   }
 
