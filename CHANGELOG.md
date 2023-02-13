@@ -1,3 +1,8 @@
+## 3.14.5
+
+- fix: https://developer.apple.com/forums/thread/714608
+- chore: add runOnce for restart button
+
 ## 3.14.4
 
 - fix: engine property crash
