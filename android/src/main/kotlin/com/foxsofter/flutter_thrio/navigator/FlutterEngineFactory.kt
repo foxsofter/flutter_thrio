@@ -34,25 +34,35 @@ object FlutterEngineFactory : PageObserver, RouteObserver {
 
     internal var isMultiEngineEnabled = false
 
+    internal var isMainEnginePreboot = false
+
     fun startup(
         context: Context,
         entrypoint: String = NAVIGATION_FLUTTER_ENTRYPOINT_DEFAULT,
         readyListener: FlutterEngineReadyListener? = null
     ) {
+        val engineGroup = ensureEngineGroup(entrypoint)
+        engineGroup.startup(context, readyListener)
+    }
+
+    private fun ensureEngineGroup(entrypoint: String): FlutterEngineGroup {
         val ep = getEntrypoint(entrypoint)
         var engineGroup = engineGroups[ep]
         if (engineGroup == null) {
             engineGroup = FlutterEngineGroup(ep)
             engineGroups[ep] = engineGroup
         }
-        engineGroup.startup(context, readyListener)
+        return engineGroup
     }
 
     // 仅用于让 ThrioFlutterActivity 或 ThrioFlutterFragmentActivity 调用
     fun provideEngine(activity: Activity): io.flutter.embedding.engine.FlutterEngine {
         val entrypoint = getEntrypoint(activity.intent.getEntrypoint())
-        return engineGroups[entrypoint]?.provideEngine(activity)
-            ?: throw RuntimeException("FlutterEngine not exists")
+        val engineGroup = ensureEngineGroup(entrypoint)
+        if (entrypoint == NAVIGATION_FLUTTER_ENTRYPOINT_DEFAULT && !isMainEnginePreboot) {
+            engineGroup.startup(activity)
+        }
+        return engineGroup.provideEngine(activity)
     }
 
     // 仅用于让 ThrioFlutterActivity 或 ThrioFlutterFragmentActivity 调用

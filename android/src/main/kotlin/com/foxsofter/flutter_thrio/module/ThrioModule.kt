@@ -38,15 +38,21 @@ open class ThrioModule {
         private val root by lazy { ThrioModule() }
 
         @JvmStatic
-        fun init(module: ThrioModule, context: Application, multiEngineEnabled: Boolean = false) {
-            FlutterEngineFactory.isMultiEngineEnabled = multiEngineEnabled
+        fun init(module: ThrioModule, context: Application, isPreboot: Boolean = false) {
+            FlutterEngineFactory.isMainEnginePreboot = isPreboot
             context.registerActivityLifecycleCallbacks(ActivityDelegate)
             root.moduleContext = ModuleContext()
             root.registerModule(module, root.moduleContext)
             root.initModule()
-            if (!FlutterEngineFactory.isMultiEngineEnabled) {
+            if (FlutterEngineFactory.isMainEnginePreboot) {
                 root.startupFlutterEngine(context)
             }
+        }
+
+        @JvmStatic
+        fun initMultiEngine(module: ThrioModule, context: Application) {
+            FlutterEngineFactory.isMultiEngineEnabled = true
+            init(module, context)
         }
     }
 

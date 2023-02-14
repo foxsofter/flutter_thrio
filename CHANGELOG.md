@@ -1,3 +1,7 @@
+## 3.14.6
+
+- feat: android support main engine lazy boot
+
 ## 3.14.5
 
 - fix: https://developer.apple.com/forums/thread/714608
