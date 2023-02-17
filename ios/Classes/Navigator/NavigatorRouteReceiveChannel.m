@@ -119,7 +119,9 @@ NS_ASSUME_NONNULL_BEGIN
                   fromEntrypoint:strongSelf.channel.entrypoint
                       fromPageId:strongSelf.channel.pageId
                           result:^(NSNumber *idx) {
-            result(idx);
+            if (result) {
+                result(idx);
+            }
         }
                     poppedResult:nil];
     }];
@@ -298,7 +300,9 @@ NS_ASSUME_NONNULL_BEGIN
             } else {
                 lastRoute = [ThrioNavigator getLastRouteByUrl:url];
             }
-            result(lastRoute.settings.name);
+            if (result) {
+                result(lastRoute.settings.name);
+            }
         }
     }];
 }
@@ -364,7 +368,9 @@ NS_ASSUME_NONNULL_BEGIN
             ThrioIdCallback _Nullable result) {
         if (!NavigatorFlutterEngineFactory.shared.multiEngineEnabled) {
             [ThrioNavigator _hotRestart:^(BOOL r) {
-                result(@(r));
+                if (result) {
+                    result(@(r));
+                }
             }];
         }
     }];

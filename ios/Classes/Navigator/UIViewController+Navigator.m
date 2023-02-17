@@ -86,7 +86,9 @@ NS_ASSUME_NONNULL_BEGIN
                result:(ThrioNumberCallback _Nullable)result
          poppedResult:(ThrioIdCallback _Nullable)poppedResult {
     if (self.thrio_routeType != NavigatorRouteTypeNone) {
-        result(@0);
+        if (result) {
+            result(@0);
+        }
     }
     self.thrio_routeType = NavigatorRouteTypePushing;
     
