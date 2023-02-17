@@ -100,8 +100,6 @@
             [observer didReplace:newRouteSettings oldRouteSettings:oldRouteSettings];
         }
     }
-
 }
-
 
 @end

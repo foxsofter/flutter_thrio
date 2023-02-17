@@ -625,6 +625,9 @@ NS_ASSUME_NONNULL_BEGIN
     if (viewControllers.count > 0) {
         UIViewController *willPopVC = self.topViewController;
         UIViewController *willShowVC = viewControllers.lastObject;
+        if (!willShowVC.thrio_hidesNavigationBar_) {
+            willShowVC.thrio_hidesNavigationBar_ = @YES;
+        }
         if (![willPopVC.thrio_hidesNavigationBar_ isEqualToNumber:willShowVC.thrio_hidesNavigationBar_]) {
             [self setNavigationBarHidden:willShowVC.thrio_hidesNavigationBar_.boolValue];
         }
