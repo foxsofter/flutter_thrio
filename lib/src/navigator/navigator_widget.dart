@@ -184,7 +184,7 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
         final poppedResult = poppedResults.remove(settings.name);
         _poppedResultCallback(poppedResult, settings.url, settings.params);
       }
-      // 在原生端处于容器的根部，或者当前 Flutter 页面栈上超过 2，则 pop
+      // 在原生端不处于容器的根部，或者当前 Flutter 页面栈上超过 2，则 pop
       // 解决目前单引擎下偶现的无法 pop 的问题
       if (!inRoot || history.whereType<NavigatorRoute>().length > 2) {
         navigatorState.pop();
@@ -233,7 +233,7 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
     final bool animated = true,
   }) async {
     final navigatorState = widget.child.tryStateOf<NavigatorState>();
-    if (navigatorState == null || history.length < 2) {
+    if (navigatorState == null) {
       return false;
     }
 
@@ -280,6 +280,7 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
   Future<bool> remove(
     final RouteSettings settings, {
     final bool animated = false,
+    final bool inRoot = false,
   }) async {
     final navigatorState = widget.child.tryStateOf<NavigatorState>();
     if (navigatorState == null) {
@@ -288,6 +289,10 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
     final route = history
         .firstWhereOrNull((final it) => it.settings.name == settings.name);
     if (route == null) {
+      return false;
+    }
+    // 在原生端处于容器的根部，且当前 Flutter 页面栈上不超过 3，则不能再 pop
+    if (inRoot && history.whereType<NavigatorRoute>().length < 3) {
       return false;
     }
 

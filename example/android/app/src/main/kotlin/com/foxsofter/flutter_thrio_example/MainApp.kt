@@ -1,9 +1,9 @@
 package com.foxsofter.flutter_thrio_example
 
-import android.app.Application
 import com.foxsofter.flutter_thrio.module.ThrioModule
+import io.flutter.app.FlutterApplication
 
-class MainApp : Application() {
+class MainApp : FlutterApplication() {
     override fun onCreate() {
         super.onCreate()
 

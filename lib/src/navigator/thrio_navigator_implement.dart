@@ -52,6 +52,7 @@ class ThrioNavigatorImplement {
   static final ThrioNavigatorImplement _default = ThrioNavigatorImplement._();
 
   Future<void> init(final ModuleContext moduleContext) async {
+    _moduleContext = moduleContext;
     _channel =
         ThrioChannel(channel: '__thrio_app__${moduleContext.entrypoint}');
     ThrioChannel(channel: '__thrio_module_context__${moduleContext.entrypoint}')
@@ -70,12 +71,8 @@ class ThrioNavigatorImplement {
     });
     _sendChannel = NavigatorRouteSendChannel(_channel);
     _receiveChannel = NavigatorRouteReceiveChannel(_channel);
-    pageChannel = NavigatorPageObserverChannel(moduleContext.entrypoint);
     routeChannel = NavigatorRouteObserverChannel(moduleContext.entrypoint);
-    observerManager = NavigatorObserverManager();
-    _stateKey = GlobalKey<NavigatorWidgetState>();
-    _moduleContext = moduleContext;
-
+    pageChannel = NavigatorPageObserverChannel(moduleContext.entrypoint);
     verbose('TransitionBuilder init');
   }
 
@@ -101,7 +98,7 @@ class ThrioNavigatorImplement {
 
   late final ModuleContext _moduleContext;
 
-  late final GlobalKey<NavigatorWidgetState> _stateKey;
+  late final _stateKey = GlobalKey<NavigatorWidgetState>();
 
   NavigatorWidgetState? get navigatorState => _stateKey.currentState;
 
@@ -119,7 +116,7 @@ class ThrioNavigatorImplement {
 
   late final NavigatorPageObserverChannel pageChannel;
 
-  late final NavigatorObserverManager observerManager;
+  late final observerManager = NavigatorObserverManager();
 
   void ready() {
     // 需要将 WidgetsAppState 中的 `didPopRoute` 去掉，否则后续所有的 `didPopRoute` 都不生效了

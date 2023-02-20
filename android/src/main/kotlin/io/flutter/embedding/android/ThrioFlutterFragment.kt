@@ -23,9 +23,15 @@
 
 package io.flutter.embedding.android
 
+import android.content.pm.PackageManager
+import com.foxsofter.flutter_thrio.navigator.NavigationController
 import com.foxsofter.flutter_thrio.navigator.ThrioNavigator
 
 open class ThrioFlutterFragment : FlutterFragment() {
+    companion object {
+        var isInitialUrlPushed = false
+    }
+
     val engine: com.foxsofter.flutter_thrio.navigator.FlutterEngine?
         get() {
             val activity = requireActivity()
@@ -37,10 +43,19 @@ open class ThrioFlutterFragment : FlutterFragment() {
 
     override fun onBackPressed() {
         val activity = requireActivity()
-        if (activity !is ThrioFlutterFragmentActivity) {
-            throw RuntimeException("ThrioFlutterFragment must be inside ThrioFlutterFragmentActivity")
-        }
         return activity.onBackPressed()
+    }
+
+    override fun onFlutterUiDisplayed() {
+        super.onFlutterUiDisplayed()
+
+        val activity = requireActivity()
+        if (!isInitialUrlPushed && initialUrl?.isNotEmpty() == true) {
+            isInitialUrlPushed = true
+            NavigationController.Push.push(initialUrl!!, null, false) {}
+        } else {
+            NavigationController.Push.doPush(activity)
+        }
     }
 
     override fun shouldDestroyEngineWithHost(): Boolean {
@@ -54,5 +69,27 @@ open class ThrioFlutterFragment : FlutterFragment() {
     override fun popSystemNavigator(): Boolean {
         ThrioNavigator.maybePop()
         return true
+    }
+
+    private var _initialUrl: String? = null
+
+    protected open val initialUrl: String?
+        get() {
+            if (_initialUrl == null) {
+                readInitialUrl()
+            }
+            return _initialUrl!!
+        }
+
+    private fun readInitialUrl() {
+        val activity = requireActivity()
+        val activityInfo =
+            activity.packageManager.getActivityInfo(
+                activity.componentName,
+                PackageManager.GET_META_DATA
+            )
+        _initialUrl = if (activityInfo.metaData == null) "" else {
+            activityInfo.metaData.getString("io.flutter.InitialUrl", "")
+        }
     }
 }

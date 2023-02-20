@@ -65,7 +65,6 @@ internal object NavigationController : Application.ActivityLifecycleCallbacks {
         context = WeakReference(activity)
 
         Remove.doRemove(activity)
-        Push.doPush(activity)
     }
 
     override fun onActivityStarted(activity: Activity) {
@@ -80,7 +79,10 @@ internal object NavigationController : Application.ActivityLifecycleCallbacks {
         context = WeakReference(activity)
 
         Notify.doNotify(activity)
-        Push.doPush(activity)
+        val pageId = activity.intent.getPageId()
+        if (activity !is ThrioFlutterActivityBase || PageRoutes.lastRoute(pageId) != null) {
+            Push.doPush(activity)
+        }
     }
 
     override fun onActivityPaused(activity: Activity) {
@@ -181,15 +183,7 @@ internal object NavigationController : Application.ActivityLifecycleCallbacks {
                 } else if (lastActivity is ThrioFlutterActivityBase && lastEntrypoint == entrypoint) {
                     doPush(lastActivity) // ThrioFlutterActivity 作为最后打开的 Activity，且是同样的 entrypoint
                 } else {
-                    // 需要启动新的 ThrioFlutterActivity，则需要先启动引擎，ready 后再启动 ThrioFlutterActivity
-                    FlutterEngineFactory.startup(
-                        lastActivity,
-                        entrypoint,
-                        object : FlutterEngineReadyListener {
-                            override fun onReady(engine: FlutterEngine) {
-                                lastActivity.startActivity(intent)
-                            }
-                        })
+                    lastActivity.startActivity(intent)
                 }
             } else {
                 // 原生的 Activity
@@ -201,6 +195,13 @@ internal object NavigationController : Application.ActivityLifecycleCallbacks {
             if (routeType != RouteType.PUSH) {
                 return
             }
+            // 设置 pageId
+            var pageId = activity.intent.getPageId()
+            if (pageId == NAVIGATION_ROUTE_PAGE_ID_NONE) {
+                pageId = activity.hashCode()
+                activity.intent.putExtra(NAVIGATION_ROUTE_PAGE_ID_KEY, pageId)
+            }
+
             val settings = routeSettings ?: activity.intent.getRouteSettings()
             if (settings == null) {
                 result?.invoke(null)
@@ -208,6 +209,11 @@ internal object NavigationController : Application.ActivityLifecycleCallbacks {
                 routeType = RouteType.NONE
                 return
             }
+
+            if (PageRoutes.lastRoute(settings.url, settings.index) != null) {
+                return
+            }
+
             // 开始 push Flutter 页面
             routeType = RouteType.PUSHING
 
@@ -215,12 +221,6 @@ internal object NavigationController : Application.ActivityLifecycleCallbacks {
             val fromEntryPoint = activity.intent.getFromEntrypoint()
             val fromPageId = activity.intent.getFromPageId()
 
-            // 设置 pageId
-            var pageId = activity.intent.getPageId()
-            if (pageId == NAVIGATION_ROUTE_PAGE_ID_NONE) {
-                pageId = activity.hashCode()
-                activity.intent.putExtra(NAVIGATION_ROUTE_PAGE_ID_KEY, pageId)
-            }
             // 这个 activity 下已存在 PageRoute 表示为嵌套的页面
             settings.isNested = PageRoutes.hasRoute(pageId)
 

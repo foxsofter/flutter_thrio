@@ -24,29 +24,22 @@
 package com.foxsofter.flutter_thrio.module
 
 import android.app.Application
-import android.content.Context
 import com.foxsofter.flutter_thrio.extension.canTransToFlutter
-import com.foxsofter.flutter_thrio.navigator.*
+import com.foxsofter.flutter_thrio.navigator.ActivityDelegate
+import com.foxsofter.flutter_thrio.navigator.FlutterEngine
+import com.foxsofter.flutter_thrio.navigator.FlutterEngineFactory
+import com.foxsofter.flutter_thrio.navigator.Log
 
 open class ThrioModule {
-    private val modules by lazy { mutableMapOf<Class<out ThrioModule>, ThrioModule>() }
-
-    lateinit var moduleContext: ModuleContext private set
-
-
     companion object {
-        private val root by lazy { ThrioModule() }
+        internal val root by lazy { ThrioModule() }
 
         @JvmStatic
-        fun init(module: ThrioModule, context: Application, isPreboot: Boolean = false) {
-            FlutterEngineFactory.isMainEnginePreboot = isPreboot
+        fun init(module: ThrioModule, context: Application) {
             context.registerActivityLifecycleCallbacks(ActivityDelegate)
             root.moduleContext = ModuleContext()
             root.registerModule(module, root.moduleContext)
             root.initModule()
-            if (FlutterEngineFactory.isMainEnginePreboot) {
-                root.startupFlutterEngine(context)
-            }
         }
 
         @JvmStatic
@@ -55,6 +48,10 @@ open class ThrioModule {
             init(module, context)
         }
     }
+
+    private val modules by lazy { mutableMapOf<Class<out ThrioModule>, ThrioModule>() }
+
+    lateinit var moduleContext: ModuleContext private set
 
     protected fun registerModule(module: ThrioModule, moduleContext: ModuleContext) {
         val jClazz = module::class.java
@@ -102,29 +99,19 @@ open class ThrioModule {
             Log.navigatorLogging = enabled
         }
 
-    @JvmOverloads
-    protected fun startupFlutterEngine(
-        context: Context,
-        entrypoint: String = NAVIGATION_FLUTTER_ENTRYPOINT_DEFAULT
-    ) {
-        FlutterEngineFactory.startup(
-            context, entrypoint,
-            object : FlutterEngineReadyListener {
-                override fun onReady(engine: FlutterEngine) {
-                    val nativeParams = moduleContext.params
-                    val canTransParams = mutableMapOf<String, Any>()
-                    for (param in nativeParams) {
-                        val value = ModuleJsonSerializers.serializeParams(param.value)
-                        if (value != null && value.canTransToFlutter()) {
-                            canTransParams[param.key] = value
-                        }
-                    }
-                    if (canTransParams.isNotEmpty()) {
-                        engine.moduleContextChannel.apply {
-                            invokeMethod("set", canTransParams)
-                        }
-                    }
-                }
-            })
+    internal fun syncModuleContext(engine: FlutterEngine) {
+        val nativeParams = moduleContext.params
+        val canTransParams = mutableMapOf<String, Any>()
+        for (param in nativeParams) {
+            val value = ModuleJsonSerializers.serializeParams(param.value)
+            if (value != null && value.canTransToFlutter()) {
+                canTransParams[param.key] = value
+            }
+        }
+        if (canTransParams.isNotEmpty()) {
+            engine.moduleContextChannel.apply {
+                invokeMethod("set", canTransParams)
+            }
+        }
     }
 }

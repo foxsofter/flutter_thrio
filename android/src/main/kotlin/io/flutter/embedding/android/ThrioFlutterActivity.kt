@@ -33,15 +33,40 @@ import com.foxsofter.flutter_thrio.extension.getFromEntrypoint
 import com.foxsofter.flutter_thrio.extension.getFromPageId
 import com.foxsofter.flutter_thrio.extension.getPageId
 import com.foxsofter.flutter_thrio.navigator.*
-import com.foxsofter.flutter_thrio.navigator.NAVIGATION_ROUTE_FROM_PAGE_ID_KEY
-import com.foxsofter.flutter_thrio.navigator.NAVIGATION_ROUTE_PAGE_ID_KEY
-import com.foxsofter.flutter_thrio.navigator.NavigationController
 import io.flutter.embedding.engine.FlutterEngine
 
 open class ThrioFlutterActivity : FlutterActivity(), ThrioFlutterActivityBase {
     companion object {
         var isInitialUrlPushed = false
     }
+
+    override fun onFlutterUiDisplayed() {
+        super.onFlutterUiDisplayed()
+        if (!isInitialUrlPushed && initialUrl?.isNotEmpty() == true) {
+            isInitialUrlPushed = true
+            NavigationController.Push.push(initialUrl!!, null, false) {}
+        } else {
+            NavigationController.Push.doPush(this)
+        }
+    }
+
+    private fun readInitialUrl() {
+        val activityInfo =
+            packageManager.getActivityInfo(componentName, PackageManager.GET_META_DATA)
+        _initialUrl = if (activityInfo.metaData == null) "" else {
+            activityInfo.metaData.getString("io.flutter.InitialUrl", "")
+        }
+    }
+
+    private var _initialUrl: String? = null
+
+    protected open val initialUrl: String?
+        get() {
+            if (_initialUrl == null) {
+                readInitialUrl()
+            }
+            return _initialUrl!!
+        }
 
     private val activityDelegate by lazy { ThrioFlutterActivityDelegate(this) }
 
@@ -53,14 +78,6 @@ open class ThrioFlutterActivity : FlutterActivity(), ThrioFlutterActivityBase {
 
     override fun cleanUpFlutterEngine(flutterEngine: FlutterEngine) =
         activityDelegate.cleanUpFlutterEngine(flutterEngine)
-
-    override fun onFlutterUiDisplayed() {
-        if (!isInitialUrlPushed && initialUrl?.isNotEmpty() == true) {
-            isInitialUrlPushed = true
-            NavigationController.Push.push(initialUrl!!, null, false) {}
-        }
-        super.onFlutterUiDisplayed()
-    }
 
     override fun onBackPressed() = activityDelegate.onBackPressed()
 
@@ -95,25 +112,6 @@ open class ThrioFlutterActivity : FlutterActivity(), ThrioFlutterActivityBase {
 
     override fun onCanPop(arguments: Map<String, Any?>?, result: BooleanCallback) =
         activityDelegate.onCanPop(arguments, result)
-
-    private fun readInitialUrl() {
-        val activityInfo =
-            packageManager.getActivityInfo(componentName, PackageManager.GET_META_DATA)
-        _initialUrl = if (activityInfo.metaData == null) "" else {
-            activityInfo.metaData.getString("io.flutter.InitialUrl", "")
-        }
-    }
-
-    private var _initialUrl: String? = null
-
-    protected open val initialUrl: String?
-        get() {
-            if (_initialUrl == null) {
-                readInitialUrl()
-            }
-            return _initialUrl!!
-        }
-
 
     override fun setIntent(intent: Intent?) {
         intent ?: return
