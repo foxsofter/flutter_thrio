@@ -219,6 +219,9 @@ class _NavigatorMountedObserver with NavigatorObserver {
     final Route<dynamic> route,
     final Route<dynamic>? previousRoute,
   ) {
+    if (_delegate._currentObserverCallback == null) {
+      return;
+    }
     if (route.settings.name == _delegate._current.name) {
       _delegate._doDispose();
     }
@@ -229,6 +232,10 @@ class _NavigatorMountedObserver with NavigatorObserver {
     final Route<dynamic> route,
     final Route<dynamic>? previousRoute,
   ) {
+    if (_delegate._currentObserverCallback == null) {
+      return;
+    }
+
     if (route.settings.name == _delegate._current.name) {
       _delegate._doDispose();
     }
@@ -239,6 +246,10 @@ class _NavigatorMountedObserver with NavigatorObserver {
     final Route<dynamic>? newRoute,
     final Route<dynamic>? oldRoute,
   }) {
+    if (_delegate._currentObserverCallback == null) {
+      return;
+    }
+
     if (oldRoute?.settings.name == _delegate._current.name) {
       _delegate._doDispose();
     }
