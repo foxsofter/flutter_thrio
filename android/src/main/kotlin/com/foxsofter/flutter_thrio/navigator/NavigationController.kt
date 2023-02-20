@@ -195,12 +195,6 @@ internal object NavigationController : Application.ActivityLifecycleCallbacks {
             if (routeType != RouteType.PUSH) {
                 return
             }
-            // 设置 pageId
-            var pageId = activity.intent.getPageId()
-            if (pageId == NAVIGATION_ROUTE_PAGE_ID_NONE) {
-                pageId = activity.hashCode()
-                activity.intent.putExtra(NAVIGATION_ROUTE_PAGE_ID_KEY, pageId)
-            }
 
             val settings = routeSettings ?: activity.intent.getRouteSettings()
             if (settings == null) {
@@ -210,12 +204,15 @@ internal object NavigationController : Application.ActivityLifecycleCallbacks {
                 return
             }
 
-            if (PageRoutes.lastRoute(settings.url, settings.index) != null) {
-                return
-            }
-
             // 开始 push Flutter 页面
             routeType = RouteType.PUSHING
+
+            // 设置 pageId
+            var pageId = activity.intent.getPageId()
+            if (pageId == NAVIGATION_ROUTE_PAGE_ID_NONE) {
+                pageId = activity.hashCode()
+                activity.intent.putExtra(NAVIGATION_ROUTE_PAGE_ID_KEY, pageId)
+            }
 
             val entrypoint = activity.intent.getEntrypoint()
             val fromEntryPoint = activity.intent.getFromEntrypoint()
