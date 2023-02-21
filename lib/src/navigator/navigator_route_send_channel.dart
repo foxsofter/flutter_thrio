@@ -32,6 +32,8 @@ import 'navigator_route_settings.dart';
 class NavigatorRouteSendChannel {
   NavigatorRouteSendChannel(final ThrioChannel channel) : _channel = channel;
 
+  final _timeLimit = const Duration(milliseconds: 300);
+
   final ThrioChannel _channel;
 
   final _taskQueue = AsyncTaskQueue();
@@ -52,7 +54,9 @@ class NavigatorRouteSendChannel {
           .then((final value) => value ?? 0);
     }
 
-    return _taskQueue.add(pushFuture).then((final value) => value ?? 0);
+    return _taskQueue
+        .add(pushFuture, timeLimit: _timeLimit)
+        .then((final value) => value ?? 0);
   }
 
   Future<bool> notify<TParams>({
@@ -91,7 +95,9 @@ class NavigatorRouteSendChannel {
           .then((final it) => it ?? false);
     }
 
-    return _taskQueue.add(popFuture).then((final value) => value == true);
+    return _taskQueue
+        .add(popFuture, timeLimit: _timeLimit)
+        .then((final value) => value == true);
   }
 
   Future<bool> maybePop<TParams>({
@@ -135,7 +141,9 @@ class NavigatorRouteSendChannel {
           .then((final it) => it ?? false);
     }
 
-    return _taskQueue.add(popToFuture).then((final value) => value == true);
+    return _taskQueue
+        .add(popToFuture, timeLimit: _timeLimit)
+        .then((final value) => value == true);
   }
 
   Future<bool> remove({
@@ -154,7 +162,9 @@ class NavigatorRouteSendChannel {
           .then((final it) => it ?? false);
     }
 
-    return _taskQueue.add(removeFuture).then((final value) => value == true);
+    return _taskQueue
+        .add(removeFuture, timeLimit: _timeLimit)
+        .then((final value) => value == true);
   }
 
   Future<int> replace({
@@ -173,7 +183,9 @@ class NavigatorRouteSendChannel {
           .then((final it) => it ?? 0);
     }
 
-    return _taskQueue.add(replaceFuture).then((final value) => value ?? 0);
+    return _taskQueue
+        .add(replaceFuture, timeLimit: _timeLimit)
+        .then((final value) => value ?? 0);
   }
 
   Future<RouteSettings?> lastRoute({final String? url}) {

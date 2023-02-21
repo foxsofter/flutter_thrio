@@ -24,8 +24,14 @@ import 'dart:async';
 class AsyncTaskQueue {
   Future<dynamic> _current = Future.value();
 
-  Future<T?> add<T>(final Future<T> Function() task) {
+  Future<T?> add<T>(
+    final Future<T> Function() task, {
+    final Duration? timeLimit,
+  }) {
     final completer = Completer<T?>();
+    if (timeLimit != null) {
+      _current = _current.timeout(timeLimit);
+    }
     _current.whenComplete(() {
       task().then<void>(completer.complete).catchError((final _) {
         completer.complete(null);

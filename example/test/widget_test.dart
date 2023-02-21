@@ -8,5 +8,5 @@
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  testWidgets('Verify Platform version', (WidgetTester tester) async {});
+  testWidgets('Verify Platform version', (final tester) async {});
 }
