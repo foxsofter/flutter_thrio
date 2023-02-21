@@ -58,7 +58,10 @@ internal class RouteReceiveChannel(
 
     private fun onPush() {
         channel.registryMethod("push") { arguments, result ->
-            if (arguments == null) return@registryMethod
+            if (arguments == null)  {
+                result(null)
+                return@registryMethod
+            }
             val url = arguments["url"] as String
             val params = arguments["params"]
             val animated = arguments["animated"] == true
@@ -66,15 +69,19 @@ internal class RouteReceiveChannel(
                 url,
                 params,
                 animated,
-                channel.entrypoint,
-                result = result
-            )
+                channel.entrypoint
+            ) {
+                result(it)
+            }
         }
     }
 
     private fun onNotify() {
         channel.registryMethod("notify") { arguments, result ->
-            if (arguments == null) return@registryMethod
+            if (arguments == null) {
+                result(false)
+                return@registryMethod
+            }
             val url = if (arguments["url"] != null) arguments["url"] as String else null
             val index = if (arguments["index"] != null) arguments["index"] as Int else 0
             val name = arguments["name"] as String
@@ -87,61 +94,91 @@ internal class RouteReceiveChannel(
 
     private fun onMaybePop() {
         channel.registryMethod("maybePop") { arguments, result ->
-            if (arguments == null) return@registryMethod
+            if (arguments == null)  {
+                result(false)
+                return@registryMethod
+            }
             val params = arguments["params"]
             val animated = arguments["animated"] == true
-            NavigationController.Pop.maybePop(params, animated, result)
+            NavigationController.Pop.maybePop(params, animated){
+                result(it)
+            }
         }
     }
 
     private fun onPop() {
         channel.registryMethod("pop") { arguments, result ->
-            if (arguments == null) return@registryMethod
+            if (arguments == null)  {
+                result(false)
+                return@registryMethod
+            }
             val params = arguments["params"]
             val animated = arguments["animated"] == true
-            NavigationController.Pop.pop(params, animated, result)
+            NavigationController.Pop.pop(params, animated){
+                result(it)
+            }
         }
     }
 
     private fun onPopTo() {
         channel.registryMethod("popTo") { arguments, result ->
-            if (arguments == null) return@registryMethod
+            if (arguments == null)  {
+                result(false)
+                return@registryMethod
+            }
             val url = arguments["url"] as String
             val index = if (arguments["index"] != null) arguments["index"] as Int else 0
             val animated = arguments["animated"] == true
-            NavigationController.PopTo.popTo(url, index, animated, result)
+            NavigationController.PopTo.popTo(url, index, animated){
+                result(it)
+            }
         }
     }
 
     private fun onRemove() {
         channel.registryMethod("remove") { arguments, result ->
-            if (arguments == null) return@registryMethod
+            if (arguments == null)  {
+                result(false)
+                return@registryMethod
+            }
             val url = arguments["url"] as String
             val index = if (arguments["index"] != null) arguments["index"] as Int else 0
             val animated = arguments["animated"] == true
-            NavigationController.Remove.remove(url, index, animated, result)
+            NavigationController.Remove.remove(url, index, animated){
+                result(it)
+            }
         }
     }
 
     private fun onReplace() {
         channel.registryMethod("replace") { arguments, result ->
-            if (arguments == null) return@registryMethod
+            if (arguments == null)  {
+                result(false)
+                return@registryMethod
+            }
             val url = arguments["url"] as String
             val index = if (arguments["index"] != null) arguments["index"] as Int else 0
             val newUrl = arguments["newUrl"] as String
-            NavigationController.Replace.replace(url, index, newUrl, result)
+            NavigationController.Replace.replace(url, index, newUrl){
+                result(it)
+            }
         }
     }
 
     private fun onCanPop() {
         channel.registryMethod("canPop") { _, result ->
-            NavigationController.Pop.canPop(result)
+            NavigationController.Pop.canPop{
+                result(it)
+            }
         }
     }
 
     private fun onLastRoute() {
         channel.registryMethod("lastRoute") { arguments, result ->
-            if (arguments == null) return@registryMethod
+            if (arguments == null)  {
+                result(null)
+                return@registryMethod
+            }
             val url = if (arguments["url"] != null) arguments["url"] as String else null
             val route = ThrioNavigator.lastRoute(url)
             result(route?.settings?.name)
@@ -150,7 +187,10 @@ internal class RouteReceiveChannel(
 
     private fun onGetAllRoutes() {
         channel.registryMethod("allRoutes") { arguments, result ->
-            if (arguments == null) return@registryMethod
+            if (arguments == null)  {
+                result(listOf<String>())
+                return@registryMethod
+            }
             val url = if (arguments["url"] != null) arguments["url"] as String else null
             val routes = ThrioNavigator.allRoutes(url)
             val routeNames = routes.map { it.settings.name }
@@ -160,7 +200,10 @@ internal class RouteReceiveChannel(
 
     private fun isInitialRoute() {
         channel.registryMethod("isInitialRoute") { arguments, result ->
-            if (arguments == null) return@registryMethod
+            if (arguments == null)  {
+                result(false)
+                return@registryMethod
+            }
             val url = arguments["url"] as String
             val index = if (arguments["index"] != null) arguments["index"] as Int else 0
             result(NavigationController.isInitialRoute(url, index))
@@ -168,7 +211,7 @@ internal class RouteReceiveChannel(
     }
 
     private fun onSetPopDisabled() {
-        channel.registryMethod("setPopDisabled") { _, _ -> }
+        channel.registryMethod("setPopDisabled") { _, result -> result(null) }
     }
 
     private fun onHotRestart() {
