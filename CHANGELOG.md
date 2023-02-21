@@ -1,6 +1,11 @@
 ## 3.14.6
 
-- feat: android support main engine lazy boot
+- refactor: android engine startup flow
+- fix: occasional non-popable issues
+- fix: _delegate._current not init exception
+- fix: __NSCFBoolean compare: nil argument
+- fix: result nil crash
+- feat: async task queue timeout
 
 ## 3.14.5
 
