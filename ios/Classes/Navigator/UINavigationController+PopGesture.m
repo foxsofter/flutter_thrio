@@ -89,7 +89,10 @@
 #pragma mark - method swizzling
 
 + (void)load {
-    [self instanceSwizzle:@selector(setDelegate:) newSelector:@selector(thrio_setDelegate:)];
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        [self instanceSwizzle:@selector(setDelegate:) newSelector:@selector(thrio_setDelegate:)];
+    });
 }
 
 /// Make sure that external delegate can take effect.

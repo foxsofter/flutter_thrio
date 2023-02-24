@@ -58,7 +58,7 @@ static ThrioModule *_module;
     [ThrioModule init:module preboot:NO];
 }
 
-+ (ThrioModule*)rootModule {
++ (ThrioModule *_Nonnull)rootModule {
     return _module;
 }
 

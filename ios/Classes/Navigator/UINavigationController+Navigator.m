@@ -471,14 +471,17 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark - method swizzling
 
 + (void)load {
-    [self instanceSwizzle:@selector(pushViewController:animated:)
-              newSelector:@selector(thrio_pushViewController:animated:)];
-    [self instanceSwizzle:@selector(popViewControllerAnimated:)
-              newSelector:@selector(thrio_popViewControllerAnimated:)];
-    [self instanceSwizzle:@selector(popToViewController:animated:)
-              newSelector:@selector(thrio_popToViewController:animated:)];
-    [self instanceSwizzle:@selector(setViewControllers:)
-              newSelector:@selector(thrio_setViewControllers:)];
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        [self instanceSwizzle:@selector(pushViewController:animated:)
+                  newSelector:@selector(thrio_pushViewController:animated:)];
+        [self instanceSwizzle:@selector(popViewControllerAnimated:)
+                  newSelector:@selector(thrio_popViewControllerAnimated:)];
+        [self instanceSwizzle:@selector(popToViewController:animated:)
+                  newSelector:@selector(thrio_popToViewController:animated:)];
+        [self instanceSwizzle:@selector(setViewControllers:)
+                  newSelector:@selector(thrio_setViewControllers:)];
+    });
 }
 
 - (void)thrio_pushViewController:(UIViewController *)viewController animated:(BOOL)animated {

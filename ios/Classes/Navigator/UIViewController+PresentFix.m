@@ -27,8 +27,11 @@
 @implementation UIViewController (PresentFix)
 
 + (void)load {
-    [self instanceSwizzle:@selector(presentViewController:animated:completion:)
-              newSelector:@selector(thrio_presentViewController:animated:completion:)];
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        [self instanceSwizzle:@selector(presentViewController:animated:completion:)
+                  newSelector:@selector(thrio_presentViewController:animated:completion:)];
+    });
 }
 
 - (void)thrio_presentViewController:(UIViewController *)viewControllerToPresent

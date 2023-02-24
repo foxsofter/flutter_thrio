@@ -533,14 +533,17 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark - method swizzling
 
 + (void)load {
-    [self instanceSwizzle:@selector(viewWillAppear:)
-              newSelector:@selector(thrio_viewWillAppear:)];
-    [self instanceSwizzle:@selector(viewDidAppear:)
-              newSelector:@selector(thrio_viewDidAppear:)];
-    [self instanceSwizzle:@selector(viewWillDisappear:)
-              newSelector:@selector(thrio_viewWillDisappear:)];
-    [self instanceSwizzle:@selector(viewDidDisappear:)
-              newSelector:@selector(thrio_viewDidDisappear:)];
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        [self instanceSwizzle:@selector(viewWillAppear:)
+                  newSelector:@selector(thrio_viewWillAppear:)];
+        [self instanceSwizzle:@selector(viewDidAppear:)
+                  newSelector:@selector(thrio_viewDidAppear:)];
+        [self instanceSwizzle:@selector(viewWillDisappear:)
+                  newSelector:@selector(thrio_viewWillDisappear:)];
+        [self instanceSwizzle:@selector(viewDidDisappear:)
+                  newSelector:@selector(thrio_viewDidDisappear:)];
+    });
 }
 
 - (void)thrio_viewWillAppear:(BOOL)animated {

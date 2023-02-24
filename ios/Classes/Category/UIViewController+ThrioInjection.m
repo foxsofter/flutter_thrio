@@ -75,14 +75,17 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 + (void)load {
-    [self instanceSwizzle:@selector(viewWillAppear:)
-              newSelector:@selector(thrioInjection_viewWillAppear:)];
-    [self instanceSwizzle:@selector(viewDidAppear:)
-              newSelector:@selector(thrioInjection_viewDidAppear:)];
-    [self instanceSwizzle:@selector(viewWillDisappear:)
-              newSelector:@selector(thrioInjection_viewWillDisappear:)];
-    [self instanceSwizzle:@selector(viewDidDisappear:)
-              newSelector:@selector(thrioInjection_viewDidDisappear:)];
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        [self instanceSwizzle:@selector(viewWillAppear:)
+                  newSelector:@selector(thrioInjection_viewWillAppear:)];
+        [self instanceSwizzle:@selector(viewDidAppear:)
+                  newSelector:@selector(thrioInjection_viewDidAppear:)];
+        [self instanceSwizzle:@selector(viewWillDisappear:)
+                  newSelector:@selector(thrioInjection_viewWillDisappear:)];
+        [self instanceSwizzle:@selector(viewDidDisappear:)
+                  newSelector:@selector(thrioInjection_viewDidDisappear:)];
+    });
 }
 
 - (void)thrioInjection_viewWillAppear:(BOOL)animated {
