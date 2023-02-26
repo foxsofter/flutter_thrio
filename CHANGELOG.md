@@ -1,3 +1,9 @@
+## 3.14.7
+
+- feat: add objc swizzle method
+- fix: load dispatch once
+
+
 ## 3.14.6
 
 - refactor: android engine startup flow
