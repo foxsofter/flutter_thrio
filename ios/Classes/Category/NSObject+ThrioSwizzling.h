@@ -39,6 +39,24 @@ NS_ASSUME_NONNULL_BEGIN
 ///
 + (void)instanceSwizzle:(SEL)oldSelector newSelector:(SEL)newSelector;
 
+/// 交换`targetCls`类方法的实现
+///
+/// `oldSelector`  原实例方法的实现
+/// `newSelector`  新实例方法的实现
+///
++ (void)classSwizzle:(SEL)oldSelector
+           targetCls:(Class)targetCls
+         newSelector:(SEL)newSelector;
+
+/// 交换`targetCls`类的实例方法的实现
+///
+/// `oldSelector`  原实例方法的实现
+/// `newSelector`  新实例方法的实现
+///
++ (void)instanceSwizzle:(SEL)oldSelector
+              targetCls:(Class)targetCls
+            newSelector:(SEL)newSelector;
+
 @end
 
 NS_ASSUME_NONNULL_END

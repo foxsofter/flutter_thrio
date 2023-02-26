@@ -29,7 +29,7 @@
     Class cls = object_getClass((id)self);
     Method oldMethod = class_getClassMethod(cls, oldSelector);
     Method newMethod = class_getClassMethod(cls, newSelector);
-
+    
     if (class_addMethod(cls, oldSelector, method_getImplementation(newMethod), method_getTypeEncoding(newMethod))) {
         class_replaceMethod(cls, newSelector, method_getImplementation(oldMethod), method_getTypeEncoding(oldMethod));
     } else {
@@ -41,12 +41,41 @@
     Class cls = [self class];
     Method oldMethod = class_getInstanceMethod(cls, oldSelector);
     Method newMethod = class_getInstanceMethod(cls, newSelector);
-
+    
     if (class_addMethod(cls, oldSelector, method_getImplementation(newMethod), method_getTypeEncoding(newMethod))) {
         class_replaceMethod(cls, newSelector, method_getImplementation(oldMethod), method_getTypeEncoding(oldMethod));
     } else {
         method_exchangeImplementations(oldMethod, newMethod);
     }
 }
+
++ (void)classSwizzle:(SEL)oldSelector
+           targetCls:(Class)targetCls
+         newSelector:(SEL)newSelector {
+    Class cls = object_getClass((id)self);
+    Method oldMethod = class_getClassMethod(targetCls, oldSelector);
+    Method newMethod = class_getClassMethod(cls, newSelector);
+    
+    if (class_addMethod(targetCls, oldSelector, method_getImplementation(newMethod), method_getTypeEncoding(newMethod))) {
+        class_replaceMethod(targetCls, newSelector, method_getImplementation(oldMethod), method_getTypeEncoding(oldMethod));
+    } else {
+        method_exchangeImplementations(oldMethod, newMethod);
+    }
+}
+
++ (void)instanceSwizzle:(SEL)oldSelector
+              targetCls:(Class)targetCls
+            newSelector:(SEL)newSelector {
+    Class cls = [self class];
+    Method oldMethod = class_getInstanceMethod(targetCls, oldSelector);
+    Method newMethod = class_getInstanceMethod(cls, newSelector);
+    
+    if (class_addMethod(targetCls, oldSelector, method_getImplementation(newMethod), method_getTypeEncoding(newMethod))) {
+        class_replaceMethod(targetCls, newSelector, method_getImplementation(oldMethod), method_getTypeEncoding(oldMethod));
+    } else {
+        method_exchangeImplementations(oldMethod, newMethod);
+    }
+}
+
 
 @end
