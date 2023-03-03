@@ -56,16 +56,19 @@
 
 - (NavigatorFlutterEngine *)startupWithReadyBlock:(ThrioEngineReadyCallback _Nullable)block {
     if (_isRunning) { // 引擎正在启动，需返回当前引擎，给首页是 FlutterViewController 的情况下使用引擎
+        if (block) {
+            block(_currentEngine);
+        }
         return _currentEngine;
     }
     _isRunning = YES;
     ThrioFlutterEngine *flutterEngine;
     // 主引擎存在，且还没有使用
     if (_mainEngine && _mainEngine.pageId == kNavigatorRoutePageIdNone) {
+        _isRunning = NO;
         if (block) {
             _currentEngine = _mainEngine;
-            _isRunning = NO;
-            block(_mainEngine);
+            block(_currentEngine);
         }
         return _currentEngine;
     }
@@ -122,8 +125,8 @@
     } else {
         NSNumber *key = @(pageId);
         NavigatorFlutterEngine *engine = _engineMap[key];
-        [engine destroyContext];
         if (engine) {
+            [engine destroyContext];
             [_engineMap removeObjectForKey:key];
         }
     }

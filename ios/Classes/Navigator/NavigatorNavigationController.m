@@ -100,7 +100,7 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 - (BOOL)shouldAutorotate {
-    return YES;
+    return [self.viewControllers.lastObject shouldAutorotate];
 }
 
 - (UIInterfaceOrientationMask)supportedInterfaceOrientations {

@@ -77,6 +77,7 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark - private methods
 
 - (void)startupFlutterEngine {
+    // fork 出来的引擎不需要启动
     if (!_isMainEngine) {
         return;
     }

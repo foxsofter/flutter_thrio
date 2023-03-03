@@ -51,7 +51,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 
 - (NavigatorFlutterEngine *)startupWithEntrypoint:(NSString *)entrypoint
-                   readyBlock:(ThrioEngineReadyCallback _Nullable)block {
+                                       readyBlock:(ThrioEngineReadyCallback _Nullable)block {
     if (!_multiEngineEnabled) {
         entrypoint = kNavigatorDefaultEntrypoint;
     }
@@ -64,7 +64,7 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 - (BOOL)isMainEngineByPageId:(NSUInteger)pageId withEntrypoint:(NSString *)entrypoint {
-    return [_engineGroups[@(pageId)] isMainEngineByPageId:pageId];
+    return [_engineGroups[entrypoint] isMainEngineByPageId:pageId];
 }
 
 - (NavigatorFlutterEngine *_Nullable)getEngineByPageId:(NSUInteger)pageId withEntrypoint:(NSString *)entrypoint {

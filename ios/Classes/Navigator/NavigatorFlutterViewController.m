@@ -64,9 +64,7 @@ NS_ASSUME_NONNULL_BEGIN
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(viewDidDisappearFromForeground)
                                                      name:UIApplicationDidEnterBackgroundNotification
-                                                   object:nil];
-        
-        
+                                                   object:nil];        
     }
     return self;
 }
