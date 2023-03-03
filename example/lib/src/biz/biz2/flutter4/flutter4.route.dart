@@ -19,7 +19,6 @@ class Flutter4Route extends NavigatorRouteLeaf {
 
   /// `people` hello, this is a people
   ///
-
   /// 打开 people 页面
   ///
   Future<TPopParams?> push<TPopParams>({
@@ -28,6 +27,24 @@ class Flutter4Route extends NavigatorRouteLeaf {
     final NavigatorIntCallback? result,
   }) =>
       ThrioNavigator.push<Map<String, dynamic>, TPopParams>(
+        url: url,
+        params: <String, dynamic>{
+          'people': people,
+        },
+        animated: animated,
+        result: result,
+      );
+
+  /// `people` hello, this is a people
+  ///
+  /// 打开 people 页面
+  ///
+  Future<TPopParams?> pushSingle<TPopParams>({
+    required final People people,
+    final bool animated = true,
+    final NavigatorIntCallback? result,
+  }) =>
+      ThrioNavigator.pushSingle<Map<String, dynamic>, TPopParams>(
         url: url,
         params: <String, dynamic>{
           'people': people,

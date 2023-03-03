@@ -27,4 +27,16 @@ class Flutter8Route extends NavigatorRouteLeaf {
         animated: animated,
         result: result,
       );
+
+  Future<TPopParams?> pushSingle<TParams, TPopParams>({
+    final TParams? params,
+    final bool animated = true,
+    final NavigatorIntCallback? result,
+  }) =>
+      ThrioNavigator.pushSingle<TParams, TPopParams>(
+        url: url,
+        params: params,
+        animated: animated,
+        result: result,
+      );
 }

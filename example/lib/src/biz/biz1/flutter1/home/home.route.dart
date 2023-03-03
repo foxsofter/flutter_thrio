@@ -20,7 +20,6 @@ class HomeRoute extends NavigatorRouteLeaf {
   ///
   /// `goodMap` hello, this is a map.
   ///
-
   /// 测试 集合 传参
   ///
   Future<TPopParams?> push<TPopParams>({
@@ -30,6 +29,28 @@ class HomeRoute extends NavigatorRouteLeaf {
     final NavigatorIntCallback? result,
   }) =>
       ThrioNavigator.push<Map<String, dynamic>, TPopParams>(
+        url: url,
+        params: <String, dynamic>{
+          'strList': strList,
+          'goodMap': goodMap,
+        },
+        animated: animated,
+        result: result,
+      );
+
+  /// `strList` hello, this is a list.
+  ///
+  /// `goodMap` hello, this is a map.
+  ///
+  /// 测试 集合 传参
+  ///
+  Future<TPopParams?> pushSingle<TPopParams>({
+    final List<String> strList = const <String>[],
+    final Map<String, dynamic> goodMap = const <String, dynamic>{},
+    final bool animated = true,
+    final NavigatorIntCallback? result,
+  }) =>
+      ThrioNavigator.pushSingle<Map<String, dynamic>, TPopParams>(
         url: url,
         params: <String, dynamic>{
           'strList': strList,

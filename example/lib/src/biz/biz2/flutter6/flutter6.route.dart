@@ -29,6 +29,18 @@ class Flutter6Route extends NavigatorRouteLeaf {
         result: result,
       );
 
+  Future<TPopParams?> pushSingle<TParams, TPopParams>({
+    final TParams? params,
+    final bool animated = true,
+    final NavigatorIntCallback? result,
+  }) =>
+      ThrioNavigator.pushSingle<TParams, TPopParams>(
+        url: url,
+        params: params,
+        animated: animated,
+        result: result,
+      );
+
   /// 发送邮箱验证码
   ///
   Future<bool?> sendEmailCode({
