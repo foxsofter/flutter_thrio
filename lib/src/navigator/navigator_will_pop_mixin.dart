@@ -40,6 +40,8 @@ mixin NavigatorWillPopMixin<T extends StatefulWidget> on State<T> {
 
   ModalRoute<dynamic>? _route;
 
+  bool _added = false;
+
   VoidCallback? _callback;
 
   static final _observerMaps = <GlobalKey<NavigatorState>, NavigatorObserver>{};
@@ -75,19 +77,28 @@ mixin NavigatorWillPopMixin<T extends StatefulWidget> on State<T> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
+    _added = false;
+    _route?.removeScopedWillPopCallback(onWillPop);
     _route = ModalRoute.of(context);
   }
 
   void _checkWillPop() {
     if (internalNavigatorKey.currentState?.canPop() == true) {
-      _route?.addScopedWillPopCallback(onWillPop);
+      if (!_added) {
+        _added = true;
+        _route?.addScopedWillPopCallback(onWillPop);
+      }
     } else {
-      _route?.removeScopedWillPopCallback(onWillPop);
+      if (_added) {
+        _added = false;
+        _route?.removeScopedWillPopCallback(onWillPop);
+      }
     }
   }
 
   @override
   void dispose() {
+    _added = false;
     _route?.removeScopedWillPopCallback(onWillPop);
     _callback?.call();
     super.dispose();
