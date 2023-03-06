@@ -19,25 +19,23 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 
-import '../module/module_anchor.dart';
 import 'navigator_page_lifecycle_mixin.dart';
+import 'navigator_route_push_mixin.dart';
 import 'navigator_types.dart';
 
 class NavigatorRoutePush extends StatefulWidget {
   const NavigatorRoutePush({
     super.key,
-    required this.urls,
     required this.onPush,
-    required this.child,
     this.alwaysTakeEffect = false,
+    required this.child,
   });
 
-  final List<String> urls;
+  /// 拦截路由的 handle，return prevention 表示该路由会被拦截
+  ///
   final NavigatorRoutePushHandle onPush;
-  final Widget child;
 
   /// 表示是否总是拦截
   ///
@@ -45,62 +43,19 @@ class NavigatorRoutePush extends StatefulWidget {
   ///
   final bool alwaysTakeEffect;
 
+  final Widget child;
+
   @override
   _NavigatorRoutePushState createState() => _NavigatorRoutePushState();
 }
 
 class _NavigatorRoutePushState extends State<NavigatorRoutePush>
-    with NavigatorPageLifecycleMixin {
-  VoidCallback? _registry;
-  final _handles = <String, NavigatorRoutePushHandle>{};
+    with NavigatorPageLifecycleMixin, NavigatorRoutePushMixin {
+  @override
+  bool get alwaysTakeEffect => widget.alwaysTakeEffect;
 
   @override
-  void initState() {
-    super.initState();
-    if (mounted) {
-      _init();
-    }
-  }
-
-  @override
-  void didUpdateWidget(covariant final NavigatorRoutePush oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (!listEquals(widget.urls, oldWidget.urls)) {
-      _init();
-    }
-  }
-
-  void _init() {
-    for (final url in widget.urls) {
-      _handles[url] = widget.onPush;
-    }
-    _registry?.call();
-    _registry = anchor.pushHandlers.registryAll(_handles);
-  }
-
-  @override
-  void dispose() {
-    _registry?.call();
-    super.dispose();
-  }
-
-  @override
-  void didAppear(final RouteSettings settings) {
-    if (widget.alwaysTakeEffect) {
-      return;
-    }
-    _registry?.call();
-    _registry = anchor.pushHandlers.registryAll(_handles);
-  }
-
-  @override
-  void didDisappear(final RouteSettings settings) {
-    if (widget.alwaysTakeEffect) {
-      return;
-    }
-    _registry?.call();
-    _registry = null;
-  }
+  NavigatorRoutePushHandle get onPush => widget.onPush;
 
   @override
   Widget build(final BuildContext context) => widget.child;

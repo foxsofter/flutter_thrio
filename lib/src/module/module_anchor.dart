@@ -30,8 +30,8 @@ import '../navigator/navigator_route_settings.dart';
 import '../navigator/navigator_types.dart';
 import '../navigator/navigator_url_template.dart';
 import '../navigator/thrio_navigator_implement.dart';
-import '../registry/registry_map.dart';
 import '../registry/registry_order_map.dart';
+import '../registry/registry_set.dart';
 import '../registry/registry_set_map.dart';
 import 'module_json_deserializer.dart';
 import 'module_json_serializer.dart';
@@ -64,7 +64,7 @@ class ModuleAnchor
 
   /// Holds PushHandler registered by `NavigatorRoutePush` .
   ///
-  final pushHandlers = RegistryMap<String, NavigatorRoutePushHandle>();
+  final pushHandlers = RegistrySet<NavigatorRoutePushHandle>();
 
   /// A collection of route handlers for matching the key's pattern.
   ///
@@ -133,12 +133,6 @@ class ModuleAnchor
     var modules = <ThrioModule>[];
     if (url != null && url.isNotEmpty) {
       final typeString = T.toString();
-      if (typeString == (NavigatorRoutePushHandle).toString()) {
-        final handler = pushHandlers[url];
-        if (handler != null) {
-          return handler as T;
-        }
-      }
       modules = _getModules(url: url);
       if (T == ThrioModule || T == dynamic || T == Object) {
         return modules.isEmpty ? null : modules.last as T;
