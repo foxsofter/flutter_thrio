@@ -1,5 +1,7 @@
 ## 3.14.8
 - fix: NavigatorWillPop not working
+- refactor: rm urls from NavigatorRoutePush
+- feat: add NavigatorRoutePushMixin
 
 ## 3.14.7
 
