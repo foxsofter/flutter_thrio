@@ -25,6 +25,8 @@ export 'src/async/async_task_queue.dart';
 export 'src/channel/thrio_channel.dart';
 export 'src/extension/thrio_build_context.dart';
 export 'src/extension/thrio_dynamic.dart';
+export 'src/extension/thrio_list.dart';
+export 'src/extension/thrio_map.dart';
 export 'src/extension/thrio_object.dart';
 export 'src/extension/thrio_stateful_widget.dart';
 export 'src/logger/thrio_logger.dart';

@@ -19,8 +19,6 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
-import 'dart:core';
-
 extension ThrioObject on Object {
   /// Determine whether the current instance is a bool.
   ///
@@ -156,38 +154,6 @@ extension ThrioObject on Object {
     return true;
   }
 
-  /// Determine whether the current instance is a Set.
-  ///
-  /// Can be called in the following ways,
-  /// `{ 'k' }.isSet`
-  /// `{ 'k' }.runtimeType.isSet`
-  ///
-  bool get isSet {
-    if (this is Type) {
-      return toString().contains('Set');
-    } else {
-      return this is Set;
-    }
-  }
-
-  /// Determine whether the current instance is a simple Set.
-  ///
-  /// Can be called in the following ways,
-  /// `{ 'k' }.isSet`
-  ///
-  bool get isSimpleSet {
-    final ts = this;
-    if (ts is! Set) {
-      return false;
-    }
-    for (final it in ts) {
-      if (it is Object && it.isSimpleType == false) {
-        return false;
-      }
-    }
-    return true;
-  }
-
   /// Determine whether the current instance is a primitive type,
   /// including bool, int, double, String.
   ///
@@ -204,24 +170,15 @@ extension ThrioObject on Object {
   }
 
   /// Determine whether the current instance is a simple type,
-  /// including bool, int, double, String, Map, List, Set.
+  /// including bool, int, double, String, Map, List.
   ///
   /// Can be called in the following ways,
   /// `2.isSimpleType`
   ///
-  bool get isSimpleType =>
-      isPrimitiveType || isSimpleList || isSimpleMap || isSimpleSet;
-
-  /// Determine whether the current instance is a transferable type,
-  /// including bool, int, double, String, Map, List.
-  ///
-  /// Can be called in the following ways,
-  /// `2.isTransferableType`
-  ///
-  bool get isTransferableType => isPrimitiveType || isSimpleList || isSimpleMap;
+  bool get isSimpleType => isPrimitiveType || isSimpleList || isSimpleMap;
 
   /// Determine whether the current instance is a complex type,
-  /// not bool, int, double, String, Map, List, Set.
+  /// not bool, int, double, String, Map, List.
   ///
   /// Can be called in the following ways,
   /// `2.isComplexType`
