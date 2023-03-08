@@ -76,7 +76,7 @@ mixin NavigatorPageLifecycleMixin<T extends StatefulWidget> on State<T> {
 
   void didAppear(final RouteSettings settings) {
     verbose(
-        'NavigatorPageLifecycleMixin didAppear: ${settings.name}, $runtimeType, hash: ${settings.hashCode}, stack:${StackTrace.current}');
+        'NavigatorPageLifecycleMixin didAppear: ${settings.name}, $runtimeType, hash: ${settings.hashCode}');
   }
 
   void didDisappear(final RouteSettings settings) {
