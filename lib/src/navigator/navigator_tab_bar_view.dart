@@ -94,8 +94,7 @@ class _NavigatorTabBarViewState extends State<NavigatorTabBarView> {
   bool get _controllerIsValid => _controller?.animation != null;
 
   void _updateTabController() {
-    final newController =
-        widget.controller ?? DefaultTabController.maybeOf(context);
+    final newController = widget.controller ?? DefaultTabController.of(context);
     assert(() {
       if (newController == null) {
         throw FlutterError(
