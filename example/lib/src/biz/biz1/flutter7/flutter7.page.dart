@@ -43,15 +43,12 @@ class _Flutter7PageState extends State<Flutter7Page>
 
   @override
   void didAppear(final RouteSettings routeSettings) {
-    Future.delayed(const Duration(seconds: 1), () {
-      setState(() {});
-    });
-    ThrioLogger.d('flutter7 didAppear: $routeSettings');
+    super.didAppear(routeSettings);
   }
 
   @override
   void didDisappear(final RouteSettings routeSettings) {
-    ThrioLogger.d('flutter7 didDisappear: $routeSettings');
+    super.didDisappear(routeSettings);
   }
 
   @override

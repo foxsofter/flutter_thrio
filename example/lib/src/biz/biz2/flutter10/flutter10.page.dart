@@ -62,11 +62,11 @@ class __TestConstWidgetState extends State<_TestConstWidget>
 
   @override
   void didAppear(final RouteSettings settings) {
-    ThrioLogger.d('flutter10 didAppear: $settings ');
+    super.didAppear(settings);
   }
 
   @override
   void didDisappear(final RouteSettings settings) {
-    ThrioLogger.d('flutter10 didDisappear: $settings ');
+    super.didDisappear(settings);
   }
 }

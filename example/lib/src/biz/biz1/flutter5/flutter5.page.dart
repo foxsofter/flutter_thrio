@@ -34,12 +34,12 @@ class _Flutter5PageState extends State<Flutter5Page>
 
   @override
   void didAppear(final RouteSettings routeSettings) {
-    ThrioLogger.d('flutter5 didAppear: $routeSettings');
+    super.didAppear(routeSettings);
   }
 
   @override
   void didDisappear(final RouteSettings routeSettings) {
-    ThrioLogger.d('flutter5 didDisappear: $routeSettings');
+    super.didDisappear(routeSettings);
   }
 
   @override

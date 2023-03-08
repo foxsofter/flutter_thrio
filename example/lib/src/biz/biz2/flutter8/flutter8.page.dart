@@ -25,12 +25,12 @@ class _Flutter8PageState extends State<Flutter8Page>
     with NavigatorPageLifecycleMixin, AutomaticKeepAliveClientMixin {
   @override
   void didAppear(final RouteSettings settings) {
-    ThrioLogger.d('flutter8 didAppear: $settings');
+    super.didAppear(settings);
   }
 
   @override
   void didDisappear(final RouteSettings settings) {
-    ThrioLogger.d('flutter8 didDisappear: $settings');
+    super.didDisappear(settings);
   }
 
   @override

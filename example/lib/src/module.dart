@@ -15,7 +15,7 @@ class Module
         ModuleParamScheme {
   @override
   void onModuleRegister(final ModuleContext moduleContext) {
-    navigatorLogEnabled = false;
+    navigatorLogEnabled = true;
     registerModule(biz.Module(), moduleContext);
   }
 

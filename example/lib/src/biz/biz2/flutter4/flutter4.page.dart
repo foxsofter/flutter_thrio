@@ -35,12 +35,12 @@ class _Flutter4PageState extends State<Flutter4Page>
 
   @override
   void didAppear(final RouteSettings routeSettings) {
-    ThrioLogger.d('flutter4 didAppear: $routeSettings');
+    super.didAppear(routeSettings);
   }
 
   @override
   void didDisappear(final RouteSettings routeSettings) {
-    ThrioLogger.d('flutter4 didDisappear: $routeSettings');
+    super.didDisappear(routeSettings);
   }
 
   @override

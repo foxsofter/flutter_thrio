@@ -44,12 +44,12 @@ class _Flutter2PageState extends State<Flutter2Page>
 
   @override
   void didAppear(final RouteSettings routeSettings) {
-    ThrioLogger.d('flutter2 didAppear: $routeSettings');
+    super.didAppear(routeSettings);
   }
 
   @override
   void didDisappear(final RouteSettings routeSettings) {
-    ThrioLogger.d('flutter2 didDisappear: $routeSettings');
+    super.didDisappear(routeSettings);
   }
 
   @override
