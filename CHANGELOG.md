@@ -1,3 +1,7 @@
+## 3.14.9
+- refactor: root page didAppear not trigger on init
+- feat: add toSimpleList, toSimpleMap
+
 ## 3.14.8
 - fix: NavigatorWillPop not working
 - refactor: rm urls from NavigatorRoutePush
