@@ -1,3 +1,6 @@
+## 3.15.0
+- feat: 适配 Flutter 3.7.6
+
 ## 3.14.9
 - refactor: root page didAppear not trigger on init
 - feat: add toSimpleList, toSimpleMap
