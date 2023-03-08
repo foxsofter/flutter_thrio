@@ -22,7 +22,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import 'thrio_navigator_implement.dart';
+import 'navigator_hot_restart_button.dart';
 
 class NavigatorHome extends StatefulWidget {
   const NavigatorHome({super.key, this.showRestartButton = false});
@@ -46,19 +46,10 @@ class _NavigatorHomeState extends State<NavigatorHome> {
                 child: Column(children: <Widget>[
           const SizedBox(
               width: 60, height: 60, child: CircularProgressIndicator()),
+          const SizedBox(width: 60, height: 60),
           if (widget.showRestartButton)
-            InkWell(
-              onTap: () => ThrioNavigatorImplement.shared().hotRestart(),
-              child: Container(
-                  padding: const EdgeInsets.only(top: 160),
-                  child: const Text(
-                    'hot restart',
-                    style: TextStyle(
-                        fontSize: 22,
-                        color: Colors.blue,
-                        decoration: TextDecoration.underline),
-                  )),
-            ),
+            const SizedBox(
+                width: 200, height: 48, child: NavigatorHotRestartButton()),
         ]))),
       );
 }
