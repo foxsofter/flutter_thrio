@@ -77,8 +77,17 @@ class ThrioNavigatorImplement {
   }
 
   TransitionBuilder get builder => (final context, final child) {
+        Navigator? navigator;
         if (child is Navigator) {
-          final navigator = child;
+          navigator = child;
+        }
+        if (navigator == null && child is FocusScope) {
+          final c = child.child;
+          if (c is Navigator) {
+            navigator = c;
+          }
+        }
+        if (navigator != null) {
           if (!navigator.observers.contains(observerManager)) {
             navigator.observers.add(observerManager);
           }
