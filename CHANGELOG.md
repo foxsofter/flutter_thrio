@@ -1,3 +1,6 @@
+## 3.15.1
+- fix: no DefaultTabController.maybeOf
+  
 ## 3.15.0
 - feat: 适配 Flutter 3.7.6
 
