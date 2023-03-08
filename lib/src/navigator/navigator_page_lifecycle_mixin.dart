@@ -62,7 +62,7 @@ mixin NavigatorPageLifecycleMixin<T extends StatefulWidget> on State<T> {
     super.didChangeDependencies();
     _init();
     _initAppear.runOnce(() {
-      if (!_current.isBuilt || (_current.isSelected != false)) {
+      if (!_current.isBuilt || (_current.isSelected == true)) {
         Future(() => didAppear(_current));
       }
     });
@@ -76,7 +76,7 @@ mixin NavigatorPageLifecycleMixin<T extends StatefulWidget> on State<T> {
 
   void didAppear(final RouteSettings settings) {
     verbose(
-        'NavigatorPageLifecycleMixin didAppear: ${settings.name}, $runtimeType, hash: ${settings.hashCode}');
+        'NavigatorPageLifecycleMixin didAppear: ${settings.name}, $runtimeType, hash: ${settings.hashCode}, stack:${StackTrace.current}');
   }
 
   void didDisappear(final RouteSettings settings) {
