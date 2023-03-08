@@ -59,14 +59,4 @@ class __TestConstWidgetState extends State<_TestConstWidget>
           child: Text('flutter 10'),
         ),
       );
-
-  @override
-  void didAppear(final RouteSettings settings) {
-    super.didAppear(settings);
-  }
-
-  @override
-  void didDisappear(final RouteSettings settings) {
-    super.didDisappear(settings);
-  }
 }

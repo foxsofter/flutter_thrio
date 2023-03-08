@@ -24,16 +24,6 @@ class Flutter8Page extends NavigatorStatefulPage {
 class _Flutter8PageState extends State<Flutter8Page>
     with NavigatorPageLifecycleMixin, AutomaticKeepAliveClientMixin {
   @override
-  void didAppear(final RouteSettings settings) {
-    super.didAppear(settings);
-  }
-
-  @override
-  void didDisappear(final RouteSettings settings) {
-    super.didDisappear(settings);
-  }
-
-  @override
   Widget build(final BuildContext context) {
     super.build(context);
     return Scaffold(

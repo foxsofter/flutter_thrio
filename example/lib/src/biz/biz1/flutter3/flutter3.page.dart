@@ -205,16 +205,6 @@ class _Flutter3PageState extends State<Flutter3Page>
           ),
         ));
   }
-
-  @override
-  void didAppear(final RouteSettings settings) {
-    super.didAppear(settings);
-  }
-
-  @override
-  void didDisappear(final RouteSettings settings) {
-    super.didDisappear(settings);
-  }
 }
 
 class TestPage extends StatefulWidget {
