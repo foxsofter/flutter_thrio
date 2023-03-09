@@ -83,7 +83,6 @@ class NavigatorTabBarView extends StatefulWidget {
 class _NavigatorTabBarViewState extends State<NavigatorTabBarView> {
   TabController? _controller;
   late PageController _pageController;
-  late List<RouteSettings> _routeSettings;
   int? _currentIndex;
   int _warpUnderwayCount = 0;
   bool _debugHasScheduledValidChildrenCountCheck = false;
@@ -122,12 +121,6 @@ class _NavigatorTabBarViewState extends State<NavigatorTabBarView> {
   }
 
   @override
-  void initState() {
-    super.initState();
-    _updateChildren();
-  }
-
-  @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     _updateTabController();
@@ -148,10 +141,6 @@ class _NavigatorTabBarViewState extends State<NavigatorTabBarView> {
       _pageController.jumpToPage(_currentIndex!);
       _warpUnderwayCount -= 1;
     }
-    if (listEquals(widget.routeSettings, oldWidget.routeSettings) &&
-        _warpUnderwayCount == 0) {
-      _updateChildren();
-    }
   }
 
   @override
@@ -162,10 +151,6 @@ class _NavigatorTabBarViewState extends State<NavigatorTabBarView> {
     _controller = null;
     // We don't own the _controller Animation, so it's not disposed here.
     super.dispose();
-  }
-
-  void _updateChildren() {
-    _routeSettings = widget.routeSettings;
   }
 
   void _handleTabControllerAnimationTick() {
@@ -200,10 +185,6 @@ class _NavigatorTabBarViewState extends State<NavigatorTabBarView> {
       await _pageController.animateToPage(_currentIndex!,
           duration: duration, curve: Curves.ease);
       _warpUnderwayCount -= 1;
-
-      if (mounted && listEquals(widget.routeSettings, _routeSettings)) {
-        setState(_updateChildren);
-      }
       return Future<void>.value();
     }
 
@@ -211,35 +192,23 @@ class _NavigatorTabBarViewState extends State<NavigatorTabBarView> {
     final initialPage = _currentIndex! > previousIndex
         ? _currentIndex! - 1
         : _currentIndex! + 1;
-    final settings = _routeSettings;
     setState(() {
       _warpUnderwayCount += 1;
-
-      _routeSettings = List<RouteSettings>.of(_routeSettings, growable: false);
-      final temp = _routeSettings[initialPage];
-      _routeSettings[initialPage] = _routeSettings[previousIndex];
-      _routeSettings[previousIndex] = temp;
     });
     _pageController.jumpToPage(initialPage);
 
     if (duration == Duration.zero) {
       _pageController.jumpToPage(_currentIndex!);
-    } else {
-      await _pageController.animateToPage(_currentIndex!,
-          duration: duration, curve: Curves.ease);
-
-      if (!mounted) {
-        return Future<void>.value();
-      }
+      return Future<void>.value();
     }
 
+    await _pageController.animateToPage(_currentIndex!,
+        duration: duration, curve: Curves.ease);
+    if (!mounted) {
+      return Future<void>.value();
+    }
     setState(() {
       _warpUnderwayCount -= 1;
-      if (listEquals(widget.routeSettings, _routeSettings)) {
-        _updateChildren();
-      } else {
-        _routeSettings = settings;
-      }
     });
   }
 
@@ -311,7 +280,7 @@ class _NavigatorTabBarViewState extends State<NavigatorTabBarView> {
         physics: widget.physics == null
             ? const PageScrollPhysics().applyTo(const ClampingScrollPhysics())
             : const PageScrollPhysics().applyTo(widget.physics),
-        routeSettings: _routeSettings,
+        routeSettings: widget.routeSettings,
         keepIndex: widget.keepIndex,
         childBuilder: widget.childBuilder,
       ),
