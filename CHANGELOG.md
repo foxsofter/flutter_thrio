@@ -1,3 +1,6 @@
+## 3.15.2
+- fix: revert update TabBarView
+
 ## 3.15.1
 - fix: no DefaultTabController.maybeOf
   
