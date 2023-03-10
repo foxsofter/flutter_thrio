@@ -1,3 +1,6 @@
+## 3.15.3
+- fix: miss disappear when page pop
+
 ## 3.15.2
 - fix: revert update TabBarView
 

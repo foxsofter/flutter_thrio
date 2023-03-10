@@ -45,10 +45,6 @@ mixin NavigatorPageLifecycleMixin<T extends StatefulWidget> on State<T> {
 
   bool _unmounted = false;
 
-  bool _disposed = false;
-
-  bool get disposed => _disposed;
-
   @override
   void initState() {
     super.initState();
@@ -62,7 +58,7 @@ mixin NavigatorPageLifecycleMixin<T extends StatefulWidget> on State<T> {
     super.didChangeDependencies();
     _init();
     _initAppear.runOnce(() {
-      if (!_current.isBuilt || (_current.isSelected == true)) {
+      if (!_current.isBuilt || _current.isSelected != false) {
         Future(() => didAppear(_current));
       }
     });
@@ -86,8 +82,6 @@ mixin NavigatorPageLifecycleMixin<T extends StatefulWidget> on State<T> {
 
   @override
   void dispose() {
-    _disposed = true;
-
     _currentObserverCallback?.call();
     for (final callback in _anchorsObserverCallbacks) {
       callback();
@@ -159,9 +153,6 @@ class _CurrentLifecycleObserver with NavigatorPageObserver {
   @override
   void didDisappear(final RouteSettings routeSettings) {
     // state not disposed and not mounted, not trigger didDisappear
-    if (!_delegate._disposed && _delegate._unmounted) {
-      return;
-    }
     if (_delegate._current.name == routeSettings.name &&
         routeSettings.isSelected != false) {
       _delegate.didDisappear(routeSettings);
