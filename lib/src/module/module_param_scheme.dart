@@ -52,10 +52,10 @@ mixin ModuleParamScheme on ThrioModule {
   ///
   @protected
   Stream<T> onParam<T>(final Comparable<dynamic> key, {final T? initialValue}) {
+    paramStreamCtrls[key] ??= <StreamController<dynamic>>{};
     final sc = StreamController<T>();
     sc
       ..onListen = () {
-        paramStreamCtrls[key] ??= <StreamController<dynamic>>{};
         paramStreamCtrls[key]?.add(sc);
         // sink lastest value.
         final value = getParam<T>(key);
@@ -133,17 +133,15 @@ mixin ModuleParamScheme on ThrioModule {
   void _setParam(final Comparable<dynamic> key, final dynamic value) {
     if (_params[key] != value) {
       _params[key] = value;
-      Future(() {
-        final scs = paramStreamCtrls[key];
-        if (scs == null || scs.isEmpty) {
-          return;
+      final scs = paramStreamCtrls[key];
+      if (scs == null || scs.isEmpty) {
+        return;
+      }
+      for (final sc in scs) {
+        if (sc.hasListener && !sc.isPaused && !sc.isClosed) {
+          sc.add(value);
         }
-        for (final sc in scs) {
-          if (sc.hasListener && !sc.isPaused && !sc.isClosed) {
-            sc.add(value);
-          }
-        }
-      });
+      }
     }
   }
 

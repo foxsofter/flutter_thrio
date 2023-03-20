@@ -1,3 +1,6 @@
+## 3.14.4
+- fix: ModuleContext.on called after ModuleContext.set will trigger two callbacks at the beginning
+
 ## 3.15.3
 - fix: miss disappear when page pop
 
