@@ -1,7 +1,7 @@
-## 3.14.5
+## 3.15.5
 - fix: pushSingle no need to check lastRoute
 
-## 3.14.4
+## 3.15.4
 - fix: ModuleContext.on called after ModuleContext.set will trigger two callbacks at the beginning
 
 ## 3.15.3
