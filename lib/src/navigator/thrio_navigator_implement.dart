@@ -204,10 +204,6 @@ class ThrioNavigatorImplement {
     final bool animated = true,
     final NavigatorIntCallback? result,
   }) async {
-    final lastSetting = await lastRoute();
-    if (lastSetting == null) {
-      throw ThrioException('no route to replace');
-    }
     final match = matchRouteCustomHandle(url);
     if (match != null) {
       final poppedResult = await onRouteCustomHandle<TParams, TPopParams>(
