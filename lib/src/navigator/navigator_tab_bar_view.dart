@@ -95,6 +95,7 @@ class _NavigatorTabBarViewState extends State<NavigatorTabBarView> {
   void _updateTabController() {
     final newController = widget.controller ?? DefaultTabController.of(context);
     assert(() {
+      // ignore: unnecessary_null_comparison
       if (newController == null) {
         throw FlutterError(
           'No TabController for ${widget.runtimeType}.\n'

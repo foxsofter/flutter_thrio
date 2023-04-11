@@ -55,6 +55,7 @@ open class ThrioFlutterActivityDelegate(val activity: Activity) : ThrioFlutterAc
     override fun onBackPressed() {
         val now = System.currentTimeMillis()
         if (now - lastClickTime <= 400) {
+            lastClickTime = now
             return
         }
         lastClickTime = now

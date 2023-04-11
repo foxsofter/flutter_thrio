@@ -1,3 +1,6 @@
+## 3.15.6
+- fix: quickly clicking the back button of android may cause an exception
+
 ## 3.15.5
 - fix: pushSingle no need to check lastRoute
 
