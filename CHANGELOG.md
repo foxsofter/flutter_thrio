@@ -1,3 +1,6 @@
+## 3.15.7
+- feat: registerRouteCustomHandler template can be repeated
+
 ## 3.15.6
 - fix: quickly clicking the back button of android may cause an exception
 
