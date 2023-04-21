@@ -19,7 +19,11 @@
 // FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
 // IN THE SOFTWARE.
 
+import 'dart:async';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_thrio/src/navigator/thrio_navigator_implement.dart';
 
 import '../async/async_task_queue.dart';
 import '../channel/thrio_channel.dart';
@@ -42,13 +46,20 @@ class NavigatorRouteSendChannel {
     required final String url,
     final TParams? params,
     final bool animated = true,
-  }) {
+  }) async {
+    // 如果是 Android 系统，且没有开启混合栈，那么就等待引擎激活后再继续 push
+    if (Platform.isAndroid &&
+        !ThrioNavigatorImplement.shared().hybridNavigationEnabled) {
+      await ThrioNavigatorImplement.shared().isEngineActivate;
+    }
+
     Future<int> pushFuture() {
       final arguments = <String, dynamic>{
         'url': url,
         'animated': animated,
         'params': _serializeParams<TParams>(url: url, params: params),
       };
+
       return _channel
           .invokeMethod<int>('push', arguments)
           .then((final value) => value ?? 0);

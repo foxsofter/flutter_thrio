@@ -16,6 +16,7 @@ class Module
   @override
   void onModuleRegister(final ModuleContext moduleContext) {
     navigatorLogEnabled = true;
+    hybridNavigationEnabled = false;
     registerModule(biz.Module(), moduleContext);
   }
 

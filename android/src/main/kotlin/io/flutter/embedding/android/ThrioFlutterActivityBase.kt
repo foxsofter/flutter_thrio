@@ -45,6 +45,8 @@ interface ThrioFlutterActivityBase {
 
     fun onNotify(arguments: Map<String, Any?>?, result: BooleanCallback)
 
+    fun onEngineStatusChanged(activate: Boolean, result: BooleanCallback)
+
     fun onMaybePop(arguments: Map<String, Any?>?, result: IntCallback)
 
     fun onPop(arguments: Map<String, Any?>?, result: BooleanCallback)

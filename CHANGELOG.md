@@ -1,3 +1,6 @@
+## 3.16.0
+- feat: android supports whether to enable hybrid navigation
+
 ## 3.15.7
 - feat: registerRouteCustomHandler template can be repeated
 

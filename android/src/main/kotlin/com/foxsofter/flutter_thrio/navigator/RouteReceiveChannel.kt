@@ -43,7 +43,7 @@ internal class RouteReceiveChannel(
 
         onLastRoute()
         onGetAllRoutes()
-        isInitialRoute()
+        onIsInitialRoute()
 
         onSetPopDisabled()
         onHotRestart()
@@ -198,7 +198,7 @@ internal class RouteReceiveChannel(
         }
     }
 
-    private fun isInitialRoute() {
+    private fun onIsInitialRoute() {
         channel.registryMethod("isInitialRoute") { arguments, result ->
             if (arguments == null)  {
                 result(false)

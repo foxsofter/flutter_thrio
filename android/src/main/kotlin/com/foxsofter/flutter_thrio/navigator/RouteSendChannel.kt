@@ -41,6 +41,12 @@ internal class RouteSendChannel constructor(internal val channel: ThrioChannel) 
         result(true)
     }
 
+    fun onEngineStatusChanged(activate: Boolean, result: BooleanCallback) {
+        Log.i("Thrio", "onEngineStatus channel data $activate")
+        channel.sendEvent("__onEngineStatus__", mapOf("activate" to activate))
+        result(true)
+    }
+
     fun onMaybePop(arguments: Map<String, Any?>?, result: IntCallback) {
         channel.invokeMethod("maybePop", arguments) {
             val r = if (it != null) it as Int else 0

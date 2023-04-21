@@ -49,6 +49,16 @@ open class ThrioFlutterFragmentActivity : FlutterFragmentActivity(), ThrioFlutte
     override fun cleanUpFlutterEngine(flutterEngine: FlutterEngine) =
         activityDelegate.cleanUpFlutterEngine(flutterEngine)
 
+    override fun onResume() {
+        super.onResume()
+        onEngineStatusChanged(true) {}
+    }
+
+    override fun onPause() {
+        super.onPause()
+        onEngineStatusChanged(false) {}
+    }
+
     override fun onBackPressed() = activityDelegate.onBackPressed()
 
     override fun shouldDestroyEngineWithHost(): Boolean =
@@ -59,6 +69,9 @@ open class ThrioFlutterFragmentActivity : FlutterFragmentActivity(), ThrioFlutte
 
     override fun onNotify(arguments: Map<String, Any?>?, result: BooleanCallback) =
         activityDelegate.onNotify(arguments, result)
+
+    override fun onEngineStatusChanged(activate: Boolean, result: BooleanCallback) =
+        activityDelegate.onEngineStatusChanged(activate, result)
 
     override fun onMaybePop(arguments: Map<String, Any?>?, result: IntCallback) =
         activityDelegate.onMaybePop(arguments, result)
