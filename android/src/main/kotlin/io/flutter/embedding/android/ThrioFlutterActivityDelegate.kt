@@ -84,7 +84,7 @@ open class ThrioFlutterActivityDelegate(val activity: Activity) : ThrioFlutterAc
         val entrypoint = activity.intent.getEntrypoint()
         val engine = FlutterEngineFactory.getEngine(pageId, entrypoint)
             ?: throw IllegalStateException("engine must not be null")
-        engine.sendChannel.notify(arguments, result)
+        engine.sendChannel.onNotify(arguments, result)
     }
 
     override fun onEngineStatusChanged(activate: Boolean, result: BooleanCallback) {
