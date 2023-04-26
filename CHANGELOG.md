@@ -1,3 +1,6 @@
+## 3.16.1
+- fix: android hybrid navigation disabled not working
+
 ## 3.16.0
 - feat: android supports whether to enable hybrid navigation
 

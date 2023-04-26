@@ -909,7 +909,11 @@ class ThrioNavigatorImplement {
 
   Future<bool> get isEngineActivate async {
     if (_isActivated) {
-      return true;
+      final lastUrl = (await lastRoute())?.url;
+      final lastFlutterUrl = lastFlutterRoute()?.settings.url;
+      if (lastFlutterUrl == lastUrl) {
+        return true;
+      }
     }
     final completer = Completer<bool>();
     _engineActivateCompleters.add(completer);
