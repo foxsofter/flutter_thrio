@@ -888,7 +888,7 @@ class ThrioNavigatorImplement {
       if (idx < 0 || routes.length <= idx + 1) {
         return false;
       }
-      return routes[idx + 1] is! NavigatorRoute;
+      return routes[idx + 1] is NavigatorDialogRoute;
     }
     return ns.history.last is NavigatorDialogRoute;
   }
