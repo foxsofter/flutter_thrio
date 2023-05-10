@@ -62,7 +62,7 @@ open class ThrioFlutterActivityDelegate(val activity: Activity) : ThrioFlutterAc
         engine?.engine?.navigationChannel?.popRoute()
     }
 
-    override fun shouldDestroyEngineWithHost(): Boolean {
+    fun shouldDestroyEngineWithHost(): Boolean {
         val pageId = activity.intent.getPageId()
         if (pageId == NAVIGATION_ROUTE_PAGE_ID_NONE) throw IllegalStateException("pageId must not be null")
         val entrypoint = activity.intent.getEntrypoint()
@@ -85,15 +85,6 @@ open class ThrioFlutterActivityDelegate(val activity: Activity) : ThrioFlutterAc
         val engine = FlutterEngineFactory.getEngine(pageId, entrypoint)
             ?: throw IllegalStateException("engine must not be null")
         engine.sendChannel.onNotify(arguments, result)
-    }
-
-    override fun onEngineStatusChanged(activate: Boolean, result: BooleanCallback) {
-        val pageId = activity.intent.getPageId()
-        if (pageId == NAVIGATION_ROUTE_PAGE_ID_NONE) throw IllegalStateException("pageId must not be null")
-        val entrypoint = activity.intent.getEntrypoint()
-        val engine = FlutterEngineFactory.getEngine(pageId, entrypoint)
-            ?: throw IllegalStateException("engine must not be null")
-        engine.sendChannel.onEngineStatusChanged(activate, result)
     }
 
     override fun onMaybePop(arguments: Map<String, Any?>?, result: IntCallback) {

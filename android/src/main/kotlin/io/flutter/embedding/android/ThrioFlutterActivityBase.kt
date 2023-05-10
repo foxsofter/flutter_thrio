@@ -29,6 +29,7 @@ import com.foxsofter.flutter_thrio.IntCallback
 import io.flutter.embedding.engine.FlutterEngine
 
 interface ThrioFlutterActivityBase {
+
     val engine: com.foxsofter.flutter_thrio.navigator.FlutterEngine?
 
     fun provideFlutterEngine(context: Context): FlutterEngine?
@@ -39,13 +40,9 @@ interface ThrioFlutterActivityBase {
 
     fun shouldMoveToBack(): Boolean = true
 
-    fun shouldDestroyEngineWithHost(): Boolean
-
     fun onPush(arguments: Map<String, Any?>?, result: BooleanCallback)
 
     fun onNotify(arguments: Map<String, Any?>?, result: BooleanCallback)
-
-    fun onEngineStatusChanged(activate: Boolean, result: BooleanCallback)
 
     fun onMaybePop(arguments: Map<String, Any?>?, result: IntCallback)
 

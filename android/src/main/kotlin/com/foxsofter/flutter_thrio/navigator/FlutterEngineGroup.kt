@@ -13,14 +13,17 @@ open class FlutterEngineGroup constructor(private var entrypoint: String) {
     val engines get() = engineMap.values
 
     // 返回 pageId 是否匹配的是主引擎
-    fun isMainEngine(pageId: Int): Boolean = engineMap[pageId] == mainEngine
+    fun isMainEngine(pageId: Int): Boolean = true
 
     // 根据 pageId 获取对应引擎实例
-    fun getEngine(pageId: Int): FlutterEngine? = engineMap[pageId]
+    fun getEngine(pageId: Int): FlutterEngine? = engineMap.values.first()
 
     // 仅用于让 ThrioFlutterActivity 或 ThrioFlutterFragmentActivity 调用
     fun provideEngine(activity: Activity): ThrioFlutterEngine {
         val pageId = activity.intent.getPageId()
+        if (engineMap.isNotEmpty()) {
+            return engineMap.values.first().engine
+        }
         if (engineMap.contains(pageId)) {
             return engineMap[pageId]!!.engine
         }

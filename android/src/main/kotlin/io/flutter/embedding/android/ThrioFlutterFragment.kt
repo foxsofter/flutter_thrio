@@ -23,13 +23,25 @@
 
 package io.flutter.embedding.android
 
+import android.content.Context
 import android.content.pm.PackageManager
+import com.foxsofter.flutter_thrio.extension.setSuperFieldValue
 import com.foxsofter.flutter_thrio.navigator.NavigationController
 import com.foxsofter.flutter_thrio.navigator.ThrioNavigator
+import io.flutter.Log
 
-open class ThrioFlutterFragment : FlutterFragment() {
+class ThrioFlutterFragment : FlutterFragment() {
     companion object {
+        const val TAG = "ThrioFlutterFragment"
         var isInitialUrlPushed = false
+    }
+
+    internal class HookDelegateFactory : FlutterActivityAndFragmentDelegate.DelegateFactory {
+        override fun createDelegate(host: FlutterActivityAndFragmentDelegate.Host): FlutterActivityAndFragmentDelegate {
+            val d = ThrioFlutterViewDelegate(host)
+            Log.i("ThrioFlutterViewDelegate", "createDelegate = ${d.hashCode()}")
+            return d
+        }
     }
 
     val engine: com.foxsofter.flutter_thrio.navigator.FlutterEngine?
@@ -40,6 +52,24 @@ open class ThrioFlutterFragment : FlutterFragment() {
             }
             return activity.engine
         }
+
+    override fun onAttach(context: Context) {
+        setSuperFieldValue("delegateFactory", HookDelegateFactory())
+        super.onAttach(context)
+    }
+
+    override fun onStart() {
+        if (delegate?.isAttached != true) {
+            Log.v(TAG, "onStart ${hashCode()}")
+            (delegate!! as ThrioFlutterViewDelegate).resume()
+        }
+        super.onStart()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Log.v(TAG, "onResume ${hashCode()}")
+    }
 
     override fun onBackPressed() {
         val activity = requireActivity()
@@ -73,7 +103,7 @@ open class ThrioFlutterFragment : FlutterFragment() {
 
     private var _initialUrl: String? = null
 
-    protected open val initialUrl: String?
+    private val initialUrl: String?
         get() {
             if (_initialUrl == null) {
                 readInitialUrl()

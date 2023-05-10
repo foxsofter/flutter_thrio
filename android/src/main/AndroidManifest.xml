@@ -3,14 +3,6 @@
 
     <application>
         <activity
-            android:name="io.flutter.embedding.android.ThrioFlutterActivity"
-            android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
-            android:hardwareAccelerated="true"
-            android:launchMode="standard"
-            android:screenOrientation="sensor"
-            android:theme="@style/Theme.Thrio.Default"
-            android:windowSoftInputMode="adjustResize" />
-        <activity
             android:name="io.flutter.embedding.android.ThrioFlutterFragmentActivity"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
             android:hardwareAccelerated="true"
