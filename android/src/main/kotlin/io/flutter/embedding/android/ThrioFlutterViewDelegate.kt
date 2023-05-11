@@ -1,3 +1,26 @@
+/**
+ * The MIT License (MIT)
+ *
+ * Copyright (c) 2023 foxsofter
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a
+ * copy of this software and associated documentation files (the "Software"),
+ * to deal in the Software without restriction, including without limitation
+ * the rights to use, copy, modify, merge, publish, distribute, sublicense,
+ * and/or sell copies of the Software, and to permit persons to whom the
+ * Software is furnished to do so, subject to the following conditions:
+ * The above copyright notice and this permission notice shall be included
+ * in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+ * OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL
+ * THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+ * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+ * IN THE SOFTWARE.
+ */
+
 package io.flutter.embedding.android
 
 import com.foxsofter.flutter_thrio.extension.*
@@ -25,65 +48,6 @@ internal class ThrioFlutterViewDelegate(host: Host) : FlutterActivityAndFragment
     private var attached
         get() = getSuperFieldBoolean("isAttached")
         set(value) = setSuperFieldBoolean("isAttached", value)
-
-//    private var engine
-//        get() = getSuperFieldNullableValue<FlutterEngine>("flutterEngine")
-//        set(value) = setSuperFieldValue("flutterEngine", value)
-
-//    override fun onCreateView(
-//        inflater: LayoutInflater?,
-//        container: ViewGroup?,
-//        savedInstanceState: Bundle?,
-//        flutterViewId: Int,
-//        shouldDelayFirstAndroidViewDraw: Boolean
-//    ): View {
-//        Log.v(TAG, "Creating ThrioFlutterView.")
-//        callSuperMethod("ensureAlive")
-//        if (host.renderMode == RenderMode.surface) {
-//            val flutterSurfaceView = FlutterSurfaceView(
-//                host.context, host.transparencyMode == TransparencyMode.transparent
-//            )
-//
-//            // Allow our host to customize FlutterSurfaceView, if desired.
-//            host.onFlutterSurfaceViewCreated(flutterSurfaceView)
-//
-//            // Create the FlutterView that owns the FlutterSurfaceView.
-//            flutterView = ThrioFlutterView(host.context, RenderMode.surface)
-//        } else {
-//            val flutterTextureView = FlutterTextureView(host.context)
-//            flutterTextureView.isOpaque = host.transparencyMode == TransparencyMode.opaque
-//
-//            // Allow our host to customize FlutterSurfaceView, if desired.
-//            host.onFlutterTextureViewCreated(flutterTextureView)
-//
-//            // Create the FlutterView that owns the FlutterTextureView.
-//            flutterView = ThrioFlutterView(host.context, RenderMode.texture)
-//        }
-//
-//        // Add listener to be notified when Flutter renders its first frame.
-//        flutterView!!.addOnFirstFrameRenderedListener(flutterUiDisplayListener)
-//        Log.v(TAG, "Attaching FlutterEngine to FlutterView.")
-//        flutterView!!.attachToFlutterEngine(flutterEngine!!)
-//        flutterView!!.id = flutterViewId
-//        val splashScreen = host.provideSplashScreen()
-//        if (splashScreen != null) {
-//            Log.w(
-//                TAG,
-//                "A splash screen was provided to Flutter, but this is deprecated. See"
-//                        + " flutter.dev/go/android-splash-migration for migration steps."
-//            )
-//            val flutterSplashView = FlutterSplashView(host.context)
-//            flutterSplashView.id = ViewUtils.generateViewId(
-//                FLUTTER_SPLASH_VIEW_FALLBACK_ID
-//            )
-//            flutterSplashView.displayFlutterViewWithSplash(flutterView!!, splashScreen)
-//            return flutterSplashView
-//        }
-//        if (shouldDelayFirstAndroidViewDraw) {
-//            callSuperMethod("delayFirstAndroidViewDraw", flutterView)
-//        }
-//        return flutterView!!
-//    }
 
     fun resume() {
         Log.i(TAG, "resume ${hashCode()} begin")
@@ -115,16 +79,5 @@ internal class ThrioFlutterViewDelegate(host: Host) : FlutterActivityAndFragment
             flutterView!!.attachToFlutterEngine(flutterEngine!!)
             attached = true
         }
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        Log.w(TAG, "onDestroyView ${hashCode()}")
-    }
-
-    override fun onDetach() {
-        super.onDetach()
-        Log.w(TAG, "onDetach ${hashCode()}")
-
     }
 }
