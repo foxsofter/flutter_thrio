@@ -755,6 +755,7 @@ class ThrioNavigatorImplement {
   }) async {
     final routes = await allRoutes();
     final route = routes
+        .sublist(0, routes.length - 1)
         .lastWhereOrNull((final it) => it.url.isNotEmpty && predicate(it.url));
     if (route == null) {
       return false;
@@ -773,6 +774,7 @@ class ThrioNavigatorImplement {
   }) async {
     final routes = await allRoutes();
     final route = routes
+        .sublist(0, routes.length - 1)
         .firstWhereOrNull((final it) => it.url.isNotEmpty && predicate(it.url));
     if (route == null) {
       return false;
