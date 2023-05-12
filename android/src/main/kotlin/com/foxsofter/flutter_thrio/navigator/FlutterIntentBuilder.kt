@@ -26,27 +26,19 @@ package com.foxsofter.flutter_thrio.navigator
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import io.flutter.embedding.android.FlutterActivity
 import io.flutter.embedding.android.FlutterActivityLaunchConfigs
 import io.flutter.embedding.android.FlutterFragmentActivity
-import io.flutter.embedding.android.ThrioFlutterActivity
+import io.flutter.embedding.android.ThrioFlutterFragmentActivity
 
 open class FlutterIntentBuilder : IntentBuilder {
 
-    override fun getActivityClz(): Class<out Activity> = ThrioFlutterActivity::class.java
+    override fun getActivityClz(): Class<out Activity> = ThrioFlutterFragmentActivity::class.java
 
     @Suppress("UNCHECKED_CAST")
     override fun build(context: Context, entrypoint: String): Intent {
-
         val clz = getActivityClz()
-        if (FlutterFragmentActivity::class.java.isAssignableFrom(clz)) {
-            return FlutterFragmentActivity
-                .NewEngineIntentBuilder(clz as Class<out FlutterFragmentActivity>)
-                .backgroundMode(FlutterActivityLaunchConfigs.BackgroundMode.transparent)
-                .build(context)
-        }
-        return FlutterActivity
-            .NewEngineIntentBuilder(clz as Class<out FlutterActivity>)
+        return FlutterFragmentActivity
+            .NewEngineIntentBuilder(clz as Class<out FlutterFragmentActivity>)
             .backgroundMode(FlutterActivityLaunchConfigs.BackgroundMode.transparent)
             .build(context)
     }

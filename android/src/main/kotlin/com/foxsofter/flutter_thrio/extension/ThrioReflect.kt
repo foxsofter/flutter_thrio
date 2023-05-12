@@ -11,47 +11,51 @@ fun Any.callMethod(name: String, vararg args: Any?): Any? {
 }
 
 fun Any.callSuperMethod(name: String, vararg args: Any?): Any? {
-    return getSuperMethod(name )
+    return getSuperMethod(name)
         .apply { isAccessible = true }
         .invoke(this, *args)
 }
 
-fun <T> Any.getFieldValue(name: String): T {
+inline fun <reified T> Any.getFieldValue(name: String): T {
     return javaClass.getDeclaredField(name).let {
         it.isAccessible = true
-        return@let it.get(this) as T
+        val r = it.get(this)
+        return@let if (r is T) r else throw NoSuchFieldError(name)
     }
 }
 
-fun <T> Any.getFieldNullableValue(name: String): T? {
+inline fun <reified T> Any.getFieldNullableValue(name: String): T? {
     return javaClass.getDeclaredField(name).let {
         it.isAccessible = true
-        return@let it.get(this) as T?
+        val r = it.get(this)
+        return@let if (r is T) r else null
     }
 }
 
-fun <T> Any.setFieldValue(name: String, value: T?) {
+inline fun <reified T> Any.setFieldValue(name: String, value: T?) {
     return javaClass.getDeclaredField(name).let {
         it.isAccessible = true
         it.set(this, value)
     }
 }
 
-fun <T> Any.getSuperFieldValue(name: String): T {
+inline fun <reified T> Any.getSuperFieldValue(name: String): T {
     return getSuperField(name).let {
         it.isAccessible = true
-        return@let it.get(this) as T
+        val r = it.get(this)
+        return@let if (r is T) r else throw NoSuchFieldError(name)
     }
 }
 
-fun <T> Any.getSuperFieldNullableValue(name: String): T? {
+inline fun <reified T> Any.getSuperFieldNullableValue(name: String): T? {
     return getSuperField(name).let {
         it.isAccessible = true
-        return@let it.get(this) as T?
+        val r = it.get(this)
+        return@let if (r is T) r else null
     }
 }
 
-private fun Any.getSuperMethodOrNull(name: String): Method? {
+fun Any.getSuperMethodOrNull(name: String): Method? {
     var sc = javaClass.superclass
     var method = sc.declaredMethods.firstOrNull {
         it.name == name
@@ -63,10 +67,10 @@ private fun Any.getSuperMethodOrNull(name: String): Method? {
     return method
 }
 
-private fun Any.getSuperMethod(name: String): Method =
+fun Any.getSuperMethod(name: String): Method =
     getSuperMethodOrNull(name) ?: throw NoSuchMethodError("$name not found")
 
-private fun Any.getSuperFieldOrNull(name: String): Field? {
+fun Any.getSuperFieldOrNull(name: String): Field? {
     var sc = javaClass.superclass
     var field = sc.declaredFields.firstOrNull { it.name == name }
     while (field == null && sc != null) {
@@ -76,10 +80,10 @@ private fun Any.getSuperFieldOrNull(name: String): Field? {
     return field
 }
 
-private fun Any.getSuperField(name: String): Field =
+fun Any.getSuperField(name: String): Field =
     getSuperFieldOrNull(name) ?: throw NoSuchFieldError("$name not found")
 
-fun <T> Any.setSuperFieldValue(name: String, value: T?) {
+inline fun <reified T> Any.setSuperFieldValue(name: String, value: T?) {
     return getSuperField(name).let {
         it.isAccessible = true
         it.set(this, value)

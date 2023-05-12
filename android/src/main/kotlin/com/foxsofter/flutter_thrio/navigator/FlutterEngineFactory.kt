@@ -42,14 +42,14 @@ object FlutterEngineFactory : PageObserver, RouteObserver {
         return engineGroup
     }
 
-    // 仅用于让 ThrioFlutterActivity 或 ThrioFlutterFragmentActivity 调用
+    // 仅用于让 ThrioFlutterFragmentActivity 调用
     fun provideEngine(activity: Activity): io.flutter.embedding.engine.FlutterEngine {
         val entrypoint = getEntrypoint(activity.intent.getEntrypoint())
         val engineGroup = ensureEngineGroup(entrypoint)
         return engineGroup.provideEngine(activity)
     }
 
-    // 仅用于让 ThrioFlutterActivity 或 ThrioFlutterFragmentActivity 调用
+    // 仅用于让 ThrioFlutterFragmentActivity 调用
     fun cleanUpFlutterEngine(activity: Activity) {
         val entrypoint = getEntrypoint(activity.intent.getEntrypoint())
         engineGroups[entrypoint]?.cleanUpFlutterEngine(activity)

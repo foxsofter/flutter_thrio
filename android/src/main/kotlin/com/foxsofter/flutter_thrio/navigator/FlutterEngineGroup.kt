@@ -18,7 +18,7 @@ open class FlutterEngineGroup constructor(private var entrypoint: String) {
     // 根据 pageId 获取对应引擎实例
     fun getEngine(pageId: Int): FlutterEngine? = engineMap.values.first()
 
-    // 仅用于让 ThrioFlutterActivity 或 ThrioFlutterFragmentActivity 调用
+    // 仅用于让 ThrioFlutterFragmentActivity 调用
     fun provideEngine(activity: Activity): ThrioFlutterEngine {
         val pageId = activity.intent.getPageId()
         if (engineMap.isNotEmpty()) {
@@ -33,7 +33,7 @@ open class FlutterEngineGroup constructor(private var entrypoint: String) {
         return newEngine.engine
     }
 
-    // 仅用于让 ThrioFlutterActivity 或 ThrioFlutterFragmentActivity 调用
+    // 仅用于让 ThrioFlutterFragmentActivity 调用
     fun cleanUpFlutterEngine(activity: Activity) {
         val pageId = activity.intent.getPageId()
         val engine = engineMap[pageId]

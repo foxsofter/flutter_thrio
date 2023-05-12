@@ -72,21 +72,7 @@ class ThrioNavigatorImplement {
     _receiveChannel = NavigatorRouteReceiveChannel(_channel);
     routeChannel = NavigatorRouteObserverChannel(moduleContext.entrypoint);
     pageChannel = NavigatorPageObserverChannel(moduleContext.entrypoint);
-    _receiveChannel.onEngineStatusChanged().listen((final event) {
-      _isActivated = event;
-      if (event) {
-        while (_engineActivateCompleters.isNotEmpty) {
-          _engineActivateCompleters.removeAt(0).complete(true);
-        }
-      }
-    });
   }
-
-  bool hybridNavigationEnabled = true;
-
-  bool _isActivated = true;
-
-  final _engineActivateCompleters = <Completer<bool>>[];
 
   TransitionBuilder get builder => (final context, final child) {
         Navigator? navigator;
@@ -876,19 +862,6 @@ class ThrioNavigatorImplement {
     final int index = 0,
   }) =>
       _receiveChannel.onPageNotify(name: name, url: url, index: index);
-
-  Future<bool> get isEngineActivate async {
-    if (_isActivated) {
-      final lastUrl = (await lastRoute())?.url;
-      final lastFlutterUrl = lastFlutterRoute()?.settings.url;
-      if (lastFlutterUrl == lastUrl) {
-        return true;
-      }
-    }
-    final completer = Completer<bool>();
-    _engineActivateCompleters.add(completer);
-    return completer.future;
-  }
 
   void hotRestart() {
     _channel.invokeMethod<bool>('hotRestart');

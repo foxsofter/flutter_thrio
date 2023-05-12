@@ -24,7 +24,6 @@
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
-import 'package:flutter_thrio/src/navigator/thrio_navigator_implement.dart';
 
 import '../exception/thrio_exception.dart';
 import '../navigator/navigator_logger.dart';
@@ -249,14 +248,6 @@ mixin ThrioModule {
 
   @protected
   set navigatorLogEnabled(final bool enabled) => navigatorLogging = enabled;
-
-  @protected
-  bool get hybridNavigationEnabled =>
-      ThrioNavigatorImplement.shared().hybridNavigationEnabled;
-
-  @protected
-  set hybridNavigationEnabled(final bool enabled) =>
-      ThrioNavigatorImplement.shared().hybridNavigationEnabled = enabled;
 
   @override
   String toString() => '$key: ${modules.keys.toString()}';

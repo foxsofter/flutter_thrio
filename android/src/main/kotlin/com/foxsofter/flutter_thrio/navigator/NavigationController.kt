@@ -160,7 +160,7 @@ internal object NavigationController : Application.ActivityLifecycleCallbacks {
             val intent = if (lastActivity is ThrioFlutterActivityBase &&
                 (lastEntrypoint == entrypoint || PageRoutes.lastRoute == null)
             ) {
-                lastActivity.intent // 复用 ThrioFlutterActivity
+                lastActivity.intent // 复用 ThrioFlutterFragmentActivity
             } else {
                 builder.build(lastActivity, entrypoint).apply {
                     if (!animated) {
@@ -179,9 +179,9 @@ internal object NavigationController : Application.ActivityLifecycleCallbacks {
 
             if (builder is FlutterIntentBuilder) {
                 if (lastActivity is ThrioFlutterActivityBase && PageRoutes.lastRoute == null) {
-                    doPush(lastActivity, routeSettings = settings) // ThrioFlutterActivity 做为首页被打开
+                    doPush(lastActivity, routeSettings = settings) // ThrioFlutterFragmentActivity 做为首页被打开
                 } else if (lastActivity is ThrioFlutterActivityBase && lastEntrypoint == entrypoint) {
-                    doPush(lastActivity) // ThrioFlutterActivity 作为最后打开的 Activity，且是同样的 entrypoint
+                    doPush(lastActivity) // ThrioFlutterFragmentActivity 作为最后打开的 Activity，且是同样的 entrypoint
                 } else {
                     lastActivity.startActivity(intent)
                 }

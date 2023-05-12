@@ -32,7 +32,6 @@ import com.foxsofter.flutter_thrio.NullableIntCallback
 import com.foxsofter.flutter_thrio.extension.getEntrypoint
 import com.foxsofter.flutter_thrio.extension.getPageId
 import com.foxsofter.flutter_thrio.module.ModulePageObservers
-import io.flutter.embedding.android.ThrioFlutterActivity
 import io.flutter.embedding.android.ThrioFlutterActivityBase
 import io.flutter.embedding.android.ThrioFlutterFragment
 import java.lang.ref.WeakReference
@@ -539,10 +538,9 @@ internal object PageRoutes : Application.ActivityLifecycleCallbacks {
                 if (activity.isFinishing) {
                     routeHolders.remove(this)
                     this.activity = null
-                    // 需重置标记位，如果 ThrioFlutterActivity 曾经是首页的话，下次进入的时候才会打开第一个页面
+                    // 需重置标记位，如果 ThrioFlutterFragmentActivity 曾经是首页的话，下次进入的时候才会打开第一个页面
                     if (routeHolders.isEmpty()) {
                         ThrioFlutterFragment.isInitialUrlPushed = false
-                        ThrioFlutterActivity.isInitialUrlPushed = false
                     }
                 }
             }

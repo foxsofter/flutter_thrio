@@ -191,10 +191,6 @@ class NavigatorRouteReceiveChannel {
               (index == 0 || arguments.containsValue(index)))
           .map((final arguments) => arguments['params']);
 
-  Stream<bool> onEngineStatusChanged() => _channel
-      .onEventStream('__onEngineStatus__')
-      .map((final arguments) => arguments['activate'] == true);
-
   dynamic _deserializeParams(final String url, final dynamic params) {
     if (params == null) {
       return null;
