@@ -27,15 +27,21 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.os.Bundle
 import com.foxsofter.flutter_thrio.BooleanCallback
 import com.foxsofter.flutter_thrio.IntCallback
 import com.foxsofter.flutter_thrio.extension.*
 import com.foxsofter.flutter_thrio.navigator.*
+import io.flutter.Log
 import io.flutter.embedding.android.FlutterActivityLaunchConfigs.BackgroundMode
 import io.flutter.embedding.engine.FlutterEngine
 
 open class ThrioFlutterFragmentActivity : FlutterFragmentActivity(), ThrioFlutterActivityBase,
     ExclusiveAppComponent<Activity> {
+
+    companion object {
+        const val TAG = "ThrioFlutterFragmentActivity"
+    }
 
     private val activityDelegate by lazy { ThrioFlutterActivityDelegate(this) }
 
@@ -53,9 +59,33 @@ open class ThrioFlutterFragmentActivity : FlutterFragmentActivity(), ThrioFlutte
 
     override fun onBackPressed() = activityDelegate.onBackPressed()
 
-    override fun onPostResume() {
-        super.onPostResume()
-        flutterFragment.onPostResume()
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        Log.v(TAG, "onCreate ${hashCode()}")
+    }
+    override fun onStart() {
+        if (flutterFragment.delegate != null && flutterFragment.delegate?.isAttached != true) {
+            (flutterFragment.delegate!! as ThrioFlutterViewDelegate).restart()
+        }
+        super.onStart()
+    }
+
+    override fun onResume() {
+        super.onResume()
+//        if (flutterFragment.delegate != null) {
+//            (flutterFragment.delegate!! as ThrioFlutterViewDelegate).resume()
+//        }
+        Log.v(TAG, "onResume ${hashCode()}")
+    }
+
+    override fun onPause() {
+        super.onPause()
+        Log.v(TAG, "onPause ${hashCode()}")
+    }
+
+    override fun onStop() {
+        super.onStop()
+        Log.v(TAG, "onStop ${hashCode()}")
     }
 
     override fun shouldDestroyEngineWithHost(): Boolean =

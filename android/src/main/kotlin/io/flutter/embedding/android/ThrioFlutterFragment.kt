@@ -59,16 +59,23 @@ class ThrioFlutterFragment : FlutterFragment() {
     }
 
     override fun onStart() {
-        if (delegate?.isAttached != true) {
-            Log.v(TAG, "onStart ${hashCode()}")
-            (delegate!! as ThrioFlutterViewDelegate).resume()
-        }
         super.onStart()
+        Log.v(TAG, "onStart ${hashCode()}")
     }
 
     override fun onResume() {
         super.onResume()
         Log.v(TAG, "onResume ${hashCode()}")
+    }
+
+    override fun onPause() {
+        super.onPause()
+        Log.v(TAG, "onPause ${hashCode()}")
+    }
+
+    override fun onStop() {
+        super.onStop()
+        Log.v(TAG, "onStop ${hashCode()}")
     }
 
     override fun onBackPressed() {
@@ -79,11 +86,12 @@ class ThrioFlutterFragment : FlutterFragment() {
     override fun onFlutterUiDisplayed() {
         super.onFlutterUiDisplayed()
 
-        val activity = requireActivity()
         if (!isInitialUrlPushed && initialUrl?.isNotEmpty() == true) {
             isInitialUrlPushed = true
             NavigationController.Push.push(initialUrl!!, null, false) {}
         } else {
+            val activity = requireActivity()
+            Log.v(TAG, "onFlutterUiDisplayed ${hashCode()}, activity: ${activity.hashCode()}")
             NavigationController.Push.doPush(activity)
         }
     }

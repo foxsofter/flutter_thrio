@@ -200,7 +200,7 @@ class _AnchorLifecycleObserver with NavigatorPageObserver {
 }
 
 // ignore: prefer_mixin
-class _NavigatorMountedObserver with NavigatorObserver {
+class _NavigatorMountedObserver extends NavigatorObserver {
   _NavigatorMountedObserver(this._delegate);
 
   final NavigatorPageLifecycleMixin _delegate;

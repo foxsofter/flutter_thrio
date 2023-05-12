@@ -105,7 +105,7 @@ mixin NavigatorWillPopMixin<T extends StatefulWidget> on State<T> {
   }
 }
 
-class _InternalNavigatorObserver with NavigatorObserver {
+class _InternalNavigatorObserver extends NavigatorObserver {
   final delegates = RegistrySet<NavigatorWillPopMixin>();
 
   @override

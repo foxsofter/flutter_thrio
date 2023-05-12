@@ -123,7 +123,7 @@ class _HomePageState extends State<HomePage>
                             width: 100,
                             child: TextField(
                                 controller: _inputController,
-                                textInputAction: TextInputAction.search,
+                                textInputAction: TextInputAction.done,
                                 // onSubmitted: onSubmitted,
                                 decoration: const InputDecoration(
                                   hintText: 'hintText',

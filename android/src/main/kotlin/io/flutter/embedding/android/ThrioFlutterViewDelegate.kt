@@ -49,10 +49,13 @@ internal class ThrioFlutterViewDelegate(host: Host) : FlutterActivityAndFragment
         get() = getSuperFieldBoolean("isAttached")
         set(value) = setSuperFieldBoolean("isAttached", value)
 
-    fun resume() {
-        Log.i(TAG, "resume ${hashCode()} begin")
+    fun restart() {
+        Log.i(TAG, "restart ${hashCode()} begin")
+
         val prevDelegate =
-            flutterEngine!!.activityControlSurface.getFieldNullableValue<ThrioFlutterViewDelegate>("exclusiveActivity")
+            flutterEngine!!.activityControlSurface.getFieldNullableValue<ThrioFlutterViewDelegate>(
+                "exclusiveActivity"
+            )
         if (prevDelegate != null) {
             if (lastResumeTimer != null) {
                 lastResumeTimer!!.cancel();
@@ -62,21 +65,32 @@ internal class ThrioFlutterViewDelegate(host: Host) : FlutterActivityAndFragment
             lastResumeTimer!!.schedule(object : TimerTask() {
                 override fun run() {
                     host.activity?.runOnUiThread {
-                        platformPlugin = PlatformPlugin(host.activity!!, flutterEngine!!.platformChannel)
                         if (host.shouldDispatchAppLifecycleState()) {
                             flutterEngine!!.lifecycleChannel.appIsResumed()
                         }
-                        updateSystemUiOverlays()
                     }
                 }
             }, 500)
         }
+
         flutterEngine!!.activityControlSurface.attachToActivity(this, host.lifecycle)
         if (host.shouldAttachEngineToActivity() && flutterView != null && !flutterView!!.isAttachedToFlutterEngine) {
-            println("$TAG resume ${hashCode()} flutterView attach")
-            platformPlugin = PlatformPlugin(host.activity!!, flutterEngine!!.platformChannel)
+            platformPlugin = host.providePlatformPlugin(host.activity, flutterEngine!!)
             flutterView!!.addOnFirstFrameRenderedListener(flutterUiDisplayListener)
             flutterView!!.attachToFlutterEngine(flutterEngine!!)
+            updateSystemUiOverlays()
+            attached = true
+        }
+    }
+
+    fun resume() {
+        Log.i(TAG, "resume ${hashCode()} begin")
+
+        if (host.shouldAttachEngineToActivity() && flutterView != null && !flutterView!!.isAttachedToFlutterEngine) {
+            platformPlugin = host.providePlatformPlugin(host.activity, flutterEngine!!)
+            flutterView!!.addOnFirstFrameRenderedListener(flutterUiDisplayListener)
+            flutterView!!.attachToFlutterEngine(flutterEngine!!)
+            updateSystemUiOverlays()
             attached = true
         }
     }

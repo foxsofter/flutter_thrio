@@ -186,7 +186,7 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
       }
       // 在原生端不处于容器的根部，或者当前 Flutter 页面栈上超过 2，则 pop
       // 解决目前单引擎下偶现的无法 pop 的问题
-      if (!inRoot || history.whereType<NavigatorRoute>().length > 2) {
+      if (!inRoot && history.whereType<NavigatorRoute>().length > 2) {
         navigatorState.pop();
       }
 
