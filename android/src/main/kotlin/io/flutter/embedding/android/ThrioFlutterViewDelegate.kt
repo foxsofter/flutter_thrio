@@ -25,6 +25,7 @@ package io.flutter.embedding.android
 
 import com.foxsofter.flutter_thrio.extension.*
 import io.flutter.Log
+import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.embedding.engine.renderer.FlutterUiDisplayListener
 import io.flutter.plugin.platform.PlatformPlugin
 import java.util.*
@@ -67,17 +68,18 @@ internal class ThrioFlutterViewDelegate(host: Host) : FlutterActivityAndFragment
                     host.activity?.runOnUiThread {
                         if (host.shouldDispatchAppLifecycleState()) {
                             flutterEngine!!.lifecycleChannel.appIsResumed()
+                            updateSystemUiOverlays()
                         }
                     }
                 }
-            }, 500)
-            flutterEngine!!.activityControlSurface.attachToActivity(this, host.lifecycle)
-            if (host.shouldAttachEngineToActivity() && flutterView != null && !flutterView!!.isAttachedToFlutterEngine) {
-                platformPlugin = host.providePlatformPlugin(host.activity, flutterEngine!!)
-                flutterView!!.addOnFirstFrameRenderedListener(flutterUiDisplayListener)
-                flutterView!!.attachToFlutterEngine(flutterEngine!!)
-                attached = true
-            }
+            }, 600)
+        }
+        flutterEngine!!.activityControlSurface.attachToActivity(this, host.lifecycle)
+        if (host.shouldAttachEngineToActivity() && flutterView != null) {
+            platformPlugin = host.providePlatformPlugin(host.activity, flutterEngine!!)
+            flutterView!!.setFieldValue<FlutterEngine>("flutterEngine", null)
+            flutterView!!.attachToFlutterEngine(flutterEngine!!)
+            attached = true
         }
     }
 }

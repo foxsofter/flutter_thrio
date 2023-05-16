@@ -58,13 +58,6 @@ class ThrioFlutterFragment : FlutterFragment() {
         super.onAttach(context)
     }
 
-    override fun onStart() {
-        if (delegate != null && delegate?.isAttached != true) {
-            (delegate!! as ThrioFlutterViewDelegate).restart()
-        }
-        super.onStart()
-    }
-
     override fun onBackPressed() {
         val activity = requireActivity()
         return activity.onBackPressed()
