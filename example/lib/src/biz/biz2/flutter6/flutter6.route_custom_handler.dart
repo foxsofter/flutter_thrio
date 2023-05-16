@@ -34,6 +34,18 @@ Future<void> on$RouteCustomHandlerRegister(
             animated: animated,
             result: result,
           ));
+
+  registerFunc('justascheme://open/biz2/home', <TParams, TPopParams>(
+    final url,
+    final queryParams, {
+    final params,
+    final animated = true,
+    final result,
+  }) {
+    result?.call(-1); // 不拦截
+    return null;
+  });
+
   registerFunc(
       'anotherScheme://leaderboard/home{hashId?,product}',
       <TParams, TPopParams>(

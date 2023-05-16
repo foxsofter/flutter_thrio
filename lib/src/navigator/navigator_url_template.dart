@@ -99,4 +99,7 @@ class NavigatorUrlTemplate {
 
   @override
   int get hashCode => template.hashCode;
+
+  @override
+  String toString() => template;
 }

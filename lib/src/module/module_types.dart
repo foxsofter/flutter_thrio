@@ -59,6 +59,9 @@ typedef RegisterRouteCustomHandlerFunc = void Function(
   bool queryParamsDecoded,
 });
 
+const navigatorResultTypeHandled = 0;
+const navigatorResultTypeNotHandled = -1;
+
 /// Signature of route action.
 ///
 /// Can be used to handle route action.

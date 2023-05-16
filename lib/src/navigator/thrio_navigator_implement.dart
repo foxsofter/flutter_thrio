@@ -158,32 +158,10 @@ class ThrioNavigatorImplement {
     final bool animated = true,
     final NavigatorIntCallback? result,
   }) async {
-    final uri = Uri.parse(url);
-    var handler =
-        anchor.routeCustomHandlers.lastWhereOrNull((final it) => it.match(uri));
-    if (handler != null) {
-      for (var i = anchor.routeCustomHandlers.length - 1; i >= 0; i--) {
-        final entry  = anchor.routeCustomHandlers.elementAt(i);
-        if(!entry.key.match(uri)) continue;
-        handler = entry.value;
-        var index = 0;
-        final pr = await onRouteCustomHandle<TParams, TPopParams>(
-          handler: handler,
-          uri: uri,
-          params: params,
-          animated: animated,
-          result: (final idx) {
-            index = idx;
-            result?.call(index);
-          },
-        );
-        print('wey index $index');
-        if (index != -1) {
-          return pr;
-        }
-      }
-    }
     final completer = Completer<TPopParams?>();
+
+    await _pushToHandler(url, params, animated, completer, result);
+
     unawaited(_pushToNative<TParams, TPopParams>(
       url,
       params,
@@ -191,19 +169,6 @@ class ThrioNavigatorImplement {
       completer,
     ).then((final index) => result?.call(index)));
     return completer.future;
-  }
-
-  MapEntry<Uri, NavigatorRouteCustomHandler>? matchRouteCustomHandle(
-    final String url,
-  ) {
-    // 优先匹配后入的
-    final uri = Uri.parse(url);
-    final handle =
-        anchor.routeCustomHandlers.lastWhereOrNull((final it) => it.match(uri));
-    if (handle == null) {
-      return null;
-    }
-    return MapEntry(uri, handle);
   }
 
   Future<TPopParams?> onRouteCustomHandle<TParams, TPopParams>({
@@ -231,23 +196,15 @@ class ThrioNavigatorImplement {
     final bool animated = true,
     final NavigatorIntCallback? result,
   }) async {
-    final match = matchRouteCustomHandle(url);
-    if (match != null) {
-      final poppedResult = await onRouteCustomHandle<TParams, TPopParams>(
-        handler: match.value,
-        uri: match.key,
-        params: params,
-        animated: animated,
-        result: (final index) async {
-          if (index > 0) {
-            await removeAll(url: url, excludeIndex: index);
-          }
-          result?.call(index);
-        },
-      );
-      return poppedResult;
-    }
     final completer = Completer<TPopParams?>();
+
+    await _pushToHandler(url, params, animated, completer, (final index) async {
+      if (index > 0) {
+        await removeAll(url: url, excludeIndex: index);
+      }
+      result?.call(index);
+    });
+
     unawaited(
         _pushToNative<TParams, TPopParams>(url, params, animated, completer)
             .then((final index) async {
@@ -269,24 +226,15 @@ class ThrioNavigatorImplement {
     if (lastSetting == null) {
       throw ThrioException('no route to replace');
     }
-    final match = matchRouteCustomHandle(url);
-    if (match != null) {
-      final poppedResult = await onRouteCustomHandle<TParams, TPopParams>(
-        handler: match.value,
-        uri: match.key,
-        params: params,
-        animated: animated,
-        result: (final index) async {
-          if (index > 0) {
-            await remove(url: lastSetting.url, index: lastSetting.index);
-          }
-          result?.call(index);
-        },
-      );
-      return poppedResult;
-    }
-
     final completer = Completer<TPopParams>();
+
+    await _pushToHandler(url, params, animated, completer, (final index) async {
+      if (index > 0) {
+        await remove(url: lastSetting.url, index: lastSetting.index);
+      }
+      result?.call(index);
+    });
+
     unawaited(
         _pushToNative<TParams, TPopParams>(url, params, animated, completer)
             .then((final index) async {
@@ -311,24 +259,16 @@ class ThrioNavigatorImplement {
       result?.call(0);
       return null;
     }
-    final match = matchRouteCustomHandle(url);
-    if (match != null) {
-      final poppedResult = await onRouteCustomHandle<TParams, TPopParams>(
-        handler: match.value,
-        uri: match.key,
-        params: params,
-        animated: animated,
-        result: (final index) async {
-          if (index > 0) {
-            await removeBlowUntil(predicate: (final url) => url == toUrl);
-          }
-          result?.call(index);
-        },
-      );
-      return poppedResult;
-    }
 
     final completer = Completer<TPopParams>();
+
+    await _pushToHandler(url, params, animated, completer, (final index) async {
+      if (index > 0) {
+        await removeBlowUntil(predicate: (final url) => url == toUrl);
+      }
+      result?.call(index);
+    });
+
     unawaited(
         _pushToNative<TParams, TPopParams>(url, params, animated, completer)
             .then((final index) async {
@@ -353,24 +293,16 @@ class ThrioNavigatorImplement {
       result?.call(0);
       return null;
     }
-    final match = matchRouteCustomHandle(url);
-    if (match != null) {
-      final poppedResult = await onRouteCustomHandle<TParams, TPopParams>(
-        handler: match.value,
-        uri: match.key,
-        params: params,
-        animated: animated,
-        result: (final index) async {
-          if (index > 0) {
-            await removeBlowUntilFirst(predicate: (final url) => url == toUrl);
-          }
-          result?.call(index);
-        },
-      );
-      return poppedResult;
-    }
 
     final completer = Completer<TPopParams>();
+
+    await _pushToHandler(url, params, animated, completer, (final index) async {
+      if (index > 0) {
+        await removeBlowUntilFirst(predicate: (final url) => url == toUrl);
+      }
+      result?.call(index);
+    });
+
     unawaited(
         _pushToNative<TParams, TPopParams>(url, params, animated, completer)
             .then((final index) async {
@@ -396,24 +328,16 @@ class ThrioNavigatorImplement {
       result?.call(0);
       return null;
     }
-    final match = matchRouteCustomHandle(url);
-    if (match != null) {
-      final poppedResult = await onRouteCustomHandle<TParams, TPopParams>(
-        handler: match.value,
-        uri: match.key,
-        params: params,
-        animated: animated,
-        result: (final index) async {
-          if (index > 0) {
-            await removeBlowUntil(predicate: predicate);
-          }
-          result?.call(index);
-        },
-      );
-      return poppedResult;
-    }
 
     final completer = Completer<TPopParams>();
+
+    await _pushToHandler(url, params, animated, completer, (final index) async {
+      if (index > 0) {
+        await removeBlowUntil(predicate: predicate);
+      }
+      result?.call(index);
+    });
+
     unawaited(
         _pushToNative<TParams, TPopParams>(url, params, animated, completer)
             .then((final index) async {
@@ -439,24 +363,16 @@ class ThrioNavigatorImplement {
       result?.call(0);
       return null;
     }
-    final match = matchRouteCustomHandle(url);
-    if (match != null) {
-      final poppedResult = await onRouteCustomHandle<TParams, TPopParams>(
-        handler: match.value,
-        uri: match.key,
-        params: params,
-        animated: animated,
-        result: (final index) async {
-          if (index > 0) {
-            await removeBlowUntilFirst(predicate: predicate);
-          }
-          result?.call(index);
-        },
-      );
-      return poppedResult;
-    }
 
     final completer = Completer<TPopParams>();
+
+    await _pushToHandler(url, params, animated, completer, (final index) async {
+      if (index > 0) {
+        await removeBlowUntilFirst(predicate: predicate);
+      }
+      result?.call(index);
+    });
+
     unawaited(
         _pushToNative<TParams, TPopParams>(url, params, animated, completer)
             .then((final index) async {
@@ -466,6 +382,41 @@ class ThrioNavigatorImplement {
       result?.call(index);
     }));
     return completer.future;
+  }
+
+  Future<void> _pushToHandler<TParams, TPopParams>(
+    final String url,
+    final TParams? params,
+    final bool animated,
+    final Completer<TPopParams?> completer,
+    final NavigatorIntCallback? result,
+  ) async {
+    final uri = Uri.parse(url);
+    var handler =
+        anchor.routeCustomHandlers.lastWhereOrNull((final it) => it.match(uri));
+    if (handler != null) {
+      for (var i = anchor.routeCustomHandlers.length - 1; i >= 0; i--) {
+        final entry = anchor.routeCustomHandlers.elementAt(i);
+        if (!entry.key.match(uri)) {
+          continue;
+        }
+        handler = entry.value;
+        var index = 0;
+        final pr = await onRouteCustomHandle<TParams, TPopParams>(
+          handler: handler,
+          uri: uri,
+          params: params,
+          animated: animated,
+          result: (final idx) {
+            index = idx;
+            result?.call(index);
+          },
+        );
+        if (index != navigatorResultTypeNotHandled) {
+          poppedResult(completer, pr);
+        }
+      }
+    }
   }
 
   Future<int> _pushToNative<TParams, TPopParams>(
