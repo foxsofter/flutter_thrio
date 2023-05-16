@@ -163,7 +163,9 @@ class ThrioNavigatorImplement {
         anchor.routeCustomHandlers.lastWhereOrNull((final it) => it.match(uri));
     if (handler != null) {
       for (var i = anchor.routeCustomHandlers.length - 1; i >= 0; i--) {
-        handler = anchor.routeCustomHandlers.elementAt(i).value;
+        final entry  = anchor.routeCustomHandlers.elementAt(i);
+        if(!entry.key.match(uri)) continue;
+        handler = entry.value;
         var index = 0;
         final pr = await onRouteCustomHandle<TParams, TPopParams>(
           handler: handler,
@@ -175,6 +177,7 @@ class ThrioNavigatorImplement {
             result?.call(index);
           },
         );
+        print('wey index $index');
         if (index != -1) {
           return pr;
         }
