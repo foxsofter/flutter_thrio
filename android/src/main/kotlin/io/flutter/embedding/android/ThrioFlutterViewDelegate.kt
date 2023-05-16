@@ -71,27 +71,13 @@ internal class ThrioFlutterViewDelegate(host: Host) : FlutterActivityAndFragment
                     }
                 }
             }, 500)
-        }
-
-        flutterEngine!!.activityControlSurface.attachToActivity(this, host.lifecycle)
-        if (host.shouldAttachEngineToActivity() && flutterView != null && !flutterView!!.isAttachedToFlutterEngine) {
-            platformPlugin = host.providePlatformPlugin(host.activity, flutterEngine!!)
-            flutterView!!.addOnFirstFrameRenderedListener(flutterUiDisplayListener)
-            flutterView!!.attachToFlutterEngine(flutterEngine!!)
-            updateSystemUiOverlays()
-            attached = true
-        }
-    }
-
-    fun resume() {
-        Log.i(TAG, "resume ${hashCode()} begin")
-
-        if (host.shouldAttachEngineToActivity() && flutterView != null && !flutterView!!.isAttachedToFlutterEngine) {
-            platformPlugin = host.providePlatformPlugin(host.activity, flutterEngine!!)
-            flutterView!!.addOnFirstFrameRenderedListener(flutterUiDisplayListener)
-            flutterView!!.attachToFlutterEngine(flutterEngine!!)
-            updateSystemUiOverlays()
-            attached = true
+            flutterEngine!!.activityControlSurface.attachToActivity(this, host.lifecycle)
+            if (host.shouldAttachEngineToActivity() && flutterView != null && !flutterView!!.isAttachedToFlutterEngine) {
+                platformPlugin = host.providePlatformPlugin(host.activity, flutterEngine!!)
+                flutterView!!.addOnFirstFrameRenderedListener(flutterUiDisplayListener)
+                flutterView!!.attachToFlutterEngine(flutterEngine!!)
+                attached = true
+            }
         }
     }
 }

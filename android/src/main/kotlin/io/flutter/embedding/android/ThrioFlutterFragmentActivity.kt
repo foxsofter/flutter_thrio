@@ -27,7 +27,6 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
-import android.os.Bundle
 import com.foxsofter.flutter_thrio.BooleanCallback
 import com.foxsofter.flutter_thrio.IntCallback
 import com.foxsofter.flutter_thrio.extension.*
@@ -58,25 +57,6 @@ open class ThrioFlutterFragmentActivity : FlutterFragmentActivity(), ThrioFlutte
         activityDelegate.cleanUpFlutterEngine(flutterEngine)
 
     override fun onBackPressed() = activityDelegate.onBackPressed()
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        Log.v(TAG, "onCreate ${hashCode()}")
-    }
-    override fun onStart() {
-        if (flutterFragment.delegate != null && flutterFragment.delegate?.isAttached != true) {
-            (flutterFragment.delegate!! as ThrioFlutterViewDelegate).restart()
-        }
-        super.onStart()
-    }
-
-    override fun onResume() {
-        super.onResume()
-//        if (flutterFragment.delegate != null) {
-//            (flutterFragment.delegate!! as ThrioFlutterViewDelegate).resume()
-//        }
-        Log.v(TAG, "onResume ${hashCode()}")
-    }
 
     override fun onPause() {
         super.onPause()

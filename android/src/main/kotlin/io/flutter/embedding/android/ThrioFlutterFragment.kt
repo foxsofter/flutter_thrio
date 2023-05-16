@@ -59,23 +59,10 @@ class ThrioFlutterFragment : FlutterFragment() {
     }
 
     override fun onStart() {
+        if (delegate != null && delegate?.isAttached != true) {
+            (delegate!! as ThrioFlutterViewDelegate).restart()
+        }
         super.onStart()
-        Log.v(TAG, "onStart ${hashCode()}")
-    }
-
-    override fun onResume() {
-        super.onResume()
-        Log.v(TAG, "onResume ${hashCode()}")
-    }
-
-    override fun onPause() {
-        super.onPause()
-        Log.v(TAG, "onPause ${hashCode()}")
-    }
-
-    override fun onStop() {
-        super.onStop()
-        Log.v(TAG, "onStop ${hashCode()}")
     }
 
     override fun onBackPressed() {
