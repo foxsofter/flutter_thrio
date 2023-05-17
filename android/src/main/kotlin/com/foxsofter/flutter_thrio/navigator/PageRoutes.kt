@@ -256,7 +256,7 @@ internal object PageRoutes : Application.ActivityLifecycleCallbacks {
                                     break
                                 }
                             }
-                            FlutterEngineFactory.getEngines(entrypoint).forEach { engine ->
+                            FlutterEngineFactory.getEngines().forEach { engine ->
                                 engine.sendChannel.onPopTo(
                                     poppedToSettings.toArguments()
                                 ) {}

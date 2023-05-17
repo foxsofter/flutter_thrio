@@ -59,7 +59,7 @@ open class ThrioFlutterFragmentActivity : FlutterFragmentActivity(), ThrioFlutte
     override fun onBackPressed() = activityDelegate.onBackPressed()
 
     override fun onStart() {
-        if (flutterFragment?.delegate != null) {
+        if (flutterFragment.delegate != null) {
             (flutterFragment.delegate!! as ThrioFlutterViewDelegate).restart()
         }
         super.onStart()

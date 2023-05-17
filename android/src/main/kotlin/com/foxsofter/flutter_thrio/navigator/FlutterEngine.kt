@@ -30,8 +30,7 @@ import io.flutter.embedding.engine.dart.DartExecutor
 
 data class FlutterEngine(
     override val entrypoint: String,
-    val engine: ThrioFlutterEngine,
-    val isMainEngine: Boolean,
+    val flutterEngine: ThrioFlutterEngine,
     private val readyListener: FlutterEngineReadyListener? = null
 ) : FlutterEngineIdentifier {
     override var pageId: Int = NAVIGATION_ROUTE_PAGE_ID_NONE
@@ -46,26 +45,24 @@ data class FlutterEngine(
         val channel = ThrioChannel(
             this, "__thrio_app__${entrypoint}"
         )
-        channel.setupMethodChannel(engine.dartExecutor)
-        channel.setupEventChannel(engine.dartExecutor)
+        channel.setupMethodChannel(flutterEngine.dartExecutor)
+        channel.setupEventChannel(flutterEngine.dartExecutor)
         sendChannel = RouteSendChannel(channel)
         receiveChannel = RouteReceiveChannel(channel) {
             readyListener?.onReady(this)
         }
-        routeChannel = RouteObserverChannel(this, engine.dartExecutor)
-        pageChannel = PageObserverChannel(this, engine.dartExecutor)
+        routeChannel = RouteObserverChannel(this, flutterEngine.dartExecutor)
+        pageChannel = PageObserverChannel(this, flutterEngine.dartExecutor)
         moduleContextChannel = ThrioChannel(
             this,
             "__thrio_module_context__${entrypoint}"
         )
-        moduleContextChannel.setupMethodChannel(engine.dartExecutor)
+        moduleContextChannel.setupMethodChannel(flutterEngine.dartExecutor)
 
-        if (isMainEngine) {
-            val dartEntrypoint = DartExecutor.DartEntrypoint(
-                FlutterInjector.instance().flutterLoader().findAppBundlePath(), entrypoint
-            )
-            engine.dartExecutor.executeDartEntrypoint(dartEntrypoint)
-        }
+        val dartEntrypoint = DartExecutor.DartEntrypoint(
+            FlutterInjector.instance().flutterLoader().findAppBundlePath(), entrypoint
+        )
+        flutterEngine.dartExecutor.executeDartEntrypoint(dartEntrypoint)
     }
 
     fun destroy() {

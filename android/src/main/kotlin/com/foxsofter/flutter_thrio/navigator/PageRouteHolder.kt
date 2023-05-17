@@ -175,7 +175,6 @@ internal data class PageRouteHolder(
                             lastRoute.entrypoint != lastRoute.fromEntrypoint
                         ) {
                             FlutterEngineFactory.getEngine(
-                                lastRoute.fromPageId,
                                 lastRoute.fromEntrypoint
                             )?.sendChannel?.onPop(
                                 lastRoute.settings.toArguments()
@@ -195,7 +194,6 @@ internal data class PageRouteHolder(
                     lastRoute.settings.params = ModuleJsonSerializers.serializeParams(params)
                     lastRoute.settings.animated = false
                     FlutterEngineFactory.getEngine(
-                        lastRoute.fromPageId,
                         lastRoute.fromEntrypoint
                     )?.sendChannel?.onPop(
                         lastRoute.settings.toArguments()
