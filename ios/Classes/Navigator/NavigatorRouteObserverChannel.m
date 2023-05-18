@@ -44,16 +44,6 @@
     return self;
 }
 
-#pragma mark - NavigatorFlutterEngineIdentifier methods
-
-- (NSString *)entrypoint {
-    return _channel.entrypoint;
-}
-
-- (NSUInteger)pageId {
-    return _channel.pageId;
-}
-
 #pragma mark - NavigatorRouteObserverProtocol methods
 
 /// Send `didPush` to all flutter engines.

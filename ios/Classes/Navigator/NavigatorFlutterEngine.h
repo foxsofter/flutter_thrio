@@ -21,7 +21,6 @@
 
 #import <Foundation/Foundation.h>
 #import <Flutter/Flutter.h>
-#import "NavigatorFlutterEngineIdentifier.h"
 #import "NavigatorFlutterViewController.h"
 #import "NavigatorPageObserverChannel.h"
 #import "NavigatorRouteObserverChannel.h"
@@ -33,17 +32,16 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface NavigatorFlutterEngine : NSObject<NavigatorFlutterEngineIdentifier>
+@interface NavigatorFlutterEngine : NSObject
 
 - (instancetype)initWithEntrypoint:(NSString *)entrypoint
-                        withEngine:(ThrioFlutterEngine *)flutterEngine
-                      isMainEngine:(BOOL)isMainEngine NS_DESIGNATED_INITIALIZER;
+                        withEngine:(ThrioFlutterEngine *)flutterEngine NS_DESIGNATED_INITIALIZER;
 
 - (instancetype)init NS_UNAVAILABLE;
 
 - (void)startupWithReadyBlock:(ThrioEngineReadyCallback _Nullable)block;
 
-@property (nonatomic, assign) NSUInteger pageId;
+@property (nonatomic, copy, readonly) NSString *entrypoint;
 
 @property (nonatomic, readonly) ThrioFlutterEngine *flutterEngine;
 

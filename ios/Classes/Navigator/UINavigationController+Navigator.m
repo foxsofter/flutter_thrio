@@ -67,7 +67,6 @@ NS_ASSUME_NONNULL_BEGIN
                params:(id _Nullable)params
              animated:(BOOL)animated
        fromEntrypoint:(NSString *_Nullable)fromEntrypoint
-           fromPageId:(NSUInteger)fromPageId
                result:(ThrioNumberCallback _Nullable)result
          poppedResult:(ThrioIdCallback _Nullable)poppedResult {
     @synchronized (self) {
@@ -78,7 +77,6 @@ NS_ASSUME_NONNULL_BEGIN
                                     params:params
                                   animated:animated
                             fromEntrypoint:fromEntrypoint
-                                fromPageId:fromPageId
                                     result:result
                               poppedResult:poppedResult];
         } else {
@@ -87,7 +85,7 @@ NS_ASSUME_NONNULL_BEGIN
                 entrypoint = [url componentsSeparatedByString:@"/"][1];
             }
             if ([self.topViewController isKindOfClass:NavigatorFlutterViewController.class] &&
-                [[(NavigatorFlutterViewController *)self.topViewController entrypoint] isEqualToString:entrypoint]) {
+                [[[(NavigatorFlutterViewController *)self.topViewController warpEngine] entrypoint] isEqualToString:entrypoint]) {
                 NavigatorPageRoute *lastRoute = [ThrioNavigator getLastRouteByUrl:url];
                 NSNumber *index = lastRoute ? @(lastRoute.settings.index.integerValue + 1) : @1;
                 ThrioNumberCallback resultBlock = ^(NSNumber *idx) {
@@ -103,7 +101,6 @@ NS_ASSUME_NONNULL_BEGIN
                                                params:params
                                              animated:animated
                                        fromEntrypoint:fromEntrypoint
-                                           fromPageId:fromPageId
                                                result:resultBlock
                                          poppedResult:poppedResult];
             } else {
@@ -117,7 +114,6 @@ NS_ASSUME_NONNULL_BEGIN
                                                   params:params
                                                 animated:animated
                                           fromEntrypoint:fromEntrypoint
-                                              fromPageId:fromPageId
                                                   result:result
                                             poppedResult:poppedResult];
                 };
@@ -434,7 +430,7 @@ NS_ASSUME_NONNULL_BEGIN
     for (UIViewController *vc in vcs) {
         if ([vc isKindOfClass:NavigatorFlutterViewController.class]) {
             NavigatorFlutterViewController *fvc = (NavigatorFlutterViewController *)vc;
-            if ([fvc.entrypoint isEqualToString:entrypoint]) {
+            if ([fvc.warpEngine.entrypoint isEqualToString:entrypoint]) {
                 return fvc.thrio_lastRoute;
             }
         } else {
@@ -696,7 +692,6 @@ NS_ASSUME_NONNULL_BEGIN
                           params:(id _Nullable)params
                         animated:(BOOL)animated
                   fromEntrypoint:(NSString *_Nullable)fromEntrypoint
-                      fromPageId:(NSUInteger)fromPageId
                           result:(ThrioNumberCallback _Nullable)result
                     poppedResult:(ThrioIdCallback _Nullable)poppedResult {
     if (viewController) {
@@ -708,7 +703,6 @@ NS_ASSUME_NONNULL_BEGIN
                                params:params
                              animated:animated
                        fromEntrypoint:fromEntrypoint
-                           fromPageId:fromPageId
                                result:^(NSNumber *idx) {
             if (idx && [idx boolValue]) {
                 __strong typeof(weakself) strongSelf = weakself;

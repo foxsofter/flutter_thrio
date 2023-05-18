@@ -44,15 +44,15 @@ NavigatorRouteObserverProtocol
 
 - (NavigatorFlutterEngine *)startupWithEntrypoint:(NSString *)entrypoint readyBlock:(ThrioEngineReadyCallback _Nullable)block;
 
-- (BOOL)isMainEngineByPageId:(NSUInteger)pageId withEntrypoint:(NSString *)entrypoint;
+- (BOOL)isMainEngineByEntrypoint:(NSString *)entrypoint;
 
-- (NavigatorFlutterEngine *_Nullable)getEngineByPageId:(NSUInteger)pageId withEntrypoint:(NSString *)entrypoint;
+- (NavigatorFlutterEngine *_Nullable)getEngineByEntrypoint:(NSString *)entrypoint;
 
-- (void)destroyEngineByPageId:(NSUInteger)pageId withEntrypoint:(NSString *)entrypoint;
+- (void)destroyEngineByEntrypoint:(NSString *)entrypoint;
 
-- (NavigatorRouteSendChannel *)getSendChannelByPageId:(NSUInteger)pageId withEntrypoint:(NSString *)entrypoint;
+- (NavigatorRouteSendChannel *)getSendChannelByEntrypoint:(NSString *)entrypoint;
 
-- (ThrioChannel *)getModuleChannelByPageId:(NSUInteger)pageId withEntrypoint:(NSString *)entrypoint;
+- (ThrioChannel *)getModuleChannelByEntrypoint:(NSString *)entrypoint;
 
 - (void)setModuleContextValue:(id _Nullable)value forKey:(NSString *)key;
 

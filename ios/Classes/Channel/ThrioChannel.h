@@ -23,7 +23,6 @@
 #import <Flutter/Flutter.h>
 
 #import "FlutterThrioTypes.h"
-#import "NavigatorFlutterEngineIdentifier.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -31,7 +30,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// A wrapper class for FlutterMethodChannel and FlutterEventChannel.
 ///
-@interface ThrioChannel : NSObject<FlutterStreamHandler,NavigatorFlutterEngineIdentifier>
+@interface ThrioChannel : NSObject<FlutterStreamHandler>
 
 /// Construct the instance with a default channel name.
 ///

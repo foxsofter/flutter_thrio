@@ -37,16 +37,6 @@
     return self;
 }
 
-#pragma mark - NavigatorFlutterEngineIdentifier methods
-
-- (NSString *)entrypoint {
-    return _channel.entrypoint;
-}
-
-- (NSUInteger)pageId {
-    return _channel.pageId;
-}
-
 #pragma mark - navigator methods
 
 - (void)push:(id)arguments result:(ThrioBoolCallback _Nullable)result {

@@ -21,16 +21,12 @@
 
 #import <Flutter/Flutter.h>
 #import "NavigatorFlutterEngine.h"
-#import "NavigatorFlutterEngineIdentifier.h"
 #import "NavigatorPageNotifyProtocol.h"
 #import "FlutterThrioTypes.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface NavigatorFlutterViewController : FlutterViewController <
-UINavigationControllerDelegate,
-NavigatorFlutterEngineIdentifier
->
+@interface NavigatorFlutterViewController : FlutterViewController <UINavigationControllerDelegate>
 
 - (instancetype)initWithEngine:(NavigatorFlutterEngine *)engine NS_DESIGNATED_INITIALIZER;
 

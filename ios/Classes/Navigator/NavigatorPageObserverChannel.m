@@ -46,17 +46,6 @@ NS_ASSUME_NONNULL_BEGIN
     return self;
 }
 
-#pragma mark - NavigatorFlutterEngineIdentifier methods
-
-- (NSString *)entrypoint {
-    return _channel.entrypoint;
-}
-
-- (NSUInteger)pageId {
-    return _channel.pageId;
-}
-
-
 #pragma mark - NavigatorPageObserverProtocol methods
 
 /// Send `willAppear` to all flutter engines.

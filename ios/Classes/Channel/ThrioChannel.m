@@ -80,16 +80,6 @@ static NSString *const kEventNameKey = @"__event_name__";
     return self;
 }
 
-#pragma mark - NavigatorFlutterEngineIdentifier methods
-
-- (NSString *)entrypoint {
-    return _engine.entrypoint;
-}
-
-- (NSUInteger)pageId {
-    return _engine.pageId;
-}
-
 #pragma mark - method channel methods
 
 - (void)invokeMethod:(NSString *)method {

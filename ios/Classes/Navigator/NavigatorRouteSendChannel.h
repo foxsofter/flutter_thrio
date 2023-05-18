@@ -21,13 +21,12 @@
 
 #import <Foundation/Foundation.h>
 #import <Flutter/Flutter.h>
-#import "NavigatorFlutterEngineIdentifier.h"
 #import "ThrioChannel.h"
 #import "FlutterThrioTypes.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface NavigatorRouteSendChannel : NSObject<NavigatorFlutterEngineIdentifier>
+@interface NavigatorRouteSendChannel : NSObject
 
 - (instancetype)initWithChannel:(ThrioChannel *)channel;
 

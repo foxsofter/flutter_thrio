@@ -68,16 +68,6 @@ NS_ASSUME_NONNULL_BEGIN
     return self;
 }
 
-#pragma mark - NavigatorFlutterEngineIdentifier methods
-
-- (NSString *)entrypoint {
-    return _channel.entrypoint;
-}
-
-- (NSUInteger)pageId {
-    return _channel.pageId;
-}
-
 #pragma mark - on channel methods
 
 - (void)_onReady {
@@ -116,8 +106,7 @@ NS_ASSUME_NONNULL_BEGIN
         [ThrioNavigator _pushUrl:url
                           params:params
                         animated:animated
-                  fromEntrypoint:strongSelf.channel.entrypoint
-                      fromPageId:strongSelf.channel.pageId
+                  fromEntrypoint:strongSelf.channel.engine.entrypoint
                           result:^(NSNumber *idx) {
             if (result) {
                 result(idx);

@@ -40,8 +40,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, weak, readwrite) NavigatorFlutterEngine *warpEngine;
 
-@property (nonatomic, assign) NSUInteger pageId;
-
 @end
 
 #pragma clang diagnostic push
@@ -50,8 +48,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (instancetype)initWithEngine:(NavigatorFlutterEngine *)engine {
     _warpEngine = engine;
-    _pageId = [self hash];
-    engine.pageId = _pageId;
     self = [super initWithEngine:engine.flutterEngine nibName:nil bundle:nil];
     if (self) {
         self.thrio_hidesNavigationBar_ = @YES;
@@ -113,7 +109,7 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     NavigatorVerbose(@"NavigatorFlutterViewController dealloc: %@", self);
-    [NavigatorFlutterEngineFactory.shared destroyEngineByPageId:_pageId withEntrypoint:self.entrypoint];
+    [NavigatorFlutterEngineFactory.shared destroyEngineByEntrypoint:self.entrypoint];
 }
 
 - (void)viewDidAppearFromBackgroud {

@@ -61,13 +61,11 @@ NS_ASSUME_NONNULL_BEGIN
         __weak typeof(self) weakself = self;
         __block ThrioEngineReadyCallback readyBlock = ^(NavigatorFlutterEngine *engine) {
             __strong typeof(weakself) strongSelf = weakself;
-            NSUInteger pageId = [(NavigatorFlutterViewController *)strongSelf.topViewController pageId];
             [strongSelf.topViewController thrio_pushUrl:strongSelf.initialUrl
                                                   index:@1
                                                  params:strongSelf.initialParams
                                                animated:NO
                                          fromEntrypoint:entrypoint
-                                             fromPageId:pageId
                                                  result:nil
                                            poppedResult:nil];
         };
@@ -85,14 +83,13 @@ NS_ASSUME_NONNULL_BEGIN
         [viewController registerInjectionBlock:^(UIViewController *vc, BOOL animated) {
             __strong typeof(weakSelf) strongSelf = weakSelf;
             if (!vc.thrio_lastRoute) {
-                [vc  thrio_pushUrl:strongSelf.initialUrl
-                             index:@1
-                            params:strongSelf.initialParams
-                          animated:NO
-                    fromEntrypoint:nil
-                        fromPageId:kNavigatorRoutePageIdNone
-                            result:nil
-                      poppedResult:nil];
+                [vc thrio_pushUrl:strongSelf.initialUrl
+                            index:@1
+                           params:strongSelf.initialParams
+                         animated:NO
+                   fromEntrypoint:nil
+                           result:nil
+                     poppedResult:nil];
             }
         } afterLifecycle:ThrioViewControllerLifecycleViewDidAppear];
     }

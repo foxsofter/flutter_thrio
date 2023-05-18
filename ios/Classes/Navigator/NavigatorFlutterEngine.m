@@ -35,8 +35,6 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, readwrite) ThrioFlutterEngine *flutterEngine;
 
-@property (nonatomic, assign) BOOL isMainEngine;
-
 @property (nonatomic) ThrioChannel *channel;
 
 @property (nonatomic, readwrite) ThrioChannel *moduleContextChannel;
@@ -54,13 +52,11 @@ NS_ASSUME_NONNULL_BEGIN
 @implementation NavigatorFlutterEngine
 
 - (instancetype)initWithEntrypoint:(NSString *)entrypoint
-                        withEngine:(ThrioFlutterEngine *)flutterEngine
-                      isMainEngine:(BOOL)isMainEngine  {
+                        withEngine:(ThrioFlutterEngine *)flutterEngine {
     self = [super init];
     if (self) {
         _entrypoint = entrypoint;
         _flutterEngine = flutterEngine;
-        _isMainEngine = isMainEngine;
     }
     return self;
 }
@@ -77,10 +73,6 @@ NS_ASSUME_NONNULL_BEGIN
 #pragma mark - private methods
 
 - (void)startupFlutterEngine {
-    // fork 出来的引擎不需要启动
-    if (!_isMainEngine) {
-        return;
-    }
     BOOL result = NO;
     if (NavigatorFlutterEngineFactory.shared.multiEngineEnabled) {
         result = [_flutterEngine runWithEntrypoint:_entrypoint];
