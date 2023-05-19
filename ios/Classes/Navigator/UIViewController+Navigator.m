@@ -290,6 +290,7 @@ NS_ASSUME_NONNULL_BEGIN
         return;
     }
     if ([self isKindOfClass:NavigatorFlutterViewController.class]) {
+        self.thrio_hidesNavigationBar = @YES;
         NSMutableDictionary *arguments =
         [NSMutableDictionary dictionaryWithDictionary:[route.settings toArgumentsWithParams:nil]];
         [arguments setObject:[NSNumber numberWithBool:animated] forKey:@"animated"];

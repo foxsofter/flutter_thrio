@@ -505,8 +505,14 @@ NS_ASSUME_NONNULL_BEGIN
         // 如果是FlutterViewController，无视thrio_willPopBlock，willPop在Dart中已经调用过
         if ([self.topViewController isKindOfClass:NavigatorFlutterViewController.class]) {
             if (self.viewControllers.count > 1) {
-                // 判断前一个页面导航栏是否需要切换
+                // 判断前一个页面如果是NavigatorFlutterViewController，直接将引擎切换到该页面
                 UIViewController *vc = [self.viewControllers objectAtIndex:self.viewControllers.count - 2];
+                if ([vc isKindOfClass:NavigatorFlutterViewController.class]) {
+                    [NavigatorFlutterEngineFactory.shared pushViewController:(NavigatorFlutterViewController *)vc];
+                } else {
+                    [NavigatorFlutterEngineFactory.shared popViewController:(NavigatorFlutterViewController *)self.topViewController];
+                }
+                // 判断前一个页面导航栏是否需要切换
                 if (self.navigationBarHidden != vc.thrio_hidesNavigationBar_.boolValue) {
                     [self setNavigationBarHidden:vc.thrio_hidesNavigationBar_.boolValue];
                 }
@@ -528,7 +534,6 @@ NS_ASSUME_NONNULL_BEGIN
                     if (vcs.count > 1) {
                         previousVC = vcs[vcs.count - 2];
                     }
-                    
                     if (strongSelf.topViewController.thrio_firstRoute) {
                         NavigatorRouteSettings *routeSettings = strongSelf.topViewController.thrio_lastRoute.settings;
                         if (animated) {
@@ -570,6 +575,11 @@ NS_ASSUME_NONNULL_BEGIN
         if (vcs.count > 1) {
             previousVC = vcs[vcs.count - 2];
         }
+        // 判断前一个页面如果是NavigatorFlutterViewController，直接将引擎切换到该页面
+        if ([previousVC isKindOfClass:NavigatorFlutterViewController.class]) {
+            [NavigatorFlutterEngineFactory.shared pushViewController:(NavigatorFlutterViewController *)previousVC];
+        }
+
         UIViewController *vc;
         if (animated) {
             [CATransaction begin];
@@ -638,7 +648,10 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)thrio_didShowViewController:(UIViewController *)viewController animated:(BOOL)animated {
     // 记录最后展示的 Route
     ThrioModule.pageObservers.lastRoute = viewController.thrio_lastRoute;
-    
+    // 如果即将显示的页面为NavigatorFlutterViewController，需要将该页面切换到引擎上
+    if ([viewController isKindOfClass:NavigatorFlutterViewController.class]) {
+        [NavigatorFlutterEngineFactory.shared pushViewController:(NavigatorFlutterViewController *)viewController];
+    }
     // 手势触发的pop，或者UINavigationController的pop方法触发的pop
     if (self.thrio_popingViewController) {
         if (self.thrio_popingViewController == viewController) {
@@ -650,6 +663,9 @@ NS_ASSUME_NONNULL_BEGIN
                 [strongSelf thrio_lastRoute].next = nil;
                 
                 if ([strongSelf.thrio_popingViewController isKindOfClass:NavigatorFlutterViewController.class]) {
+                    if (![viewController isKindOfClass:NavigatorFlutterViewController.class]) {
+                        [NavigatorFlutterEngineFactory.shared popViewController:(NavigatorFlutterViewController *)strongSelf.thrio_popingViewController];
+                    }
                     if (strongSelf.navigationBarHidden != viewController.thrio_hidesNavigationBar_.boolValue) {
                         [strongSelf setNavigationBarHidden:viewController.thrio_hidesNavigationBar_.boolValue];
                     }

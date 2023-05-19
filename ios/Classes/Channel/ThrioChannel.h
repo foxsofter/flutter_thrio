@@ -32,6 +32,8 @@ NS_ASSUME_NONNULL_BEGIN
 ///
 @interface ThrioChannel : NSObject<FlutterStreamHandler>
 
+@property (nonatomic, copy, readonly) NSString *entrypoint;
+
 /// Construct the instance with a default channel name.
 ///
 + (instancetype)channelWithEngine:(NavigatorFlutterEngine *)engine;

@@ -22,6 +22,7 @@
 #import <UIKit/UIKit.h>
 
 #import "NavigatorControllerDelegate.h"
+#import "NavigatorLogger.h"
 #import "UINavigationController+Navigator.h"
 
 @implementation NavigatorControllerDelegate
@@ -91,7 +92,7 @@
                                            animationControllerForOperation:(UINavigationControllerOperation)operation
                                                         fromViewController:(UIViewController *)fromVC
                                                           toViewController:(UIViewController *)toVC {
-    NSLog(@"fromVC: %@ toVC: %@", fromVC, toVC);
+    NavigatorVerbose(@"fromVC: %@ toVC: %@", fromVC, toVC);
     id<UIViewControllerAnimatedTransitioning> animator;
     if (self.originDelegate && ![self.originDelegate isEqual:self]) {
         if ([self.originDelegate respondsToSelector:@selector(navigationController:animationControllerForOperation:fromViewController:toViewController:)]) {

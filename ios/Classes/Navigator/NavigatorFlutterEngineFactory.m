@@ -59,6 +59,9 @@ NS_ASSUME_NONNULL_BEGIN
         NSString *enginName = [NSString stringWithFormat:@"io.flutter.%lu", (unsigned long)self.hash];
         ThrioFlutterEngine *flutterEngine = [[ThrioFlutterEngine alloc] initWithName:enginName allowHeadlessExecution:YES];
         engine = [[NavigatorFlutterEngine alloc] initWithEntrypoint:entrypoint withEngine:flutterEngine];
+        if (_engines.count < 1) {
+            _firstEntrypoint = entrypoint;
+        }
         _engines[entrypoint] = engine;
         [engine startupWithReadyBlock:block];
     } else {
@@ -103,6 +106,16 @@ NS_ASSUME_NONNULL_BEGIN
     for (NavigatorFlutterEngine *engine in engines) {
         [engine.moduleContextChannel invokeMethod:@"set" arguments:@{ key: value }];
     }
+}
+
+- (void)pushViewController:(NavigatorFlutterViewController *)viewController {
+    NavigatorFlutterEngine *flutterEngine = self.engines[viewController.entrypoint];
+    [flutterEngine pushViewController:viewController];
+}
+
+- (void)popViewController:(NavigatorFlutterViewController *)viewController {
+    NavigatorFlutterEngine *flutterEngine = self.engines[viewController.entrypoint];
+    [flutterEngine popViewController:viewController];
 }
 
 #pragma mark - NavigatorRouteObserverProtocol methods

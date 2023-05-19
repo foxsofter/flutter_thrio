@@ -55,6 +55,10 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic, readonly) ThrioChannel *moduleContextChannel;
 
+- (void)pushViewController:(NavigatorFlutterViewController *)viewController;
+
+- (NSUInteger)popViewController:(NavigatorFlutterViewController *)viewController;
+
 - (void)destroyContext;
 
 @end

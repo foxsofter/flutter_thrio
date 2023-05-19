@@ -56,6 +56,10 @@ NavigatorRouteObserverProtocol
 
 - (void)setModuleContextValue:(id _Nullable)value forKey:(NSString *)key;
 
+- (void)pushViewController:(NavigatorFlutterViewController *)viewController;
+
+- (void)popViewController:(NavigatorFlutterViewController *)viewController;
+
 @end
 
 NS_ASSUME_NONNULL_END

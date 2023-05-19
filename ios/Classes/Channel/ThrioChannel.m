@@ -80,6 +80,10 @@ static NSString *const kEventNameKey = @"__event_name__";
     return self;
 }
 
+- (NSString *)entrypoint {
+    return _engine.entrypoint;
+}
+
 #pragma mark - method channel methods
 
 - (void)invokeMethod:(NSString *)method {

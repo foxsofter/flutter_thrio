@@ -60,7 +60,7 @@ NS_ASSUME_NONNULL_BEGIN
         [[NSNotificationCenter defaultCenter] addObserver:self
                                                  selector:@selector(viewDidDisappearFromForeground)
                                                      name:UIApplicationDidEnterBackgroundNotification
-                                                   object:nil];        
+                                                   object:nil];
     }
     return self;
 }
@@ -85,7 +85,9 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
     
-    if (![self isMovingToParentViewController]) {
+    if ([self isMovingToParentViewController]) {
+        [NavigatorFlutterEngineFactory.shared pushViewController:self];
+    } else {
         [ThrioModule.pageObservers didAppear:self.thrio_lastRoute.settings];
     }
 }

@@ -47,6 +47,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @property (nonatomic) NavigatorRouteObserverChannel *routeChannel;
 
+@property (nonatomic, strong) NSPointerArray *flutterViewControllers;
+
 @end
 
 @implementation NavigatorFlutterEngine
@@ -55,6 +57,7 @@ NS_ASSUME_NONNULL_BEGIN
                         withEngine:(ThrioFlutterEngine *)flutterEngine {
     self = [super init];
     if (self) {
+        _flutterViewControllers = [NSPointerArray weakObjectsPointerArray];
         _entrypoint = entrypoint;
         _flutterEngine = flutterEngine;
     }
@@ -69,6 +72,42 @@ NS_ASSUME_NONNULL_BEGIN
     }
 }
 
+- (void)pushViewController:(NavigatorFlutterViewController *)viewController {
+    NavigatorVerbose(@"NavigatorFlutterEngine: enter pushViewController");
+    if (viewController != nil && (_flutterEngine.viewController == nil || _flutterEngine.viewController != viewController)) {
+        if (_flutterEngine.viewController) {
+            [(NavigatorFlutterViewController *)_flutterEngine.viewController surfaceUpdated:NO];
+            [_flutterViewControllers removeLastObject:_flutterEngine.viewController];
+        }
+        NavigatorVerbose(@"NavigatorFlutterEngine: set new %@", viewController);
+        _flutterEngine.viewController = viewController;
+        [_flutterViewControllers addObject:viewController];
+        [(NavigatorFlutterViewController *)_flutterEngine.viewController surfaceUpdated:YES];
+        [[_flutterEngine lifecycleChannel] performSelector:@selector(sendMessage:) withObject: @"AppLifecycleState.resumed"];
+    }
+}
+
+- (NSUInteger)popViewController:(NavigatorFlutterViewController *)viewController {
+    NavigatorVerbose(@"NavigatorFlutterEngine: enter popViewController");
+    if (viewController != nil && _flutterEngine.viewController == viewController) {
+        NavigatorVerbose(@"NavigatorFlutterEngine: unset %@", viewController);
+        if (_flutterEngine.viewController) {
+            [(NavigatorFlutterViewController *)_flutterEngine.viewController surfaceUpdated:NO];
+        }
+        NavigatorFlutterViewController *vc = _flutterViewControllers.last;
+        if (viewController == vc) {
+            [_flutterViewControllers removeLastObject:vc];
+        }
+        vc = _flutterViewControllers.last;
+        if (viewController != vc) {
+            _flutterEngine.viewController = vc;
+            if (_flutterEngine.viewController) {
+                [(NavigatorFlutterViewController *)_flutterEngine.viewController surfaceUpdated:YES];
+            }
+        }
+    }
+    return _flutterViewControllers.count;
+}
 
 #pragma mark - private methods
 
@@ -104,7 +143,7 @@ NS_ASSUME_NONNULL_BEGIN
     _channel = [ThrioChannel channelWithEngine:self name:channelName];
     [_channel setupEventChannel];
     [_channel setupMethodChannel];
-
+    
     NSString *moduleContextChannelName =
     [NSString stringWithFormat:@"__thrio_module_context__%@", self.entrypoint];
     _moduleContextChannel = [ThrioChannel channelWithEngine:self name:moduleContextChannelName];
