@@ -1,3 +1,6 @@
+## 4.0.0
+feat: remove lightweight engine mode and support single engine mode
+
 ## 3.16.4
 fix: handler can't handled
 
