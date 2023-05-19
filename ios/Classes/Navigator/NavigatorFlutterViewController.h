@@ -47,6 +47,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)surfaceUpdated:(BOOL)appeared;
 
+@property (nonatomic, copy, readonly) NSString *entrypoint;
+
 @property (nonatomic, weak, readonly) NavigatorFlutterEngine *warpEngine;
 
 @end

@@ -103,7 +103,7 @@ NS_ASSUME_NONNULL_BEGIN
         id serializeParams = [ThrioModule serializeParams:params];
         NSMutableDictionary *arguments = [NSMutableDictionary dictionaryWithDictionary:[settings toArgumentsWithParams:serializeParams]];
         [arguments setObject:[NSNumber numberWithBool:animated] forKey:@"animated"];
-        NSString *entrypoint = [(NavigatorFlutterViewController *)self warpEngine].entrypoint;
+        NSString *entrypoint = [(NavigatorFlutterViewController *)self entrypoint];
         NavigatorRouteSendChannel *channel =
         [NavigatorFlutterEngineFactory.shared getSendChannelByEntrypoint:entrypoint];
         __weak typeof(self) weakSelf = self;
@@ -183,7 +183,7 @@ NS_ASSUME_NONNULL_BEGIN
     [arguments setObject:[NSNumber numberWithBool:inRoot] forKey:@"inRoot"];
     
     if ([self isKindOfClass:NavigatorFlutterViewController.class]) {
-        NSString *entrypoint = [[(NavigatorFlutterViewController *)self warpEngine] entrypoint];
+        NSString *entrypoint = [(NavigatorFlutterViewController *)self entrypoint];
         NavigatorRouteSendChannel *channel = [NavigatorFlutterEngineFactory.shared getSendChannelByEntrypoint:entrypoint];
         // 发送给需要关闭页面的引擎
         [channel maybePop:arguments result:result];
@@ -214,7 +214,7 @@ NS_ASSUME_NONNULL_BEGIN
     [arguments setObject:[NSNumber numberWithBool:inRoot] forKey:@"inRoot"];
     if ([self isKindOfClass:NavigatorFlutterViewController.class]) {
         self.thrio_routeType = NavigatorRouteTypePopping;
-        NSString *entrypoint = [[(NavigatorFlutterViewController *)self warpEngine] entrypoint];
+        NSString *entrypoint = [(NavigatorFlutterViewController *)self entrypoint];
         NavigatorRouteSendChannel *channel = [NavigatorFlutterEngineFactory.shared getSendChannelByEntrypoint:entrypoint];
         __weak typeof(self) weakself = self;
         // 发送给需要关闭页面的引擎
@@ -294,7 +294,7 @@ NS_ASSUME_NONNULL_BEGIN
         [NSMutableDictionary dictionaryWithDictionary:[route.settings toArgumentsWithParams:nil]];
         [arguments setObject:[NSNumber numberWithBool:animated] forKey:@"animated"];
         __weak typeof(self) weakself = self;
-        NSString *entrypoint = [[(NavigatorFlutterViewController *)self warpEngine] entrypoint];
+        NSString *entrypoint = [(NavigatorFlutterViewController *)self entrypoint];
         NavigatorRouteSendChannel *channel =
         [NavigatorFlutterEngineFactory.shared getSendChannelByEntrypoint:entrypoint];
         [channel popTo:arguments result:^(BOOL r) {
@@ -332,7 +332,7 @@ NS_ASSUME_NONNULL_BEGIN
         [NSMutableDictionary dictionaryWithDictionary:[route.settings toArgumentsWithParams:nil]];
         [arguments setObject:[NSNumber numberWithBool:animated] forKey:@"animated"];
         __weak typeof(self) weakself = self;
-        NSString *entrypoint = [[(NavigatorFlutterViewController *)self warpEngine] entrypoint];
+        NSString *entrypoint = [(NavigatorFlutterViewController *)self entrypoint];
         NavigatorRouteSendChannel *channel =
         [NavigatorFlutterEngineFactory.shared getSendChannelByEntrypoint:entrypoint];
         [channel remove:arguments result:^(BOOL r) {
@@ -386,7 +386,7 @@ NS_ASSUME_NONNULL_BEGIN
     }
     if ([self isKindOfClass:NavigatorFlutterViewController.class]) {
         NSDictionary *arguments = [oldRoute.settings toArgumentsWithNewUrl:newUrl newIndex:newIndex];
-        NSString *entrypoint = [[(NavigatorFlutterViewController *)self warpEngine] entrypoint];
+        NSString *entrypoint = [(NavigatorFlutterViewController *)self entrypoint];
         NavigatorRouteSendChannel *channel =
         [NavigatorFlutterEngineFactory.shared getSendChannelByEntrypoint:entrypoint];
         [channel replace:arguments result:^(BOOL r) {
@@ -422,7 +422,7 @@ NS_ASSUME_NONNULL_BEGIN
     NSMutableDictionary *arguments =
     [NSMutableDictionary dictionaryWithDictionary:[lastRoute.settings toArguments]];
     [arguments setObject:[NSNumber numberWithBool:inRoot] forKey:@"inRoot"];
-    NSString *entrypoint = [[(NavigatorFlutterViewController *)self warpEngine] entrypoint];
+    NSString *entrypoint = [(NavigatorFlutterViewController *)self entrypoint];
     NavigatorRouteSendChannel *channel =
     [NavigatorFlutterEngineFactory.shared getSendChannelByEntrypoint:entrypoint];
     [channel canPop:arguments result:result];
@@ -616,7 +616,7 @@ NS_ASSUME_NONNULL_BEGIN
                 @"index": route.settings.index,
                 @"name": name,
             };
-            NSString *entrypoint = [[(NavigatorFlutterViewController *)self warpEngine] entrypoint];
+            NSString *entrypoint = [(NavigatorFlutterViewController *)self entrypoint];
             NavigatorRouteSendChannel *channel =
             [NavigatorFlutterEngineFactory.shared getSendChannelByEntrypoint:entrypoint];
             [channel notify:arguments];

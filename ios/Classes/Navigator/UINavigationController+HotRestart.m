@@ -55,7 +55,7 @@
         NavigatorRouteSettings *settings = viewController.thrio_firstRoute.settings;
         id serializerParams = [ThrioModule serializeParams:settings.params];
         NavigatorRouteSendChannel *channel =
-        [NavigatorFlutterEngineFactory.shared getSendChannelByEntrypoint:viewController.warpEngine.entrypoint];
+        [NavigatorFlutterEngineFactory.shared getSendChannelByEntrypoint:viewController.entrypoint];
         [channel push:[settings toArgumentsWithParams:serializerParams] result:nil];
     });
 }

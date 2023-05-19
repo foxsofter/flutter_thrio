@@ -85,7 +85,7 @@ NS_ASSUME_NONNULL_BEGIN
                 entrypoint = [url componentsSeparatedByString:@"/"][1];
             }
             if ([self.topViewController isKindOfClass:NavigatorFlutterViewController.class] &&
-                [[[(NavigatorFlutterViewController *)self.topViewController warpEngine] entrypoint] isEqualToString:entrypoint]) {
+                [[(NavigatorFlutterViewController *)self.topViewController entrypoint] isEqualToString:entrypoint]) {
                 NavigatorPageRoute *lastRoute = [ThrioNavigator getLastRouteByUrl:url];
                 NSNumber *index = lastRoute ? @(lastRoute.settings.index.integerValue + 1) : @1;
                 ThrioNumberCallback resultBlock = ^(NSNumber *idx) {
@@ -430,7 +430,7 @@ NS_ASSUME_NONNULL_BEGIN
     for (UIViewController *vc in vcs) {
         if ([vc isKindOfClass:NavigatorFlutterViewController.class]) {
             NavigatorFlutterViewController *fvc = (NavigatorFlutterViewController *)vc;
-            if ([fvc.warpEngine.entrypoint isEqualToString:entrypoint]) {
+            if ([fvc.entrypoint isEqualToString:entrypoint]) {
                 return fvc.thrio_lastRoute;
             }
         } else {
