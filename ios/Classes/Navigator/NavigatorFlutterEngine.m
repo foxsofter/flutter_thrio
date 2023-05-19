@@ -78,6 +78,7 @@ NS_ASSUME_NONNULL_BEGIN
         if (_flutterEngine.viewController) {
             [(NavigatorFlutterViewController *)_flutterEngine.viewController surfaceUpdated:NO];
             [_flutterViewControllers removeLastObject:_flutterEngine.viewController];
+            _flutterEngine.viewController = nil;
         }
         NavigatorVerbose(@"NavigatorFlutterEngine: set new %@", viewController);
         _flutterEngine.viewController = viewController;
@@ -91,18 +92,16 @@ NS_ASSUME_NONNULL_BEGIN
     NavigatorVerbose(@"NavigatorFlutterEngine: enter popViewController");
     if (viewController != nil && _flutterEngine.viewController == viewController) {
         NavigatorVerbose(@"NavigatorFlutterEngine: unset %@", viewController);
-        if (_flutterEngine.viewController) {
-            [(NavigatorFlutterViewController *)_flutterEngine.viewController surfaceUpdated:NO];
+        if (viewController) {
+            [viewController surfaceUpdated:NO];
+            [_flutterViewControllers removeLastObject:viewController];
+            _flutterEngine.viewController = nil;
         }
         NavigatorFlutterViewController *vc = _flutterViewControllers.last;
-        if (viewController == vc) {
-            [_flutterViewControllers removeLastObject:vc];
-        }
-        vc = _flutterViewControllers.last;
         if (viewController != vc) {
             _flutterEngine.viewController = vc;
-            if (_flutterEngine.viewController) {
-                [(NavigatorFlutterViewController *)_flutterEngine.viewController surfaceUpdated:YES];
+            if (vc && vc.isFirstResponder) {
+                [vc surfaceUpdated:YES];
             }
         }
     }
