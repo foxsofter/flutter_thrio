@@ -17,6 +17,7 @@
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
             android:exported="true"
             android:hardwareAccelerated="true"
+            android:requestLegacyExternalStorage="true"
             android:launchMode="standard"
             android:screenOrientation="sensor"
             android:theme="@style/Theme.Thrio.Default"

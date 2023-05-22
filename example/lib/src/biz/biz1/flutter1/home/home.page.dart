@@ -9,6 +9,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_thrio/flutter_thrio.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../../../route.dart';
 import '../../../types/people.dart';
@@ -324,27 +325,23 @@ class _HomePageState extends State<HomePage>
                                     fontSize: 22, color: Colors.black),
                               )),
                         ),
-                        NavigatorPageLifecycle(
-                            didAppear: (final settings) {
-                              ThrioLogger.v('home  didAppear -> $settings');
-                            },
-                            didDisappear: (final settings) {
-                              ThrioLogger.v('home  didDisappear -> $settings');
-                            },
-                            child: StreamBuilder<Object>(
-                                stream:
-                                    widget.moduleContext.on('stringKeyBiz1'),
-                                builder: (final context, final snapshot) =>
-                                    Container(
-                                        padding: const EdgeInsets.all(8),
-                                        margin: const EdgeInsets.all(8),
-                                        color: Colors.grey,
-                                        child: Text(
-                                          '${snapshot.data}',
-                                          style: const TextStyle(
-                                              fontSize: 22,
-                                              color: Colors.black),
-                                        ))))
+                        InkWell(
+                          onTap: () async {
+                            final picker = ImagePicker();
+
+                            final images = await picker.pickMultiImage();
+                            if (images.isEmpty) {}
+                          },
+                          child: Container(
+                              padding: const EdgeInsets.all(8),
+                              margin: const EdgeInsets.all(8),
+                              color: Colors.grey,
+                              child: const Text(
+                                'pick image',
+                                style: TextStyle(
+                                    fontSize: 22, color: Colors.black),
+                              )),
+                        ),
                       ]),
                     ),
                   )))),
