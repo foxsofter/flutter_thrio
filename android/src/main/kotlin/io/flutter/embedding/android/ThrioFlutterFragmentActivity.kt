@@ -60,7 +60,13 @@ open class ThrioFlutterFragmentActivity : FlutterFragmentActivity(), ThrioFlutte
 
     override fun onStart() {
         if (flutterFragment.delegate != null) {
-            (flutterFragment.delegate!! as ThrioFlutterViewDelegate).restart()
+            val prevDelegate =
+                flutterEngine!!.activityControlSurface.getFieldNullableValue<ThrioFlutterViewDelegate>(
+                    "exclusiveActivity"
+                )
+            if (prevDelegate == null || flutterFragment.delegate != prevDelegate) {
+                (flutterFragment.delegate!! as ThrioFlutterViewDelegate).reattach()
+            }
         }
         super.onStart()
         Log.v(TAG, "onPause ${hashCode()}")

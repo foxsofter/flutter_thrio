@@ -26,7 +26,6 @@ package io.flutter.embedding.android
 import com.foxsofter.flutter_thrio.extension.*
 import io.flutter.Log
 import io.flutter.embedding.engine.FlutterEngine
-import io.flutter.embedding.engine.renderer.FlutterUiDisplayListener
 import io.flutter.plugin.platform.PlatformPlugin
 import java.util.*
 
@@ -39,9 +38,6 @@ internal class ThrioFlutterViewDelegate(host: Host) : FlutterActivityAndFragment
     private val host
         get() = getSuperFieldValue<Host>("host")
 
-    private val flutterUiDisplayListener
-        get() = getSuperFieldValue<FlutterUiDisplayListener>("flutterUiDisplayListener")
-
     private var platformPlugin
         get() = getSuperFieldNullableValue<PlatformPlugin>("platformPlugin")
         set(value) = setSuperFieldValue("platformPlugin", value)
@@ -50,30 +46,23 @@ internal class ThrioFlutterViewDelegate(host: Host) : FlutterActivityAndFragment
         get() = getSuperFieldBoolean("isAttached")
         set(value) = setSuperFieldBoolean("isAttached", value)
 
-    fun restart() {
+    fun reattach() {
         Log.i(TAG, "restart ${hashCode()} begin")
-
-        val prevDelegate =
-            flutterEngine!!.activityControlSurface.getFieldNullableValue<ThrioFlutterViewDelegate>(
-                "exclusiveActivity"
-            )
-        if (prevDelegate != null) {
-            if (lastResumeTimer != null) {
-                lastResumeTimer!!.cancel();
-                lastResumeTimer = null;
-            }
-            lastResumeTimer = Timer()
-            lastResumeTimer!!.schedule(object : TimerTask() {
-                override fun run() {
-                    host.activity?.runOnUiThread {
-                        if (host.shouldDispatchAppLifecycleState()) {
-                            flutterEngine!!.lifecycleChannel.appIsResumed()
-                            updateSystemUiOverlays()
-                        }
+        if (lastResumeTimer != null) {
+            lastResumeTimer!!.cancel()
+            lastResumeTimer = null
+        }
+        lastResumeTimer = Timer()
+        lastResumeTimer!!.schedule(object : TimerTask() {
+            override fun run() {
+                host.activity?.runOnUiThread {
+                    if (host.shouldDispatchAppLifecycleState()) {
+                        flutterEngine!!.lifecycleChannel.appIsResumed()
+                        updateSystemUiOverlays()
                     }
                 }
-            }, 600)
-        }
+            }
+        }, 600)
         flutterEngine!!.activityControlSurface.attachToActivity(this, host.lifecycle)
         if (host.shouldAttachEngineToActivity() && flutterView != null) {
             platformPlugin = host.providePlatformPlugin(host.activity, flutterEngine!!)

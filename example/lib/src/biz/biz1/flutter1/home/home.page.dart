@@ -331,6 +331,7 @@ class _HomePageState extends State<HomePage>
 
                             final images = await picker.pickMultiImage();
                             if (images.isEmpty) {}
+                            debugPrint('images: ${images.length}');
                           },
                           child: Container(
                               padding: const EdgeInsets.all(8),
