@@ -1,3 +1,7 @@
+## 4.1.0
+feat: support push animated
+fix: ios maybe pop causes route history miss match
+
 ## 4.0.0
 feat: remove lightweight engine mode and support single engine mode
 
