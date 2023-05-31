@@ -225,17 +225,18 @@ NS_ASSUME_NONNULL_BEGIN
             return;
         }
     }
+    NavigatorPageRoute *lastRoute = vc.thrio_lastRoute;
     __weak typeof(self) weakself = self;
     [vc thrio_popParams:params animated:animated inRoot:inRoot result:^(BOOL r) {
         __strong typeof(weakself) strongSelf = weakself;
         if (r) {
             // 只有 FlutterViewController 才能满足条件
-            if (vc.thrio_lastRoute != vc.thrio_firstRoute) {
+            if (lastRoute == vc.thrio_lastRoute && vc.thrio_lastRoute != vc.thrio_firstRoute) {
                 vc.thrio_lastRoute.prev.next = nil;
-                // 只剩一个 route 的时候，需要添加侧滑返回手势
-                if (vc.thrio_firstRoute == vc.thrio_lastRoute) {
-                    [strongSelf thrio_addPopGesture];
-                }
+            }
+            // 只剩一个 route 的时候，需要添加侧滑返回手势
+            if ([vc isKindOfClass:NavigatorFlutterViewController.class] && vc.thrio_firstRoute == vc.thrio_lastRoute) {
+                [strongSelf thrio_addPopGesture];
             }
         }
         if (result) {
