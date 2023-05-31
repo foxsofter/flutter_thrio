@@ -57,10 +57,15 @@ extension NavigatorRouteSettings on RouteSettings {
       final indexValue = arguments['index'];
       final index = indexValue is int ? indexValue : null;
       final isNested = arguments['isNested'] == true;
+      final animated = arguments['animated'] == true;
       final params = arguments['params'];
       return RouteSettings(
         name: '$index $url',
-        arguments: <String, dynamic>{'isNested': isNested, 'params': params},
+        arguments: <String, dynamic>{
+          'isNested': isNested,
+          'params': params,
+          'animated': animated,
+        },
       );
     }
     return null;
@@ -76,9 +81,11 @@ extension NavigatorRouteSettings on RouteSettings {
       final indexValue = arguments['newIndex'];
       final index = indexValue is int ? indexValue : null;
       final isNested = arguments['isNested'] == true;
-      return RouteSettings(
-          name: '$index $url',
-          arguments: <String, dynamic>{'isNested': isNested});
+      final animated = arguments['animated'] == true;
+      return RouteSettings(name: '$index $url', arguments: <String, dynamic>{
+        'isNested': isNested,
+        'animated': animated,
+      });
     }
     return null;
   }
@@ -135,9 +142,16 @@ extension NavigatorRouteSettings on RouteSettings {
     return false;
   }
 
+  bool get animated {
+    if (arguments != null && arguments is Map) {
+      return (arguments as Map<String, dynamic>)['animated'] == true;
+    }
+    return false;
+  }
+
   dynamic get params {
     if (arguments != null && arguments is Map) {
-      return (arguments as Map<String, dynamic>)['params'];
+      return (arguments as Map<String, Object?>)['params'];
     }
     return null;
   }

@@ -56,6 +56,9 @@ class NavigatorPageRoute extends MaterialPageRoute<bool> with NavigatorRoute {
     final Widget child,
   ) {
     if (settings.isNested) {
+      if (!settings.animated) {
+        return child;
+      }
       final builder =
           ThrioModule.get<RouteTransitionsBuilder>(url: settings.url);
       if (builder != null) {
