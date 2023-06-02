@@ -106,18 +106,14 @@ open class ThrioFlutterFragmentActivity : FlutterFragmentActivity(), ThrioFlutte
 
     @SuppressLint("VisibleForTests")
     override fun createFlutterFragment(): FlutterFragment {
-        val pageId = intent.getPageId()
-        if (pageId == NAVIGATION_ROUTE_PAGE_ID_NONE) throw IllegalStateException("pageId must not be null")
-        val holder = PageRoutes.lastRouteHolder(pageId)
-            ?: throw throw IllegalStateException("holder must not be null")
-
+        val entrypoint = intent.getEntrypoint()
         val backgroundMode = backgroundMode
         val renderMode = renderMode
         val transparencyMode =
             if (backgroundMode == BackgroundMode.opaque) TransparencyMode.opaque else TransparencyMode.transparent
         val shouldDelayFirstAndroidViewDraw = renderMode == RenderMode.surface
         return FlutterFragment.NewEngineFragmentBuilder(ThrioFlutterFragment::class.java)
-            .dartEntrypoint(holder.entrypoint)
+            .dartEntrypoint(entrypoint)
             .handleDeeplinking(shouldHandleDeeplinking())
             .renderMode(renderMode)
             .transparencyMode(transparencyMode)
