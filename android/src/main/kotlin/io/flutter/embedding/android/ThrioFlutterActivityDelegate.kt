@@ -30,6 +30,8 @@ import com.foxsofter.flutter_thrio.IntCallback
 import com.foxsofter.flutter_thrio.extension.getEntrypoint
 import com.foxsofter.flutter_thrio.extension.getPageId
 import com.foxsofter.flutter_thrio.navigator.FlutterEngineFactory
+import com.foxsofter.flutter_thrio.navigator.NAVIGATION_FLUTTER_ENTRYPOINT_DEFAULT
+import com.foxsofter.flutter_thrio.navigator.NAVIGATION_NATIVE_ENTRYPOINT
 import com.foxsofter.flutter_thrio.navigator.PageRoutes
 import io.flutter.embedding.engine.FlutterEngine
 
@@ -62,7 +64,10 @@ open class ThrioFlutterActivityDelegate(val activity: Activity) : ThrioFlutterAc
     }
 
     fun shouldDestroyEngineWithHost(): Boolean {
-        val entrypoint = activity.intent.getEntrypoint()
+        var entrypoint = activity.intent.getEntrypoint()
+        if (entrypoint.isEmpty() || entrypoint == NAVIGATION_NATIVE_ENTRYPOINT) {
+            entrypoint = NAVIGATION_FLUTTER_ENTRYPOINT_DEFAULT
+        }
         return !FlutterEngineFactory.isMainEngine(entrypoint)
     }
 

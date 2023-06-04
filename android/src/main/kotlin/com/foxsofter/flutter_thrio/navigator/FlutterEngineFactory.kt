@@ -30,7 +30,7 @@ import io.flutter.embedding.engine.ThrioFlutterEngine
 
 object FlutterEngineFactory : PageObserver, RouteObserver {
 
-    private lateinit var firstEntrypoint: String
+    private var firstEntrypoint: String = "main"
 
     private val engines = mutableMapOf<String, FlutterEngine>()
 

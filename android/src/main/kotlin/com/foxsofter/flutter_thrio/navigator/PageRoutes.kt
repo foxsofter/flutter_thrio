@@ -465,6 +465,20 @@ internal object PageRoutes : Application.ActivityLifecycleCallbacks {
                 val holder = routeHolders.lastOrNull { it.pageId == pageId }
                 holder?.activity = WeakReference(activity)
             }
+//            val fromPageId = savedInstanceState.getInt(NAVIGATION_ROUTE_FROM_PAGE_ID_KEY, NAVIGATION_ROUTE_PAGE_ID_NONE)
+//            if (fromPageId != NAVIGATION_ROUTE_PAGE_ID_NONE) {
+//                activity.intent.putExtra(NAVIGATION_ROUTE_FROM_PAGE_ID_KEY, NAVIGATION_ROUTE_PAGE_ID_NONE)
+//            }
+//            val entrypoint = savedInstanceState.getString(NAVIGATION_ROUTE_ENTRYPOINT_KEY, NAVIGATION_NATIVE_ENTRYPOINT)
+//            if (entrypoint != NAVIGATION_NATIVE_ENTRYPOINT) {
+//                activity.intent.putExtra(NAVIGATION_ROUTE_ENTRYPOINT_KEY, entrypoint)
+//            }
+//            val fromEntrypoint = savedInstanceState.getString(NAVIGATION_ROUTE_FROM_ENTRYPOINT_KEY, NAVIGATION_NATIVE_ENTRYPOINT)
+//            if (fromEntrypoint != NAVIGATION_NATIVE_ENTRYPOINT) {
+//                activity.intent.putExtra(NAVIGATION_ROUTE_FROM_ENTRYPOINT_KEY, fromEntrypoint)
+//            }
+//            val settingsData = savedInstanceState.getSerializable(NAVIGATION_ROUTE_SETTINGS_KEY)
+//            activity.intent.putExtra(NAVIGATION_ROUTE_SETTINGS_KEY, settingsData)
         }
     }
 
@@ -492,6 +506,20 @@ internal object PageRoutes : Application.ActivityLifecycleCallbacks {
         if (pageId != NAVIGATION_ROUTE_PAGE_ID_NONE) {
             outState.putInt(NAVIGATION_ROUTE_PAGE_ID_KEY, pageId)
         }
+//        val fromPageId = activity.intent.getFromPageId()
+//        if (fromPageId != NAVIGATION_ROUTE_PAGE_ID_NONE) {
+//            outState.putInt(NAVIGATION_ROUTE_FROM_PAGE_ID_KEY, fromPageId)
+//        }
+//        val entrypoint = activity.intent.getEntrypoint()
+//        if (entrypoint != NAVIGATION_NATIVE_ENTRYPOINT) {
+//            outState.putString(NAVIGATION_ROUTE_ENTRYPOINT_KEY, entrypoint)
+//        }
+//        val fromEntrypoint = activity.intent.getFromEntrypoint()
+//        if (fromEntrypoint != NAVIGATION_NATIVE_ENTRYPOINT) {
+//            outState.putString(NAVIGATION_ROUTE_FROM_ENTRYPOINT_KEY, fromEntrypoint)
+//        }
+//        val settingsData = activity.intent.getSerializableExtra(NAVIGATION_ROUTE_SETTINGS_KEY)
+//        outState.putSerializable(NAVIGATION_ROUTE_SETTINGS_KEY, settingsData)
     }
 
     override fun onActivityResumed(activity: Activity) {
