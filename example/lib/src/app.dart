@@ -25,18 +25,16 @@ class _MainAppState extends State<MainApp> {
   }
 
   @override
-  Widget build(final BuildContext context) => ExcludeSemantics(
-        child: NavigatorMaterialApp(
-          home: const NavigatorHome(showRestartButton: true),
-          builder: (final context, final child) => Container(
-            child: child,
-          ),
-          theme: ThemeData(
-            pageTransitionsTheme: const PageTransitionsTheme(builders: {
-              TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
-              TargetPlatform.android: CupertinoPageTransitionsBuilder(),
-            }),
-          ),
+  Widget build(final BuildContext context) => NavigatorMaterialApp(
+        home: const NavigatorHome(showRestartButton: true),
+        builder: (final context, final child) => Container(
+          child: child,
+        ),
+        theme: ThemeData(
+          pageTransitionsTheme: const PageTransitionsTheme(builders: {
+            TargetPlatform.iOS: CupertinoPageTransitionsBuilder(),
+            TargetPlatform.android: CupertinoPageTransitionsBuilder(),
+          }),
         ),
       );
 }
