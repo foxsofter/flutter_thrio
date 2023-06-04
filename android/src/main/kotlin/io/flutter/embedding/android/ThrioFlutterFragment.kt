@@ -25,6 +25,7 @@ package io.flutter.embedding.android
 
 import android.content.Context
 import android.content.pm.PackageManager
+import com.foxsofter.flutter_thrio.extension.getFieldNullableValue
 import com.foxsofter.flutter_thrio.extension.setSuperFieldValue
 import com.foxsofter.flutter_thrio.navigator.NavigationController
 import com.foxsofter.flutter_thrio.navigator.ThrioNavigator
@@ -52,6 +53,19 @@ class ThrioFlutterFragment : FlutterFragment() {
             }
             return activity.engine
         }
+
+    override fun onStart() {
+        if (delegate != null) {
+            val prevDelegate =
+                flutterEngine!!.activityControlSurface.getFieldNullableValue<ThrioFlutterViewDelegate>(
+                    "exclusiveActivity"
+                )
+            if (prevDelegate == null || delegate != prevDelegate) {
+                (delegate!! as ThrioFlutterViewDelegate).reattach()
+            }
+        }
+        super.onStart()
+    }
 
     override fun onAttach(context: Context) {
         setSuperFieldValue("delegateFactory", HookDelegateFactory())

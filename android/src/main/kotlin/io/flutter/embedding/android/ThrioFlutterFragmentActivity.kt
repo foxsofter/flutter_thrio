@@ -58,18 +58,9 @@ open class ThrioFlutterFragmentActivity : FlutterFragmentActivity(), ThrioFlutte
 
     override fun onBackPressed() = activityDelegate.onBackPressed()
 
-    override fun onStart() {
-        if (flutterFragment.delegate != null) {
-            val prevDelegate =
-                flutterEngine!!.activityControlSurface.getFieldNullableValue<ThrioFlutterViewDelegate>(
-                    "exclusiveActivity"
-                )
-            if (prevDelegate == null || flutterFragment.delegate != prevDelegate) {
-                (flutterFragment.delegate!! as ThrioFlutterViewDelegate).reattach()
-            }
-        }
-        super.onStart()
-        Log.v(TAG, "onPause ${hashCode()}")
+    override fun onResume() {
+        super.onResume()
+        Log.v(TAG, "onResume ${hashCode()}")
     }
 
     override fun onStop() {
