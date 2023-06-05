@@ -149,13 +149,6 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
     if (inRoot && history.whereType<NavigatorRoute>().length < 2) {
       return 0;
     }
-    if (inRoot && history.whereType<NavigatorRoute>().length == 2) {
-      final notPop =
-          await history.last.willPop() == RoutePopDisposition.doNotPop;
-      if (notPop) {
-        return 0;
-      }
-    }
     final notPop = await history.last.willPop() == RoutePopDisposition.doNotPop;
     return notPop ? 0 : 1;
   }
