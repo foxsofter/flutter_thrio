@@ -1,3 +1,10 @@
+## 4.1.1
+fix: detach FlutterView first
+fix: popTo url match
+fix: move reattach to FlutterFragment onStart
+fix: crash on holder null
+fix: FlutterEngine has been attached to by another activity
+
 ## 4.1.0
 feat: support push animated
 fix: ios maybe pop causes route history miss match
