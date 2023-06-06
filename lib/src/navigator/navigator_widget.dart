@@ -230,10 +230,13 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
       return false;
     }
 
-    final index =
+    var index =
         history.indexWhere((final it) => it.settings.name == settings.name);
     if (index == -1) {
-      return false;
+      index = history.indexWhere((final it) => it.settings.url == settings.url);
+      if (index == -1) {
+        return false;
+      }
     }
     // 已经是最顶部的页面了，直接返回 true
     if (index == history.length - 1) {
