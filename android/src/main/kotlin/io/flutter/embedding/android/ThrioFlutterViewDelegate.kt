@@ -26,11 +26,9 @@ package io.flutter.embedding.android
 import com.foxsofter.flutter_thrio.extension.getSuperFieldBoolean
 import com.foxsofter.flutter_thrio.extension.getSuperFieldNullableValue
 import com.foxsofter.flutter_thrio.extension.getSuperFieldValue
-import com.foxsofter.flutter_thrio.extension.setFieldValue
 import com.foxsofter.flutter_thrio.extension.setSuperFieldBoolean
 import com.foxsofter.flutter_thrio.extension.setSuperFieldValue
 import io.flutter.Log
-import io.flutter.embedding.engine.FlutterEngine
 import io.flutter.plugin.platform.PlatformPlugin
 import java.util.Timer
 import java.util.TimerTask
@@ -53,7 +51,6 @@ internal class ThrioFlutterViewDelegate(host: Host) : FlutterActivityAndFragment
         set(value) = setSuperFieldBoolean("isAttached", value)
 
     fun reattach() {
-        Log.i(TAG, "restart ${hashCode()} begin")
         if (lastResumeTimer != null) {
             lastResumeTimer!!.cancel()
             lastResumeTimer = null
@@ -71,8 +68,8 @@ internal class ThrioFlutterViewDelegate(host: Host) : FlutterActivityAndFragment
         }, 600)
         flutterEngine!!.activityControlSurface.attachToActivity(this, host.lifecycle)
         if (host.shouldAttachEngineToActivity() && flutterView != null) {
+            flutterView!!.detachFromFlutterEngine()
             platformPlugin = host.providePlatformPlugin(host.activity, flutterEngine!!)
-            flutterView!!.setFieldValue<FlutterEngine>("flutterEngine", null)
             flutterView!!.attachToFlutterEngine(flutterEngine!!)
             attached = true
         }
