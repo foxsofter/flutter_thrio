@@ -56,15 +56,12 @@ class NavigatorRouteNode {
 
 void _initUrl(final NavigatorRouteNode routeNode) {
   if (routeNode._url == null) {
-    final pathComs = <String>['/${routeNode.name}'];
-    var parentRoute = routeNode.parent;
-    while (parentRoute != _emptyRouteNode) {
-      if (parentRoute.name.isNotEmpty) {
-        pathComs.add('/${parentRoute.name}');
-      }
-      parentRoute = parentRoute.parent;
+    var parentUrl = '';
+    final parentRoute = routeNode.parent;
+    if (parentRoute != _emptyRouteNode && parentRoute.name.isNotEmpty) {
+      parentUrl = parentRoute.url;
     }
-    routeNode._url = pathComs.reversed.join();
+    routeNode._url = '$parentUrl/${routeNode.name}';
   }
 }
 
