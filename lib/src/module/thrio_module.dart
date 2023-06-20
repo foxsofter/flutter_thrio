@@ -49,20 +49,24 @@ mixin ThrioModule {
   static Future<void> init(
     final ThrioModule rootModule, {
     final String? entrypoint,
+    final void Function(String)? onModuleInitStart,
+    final void Function(String)? onModuleInitEnd,
   }) async {
     if (anchor.modules.length == 1) {
       throw ThrioException('init method can only be called once.');
-    } else {
-      final moduleContext = entrypoint == null
-          ? ModuleContext()
-          : ModuleContext(entrypoint: entrypoint);
-      moduleOf[moduleContext] = anchor;
-      anchor
-        .._moduleContext = moduleContext
-        ..registerModule(rootModule, moduleContext);
-      await anchor.onModuleInit(moduleContext);
-      await anchor.initModule();
     }
+    ThrioModule.onModuleInitStart = onModuleInitStart;
+    ThrioModule.onModuleInitEnd = onModuleInitEnd;
+
+    final moduleContext = entrypoint == null
+        ? ModuleContext()
+        : ModuleContext(entrypoint: entrypoint);
+    moduleOf[moduleContext] = anchor;
+    anchor
+      .._moduleContext = moduleContext
+      ..registerModule(rootModule, moduleContext);
+    await anchor.onModuleInit(moduleContext);
+    await anchor.initModule();
   }
 
   /// Get instance by `T`, `url` and `key`.
@@ -115,11 +119,27 @@ mixin ThrioModule {
   @protected
   ThrioModule? get parent => parentOf[this];
 
+  String? _url;
+
+  /// Get route url by join all route node's name.
+  ///
+  String get url {
+    _initUrl(this);
+    return _url!;
+  }
+
   /// `ModuleContext` of current module.
   ///
   @protected
   ModuleContext get moduleContext => _moduleContext;
   late ModuleContext _moduleContext;
+
+  /// Call at module init start.
+  ///
+  static void Function(String)? onModuleInitStart;
+
+  /// Call at module init end.
+  static void Function(String)? onModuleInitEnd;
 
   /// A function for registering a module, which will call
   /// the `onModuleRegister` function of the `module`.
@@ -196,6 +216,7 @@ mixin ThrioModule {
       }
     }
     for (final module in values) {
+      onModuleInitStart?.call(module.url);
       if (kDebugMode) {
         final sw = Stopwatch()..start();
         await module.onModuleInit(module._moduleContext);
@@ -204,6 +225,7 @@ mixin ThrioModule {
       } else {
         await module.onModuleInit(module._moduleContext);
       }
+      onModuleInitEnd?.call(module.url);
       await module.initModule();
     }
     for (final module in values) {
@@ -251,4 +273,17 @@ mixin ThrioModule {
 
   @override
   String toString() => '$key: ${modules.keys.toString()}';
+
+  void _initUrl(final ThrioModule module) {
+    if (module._url == null) {
+      var parentUrl = '';
+      final parentModule = module.parent;
+      if (parentModule != null &&
+          parentModule != anchor &&
+          parentModule.key.isNotEmpty) {
+        parentUrl = parentModule.url;
+      }
+      module._url = '$parentUrl/${module.key}';
+    }
+  }
 }
