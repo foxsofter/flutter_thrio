@@ -102,11 +102,6 @@ mixin NavigatorPageLifecycleMixin<T extends StatefulWidget> on State<T> {
     // 链路上重复的 settings 要去掉
     _anchors.removeWhere((final it) => it.name == _current.name);
 
-    verbose(
-        'NavigatorPageLifecycleMixin current: $runtimeType, hash: ${_current.hashCode} ${_current.name} ');
-    verbose(
-        'NavigatorPageLifecycleMixin anchors: ${_anchors.map((final e) => e.name).join(',')} ');
-
     for (final callback in _anchorsObserverCallbacks) {
       callback();
     }
