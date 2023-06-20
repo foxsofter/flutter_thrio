@@ -1,3 +1,7 @@
+## 4.2.0
+feat: add onModuleInitStart and onModuleInitEnd
+refactor: route url logic 
+
 ## 4.1.1
 fix: detach FlutterView first
 fix: popTo url match
