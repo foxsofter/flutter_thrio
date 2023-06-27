@@ -1,3 +1,6 @@
+## 4.2.2
+fix: didDisappear last route not working for ios release
+
 ## 4.2.1
 fix: duplicate call NavigatorRouteObservers selector
 
