@@ -1,3 +1,6 @@
+## 4.2.1
+fix: duplicate call NavigatorRouteObservers selector
+
 ## 4.2.0
 feat: add onModuleInitStart and onModuleInitEnd
 refactor: route url logic 
