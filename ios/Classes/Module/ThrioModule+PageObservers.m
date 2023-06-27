@@ -40,7 +40,7 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 + (void)willAppear:(NavigatorRouteSettings *)routeSettings
-       routeType:(NSString *)routeTypeString {
+         routeType:(NSString *)routeTypeString {
     NavigatorRouteType routeType = [self routeTypeFromString:routeTypeString];
     UINavigationController *nvc = ThrioNavigator.navigationController;
     if (routeType == NavigatorRouteTypePush) {
@@ -58,14 +58,19 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 + (void)didAppear:(NavigatorRouteSettings *)routeSettings
-      routeType:(NSString *)routeTypeString {
+        routeType:(NSString *)routeTypeString {
     NavigatorRouteType routeType = [self routeTypeFromString:routeTypeString];
     UINavigationController *nvc = ThrioNavigator.navigationController;
     if (routeType == NavigatorRouteTypePush) {
         [ThrioModule.pageObservers didAppear:routeSettings];
         if ([[nvc thrio_getAllRoutesByUrl:nil] count] > 0) {
             NavigatorPageRoute *lastRoute = nvc.thrio_lastRoute;
-            [ThrioModule.pageObservers didDisappear:lastRoute.settings];
+            if ([lastRoute.settings isEqualToRouteSettings:routeSettings]) {
+                lastRoute = lastRoute.prev;
+            }
+            if (lastRoute) {
+                [ThrioModule.pageObservers didDisappear:lastRoute.settings];
+            }
         }
     } else if (routeType == NavigatorRouteTypeReplace) {
         [ThrioModule.pageObservers didAppear:routeSettings];
@@ -75,7 +80,7 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 + (void)willDisappear:(NavigatorRouteSettings *)routeSettings
-          routeType:(NSString *)routeTypeString {
+            routeType:(NSString *)routeTypeString {
     NavigatorRouteType routeType = [self routeTypeFromString:routeTypeString];
     UINavigationController *nvc = ThrioNavigator.navigationController;
     if (routeType == NavigatorRouteTypePop || routeType == NavigatorRouteTypeRemove) {
@@ -92,7 +97,7 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 + (void)didDisappear:(NavigatorRouteSettings *)routeSettings
-         routeType:(NSString *)routeTypeString {
+           routeType:(NSString *)routeTypeString {
     NavigatorRouteType routeType = [self routeTypeFromString:routeTypeString];
     UINavigationController *nvc = ThrioNavigator.navigationController;
     if (routeType == NavigatorRouteTypePop || routeType == NavigatorRouteTypeRemove) {
