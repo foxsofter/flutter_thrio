@@ -301,14 +301,28 @@ internal object NavigationController : Application.ActivityLifecycleCallbacks {
             animated: Boolean = true,
             result: BooleanCallback? = null
         ) {
-            val lastHolder = PageRoutes.lastRouteHolder()
+            var lastHolder = PageRoutes.lastRouteHolder()
+            if (lastHolder == null) {
+                result?.invoke(false)
+                return
+            }
+            var activity = lastHolder.activity?.get() ?: return // 不应该会走到这
+            // 如果该 activity 正在被关闭，则对其下的 activity 进行 pop
+            while (activity.isFinishing) {
+                val idx = PageRoutes.routeHolders.indexOf(lastHolder)
+                if (idx < 1) {
+                    result?.invoke(false)
+                    return
+                }
+                lastHolder = PageRoutes.routeHolders[idx - 1]
+                activity = lastHolder.activity?.get() ?: return // 不应该会走到这
+            }
             if (lastHolder == null) {
                 result?.invoke(false)
                 return
             }
             val inRoot = lastHolder == PageRoutes.firstRouteHolder
             if (inRoot && lastHolder.allRoute().count() < 2) {
-                val activity = lastHolder.activity?.get() ?: return // 不应该会走到这
                 if (activity is ThrioFlutterActivityBase) {
                     PageRoutes.maybePop<T>(params, animated, true) {
                         if (it == 1) {
@@ -342,18 +356,34 @@ internal object NavigationController : Application.ActivityLifecycleCallbacks {
                 result?.invoke(false)
                 return
             }
-            val lastHolder = PageRoutes.lastRouteHolder()
+            var lastHolder = PageRoutes.lastRouteHolder()
             if (lastHolder == null) {
                 result?.invoke(false)
                 return
             }
             routeType = RouteType.POP
 
+            var activity = lastHolder.activity?.get() ?: return // 不应该会走到这
+            // 如果该 activity 正在被关闭，则对其下的 activity 进行 pop
+            while (activity.isFinishing) {
+                val idx = PageRoutes.routeHolders.indexOf(lastHolder)
+                if (idx < 1) {
+                    routeType = RouteType.NONE
+                    result?.invoke(false)
+                    return
+                }
+                lastHolder = PageRoutes.routeHolders[idx - 1]
+                activity = lastHolder.activity?.get() ?: return // 不应该会走到这
+            }
+            if (lastHolder == null) {
+                routeType = RouteType.NONE
+                result?.invoke(false)
+                return
+            }
             val inRoot = lastHolder == PageRoutes.firstRouteHolder
 
             PageRoutes.willAppearPageId = 0
             if (inRoot && lastHolder.allRoute().count() < 2) {
-                val activity = lastHolder.activity?.get() ?: return // 不应该会走到这
                 if (activity is ThrioFlutterActivityBase) {
                     activity.moveTaskToBack(false)
                 } else {
@@ -552,3 +582,4 @@ internal object NavigationController : Application.ActivityLifecycleCallbacks {
         }
     }
 }
+ 
