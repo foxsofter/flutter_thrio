@@ -628,6 +628,12 @@ class ThrioNavigatorImplement {
   }) =>
       _sendChannel.pop<TParams>(params: params, animated: animated);
 
+  Future<bool> popFlutter<TParams>({
+    final TParams? params,
+    final bool animated = true,
+  }) =>
+      _sendChannel.popFlutter<TParams>(params: params, animated: animated);
+
   Future<bool> popToRoot({
     final bool animated = true,
   }) async {

@@ -30,6 +30,7 @@ import '../module/module_anchor.dart';
 import '../module/module_types.dart';
 import '../module/thrio_module.dart';
 import 'navigator_route_settings.dart';
+import 'thrio_navigator_implement.dart';
 
 class NavigatorRouteSendChannel {
   NavigatorRouteSendChannel(final ThrioChannel channel) : _channel = channel;
@@ -88,6 +89,28 @@ class NavigatorRouteSendChannel {
   }) {
     Future<bool> popFuture() async {
       final settings = await lastRoute();
+      final url = settings?.url;
+      final arguments = <String, dynamic>{
+        'params': _serializeParams<TParams>(url: url, params: params),
+        'animated': animated,
+      };
+      return _channel
+          .invokeMethod<bool>('pop', arguments)
+          .then((final it) => it ?? false);
+    }
+
+    return _taskQueue
+        .add(popFuture, timeLimit: _timeLimit)
+        .then((final value) => value == true);
+  }
+
+  Future<bool> popFlutter<TParams>({
+    final TParams? params,
+    final bool animated = true,
+  }) {
+    Future<bool> popFuture() async {
+      final settings =
+          ThrioNavigatorImplement.shared().lastFlutterRoute()?.settings;
       final url = settings?.url;
       final arguments = <String, dynamic>{
         'params': _serializeParams<TParams>(url: url, params: params),

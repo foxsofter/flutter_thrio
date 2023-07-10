@@ -30,7 +30,11 @@ import android.os.Bundle
 import com.foxsofter.flutter_thrio.BooleanCallback
 import com.foxsofter.flutter_thrio.NullableAnyCallback
 import com.foxsofter.flutter_thrio.NullableIntCallback
-import com.foxsofter.flutter_thrio.extension.*
+import com.foxsofter.flutter_thrio.extension.getEntrypoint
+import com.foxsofter.flutter_thrio.extension.getFromEntrypoint
+import com.foxsofter.flutter_thrio.extension.getFromPageId
+import com.foxsofter.flutter_thrio.extension.getPageId
+import com.foxsofter.flutter_thrio.extension.getRouteSettings
 import com.foxsofter.flutter_thrio.module.ModuleIntentBuilders
 import com.foxsofter.flutter_thrio.module.ModuleJsonSerializers
 import com.foxsofter.flutter_thrio.module.ModuleRouteObservers
