@@ -52,6 +52,7 @@ NS_ASSUME_NONNULL_BEGIN
         [self _onNotify];
         [self _onMaybePop];
         [self _onPop];
+        [self _onPopFlutter];
         [self _onPopTo];
         [self _onRemove];
         [self _onReplace];
@@ -154,6 +155,24 @@ NS_ASSUME_NONNULL_BEGIN
         [ThrioNavigator _popParams:params
                           animated:animated
                             result:^(BOOL r) {
+            if (result) {
+                result(@(r));
+            }
+        }];
+    }];
+}
+
+- (void)_onPopFlutter {
+    [_channel registryMethod:@"popFlutter"
+                     handler:
+     ^void (NSDictionary<NSString *, id> *arguments,
+            ThrioIdCallback _Nullable result) {
+        id params = [arguments[@"params"] isKindOfClass:NSNull.class] ? nil : arguments[@"params"];
+        BOOL animated = [arguments[@"animated"] boolValue];
+        NavigatorVerbose(@"on pop");
+        [ThrioNavigator _popFlutterParams:params
+                                 animated:animated
+                                   result:^(BOOL r) {
             if (result) {
                 result(@(r));
             }

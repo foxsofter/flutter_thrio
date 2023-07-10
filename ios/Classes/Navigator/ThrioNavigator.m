@@ -303,6 +303,38 @@ NS_ASSUME_NONNULL_BEGIN
     [self _popParams:params animated:animated result:result];
 }
 
+#pragma mark - popFlutter methods
+
++ (void)popFlutter {
+    [self _popFlutterParams:nil animated:YES result:nil];
+}
+
++ (void)popFlutterParams:(id)params {
+    [self _popFlutterParams:params animated:YES result:nil];
+}
+
++ (void)popFlutterAnimated:(BOOL)animated {
+    [self _popFlutterParams:nil animated:animated result:nil];
+}
+
++ (void)popFlutterParams:(id)params animated:(BOOL)animated {
+    [self _popFlutterParams:params animated:animated result:nil];
+}
+
++ (void)popFlutterAnimated:(BOOL)animated result:(ThrioBoolCallback)result {
+    [self _popFlutterParams:nil animated:animated result:nil];
+}
+
++ (void)popFlutterParams:(id)params result:(ThrioBoolCallback)result {
+    [self _popFlutterParams:params animated:YES result:result];
+}
+
++ (void)popFlutterParams:(id)params
+                animated:(BOOL)animated
+                  result:(ThrioBoolCallback)result {
+    [self _popFlutterParams:params animated:animated result:result];
+}
+
 #pragma mark - popTo methods
 
 + (void)popToUrl:(NSString *)url {

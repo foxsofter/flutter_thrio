@@ -52,6 +52,11 @@
     [ThrioNavigator popParams:@{ @"k1": @3 }];
 }
 
+- (IBAction)popFlutter:(id)sender {
+    [ThrioNavigator popFlutterParams:@{ @"k1": @3 }];
+}
+
+
 - (IBAction)willPopYESNative2:(id)sender {
     self.thrio_willPopBlock = ^(ThrioBoolCallback _Nonnull result) {
         result(YES);

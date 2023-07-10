@@ -305,6 +305,39 @@ NS_ASSUME_NONNULL_BEGIN
          animated:(BOOL)animated
            result:(ThrioBoolCallback)result;
 
+#pragma mark - popFlutter methods
+
+/// Pop a flutter page from the navigation stack.
+///
++ (void)popFlutter;
+
+/// Pop a flutter page from the navigation stack.
+///
++ (void)popFlutterParams:(id)params;
+
+/// Pop a flutter page from the navigation stack.
+///
++ (void)popFlutterAnimated:(BOOL)animated;
+
+/// Pop a flutter page from the navigation stack.
+///
++ (void)popFlutterParams:(id)params animated:(BOOL)animated;
+
+/// Pop a flutter page from the navigation stack.
+///
++ (void)popFlutterAnimated:(BOOL)animated result:(ThrioBoolCallback)result;
+
+/// Pop a flutter page from the navigation stack.
+///
++ (void)popParams:(id)params result:(ThrioBoolCallback)result;
+
+/// Pop a flutter page from the navigation stack.
+///
++ (void)popParams:(id)params
+         animated:(BOOL)animated
+           result:(ThrioBoolCallback)result;
+
+
 #pragma mark - popTo methods
 
 /// Pop the page in the navigation stack until the page with `url`.

@@ -245,6 +245,40 @@ NS_ASSUME_NONNULL_BEGIN
     }];
 }
 
+- (void)thrio_popFlutterParams:(id _Nullable)params
+                      animated:(BOOL)animated
+                        result:(ThrioBoolCallback _Nullable)result {
+    UIViewController *vc = self.topViewController;
+    NSInteger idx = self.viewControllers.count - 1;
+    while (![vc isKindOfClass:FlutterViewController.class] && idx >= 0) {
+        vc = self.viewControllers[idx--];
+    }
+    if (![vc isKindOfClass:FlutterViewController.class]) {
+        if (result) {
+            result(NO);
+        }
+        return;
+    }
+    BOOL inRoot = vc.thrio_firstRoute == vc.thrio_lastRoute && idx == 0;
+    NavigatorPageRoute *lastRoute = vc.thrio_lastRoute;
+    __weak typeof(self) weakself = self;
+    [vc thrio_popParams:params animated:animated inRoot:inRoot result:^(BOOL r) {
+        __strong typeof(weakself) strongSelf = weakself;
+        if (r) {
+            if (lastRoute == vc.thrio_lastRoute && vc.thrio_lastRoute != vc.thrio_firstRoute) {
+                vc.thrio_lastRoute.prev.next = nil;
+            }
+            // 只剩一个 route 的时候，需要添加侧滑返回手势
+            if ([vc isKindOfClass:NavigatorFlutterViewController.class] && vc.thrio_firstRoute == vc.thrio_lastRoute) {
+                [strongSelf thrio_addPopGesture];
+            }
+        }
+        if (result) {
+            result(r);
+        }
+    }];
+}
+
 - (void)thrio_popToUrl:(NSString *)url
                  index:(NSNumber *_Nullable)index
               animated:(BOOL)animated
@@ -271,6 +305,7 @@ NS_ASSUME_NONNULL_BEGIN
         }
     }];
 }
+
 
 - (void)thrio_removeUrl:(NSString *)url
                   index:(NSNumber *_Nullable)index

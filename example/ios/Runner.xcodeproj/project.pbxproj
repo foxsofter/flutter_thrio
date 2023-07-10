@@ -111,9 +111,9 @@
 		478AE4F32898F9B100887E22 /* Module2 */ = {
 			isa = PBXGroup;
 			children = (
+				478AE4F62898F9B100887E22 /* Module2.h */,
 				478AE4F42898F9B100887E22 /* Module2.m */,
 				478AE4F52898F9B100887E22 /* ThrioViewController2.h */,
-				478AE4F62898F9B100887E22 /* Module2.h */,
 				478AE4F72898F9B100887E22 /* ThrioViewController2.m */,
 			);
 			path = Module2;
