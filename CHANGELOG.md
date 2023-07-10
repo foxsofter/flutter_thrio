@@ -1,3 +1,7 @@
+## 4.3.0
+feat: add popFlutter
+fix: android pop failed when activity isFinishing
+
 ## 4.2.2
 fix: didDisappear last route not working for ios release
 

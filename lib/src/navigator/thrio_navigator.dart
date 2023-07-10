@@ -288,7 +288,7 @@ abstract class ThrioNavigator {
         animated: animated,
       );
 
-  /// Pop the top Flutter page of current engine.
+  /// Pop the top Flutter page.
   ///
   static Future<bool> popFlutter<TParams>({
     final TParams? params,
