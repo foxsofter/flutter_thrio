@@ -39,7 +39,9 @@ class Native1Activity : AppCompatActivity(), PageNotifyListener {
                 Log.i("Thrio", "push result data $it")
             }
         }
-
+        binding.btn2.setOnClickListener {
+            ThrioNavigator.popFlutter()
+        }
         binding.btn12.setOnClickListener {
             ThrioNavigator.push("/biz/biz2/flutter2",
                 params = mapOf("k1" to 1),

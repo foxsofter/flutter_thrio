@@ -97,8 +97,20 @@ object ThrioNavigator {
     ) = NavigationController.Pop.pop<T>(params, animated, result)
 
     @JvmStatic
+    @JvmOverloads
+    fun <T> popFlutter(
+        params: T? = null,
+        animated: Boolean = true,
+        result: BooleanCallback = {}
+    ) = NavigationController.Pop.popFlutter<T>(params, animated, result)
+
+    @JvmStatic
     fun pop(animated: Boolean = true, result: BooleanCallback = {}) =
         NavigationController.Pop.pop(null, animated, result)
+
+    @JvmStatic
+    fun popFlutter(animated: Boolean = true, result: BooleanCallback = {}) =
+        NavigationController.Pop.popFlutter(null, animated, result)
 
     @JvmStatic
     @JvmOverloads

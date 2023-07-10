@@ -50,8 +50,6 @@ internal object PageRoutes : Application.ActivityLifecycleCallbacks {
             }
         }
 
-    var willAppearPageId = 0
-
     val routeHolders by lazy { mutableListOf<PageRouteHolder>() }
 
     val firstRouteHolder: PageRouteHolder? get() = routeHolders.firstOrNull()
@@ -71,6 +69,17 @@ internal object PageRoutes : Application.ActivityLifecycleCallbacks {
         null -> routeHolders.lastOrNull()
         else -> routeHolders.lastOrNull { it.hasRoute(url, index) }
     }
+
+    fun lastFlutterRouteHolder(url: String? = null, index: Int? = null): PageRouteHolder? =
+        when (url) {
+            null -> routeHolders.lastOrNull { it.entrypoint != NAVIGATION_NATIVE_ENTRYPOINT }
+            else -> routeHolders.lastOrNull {
+                it.entrypoint != NAVIGATION_NATIVE_ENTRYPOINT && it.hasRoute(
+                    url,
+                    index
+                )
+            }
+        }
 
     fun removedByRemoveRouteHolder(pageId: Int): PageRouteHolder? {
         val index = removedRouteHolders.indexOfLast { it.pageId == pageId }
@@ -187,33 +196,20 @@ internal object PageRoutes : Application.ActivityLifecycleCallbacks {
     }
 
     fun <T> pop(
+        holder: PageRouteHolder,
         params: T?,
         animated: Boolean,
         inRoot: Boolean = false,
         result: BooleanCallback
     ) {
-        val holder = routeHolders.lastOrNull()
-        if (holder == null) {
-            result(false)
-            return
-        }
-
         if (holder.routes.isEmpty()) {
             holder.activity?.get()?.finish()
             routeHolders.remove(holder)
             result(true)
         } else {
-            // 记下次顶部的 Activity 的 holder
-            val secondTopHolder =
-                if (routeHolders.count() > 1) routeHolders[routeHolders.count() - 2] else null
-
             holder.pop<T>(params, animated, inRoot) { it ->
                 if (it) {
                     if (!holder.hasRoute()) {
-                        willAppearPageId =
-                            if (secondTopHolder == null || secondTopHolder.entrypoint == NAVIGATION_NATIVE_ENTRYPOINT) 0
-                            else secondTopHolder.pageId
-
                         holder.activity?.get()?.let {
                             routeHolders.remove(holder)
                             it.finish()
@@ -281,12 +277,6 @@ internal object PageRoutes : Application.ActivityLifecycleCallbacks {
         holder.remove(url, index, animated) {
             if (it) {
                 if (!holder.hasRoute()) {
-                    if (holder == routeHolders.last() && routeHolders.count() > 1) {
-                        val secondTopHolder = routeHolders[routeHolders.count() - 2]
-                        if (secondTopHolder.entrypoint != NAVIGATION_NATIVE_ENTRYPOINT) {
-                            willAppearPageId = secondTopHolder.pageId
-                        }
-                    }
                     val activity = holder.activity?.get()
                     if (activity == null) {
                         routeHolders.remove(holder)

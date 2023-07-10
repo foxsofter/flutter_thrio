@@ -117,7 +117,7 @@ class NavigatorRouteSendChannel {
         'animated': animated,
       };
       return _channel
-          .invokeMethod<bool>('pop', arguments)
+          .invokeMethod<bool>('popFlutter', arguments)
           .then((final it) => it ?? false);
     }
 

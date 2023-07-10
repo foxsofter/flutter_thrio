@@ -150,6 +150,17 @@ class _Flutter3PageState extends State<Flutter3Page>
                     )),
               ),
               InkWell(
+                onTap: ThrioNavigator.popFlutter,
+                child: Container(
+                    padding: const EdgeInsets.all(4),
+                    margin: const EdgeInsets.all(4),
+                    color: Colors.grey,
+                    child: const Text(
+                      'pop flutter',
+                      style: TextStyle(fontSize: 22, color: Colors.black),
+                    )),
+              ),
+              InkWell(
                 onTap: () async => biz.biz1.flutter1.flutter1(intValue: 9),
                 child: Container(
                     padding: const EdgeInsets.all(4),
