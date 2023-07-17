@@ -136,9 +136,6 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
     // 关闭非体系内的顶部 route，同时 return false，避免原生端清栈
     if (history.last is! NavigatorRoute) {
       final result = await navigatorState.maybePop(settings.params);
-      if (result) {
-        history.removeLast();
-      }
       // 返回 -1 表示关闭非体系内的顶部 route
       return result ? -1 : 0;
     }
@@ -166,7 +163,6 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
     // 关闭非体系内的顶部 route，同时 return false，避免原生端清栈
     if (history.last is! NavigatorRoute) {
       navigatorState.pop(settings.params);
-      history.removeLast();
       return false;
     }
 

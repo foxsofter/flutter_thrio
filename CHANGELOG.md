@@ -1,3 +1,6 @@
+## 4.3.1
+fix: pop Navigator route twice
+
 ## 4.3.0
 feat: add popFlutter
 fix: android pop failed when activity isFinishing
