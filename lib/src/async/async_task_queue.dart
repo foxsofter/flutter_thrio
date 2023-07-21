@@ -29,13 +29,17 @@ class AsyncTaskQueue {
     final Duration? timeLimit,
   }) {
     final completer = Completer<T?>();
-    if (timeLimit != null) {
-      _current = _current.timeout(timeLimit);
+    void complete(final T? value) {
+      if (!completer.isCompleted) {
+        completer.complete(value);
+      }
     }
+
     _current.whenComplete(() {
-      task().then<void>(completer.complete).catchError((final _) {
-        completer.complete(null);
-      });
+      final f = task().then(complete).catchError((final _) => complete(null));
+      if (timeLimit != null) {
+        f.timeout(timeLimit, onTimeout: () => complete(null));
+      }
     });
     _current = completer.future;
     return completer.future;

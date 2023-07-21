@@ -23,7 +23,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
-import '../async/async_task_queue.dart';
 import '../channel/thrio_channel.dart';
 import '../extension/thrio_object.dart';
 import '../module/module_anchor.dart';
@@ -35,31 +34,21 @@ import 'thrio_navigator_implement.dart';
 class NavigatorRouteSendChannel {
   NavigatorRouteSendChannel(final ThrioChannel channel) : _channel = channel;
 
-  final _timeLimit = const Duration(milliseconds: 300);
-
   final ThrioChannel _channel;
-
-  final _taskQueue = AsyncTaskQueue();
 
   Future<int> push<TParams>({
     required final String url,
     final TParams? params,
     final bool animated = true,
   }) async {
-    Future<int> pushFuture() {
-      final arguments = <String, dynamic>{
-        'url': url,
-        'animated': animated,
-        'params': _serializeParams<TParams>(url: url, params: params),
-      };
+    final arguments = <String, dynamic>{
+      'url': url,
+      'animated': animated,
+      'params': _serializeParams<TParams>(url: url, params: params),
+    };
 
-      return _channel
-          .invokeMethod<int>('push', arguments)
-          .then((final value) => value ?? 0);
-    }
-
-    return _taskQueue
-        .add(pushFuture, timeLimit: _timeLimit)
+    return _channel
+        .invokeMethod<int>('push', arguments)
         .then((final value) => value ?? 0);
   }
 
@@ -86,44 +75,32 @@ class NavigatorRouteSendChannel {
   Future<bool> pop<TParams>({
     final TParams? params,
     final bool animated = true,
-  }) {
-    Future<bool> popFuture() async {
-      final settings = await lastRoute();
-      final url = settings?.url;
-      final arguments = <String, dynamic>{
-        'params': _serializeParams<TParams>(url: url, params: params),
-        'animated': animated,
-      };
-      return _channel
-          .invokeMethod<bool>('pop', arguments)
-          .then((final it) => it ?? false);
-    }
-
-    return _taskQueue
-        .add(popFuture, timeLimit: _timeLimit)
-        .then((final value) => value == true);
+  }) async {
+    final settings = await lastRoute();
+    final url = settings?.url;
+    final arguments = <String, dynamic>{
+      'params': _serializeParams<TParams>(url: url, params: params),
+      'animated': animated,
+    };
+    return _channel
+        .invokeMethod<bool>('pop', arguments)
+        .then((final it) => it ?? false);
   }
 
   Future<bool> popFlutter<TParams>({
     final TParams? params,
     final bool animated = true,
   }) {
-    Future<bool> popFuture() async {
-      final settings =
-          ThrioNavigatorImplement.shared().lastFlutterRoute()?.settings;
-      final url = settings?.url;
-      final arguments = <String, dynamic>{
-        'params': _serializeParams<TParams>(url: url, params: params),
-        'animated': animated,
-      };
-      return _channel
-          .invokeMethod<bool>('popFlutter', arguments)
-          .then((final it) => it ?? false);
-    }
-
-    return _taskQueue
-        .add(popFuture, timeLimit: _timeLimit)
-        .then((final value) => value == true);
+    final settings =
+        ThrioNavigatorImplement.shared().lastFlutterRoute()?.settings;
+    final url = settings?.url;
+    final arguments = <String, dynamic>{
+      'params': _serializeParams<TParams>(url: url, params: params),
+      'animated': animated,
+    };
+    return _channel
+        .invokeMethod<bool>('popFlutter', arguments)
+        .then((final it) => it ?? false);
   }
 
   Future<bool> maybePop<TParams>({
@@ -156,7 +133,6 @@ class NavigatorRouteSendChannel {
     final int index = 0,
     final bool animated = true,
   }) {
-    Future<bool> popToFuture() {
       final arguments = <String, dynamic>{
         'url': url,
         'index': index,
@@ -165,11 +141,6 @@ class NavigatorRouteSendChannel {
       return _channel
           .invokeMethod<bool>('popTo', arguments)
           .then((final it) => it ?? false);
-    }
-
-    return _taskQueue
-        .add(popToFuture, timeLimit: _timeLimit)
-        .then((final value) => value == true);
   }
 
   Future<bool> remove({
@@ -177,7 +148,6 @@ class NavigatorRouteSendChannel {
     final int index = 0,
     final bool animated = true,
   }) {
-    Future<bool> removeFuture() {
       final arguments = <String, dynamic>{
         'url': url,
         'index': index,
@@ -186,11 +156,6 @@ class NavigatorRouteSendChannel {
       return _channel
           .invokeMethod<bool>('remove', arguments)
           .then((final it) => it ?? false);
-    }
-
-    return _taskQueue
-        .add(removeFuture, timeLimit: _timeLimit)
-        .then((final value) => value == true);
   }
 
   Future<int> replace({
@@ -198,7 +163,6 @@ class NavigatorRouteSendChannel {
     final int index = 0,
     required final String newUrl,
   }) {
-    Future<int> replaceFuture() {
       final arguments = <String, dynamic>{
         'url': url,
         'index': index,
@@ -207,11 +171,6 @@ class NavigatorRouteSendChannel {
       return _channel
           .invokeMethod<int>('replace', arguments)
           .then((final it) => it ?? 0);
-    }
-
-    return _taskQueue
-        .add(replaceFuture, timeLimit: _timeLimit)
-        .then((final value) => value ?? 0);
   }
 
   Future<RouteSettings?> lastRoute({final String? url}) {

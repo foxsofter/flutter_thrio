@@ -24,6 +24,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
+import '../async/async_task_queue.dart';
 import '../channel/thrio_channel.dart';
 import '../exception/thrio_exception.dart';
 import '../extension/thrio_iterable.dart';
@@ -125,6 +126,8 @@ class ThrioNavigatorImplement {
 
   late final observerManager = NavigatorObserverManager();
 
+  final _taskQueue = AsyncTaskQueue();
+
   void ready() {
     // 需要将 WidgetsAppState 中的 `didPopRoute` 去掉，否则后续所有的 `didPopRoute` 都不生效了
     final appState = NavigatorMaterialApp.appKey.currentState;
@@ -143,20 +146,37 @@ class ThrioNavigatorImplement {
     final TParams? params,
     final bool animated = true,
     final NavigatorIntCallback? result,
-  }) async {
+  }) {
     final completer = Completer<TPopParams?>();
 
-    final handled =
-        await _pushToHandler(url, params, animated, completer, result);
-
-    if (!handled) {
-      unawaited(_pushToNative<TParams, TPopParams>(
+    Future<void> pushFuture() async {
+      final resultCompleter = Completer();
+      final handled = await _pushToHandler(
         url,
         params,
         animated,
         completer,
-      ).then((final index) => result?.call(index)));
+        (final index) {
+          result?.call(index);
+          resultCompleter.complete();
+        },
+      );
+
+      if (!handled) {
+        unawaited(_pushToNative<TParams, TPopParams>(
+          url,
+          params,
+          animated,
+          completer,
+        ).then((final index) {
+          result?.call(index);
+          resultCompleter.complete();
+        }));
+      }
     }
+
+    _taskQueue.add(pushFuture);
+
     return completer.future;
   }
 
@@ -184,26 +204,34 @@ class ThrioNavigatorImplement {
     final TParams? params,
     final bool animated = true,
     final NavigatorIntCallback? result,
-  }) async {
+  }) {
     final completer = Completer<TPopParams?>();
-
-    final handled = await _pushToHandler(url, params, animated, completer,
-        (final index) async {
-      if (index > 0) {
-        await removeAll(url: url, excludeIndex: index);
-      }
-      result?.call(index);
-    });
-    if (!handled) {
-      unawaited(
-          _pushToNative<TParams, TPopParams>(url, params, animated, completer)
-              .then((final index) async {
+    
+    Future<void> pushFuture() async {
+      final resultCompleter = Completer();
+      final handled = await _pushToHandler(url, params, animated, completer,
+          (final index) async {
         if (index > 0) {
           await removeAll(url: url, excludeIndex: index);
         }
         result?.call(index);
-      }));
+        resultCompleter.complete();
+      });
+      if (!handled) {
+        unawaited(
+            _pushToNative<TParams, TPopParams>(url, params, animated, completer)
+                .then((final index) async {
+          if (index > 0) {
+            await removeAll(url: url, excludeIndex: index);
+          }
+          result?.call(index);
+          resultCompleter.complete();
+        }));
+      }
     }
+
+    _taskQueue.add(pushFuture);
+
     return completer.future;
   }
 
@@ -212,30 +240,39 @@ class ThrioNavigatorImplement {
     final TParams? params,
     final bool animated = true,
     final NavigatorIntCallback? result,
-  }) async {
-    final lastSetting = await lastRoute();
-    if (lastSetting == null) {
-      throw ThrioException('no route to replace');
-    }
+  }) {
     final completer = Completer<TPopParams>();
 
-    final handled = await _pushToHandler(url, params, animated, completer,
-        (final index) async {
-      if (index > 0) {
-        await remove(url: lastSetting.url, index: lastSetting.index);
+    Future<void> pushFuture() async {
+      final resultCompleter = Completer<TPopParams>();
+      final lastSetting = await lastRoute();
+      if (lastSetting == null) {
+        throw ThrioException('no route to replace');
       }
-      result?.call(index);
-    });
-    if (!handled) {
-      unawaited(
-          _pushToNative<TParams, TPopParams>(url, params, animated, completer)
-              .then((final index) async {
+
+      final handled = await _pushToHandler(url, params, animated, completer,
+          (final index) async {
         if (index > 0) {
           await remove(url: lastSetting.url, index: lastSetting.index);
         }
         result?.call(index);
-      }));
+        resultCompleter.complete();
+      });
+      if (!handled) {
+        unawaited(
+            _pushToNative<TParams, TPopParams>(url, params, animated, completer)
+                .then((final index) async {
+          if (index > 0) {
+            await remove(url: lastSetting.url, index: lastSetting.index);
+          }
+          result?.call(index);
+          resultCompleter.complete();
+        }));
+      }
     }
+
+    _taskQueue.add(pushFuture);
+
     return completer.future;
   }
 
@@ -245,33 +282,41 @@ class ThrioNavigatorImplement {
     final TParams? params,
     final bool animated = true,
     final NavigatorIntCallback? result,
-  }) async {
-    final routes = await allRoutes();
-    final route = routes.lastWhereOrNull((final it) => it.url == toUrl);
-    if (route == null) {
-      result?.call(0);
-      return null;
-    }
-
+  }) {
     final completer = Completer<TPopParams>();
 
-    final handled = await _pushToHandler(url, params, animated, completer,
-        (final index) async {
-      if (index > 0) {
-        await removeBlowUntil(predicate: (final url) => url == toUrl);
+    Future<void> pushFuture() async {
+      final resultCompleter = Completer();
+      final routes = await allRoutes();
+      final route = routes.lastWhereOrNull((final it) => it.url == toUrl);
+      if (route == null) {
+        result?.call(0);
+        resultCompleter.complete();
       }
-      result?.call(index);
-    });
-    if (!handled) {
-      unawaited(
-          _pushToNative<TParams, TPopParams>(url, params, animated, completer)
-              .then((final index) async {
+
+      final handled = await _pushToHandler(url, params, animated, completer,
+          (final index) async {
         if (index > 0) {
           await removeBlowUntil(predicate: (final url) => url == toUrl);
         }
         result?.call(index);
-      }));
+        resultCompleter.complete();
+      });
+      if (!handled) {
+        unawaited(
+            _pushToNative<TParams, TPopParams>(url, params, animated, completer)
+                .then((final index) async {
+          if (index > 0) {
+            await removeBlowUntil(predicate: (final url) => url == toUrl);
+          }
+          result?.call(index);
+          resultCompleter.complete();
+        }));
+      }
     }
+
+    _taskQueue.add(pushFuture);
+
     return completer.future;
   }
 
@@ -281,33 +326,42 @@ class ThrioNavigatorImplement {
     final TParams? params,
     final bool animated = true,
     final NavigatorIntCallback? result,
-  }) async {
-    final routes = await allRoutes();
-    final route = routes.firstWhereOrNull((final it) => it.url == toUrl);
-    if (route == null) {
-      result?.call(0);
-      return null;
-    }
-
+  }) {
     final completer = Completer<TPopParams>();
 
-    final handled = await _pushToHandler(url, params, animated, completer,
-        (final index) async {
-      if (index > 0) {
-        await removeBlowUntilFirst(predicate: (final url) => url == toUrl);
+    Future<void> pushFuture() async {
+      final resultCompleter = Completer<TPopParams>();
+
+      final routes = await allRoutes();
+      final route = routes.firstWhereOrNull((final it) => it.url == toUrl);
+      if (route == null) {
+        result?.call(0);
+        resultCompleter.complete();
       }
-      result?.call(index);
-    });
-    if (!handled) {
-      unawaited(
-          _pushToNative<TParams, TPopParams>(url, params, animated, completer)
-              .then((final index) async {
+
+      final handled = await _pushToHandler(url, params, animated, completer,
+          (final index) async {
         if (index > 0) {
           await removeBlowUntilFirst(predicate: (final url) => url == toUrl);
         }
         result?.call(index);
-      }));
+        resultCompleter.complete();
+      });
+      if (!handled) {
+        unawaited(
+            _pushToNative<TParams, TPopParams>(url, params, animated, completer)
+                .then((final index) async {
+          if (index > 0) {
+            await removeBlowUntilFirst(predicate: (final url) => url == toUrl);
+          }
+          result?.call(index);
+          resultCompleter.complete();
+        }));
+      }
     }
+
+    _taskQueue.add(pushFuture);
+
     return completer.future;
   }
 
@@ -317,34 +371,43 @@ class ThrioNavigatorImplement {
     final TParams? params,
     final bool animated = true,
     final NavigatorIntCallback? result,
-  }) async {
-    final routes = await allRoutes();
-    final route = routes
-        .lastWhereOrNull((final it) => it.url.isNotEmpty && predicate(it.url));
-    if (route == null) {
-      result?.call(0);
-      return null;
-    }
-
+  }) {
     final completer = Completer<TPopParams>();
 
-    final handled = await _pushToHandler(url, params, animated, completer,
-        (final index) async {
-      if (index > 0) {
-        await removeBlowUntil(predicate: predicate);
+    Future<void> pushFuture() async {
+      final resultCompleter = Completer<TPopParams>();
+
+      final routes = await allRoutes();
+      final route = routes.lastWhereOrNull(
+          (final it) => it.url.isNotEmpty && predicate(it.url));
+      if (route == null) {
+        result?.call(0);
+        resultCompleter.complete();
       }
-      result?.call(index);
-    });
-    if (!handled) {
-      unawaited(
-          _pushToNative<TParams, TPopParams>(url, params, animated, completer)
-              .then((final index) async {
+
+      final handled = await _pushToHandler(url, params, animated, completer,
+          (final index) async {
         if (index > 0) {
           await removeBlowUntil(predicate: predicate);
         }
         result?.call(index);
-      }));
+        resultCompleter.complete();
+      });
+      if (!handled) {
+        unawaited(
+            _pushToNative<TParams, TPopParams>(url, params, animated, completer)
+                .then((final index) async {
+          if (index > 0) {
+            await removeBlowUntil(predicate: predicate);
+          }
+          result?.call(index);
+          resultCompleter.complete();
+        }));
+      }
     }
+
+    _taskQueue.add(pushFuture);
+
     return completer.future;
   }
 
@@ -354,34 +417,42 @@ class ThrioNavigatorImplement {
     final TParams? params,
     final bool animated = true,
     final NavigatorIntCallback? result,
-  }) async {
-    final routes = await allRoutes();
-    final route = routes
-        .firstWhereOrNull((final it) => it.url.isNotEmpty && predicate(it.url));
-    if (route == null) {
-      result?.call(0);
-      return null;
-    }
-
+  }) {
     final completer = Completer<TPopParams>();
 
-    final handled = await _pushToHandler(url, params, animated, completer,
-        (final index) async {
-      if (index > 0) {
-        await removeBlowUntilFirst(predicate: predicate);
+    Future<void> pushFuture() async {
+      final resultCompleter = Completer<TPopParams>();
+      final routes = await allRoutes();
+      final route = routes.firstWhereOrNull(
+          (final it) => it.url.isNotEmpty && predicate(it.url));
+      if (route == null) {
+        result?.call(0);
+        resultCompleter.complete();
       }
-      result?.call(index);
-    });
-    if (!handled) {
-      unawaited(
-          _pushToNative<TParams, TPopParams>(url, params, animated, completer)
-              .then((final index) async {
+
+      final handled = await _pushToHandler(url, params, animated, completer,
+          (final index) async {
         if (index > 0) {
           await removeBlowUntilFirst(predicate: predicate);
         }
         result?.call(index);
-      }));
+        resultCompleter.complete();
+      });
+      if (!handled) {
+        unawaited(
+            _pushToNative<TParams, TPopParams>(url, params, animated, completer)
+                .then((final index) async {
+          if (index > 0) {
+            await removeBlowUntilFirst(predicate: predicate);
+          }
+          result?.call(index);
+          resultCompleter.complete();
+        }));
+      }
     }
+
+    _taskQueue.add(pushFuture);
+
     return completer.future;
   }
 
@@ -619,169 +690,256 @@ class ThrioNavigatorImplement {
   Future<bool> maybePop<TParams>({
     final TParams? params,
     final bool animated = true,
-  }) =>
-      _sendChannel.maybePop<TParams>(params: params, animated: animated);
+  }) {
+    Future<bool> popFuture() =>
+        _sendChannel.maybePop<TParams>(params: params, animated: animated);
+    return _taskQueue
+        .add<bool>(popFuture)
+        .then((final value) => value ?? false);
+  }
 
   Future<bool> pop<TParams>({
     final TParams? params,
     final bool animated = true,
-  }) =>
-      _sendChannel.pop<TParams>(params: params, animated: animated);
+  }) {
+    Future<bool> popFuture() =>
+        _sendChannel.pop<TParams>(params: params, animated: animated);
+    return _taskQueue
+        .add<bool>(popFuture)
+        .then((final value) => value ?? false);
+  }
 
   Future<bool> popFlutter<TParams>({
     final TParams? params,
     final bool animated = true,
-  }) =>
-      _sendChannel.popFlutter<TParams>(params: params, animated: animated);
+  }) {
+    Future<bool> popFuture() =>
+        _sendChannel.popFlutter<TParams>(params: params, animated: animated);
+    return _taskQueue
+        .add<bool>(popFuture)
+        .then((final value) => value ?? false);
+  }
 
   Future<bool> popToRoot({
     final bool animated = true,
-  }) async {
-    final rootRoute = await firstRoute();
-    if (rootRoute == null) {
-      return false;
+  }) {
+    Future<bool> popToFuture() async {
+      final rootRoute = await firstRoute();
+      if (rootRoute == null) {
+        return false;
+      }
+      return _sendChannel.popTo(
+          url: rootRoute.url, index: rootRoute.index, animated: animated);
     }
-    return _sendChannel.popTo(
-        url: rootRoute.url, index: rootRoute.index, animated: animated);
+
+    return _taskQueue
+        .add<bool>(popToFuture)
+        .then((final value) => value ?? false);
   }
 
   Future<bool> popTo({
     required final String url,
     final bool animated = true,
-  }) =>
-      _sendChannel.popTo(url: url, animated: animated);
+  }) {
+    Future<bool> popToFuture() =>
+        _sendChannel.popTo(url: url, animated: animated);
+    return _taskQueue
+        .add<bool>(popToFuture)
+        .then((final value) => value ?? false);
+  }
 
   Future<bool> popToFirst({
     required final String url,
     final bool animated = true,
-  }) async {
-    final route = await firstRoute(url: url);
-    if (route == null) {
-      return false;
+  }) {
+    Future<bool> popToFuture() async {
+      final route = await firstRoute(url: url);
+      if (route == null) {
+        return false;
+      }
+      return _sendChannel.popTo(
+          url: route.url, index: route.index, animated: animated);
     }
-    return _sendChannel.popTo(
-        url: route.url, index: route.index, animated: animated);
+
+    return _taskQueue
+        .add<bool>(popToFuture)
+        .then((final value) => value ?? false);
   }
 
   Future<bool> popUntil({
     required final bool Function(String url) predicate,
     final bool animated = true,
-  }) async {
-    final routes = await allRoutes();
-    final route = routes
-        .lastWhereOrNull((final it) => it.url.isNotEmpty && predicate(it.url));
-    if (route == null) {
-      return false;
+  }) {
+    Future<bool> popFuture() async {
+      final routes = await allRoutes();
+      final route = routes.lastWhereOrNull(
+          (final it) => it.url.isNotEmpty && predicate(it.url));
+      if (route == null) {
+        return false;
+      }
+      return _sendChannel.popTo(
+          url: route.url, index: route.index, animated: animated);
     }
-    return _sendChannel.popTo(
-        url: route.url, index: route.index, animated: animated);
+
+    return _taskQueue
+        .add<bool>(popFuture)
+        .then((final value) => value ?? false);
   }
 
   Future<bool> popUntilFirst({
     required final bool Function(String url) predicate,
     final bool animated = true,
-  }) async {
-    final routes = await allRoutes();
-    final route = routes
-        .firstWhereOrNull((final it) => it.url.isNotEmpty && predicate(it.url));
-    if (route == null) {
-      return false;
+  }) {
+    Future<bool> popFuture() async {
+      final routes = await allRoutes();
+      final route = routes.firstWhereOrNull(
+          (final it) => it.url.isNotEmpty && predicate(it.url));
+      if (route == null) {
+        return false;
+      }
+      return _sendChannel.popTo(
+          url: route.url, index: route.index, animated: animated);
     }
-    return _sendChannel.popTo(
-        url: route.url, index: route.index, animated: animated);
+
+    return _taskQueue
+        .add<bool>(popFuture)
+        .then((final value) => value ?? false);
   }
 
-  Future<int> removeAll(
-      {required final String url, final int excludeIndex = 0}) async {
-    if (url.isEmpty) {
-      return 0;
-    }
-    var total = 0;
-    var isMatch = false;
-    final all = (await allRoutes(url: url))
-        .where((final it) => it.index != excludeIndex);
-    for (final r in all) {
-      isMatch = await _sendChannel.remove(url: r.url, index: r.index);
-      if (isMatch) {
-        total += 1;
+  Future<int> removeAll({
+    required final String url,
+    final int excludeIndex = 0,
+  }) async {
+    Future<int> removeFuture() async {
+      if (url.isEmpty) {
+        return 0;
       }
+      var total = 0;
+      var isMatch = false;
+      final all = (await allRoutes(url: url))
+          .where((final it) => it.index != excludeIndex);
+      for (final r in all) {
+        isMatch = await _sendChannel.remove(url: r.url, index: r.index);
+        if (isMatch) {
+          total += 1;
+        }
+      }
+      return total;
     }
-    return total;
+
+    return _taskQueue.add<int>(removeFuture).then((final value) => value ?? 0);
   }
 
   Future<bool> remove({
     required final String url,
     final int index = 0,
     final bool animated = true,
-  }) =>
-      _sendChannel.remove(url: url, index: index, animated: animated);
+  }) {
+    Future<bool> removeFuture() => _sendChannel.remove(
+          url: url,
+          index: index,
+          animated: animated,
+        );
+    return _taskQueue
+        .add<bool>(removeFuture)
+        .then((final value) => value ?? false);
+  }
 
   Future<bool> removeFirst({
     required final String url,
     final bool animated = true,
-  }) async {
-    final route = await firstRoute(url: url);
-    if (route == null) {
-      return false;
+  }) {
+    Future<bool> removeFuture() async {
+      final route = await firstRoute(url: url);
+      if (route == null) {
+        return false;
+      }
+      return _sendChannel.remove(
+        url: route.url,
+        index: route.index,
+        animated: animated,
+      );
     }
-    return _sendChannel.remove(
-        url: route.url, index: route.index, animated: animated);
+
+    return _taskQueue
+        .add<bool>(removeFuture)
+        .then((final value) => value ?? false);
   }
 
   Future<bool> removeBlowUntil({
     required final bool Function(String url) predicate,
     final bool animated = true,
-  }) async {
-    final routes = await allRoutes();
-    final route = routes
-        .sublist(0, routes.length - 1)
-        .lastWhereOrNull((final it) => it.url.isNotEmpty && predicate(it.url));
-    if (route == null) {
-      return false;
+  }) {
+    Future<bool> removeFuture() async {
+      final routes = await allRoutes();
+      final route = routes.sublist(0, routes.length - 1).lastWhereOrNull(
+          (final it) => it.url.isNotEmpty && predicate(it.url));
+      if (route == null) {
+        return false;
+      }
+      final index = routes.indexOf(route);
+      final all = routes.getRange(index + 1, routes.length - 1);
+      for (final r in all) {
+        await _sendChannel.remove(url: r.url, index: r.index);
+      }
+      return true;
     }
-    final index = routes.indexOf(route);
-    final all = routes.getRange(index + 1, routes.length - 1);
-    for (final r in all) {
-      await _sendChannel.remove(url: r.url, index: r.index);
-    }
-    return true;
+
+    return _taskQueue
+        .add<bool>(removeFuture)
+        .then((final value) => value ?? false);
   }
 
   Future<bool> removeBlowUntilFirst({
     required final bool Function(String url) predicate,
     final bool animated = true,
-  }) async {
-    final routes = await allRoutes();
-    final route = routes
-        .sublist(0, routes.length - 1)
-        .firstWhereOrNull((final it) => it.url.isNotEmpty && predicate(it.url));
-    if (route == null) {
-      return false;
+  }) {
+    Future<bool> removeFuture() async {
+      final routes = await allRoutes();
+      final route = routes.sublist(0, routes.length - 1).firstWhereOrNull(
+          (final it) => it.url.isNotEmpty && predicate(it.url));
+      if (route == null) {
+        return false;
+      }
+      final index = routes.indexOf(route);
+      final all = routes.getRange(index + 1, routes.length - 1);
+      for (final r in all) {
+        await _sendChannel.remove(url: r.url, index: r.index);
+      }
+      return true;
     }
-    final index = routes.indexOf(route);
-    final all = routes.getRange(index + 1, routes.length - 1);
-    for (final r in all) {
-      await _sendChannel.remove(url: r.url, index: r.index);
-    }
-    return true;
+
+    return _taskQueue
+        .add<bool>(removeFuture)
+        .then((final value) => value ?? false);
   }
 
   Future<int> replace({
     required final String url,
     required final String newUrl,
-  }) =>
-      _sendChannel.replace(url: url, newUrl: newUrl);
+  }) {
+    Future<int> replaceFuture() =>
+        _sendChannel.replace(url: url, newUrl: newUrl);
+    return _taskQueue.add<int>(replaceFuture).then((final value) => value ?? 0);
+  }
 
   Future<int> replaceFirst({
     required final String url,
     required final String newUrl,
-  }) async {
-    final route = await firstRoute(url: url);
-    if (route == null) {
-      return 0;
+  }) {
+    Future<int> replaceFuture() async {
+      final route = await firstRoute(url: url);
+      if (route == null) {
+        return 0;
+      }
+      return _sendChannel.replace(
+        url: route.url,
+        index: route.index,
+        newUrl: newUrl,
+      );
     }
-    return _sendChannel.replace(
-        url: route.url, index: route.index, newUrl: newUrl);
+
+    return _taskQueue.add<int>(replaceFuture).then((final value) => value ?? 0);
   }
 
   Future<bool> canPop() => _sendChannel.canPop();
