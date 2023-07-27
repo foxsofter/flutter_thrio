@@ -1,5 +1,5 @@
 ## 4.4.0
-refactor: implementation of the future queue of the routing method
+refactor: routing method implementation of future queue
 
 ## 4.3.1
 fix: pop Navigator route twice

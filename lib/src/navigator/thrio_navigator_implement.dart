@@ -206,7 +206,7 @@ class ThrioNavigatorImplement {
     final NavigatorIntCallback? result,
   }) {
     final completer = Completer<TPopParams?>();
-    
+
     Future<void> pushFuture() async {
       final resultCompleter = Completer();
       final handled = await _pushToHandler(url, params, animated, completer,
