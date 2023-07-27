@@ -10,6 +10,7 @@ pages:
       - flutter5:
       - flutter7:
       - flutter9:
+      - flutter11:
   - biz2:
       - flutter2:
       - flutter4:

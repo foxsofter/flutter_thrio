@@ -71,6 +71,20 @@ class _Flutter6PageState extends State<Flutter6Page> {
             ),
             InkWell(
               onTap: () async {
+                final result = await biz.biz1.flutter11.push();
+                debugPrint(result.toString());
+              },
+              child: Container(
+                  padding: const EdgeInsets.all(8),
+                  margin: const EdgeInsets.all(8),
+                  color: Colors.yellow,
+                  child: const Text(
+                    'push flutter11',
+                    style: TextStyle(fontSize: 22, color: Colors.black),
+                  )),
+            ),
+            InkWell(
+              onTap: () async {
                 final result = await ThrioNavigator.push(
                     url: 'justascheme://open/biz2/home');
                 debugPrint(result.toString());

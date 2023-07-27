@@ -22,6 +22,7 @@
 #import <objc/runtime.h>
 #import "NSObject+ThrioSwizzling.h"
 #import "UINavigationController+PopGesture.h"
+#import "NavigatorNavigationController.h"
 
 @implementation UINavigationController (PopGesture)
 
@@ -72,6 +73,9 @@
 }
 
 - (void)thrio_addPopGesture {
+    if (![self isKindOfClass:NavigatorNavigationController.class]) {
+        return;
+    }
     if (![self.interactivePopGestureRecognizer.view.gestureRecognizers containsObject:self.thrio_popGestureRecognizer]) {
         [self.interactivePopGestureRecognizer.view addGestureRecognizer:self.thrio_popGestureRecognizer];
     }
@@ -80,6 +84,9 @@
 }
 
 - (void)thrio_removePopGesture {
+    if (![self isKindOfClass:NavigatorNavigationController.class]) {
+        return;
+    }
     if ([self.interactivePopGestureRecognizer.view.gestureRecognizers containsObject:self.thrio_popGestureRecognizer]) {
         [self.interactivePopGestureRecognizer.view removeGestureRecognizer:self.thrio_popGestureRecognizer];
     }
@@ -98,11 +105,18 @@
 /// Make sure that external delegate can take effect.
 ///
 - (void)thrio_setDelegate:(id<UINavigationControllerDelegate> _Nullable)delegate {
-    if (!self.delegate) {
-        [self setValue:self.thrio_navigationControllerDelegate forKey:@"_delegate"];
+    if (delegate == self.delegate) {
+        return;
     }
-    if (delegate != self.thrio_navigationControllerDelegate) {
-        self.thrio_navigationControllerDelegate.originDelegate = delegate;
+    if (![self isKindOfClass:NavigatorNavigationController.class]) {
+        [self setValue:delegate forKey:@"_delegate"];
+    } else {
+        if (!self.delegate) {
+            [self setValue:self.thrio_navigationControllerDelegate forKey:@"_delegate"];
+        }
+        if (delegate != self.thrio_navigationControllerDelegate) {
+            self.thrio_navigationControllerDelegate.originDelegate = delegate;
+        }
     }
 }
 

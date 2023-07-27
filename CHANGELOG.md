@@ -1,5 +1,6 @@
 ## 4.4.0
 refactor: routing method implementation of future queue
+fix: NavigatorNavigationController.delegate not set correctly
 
 ## 4.3.1
 fix: pop Navigator route twice
