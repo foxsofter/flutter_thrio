@@ -84,7 +84,7 @@ class _PermissionHandlerWidgetState extends State<PermissionHandlerWidget> {
                       permission != Permission.criticalAlerts;
                 }
               })
-              .map((final permission) => PermissionWidget(permission))
+              .map(PermissionWidget.new)
               .toList()),
     );
 }
@@ -97,13 +97,13 @@ class PermissionWidget extends StatefulWidget {
   final Permission _permission;
 
   @override
-  _PermissionState createState() => _PermissionState(_permission);
+  _PermissionState createState() => _PermissionState();
 }
 
 class _PermissionState extends State<PermissionWidget> {
-  _PermissionState(this._permission);
+  _PermissionState();
 
-  final Permission _permission;
+   Permission get _permission => widget._permission;
   PermissionStatus _permissionStatus = PermissionStatus.denied;
 
   @override
@@ -113,7 +113,7 @@ class _PermissionState extends State<PermissionWidget> {
     _listenForPermissionStatus();
   }
 
-  void _listenForPermissionStatus() async {
+  Future<void> _listenForPermissionStatus() async {
     final status = await _permission.status;
     setState(() => _permissionStatus = status);
   }
@@ -157,7 +157,7 @@ class _PermissionState extends State<PermissionWidget> {
       },
     );
 
-  void checkServiceStatus(
+  Future<void> checkServiceStatus(
       final BuildContext context, final PermissionWithService permission) async {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       content: Text((await permission.serviceStatus).toString()),
@@ -168,9 +168,9 @@ class _PermissionState extends State<PermissionWidget> {
     final status = await permission.request();
 
     setState(() {
-      print(status);
+      debugPrint(status.toString());
       _permissionStatus = status;
-      print(_permissionStatus);
+      debugPrint(_permissionStatus.toString());
     });
   }
 }
