@@ -1,3 +1,6 @@
+## 4.4.1
+fix: navigation future queue not working
+
 ## 4.4.0
 refactor: routing method implementation of future queue
 fix: NavigatorNavigationController.delegate not set correctly
