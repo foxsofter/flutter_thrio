@@ -133,14 +133,14 @@ class NavigatorRouteSendChannel {
     final int index = 0,
     final bool animated = true,
   }) {
-      final arguments = <String, dynamic>{
-        'url': url,
-        'index': index,
-        'animated': animated
-      };
-      return _channel
-          .invokeMethod<bool>('popTo', arguments)
-          .then((final it) => it ?? false);
+    final arguments = <String, dynamic>{
+      'url': url,
+      'index': index,
+      'animated': animated
+    };
+    return _channel
+        .invokeMethod<bool>('popTo', arguments)
+        .then((final it) => it ?? false);
   }
 
   Future<bool> remove({
@@ -148,14 +148,14 @@ class NavigatorRouteSendChannel {
     final int index = 0,
     final bool animated = true,
   }) {
-      final arguments = <String, dynamic>{
-        'url': url,
-        'index': index,
-        'animated': animated,
-      };
-      return _channel
-          .invokeMethod<bool>('remove', arguments)
-          .then((final it) => it ?? false);
+    final arguments = <String, dynamic>{
+      'url': url,
+      'index': index,
+      'animated': animated,
+    };
+    return _channel
+        .invokeMethod<bool>('remove', arguments)
+        .then((final it) => it ?? false);
   }
 
   Future<int> replace({
@@ -163,14 +163,14 @@ class NavigatorRouteSendChannel {
     final int index = 0,
     required final String newUrl,
   }) {
-      final arguments = <String, dynamic>{
-        'url': url,
-        'index': index,
-        'newUrl': newUrl,
-      };
-      return _channel
-          .invokeMethod<int>('replace', arguments)
-          .then((final it) => it ?? 0);
+    final arguments = <String, dynamic>{
+      'url': url,
+      'index': index,
+      'newUrl': newUrl,
+    };
+    return _channel
+        .invokeMethod<int>('replace', arguments)
+        .then((final it) => it ?? 0);
   }
 
   Future<RouteSettings?> lastRoute({final String? url}) {
