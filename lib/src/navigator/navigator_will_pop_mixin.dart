@@ -137,4 +137,11 @@ class _InternalNavigatorObserver extends NavigatorObserver {
       it._checkWillPop();
     }
   }
+
+  @override
+  void didReplace({final Route<dynamic>? newRoute, final Route<dynamic>? oldRoute}) {
+    for (final it in delegates) {
+      it._checkWillPop();
+    }
+  }
 }
