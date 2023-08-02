@@ -175,7 +175,7 @@ class _Flutter3PageState extends State<Flutter3Page>
                 onTap: () => Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (final context) => const TestPage())),
+                        builder: (final context) => const TestNavigatorPage())),
                 child: Container(
                     padding: const EdgeInsets.all(4),
                     margin: const EdgeInsets.all(4),
@@ -271,6 +271,44 @@ class _TestPageState extends State<TestPage> {
                       foregroundColor:
                           MaterialStateProperty.all(Colors.indigo)),
                   onPressed: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                          settings: const RouteSettings(name: 'test'),
+                          builder: (final context) => const TestPage()),
+                    );
+                  },
+                  child: const Text(
+                    'Navigator push',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: ElevatedButton(
+                  style: ButtonStyle(
+                      foregroundColor:
+                          MaterialStateProperty.all(Colors.indigo)),
+                  onPressed: () {
+                    Navigator.of(context).pushReplacement(
+                      MaterialPageRoute(
+                          settings: const RouteSettings(name: 'test'),
+                          builder: (final context) => const TestPage()),
+                    );
+                  },
+                  child: const Text(
+                    'Navigator pushReplace',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: ElevatedButton(
+                  style: ButtonStyle(
+                      foregroundColor:
+                          MaterialStateProperty.all(Colors.indigo)),
+                  onPressed: () {
                     final mctx = NavigatorPage.moduleContextOf(context);
                     ThrioLogger.v(mctx.toString());
                   },
@@ -284,4 +322,68 @@ class _TestPageState extends State<TestPage> {
           ),
         ),
       );
+}
+
+class TestNavigatorPage extends StatefulWidget {
+  const TestNavigatorPage({super.key});
+
+  @override
+  _TestNavigatorPageState createState() => _TestNavigatorPageState();
+}
+
+class _TestNavigatorPageState extends State<TestNavigatorPage> {
+  final navigatorKey = GlobalKey<NavigatorState>();
+  BuildContext? internalContext;
+
+  @override
+  Widget build(final BuildContext context) => Scaffold(
+      appBar: AppBar(
+        title: const Text('test page'),
+        leading: const IconButton(
+          color: Colors.black,
+          tooltip: 'back',
+          icon: Icon(Icons.arrow_back_ios),
+          onPressed: ThrioNavigator.pop,
+        ),
+      ),
+      body: NavigatorWillPop(
+        internalNavigatorKey: navigatorKey,
+        onWillPop: () async {
+          final canPop = Navigator.of(internalContext!).canPop();
+          if (canPop) {
+            Navigator.of(internalContext!).pop();
+            return false;
+          }
+          return true;
+        },
+        child: Navigator(
+          observers: [
+            TestObser(),
+            NavigatorWillPop.navigatorObserverFor(navigatorKey)
+          ],
+          key: navigatorKey,
+          initialRoute: 'test',
+          onGenerateRoute: (final settings) {
+            if (settings.name == 'test') {
+              return MaterialPageRoute(
+                  builder: (final context) {
+                    internalContext = context;
+                    return const TestPage();
+                  },
+                  settings: settings);
+            }
+            return null;
+          },
+        ),
+      ));
+}
+
+class TestObser extends NavigatorObserver {
+  @override
+  void didPush(final Route<dynamic> route, final Route<dynamic>? previousRoute) {
+  }
+
+  @override
+  void didReplace({final Route<dynamic>? newRoute, final Route<dynamic>? oldRoute}) {
+  }
 }
