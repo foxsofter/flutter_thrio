@@ -1,3 +1,6 @@
+## 4.4.2
+feat: NavigatorWillPopMixin check on didReplace
+
 ## 4.4.1
 fix: navigation future queue not working
 
