@@ -419,14 +419,20 @@ NS_ASSUME_NONNULL_BEGIN
                 return;
             }
         }
+    } 
+    if ([self isKindOfClass:NavigatorFlutterViewController.class]) {
+        NSMutableDictionary *arguments =
+        [NSMutableDictionary dictionaryWithDictionary:[lastRoute.settings toArguments]];
+        [arguments setObject:[NSNumber numberWithBool:inRoot] forKey:@"inRoot"];
+        NSString *entrypoint = [(NavigatorFlutterViewController *)self entrypoint];
+        NavigatorRouteSendChannel *channel =
+        [NavigatorFlutterEngineFactory.shared getSendChannelByEntrypoint:entrypoint];
+        [channel canPop:arguments result:result];
+    } else {
+        // 走原生 vc 逻辑，不处理直接返回 NO
+        result(NO);
+        return;
     }
-    NSMutableDictionary *arguments =
-    [NSMutableDictionary dictionaryWithDictionary:[lastRoute.settings toArguments]];
-    [arguments setObject:[NSNumber numberWithBool:inRoot] forKey:@"inRoot"];
-    NSString *entrypoint = [(NavigatorFlutterViewController *)self entrypoint];
-    NavigatorRouteSendChannel *channel =
-    [NavigatorFlutterEngineFactory.shared getSendChannelByEntrypoint:entrypoint];
-    [channel canPop:arguments result:result];
 }
 
 - (void)thrio_didPushUrl:(NSString *)url index:(NSNumber *)index {

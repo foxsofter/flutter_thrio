@@ -1,3 +1,6 @@
+## 4.4.3
+fix: exception caused by calling canPop when the iOS native vc is at the top
+
 ## 4.4.2
 feat: NavigatorWillPopMixin check on didReplace
 
