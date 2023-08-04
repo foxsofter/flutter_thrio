@@ -20,6 +20,7 @@
 // IN THE SOFTWARE.
 
 #import "UIApplication+Thrio.h"
+#import "NavigatorNavigationController.h"
 
 @implementation UIApplication (Thrio)
 
@@ -45,7 +46,7 @@
     UINavigationController *topmostNavigationController = nil;
     UIViewController *topmostViewController = self.delegate.window.rootViewController;
     while (true) {
-        if ([topmostViewController isKindOfClass:[UINavigationController class]]) {
+        if ([topmostViewController isKindOfClass:[NavigatorNavigationController class]]) {
             topmostNavigationController = (UINavigationController *)topmostViewController;
         }
         if (topmostViewController.presentedViewController) {
