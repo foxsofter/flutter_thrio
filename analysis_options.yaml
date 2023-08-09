@@ -106,7 +106,6 @@ linter:
     prefer_const_literals_to_create_immutables: true # 使用 const 实例化 list 和 map 作为函数的不可变参数
     prefer_constructors_over_static_methods: true # 推荐使用构造方法而不是静态方法构造实例
     prefer_contains: true # 推荐使用 contains 而不是 indexOf
-    prefer_equal_for_default_values: true # 推荐使用 = 分隔参数和默认值
     prefer_expression_function_bodies: true # 使用 => 缩短单个返回
     prefer_final_fields: true # 推荐使用 final 定义私有变量
     prefer_final_in_for_each: true # 再 for-each 中，如果未重新定义，推荐使用 final
