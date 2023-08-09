@@ -30,6 +30,11 @@ import 'navigator_types.dart';
 import 'thrio_navigator_implement.dart';
 
 abstract class ThrioNavigator {
+  /// Register a handle called before the push call.
+  /// 
+  VoidCallback registerPushBeginHandle(final NavigatorPushBeginHandle handle) =>
+      ThrioNavigatorImplement.shared().registerPushBeginHandle(handle);
+
   /// Push the page onto the navigation stack.
   ///
   /// If a native page builder exists for the `url`, open the native page,

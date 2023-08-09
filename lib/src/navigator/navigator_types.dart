@@ -64,3 +64,9 @@ typedef NavigatorRoutePushHandle = Future<NavigatorRoutePushHandleType>
   RouteSettings settings, {
   bool animated,
 });
+
+/// Signature of push begin handler with url.
+typedef NavigatorPushBeginHandle = Future<void> Function<TParams>(
+  String url,
+  TParams? params,
+);

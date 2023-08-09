@@ -55,8 +55,8 @@ mixin ThrioModule {
     if (anchor.modules.length == 1) {
       throw ThrioException('init method can only be called once.');
     }
-    ThrioModule.onModuleInitStart = onModuleInitStart;
-    ThrioModule.onModuleInitEnd = onModuleInitEnd;
+    ThrioModule._onModuleInitStart = onModuleInitStart;
+    ThrioModule._onModuleInitEnd = onModuleInitEnd;
 
     final moduleContext = entrypoint == null
         ? ModuleContext()
@@ -136,10 +136,12 @@ mixin ThrioModule {
 
   /// Call at module init start.
   ///
-  static void Function(String)? onModuleInitStart;
+  static void Function(String)? get onModuleInitStart => _onModuleInitStart;
+  static void Function(String)? _onModuleInitStart;
 
   /// Call at module init end.
-  static void Function(String)? onModuleInitEnd;
+  static void Function(String)? get onModuleInitEnd => _onModuleInitEnd;
+  static void Function(String)? _onModuleInitEnd;
 
   /// A function for registering a module, which will call
   /// the `onModuleRegister` function of the `module`.

@@ -32,6 +32,7 @@ import '../extension/thrio_uri_string.dart';
 import '../module/module_anchor.dart';
 import '../module/module_types.dart';
 import '../module/thrio_module.dart';
+import '../registry/registry_set.dart';
 import 'navigator_dialog_route.dart';
 import 'navigator_material_app.dart';
 import 'navigator_observer_manager.dart';
@@ -110,6 +111,8 @@ class ThrioNavigatorImplement {
 
   NavigatorWidgetState? get navigatorState => _stateKey.currentState;
 
+  final _pushBeginHandlers = RegistrySet();
+
   final poppedResults = <String, NavigatorParamsCallback>{};
 
   List<NavigatorRoute> get currentPopRoutes => observerManager.currentPopRoutes;
@@ -141,12 +144,17 @@ class ThrioNavigatorImplement {
     _channel.invokeMethod<bool>('ready');
   }
 
+  VoidCallback registerPushBeginHandle(final NavigatorPushBeginHandle handle) =>
+      _pushBeginHandlers.registry(handle);
+
   Future<TPopParams?> push<TParams, TPopParams>({
     required final String url,
     final TParams? params,
     final bool animated = true,
     final NavigatorIntCallback? result,
   }) async {
+    await _onPushBeginHandle(url: url, params: params);
+
     final completer = Completer<TPopParams?>();
 
     final handled = await _pushToHandler(
@@ -177,7 +185,16 @@ class ThrioNavigatorImplement {
     return completer.future;
   }
 
-  Future<TPopParams?> onRouteCustomHandle<TParams, TPopParams>({
+  Future<void> _onPushBeginHandle<TParams>({
+    required final String url,
+    final TParams? params,
+  }) async {
+    for (final handle in _pushBeginHandlers) {
+      await handle(url, params);
+    }
+  }
+
+  Future<TPopParams?> _onRouteCustomHandle<TParams, TPopParams>({
     required final NavigatorRouteCustomHandler handler,
     required final Uri uri,
     final TParams? params,
@@ -202,6 +219,8 @@ class ThrioNavigatorImplement {
     final bool animated = true,
     final NavigatorIntCallback? result,
   }) async {
+    await _onPushBeginHandle(url: url, params: params);
+
     final completer = Completer<TPopParams?>();
 
     final handled = await _pushToHandler(url, params, animated, completer,
@@ -237,6 +256,8 @@ class ThrioNavigatorImplement {
     final bool animated = true,
     final NavigatorIntCallback? result,
   }) async {
+    await _onPushBeginHandle(url: url, params: params);
+
     final completer = Completer<TPopParams>();
 
     final lastSetting = await lastRoute();
@@ -282,6 +303,8 @@ class ThrioNavigatorImplement {
     final bool animated = true,
     final NavigatorIntCallback? result,
   }) async {
+    await _onPushBeginHandle(url: url, params: params);
+
     final completer = Completer<TPopParams>();
 
     final routes = await allRoutes();
@@ -331,6 +354,8 @@ class ThrioNavigatorImplement {
     final bool animated = true,
     final NavigatorIntCallback? result,
   }) async {
+    await _onPushBeginHandle(url: url, params: params);
+
     final completer = Completer<TPopParams>();
 
     final routes = await allRoutes();
@@ -379,6 +404,8 @@ class ThrioNavigatorImplement {
     final bool animated = true,
     final NavigatorIntCallback? result,
   }) async {
+    await _onPushBeginHandle(url: url, params: params);
+
     final completer = Completer<TPopParams>();
 
     final routes = await allRoutes();
@@ -430,6 +457,8 @@ class ThrioNavigatorImplement {
     final bool animated = true,
     final NavigatorIntCallback? result,
   }) async {
+    await _onPushBeginHandle(url: url, params: params);
+
     final completer = Completer<TPopParams>();
 
     final routes = await allRoutes();
@@ -493,7 +522,7 @@ class ThrioNavigatorImplement {
         }
         handler = entry.value;
         var index = 0;
-        final pr = await onRouteCustomHandle<TParams, TPopParams>(
+        final pr = await _onRouteCustomHandle<TParams, TPopParams>(
           handler: handler,
           uri: uri,
           params: params,
