@@ -1,3 +1,6 @@
+## 4.4.4
+feat: add NavigatorPushBeginHandle api
+
 ## 4.4.3
 fix: exception caused by calling canPop when the iOS native vc is at the top
 
