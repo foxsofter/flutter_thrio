@@ -1,4 +1,4 @@
-## 4.4.4
+## 4.4.5
 feat: add NavigatorPushBeginHandle api
 
 ## 4.4.3
