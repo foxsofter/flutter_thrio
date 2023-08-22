@@ -166,7 +166,7 @@ class ThrioNavigatorImplement {
     );
     if (!handled) {
       Future<void> pushFuture() {
-        final resultCompleter = Completer<void>();
+        final resultCompleter = Completer();
         _pushToNative<TParams, TPopParams>(
           url,
           params,
@@ -232,7 +232,7 @@ class ThrioNavigatorImplement {
     });
     if (!handled) {
       Future<void> pushFuture() {
-        final resultCompleter = Completer<TPopParams>();
+        final resultCompleter = Completer();
         _pushToNative<TParams, TPopParams>(url, params, animated, completer)
             .then<void>((final index) async {
           resultCompleter.complete();

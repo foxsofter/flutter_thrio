@@ -1,3 +1,6 @@
+## 4.4.6
+fix: push single failed on Null is not a subtype of type Future<bool> 
+
 ## 4.4.5
 feat: add NavigatorPushBeginHandle api
 
