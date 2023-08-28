@@ -7,6 +7,7 @@ import 'package:flutter_thrio/flutter_thrio.dart';
 
 import 'biz1/module.dart' as biz1;
 import 'biz2/module.dart' as biz2;
+import 'types/house.dart';
 import 'types/people.dart';
 import 'types/user_profile.dart';
 
@@ -33,13 +34,15 @@ class Module
 
   @override
   void onJsonSerializerRegister(final ModuleContext moduleContext) {
-    registerJsonSerializer<People>((final i) => i<People>().toMap());
-    registerJsonSerializer<UserProfile>((final i) => i<UserProfile>().toMap());
+    registerJsonSerializer<People>((final i) => i<People>().toJson());
+    registerJsonSerializer<House>((final i) => i<House>().toJson());
+    registerJsonSerializer<UserProfile>((final i) => i<UserProfile>().toJson());
   }
 
   @override
   void onJsonDeserializerRegister(final ModuleContext moduleContext) {
-    registerJsonDeserializer(People.fromMap);
-    registerJsonDeserializer(UserProfile.fromMap);
+    registerJsonDeserializer(People.fromJson);
+    registerJsonDeserializer(House.fromJson);
+    registerJsonDeserializer(UserProfile.fromJson);
   }
 }
