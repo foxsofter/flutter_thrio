@@ -68,7 +68,7 @@ class _Flutter3PageState extends State<Flutter3Page>
               ),
               InkWell(
                 onTap: () => biz.biz2.flutter4
-                    .push(people: People(age: 10, name: 'goodman', sex: '女')),
+                    .push(people: People(name: 'goodman', sex: '女')),
                 child: Container(
                     padding: const EdgeInsets.all(4),
                     margin: const EdgeInsets.all(4),

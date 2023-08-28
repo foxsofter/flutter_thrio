@@ -10,16 +10,18 @@ import 'package:flutter_jsonable/flutter_jsonable.dart';
 ///
 class House {
   House({
-    required this.address,
-    required this.owner,
+    this.address = '',
+    this.owner,
   });
 
   factory House.fromJson(final Map<String, dynamic> json) => House(
-        address: getValueFromJsonOrNull<String>(json, 'address'),
+        address: getValueFromJsonOrDefault<String>(json, 'address', ''),
         owner: getValueFromJsonOrNull<People>(json, 'owner'),
       );
 
-  final String? address;
+  factory House.from(final House other) => House.fromJson(other.toJson());
+
+  final String address;
 
   final People? owner;
 

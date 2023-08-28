@@ -10,6 +10,14 @@ type:
             default: 10
         - sex:
             type: String
+        - balance:
+            type: double
+            ignore: true
+        - wife:
+            type: People
+        - aliases:
+            type: List<String>
+            ignore: true
         - children:
             type: List<People>
         - parents:
@@ -26,7 +34,7 @@ type:
       doc: 结构体的注释
       parameter:
         - uid:
-            type: int?
+            type: int
             doc: "字段的注释"
             default: 2
             ignore: true #表示序列化时忽略

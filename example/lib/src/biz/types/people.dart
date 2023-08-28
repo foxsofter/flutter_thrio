@@ -9,26 +9,38 @@ import 'package:flutter_jsonable/flutter_jsonable.dart';
 ///
 class People {
   People({
-    required this.name,
+    this.name = '',
     this.age = 10,
-    required this.sex,
+    this.sex = '',
+    this.balance = 0.0,
+    this.wife,
+    this.aliases = const <String>[],
     this.children = const <People>[],
     this.parents = const <String, People>{},
   });
 
   factory People.fromJson(final Map<String, dynamic> json) => People(
-        name: getValueFromJsonOrNull<String>(json, 'name'),
+        name: getValueFromJsonOrDefault<String>(json, 'name', ''),
         age: getValueFromJsonOrDefault<int>(json, 'age', 10),
-        sex: getValueFromJsonOrNull<String>(json, 'sex'),
+        sex: getValueFromJsonOrDefault<String>(json, 'sex', ''),
+        wife: getValueFromJsonOrNull<People>(json, 'wife'),
         children: getListFromJson<People>(json, 'children'),
         parents: getMapFromJson<People>(json, 'parents'),
       );
 
-  final String? name;
+  factory People.from(final People other) => People.fromJson(other.toJson());
+
+  final String name;
 
   final int age;
 
-  final String? sex;
+  final String sex;
+
+  final double balance;
+
+  final People? wife;
+
+  final List<String> aliases;
 
   final List<People> children;
 
@@ -38,6 +50,7 @@ class People {
         'name': name,
         'age': age,
         'sex': sex,
+        'wife': getJsonFromValue<People>(wife),
         'children': getJsonFromList(children),
         'parents': getJsonFromMap(parents),
       };

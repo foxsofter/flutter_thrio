@@ -10,31 +10,33 @@ import 'package:flutter_jsonable/flutter_jsonable.dart';
 class UserProfile {
   UserProfile({
     this.uid = 2,
-    required this.userName,
+    this.userName = '',
     this.emailVerified = false,
     this.mobileVerified = false,
-    required this.userToken,
+    this.userToken = '',
   });
 
   factory UserProfile.fromJson(final Map<String, dynamic> json) => UserProfile(
-        uid: getValueFromJsonOrDefault<int>(json, 'uid', 2),
-        userName: getValueFromJsonOrNull<String>(json, 'userName'),
+        userName: getValueFromJsonOrDefault<String>(json, 'userName', ''),
         emailVerified:
             getValueFromJsonOrDefault<bool>(json, 'emailVerified', false),
         mobileVerified:
             getValueFromJsonOrDefault<bool>(json, 'mobileVerified', false),
-        userToken: getValueFromJsonOrNull<String>(json, 'userToken'),
+        userToken: getValueFromJsonOrDefault<String>(json, 'userToken', ''),
       );
+
+  factory UserProfile.from(final UserProfile other) =>
+      UserProfile.fromJson(other.toJson());
 
   final int uid;
 
-  final String? userName;
+  final String userName;
 
   final bool emailVerified;
 
   final bool mobileVerified;
 
-  final String? userToken;
+  final String userToken;
 
   Map<String, dynamic> toJson() => <String, dynamic>{
         'userName': userName,
