@@ -250,7 +250,7 @@ class _HomePageState extends State<HomePage>
                           onTap: () async {
                             final params = await ThrioNavigator.push(
                               url: '/biz1/native1',
-                              params: People(name: '大宝剑', age: 10, sex: 'x'),
+                              params: People(name: '大宝剑', sex: 'x'),
                             );
                             ThrioLogger.v(
                                 '/biz1/native1 poppedResult call params:$params');

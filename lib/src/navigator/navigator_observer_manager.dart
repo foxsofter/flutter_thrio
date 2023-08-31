@@ -22,10 +22,8 @@
 import 'package:flutter/widgets.dart';
 
 import '../module/thrio_module.dart';
-import 'navigator_home.dart';
 import 'navigator_logger.dart';
 import 'navigator_page_observer.dart';
-import 'navigator_page_route.dart';
 import 'navigator_route.dart';
 import 'navigator_route_settings.dart';
 import 'thrio_navigator_implement.dart';
@@ -37,11 +35,7 @@ class NavigatorObserverManager extends NavigatorObserver {
 
   final _currentRemoveRoutes = <NavigatorRoute>[];
 
-  final pageRoutes = <Route<dynamic>>[
-    NavigatorPageRoute(
-        pageBuilder: (final settings) => const NavigatorHome(),
-        settings: const RouteSettings(name: '1 /'))
-  ];
+  final pageRoutes = <Route<dynamic>>[];
 
   @override
   void didPush(

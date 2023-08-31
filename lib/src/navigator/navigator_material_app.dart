@@ -24,6 +24,7 @@ import 'package:flutter/material.dart';
 import '../module/module_anchor.dart';
 import '../module/thrio_module.dart';
 import 'navigator_home.dart';
+import 'navigator_page_route.dart';
 import 'thrio_navigator_implement.dart';
 
 class NavigatorMaterialApp extends MaterialApp {
@@ -33,8 +34,8 @@ class NavigatorMaterialApp extends MaterialApp {
         const <NavigatorObserver>[],
     final TransitionBuilder? builder,
     super.title,
-    super.home,
     super.onGenerateTitle,
+    this.transitionPage,
     super.color,
     super.theme,
     super.darkTheme,
@@ -54,21 +55,27 @@ class NavigatorMaterialApp extends MaterialApp {
     super.actions,
     super.restorationScopeId,
   }) : super(
-          key: appKey,
-          builder: (final context, final child) {
-            if (builder != null) {
-              return builder(context,
-                  ThrioNavigatorImplement.shared().builder(context, child));
-            } else {
-              return ThrioNavigatorImplement.shared().builder(context, child);
-            }
-          },
-          navigatorObservers: [...navigatorObservers],
-          initialRoute: '1 /',
-          routes: {'1 /': (final _) => home ?? const NavigatorHome()},
-        );
+            key: appKey,
+            builder: (final context, final child) => builder == null
+                ? ThrioNavigatorImplement.shared().builder(context, child)
+                : builder(context,
+                    ThrioNavigatorImplement.shared().builder(context, child)),
+            navigatorObservers: [...navigatorObservers],
+            initialRoute: '1 /',
+            onGenerateRoute: (final settings) => settings.name == '1 /'
+                ? NavigatorPageRoute(
+                    pageBuilder: (final _) =>
+                        transitionPage ?? const NavigatorHome(),
+                    settings: const RouteSettings(name: '1 /', arguments: {
+                      'animated': false,
+                    }))
+                : null);
 
   static final appKey = GlobalKey(debugLabel: 'app');
+
+  /// Transition page
+  ///
+  final Widget? transitionPage;
 
   /// Get moduleContext of root module.
   ///

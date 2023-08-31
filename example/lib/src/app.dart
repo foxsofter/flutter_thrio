@@ -29,7 +29,7 @@ class _MainAppState extends State<MainApp> {
 
   @override
   Widget build(final BuildContext context) => NavigatorMaterialApp(
-        home: const NavigatorHome(showRestartButton: true),
+        transitionPage: const NavigatorHome(showRestartButton: true),
         builder: (final context, final child) => Container(
           child: child,
         ),
