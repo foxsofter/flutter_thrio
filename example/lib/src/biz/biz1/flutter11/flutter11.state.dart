@@ -4,4 +4,4 @@
 
 part of 'flutter11.page.dart';
 
-extension Flutter11 on _Flutter11PageState {}
+extension Flutter11 on State<Flutter11Page> {}

@@ -9,7 +9,7 @@ extension Flutter4Context on ModuleContext {
   /// get a people.
   ///
   People get people =>
-      get<People>('people') ?? (throw ArgumentError('people cannot be null'));
+      get<People>('people') ?? (throw ArgumentError('people not exists'));
 
   bool setPeople(final People value) => set<People>('people', value);
 
@@ -18,6 +18,5 @@ extension Flutter4Context on ModuleContext {
   People? removePeople() => remove<People>('people');
 
   Stream<People?> get onPeople =>
-      on<People>('people') ??
-      (throw ArgumentError('people stream cannot be null'));
+      on<People>('people') ?? (throw ArgumentError('people stream not exists'));
 }

@@ -4,7 +4,7 @@
 
 part of 'flutter4.page.dart';
 
-extension Flutter4 on _Flutter4PageState {
+extension Flutter4 on State<Flutter4Page> {
   /// hello, this is a people
   ///
   People get people => widget.getParam<People>('people');

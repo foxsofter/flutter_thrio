@@ -4,4 +4,4 @@
 
 part of 'flutter2.page.dart';
 
-extension Flutter2 on _Flutter2PageState {}
+extension Flutter2 on State<Flutter2Page> {}

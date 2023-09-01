@@ -9,7 +9,7 @@ extension Biz1Context on ModuleContext {
   /// get an int value.
   ///
   int get intValue =>
-      get<int>('intValue') ?? (throw ArgumentError('intValue cannot be null'));
+      get<int>('intValue') ?? (throw ArgumentError('intValue not exists'));
 
   bool setIntValue(final int value) => set<int>('intValue', value);
 
@@ -19,5 +19,5 @@ extension Biz1Context on ModuleContext {
 
   Stream<int?> get onIntValue =>
       on<int>('intValue') ??
-      (throw ArgumentError('intValue stream cannot be null'));
+      (throw ArgumentError('intValue stream not exists'));
 }

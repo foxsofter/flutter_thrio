@@ -4,4 +4,4 @@
 
 part of 'flutter8.page.dart';
 
-extension Flutter8 on _Flutter8PageState {}
+extension Flutter8 on State<Flutter8Page> {}

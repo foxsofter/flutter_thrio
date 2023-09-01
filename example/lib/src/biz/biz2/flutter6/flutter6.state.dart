@@ -4,4 +4,4 @@
 
 part of 'flutter6.page.dart';
 
-extension Flutter6 on _Flutter6PageState {}
+extension Flutter6 on State<Flutter6Page> {}
