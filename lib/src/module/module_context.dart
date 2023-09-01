@@ -82,8 +82,10 @@ class ModuleContext {
   }
 
   /// Subscribe to a series of param by `key`.
+  /// 
+  /// sink `null` when `key` removed.
   ///
-  Stream<T?>? on<T>(final String key, {final T? initialValue}) {
+  Stream<T?>? onWithNull<T>(final String key, {final T? initialValue}) {
     if (module == anchor) {
       return anchor.onParam(key, initialValue: initialValue);
     }
@@ -97,6 +99,18 @@ class ModuleContext {
 
     return module.parent?._moduleContext.on(key, initialValue: initialValue);
   }
+
+  /// Subscribe to a series of param by `key`.
+  ///
+  Stream<T>? on<T>(final String key, {final T? initialValue}) =>
+      onWithNull<T>(key, initialValue: initialValue)
+          ?.transform<T>(StreamTransformer.fromHandlers(
+        handleData: (final data, final sink) {
+          if (data != null) {
+            sink.add(data);
+          }
+        },
+      ));
 
   @override
   String toString() => 'Context of module ${module.key}';

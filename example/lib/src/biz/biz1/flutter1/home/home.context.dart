@@ -19,8 +19,12 @@ extension HomeContext on ModuleContext {
 
   String? removeStringKeyBiz1() => remove<String>('stringKeyBiz1');
 
-  Stream<String?> get onStringKeyBiz1 =>
+  Stream<String> get onStringKeyBiz1 =>
       on<String>('stringKeyBiz1') ??
+      (throw ArgumentError('stringKeyBiz1 stream not exists'));
+
+  Stream<String?> get onStringKeyBiz1WithNull =>
+      onWithNull<String>('stringKeyBiz1') ??
       (throw ArgumentError('stringKeyBiz1 stream not exists'));
 
   Stream<String?> get onStringKeyBiz1WithInitial =>
@@ -33,6 +37,14 @@ extension HomeContext on ModuleContext {
 
   bool setIntKeyRootModule(final int value) =>
       set<int>('intKeyRootModule', value);
+
+  Stream<int> get onIntKeyRootModule =>
+      on<int>('intKeyRootModule') ??
+      (throw ArgumentError('intKeyRootModule stream not exists'));
+
+  Stream<int?> get onIntKeyRootModuleWithNull =>
+      onWithNull<int>('intKeyRootModule') ??
+      (throw ArgumentError('intKeyRootModule stream not exists'));
 
   Stream<int?> onIntKeyRootModuleWithInitial(
           {required final int initialValue}) =>
@@ -51,8 +63,12 @@ extension HomeContext on ModuleContext {
 
   People? removePeople() => remove<People>('people');
 
-  Stream<People?> get onPeople =>
+  Stream<People> get onPeople =>
       on<People>('people') ?? (throw ArgumentError('people stream not exists'));
+
+  Stream<People?> get onPeopleWithNull =>
+      onWithNull<People>('people') ??
+      (throw ArgumentError('people stream not exists'));
 
   Stream<People?> onPeopleWithInitial({required final People initialValue}) =>
       on<People>('people', initialValue: initialValue) ??

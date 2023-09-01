@@ -1,3 +1,6 @@
+## 4.5.1
+- feat: add onWithNull
+
 ## 4.5.0
 - refactor: The on method of ModuleContext can now return null, and remove will sink null
 

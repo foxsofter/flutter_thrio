@@ -15,12 +15,15 @@ context:
           set:
           remove:
           on:
+          onNull:
           onInitial:
     - intKeyRootModule:
         type: int
         method:
           get:
           set:
+          on:
+          onNull:
           onInitial:
     - people:
         type: People
@@ -31,6 +34,7 @@ context:
           set:
           remove:
           on:
+          onNull:
           onInitial:
 
 
