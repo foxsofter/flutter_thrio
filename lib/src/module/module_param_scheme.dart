@@ -51,7 +51,10 @@ mixin ModuleParamScheme on ThrioModule {
   /// Subscribe to a series of param by `key`.
   ///
   @protected
-  Stream<T> onParam<T>(final Comparable<dynamic> key, {final T? initialValue}) {
+  Stream<T?>? onParam<T>(final Comparable<dynamic> key, {final T? initialValue}) {
+    if (!hasParamScheme<T>(key)) {
+      return null;
+    }
     paramStreamCtrls[key] ??= <StreamController<dynamic>>{};
     final sc = StreamController<T>();
     sc
@@ -81,7 +84,7 @@ mixin ModuleParamScheme on ThrioModule {
   T? getParam<T>(final Comparable<dynamic> key) {
     // Anchor module does not need to get param scheme.
     if (this == anchor) {
-      return _params[key] as T?; // ignore: avoid_as
+      return _params[key] as T?;
     }
     if (!_paramSchemes.keys.contains(key)) {
       return null;
@@ -94,7 +97,7 @@ mixin ModuleParamScheme on ThrioModule {
       throw ThrioException(
           '$T does not match the param scheme type: ${value.runtimeType}');
     }
-    return value as T; // ignore: avoid_as
+    return value as T?;
   }
 
   /// Sets param with `key` & `value`.
@@ -149,10 +152,10 @@ mixin ModuleParamScheme on ThrioModule {
   ///
   /// Throw `ThrioException` if `T` is not matched param scheme.
   ///
-  T removeParam<T>(final Comparable<dynamic> key) {
+  T? removeParam<T>(final Comparable<dynamic> key) {
     // Anchor module does not need to get param scheme.
     if (this == anchor) {
-      return _params.remove(key) as T; // ignore: avoid_as
+      return _params.remove(key) as T?;
     }
     if (T != dynamic &&
         T != Object &&
@@ -161,7 +164,11 @@ mixin ModuleParamScheme on ThrioModule {
       throw ThrioException(
           '$T does not match the param scheme type: ${_paramSchemes[key]}');
     }
-    return _params.remove(key) as T; // ignore: avoid_as
+    final param = _params.remove(key) as T?;
+    if (param != null) {
+      _setParam(key, param);
+    }
+    return param;
   }
 
   /// A function for register a param scheme.

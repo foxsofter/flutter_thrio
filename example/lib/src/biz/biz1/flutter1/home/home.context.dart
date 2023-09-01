@@ -13,7 +13,7 @@ extension HomeContext on ModuleContext {
   bool setStringKeyBiz1(final String value) =>
       set<String>('stringKeyBiz1', value);
 
-  Stream<String> get onStringKeyBiz1 =>
+  Stream<String?> get onStringKeyBiz1 =>
       on<String>('stringKeyBiz1') ??
       (throw ArgumentError('stringKeyBiz1 stream cannot be null'));
 

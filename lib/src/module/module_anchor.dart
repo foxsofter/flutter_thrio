@@ -231,7 +231,7 @@ class ModuleAnchor
   void set<T>(final Comparable<dynamic> key, final T value) =>
       setParam(key, value);
 
-  T remove<T>(final Comparable<dynamic> key) => removeParam(key);
+  T? remove<T>(final Comparable<dynamic> key) => removeParam(key);
 
   List<ThrioModule> _getModules({final String? url}) {
     if (modules.isEmpty) {

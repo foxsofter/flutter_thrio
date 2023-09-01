@@ -1,3 +1,6 @@
+## 4.5.0
+- refactor: The on method of ModuleContext can now return null, and remove will sink null
+
 ## 4.4.7
 fix: remove transitionPage pop transition
 

@@ -76,14 +76,14 @@ class ModuleContext {
       }
     }
     // Anchor module caches the data of the framework
-    return module.parent == anchor || module.parent == null
+    return module.parent == anchor
         ? null
         : module.parent?._moduleContext.remove<T>(key);
   }
 
   /// Subscribe to a series of param by `key`.
   ///
-  Stream<T>? on<T>(final String key, {final T? initialValue}) {
+  Stream<T?>? on<T>(final String key, {final T? initialValue}) {
     if (module == anchor) {
       return anchor.onParam(key, initialValue: initialValue);
     }

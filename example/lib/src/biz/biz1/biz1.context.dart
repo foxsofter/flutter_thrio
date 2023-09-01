@@ -17,7 +17,7 @@ extension Biz1Context on ModuleContext {
   ///
   int? removeIntValue() => remove<int>('intValue');
 
-  Stream<int> get onIntValue =>
+  Stream<int?> get onIntValue =>
       on<int>('intValue') ??
       (throw ArgumentError('intValue stream cannot be null'));
 }

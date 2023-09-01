@@ -17,7 +17,7 @@ extension Flutter4Context on ModuleContext {
   ///
   People? removePeople() => remove<People>('people');
 
-  Stream<People> get onPeople =>
+  Stream<People?> get onPeople =>
       on<People>('people') ??
       (throw ArgumentError('people stream cannot be null'));
 }
