@@ -51,10 +51,10 @@ mixin ModuleParamScheme on ThrioModule {
   /// Subscribe to a series of param by `key`.
   ///
   @protected
-  Stream<T?>? onParam<T>(final Comparable<dynamic> key, {final T? initialValue}) {
-    if (!hasParamScheme<T>(key)) {
-      return null;
-    }
+  Stream<T?>? onParam<T>(
+    final Comparable<dynamic> key, {
+    final T? initialValue,
+  }) {
     paramStreamCtrls[key] ??= <StreamController<dynamic>>{};
     final sc = StreamController<T>();
     sc

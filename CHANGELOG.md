@@ -1,3 +1,6 @@
+## 4.5.2
+- feat: remove on method check schema exists
+
 ## 4.5.1
 - feat: add onWithNull
 
