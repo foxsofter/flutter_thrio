@@ -1,3 +1,6 @@
+## 4.5.3
+- fix: StreamTransfer type error
+
 ## 4.5.2
 - feat: remove on method check schema exists
 
