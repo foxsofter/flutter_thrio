@@ -27,7 +27,7 @@ extension HomeContext on ModuleContext {
       onWithNull<String>('stringKeyBiz1') ??
       (throw ArgumentError('stringKeyBiz1 stream not exists'));
 
-  Stream<String?> get onStringKeyBiz1WithInitial =>
+  Stream<String> get onStringKeyBiz1WithInitial =>
       on<String>('stringKeyBiz1', initialValue: 'weewr') ??
       (throw ArgumentError('stringKeyBiz1 stream not exists'));
 
@@ -46,7 +46,7 @@ extension HomeContext on ModuleContext {
       onWithNull<int>('intKeyRootModule') ??
       (throw ArgumentError('intKeyRootModule stream not exists'));
 
-  Stream<int?> onIntKeyRootModuleWithInitial(
+  Stream<int> onIntKeyRootModuleWithInitial(
           {required final int initialValue}) =>
       on<int>('intKeyRootModule', initialValue: initialValue) ??
       (throw ArgumentError('intKeyRootModule stream not exists'));
@@ -70,7 +70,7 @@ extension HomeContext on ModuleContext {
       onWithNull<People>('people') ??
       (throw ArgumentError('people stream not exists'));
 
-  Stream<People?> onPeopleWithInitial({required final People initialValue}) =>
+  Stream<People> onPeopleWithInitial({required final People initialValue}) =>
       on<People>('people', initialValue: initialValue) ??
       (throw ArgumentError('people stream not exists'));
 }

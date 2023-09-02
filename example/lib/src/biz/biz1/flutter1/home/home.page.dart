@@ -41,6 +41,9 @@ class _HomePageState extends State<HomePage>
     super.initState();
     if (mounted) {
       WidgetsBinding.instance.addObserver(this);
+      widget.moduleContext.onStringKeyBiz1.listen((final i) {
+        ThrioLogger.v('onIntKeyRootModule value is $i');
+      });
     }
   }
 
@@ -155,6 +158,8 @@ class _HomePageState extends State<HomePage>
                                   widget.moduleContext.intKeyRootModule;
                               ThrioLogger.v('intKeyRootModule value is $value');
                             }
+
+                            widget.moduleContext.setStringKeyBiz1('value');
 
                             final value =
                                 widget.moduleContext.get('people_from_native');

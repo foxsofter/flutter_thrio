@@ -56,7 +56,7 @@ mixin ModuleParamScheme on ThrioModule {
     final T? initialValue,
   }) {
     paramStreamCtrls[key] ??= <StreamController<dynamic>>{};
-    final sc = StreamController<T>();
+    final sc = StreamController<T?>();
     sc
       ..onListen = () {
         paramStreamCtrls[key]?.add(sc);

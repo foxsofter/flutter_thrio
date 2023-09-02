@@ -87,17 +87,17 @@ class ModuleContext {
   ///
   Stream<T?>? onWithNull<T>(final String key, {final T? initialValue}) {
     if (module == anchor) {
-      return anchor.onParam(key, initialValue: initialValue);
+      return anchor.onParam<T>(key, initialValue: initialValue);
     }
 
     if (module is ModuleParamScheme) {
       final paramModule = module as ModuleParamScheme;
       if (paramModule.hasParamScheme<T>(key)) {
-        return paramModule.onParam(key, initialValue: initialValue);
+        return paramModule.onParam<T>(key, initialValue: initialValue);
       }
     }
 
-    return module.parent?._moduleContext.on(key, initialValue: initialValue);
+    return module.parent?._moduleContext.onWithNull<T>(key, initialValue: initialValue);
   }
 
   /// Subscribe to a series of param by `key`.
