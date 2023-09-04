@@ -1,3 +1,6 @@
+## 4.6.0
+- feat: add ModuleJsonable
+
 ## 4.5.3
 - fix: StreamTransfer type error
 
