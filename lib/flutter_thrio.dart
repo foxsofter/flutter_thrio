@@ -32,6 +32,7 @@ export 'src/extension/thrio_stateful_widget.dart';
 export 'src/logger/thrio_logger.dart';
 export 'src/module/module_json_deserializer.dart';
 export 'src/module/module_json_serializer.dart';
+export 'src/module/module_jsonable.dart';
 export 'src/module/module_page_builder.dart';
 export 'src/module/module_page_observer.dart';
 export 'src/module/module_param_scheme.dart';

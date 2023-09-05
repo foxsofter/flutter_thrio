@@ -41,6 +41,6 @@ mixin ModuleJsonable on ThrioModule {
   /// Unregistry by calling the return value `VoidCallback`.
   ///
   @protected
-  VoidCallback registerJsonSerializer<T>(final Jsonable<dynamic> jsonable) =>
+  VoidCallback registerJsonable<T>(final Jsonable<dynamic> jsonable) =>
       jsonableRegistry.registerJsonable(jsonable);
 }

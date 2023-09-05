@@ -1,3 +1,6 @@
+## 4.6.1
+- faet: add registerJsonable
+
 ## 4.6.0
 - feat: add ModuleJsonable
 
