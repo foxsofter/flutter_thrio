@@ -375,11 +375,11 @@ abstract class ThrioNavigator {
   /// Remove pages below the last page in the navigation stack.
   /// Until the last page with `url` satisfies the `predicate`.
   ///
-  static Future<bool> removeBlowUntil({
+  static Future<bool> removeBelowUntil({
     required final bool Function(String url) predicate,
     final bool animated = true,
   }) =>
-      ThrioNavigatorImplement.shared().removeBlowUntil(
+      ThrioNavigatorImplement.shared().removeBelowUntil(
         predicate: predicate,
         animated: animated,
       );
@@ -387,11 +387,11 @@ abstract class ThrioNavigator {
   /// Remove pages below the last page  in the navigation stack.
   /// Until the first page with `url` satisfies the `predicate`.
   ///
-  static Future<bool> removeBlowUntilFirst({
+  static Future<bool> removeBelowUntilFirst({
     required final bool Function(String url) predicate,
     final bool animated = true,
   }) =>
-      ThrioNavigatorImplement.shared().removeBlowUntilFirst(
+      ThrioNavigatorImplement.shared().removeBelowUntilFirst(
         predicate: predicate,
         animated: animated,
       );

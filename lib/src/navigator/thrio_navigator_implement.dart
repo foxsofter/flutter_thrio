@@ -316,7 +316,7 @@ class ThrioNavigatorImplement {
     final handled = await _pushToHandler(url, params, animated, completer,
         (final index) async {
       if (index > 0) {
-        await removeBlowUntil(predicate: (final url) => url == toUrl);
+        await removeBelowUntil(predicate: (final url) => url == toUrl);
       }
       result?.call(index);
     });
@@ -334,7 +334,7 @@ class ThrioNavigatorImplement {
                 .then((final index) async {
           resultCompleter.complete();
           if (index > 0) {
-            await removeBlowUntil(predicate: (final url) => url == toUrl);
+            await removeBelowUntil(predicate: (final url) => url == toUrl);
           }
           result?.call(index);
         }));
@@ -366,7 +366,7 @@ class ThrioNavigatorImplement {
     final handled = await _pushToHandler(url, params, animated, completer,
         (final index) async {
       if (index > 0) {
-        await removeBlowUntilFirst(predicate: (final url) => url == toUrl);
+        await removeBelowUntilFirst(predicate: (final url) => url == toUrl);
       }
       result?.call(index);
     });
@@ -384,7 +384,7 @@ class ThrioNavigatorImplement {
                 .then((final index) async {
           resultCompleter.complete();
           if (index > 0) {
-            await removeBlowUntilFirst(predicate: (final url) => url == toUrl);
+            await removeBelowUntilFirst(predicate: (final url) => url == toUrl);
           }
           result?.call(index);
         }));
@@ -418,7 +418,7 @@ class ThrioNavigatorImplement {
     final handled = await _pushToHandler(url, params, animated, completer,
         (final index) async {
       if (index > 0) {
-        await removeBlowUntil(predicate: predicate);
+        await removeBelowUntil(predicate: predicate);
       }
       result?.call(index);
     });
@@ -437,7 +437,7 @@ class ThrioNavigatorImplement {
                 .then((final index) async {
           resultCompleter.complete();
           if (index > 0) {
-            await removeBlowUntil(predicate: predicate);
+            await removeBelowUntil(predicate: predicate);
           }
           result?.call(index);
         }));
@@ -471,7 +471,7 @@ class ThrioNavigatorImplement {
     final handled = await _pushToHandler(url, params, animated, completer,
         (final index) async {
       if (index > 0) {
-        await removeBlowUntilFirst(predicate: predicate);
+        await removeBelowUntilFirst(predicate: predicate);
       }
       result?.call(index);
     });
@@ -490,7 +490,7 @@ class ThrioNavigatorImplement {
                 .then((final index) async {
           resultCompleter.complete();
           if (index > 0) {
-            await removeBlowUntilFirst(predicate: predicate);
+            await removeBelowUntilFirst(predicate: predicate);
           }
           result?.call(index);
         }));
@@ -908,7 +908,7 @@ class ThrioNavigatorImplement {
         .then((final value) => value ?? false);
   }
 
-  Future<bool> removeBlowUntil({
+  Future<bool> removeBelowUntil({
     required final bool Function(String url) predicate,
     final bool animated = true,
   }) {
@@ -932,7 +932,7 @@ class ThrioNavigatorImplement {
         .then((final value) => value ?? false);
   }
 
-  Future<bool> removeBlowUntilFirst({
+  Future<bool> removeBelowUntilFirst({
     required final bool Function(String url) predicate,
     final bool animated = true,
   }) {
