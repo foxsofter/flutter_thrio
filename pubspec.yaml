@@ -11,7 +11,7 @@ dependencies:
   flutter:
     sdk: flutter
   async: ^2.9.0
-  flutter_jsonable: ^1.0.1
+  flutter_jsonable: ^1.2.0
 
 dev_dependencies:
   flutter_test:
