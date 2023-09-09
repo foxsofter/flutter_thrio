@@ -14,12 +14,21 @@ class House {
     this.owner,
   });
 
-  factory House.fromJson(final Map<String, dynamic> json) => House(
-        address: getValueFromJsonOrDefault<String>(json, 'address', ''),
+  factory House.fromJson(Map<String, dynamic> json) => House(
+        address: getValueFromJsonOrNull<String>(json, 'address') ?? '',
         owner: getValueFromJsonOrNull<People>(json, 'owner'),
       );
 
-  factory House.from(final House other) => House.fromJson(other.toJson());
+  factory House.copyWith(
+    House other, {
+    String? address,
+    People? owner,
+  }) {
+    final otherJson = other.toJson();
+    otherJson['address'] = address ?? otherJson['address'];
+    otherJson['owner'] = getJsonFromValue<People>(owner) ?? otherJson['owner'];
+    return House.fromJson(otherJson);
+  }
 
   final String address;
 

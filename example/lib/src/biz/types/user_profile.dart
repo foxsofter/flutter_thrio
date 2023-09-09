@@ -16,19 +16,32 @@ class UserProfile {
     this.userToken = '',
   });
 
-  factory UserProfile.fromJson(final Map<String, dynamic> json) => UserProfile(
-        userName: getValueFromJsonOrDefault<String>(json, 'userName', ''),
+  factory UserProfile.fromJson(Map<String, dynamic> json) => UserProfile(
+        userName: getValueFromJsonOrNull<String>(json, 'userName') ?? '',
         emailVerified:
-            getValueFromJsonOrDefault<bool>(json, 'emailVerified', false),
+            getValueFromJsonOrNull<bool>(json, 'emailVerified') ?? false,
         mobileVerified:
-            getValueFromJsonOrDefault<bool>(json, 'mobileVerified', false),
-        userToken: getValueFromJsonOrDefault<String>(json, 'userToken', ''),
+            getValueFromJsonOrNull<bool>(json, 'mobileVerified') ?? false,
+        userToken: getValueFromJsonOrNull<String>(json, 'userToken') ?? '',
       );
 
-  factory UserProfile.from(final UserProfile other) =>
-      UserProfile.fromJson(other.toJson());
+  factory UserProfile.copyWith(
+    UserProfile other, {
+    int? uid,
+    String? userName,
+    bool? emailVerified,
+    bool? mobileVerified,
+    String? userToken,
+  }) {
+    final otherJson = other.toJson();
+    otherJson['userName'] = userName ?? otherJson['userName'];
+    otherJson['emailVerified'] = emailVerified ?? otherJson['emailVerified'];
+    otherJson['mobileVerified'] = mobileVerified ?? otherJson['mobileVerified'];
+    otherJson['userToken'] = userToken ?? otherJson['userToken'];
+    return UserProfile.fromJson(otherJson)..uid = uid ?? other.uid;
+  }
 
-  final int uid;
+  int uid;
 
   final String userName;
 

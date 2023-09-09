@@ -19,16 +19,39 @@ class People {
     this.parents = const <String, People>{},
   });
 
-  factory People.fromJson(final Map<String, dynamic> json) => People(
-        name: getValueFromJsonOrDefault<String>(json, 'name', ''),
-        age: getValueFromJsonOrDefault<int>(json, 'age', 10),
-        sex: getValueFromJsonOrDefault<String>(json, 'sex', ''),
+  factory People.fromJson(Map<String, dynamic> json) => People(
+        name: getValueFromJsonOrNull<String>(json, 'name') ?? '',
+        age: getValueFromJsonOrNull<int>(json, 'age') ?? 10,
+        sex: getValueFromJsonOrNull<String>(json, 'sex') ?? '',
         wife: getValueFromJsonOrNull<People>(json, 'wife'),
-        children: getListFromJson<People>(json, 'children'),
-        parents: getMapFromJson<People>(json, 'parents'),
+        children:
+            getListFromJsonOrNull<People>(json, 'children') ?? const <People>[],
+        parents: getMapFromJsonOrNull<People>(json, 'parents') ??
+            const <String, People>{},
       );
 
-  factory People.from(final People other) => People.fromJson(other.toJson());
+  factory People.copyWith(
+    People other, {
+    String? name,
+    int? age,
+    String? sex,
+    double? balance,
+    People? wife,
+    List<String>? aliases,
+    List<People>? children,
+    Map<String, People>? parents,
+  }) {
+    final otherJson = other.toJson();
+    otherJson['name'] = name ?? otherJson['name'];
+    otherJson['age'] = age ?? otherJson['age'];
+    otherJson['sex'] = sex ?? otherJson['sex'];
+    otherJson['wife'] = getJsonFromValue<People>(wife) ?? otherJson['wife'];
+    otherJson['children'] = getJsonFromList(children) ?? otherJson['children'];
+    otherJson['parents'] = getJsonFromMap(parents) ?? otherJson['parents'];
+    return People.fromJson(otherJson)
+      ..balance = balance ?? other.balance
+      ..aliases = aliases ?? other.aliases;
+  }
 
   final String name;
 
@@ -36,11 +59,11 @@ class People {
 
   final String sex;
 
-  final double balance;
+  double balance;
 
   final People? wife;
 
-  final List<String> aliases;
+  List<String> aliases;
 
   final List<People> children;
 
