@@ -1,3 +1,6 @@
+## 4.6.2
+- faet: call onJsonableRegister
+
 ## 4.6.1
 - faet: add registerJsonable
 

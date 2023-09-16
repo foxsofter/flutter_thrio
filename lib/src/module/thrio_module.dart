@@ -24,6 +24,7 @@
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter_thrio/flutter_thrio.dart';
 
 import '../exception/thrio_exception.dart';
 import '../navigator/navigator_logger.dart';
@@ -215,6 +216,11 @@ mixin ThrioModule {
       }
       if (module is ModuleJsonDeserializer) {
         module.onJsonDeserializerRegister(module._moduleContext);
+      }
+    }
+    for (final module in values) {
+      if (module is ModuleJsonable) {
+        module.onJsonableRegister(module._moduleContext);
       }
     }
     for (final module in values) {
