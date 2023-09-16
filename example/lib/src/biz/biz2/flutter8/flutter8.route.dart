@@ -6,7 +6,7 @@
 import 'package:flutter_thrio/flutter_thrio.dart';
 
 class Flutter8Route extends NavigatorRouteLeaf {
-  factory Flutter8Route(final NavigatorRouteNode parent) =>
+  factory Flutter8Route(NavigatorRouteNode parent) =>
       _instance ??= Flutter8Route._(parent);
 
   Flutter8Route._(super.parent);
@@ -17,9 +17,9 @@ class Flutter8Route extends NavigatorRouteLeaf {
   String get name => 'flutter8';
 
   Future<TPopParams?> push<TParams, TPopParams>({
-    final TParams? params,
-    final bool animated = true,
-    final NavigatorIntCallback? result,
+    TParams? params,
+    bool animated = true,
+    NavigatorIntCallback? result,
   }) =>
       ThrioNavigator.push<TParams, TPopParams>(
         url: url,
@@ -29,9 +29,9 @@ class Flutter8Route extends NavigatorRouteLeaf {
       );
 
   Future<TPopParams?> pushSingle<TParams, TPopParams>({
-    final TParams? params,
-    final bool animated = true,
-    final NavigatorIntCallback? result,
+    TParams? params,
+    bool animated = true,
+    NavigatorIntCallback? result,
   }) =>
       ThrioNavigator.pushSingle<TParams, TPopParams>(
         url: url,

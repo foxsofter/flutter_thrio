@@ -12,8 +12,8 @@ class Module with ThrioModule, ModulePageBuilder {
   String get key => 'flutter11';
 
   @override
-  void onPageBuilderSetting(final ModuleContext moduleContext) =>
-      pageBuilder = (final settings) => Flutter11Page(
+  void onPageBuilderSetting(ModuleContext moduleContext) =>
+      pageBuilder = (settings) => Flutter11Page(
             moduleContext: moduleContext,
             settings: settings,
           );

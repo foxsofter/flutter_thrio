@@ -35,9 +35,9 @@ mixin ModuleRouteCustomHandler on ThrioModule {
   ///
   @protected
   VoidCallback registerRouteCustomHandler(
-    final String template,
-    final NavigatorRouteCustomHandler handler, {
-    final bool queryParamsDecoded = false,
+    String template,
+    NavigatorRouteCustomHandler handler, {
+    bool queryParamsDecoded = false,
   }) {
     final key = NavigatorUrlTemplate(template: template);
     handler.queryParamsDecoded = queryParamsDecoded;
@@ -47,5 +47,5 @@ mixin ModuleRouteCustomHandler on ThrioModule {
   /// A function for register a `NavigatorRouteCustomHandler` .
   ///
   @protected
-  void onRouteCustomHandlerRegister(final ModuleContext moduleContext) {}
+  void onRouteCustomHandlerRegister(ModuleContext moduleContext) {}
 }

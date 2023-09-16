@@ -24,7 +24,7 @@ class Flutter8Page extends NavigatorStatefulPage {
 class _Flutter8PageState extends State<Flutter8Page>
     with NavigatorPageLifecycleMixin, AutomaticKeepAliveClientMixin {
   @override
-  Widget build(final BuildContext context) {
+  Widget build(BuildContext context) {
     super.build(context);
     return Scaffold(
       appBar: AppBar(

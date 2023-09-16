@@ -23,42 +23,42 @@ class Module
   String get key => 'biz';
 
   @override
-  void onModuleRegister(final ModuleContext moduleContext) {
+  void onModuleRegister(ModuleContext moduleContext) {
     registerModule(biz1.Module(), moduleContext);
     registerModule(biz2.Module(), moduleContext);
   }
 
   @override
-  void onParamSchemeRegister(final ModuleContext moduleContext) {
+  void onParamSchemeRegister(ModuleContext moduleContext) {
     registerParamScheme('intKeyRootModule');
     registerParamScheme('people');
   }
 
   @override
-  void onJsonableRegister(final ModuleContext moduleContext) {
+  void onJsonableRegister(ModuleContext moduleContext) {
     registerJsonable<People>(JsonableBuilder<People>(
-      (final obj) => obj.toJson(),
+      (obj) => obj.toJson(),
       People.fromJson,
     ));
     registerJsonable<House>(JsonableBuilder<House>(
-      (final obj) => obj.toJson(),
+      (obj) => obj.toJson(),
       House.fromJson,
     ));
     registerJsonable<UserProfile>(JsonableBuilder<UserProfile>(
-      (final obj) => obj.toJson(),
+      (obj) => obj.toJson(),
       UserProfile.fromJson,
     ));
   }
 
   @override
-  void onJsonSerializerRegister(final ModuleContext moduleContext) {
-    registerJsonSerializer<People>((final i) => i<People>().toJson());
-    registerJsonSerializer<House>((final i) => i<House>().toJson());
-    registerJsonSerializer<UserProfile>((final i) => i<UserProfile>().toJson());
+  void onJsonSerializerRegister(ModuleContext moduleContext) {
+    registerJsonSerializer<People>((i) => i<People>().toJson());
+    registerJsonSerializer<House>((i) => i<House>().toJson());
+    registerJsonSerializer<UserProfile>((i) => i<UserProfile>().toJson());
   }
 
   @override
-  void onJsonDeserializerRegister(final ModuleContext moduleContext) {
+  void onJsonDeserializerRegister(ModuleContext moduleContext) {
     registerJsonDeserializer(People.fromJson);
     registerJsonDeserializer(House.fromJson);
     registerJsonDeserializer(UserProfile.fromJson);

@@ -29,9 +29,9 @@ class AppRoute extends NavigatorRouteNode {
   /// `userName` user name of login user.
   ///
   Future<bool> login({
-    final int? uid,
-    required final String userName,
-    final String userToken = 'good token',
+    int? uid,
+    required String userName,
+    String userToken = 'good token',
   }) =>
       ThrioNavigator.notify(
         url: url,

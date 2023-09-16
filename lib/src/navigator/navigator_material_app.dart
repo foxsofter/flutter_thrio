@@ -30,9 +30,8 @@ import 'thrio_navigator_implement.dart';
 class NavigatorMaterialApp extends MaterialApp {
   NavigatorMaterialApp({
     super.navigatorKey,
-    final List<NavigatorObserver> navigatorObservers =
-        const <NavigatorObserver>[],
-    final TransitionBuilder? builder,
+    List<NavigatorObserver> navigatorObservers = const <NavigatorObserver>[],
+    TransitionBuilder? builder,
     super.title,
     super.onGenerateTitle,
     this.transitionPage,
@@ -56,16 +55,15 @@ class NavigatorMaterialApp extends MaterialApp {
     super.restorationScopeId,
   }) : super(
             key: appKey,
-            builder: (final context, final child) => builder == null
+            builder: (context, child) => builder == null
                 ? ThrioNavigatorImplement.shared().builder(context, child)
                 : builder(context,
                     ThrioNavigatorImplement.shared().builder(context, child)),
             navigatorObservers: [...navigatorObservers],
             initialRoute: '1 /',
-            onGenerateRoute: (final settings) => settings.name == '1 /'
+            onGenerateRoute: (settings) => settings.name == '1 /'
                 ? NavigatorPageRoute(
-                    pageBuilder: (final _) =>
-                        transitionPage ?? const NavigatorHome(),
+                    pageBuilder: (_) => transitionPage ?? const NavigatorHome(),
                     settings: const RouteSettings(name: '1 /', arguments: {
                       'animated': false,
                     }))

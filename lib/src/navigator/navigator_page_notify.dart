@@ -85,7 +85,7 @@ class _NavigatorPageNotifyState extends State<NavigatorPageNotify> {
   }
 
   @override
-  void didUpdateWidget(covariant final NavigatorPageNotify oldWidget) {
+  void didUpdateWidget(covariant NavigatorPageNotify oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.initialParams != null &&
         widget.initialParams != oldWidget.initialParams) {
@@ -103,7 +103,7 @@ class _NavigatorPageNotifyState extends State<NavigatorPageNotify> {
     }
   }
 
-  void _listen(final dynamic params) {
+  void _listen(dynamic params) {
     if (params != null) {
       if (params is Map) {
         if (params.containsKey('__thrio_Params_HashCode__')) {
@@ -138,5 +138,5 @@ class _NavigatorPageNotifyState extends State<NavigatorPageNotify> {
   }
 
   @override
-  Widget build(final BuildContext context) => widget.child;
+  Widget build(BuildContext context) => widget.child;
 }

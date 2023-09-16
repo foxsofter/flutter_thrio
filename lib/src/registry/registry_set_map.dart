@@ -24,7 +24,7 @@ import 'package:flutter/foundation.dart';
 class RegistrySetMap<K, V> {
   final Map<K, Set<V>> _maps = {};
 
-  VoidCallback registry(final K key, final V value) {
+  VoidCallback registry(K key, V value) {
     assert(key != null, 'key must not be null.');
     assert(value != null, 'value must not be null.');
 
@@ -38,7 +38,7 @@ class RegistrySetMap<K, V> {
     };
   }
 
-  VoidCallback registryAll(final Map<K, V> values) {
+  VoidCallback registryAll(Map<K, V> values) {
     assert(values.isNotEmpty, 'values must not be null or empty.');
 
     for (final key in values.keys) {
@@ -64,5 +64,5 @@ class RegistrySetMap<K, V> {
 
   void clear() => _maps.clear();
 
-  Set<V> operator [](final K key) => _maps[key] ?? <V>{};
+  Set<V> operator [](K key) => _maps[key] ?? <V>{};
 }

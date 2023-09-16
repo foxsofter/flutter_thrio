@@ -17,18 +17,18 @@ class Module
         ModuleRouteAction,
         ModulePageBuilder {
   @override
-  void onRouteCustomHandlerRegister(final ModuleContext moduleContext) =>
+  void onRouteCustomHandlerRegister(ModuleContext moduleContext) =>
       on$RouteCustomHandlerRegister(moduleContext, registerRouteCustomHandler);
 
   @override
-  void onRouteActionRegister(final ModuleContext moduleContext) {
+  void onRouteActionRegister(ModuleContext moduleContext) {
     registerRouteAction(
         'sendEmailCode{context?,email,currentFrom?,coin?,amount?,address?,tag?}',
         <TParams, TResult>(
-      final url,
-      final action,
-      final queryParams, {
-      final params,
+      url,
+      action,
+      queryParams, {
+      params,
     }) {
       final result = onSendEmailCode(
         moduleContext,
@@ -56,8 +56,8 @@ class Module
   String get key => 'flutter6';
 
   @override
-  void onPageBuilderSetting(final ModuleContext moduleContext) =>
-      pageBuilder = (final settings) => Flutter6Page(
+  void onPageBuilderSetting(ModuleContext moduleContext) =>
+      pageBuilder = (settings) => Flutter6Page(
             moduleContext: moduleContext,
             settings: settings,
           );

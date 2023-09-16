@@ -12,8 +12,8 @@ class Module with ThrioModule, ModulePageBuilder {
   String get key => 'flutter5';
 
   @override
-  void onPageBuilderSetting(final ModuleContext moduleContext) =>
-      pageBuilder = (final settings) => Flutter5Page(
+  void onPageBuilderSetting(ModuleContext moduleContext) =>
+      pageBuilder = (settings) => Flutter5Page(
             moduleContext: moduleContext,
             settings: settings,
           );

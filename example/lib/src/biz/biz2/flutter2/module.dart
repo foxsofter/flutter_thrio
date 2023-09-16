@@ -12,8 +12,8 @@ class Module with ThrioModule, ModulePageBuilder {
   String get key => 'flutter2';
 
   @override
-  void onPageBuilderSetting(final ModuleContext moduleContext) =>
-      pageBuilder = (final settings) => Flutter2Page(
+  void onPageBuilderSetting(ModuleContext moduleContext) =>
+      pageBuilder = (settings) => Flutter2Page(
             moduleContext: moduleContext,
             settings: settings,
           );

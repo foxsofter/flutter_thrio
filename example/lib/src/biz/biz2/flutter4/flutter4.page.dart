@@ -36,17 +36,17 @@ class _Flutter4PageState extends State<Flutter4Page>
   bool get wantKeepAlive => true;
 
   @override
-  void didAppear(final RouteSettings routeSettings) {
+  void didAppear(RouteSettings routeSettings) {
     super.didAppear(routeSettings);
   }
 
   @override
-  void didDisappear(final RouteSettings routeSettings) {
+  void didDisappear(RouteSettings routeSettings) {
     super.didDisappear(routeSettings);
   }
 
   @override
-  Widget build(final BuildContext context) {
+  Widget build(BuildContext context) {
     super.build(context);
     return Scaffold(
         appBar: AppBar(

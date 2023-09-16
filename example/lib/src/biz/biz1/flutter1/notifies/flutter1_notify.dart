@@ -11,12 +11,12 @@ typedef Flutter1NotifyCallback = void Function({int intValue});
 class Flutter1Notify extends NavigatorPageNotify {
   Flutter1Notify({
     super.key,
-    required final Flutter1NotifyCallback onNotify,
-    final int? intValue,
+    required Flutter1NotifyCallback onNotify,
+    int? intValue,
     required super.child,
   }) : super(
             name: 'flutter1',
-            onPageNotify: (final params) =>
+            onPageNotify: (params) =>
                 onNotify(intValue: params['intValue'] as int),
             initialParams: intValue == null ? null : {'intValue': intValue});
 }

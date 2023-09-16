@@ -78,10 +78,10 @@ class ModuleAnchor
   ModuleContext get rootModuleContext => modules.values.first.moduleContext;
 
   @override
-  Future<void> onModuleInit(final ModuleContext moduleContext) =>
+  Future<void> onModuleInit(ModuleContext moduleContext) =>
       ThrioNavigatorImplement.shared().init(moduleContext);
 
-  Future<dynamic> loading(final String url) async {
+  Future<dynamic> loading(String url) async {
     final modules = _getModules(url: url);
     for (final module in modules) {
       if (!module.isLoaded) {
@@ -91,16 +91,15 @@ class ModuleAnchor
     }
   }
 
-  Future<dynamic> unloading(final Iterable<NavigatorRoute> allRoutes) async {
-    final urls = allRoutes.map<String>((final it) => it.settings.url).toSet();
-    final notPushedUrls =
-        allUrls.where((final it) => !urls.contains(it)).toList();
+  Future<dynamic> unloading(Iterable<NavigatorRoute> allRoutes) async {
+    final urls = allRoutes.map<String>((it) => it.settings.url).toSet();
+    final notPushedUrls = allUrls.where((it) => !urls.contains(it)).toList();
     final modules = <ThrioModule>{};
     for (final url in notPushedUrls) {
       modules.addAll(_getModules(url: url));
     }
     final notPushedModules = modules
-        .where((final it) => it is ModulePageBuilder && it.pageBuilder != null)
+        .where((it) => it is ModulePageBuilder && it.pageBuilder != null)
         .toSet();
     for (final module in notPushedModules) {
       // 页 Module onModuleUnloading
@@ -129,7 +128,7 @@ class ModuleAnchor
     }
   }
 
-  T? get<T>({final String? url, final String? key}) {
+  T? get<T>({String? url, String? key}) {
     var modules = <ThrioModule>[];
     if (url != null && url.isNotEmpty) {
       final typeString = T.toString();
@@ -201,7 +200,7 @@ class ModuleAnchor
     return _get<T>(modules, key);
   }
 
-  Iterable<T> gets<T>(final String url) {
+  Iterable<T> gets<T>(String url) {
     final modules = _getModules(url: url);
     if (modules.isEmpty) {
       return <T>[];
@@ -228,12 +227,11 @@ class ModuleAnchor
     return <T>[];
   }
 
-  void set<T>(final Comparable<dynamic> key, final T value) =>
-      setParam(key, value);
+  void set<T>(Comparable<dynamic> key, T value) => setParam(key, value);
 
-  T? remove<T>(final Comparable<dynamic> key) => removeParam(key);
+  T? remove<T>(Comparable<dynamic> key) => removeParam(key);
 
-  List<ThrioModule> _getModules({final String? url}) {
+  List<ThrioModule> _getModules({String? url}) {
     if (modules.isEmpty) {
       return <ThrioModule>[];
     }
@@ -282,13 +280,13 @@ class ModuleAnchor
     }
 
     // url 不能完全匹配到 module，可能是原生的 url 或者不存在的 url
-    if (allModules.where((final it) => it.key.isNotEmpty).length != length) {
+    if (allModules.where((it) => it.key.isNotEmpty).length != length) {
       return <ThrioModule>[];
     }
     return allModules;
   }
 
-  Iterable<ThrioModule> _getAllModules(final ThrioModule module) {
+  Iterable<ThrioModule> _getAllModules(ThrioModule module) {
     final subModules = module.modules.values;
     final allModules = [...subModules];
     for (final it in subModules) {
@@ -297,7 +295,7 @@ class ModuleAnchor
     return allModules;
   }
 
-  Iterable<ThrioModule> _getAllLeafModules(final ThrioModule module) {
+  Iterable<ThrioModule> _getAllLeafModules(ThrioModule module) {
     final subModules = module.modules.values;
     final allLeafModules = <ThrioModule>[];
     for (final module in subModules) {
@@ -312,7 +310,7 @@ class ModuleAnchor
     return allLeafModules;
   }
 
-  T? _get<T>(final List<ThrioModule> modules, final String key) {
+  T? _get<T>(List<ThrioModule> modules, String key) {
     final typeString = T.toString();
     if (typeString == (JsonSerializer).toString()) {
       for (final it in modules.reversed) {

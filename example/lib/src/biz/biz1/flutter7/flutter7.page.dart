@@ -37,17 +37,17 @@ class _Flutter7PageState extends State<Flutter7Page>
   }
 
   @override
-  void didAppear(final RouteSettings routeSettings) {
+  void didAppear(RouteSettings routeSettings) {
     super.didAppear(routeSettings);
   }
 
   @override
-  void didDisappear(final RouteSettings routeSettings) {
+  void didDisappear(RouteSettings routeSettings) {
     super.didDisappear(routeSettings);
   }
 
   @override
-  Widget build(final BuildContext context) {
+  Widget build(BuildContext context) {
     super.build(context);
     return Scaffold(
         resizeToAvoidBottomInset: true,
@@ -73,10 +73,10 @@ class _Flutter7PageState extends State<Flutter7Page>
           ),
         ),
         body: NavigatorPageLifecycle(
-            didAppear: (final settings) {
+            didAppear: (settings) {
               ThrioLogger.v('page7 didAppear -> $settings');
             },
-            didDisappear: (final settings) {
+            didDisappear: (settings) {
               ThrioLogger.v('page7 didDisappear -> $settings');
             },
             child: NavigatorTabBarView(

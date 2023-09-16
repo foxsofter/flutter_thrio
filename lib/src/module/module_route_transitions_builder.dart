@@ -33,5 +33,5 @@ mixin ModuleRouteTransitionsBuilder on ThrioModule {
   /// A function for setting a `RouteTransitionsBuilder` .
   ///
   @protected
-  void onRouteTransitionsBuilderSetting(final ModuleContext moduleContext) {}
+  void onRouteTransitionsBuilderSetting(ModuleContext moduleContext) {}
 }

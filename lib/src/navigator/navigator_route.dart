@@ -42,7 +42,7 @@ mixin NavigatorRoute on PageRoute<bool> {
   final _popDisabledFutures = <String, Future<dynamic>>{};
 
   @protected
-  void setPopDisabled({final bool disabled = false}) {
+  void setPopDisabled({bool disabled = false}) {
     if (_popDisableds[settings.name!] == disabled) {
       return;
     }

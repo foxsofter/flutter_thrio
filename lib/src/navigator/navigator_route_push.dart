@@ -58,5 +58,5 @@ class _NavigatorRoutePushState extends State<NavigatorRoutePush>
   NavigatorRoutePushHandle get onPush => widget.onPush;
 
   @override
-  Widget build(final BuildContext context) => widget.child;
+  Widget build(BuildContext context) => widget.child;
 }

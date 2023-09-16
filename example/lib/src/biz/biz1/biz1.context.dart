@@ -11,7 +11,7 @@ extension Biz1Context on ModuleContext {
   int get intValue =>
       get<int>('intValue') ?? (throw ArgumentError('intValue not exists'));
 
-  bool setIntValue(final int value) => set<int>('intValue', value);
+  bool setIntValue(int value) => set<int>('intValue', value);
 
   /// remove an int value.remove an int value.remove an int value.
   ///

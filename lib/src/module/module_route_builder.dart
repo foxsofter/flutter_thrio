@@ -31,5 +31,5 @@ mixin ModuleRouteBuilder on ThrioModule {
   /// A function for setting a `NavigatorRouteBuilder` .
   ///
   @protected
-  void onRouteBuilderSetting(final ModuleContext moduleContext) {}
+  void onRouteBuilderSetting(ModuleContext moduleContext) {}
 }

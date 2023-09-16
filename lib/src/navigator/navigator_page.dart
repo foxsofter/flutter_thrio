@@ -34,22 +34,20 @@ mixin NavigatorPage {
 
   /// Get parameter from params, throw ArgumentError when`key`'s value  not found .
   ///
-  T getParam<T>(final String key) => getValue(settings.params, key);
+  T getParam<T>(String key) => getValue(settings.params, key);
 
   /// Get parameter from params, return `defaultValue` when`key`'s value  not found .
   ///
-  T getParamOrDefault<T>(final String key, final T defaultValue) =>
+  T getParamOrDefault<T>(String key, T defaultValue) =>
       getValueOrDefault(settings.params, key, defaultValue);
 
   /// Get parameter from params.
   ///
-  T? getParamOrNull<T>(final String key) =>
-      getValueOrNull(settings.params, key);
+  T? getParamOrNull<T>(String key) => getValueOrNull(settings.params, key);
 
-  List<E> getListParam<E>(final String key) =>
-      getListValue<E>(settings.params, key);
+  List<E> getListParam<E>(String key) => getListValue<E>(settings.params, key);
 
-  Map<K, V> getMapParam<K, V>(final String key) =>
+  Map<K, V> getMapParam<K, V>(String key) =>
       getMapValue<K, V>(settings.params, key);
 
   /// Get moduleContext from current page.
@@ -60,8 +58,8 @@ mixin NavigatorPage {
   /// by calling [visitAncestorElements] in [State.didChangeDependencies].
   ///
   static ModuleContext moduleContextOf(
-    final BuildContext context, {
-    final bool pageModuleContext = false,
+    BuildContext context, {
+    bool pageModuleContext = false,
   }) {
     final page = of(context, pageModuleContext: pageModuleContext);
     if (page != null) {
@@ -73,7 +71,7 @@ mixin NavigatorPage {
       return widget.moduleContext;
     }
     NavigatorMaterialApp? app;
-    context.visitAncestorElements((final it) {
+    context.visitAncestorElements((it) {
       final widget = it.widget;
       if (widget is NavigatorMaterialApp) {
         app = widget;
@@ -95,8 +93,8 @@ mixin NavigatorPage {
   /// by calling [visitAncestorElements] in [State.didChangeDependencies].
   ///
   static dynamic paramsOf(
-    final BuildContext context, {
-    final bool pageModuleContext = false,
+    BuildContext context, {
+    bool pageModuleContext = false,
   }) =>
       routeSettingsOf(context, pageModuleContext: pageModuleContext).params;
 
@@ -108,8 +106,8 @@ mixin NavigatorPage {
   /// by calling [visitAncestorElements] in [State.didChangeDependencies].
   ///
   static RouteSettings routeSettingsOf(
-    final BuildContext context, {
-    final bool pageModuleContext = false,
+    BuildContext context, {
+    bool pageModuleContext = false,
   }) =>
       of(context, pageModuleContext: pageModuleContext)?.settings ??
       (throw ThrioException('no RouteSettings on the page'));
@@ -122,8 +120,8 @@ mixin NavigatorPage {
   /// by calling [visitAncestorElements] in [State.didChangeDependencies].
   ///
   static String urlOf(
-    final BuildContext context, {
-    final bool pageModuleContext = false,
+    BuildContext context, {
+    bool pageModuleContext = false,
   }) =>
       routeSettingsOf(context, pageModuleContext: pageModuleContext).url;
 
@@ -135,8 +133,8 @@ mixin NavigatorPage {
   /// by calling [visitAncestorElements] in [State.didChangeDependencies].
   ///
   static int indexOf(
-    final BuildContext context, {
-    final bool pageModuleContext = false,
+    BuildContext context, {
+    bool pageModuleContext = false,
   }) =>
       routeSettingsOf(context, pageModuleContext: pageModuleContext).index;
 
@@ -148,8 +146,8 @@ mixin NavigatorPage {
   /// by calling [visitAncestorElements] in [State.didChangeDependencies].
   ///
   static NavigatorPage? of(
-    final BuildContext context, {
-    final bool pageModuleContext = false,
+    BuildContext context, {
+    bool pageModuleContext = false,
   }) {
     NavigatorPage? page;
     final widget = context.widget;
@@ -164,7 +162,7 @@ mixin NavigatorPage {
       }
       page = null;
     }
-    context.visitAncestorElements((final it) {
+    context.visitAncestorElements((it) {
       final widget = it.widget;
       if (widget is NavigatorPage) {
         page = widget as NavigatorPage;
@@ -178,7 +176,7 @@ mixin NavigatorPage {
     return page;
   }
 
-  static List<RouteSettings> routeSettingsListOf(final BuildContext context) {
+  static List<RouteSettings> routeSettingsListOf(BuildContext context) {
     final settingsList = <RouteSettings>[];
     if (context.widget is NavigatorPage) {
       final settings = (context.widget as NavigatorPage).settings;
@@ -186,13 +184,13 @@ mixin NavigatorPage {
         settingsList.add(settings);
       }
     }
-    context.visitAncestorElements((final it) {
+    context.visitAncestorElements((it) {
       if (it.widget is NavigatorPage) {
         final settings = (it.widget as NavigatorPage).settings;
         if (settings.isSelected != null || !settings.isBuilt) {
           // 如果已存在，则干掉并新增，因为带相同的 RouteSettings 的 NavigatorPage 会重复出现在链路上
           settingsList
-            ..removeWhere((final it) => it.name == settings.name)
+            ..removeWhere((it) => it.name == settings.name)
             ..add(settings);
         }
         return settings.isBuilt;

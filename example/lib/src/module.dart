@@ -14,17 +14,17 @@ class Module
         ModuleJsonSerializer,
         ModuleParamScheme {
   @override
-  void onModuleRegister(final ModuleContext moduleContext) {
+  void onModuleRegister(ModuleContext moduleContext) {
     navigatorLogEnabled = true;
     registerModule(biz.Module(), moduleContext);
   }
 
   @override
-  void onParamSchemeRegister(final ModuleContext moduleContext) {}
+  void onParamSchemeRegister(ModuleContext moduleContext) {}
 
   @override
-  void onJsonSerializerRegister(final ModuleContext moduleContext) {}
+  void onJsonSerializerRegister(ModuleContext moduleContext) {}
 
   @override
-  void onJsonDeserializerRegister(final ModuleContext moduleContext) {}
+  void onJsonDeserializerRegister(ModuleContext moduleContext) {}
 }

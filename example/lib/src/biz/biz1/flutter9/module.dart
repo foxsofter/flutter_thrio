@@ -12,8 +12,8 @@ class Module with ThrioModule, ModulePageBuilder {
   String get key => 'flutter9';
 
   @override
-  void onPageBuilderSetting(final ModuleContext moduleContext) =>
-      pageBuilder = (final settings) => Flutter9Page(
+  void onPageBuilderSetting(ModuleContext moduleContext) =>
+      pageBuilder = (settings) => Flutter9Page(
             moduleContext: moduleContext,
             settings: settings,
           );

@@ -48,7 +48,7 @@ mixin NavigatorRoutePushMixin<T extends StatefulWidget>
   }
 
   @override
-  void didUpdateWidget(covariant final T oldWidget) {
+  void didUpdateWidget(covariant T oldWidget) {
     super.didUpdateWidget(oldWidget);
     _init();
   }
@@ -65,7 +65,7 @@ mixin NavigatorRoutePushMixin<T extends StatefulWidget>
   }
 
   @override
-  void didAppear(final RouteSettings settings) {
+  void didAppear(RouteSettings settings) {
     if (alwaysTakeEffect) {
       return;
     }
@@ -73,7 +73,7 @@ mixin NavigatorRoutePushMixin<T extends StatefulWidget>
   }
 
   @override
-  void didDisappear(final RouteSettings settings) {
+  void didDisappear(RouteSettings settings) {
     if (alwaysTakeEffect) {
       return;
     }

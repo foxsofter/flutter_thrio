@@ -29,7 +29,7 @@ class _Flutter6PageState extends State<Flutter6Page> {
   }
 
   @override
-  Widget build(final BuildContext context) => Scaffold(
+  Widget build(BuildContext context) => Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
         title: const Text('thrio_deeplink_example',

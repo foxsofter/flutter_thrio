@@ -26,13 +26,10 @@ import '../extension/thrio_iterable.dart';
 class AsyncTaskQueue {
   final _queue = <Completer<dynamic>>[];
 
-  Future<T?> add<T>(
-    final Future<T> Function() task, {
-    final Duration? timeLimit,
-  }) {
+  Future<T?> add<T>(Future<T> Function() task, {Duration? timeLimit}) {
     final completer = Completer<T?>();
 
-    void complete(final T? value) {
+    void complete(T? value) {
       if (!completer.isCompleted) {
         _queue.remove(completer);
         completer.complete(value);
@@ -42,13 +39,13 @@ class AsyncTaskQueue {
     final last = _queue.lastOrNull;
     _queue.insert(_queue.length, completer);
     if (last == null) {
-      final f = task().then(complete).catchError((final _) => complete(null));
+      final f = task().then(complete).catchError((_) => complete(null));
       if (timeLimit != null) {
         f.timeout(timeLimit, onTimeout: () => complete(null));
       }
     } else {
       last.future.whenComplete(() {
-        final f = task().then(complete).catchError((final _) => complete(null));
+        final f = task().then(complete).catchError((_) => complete(null));
         if (timeLimit != null) {
           f.timeout(timeLimit, onTimeout: () => complete(null));
         }

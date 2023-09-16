@@ -7,7 +7,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_thrio/flutter_thrio.dart';
 
 class Flutter6Route extends NavigatorRouteLeaf {
-  factory Flutter6Route(final NavigatorRouteNode parent) =>
+  factory Flutter6Route(NavigatorRouteNode parent) =>
       _instance ??= Flutter6Route._(parent);
 
   Flutter6Route._(super.parent);
@@ -18,9 +18,9 @@ class Flutter6Route extends NavigatorRouteLeaf {
   String get name => 'flutter6';
 
   Future<TPopParams?> push<TParams, TPopParams>({
-    final TParams? params,
-    final bool animated = true,
-    final NavigatorIntCallback? result,
+    TParams? params,
+    bool animated = true,
+    NavigatorIntCallback? result,
   }) =>
       ThrioNavigator.push<TParams, TPopParams>(
         url: url,
@@ -30,9 +30,9 @@ class Flutter6Route extends NavigatorRouteLeaf {
       );
 
   Future<TPopParams?> pushSingle<TParams, TPopParams>({
-    final TParams? params,
-    final bool animated = true,
-    final NavigatorIntCallback? result,
+    TParams? params,
+    bool animated = true,
+    NavigatorIntCallback? result,
   }) =>
       ThrioNavigator.pushSingle<TParams, TPopParams>(
         url: url,
@@ -44,13 +44,13 @@ class Flutter6Route extends NavigatorRouteLeaf {
   /// 发送邮箱验证码
   ///
   Future<bool?> sendEmailCode({
-    final BuildContext? context,
-    required final String email,
-    final int? currentFrom,
-    final String? coin,
-    final String? amount,
-    final String? address,
-    final String? tag,
+    BuildContext? context,
+    required String email,
+    int? currentFrom,
+    String? coin,
+    String? amount,
+    String? address,
+    String? tag,
   }) =>
       ThrioNavigator.act<Map<String, dynamic>, bool>(
         url: url,

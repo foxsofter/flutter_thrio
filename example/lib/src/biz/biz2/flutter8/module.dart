@@ -12,8 +12,8 @@ class Module with ThrioModule, ModulePageBuilder {
   String get key => 'flutter8';
 
   @override
-  void onPageBuilderSetting(final ModuleContext moduleContext) =>
-      pageBuilder = (final settings) => Flutter8Page(
+  void onPageBuilderSetting(ModuleContext moduleContext) =>
+      pageBuilder = (settings) => Flutter8Page(
             moduleContext: moduleContext,
             settings: settings,
           );

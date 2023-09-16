@@ -32,7 +32,7 @@ mixin ModulePageObserver on ThrioModule {
   /// A function for register a page observer.
   ///
   @protected
-  void onPageObserverRegister(final ModuleContext moduleContext) {}
+  void onPageObserverRegister(ModuleContext moduleContext) {}
 
   /// Register observers for the life cycle of all pages under
   /// the current module and submodules.
@@ -42,6 +42,6 @@ mixin ModulePageObserver on ThrioModule {
   /// Do not override this method.
   ///
   @protected
-  VoidCallback registerPageObserver(final NavigatorPageObserver pageObserver) =>
+  VoidCallback registerPageObserver(NavigatorPageObserver pageObserver) =>
       pageObservers.registry(pageObserver);
 }

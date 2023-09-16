@@ -21,7 +21,7 @@
 
 /// Get value from params, throw ArgumentError when`key`'s value  not found .
 ///
-T getValue<T>(final dynamic params, final String key) {
+T getValue<T>(dynamic params, String key) {
   final val = getValueOrNull<T>(params, key);
   if (val != null) {
     return val;
@@ -31,8 +31,7 @@ T getValue<T>(final dynamic params, final String key) {
 
 /// Get value from params, return `defaultValue` when`key`'s value  not found .
 ///
-T getValueOrDefault<T>(
-    final dynamic params, final String key, final T defaultValue) {
+T getValueOrDefault<T>(dynamic params, String key, T defaultValue) {
   final val = getValueOrNull<T>(params, key);
   if (val != null) {
     return val;
@@ -42,7 +41,7 @@ T getValueOrDefault<T>(
 
 /// Get value from params.
 ///
-T? getValueOrNull<T>(final dynamic params, final String key) {
+T? getValueOrNull<T>(dynamic params, String key) {
   if (params is Map) {
     final val = params[key];
     if (val is T) {
@@ -52,7 +51,7 @@ T? getValueOrNull<T>(final dynamic params, final String key) {
   return null;
 }
 
-List<E> getListValue<E>(final dynamic params, final String key) {
+List<E> getListValue<E>(dynamic params, String key) {
   if (params is Map) {
     final col = params[key];
     if (col is List) {
@@ -62,7 +61,7 @@ List<E> getListValue<E>(final dynamic params, final String key) {
   return <E>[];
 }
 
-Map<K, V> getMapValue<K, V>(final dynamic params, final String key) {
+Map<K, V> getMapValue<K, V>(dynamic params, String key) {
   if (params is Map) {
     final col = params[key];
     if (col is Map) {

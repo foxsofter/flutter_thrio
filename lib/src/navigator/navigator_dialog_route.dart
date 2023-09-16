@@ -30,8 +30,8 @@ import 'navigator_types.dart';
 ///
 class NavigatorDialogRoute extends PageRouteBuilder<bool> with NavigatorRoute {
   NavigatorDialogRoute({
-    required final NavigatorPageBuilder pageBuilder,
-    required final RouteSettings settings,
+    required NavigatorPageBuilder pageBuilder,
+    required RouteSettings settings,
     super.transitionDuration,
     super.reverseTransitionDuration,
     super.opaque,
@@ -41,28 +41,28 @@ class NavigatorDialogRoute extends PageRouteBuilder<bool> with NavigatorRoute {
     super.maintainState,
     super.fullscreenDialog,
   }) : super(
-          pageBuilder: (final _, final __, final ___) => pageBuilder(settings),
+          pageBuilder: (_, __, ___) => pageBuilder(settings),
           settings: settings,
         );
 
   @override
-  void addScopedWillPopCallback(final WillPopCallback callback) {
+  void addScopedWillPopCallback(WillPopCallback callback) {
     setPopDisabled(disabled: true);
     super.addScopedWillPopCallback(callback);
   }
 
   @override
-  void removeScopedWillPopCallback(final WillPopCallback callback) {
+  void removeScopedWillPopCallback(WillPopCallback callback) {
     setPopDisabled();
     super.removeScopedWillPopCallback(callback);
   }
 
   @override
   Widget buildTransitions(
-    final BuildContext context,
-    final Animation<double> animation,
-    final Animation<double> secondaryAnimation,
-    final Widget child,
+    BuildContext context,
+    Animation<double> animation,
+    Animation<double> secondaryAnimation,
+    Widget child,
   ) {
     if (settings.isNested) {
       final builder =

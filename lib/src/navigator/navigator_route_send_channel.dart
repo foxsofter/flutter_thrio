@@ -32,14 +32,14 @@ import 'navigator_route_settings.dart';
 import 'thrio_navigator_implement.dart';
 
 class NavigatorRouteSendChannel {
-  NavigatorRouteSendChannel(final ThrioChannel channel) : _channel = channel;
+  NavigatorRouteSendChannel(ThrioChannel channel) : _channel = channel;
 
   final ThrioChannel _channel;
 
   Future<int> push<TParams>({
-    required final String url,
-    final TParams? params,
-    final bool animated = true,
+    required String url,
+    TParams? params,
+    bool animated = true,
   }) async {
     final arguments = <String, dynamic>{
       'url': url,
@@ -49,14 +49,14 @@ class NavigatorRouteSendChannel {
 
     return _channel
         .invokeMethod<int>('push', arguments)
-        .then((final value) => value ?? 0);
+        .then((value) => value ?? 0);
   }
 
   Future<bool> notify<TParams>({
-    final String? url,
-    final int index = 0,
-    required final String name,
-    final TParams? params,
+    String? url,
+    int index = 0,
+    required String name,
+    TParams? params,
   }) {
     final arguments = <String, dynamic>{
       'url': url,
@@ -66,15 +66,15 @@ class NavigatorRouteSendChannel {
     };
     return _channel
         .invokeMethod<bool>('notify', arguments)
-        .then((final it) => it ?? false);
+        .then((it) => it ?? false);
   }
 
   Future<bool> canPop<TParams>() =>
-      _channel.invokeMethod<bool>('canPop').then((final it) => it ?? false);
+      _channel.invokeMethod<bool>('canPop').then((it) => it ?? false);
 
   Future<bool> pop<TParams>({
-    final TParams? params,
-    final bool animated = true,
+    TParams? params,
+    bool animated = true,
   }) async {
     final settings = await lastRoute();
     final url = settings?.url;
@@ -84,12 +84,12 @@ class NavigatorRouteSendChannel {
     };
     return _channel
         .invokeMethod<bool>('pop', arguments)
-        .then((final it) => it ?? false);
+        .then((it) => it ?? false);
   }
 
   Future<bool> popFlutter<TParams>({
-    final TParams? params,
-    final bool animated = true,
+    TParams? params,
+    bool animated = true,
   }) {
     final settings =
         ThrioNavigatorImplement.shared().lastFlutterRoute()?.settings;
@@ -100,12 +100,12 @@ class NavigatorRouteSendChannel {
     };
     return _channel
         .invokeMethod<bool>('popFlutter', arguments)
-        .then((final it) => it ?? false);
+        .then((it) => it ?? false);
   }
 
   Future<bool> maybePop<TParams>({
-    final TParams? params,
-    final bool animated = true,
+    TParams? params,
+    bool animated = true,
   }) async {
     final settings = await lastRoute();
     final url = settings?.url;
@@ -115,23 +115,23 @@ class NavigatorRouteSendChannel {
     };
     return _channel
         .invokeMethod<bool>('maybePop', arguments)
-        .then((final it) => it ?? false);
+        .then((it) => it ?? false);
   }
 
   Future<bool> isInitialRoute({
-    required final String url,
-    final int index = 0,
+    required String url,
+    int index = 0,
   }) {
     final arguments = <String, dynamic>{'url': url, 'index': index};
     return _channel
         .invokeMethod<bool>('isInitialRoute', arguments)
-        .then((final it) => it ?? false);
+        .then((it) => it ?? false);
   }
 
   Future<bool> popTo({
-    required final String url,
-    final int index = 0,
-    final bool animated = true,
+    required String url,
+    int index = 0,
+    bool animated = true,
   }) {
     final arguments = <String, dynamic>{
       'url': url,
@@ -140,13 +140,13 @@ class NavigatorRouteSendChannel {
     };
     return _channel
         .invokeMethod<bool>('popTo', arguments)
-        .then((final it) => it ?? false);
+        .then((it) => it ?? false);
   }
 
   Future<bool> remove({
-    required final String url,
-    final int index = 0,
-    final bool animated = true,
+    required String url,
+    int index = 0,
+    bool animated = true,
   }) {
     final arguments = <String, dynamic>{
       'url': url,
@@ -155,13 +155,13 @@ class NavigatorRouteSendChannel {
     };
     return _channel
         .invokeMethod<bool>('remove', arguments)
-        .then((final it) => it ?? false);
+        .then((it) => it ?? false);
   }
 
   Future<int> replace({
-    required final String url,
-    final int index = 0,
-    required final String newUrl,
+    required String url,
+    int index = 0,
+    required String newUrl,
   }) {
     final arguments = <String, dynamic>{
       'url': url,
@@ -170,36 +170,36 @@ class NavigatorRouteSendChannel {
     };
     return _channel
         .invokeMethod<int>('replace', arguments)
-        .then((final it) => it ?? 0);
+        .then((it) => it ?? 0);
   }
 
-  Future<RouteSettings?> lastRoute({final String? url}) {
+  Future<RouteSettings?> lastRoute({String? url}) {
     final arguments = (url == null || url.isEmpty)
         ? <String, dynamic>{}
         : <String, dynamic>{'url': url};
     return _channel
         .invokeMethod<String>('lastRoute', arguments)
         .then<RouteSettings?>(
-            (final value) => value == null ? null : RouteSettings(name: value));
+            (value) => value == null ? null : RouteSettings(name: value));
   }
 
-  Future<List<RouteSettings>> allRoutes({final String? url}) {
+  Future<List<RouteSettings>> allRoutes({String? url}) {
     final arguments = (url == null || url.isEmpty)
         ? <String, dynamic>{}
         : <String, dynamic>{'url': url};
     return _channel
         .invokeListMethod<String>('allRoutes', arguments)
-        .then<List<RouteSettings>>((final values) => values == null
+        .then<List<RouteSettings>>((values) => values == null
             ? <RouteSettings>[]
             : values
-                .map<RouteSettings>((final value) => RouteSettings(name: value))
+                .map<RouteSettings>((value) => RouteSettings(name: value))
                 .toList());
   }
 
   Future<bool> setPopDisabled({
-    required final String url,
-    required final int index,
-    final bool disabled = true,
+    required String url,
+    required int index,
+    bool disabled = true,
   }) {
     final arguments = <String, dynamic>{
       'url': url,
@@ -208,12 +208,12 @@ class NavigatorRouteSendChannel {
     };
     return _channel
         .invokeMethod<bool>('setPopDisabled', arguments)
-        .then((final it) => it ?? false);
+        .then((it) => it ?? false);
   }
 
   dynamic _serializeParams<TParams>({
-    final String? url,
-    final TParams? params,
+    String? url,
+    TParams? params,
   }) {
     if (params == null) {
       return null;

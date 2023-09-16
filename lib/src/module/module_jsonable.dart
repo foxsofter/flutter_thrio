@@ -28,19 +28,19 @@ mixin ModuleJsonable on ThrioModule {
   /// Get jsonable by type string.
   ///
   @protected
-  Jsonable<dynamic>? getJsonable(final String typeString) =>
+  Jsonable<dynamic>? getJsonable(String typeString) =>
       jsonableRegistry.getByTypeName(typeString);
 
   /// A function for register a jsonable.
   ///
   @protected
-  void onJsonableRegister(final ModuleContext moduleContext) {}
+  void onJsonableRegister(ModuleContext moduleContext) {}
 
   /// Register a jsonable.
   ///
   /// Unregistry by calling the return value `VoidCallback`.
   ///
   @protected
-  VoidCallback registerJsonable<T>(final Jsonable<dynamic> jsonable) =>
+  VoidCallback registerJsonable<T>(Jsonable<dynamic> jsonable) =>
       jsonableRegistry.registerJsonable(jsonable);
 }

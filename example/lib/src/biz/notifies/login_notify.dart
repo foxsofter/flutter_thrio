@@ -15,14 +15,14 @@ typedef LoginNotifyCallback = void Function({
 class LoginNotify extends NavigatorPageNotify {
   LoginNotify({
     super.key,
-    required final LoginNotifyCallback onNotify,
-    final int? uid,
-    final String? userName,
-    final String? userToken,
+    required LoginNotifyCallback onNotify,
+    int? uid,
+    String? userName,
+    String? userToken,
     required super.child,
   }) : super(
             name: 'login',
-            onPageNotify: (final params) => onNotify(
+            onPageNotify: (params) => onNotify(
                 uid: params['uid'] as int?,
                 userName: params['userName'] as String,
                 userToken: params['userToken'] as String),

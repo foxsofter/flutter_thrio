@@ -34,7 +34,7 @@ extension ThrioUri on String {
     var start = 0;
     var equalsIndex = -1;
 
-    void parsePair(final int start, final int equalsIndex, final int end) {
+    void parsePair(int start, int equalsIndex, int end) {
       String key;
       String value;
       if (start == end) {
@@ -67,8 +67,7 @@ extension ThrioUri on String {
     return Map<String, List<String>>.unmodifiable(result);
   }
 
-  Map<String, String> get rawQueryParameters =>
-      split('&').fold({}, (final map, final it) {
+  Map<String, String> get rawQueryParameters => split('&').fold({}, (map, it) {
         final index = it.indexOf('=');
         if (index == -1) {
           if (it != '') {

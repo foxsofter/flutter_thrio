@@ -35,7 +35,7 @@ class NavigatorHome extends StatefulWidget {
 
 class _NavigatorHomeState extends State<NavigatorHome> {
   @override
-  Widget build(final BuildContext context) => Scaffold(
+  Widget build(BuildContext context) => Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.white,
           title: const Text('...', style: TextStyle(color: Colors.blue)),

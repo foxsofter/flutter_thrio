@@ -47,7 +47,7 @@ mixin NavigatorWillPopMixin<T extends StatefulWidget> on State<T> {
   static final _observerMaps = <GlobalKey<NavigatorState>, NavigatorObserver>{};
 
   static NavigatorObserver navigatorObserverFor(
-    final GlobalKey<NavigatorState> navigatorStateKey,
+    GlobalKey<NavigatorState> navigatorStateKey,
   ) =>
       _observerMaps[navigatorStateKey] ??
       (_observerMaps[navigatorStateKey] = _InternalNavigatorObserver());
@@ -61,7 +61,7 @@ mixin NavigatorWillPopMixin<T extends StatefulWidget> on State<T> {
   }
 
   @override
-  void didUpdateWidget(covariant final T oldWidget) {
+  void didUpdateWidget(covariant T oldWidget) {
     super.didUpdateWidget(oldWidget);
     _init();
   }
@@ -110,8 +110,8 @@ class _InternalNavigatorObserver extends NavigatorObserver {
 
   @override
   void didPush(
-    final Route<dynamic> route,
-    final Route<dynamic>? previousRoute,
+    Route<dynamic> route,
+    Route<dynamic>? previousRoute,
   ) {
     for (final it in delegates) {
       it._checkWillPop();
@@ -120,8 +120,8 @@ class _InternalNavigatorObserver extends NavigatorObserver {
 
   @override
   void didPop(
-    final Route<dynamic> route,
-    final Route<dynamic>? previousRoute,
+    Route<dynamic> route,
+    Route<dynamic>? previousRoute,
   ) {
     for (final it in delegates) {
       it._checkWillPop();
@@ -130,8 +130,8 @@ class _InternalNavigatorObserver extends NavigatorObserver {
 
   @override
   void didRemove(
-    final Route<dynamic> route,
-    final Route<dynamic>? previousRoute,
+    Route<dynamic> route,
+    Route<dynamic>? previousRoute,
   ) {
     for (final it in delegates) {
       it._checkWillPop();
@@ -139,7 +139,7 @@ class _InternalNavigatorObserver extends NavigatorObserver {
   }
 
   @override
-  void didReplace({final Route<dynamic>? newRoute, final Route<dynamic>? oldRoute}) {
+  void didReplace({Route<dynamic>? newRoute, Route<dynamic>? oldRoute}) {
     for (final it in delegates) {
       it._checkWillPop();
     }

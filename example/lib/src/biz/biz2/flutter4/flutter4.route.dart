@@ -7,7 +7,7 @@ import 'package:example/src/biz/types/people.dart';
 import 'package:flutter_thrio/flutter_thrio.dart';
 
 class Flutter4Route extends NavigatorRouteLeaf {
-  factory Flutter4Route(final NavigatorRouteNode parent) =>
+  factory Flutter4Route(NavigatorRouteNode parent) =>
       _instance ??= Flutter4Route._(parent);
 
   Flutter4Route._(super.parent);
@@ -22,9 +22,9 @@ class Flutter4Route extends NavigatorRouteLeaf {
   /// 打开 people 页面
   ///
   Future<TPopParams?> push<TPopParams>({
-    required final People people,
-    final bool animated = true,
-    final NavigatorIntCallback? result,
+    required People people,
+    bool animated = true,
+    NavigatorIntCallback? result,
   }) =>
       ThrioNavigator.push<Map<String, dynamic>, TPopParams>(
         url: url,
@@ -40,9 +40,9 @@ class Flutter4Route extends NavigatorRouteLeaf {
   /// 打开 people 页面
   ///
   Future<TPopParams?> pushSingle<TPopParams>({
-    required final People people,
-    final bool animated = true,
-    final NavigatorIntCallback? result,
+    required People people,
+    bool animated = true,
+    NavigatorIntCallback? result,
   }) =>
       ThrioNavigator.pushSingle<Map<String, dynamic>, TPopParams>(
         url: url,

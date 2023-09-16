@@ -43,7 +43,7 @@ class NavigatorWidget extends StatefulWidget {
   const NavigatorWidget({
     super.key,
     required this.moduleContext,
-    required final NavigatorObserverManager observerManager,
+    required NavigatorObserverManager observerManager,
     required this.child,
   }) : _observerManager = observerManager;
 
@@ -64,8 +64,8 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
 
   /// 还无法实现animated=false
   Future<bool> push(
-    final RouteSettings settings, {
-    final bool animated = true,
+    RouteSettings settings, {
+    bool animated = true,
   }) async {
     final navigatorState = widget.child.tryStateOf<NavigatorState>();
     if (navigatorState == null) {
@@ -110,8 +110,8 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
   }
 
   Future<bool> canPop(
-    final RouteSettings settings, {
-    final bool inRoot = false,
+    RouteSettings settings, {
+    bool inRoot = false,
   }) async {
     final navigatorState = widget.child.tryStateOf<NavigatorState>();
     if (navigatorState == null) {
@@ -125,9 +125,9 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
   }
 
   Future<int> maybePop(
-    final RouteSettings settings, {
-    final bool animated = true,
-    final bool inRoot = false,
+    RouteSettings settings, {
+    bool animated = true,
+    bool inRoot = false,
   }) async {
     final navigatorState = widget.child.tryStateOf<NavigatorState>();
     if (navigatorState == null) {
@@ -151,9 +151,9 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
   }
 
   Future<bool> pop(
-    final RouteSettings settings, {
-    final bool animated = true,
-    final bool inRoot = false,
+    RouteSettings settings, {
+    bool animated = true,
+    bool inRoot = false,
   }) async {
     final navigatorState = widget.child.tryStateOf<NavigatorState>();
     if (navigatorState == null || history.isEmpty) {
@@ -206,7 +206,7 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
       navigatorState.removeRoute(route);
     }
 
-    return Future.value(true).then((final value) {
+    return Future.value(true).then((value) {
       _poppedResultCallback(
         route.poppedResult,
         route.settings.url,
@@ -218,18 +218,17 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
   }
 
   Future<bool> popTo(
-    final RouteSettings settings, {
-    final bool animated = true,
+    RouteSettings settings, {
+    bool animated = true,
   }) async {
     final navigatorState = widget.child.tryStateOf<NavigatorState>();
     if (navigatorState == null) {
       return false;
     }
 
-    var index =
-        history.indexWhere((final it) => it.settings.name == settings.name);
+    var index = history.indexWhere((it) => it.settings.name == settings.name);
     if (index == -1) {
-      index = history.indexWhere((final it) => it.settings.url == settings.url);
+      index = history.indexWhere((it) => it.settings.url == settings.url);
       if (index == -1) {
         return false;
       }
@@ -254,7 +253,7 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
     // ignore: avoid_as
     (route as NavigatorRoute).routeType = NavigatorRouteType.popTo;
     if (animated) {
-      navigatorState.popUntil((final it) => it.settings.name == settings.name);
+      navigatorState.popUntil((it) => it.settings.name == settings.name);
     } else {
       if (history.last != route) {
         for (var i = history.length - 2; i > index; i--) {
@@ -270,16 +269,16 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
   }
 
   Future<bool> remove(
-    final RouteSettings settings, {
-    final bool animated = false,
-    final bool inRoot = false,
+    RouteSettings settings, {
+    bool animated = false,
+    bool inRoot = false,
   }) async {
     final navigatorState = widget.child.tryStateOf<NavigatorState>();
     if (navigatorState == null) {
       return false;
     }
-    final route = history
-        .firstWhereOrNull((final it) => it.settings.name == settings.name);
+    final route =
+        history.firstWhereOrNull((it) => it.settings.name == settings.name);
     if (route == null) {
       return false;
     }
@@ -311,15 +310,15 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
   }
 
   Future<bool> replace(
-    final RouteSettings settings,
-    final RouteSettings newSettings,
+    RouteSettings settings,
+    RouteSettings newSettings,
   ) async {
     final navigatorState = widget.child.tryStateOf<NavigatorState>();
     if (navigatorState == null) {
       return false;
     }
-    final route = history
-        .lastWhereOrNull((final it) => it.settings.name == settings.name);
+    final route =
+        history.lastWhereOrNull((it) => it.settings.name == settings.name);
     if (route == null) {
       return false;
     }
@@ -378,12 +377,12 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
   }
 
   @override
-  Widget build(final BuildContext context) => widget.child;
+  Widget build(BuildContext context) => widget.child;
 
   void _poppedResultCallback(
-    final NavigatorParamsCallback? poppedResultCallback,
-    final String? url,
-    final dynamic params,
+    NavigatorParamsCallback? poppedResultCallback,
+    String? url,
+    dynamic params,
   ) {
     if (poppedResultCallback == null) {
       return;

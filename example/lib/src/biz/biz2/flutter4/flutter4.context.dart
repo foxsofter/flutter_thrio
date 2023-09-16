@@ -11,7 +11,7 @@ extension Flutter4Context on ModuleContext {
   People get people =>
       get<People>('people') ?? (throw ArgumentError('people not exists'));
 
-  bool setPeople(final People value) => set<People>('people', value);
+  bool setPeople(People value) => set<People>('people', value);
 
   /// remove a people.
   ///

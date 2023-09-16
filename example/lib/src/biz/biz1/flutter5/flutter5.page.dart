@@ -33,17 +33,17 @@ class _Flutter5PageState extends State<Flutter5Page>
   bool get wantKeepAlive => true;
 
   @override
-  void didAppear(final RouteSettings routeSettings) {
+  void didAppear(RouteSettings routeSettings) {
     super.didAppear(routeSettings);
   }
 
   @override
-  void didDisappear(final RouteSettings routeSettings) {
+  void didDisappear(RouteSettings routeSettings) {
     super.didDisappear(routeSettings);
   }
 
   @override
-  Widget build(final BuildContext context) {
+  Widget build(BuildContext context) {
     super.build(context);
     return Scaffold(
         appBar: AppBar(
@@ -59,10 +59,10 @@ class _Flutter5PageState extends State<Flutter5Page>
           systemOverlayStyle: SystemUiOverlayStyle.dark,
         ),
         body: NavigatorPageLifecycle(
-            didAppear: (final settings) {
+            didAppear: (settings) {
               ThrioLogger.v('page5 didAppear -> $settings');
             },
-            didDisappear: (final settings) {
+            didDisappear: (settings) {
               ThrioLogger.v('page5 didDisappear -> $settings');
             },
             child: NavigatorPageView(

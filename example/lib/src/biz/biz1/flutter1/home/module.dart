@@ -12,14 +12,14 @@ class Module with ThrioModule, ModuleParamScheme, ModulePageBuilder {
   String get key => 'home';
 
   @override
-  void onPageBuilderSetting(final ModuleContext moduleContext) =>
-      pageBuilder = (final settings) => HomePage(
+  void onPageBuilderSetting(ModuleContext moduleContext) =>
+      pageBuilder = (settings) => HomePage(
             moduleContext: moduleContext,
             settings: settings,
           );
 
   @override
-  void onParamSchemeRegister(final ModuleContext moduleContext) {
+  void onParamSchemeRegister(ModuleContext moduleContext) {
     registerParamScheme('stringKeyBiz1');
   }
 }

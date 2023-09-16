@@ -50,8 +50,8 @@ class NavigatorUrlTemplate {
           .replaceAll('}', '')
           .split(',');
       requiredParamKeys.addAll(paramsKeys
-          .where((final it) => it.isNotEmpty && !it.endsWith('?'))
-          .map((final it) => it.replaceAll('?', '')));
+          .where((it) => it.isNotEmpty && !it.endsWith('?'))
+          .map((it) => it.replaceAll('?', '')));
     }
   }
 
@@ -63,14 +63,14 @@ class NavigatorUrlTemplate {
   final List<String> requiredParamKeys = <String>[];
 
   @override
-  bool operator ==(final Object other) {
+  bool operator ==(Object other) {
     if (identical(this, other)) {
       return true;
     }
     return other is NavigatorUrlTemplate && template == other.template;
   }
 
-  bool match(final Uri uri) {
+  bool match(Uri uri) {
     // url 允许通过传入模板来表明使用者已经正常传入参数
     var uriPath = Uri.decodeFull(uri.path);
     var uriParamsKeys = uri.queryParametersAll.keys;
@@ -90,7 +90,7 @@ class NavigatorUrlTemplate {
       if (requiredParamKeys.isEmpty) {
         return true;
       }
-      if (!requiredParamKeys.any((final k) => !uriParamsKeys.contains(k))) {
+      if (!requiredParamKeys.any((k) => !uriParamsKeys.contains(k))) {
         return true;
       }
     }

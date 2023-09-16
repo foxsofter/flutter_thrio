@@ -22,7 +22,7 @@ class Flutter10Page extends NavigatorStatefulPage {
 class _Flutter10PageState extends State<Flutter10Page>
     with AutomaticKeepAliveClientMixin {
   @override
-  Widget build(final BuildContext context) {
+  Widget build(BuildContext context) {
     super.build(context);
     return const _TestConstWidget();
   }
@@ -41,7 +41,7 @@ class _TestConstWidget extends StatefulWidget {
 class __TestConstWidgetState extends State<_TestConstWidget>
     with NavigatorPageLifecycleMixin {
   @override
-  Widget build(final BuildContext context) => Scaffold(
+  Widget build(BuildContext context) => Scaffold(
         appBar: AppBar(
           backgroundColor: Colors.white,
           title: const Text('thrio_build_example',

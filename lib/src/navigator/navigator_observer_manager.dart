@@ -38,10 +38,7 @@ class NavigatorObserverManager extends NavigatorObserver {
   final pageRoutes = <Route<dynamic>>[];
 
   @override
-  void didPush(
-    final Route<dynamic> route,
-    final Route<dynamic>? previousRoute,
-  ) {
+  void didPush(Route<dynamic> route, Route<dynamic>? previousRoute) {
     for (final ob in observers) {
       ob.didPush(route, previousRoute);
     }
@@ -74,7 +71,7 @@ class NavigatorObserverManager extends NavigatorObserver {
   }
 
   @override
-  void didPop(final Route<dynamic> route, final Route<dynamic>? previousRoute) {
+  void didPop(Route<dynamic> route, Route<dynamic>? previousRoute) {
     Future(() {
       for (final ob in observers) {
         ob.didPop(route, previousRoute);
@@ -173,10 +170,7 @@ class NavigatorObserverManager extends NavigatorObserver {
   }
 
   @override
-  void didRemove(
-    final Route<dynamic> route,
-    final Route<dynamic>? previousRoute,
-  ) {
+  void didRemove(Route<dynamic> route, Route<dynamic>? previousRoute) {
     Future(() {
       for (final ob in observers) {
         ob.didRemove(route, previousRoute);
@@ -234,10 +228,7 @@ class NavigatorObserverManager extends NavigatorObserver {
   }
 
   @override
-  void didReplace({
-    final Route<dynamic>? newRoute,
-    final Route<dynamic>? oldRoute,
-  }) {
+  void didReplace({Route<dynamic>? newRoute, Route<dynamic>? oldRoute}) {
     Future(() {
       for (final ob in observers) {
         ob.didReplace(newRoute: newRoute, oldRoute: oldRoute);
@@ -266,7 +257,7 @@ class NavigatorObserverManager extends NavigatorObserver {
     }
   }
 
-  void _currenPopRouteCallbackAndClear(final List<NavigatorRoute> routes) {
+  void _currenPopRouteCallbackAndClear(List<NavigatorRoute> routes) {
     for (final route in routes) {
       route.poppedResult?.call(null);
       route.poppedResult = null;

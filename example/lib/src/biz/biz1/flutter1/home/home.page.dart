@@ -41,7 +41,7 @@ class _HomePageState extends State<HomePage>
     super.initState();
     if (mounted) {
       WidgetsBinding.instance.addObserver(this);
-      widget.moduleContext.onStringKeyBiz1.listen((final i) {
+      widget.moduleContext.onStringKeyBiz1.listen((i) {
         ThrioLogger.v('onIntKeyRootModule value is $i');
       });
     }
@@ -65,20 +65,20 @@ class _HomePageState extends State<HomePage>
   bool get wantKeepAlive => true;
 
   @override
-  void didAppear(final RouteSettings routeSettings) {
+  void didAppear(RouteSettings routeSettings) {
     super.didAppear(routeSettings);
   }
 
   @override
-  void didDisappear(final RouteSettings routeSettings) {
+  void didDisappear(RouteSettings routeSettings) {
     super.didDisappear(routeSettings);
   }
 
   @override
-  Widget build(final BuildContext context) {
+  Widget build(BuildContext context) {
     super.build(context);
     return NavigatorRoutePush(
-      onPush: (final settings, {final animated = true}) async {
+      onPush: (settings, {animated = true}) async {
         // root.biz1.flutter1.home.replace(newUrl: root.biz2.flutter2.url);
         if (settings.url == biz.biz2.flutter2.url) {
           ThrioLogger.d('page2 onPush');
@@ -87,10 +87,10 @@ class _HomePageState extends State<HomePage>
       },
       child: NavigatorPageNotify(
           name: 'all_page_notify',
-          onPageNotify: (final params) =>
+          onPageNotify: (params) =>
               ThrioLogger.v('flutter1 receive all page notify:$params'),
           child: Flutter1Notify(
-              onNotify: ({final intValue = 0}) =>
+              onNotify: ({intValue = 0}) =>
                   ThrioLogger.v('flutter1 receive notify:$intValue'),
               child: Scaffold(
                   appBar: PreferredSize(
@@ -220,7 +220,7 @@ class _HomePageState extends State<HomePage>
                                   '${biz.biz2.flutter2.url}?fewfew=2131&fwe=1&&',
                               params: People(name: '大宝剑', age: 0, sex: 'x'),
                               animated: false,
-                              result: (final index) {
+                              result: (index) {
                                 ThrioLogger.v('test_async_queue: push $index');
                               },
                             );

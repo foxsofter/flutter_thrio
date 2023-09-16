@@ -20,7 +20,7 @@
 // IN THE SOFTWARE.
 
 class ThrioException extends Exception {
-  factory ThrioException([final dynamic message]) => _ThrioException(message);
+  factory ThrioException([dynamic message]) => _ThrioException(message);
 }
 
 class _ThrioException implements ThrioException {

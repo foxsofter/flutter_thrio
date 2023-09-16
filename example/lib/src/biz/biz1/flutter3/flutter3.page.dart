@@ -35,7 +35,7 @@ class _Flutter3PageState extends State<Flutter3Page>
   bool get wantKeepAlive => true;
 
   @override
-  Widget build(final BuildContext context) {
+  Widget build(BuildContext context) {
     super.build(context);
     return WillPopScope(
         onWillPop: () async {
@@ -175,7 +175,7 @@ class _Flutter3PageState extends State<Flutter3Page>
                 onTap: () => Navigator.push(
                     context,
                     MaterialPageRoute(
-                        builder: (final context) => const TestNavigatorPage())),
+                        builder: (context) => const TestNavigatorPage())),
                 child: Container(
                     padding: const EdgeInsets.all(4),
                     margin: const EdgeInsets.all(4),
@@ -227,7 +227,7 @@ class TestPage extends StatefulWidget {
 
 class _TestPageState extends State<TestPage> {
   @override
-  Widget build(final BuildContext context) => Scaffold(
+  Widget build(BuildContext context) => Scaffold(
         appBar: AppBar(
           title: const Text('test page'),
           leading: const IconButton(
@@ -245,8 +245,8 @@ class _TestPageState extends State<TestPage> {
                 padding: const EdgeInsets.all(8.0),
                 child: TextFormField(
                   initialValue: '',
-                  onSaved: (final val) => val,
-                  validator: (final val) => val == '' ? val : null,
+                  onSaved: (val) => val,
+                  validator: (val) => val == '' ? val : null,
                 ),
               ),
               Padding(
@@ -274,7 +274,7 @@ class _TestPageState extends State<TestPage> {
                     Navigator.of(context).push(
                       MaterialPageRoute(
                           settings: const RouteSettings(name: 'test'),
-                          builder: (final context) => const TestPage()),
+                          builder: (context) => const TestPage()),
                     );
                   },
                   child: const Text(
@@ -293,7 +293,7 @@ class _TestPageState extends State<TestPage> {
                     Navigator.of(context).pushReplacement(
                       MaterialPageRoute(
                           settings: const RouteSettings(name: 'test'),
-                          builder: (final context) => const TestPage()),
+                          builder: (context) => const TestPage()),
                     );
                   },
                   child: const Text(
@@ -336,7 +336,7 @@ class _TestNavigatorPageState extends State<TestNavigatorPage> {
   BuildContext? internalContext;
 
   @override
-  Widget build(final BuildContext context) => Scaffold(
+  Widget build(BuildContext context) => Scaffold(
       appBar: AppBar(
         title: const Text('test page'),
         leading: const IconButton(
@@ -363,10 +363,10 @@ class _TestNavigatorPageState extends State<TestNavigatorPage> {
           ],
           key: navigatorKey,
           initialRoute: 'test',
-          onGenerateRoute: (final settings) {
+          onGenerateRoute: (settings) {
             if (settings.name == 'test') {
               return MaterialPageRoute(
-                  builder: (final context) {
+                  builder: (context) {
                     internalContext = context;
                     return const TestPage();
                   },
@@ -380,10 +380,10 @@ class _TestNavigatorPageState extends State<TestNavigatorPage> {
 
 class TestObser extends NavigatorObserver {
   @override
-  void didPush(final Route<dynamic> route, final Route<dynamic>? previousRoute) {
+  void didPush(Route<dynamic> route, Route<dynamic>? previousRoute) {
   }
 
   @override
-  void didReplace({final Route<dynamic>? newRoute, final Route<dynamic>? oldRoute}) {
+  void didReplace({Route<dynamic>? newRoute, Route<dynamic>? oldRoute}) {
   }
 }

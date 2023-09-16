@@ -14,7 +14,7 @@ FutureOr<bool?> onSendEmailCode(
   final String action,
   final Map<String, List<String>> queryParams, {
   final BuildContext? context,
-  required final String email,
+  required String email,
   final int? currentFrom,
   final String? coin,
   final String? amount,

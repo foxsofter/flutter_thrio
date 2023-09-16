@@ -6,7 +6,7 @@
 import 'package:flutter_thrio/flutter_thrio.dart';
 
 class Flutter5Route extends NavigatorRouteLeaf {
-  factory Flutter5Route(final NavigatorRouteNode parent) =>
+  factory Flutter5Route(NavigatorRouteNode parent) =>
       _instance ??= Flutter5Route._(parent);
 
   Flutter5Route._(super.parent);
@@ -17,9 +17,9 @@ class Flutter5Route extends NavigatorRouteLeaf {
   String get name => 'flutter5';
 
   Future<TPopParams?> push<TParams, TPopParams>({
-    final TParams? params,
-    final bool animated = true,
-    final NavigatorIntCallback? result,
+    TParams? params,
+    bool animated = true,
+    NavigatorIntCallback? result,
   }) =>
       ThrioNavigator.push<TParams, TPopParams>(
         url: url,
@@ -29,9 +29,9 @@ class Flutter5Route extends NavigatorRouteLeaf {
       );
 
   Future<TPopParams?> pushSingle<TParams, TPopParams>({
-    final TParams? params,
-    final bool animated = true,
-    final NavigatorIntCallback? result,
+    TParams? params,
+    bool animated = true,
+    NavigatorIntCallback? result,
   }) =>
       ThrioNavigator.pushSingle<TParams, TPopParams>(
         url: url,

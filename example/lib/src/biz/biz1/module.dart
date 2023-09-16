@@ -17,7 +17,7 @@ class Module with ThrioModule, ModuleParamScheme {
   String get key => 'biz1';
 
   @override
-  void onModuleRegister(final ModuleContext moduleContext) {
+  void onModuleRegister(ModuleContext moduleContext) {
     registerModule(flutter1.Module(), moduleContext);
     registerModule(flutter3.Module(), moduleContext);
     registerModule(flutter5.Module(), moduleContext);
@@ -27,7 +27,7 @@ class Module with ThrioModule, ModuleParamScheme {
   }
 
   @override
-  void onParamSchemeRegister(final ModuleContext moduleContext) {
+  void onParamSchemeRegister(ModuleContext moduleContext) {
     registerParamScheme<int>('intValue');
   }
 }

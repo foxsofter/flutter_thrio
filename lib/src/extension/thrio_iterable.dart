@@ -38,7 +38,7 @@ extension ThrioIterable<E> on Iterable<E> {
   ///
   /// If no element satisfies [test], return `null`.
   ///
-  E? firstWhereOrNull(final bool Function(E it) predicate) {
+  E? firstWhereOrNull(bool Function(E it) predicate) {
     for (final it in this) {
       if (predicate(it)) {
         return it;
@@ -51,7 +51,7 @@ extension ThrioIterable<E> on Iterable<E> {
   ///
   /// If no element satisfies [test], return `null`.
   ///
-  E? lastWhereOrNull(final bool Function(E it) predicate) {
+  E? lastWhereOrNull(bool Function(E it) predicate) {
     final reversed = toList().reversed;
     for (final it in reversed) {
       if (predicate(it)) {

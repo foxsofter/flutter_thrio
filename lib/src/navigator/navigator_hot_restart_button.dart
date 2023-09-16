@@ -56,7 +56,7 @@ class _NavigatorHotRestartButtonState extends State<NavigatorHotRestartButton> {
   }
 
   @override
-  Widget build(final BuildContext context) => ElevatedButton(
+  Widget build(BuildContext context) => ElevatedButton(
         style: widget.style,
         onPressed: () => ThrioNavigatorImplement.shared().hotRestart(),
         child: const Center(child: Text('hot restart')),

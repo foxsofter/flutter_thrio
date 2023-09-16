@@ -28,24 +28,24 @@ import 'thrio_navigator.dart';
 mixin NavigatorRouteObserver {
   /// The [ThrioNavigator] pushed `route`.
   ///
-  void didPush(final RouteSettings routeSettings) {}
+  void didPush(RouteSettings routeSettings) {}
 
   /// The [ThrioNavigator] popped `route`.
   ///
-  void didPop(final RouteSettings routeSettings) {}
+  void didPop(RouteSettings routeSettings) {}
 
   /// The [ThrioNavigator] popped to `route`.
   ///
-  void didPopTo(final RouteSettings routeSettings) {}
+  void didPopTo(RouteSettings routeSettings) {}
 
   /// The [ThrioNavigator] removed `route`.
   ///
-  void didRemove(final RouteSettings routeSettings) {}
+  void didRemove(RouteSettings routeSettings) {}
 
   /// The [ThrioNavigator] replace `route` .
   ///
   void didReplace(
-    final RouteSettings newRouteSettings,
-    final RouteSettings oldRouteSettings,
+    RouteSettings newRouteSettings,
+    RouteSettings oldRouteSettings,
   ) {}
 }

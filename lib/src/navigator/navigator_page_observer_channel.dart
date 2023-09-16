@@ -31,64 +31,49 @@ typedef NavigatorPageObserverCallback = void Function(
     NavigatorPageObserver observer, RouteSettings settings);
 
 class NavigatorPageObserverChannel {
-  NavigatorPageObserverChannel(final String entrypoint)
+  NavigatorPageObserverChannel(String entrypoint)
       : _channel = ThrioChannel(channel: '__thrio_page_channel__$entrypoint') {
-    _on(
-        'willAppear',
-        (final observer, final routeSettings) =>
-            observer.willAppear(routeSettings));
-    _on('didAppear', (final observer, final routeSettings) {
+    _on('willAppear',
+        (observer, routeSettings) => observer.willAppear(routeSettings));
+    _on('didAppear', (observer, routeSettings) {
       observer.didAppear(routeSettings);
     });
-    _on(
-        'willDisappear',
-        (final observer, final routeSettings) =>
-            observer.willDisappear(routeSettings));
-    _on(
-        'didDisappear',
-        (final observer, final routeSettings) =>
-            observer.didDisappear(routeSettings));
+    _on('willDisappear',
+        (observer, routeSettings) => observer.willDisappear(routeSettings));
+    _on('didDisappear',
+        (observer, routeSettings) => observer.didDisappear(routeSettings));
   }
 
   final ThrioChannel _channel;
 
-  void willAppear(
-    final RouteSettings routeSettings,
-    final NavigatorRouteType routeType,
-  ) {
+  void willAppear(RouteSettings routeSettings, NavigatorRouteType routeType) {
     final arguments = routeSettings.toArguments()..remove('params');
     arguments['routeType'] = routeType.toString().split('.').last;
     _channel.invokeMethod<dynamic>('willAppear', arguments);
   }
 
-  void didAppear(
-    final RouteSettings routeSettings,
-    final NavigatorRouteType routeType,
-  ) {
+  void didAppear(RouteSettings routeSettings, NavigatorRouteType routeType) {
     final arguments = routeSettings.toArguments()..remove('params');
     arguments['routeType'] = routeType.toString().split('.').last;
     _channel.invokeMethod<dynamic>('didAppear', arguments);
   }
 
   void willDisappear(
-    final RouteSettings routeSettings,
-    final NavigatorRouteType routeType,
+    RouteSettings routeSettings,
+    NavigatorRouteType routeType,
   ) {
     final arguments = routeSettings.toArguments()..remove('params');
     arguments['routeType'] = routeType.toString().split('.').last;
     _channel.invokeMethod<dynamic>('willDisappear', arguments);
   }
 
-  void didDisappear(
-    final RouteSettings routeSettings,
-    final NavigatorRouteType routeType,
-  ) {
+  void didDisappear(RouteSettings routeSettings, NavigatorRouteType routeType) {
     final arguments = routeSettings.toArguments()..remove('params');
     arguments['routeType'] = routeType.toString().split('.').last;
     _channel.invokeMethod<dynamic>('didDisappear', arguments);
   }
 
-  void _on(final String method, final NavigatorPageObserverCallback callback) =>
+  void _on(String method, NavigatorPageObserverCallback callback) =>
       _channel.registryMethodCall(method, ([final arguments]) {
         final routeSettings = NavigatorRouteSettings.fromArguments(arguments);
         if (routeSettings != null) {

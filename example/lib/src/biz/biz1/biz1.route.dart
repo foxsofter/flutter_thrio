@@ -13,7 +13,7 @@ import 'flutter7/flutter7.route.dart';
 import 'flutter9/flutter9.route.dart';
 
 class Biz1Route extends NavigatorRouteNode {
-  factory Biz1Route(final NavigatorRouteNode parent) =>
+  factory Biz1Route(NavigatorRouteNode parent) =>
       _instance ??= Biz1Route._(parent);
 
   Biz1Route._(super.parent);

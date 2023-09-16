@@ -6,7 +6,7 @@
 import 'package:flutter_thrio/flutter_thrio.dart';
 
 class Flutter7Route extends NavigatorRouteLeaf {
-  factory Flutter7Route(final NavigatorRouteNode parent) =>
+  factory Flutter7Route(NavigatorRouteNode parent) =>
       _instance ??= Flutter7Route._(parent);
 
   Flutter7Route._(super.parent);
@@ -17,9 +17,9 @@ class Flutter7Route extends NavigatorRouteLeaf {
   String get name => 'flutter7';
 
   Future<TPopParams?> push<TParams, TPopParams>({
-    final TParams? params,
-    final bool animated = true,
-    final NavigatorIntCallback? result,
+    TParams? params,
+    bool animated = true,
+    NavigatorIntCallback? result,
   }) =>
       ThrioNavigator.push<TParams, TPopParams>(
         url: url,
@@ -29,9 +29,9 @@ class Flutter7Route extends NavigatorRouteLeaf {
       );
 
   Future<TPopParams?> pushSingle<TParams, TPopParams>({
-    final TParams? params,
-    final bool animated = true,
-    final NavigatorIntCallback? result,
+    TParams? params,
+    bool animated = true,
+    NavigatorIntCallback? result,
   }) =>
       ThrioNavigator.pushSingle<TParams, TPopParams>(
         url: url,

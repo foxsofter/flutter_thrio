@@ -43,16 +43,16 @@ class NavigatorPageLifecycle extends StatefulWidget {
 class _NavigatorPageLifecycleState extends State<NavigatorPageLifecycle>
     with NavigatorPageLifecycleMixin {
   @override
-  Widget build(final BuildContext context) => widget.child;
+  Widget build(BuildContext context) => widget.child;
 
   @override
-  void didAppear(final RouteSettings settings) {
+  void didAppear(RouteSettings settings) {
     super.didAppear(settings);
     widget.didAppear?.call(settings);
   }
 
   @override
-  void didDisappear(final RouteSettings settings) {
+  void didDisappear(RouteSettings settings) {
     super.didDisappear(settings);
     widget.didDisappear?.call(settings);
   }

@@ -6,7 +6,7 @@
 import 'package:flutter_thrio/flutter_thrio.dart';
 
 class HomeRoute extends NavigatorRouteLeaf {
-  factory HomeRoute(final NavigatorRouteNode parent) =>
+  factory HomeRoute(NavigatorRouteNode parent) =>
       _instance ??= HomeRoute._(parent);
 
   HomeRoute._(super.parent);
@@ -23,10 +23,10 @@ class HomeRoute extends NavigatorRouteLeaf {
   /// 测试 集合 传参
   ///
   Future<TPopParams?> push<TPopParams>({
-    final List<String> strList = const <String>[],
-    final Map<String, dynamic> goodMap = const <String, dynamic>{},
-    final bool animated = true,
-    final NavigatorIntCallback? result,
+    List<String> strList = const <String>[],
+    Map<String, dynamic> goodMap = const <String, dynamic>{},
+    bool animated = true,
+    NavigatorIntCallback? result,
   }) =>
       ThrioNavigator.push<Map<String, dynamic>, TPopParams>(
         url: url,
@@ -45,10 +45,10 @@ class HomeRoute extends NavigatorRouteLeaf {
   /// 测试 集合 传参
   ///
   Future<TPopParams?> pushSingle<TPopParams>({
-    final List<String> strList = const <String>[],
-    final Map<String, dynamic> goodMap = const <String, dynamic>{},
-    final bool animated = true,
-    final NavigatorIntCallback? result,
+    List<String> strList = const <String>[],
+    Map<String, dynamic> goodMap = const <String, dynamic>{},
+    bool animated = true,
+    NavigatorIntCallback? result,
   }) =>
       ThrioNavigator.pushSingle<Map<String, dynamic>, TPopParams>(
         url: url,

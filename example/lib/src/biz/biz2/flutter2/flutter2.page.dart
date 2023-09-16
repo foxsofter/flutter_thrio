@@ -43,21 +43,21 @@ class _Flutter2PageState extends State<Flutter2Page>
   }
 
   @override
-  void didAppear(final RouteSettings routeSettings) {
+  void didAppear(RouteSettings routeSettings) {
     super.didAppear(routeSettings);
   }
 
   @override
-  void didDisappear(final RouteSettings routeSettings) {
+  void didDisappear(RouteSettings routeSettings) {
     super.didDisappear(routeSettings);
   }
 
   @override
-  Widget build(final BuildContext context) {
+  Widget build(BuildContext context) {
     super.build(context);
     return NavigatorPageNotify(
         name: 'page2Notify',
-        onPageNotify: (final params) =>
+        onPageNotify: (params) =>
             ThrioLogger.v('flutter2 receive notify:$params'),
         child: Scaffold(
             appBar: AppBar(

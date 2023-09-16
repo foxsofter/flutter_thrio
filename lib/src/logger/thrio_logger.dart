@@ -26,24 +26,24 @@ import 'package:flutter/material.dart';
 abstract class ThrioLogger {
   /// Log a message at level verbose.
   ///
-  static void v(final dynamic message) => _print('V', message);
+  static void v(dynamic message) => _print('V', message);
 
   /// Log a message at level debug.
   ///
-  static void d(final dynamic message) => _print('D', message);
+  static void d(dynamic message) => _print('D', message);
 
   /// Log a message at level info.
   ///
-  static void i(final dynamic message) => _print('I', message);
+  static void i(dynamic message) => _print('I', message);
 
   /// Log a message at level warning.
   ///
-  static void w(final dynamic message) => _print('W', message);
+  static void w(dynamic message) => _print('W', message);
 
   /// Log a message at level error.
   ///
-  static void e(final dynamic message) => _print('E', message);
+  static void e(dynamic message) => _print('E', message);
 
-  static void _print(final String level, final dynamic message) =>
+  static void _print(String level, dynamic message) =>
       debugPrint('[$level] $message');
 }

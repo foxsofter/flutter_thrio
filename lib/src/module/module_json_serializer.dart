@@ -33,9 +33,9 @@ mixin ModuleJsonSerializer on ThrioModule {
   /// Get json serializer by type string.
   ///
   @protected
-  JsonSerializer? getJsonSerializer(final String typeString) {
+  JsonSerializer? getJsonSerializer(String typeString) {
     final type = _jsonSerializers.keys.lastWhere(
-        (final it) =>
+        (it) =>
             it.toString() == typeString || typeString.endsWith(it.toString()),
         orElse: () => Null);
     return _jsonSerializers[type];
@@ -44,13 +44,13 @@ mixin ModuleJsonSerializer on ThrioModule {
   /// A function for register a json serializer.
   ///
   @protected
-  void onJsonSerializerRegister(final ModuleContext moduleContext) {}
+  void onJsonSerializerRegister(ModuleContext moduleContext) {}
 
   /// Register a json serializer for the module.
   ///
   /// Unregistry by calling the return value `VoidCallback`.
   ///
   @protected
-  VoidCallback registerJsonSerializer<T>(final JsonSerializer serializer) =>
+  VoidCallback registerJsonSerializer<T>(JsonSerializer serializer) =>
       _jsonSerializers.registry(T, serializer);
 }

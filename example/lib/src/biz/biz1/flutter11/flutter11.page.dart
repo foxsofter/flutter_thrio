@@ -24,7 +24,7 @@ class Flutter11Page extends NavigatorStatefulPage {
 
 class _Flutter11PageState extends State<Flutter11Page> {
   @override
-  Widget build(final BuildContext context) => Scaffold(
+  Widget build(BuildContext context) => Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
         title: const Text('thrio_deeplink_example',
@@ -51,10 +51,10 @@ class PermissionHandlerWidget extends StatefulWidget {
 
 class _PermissionHandlerWidgetState extends State<PermissionHandlerWidget> {
   @override
-  Widget build(final BuildContext context) => Center(
+  Widget build(BuildContext context) => Center(
       child: ListView(
           children: Permission.values
-              .where((final permission) {
+              .where((permission) {
                 if (Platform.isIOS) {
                   return permission != Permission.unknown &&
                       permission != Permission.phone &&
@@ -132,7 +132,7 @@ class _PermissionState extends State<PermissionWidget> {
   }
 
   @override
-  Widget build(final BuildContext context) => ListTile(
+  Widget build(BuildContext context) => ListTile(
       title: Text(
         _permission.toString(),
         style: Theme.of(context).textTheme.bodyLarge,
@@ -158,13 +158,13 @@ class _PermissionState extends State<PermissionWidget> {
     );
 
   Future<void> checkServiceStatus(
-      final BuildContext context, final PermissionWithService permission) async {
+      BuildContext context, PermissionWithService permission) async {
     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
       content: Text((await permission.serviceStatus).toString()),
     ));
   }
 
-  Future<void> requestPermission(final Permission permission) async {
+  Future<void> requestPermission(Permission permission) async {
     final status = await permission.request();
 
     setState(() {

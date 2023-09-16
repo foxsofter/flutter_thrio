@@ -16,7 +16,7 @@ class Module with ThrioModule {
   String get key => 'biz2';
 
   @override
-  void onModuleRegister(final ModuleContext moduleContext) {
+  void onModuleRegister(ModuleContext moduleContext) {
     registerModule(flutter2.Module(), moduleContext);
     registerModule(flutter4.Module(), moduleContext);
     registerModule(flutter6.Module(), moduleContext);

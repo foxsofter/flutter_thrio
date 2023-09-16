@@ -32,7 +32,7 @@ mixin ModuleRouteObserver on ThrioModule {
   /// A function for register a route observer.
   ///
   @protected
-  void onRouteObserverRegister(final ModuleContext moduleContext) {}
+  void onRouteObserverRegister(ModuleContext moduleContext) {}
 
   /// Register observers for routing actions. Only the pages under the current module and
   /// sub-module take effect.
@@ -42,7 +42,6 @@ mixin ModuleRouteObserver on ThrioModule {
   /// Do not override this method.
   ///
   @protected
-  VoidCallback registerRouteObserver(
-          final NavigatorRouteObserver routeObserver) =>
+  VoidCallback registerRouteObserver(NavigatorRouteObserver routeObserver) =>
       routeObservers.registry(routeObserver);
 }

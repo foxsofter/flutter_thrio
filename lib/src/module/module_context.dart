@@ -38,7 +38,7 @@ class ModuleContext {
   ///
   /// If not exist, get from parent module's `ModuleContext`.
   ///
-  T? get<T>(final String key) {
+  T? get<T>(String key) {
     if (module is ModuleParamScheme) {
       final value = (module as ModuleParamScheme).getParam<T>(key);
       if (value != null) {
@@ -52,7 +52,7 @@ class ModuleContext {
   ///
   /// Return `false` if param scheme is not registered.
   ///
-  bool set<T>(final String key, final T value) {
+  bool set<T>(String key, T value) {
     if (module is ModuleParamScheme) {
       if ((module as ModuleParamScheme).setParam<T>(key, value)) {
         return true;
@@ -68,7 +68,7 @@ class ModuleContext {
   ///
   /// Return `value` if param not exists.
   ///
-  T? remove<T>(final String key) {
+  T? remove<T>(String key) {
     if (module is ModuleParamScheme) {
       final value = (module as ModuleParamScheme).removeParam<T>(key);
       if (value != null) {
@@ -82,10 +82,10 @@ class ModuleContext {
   }
 
   /// Subscribe to a series of param by `key`.
-  /// 
+  ///
   /// sink `null` when `key` removed.
   ///
-  Stream<T?>? onWithNull<T>(final String key, {final T? initialValue}) {
+  Stream<T?>? onWithNull<T>(String key, {T? initialValue}) {
     if (module == anchor) {
       return anchor.onParam<T>(key, initialValue: initialValue);
     }
@@ -97,15 +97,16 @@ class ModuleContext {
       }
     }
 
-    return module.parent?._moduleContext.onWithNull<T>(key, initialValue: initialValue);
+    return module.parent?._moduleContext
+        .onWithNull<T>(key, initialValue: initialValue);
   }
 
   /// Subscribe to a series of param by `key`.
   ///
-  Stream<T>? on<T>(final String key, {final T? initialValue}) =>
+  Stream<T>? on<T>(String key, {T? initialValue}) =>
       onWithNull<T>(key, initialValue: initialValue)
           ?.transform<T>(StreamTransformer.fromHandlers(
-        handleData: (final data, final sink) {
+        handleData: (data, sink) {
           if (data != null) {
             sink.add(data);
           }

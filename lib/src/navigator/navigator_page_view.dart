@@ -93,7 +93,7 @@ class _NavigatorPageViewState extends State<NavigatorPageView> {
   List<String> _currentNames = <String>[];
 
   List<RouteSettings> get routeSettings =>
-      _currentNames.map((final it) => _nameSettings[it]!).toList();
+      _currentNames.map((it) => _nameSettings[it]!).toList();
 
   late RouteSettings current =
       routeSettings[widget._realController.initialPage];
@@ -113,8 +113,8 @@ class _NavigatorPageViewState extends State<NavigatorPageView> {
     }
   }
 
-  void _checkRouteSettings(final List<RouteSettings> settings) {
-    final names = settings.map((final it) => it.name).toList();
+  void _checkRouteSettings(List<RouteSettings> settings) {
+    final names = settings.map((it) => it.name).toList();
     final nameSet = names.toSet();
     if (nameSet.length != names.length) {
       nameSet.forEach(names.remove);
@@ -126,8 +126,8 @@ class _NavigatorPageViewState extends State<NavigatorPageView> {
     }
   }
 
-  void _mapRouteSettings(final List<RouteSettings> settings) {
-    final newNames = settings.map<String>((final it) => it.name!).toList();
+  void _mapRouteSettings(List<RouteSettings> settings) {
+    final newNames = settings.map<String>((it) => it.name!).toList();
     _currentNames = newNames;
 
     for (final it in settings) {
@@ -168,7 +168,7 @@ class _NavigatorPageViewState extends State<NavigatorPageView> {
   }
 
   @override
-  void didUpdateWidget(final NavigatorPageView oldWidget) {
+  void didUpdateWidget(NavigatorPageView oldWidget) {
     super.didUpdateWidget(oldWidget);
 
     if (widget.routeSettings.isNotEmpty) {
@@ -193,7 +193,7 @@ class _NavigatorPageViewState extends State<NavigatorPageView> {
   }
 
   @override
-  Widget build(final BuildContext context) => PageView(
+  Widget build(BuildContext context) => PageView(
         key: widget.key,
         scrollDirection: widget.scrollDirection,
         reverse: widget.reverse,
@@ -207,7 +207,7 @@ class _NavigatorPageViewState extends State<NavigatorPageView> {
         clipBehavior: widget.clipBehavior,
         scrollBehavior: widget.scrollBehavior,
         padEnds: widget.padEnds,
-        children: routeSettings.map((final it) {
+        children: routeSettings.map((it) {
           var w = ThrioNavigatorImplement.shared().buildWithSettings(
             settings: it,
           );
@@ -225,7 +225,7 @@ class _NavigatorPageViewState extends State<NavigatorPageView> {
         }).toList(),
       );
 
-  void onPageChanged(final int idx) {
+  void onPageChanged(int idx) {
     currentIndex = idx;
 
     final sts = routeSettings[currentIndex];
@@ -240,7 +240,7 @@ class _NavigatorPageViewState extends State<NavigatorPageView> {
     }
   }
 
-  void _changedToAppear(final RouteSettings routeSettings) {
+  void _changedToAppear(RouteSettings routeSettings) {
     final obs = ThrioModule.gets<NavigatorPageObserver>(url: routeSettings.url);
     for (final ob in obs) {
       if (ob.settings == null || ob.settings?.name == routeSettings.name) {
@@ -249,7 +249,7 @@ class _NavigatorPageViewState extends State<NavigatorPageView> {
     }
   }
 
-  void _changedToDisappear(final RouteSettings routeSettings) {
+  void _changedToDisappear(RouteSettings routeSettings) {
     final obs = ThrioModule.gets<NavigatorPageObserver>(url: routeSettings.url);
     for (final ob in obs) {
       if (ob.settings == null || ob.settings?.name == routeSettings.name) {

@@ -35,9 +35,9 @@ extension NavigatorRouteSettings on RouteSettings {
   /// Construct RouteSettings with url, index, params.
   ///
   static RouteSettings settingsWith({
-    required final String url,
-    final int? index = 0,
-    final dynamic params,
+    required String url,
+    int? index = 0,
+    dynamic params,
   }) {
     final idx = index ?? _fakeIndex--;
     return RouteSettings(
@@ -48,7 +48,7 @@ extension NavigatorRouteSettings on RouteSettings {
 
   /// Converting arguments to route settings.
   ///
-  static RouteSettings? fromArguments(final Map<String, dynamic>? arguments) {
+  static RouteSettings? fromArguments(Map<String, dynamic>? arguments) {
     if ((arguments != null && arguments.isNotEmpty) &&
         arguments.containsKey('url') &&
         arguments.containsKey('index')) {
@@ -100,7 +100,7 @@ extension NavigatorRouteSettings on RouteSettings {
   ///
   bool get isBuilt => _isBuiltOf[name!] ?? false;
 
-  set isBuilt(final bool built) {
+  set isBuilt(bool built) {
     _isBuiltOf[name!] = built;
   }
 
@@ -113,7 +113,7 @@ extension NavigatorRouteSettings on RouteSettings {
     return _isSelectedOf[name!];
   }
 
-  set isSelected(final bool? selected) {
+  set isSelected(bool? selected) {
     _isSelectedOf[name!] = selected;
   }
 
@@ -156,7 +156,7 @@ extension NavigatorRouteSettings on RouteSettings {
     return null;
   }
 
-  set params(final dynamic value) {
+  set params(dynamic value) {
     if (arguments != null && arguments is Map) {
       (arguments as Map<String, dynamic>)['params'] = value;
     }

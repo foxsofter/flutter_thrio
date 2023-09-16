@@ -32,17 +32,17 @@ mixin NavigatorPageObserver {
 
   /// The `route` is about to be activated.
   ///
-  void willAppear(final RouteSettings routeSettings) {}
+  void willAppear(RouteSettings routeSettings) {}
 
   /// The `route` has been appeared.
   ///
-  void didAppear(final RouteSettings routeSettings) {}
+  void didAppear(RouteSettings routeSettings) {}
 
   /// The `route` is about to disappear.
   ///
-  void willDisappear(final RouteSettings routeSettings) {}
+  void willDisappear(RouteSettings routeSettings) {}
 
   /// The `route` has been disappeared.
   ///
-  void didDisappear(final RouteSettings routeSettings) {}
+  void didDisappear(RouteSettings routeSettings) {}
 }

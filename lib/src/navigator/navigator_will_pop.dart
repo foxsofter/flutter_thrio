@@ -36,7 +36,7 @@ class NavigatorWillPop extends StatefulWidget {
   final Widget child;
 
   static NavigatorObserver navigatorObserverFor(
-    final GlobalKey<NavigatorState> navigatorStateKey,
+    GlobalKey<NavigatorState> navigatorStateKey,
   ) =>
       NavigatorWillPopMixin.navigatorObserverFor(navigatorStateKey);
 
@@ -47,7 +47,7 @@ class NavigatorWillPop extends StatefulWidget {
 class _NavigatorWillPopState extends State<NavigatorWillPop>
     with NavigatorWillPopMixin {
   @override
-  Widget build(final BuildContext context) => widget.child;
+  Widget build(BuildContext context) => widget.child;
 
   @override
   Future<bool> onWillPop() => widget.onWillPop();

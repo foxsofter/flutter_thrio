@@ -10,12 +10,12 @@ import 'home/module.dart' as home;
 
 class Module with ThrioModule, ModuleRouteAction {
   @override
-  void onRouteActionRegister(final ModuleContext moduleContext) {
+  void onRouteActionRegister(ModuleContext moduleContext) {
     registerRouteAction('getPeople{intValue?}', <TParams, TResult>(
-      final url,
-      final action,
-      final queryParams, {
-      final params,
+      url,
+      action,
+      queryParams, {
+      params,
     }) {
       final result = onGetPeople(
         moduleContext,
@@ -33,10 +33,10 @@ class Module with ThrioModule, ModuleRouteAction {
     });
 
     registerRouteAction('getString{boolValue}', <TParams, TResult>(
-      final url,
-      final action,
-      final queryParams, {
-      final params,
+      url,
+      action,
+      queryParams, {
+      params,
     }) {
       final result = onGetString(
         moduleContext,
@@ -58,7 +58,7 @@ class Module with ThrioModule, ModuleRouteAction {
   String get key => 'flutter1';
 
   @override
-  void onModuleRegister(final ModuleContext moduleContext) {
+  void onModuleRegister(ModuleContext moduleContext) {
     registerModule(home.Module(), moduleContext);
   }
 }

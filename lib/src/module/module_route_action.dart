@@ -33,10 +33,9 @@ mixin ModuleRouteAction on ThrioModule {
   final _routeActionHandlers =
       RegistryOrderMap<NavigatorUrlTemplate, NavigatorRouteAction>();
 
-  NavigatorRouteAction? getRouteAction(final String action) {
+  NavigatorRouteAction? getRouteAction(String action) {
     final a = action.replaceAll('?', '='); // ? 通过 Uri 解析会引起截断，先替换成 =
-    return _routeActionHandlers
-        .lastWhereOrNull((final k) => k.match(Uri.parse(a)));
+    return _routeActionHandlers.lastWhereOrNull((k) => k.match(Uri.parse(a)));
   }
 
   /// Register a route action.
@@ -47,8 +46,8 @@ mixin ModuleRouteAction on ThrioModule {
   ///
   @protected
   VoidCallback registerRouteAction(
-    final String template,
-    final NavigatorRouteAction action,
+    String template,
+    NavigatorRouteAction action,
   ) {
     final key = NavigatorUrlTemplate(template: template);
     if (key.scheme.isNotEmpty) {
@@ -65,5 +64,5 @@ mixin ModuleRouteAction on ThrioModule {
   /// A function for register a `NavigatorRouteAction` .
   ///
   @protected
-  void onRouteActionRegister(final ModuleContext moduleContext) {}
+  void onRouteActionRegister(ModuleContext moduleContext) {}
 }

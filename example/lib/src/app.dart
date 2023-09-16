@@ -8,7 +8,7 @@ void biz1() => runApp(const MainApp(entrypoint: 'biz1'));
 void biz2() => runApp(const MainApp(entrypoint: 'biz2'));
 
 class MainApp extends StatefulWidget {
-  const MainApp({super.key, final String entrypoint = 'main'})
+  const MainApp({super.key, String entrypoint = 'main'})
       : _entrypoint = entrypoint;
 
   final String _entrypoint;
@@ -22,15 +22,15 @@ class _MainAppState extends State<MainApp> {
   void initState() {
     super.initState();
     ThrioModule.init(Module(), entrypoint: widget._entrypoint,
-        onModuleInitStart: (final url) {
+        onModuleInitStart: (url) {
       ThrioLogger.i('module start init: $url');
     });
   }
 
   @override
-  Widget build(final BuildContext context) => NavigatorMaterialApp(
+  Widget build(BuildContext context) => NavigatorMaterialApp(
         transitionPage: const NavigatorHome(showRestartButton: true),
-        builder: (final context, final child) => Container(
+        builder: (context, child) => Container(
           child: child,
         ),
         theme: ThemeData(

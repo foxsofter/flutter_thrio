@@ -26,13 +26,13 @@ class _Flutter9PageState extends State<Flutter9Page>
   Widget get child => widget.getParam<Widget>('child');
 
   @override
-  Widget build(final BuildContext context) {
+  Widget build(BuildContext context) {
     super.build(context);
     return NavigatorPageLifecycle(
-        didAppear: (final settings) {
+        didAppear: (settings) {
           ThrioLogger.v('flutter9 didAppear: ${settings.name}');
         },
-        didDisappear: (final settings) {
+        didDisappear: (settings) {
           ThrioLogger.v('flutter9 didDisappear: ${settings.name}');
         },
         child: child);
