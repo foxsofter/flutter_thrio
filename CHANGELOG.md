@@ -1,3 +1,6 @@
+## 4.6.3
+- fix: push url with query parameter will not get pop result
+
 ## 4.6.2
 - faet: call onJsonableRegister
 - style: remove paremeter final
