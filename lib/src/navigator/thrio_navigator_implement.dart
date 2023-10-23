@@ -563,7 +563,7 @@ class ThrioNavigatorImplement {
         .push(url: noQueryUrl, params: ps, animated: animated)
         .then((index) {
       if (index > 0) {
-        final routeName = '$index $url';
+        final routeName = '$index $noQueryUrl';
         final routeHistory =
             ThrioNavigatorImplement.shared().navigatorState?.history;
         final route = routeHistory
