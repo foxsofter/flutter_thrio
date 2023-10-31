@@ -1,3 +1,6 @@
+## 4.6.4
+- fix: NavigatorWillPopMixin not working when pop
+
 ## 4.6.3
 - fix: push url with query parameter will not get pop result
 

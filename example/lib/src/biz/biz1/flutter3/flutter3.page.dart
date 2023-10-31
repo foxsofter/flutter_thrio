@@ -290,6 +290,25 @@ class _TestPageState extends State<TestPage> {
                       foregroundColor:
                           MaterialStateProperty.all(Colors.indigo)),
                   onPressed: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                          settings: const RouteSettings(name: 'test'),
+                          builder: (context) => const TestPage()),
+                    );
+                  },
+                  child: const Text(
+                    'Navigator push 2',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: ElevatedButton(
+                  style: ButtonStyle(
+                      foregroundColor:
+                          MaterialStateProperty.all(Colors.indigo)),
+                  onPressed: () {
                     Navigator.of(context).pushReplacement(
                       MaterialPageRoute(
                           settings: const RouteSettings(name: 'test'),
@@ -298,6 +317,22 @@ class _TestPageState extends State<TestPage> {
                   },
                   child: const Text(
                     'Navigator pushReplace',
+                    style: TextStyle(color: Colors.white),
+                  ),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: ElevatedButton(
+                  style: ButtonStyle(
+                      foregroundColor:
+                          MaterialStateProperty.all(Colors.indigo)),
+                  onPressed: () async {
+                    final mctx = await biz.biz1.flutter1.home.push();
+                    ThrioLogger.v(mctx.toString());
+                  },
+                  child: const Text(
+                    'push thrio page',
                     style: TextStyle(color: Colors.white),
                   ),
                 ),
@@ -380,10 +415,8 @@ class _TestNavigatorPageState extends State<TestNavigatorPage> {
 
 class TestObser extends NavigatorObserver {
   @override
-  void didPush(Route<dynamic> route, Route<dynamic>? previousRoute) {
-  }
+  void didPush(Route<dynamic> route, Route<dynamic>? previousRoute) {}
 
   @override
-  void didReplace({Route<dynamic>? newRoute, Route<dynamic>? oldRoute}) {
-  }
+  void didReplace({Route<dynamic>? newRoute, Route<dynamic>? oldRoute}) {}
 }

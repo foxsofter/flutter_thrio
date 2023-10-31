@@ -80,6 +80,7 @@ mixin NavigatorWillPopMixin<T extends StatefulWidget> on State<T> {
     _added = false;
     _route?.removeScopedWillPopCallback(onWillPop);
     _route = ModalRoute.of(context);
+    _checkWillPop();
   }
 
   void _checkWillPop() {
