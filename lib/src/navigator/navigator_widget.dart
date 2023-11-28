@@ -252,16 +252,16 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
 
     // ignore: avoid_as
     (route as NavigatorRoute).routeType = NavigatorRouteType.popTo;
-    if (animated) {
-      navigatorState.popUntil((it) => it.settings.name == settings.name);
-    } else {
-      if (history.last != route) {
-        for (var i = history.length - 2; i > index; i--) {
-          if (history[i].settings.name == route.settings.name) {
-            break;
-          }
-          navigatorState.removeRoute(history[i]);
+    if (history.last != route) {
+      for (var i = history.length - 2; i > index; i--) {
+        if (history[i].settings.name == route.settings.name) {
+          break;
         }
+        navigatorState.removeRoute(history[i]);
+      }
+      if (animated) {
+        navigatorState.pop();
+      } else {
         navigatorState.removeRoute(history.last);
       }
     }
