@@ -154,7 +154,7 @@ mixin NavigatorPage {
     if (widget is NavigatorPage) {
       page = widget as NavigatorPage;
       if (pageModuleContext) {
-        if (!page.settings.isBuilt) {
+        if (page.settings.isPushed) {
           return page;
         }
       } else {
@@ -167,7 +167,7 @@ mixin NavigatorPage {
       if (widget is NavigatorPage) {
         page = widget as NavigatorPage;
         if (pageModuleContext) {
-          return !page!.settings.isBuilt;
+          return page!.settings.isPushed;
         }
         return false;
       }

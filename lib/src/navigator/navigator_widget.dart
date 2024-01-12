@@ -105,6 +105,7 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
 
     // ignore: unawaited_futures
     navigatorState.push(route);
+    route.settings.isPushed = true;
 
     return true;
   }
