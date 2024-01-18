@@ -80,6 +80,7 @@ android {
         }
     }
     buildToolsVersion '33.0.0'
+    namespace 'com.foxsofter.flutter_thrio_example'
 }
 
 flutter {
