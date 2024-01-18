@@ -26,6 +26,7 @@
 #import "NavigatorConsts.h"
 #import "NavigatorFlutterEngineFactory.h"
 #import "NavigatorLogger.h"
+#import "NavigatorNavigationController.h"
 #import "NavigatorPageNotifyProtocol.h"
 #import "NavigatorRouteSettings.h"
 #import "ThrioModule+JsonDeserializers.h"
@@ -517,6 +518,10 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 - (void)thrio_pushViewController:(UIViewController *)viewController animated:(BOOL)animated {
+    if (![self.navigationController isKindOfClass:NavigatorNavigationController.class]) {
+        [self thrio_pushViewController:viewController animated:animated];
+        return;
+    }
     if (!self.topViewController || !self.topViewController.thrio_hidesNavigationBar_ || ![viewController.thrio_hidesNavigationBar_ isEqualToNumber:self.topViewController.thrio_hidesNavigationBar_]) {
         [self setNavigationBarHidden:viewController.thrio_hidesNavigationBar_.boolValue];
     }
@@ -549,7 +554,7 @@ NS_ASSUME_NONNULL_BEGIN
                     [NavigatorFlutterEngineFactory.shared popViewController:(NavigatorFlutterViewController *)self.topViewController];
                 }
                 // 判断前一个页面导航栏是否需要切换
-                if (self.navigationBarHidden != vc.thrio_hidesNavigationBar_.boolValue) {
+                if ([self.navigationController isKindOfClass:NavigatorNavigationController.class] && self.navigationBarHidden != vc.thrio_hidesNavigationBar_.boolValue) {
                     [self setNavigationBarHidden:vc.thrio_hidesNavigationBar_.boolValue];
                 }
             }
@@ -587,7 +592,7 @@ NS_ASSUME_NONNULL_BEGIN
                         poppedVC = [strongSelf thrio_popViewControllerAnimated:animated];
                     }
                     // 判断前一个页面导航栏是否需要切换
-                    if (previousVC && strongSelf.navigationBarHidden != previousVC.thrio_hidesNavigationBar_.boolValue) {
+                    if ([strongSelf.navigationController isKindOfClass:NavigatorNavigationController.class] && previousVC && strongSelf.navigationBarHidden != previousVC.thrio_hidesNavigationBar_.boolValue) {
                         [strongSelf setNavigationBarHidden:previousVC.thrio_hidesNavigationBar_.boolValue];
                     }
                     
@@ -702,7 +707,7 @@ NS_ASSUME_NONNULL_BEGIN
                     if (![viewController isKindOfClass:NavigatorFlutterViewController.class]) {
                         [NavigatorFlutterEngineFactory.shared popViewController:(NavigatorFlutterViewController *)strongSelf.thrio_popingViewController];
                     }
-                    if (strongSelf.navigationBarHidden != viewController.thrio_hidesNavigationBar_.boolValue) {
+                    if ([strongSelf.navigationController isKindOfClass:NavigatorNavigationController.class] && strongSelf.navigationBarHidden != viewController.thrio_hidesNavigationBar_.boolValue) {
                         [strongSelf setNavigationBarHidden:viewController.thrio_hidesNavigationBar_.boolValue];
                     }
                 }
