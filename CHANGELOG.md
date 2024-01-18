@@ -1,71 +1,98 @@
+## 4.7.0
+
+- fix: pageModuleContext = true not working
+- feat: do not change navigation bar hidden status except NavigatorNavigationController
+
 ## 4.6.4
+
 - fix: NavigatorWillPopMixin not working when pop
 
 ## 4.6.3
+
 - fix: push url with query parameter will not get pop result
 
 ## 4.6.2
+
 - faet: call onJsonableRegister
 - style: remove paremeter final
 
 ## 4.6.1
+
 - faet: add registerJsonable
 
 ## 4.6.0
+
 - feat: add ModuleJsonable
 
 ## 4.5.3
+
 - fix: StreamTransfer type error
 
 ## 4.5.2
+
 - feat: remove on method check schema exists
 
 ## 4.5.1
+
 - feat: add onWithNull
 
 ## 4.5.0
+
 - refactor: The on method of ModuleContext can now return null, and remove will sink null
 
 ## 4.4.7
+
 fix: remove transitionPage pop transition
 
 ## 4.4.6
-fix: push single failed on Null is not a subtype of type Future<bool> 
+
+fix: push single failed on Null is not a subtype of type Future<bool>
 
 ## 4.4.5
+
 feat: add NavigatorPushBeginHandle api
 
 ## 4.4.3
+
 fix: exception caused by calling canPop when the iOS native vc is at the top
 
 ## 4.4.2
+
 feat: NavigatorWillPopMixin check on didReplace
 
 ## 4.4.1
+
 fix: navigation future queue not working
 
 ## 4.4.0
+
 refactor: routing method implementation of future queue
 fix: NavigatorNavigationController.delegate not set correctly
 
 ## 4.3.1
+
 fix: pop Navigator route twice
 
 ## 4.3.0
+
 feat: add popFlutter
 fix: android pop failed when activity isFinishing
 
 ## 4.2.2
+
 fix: didDisappear last route not working for ios release
 
 ## 4.2.1
+
 fix: duplicate call NavigatorRouteObservers selector
 
 ## 4.2.0
+
 feat: add onModuleInitStart and onModuleInitEnd
-refactor: route url logic 
+refactor: route url logic
 
 ## 4.1.1
+
 fix: detach FlutterView first
 fix: popTo url match
 fix: move reattach to FlutterFragment onStart
@@ -73,56 +100,73 @@ fix: crash on holder null
 fix: FlutterEngine has been attached to by another activity
 
 ## 4.1.0
+
 feat: support push animated
 fix: ios maybe pop causes route history miss match
 
 ## 4.0.0
+
 feat: remove lightweight engine mode and support single engine mode
 
 ## 3.16.4
+
 fix: handler can't handled
 
 ## 3.16.3
+
 feat: custom route handler can be handled
 
 ## 3.16.2
+
 fix: removeBelowUntil and removeBelowUntilFirst not remove top
 
 ## 3.16.1
+
 - fix: android hybrid navigation disabled not working
 
 ## 3.16.0
+
 - feat: android supports whether to enable hybrid navigation
 
 ## 3.15.7
+
 - feat: registerRouteCustomHandler template can be repeated
 
 ## 3.15.6
+
 - fix: quickly clicking the back button of android may cause an exception
 
 ## 3.15.5
+
 - fix: pushSingle no need to check lastRoute
 
 ## 3.15.4
+
 - fix: ModuleContext.on called after ModuleContext.set will trigger two callbacks at the beginning
 
 ## 3.15.3
+
 - fix: miss disappear when page pop
 
 ## 3.15.2
+
 - fix: revert update TabBarView
 
 ## 3.15.1
+
 - fix: no DefaultTabController.maybeOf
   
 ## 3.15.0
+
 - feat: 适配 Flutter 3.7.6
 
 ## 3.14.9
+
 - refactor: root page didAppear not trigger on init
 - feat: add toSimpleList, toSimpleMap
 
 ## 3.14.8
+
 - fix: NavigatorWillPop not working
 - refactor: rm urls from NavigatorRoutePush
 - feat: add NavigatorRoutePushMixin
@@ -143,7 +187,7 @@ fix: removeBelowUntil and removeBelowUntilFirst not remove top
 
 ## 3.14.5
 
-- fix: https://developer.apple.com/forums/thread/714608
+- fix: <https://developer.apple.com/forums/thread/714608>
 - chore: add runOnce for restart button
 
 ## 3.14.4
@@ -171,7 +215,7 @@ fix: removeBelowUntil and removeBelowUntilFirst not remove top
 
 - fix: android back click not working
 - fix: NavigatorPageLifecycleMixin not working on const widget
-- fix: NavigatorPageLifecycleMixin first init didAppear 
+- fix: NavigatorPageLifecycleMixin first init didAppear
 - fix: NavigatorPageLifecycleMixin still working when widget not correct dispose
 - fix: observers concurrent modification during iteration
 - feat: support didPopRoute in page
@@ -185,13 +229,13 @@ fix: removeBelowUntil and removeBelowUntilFirst not remove top
 - feat: auto restart
 - feat: support android hot restart
 - fix: maybePop can not pop in some case
-- refactor: rm /home can be optional logic 
-- feat: handle didUpdateWidget for NavigatorRoutePush state 
+- refactor: rm /home can be optional logic
+- feat: handle didUpdateWidget for NavigatorRoutePush state
 - feat: handle didChangeDependencies for NavigatorPageLifecycleMixin
-- feat: handle didUpdateWidget for  NavigatorPageNotify 
+- feat: handle didUpdateWidget for  NavigatorPageNotify
 - feat: android support fragment
 - fix: routeSettings for NavigatorPageView not refresh
-- feat: make page view lifecycle work for NavigatorPageObserver 
+- feat: make page view lifecycle work for NavigatorPageObserver
 - feat: support root page WillPopScope
 - fix: kline land not trigger WillPopScope
 
