@@ -1,3 +1,7 @@
+## 4.7.1
+
+- feat: downgrade async version to 2.8.2
+
 ## 4.7.0
 
 - fix: pageModuleContext = true not working
