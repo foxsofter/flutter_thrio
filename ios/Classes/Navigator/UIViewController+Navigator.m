@@ -547,7 +547,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (void)thrio_viewDidAppear:(BOOL)animated {
     [self thrio_viewDidAppear:animated];
-    
+
     // 如果侧滑返回的手势放弃，需要清除thrio_popingViewController标记
     if (self.navigationController.thrio_popingViewController == self) {
         self.navigationController.thrio_popingViewController = nil;
@@ -564,7 +564,9 @@ NS_ASSUME_NONNULL_BEGIN
         [self thrio_onNotify:self.thrio_lastRoute];
     }
     
-    if (self.thrio_hidesNavigationBar_ && self.thrio_hidesNavigationBar_.boolValue != self.navigationController.navigationBarHidden) {
+    if ([self.navigationController isKindOfClass:NavigatorNavigationController.class] &&
+        self.thrio_hidesNavigationBar_ && 
+        self.thrio_hidesNavigationBar_.boolValue != self.navigationController.navigationBarHidden) {
         self.navigationController.navigationBarHidden = self.thrio_hidesNavigationBar_.boolValue;
     }
     

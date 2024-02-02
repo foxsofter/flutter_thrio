@@ -522,8 +522,9 @@ NS_ASSUME_NONNULL_BEGIN
         [self thrio_pushViewController:viewController animated:animated];
         return;
     }
-    if (!self.topViewController || !self.topViewController.thrio_hidesNavigationBar_ || ![viewController.thrio_hidesNavigationBar_ isEqualToNumber:self.topViewController.thrio_hidesNavigationBar_]) {
-        [self setNavigationBarHidden:viewController.thrio_hidesNavigationBar_.boolValue];
+    if (!self.topViewController || !self.topViewController.thrio_hidesNavigationBar_ || 
+    ![viewController.thrio_hidesNavigationBar_ isEqualToNumber:self.topViewController.thrio_hidesNavigationBar_]) {
+        [self setNavigationBarHidden:viewController.thrio_hidesNavigationBar_.boolValue animated:NO];
     }
     
     if (![viewController isKindOfClass:NavigatorFlutterViewController.class] && viewController.thrio_firstRoute) {
@@ -647,7 +648,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 - (NSArray<__kindof UIViewController *> *_Nullable)thrio_popToViewController:(UIViewController *)viewController
                                                                     animated:(BOOL)animated {
-    if (![viewController.thrio_hidesNavigationBar_ isEqualToNumber:self.topViewController.thrio_hidesNavigationBar_]) {
+    if ([self isKindOfClass:NavigatorNavigationController.class] &&
+        ![viewController.thrio_hidesNavigationBar_ isEqualToNumber:self.topViewController.thrio_hidesNavigationBar_]) {
         [self setNavigationBarHidden:viewController.thrio_hidesNavigationBar_.boolValue];
     }
     
@@ -672,17 +674,19 @@ NS_ASSUME_NONNULL_BEGIN
 }
 
 - (void)thrio_setViewControllers:(NSArray<UIViewController *> *)viewControllers {
-    if (viewControllers.count > 0) {
-        UIViewController *willPopVC = self.topViewController;
-        UIViewController *willShowVC = viewControllers.lastObject;
-        if (!willShowVC.thrio_hidesNavigationBar_) {
-            willShowVC.thrio_hidesNavigationBar_ = @YES;
-        }
-        if (![willPopVC.thrio_hidesNavigationBar_ isEqualToNumber:willShowVC.thrio_hidesNavigationBar_]) {
-            [self setNavigationBarHidden:willShowVC.thrio_hidesNavigationBar_.boolValue];
+    if ([self isKindOfClass:NavigatorNavigationController.class]) {
+        if (viewControllers.count > 0) {
+            UIViewController *willPopVC = self.topViewController;
+            UIViewController *willShowVC = viewControllers.lastObject;
+            if (!willShowVC.thrio_hidesNavigationBar_) {
+                willShowVC.thrio_hidesNavigationBar_ = @YES;
+            }
+            if (![willPopVC.thrio_hidesNavigationBar_ isEqualToNumber:willShowVC.thrio_hidesNavigationBar_]) {
+                [self setNavigationBarHidden:willShowVC.thrio_hidesNavigationBar_.boolValue];
+            }
         }
     }
-    
+        
     [self thrio_setViewControllers:viewControllers];
 }
 
