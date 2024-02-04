@@ -24,6 +24,7 @@
 #import "NavigatorConsts.h"
 #import "NavigatorFlutterEngineFactory.h"
 #import "NavigatorFlutterViewController.h"
+#import "NavigatorNavigationController.h"
 #import "NavigatorLogger.h"
 #import "NSObject+ThrioSwizzling.h"
 #import "ThrioModule+JsonDeserializers.h"
