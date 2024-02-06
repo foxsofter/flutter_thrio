@@ -27,6 +27,7 @@ import 'navigator_page_observer.dart';
 import 'navigator_route_settings.dart';
 import 'thrio_navigator_implement.dart';
 
+// ignore: must_be_immutable
 class NavigatorPageView extends StatefulWidget {
   NavigatorPageView({
     super.key,
@@ -82,6 +83,10 @@ class NavigatorPageView extends StatefulWidget {
   final ScrollBehavior? scrollBehavior;
 
   final bool padEnds;
+
+  late List<Widget> _children;
+
+  List<Widget> get children => _children;
 
   @override
   State<NavigatorPageView> createState() => _NavigatorPageViewState();
@@ -193,37 +198,42 @@ class _NavigatorPageViewState extends State<NavigatorPageView> {
   }
 
   @override
-  Widget build(BuildContext context) => PageView(
-        key: widget.key,
-        scrollDirection: widget.scrollDirection,
-        reverse: widget.reverse,
-        controller: widget._realController,
-        physics: widget.physics,
-        pageSnapping: widget.pageSnapping,
-        onPageChanged: onPageChanged,
-        dragStartBehavior: widget.dragStartBehavior,
-        allowImplicitScrolling: widget.allowImplicitScrolling,
-        restorationId: widget.restorationId,
-        clipBehavior: widget.clipBehavior,
-        scrollBehavior: widget.scrollBehavior,
-        padEnds: widget.padEnds,
-        children: routeSettings.map((it) {
-          var w = ThrioNavigatorImplement.shared().buildWithSettings(
-            settings: it,
+  Widget build(BuildContext context) {
+    final pv = PageView(
+      key: widget.key,
+      scrollDirection: widget.scrollDirection,
+      reverse: widget.reverse,
+      controller: widget._realController,
+      physics: widget.physics,
+      pageSnapping: widget.pageSnapping,
+      onPageChanged: onPageChanged,
+      dragStartBehavior: widget.dragStartBehavior,
+      allowImplicitScrolling: widget.allowImplicitScrolling,
+      restorationId: widget.restorationId,
+      clipBehavior: widget.clipBehavior,
+      scrollBehavior: widget.scrollBehavior,
+      padEnds: widget.padEnds,
+      children: routeSettings.map((it) {
+        var w = ThrioNavigatorImplement.shared().buildWithSettings(
+          settings: it,
+        );
+        if (w == null) {
+          throw ArgumentError.value(
+            it,
+            'routeSettings',
+            'invalid routeSettings',
           );
-          if (w == null) {
-            throw ArgumentError.value(
-              it,
-              'routeSettings',
-              'invalid routeSettings',
-            );
-          }
-          if (widget.childBuilder != null) {
-            w = widget.childBuilder!(context, it, w);
-          }
-          return w;
-        }).toList(),
-      );
+        }
+        if (widget.childBuilder != null) {
+          w = widget.childBuilder!(context, it, w);
+        }
+        return w;
+      }).toList(),
+    );
+    widget._children =
+        (pv.childrenDelegate as SliverChildListDelegate).children;
+    return pv;
+  }
 
   void onPageChanged(int idx) {
     currentIndex = idx;

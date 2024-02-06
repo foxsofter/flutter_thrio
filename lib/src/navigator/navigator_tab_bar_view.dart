@@ -83,8 +83,10 @@ class NavigatorTabBarView extends StatefulWidget {
 class _NavigatorTabBarViewState extends State<NavigatorTabBarView> {
   TabController? _controller;
   late PageController _pageController;
+  late List<Widget> _childrenWithKey;
   int? _currentIndex;
   int _warpUnderwayCount = 0;
+  int _scrollUnderwayCount = 0;
   bool _debugHasScheduledValidChildrenCountCheck = false;
 
   // If the TabBarView is rebuilt with a new tab controller, the caller should
@@ -92,10 +94,16 @@ class _NavigatorTabBarViewState extends State<NavigatorTabBarView> {
   // null and should not be accessed.
   bool get _controllerIsValid => _controller?.animation != null;
 
+  /// One widget per tab.
+  ///
+  /// Its length must match the length of the [TabBar.tabs]
+  /// list, as well as the [controller]'s [TabController.length].
+  final List<Widget> children = <Widget>[];
+
   void _updateTabController() {
-    final newController = widget.controller ?? DefaultTabController.of(context);
+    final newController =
+        widget.controller ?? DefaultTabController.maybeOf(context);
     assert(() {
-      // ignore: unnecessary_null_comparison
       if (newController == null) {
         throw FlutterError(
           'No TabController for ${widget.runtimeType}.\n'
@@ -121,6 +129,28 @@ class _NavigatorTabBarViewState extends State<NavigatorTabBarView> {
     }
   }
 
+  void _jumpToPage(int page) {
+    _warpUnderwayCount += 1;
+    _pageController.jumpToPage(page);
+    _warpUnderwayCount -= 1;
+  }
+
+  Future<void> _animateToPage(
+    int page, {
+    required Duration duration,
+    required Curve curve,
+  }) async {
+    _warpUnderwayCount += 1;
+    await _pageController.animateToPage(page, duration: duration, curve: curve);
+    _warpUnderwayCount -= 1;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _updateChildren();
+  }
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -138,9 +168,13 @@ class _NavigatorTabBarViewState extends State<NavigatorTabBarView> {
     if (widget.controller != oldWidget.controller) {
       _updateTabController();
       _currentIndex = _controller!.index;
-      _warpUnderwayCount += 1;
-      _pageController.jumpToPage(_currentIndex!);
-      _warpUnderwayCount -= 1;
+      _jumpToPage(_currentIndex!);
+    }
+    // While a warp is under way, we stop updating the tab page contents.
+    // This is tracked in https://github.com/flutter/flutter/issues/31269.
+    if (widget.routeSettings != oldWidget.routeSettings &&
+        _warpUnderwayCount == 0) {
+      _updateChildren();
     }
   }
 
@@ -154,8 +188,14 @@ class _NavigatorTabBarViewState extends State<NavigatorTabBarView> {
     super.dispose();
   }
 
+  void _updateChildren() {
+    if (pv != null) {
+      _childrenWithKey = KeyedSubtree.ensureUniqueKeysForList(pv!.children);
+    }
+  }
+
   void _handleTabControllerAnimationTick() {
-    if (_warpUnderwayCount > 0 || !_controller!.indexIsChanging) {
+    if (_scrollUnderwayCount > 0 || !_controller!.indexIsChanging) {
       return;
     } // This widget is driving the controller's animation.
 
@@ -165,57 +205,77 @@ class _NavigatorTabBarViewState extends State<NavigatorTabBarView> {
     }
   }
 
-  Future<void> _warpToCurrentIndex() async {
-    if (!mounted) {
-      return Future<void>.value();
+  void _warpToCurrentIndex() {
+    if (!mounted || _pageController.page == _currentIndex!.toDouble()) {
+      return;
     }
 
-    if (_pageController.page == _currentIndex!.toDouble()) {
-      return Future<void>.value();
+    final adjacentDestination =
+        (_currentIndex! - _controller!.previousIndex).abs() == 1;
+    if (adjacentDestination) {
+      _warpToAdjacentTab(_controller!.animationDuration);
+    } else {
+      _warpToNonAdjacentTab(_controller!.animationDuration);
     }
+  }
 
-    final duration = _controller!.animationDuration;
-    final previousIndex = _controller!.previousIndex;
-
-    if ((_currentIndex! - previousIndex).abs() == 1) {
-      if (duration == Duration.zero) {
-        _pageController.jumpToPage(_currentIndex!);
-        return Future<void>.value();
-      }
-      _warpUnderwayCount += 1;
-      await _pageController.animateToPage(_currentIndex!,
+  Future<void> _warpToAdjacentTab(Duration duration) async {
+    if (duration == Duration.zero) {
+      _jumpToPage(_currentIndex!);
+    } else {
+      await _animateToPage(_currentIndex!,
           duration: duration, curve: Curves.ease);
-      _warpUnderwayCount -= 1;
-      return Future<void>.value();
     }
+    if (mounted) {
+      setState(_updateChildren);
+    }
+    return Future<void>.value();
+  }
 
+  Future<void> _warpToNonAdjacentTab(Duration duration) async {
+    final previousIndex = _controller!.previousIndex;
     assert((_currentIndex! - previousIndex).abs() > 1);
+
+    // initialPage defines which page is shown when starting the animation.
+    // This page is adjacent to the destination page.
     final initialPage = _currentIndex! > previousIndex
         ? _currentIndex! - 1
         : _currentIndex! + 1;
-    setState(() {
-      _warpUnderwayCount += 1;
-    });
-    _pageController.jumpToPage(initialPage);
 
+    setState(() {
+      // Needed for `RenderSliverMultiBoxAdaptor.move` and kept alive children.
+      // For motivation, see https://github.com/flutter/flutter/pull/29188 and
+      // https://github.com/flutter/flutter/issues/27010#issuecomment-486475152.
+      _childrenWithKey = List<Widget>.of(_childrenWithKey, growable: false);
+      final temp = _childrenWithKey[initialPage];
+      _childrenWithKey[initialPage] = _childrenWithKey[previousIndex];
+      _childrenWithKey[previousIndex] = temp;
+    });
+
+    // Make a first jump to the adjacent page.
+    _jumpToPage(initialPage);
+
+    // Jump or animate to the destination page.
     if (duration == Duration.zero) {
-      _pageController.jumpToPage(_currentIndex!);
-      return Future<void>.value();
+      _jumpToPage(_currentIndex!);
+    } else {
+      await _animateToPage(_currentIndex!,
+          duration: duration, curve: Curves.ease);
     }
 
-    await _pageController.animateToPage(_currentIndex!,
-        duration: duration, curve: Curves.ease);
-    if (!mounted) {
-      return Future<void>.value();
+    if (mounted) {
+      setState(_updateChildren);
     }
-    setState(() {
-      _warpUnderwayCount -= 1;
-    });
+  }
+
+  void _syncControllerOffset() {
+    _controller!.offset =
+        clampDouble(_pageController.page! - _controller!.index, -1.0, 1.0);
   }
 
   // Called when the PageView scrolls
   bool _handleScrollNotification(ScrollNotification notification) {
-    if (_warpUnderwayCount > 0) {
+    if (_warpUnderwayCount > 0 || _scrollUnderwayCount > 0) {
       return false;
     }
 
@@ -223,24 +283,24 @@ class _NavigatorTabBarViewState extends State<NavigatorTabBarView> {
       return false;
     }
 
-    _warpUnderwayCount += 1;
+    _scrollUnderwayCount += 1;
     if (notification is ScrollUpdateNotification &&
         !_controller!.indexIsChanging) {
-      if ((_pageController.page! - _controller!.index).abs() > 1.0) {
+      final pageChanged =
+          (_pageController.page! - _controller!.index).abs() > 1.0;
+      if (pageChanged) {
         _controller!.index = _pageController.page!.round();
         _currentIndex = _controller!.index;
       }
-      _controller!.offset =
-          clampDouble(_pageController.page! - _controller!.index, -1.0, 1.0);
+      _syncControllerOffset();
     } else if (notification is ScrollEndNotification) {
       _controller!.index = _pageController.page!.round();
       _currentIndex = _controller!.index;
       if (!_controller!.indexIsChanging) {
-        _controller!.offset =
-            clampDouble(_pageController.page! - _controller!.index, -1.0, 1.0);
+        _syncControllerOffset();
       }
     }
-    _warpUnderwayCount -= 1;
+    _scrollUnderwayCount -= 1;
 
     return false;
   }
@@ -268,23 +328,23 @@ class _NavigatorTabBarViewState extends State<NavigatorTabBarView> {
     return true;
   }
 
+  NavigatorPageView? pv;
+
   @override
   Widget build(BuildContext context) {
     assert(_debugScheduleCheckHasValidChildrenCount());
-
+    pv = NavigatorPageView(
+      dragStartBehavior: widget.dragStartBehavior,
+      clipBehavior: widget.clipBehavior,
+      controller: _pageController,
+      physics: widget.physics == null
+          ? const PageScrollPhysics().applyTo(const ClampingScrollPhysics())
+          : const PageScrollPhysics().applyTo(widget.physics),
+      routeSettings: widget.routeSettings,
+    );
     return NotificationListener<ScrollNotification>(
       onNotification: _handleScrollNotification,
-      child: NavigatorPageView(
-        dragStartBehavior: widget.dragStartBehavior,
-        clipBehavior: widget.clipBehavior,
-        controller: _pageController,
-        physics: widget.physics == null
-            ? const PageScrollPhysics().applyTo(const ClampingScrollPhysics())
-            : const PageScrollPhysics().applyTo(widget.physics),
-        routeSettings: widget.routeSettings,
-        keepIndex: widget.keepIndex,
-        childBuilder: widget.childBuilder,
-      ),
+      child: pv!,
     );
   }
 }
