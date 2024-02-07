@@ -1,3 +1,8 @@
+## 4.8.0
+
+- fix: status bar hidden logic
+- feat: upgrade navigator TabBarView to flutter 3.10.6
+
 ## 4.7.1
 
 - feat: downgrade async version to 2.8.2
