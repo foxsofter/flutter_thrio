@@ -1,3 +1,7 @@
+## 4.8.1
+
+- fix: _childrenWithKey null exception
+
 ## 4.8.0
 
 - fix: status bar hidden logic
