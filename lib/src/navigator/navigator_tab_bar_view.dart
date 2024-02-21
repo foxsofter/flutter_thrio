@@ -83,7 +83,7 @@ class NavigatorTabBarView extends StatefulWidget {
 class _NavigatorTabBarViewState extends State<NavigatorTabBarView> {
   TabController? _controller;
   late PageController _pageController;
-  late List<Widget> _childrenWithKey;
+  List<Widget>? _childrenWithKey;
   int? _currentIndex;
   int _warpUnderwayCount = 0;
   int _scrollUnderwayCount = 0;
@@ -246,10 +246,13 @@ class _NavigatorTabBarViewState extends State<NavigatorTabBarView> {
       // Needed for `RenderSliverMultiBoxAdaptor.move` and kept alive children.
       // For motivation, see https://github.com/flutter/flutter/pull/29188 and
       // https://github.com/flutter/flutter/issues/27010#issuecomment-486475152.
-      _childrenWithKey = List<Widget>.of(_childrenWithKey, growable: false);
-      final temp = _childrenWithKey[initialPage];
-      _childrenWithKey[initialPage] = _childrenWithKey[previousIndex];
-      _childrenWithKey[previousIndex] = temp;
+      if (_childrenWithKey == null) {
+        return;
+      }
+      _childrenWithKey = List<Widget>.of(_childrenWithKey!, growable: false);
+      final temp = _childrenWithKey![initialPage];
+      _childrenWithKey![initialPage] = _childrenWithKey![previousIndex];
+      _childrenWithKey![previousIndex] = temp;
     });
 
     // Make a first jump to the adjacent page.
