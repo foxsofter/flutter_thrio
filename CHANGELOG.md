@@ -1,3 +1,7 @@
+## 4.8.2
+
+- fix: _warpToNonAdjacentTab RangeError
+
 ## 4.8.1
 
 - fix: _childrenWithKey null exception

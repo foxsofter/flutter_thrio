@@ -345,6 +345,8 @@ class _NavigatorTabBarViewState extends State<NavigatorTabBarView> {
           : const PageScrollPhysics().applyTo(widget.physics),
       routeSettings: widget.routeSettings,
     );
+    // must invoke to update `_childrenWithKey` once the building process is completed.
+    Future(_updateChildren);
     return NotificationListener<ScrollNotification>(
       onNotification: _handleScrollNotification,
       child: pv!,
