@@ -113,6 +113,8 @@ class ThrioNavigatorImplement {
 
   final _pushBeginHandlers = RegistrySet();
 
+  final _pushReturnHandlers = RegistrySet();
+
   final poppedResults = <String, NavigatorParamsCallback>{};
 
   List<NavigatorRoute> get currentPopRoutes => observerManager.currentPopRoutes;
@@ -144,8 +146,11 @@ class ThrioNavigatorImplement {
     _channel.invokeMethod<bool>('ready');
   }
 
-  VoidCallback registerPushBeginHandle(NavigatorPushBeginHandle handle) =>
+  VoidCallback registerPushBeginHandle(NavigatorPushHandle handle) =>
       _pushBeginHandlers.registry(handle);
+
+  VoidCallback registerPushReturnHandle(NavigatorPushHandle handle) =>
+      _pushReturnHandlers.registry(handle);
 
   Future<TPopParams?> push<TParams, TPopParams>({
     required String url,
@@ -190,6 +195,15 @@ class ThrioNavigatorImplement {
     TParams? params,
   }) async {
     for (final handle in _pushBeginHandlers) {
+      await handle(url, params);
+    }
+  }
+
+  Future<void> _onPushReturnHandle<TParams>({
+    required String url,
+    TParams? params,
+  }) async {
+    for (final handle in _pushReturnHandlers) {
       await handle(url, params);
     }
   }
@@ -559,6 +573,10 @@ class ThrioNavigatorImplement {
       }
       noQueryUrl = url.substring(0, qidx);
     }
+    unawaited(completer.future.then((value) {
+      _onPushReturnHandle(url: url, params: params);
+    }));
+
     return _sendChannel
         .push(url: noQueryUrl, params: ps, animated: animated)
         .then((index) {

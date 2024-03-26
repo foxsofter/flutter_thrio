@@ -1,3 +1,7 @@
+## 4.9.0
+
+- feat: add push return handle
+
 ## 4.8.2
 
 - fix: _warpToNonAdjacentTab RangeError
@@ -67,7 +71,7 @@ fix: push single failed on Null is not a subtype of type Future<bool>
 
 ## 4.4.5
 
-feat: add NavigatorPushBeginHandle api
+feat: add NavigatorPushHandle api
 
 ## 4.4.3
 
@@ -172,7 +176,7 @@ fix: removeBelowUntil and removeBelowUntilFirst not remove top
 ## 3.15.1
 
 - fix: no DefaultTabController.maybeOf
-  
+
 ## 3.15.0
 
 - feat: 适配 Flutter 3.7.6
@@ -216,7 +220,7 @@ fix: removeBelowUntil and removeBelowUntilFirst not remove top
 ## 3.14.3
 
 - feat: add NavigatorWillPop and NavigatorWillPopMixin
-  
+
 ## 3.14.2
 
 - fix: async task queue not working expected when task throw exception
@@ -249,7 +253,7 @@ fix: removeBelowUntil and removeBelowUntilFirst not remove top
 - refactor: rm /home can be optional logic
 - feat: handle didUpdateWidget for NavigatorRoutePush state
 - feat: handle didChangeDependencies for NavigatorPageLifecycleMixin
-- feat: handle didUpdateWidget for  NavigatorPageNotify
+- feat: handle didUpdateWidget for NavigatorPageNotify
 - feat: android support fragment
 - fix: routeSettings for NavigatorPageView not refresh
 - feat: make page view lifecycle work for NavigatorPageObserver
