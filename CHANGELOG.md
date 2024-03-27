@@ -1,3 +1,7 @@
+## 4.9.2
+
+- fix: _children has not been initialized exception
+
 ## 4.9.1
 
 - fix: NavigatorRoute type cast error in NavigatorObserverManager.didRemove

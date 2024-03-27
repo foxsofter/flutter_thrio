@@ -84,9 +84,9 @@ class NavigatorPageView extends StatefulWidget {
 
   final bool padEnds;
 
-  late List<Widget> _children;
+  List<Widget>? _children;
 
-  List<Widget> get children => _children;
+  List<Widget>? get children => _children;
 
   @override
   State<NavigatorPageView> createState() => _NavigatorPageViewState();

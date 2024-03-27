@@ -189,8 +189,11 @@ class _NavigatorTabBarViewState extends State<NavigatorTabBarView> {
   }
 
   void _updateChildren() {
-    if (pv != null) {
-      _childrenWithKey = KeyedSubtree.ensureUniqueKeysForList(pv!.children);
+    if (pv != null && pv?.children != null) {
+      _childrenWithKey = KeyedSubtree.ensureUniqueKeysForList(pv!.children!);
+    } else {
+      // 尽可能早的初始化
+      Future.delayed(const Duration(milliseconds: 10), _updateChildren);
     }
   }
 
