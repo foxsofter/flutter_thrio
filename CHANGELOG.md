@@ -1,3 +1,7 @@
+## 4.9.1
+
+- fix: NavigatorRoute type cast error in NavigatorObserverManager.didRemove
+
 ## 4.9.0
 
 - feat: add push return handle

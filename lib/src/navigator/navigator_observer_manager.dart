@@ -215,8 +215,10 @@ class NavigatorObserverManager extends NavigatorObserver {
                   NavigatorRouteType.popTo,
                 );
             }
-            // ignore: avoid_as
-            (pageRoutes.last as NavigatorRoute).routeType = null;
+            final last = pageRoutes.last;
+            if (last is NavigatorRoute) {
+              last.routeType = null;
+            }
           }
 
           _currenPopRouteCallbackAndClear(_currentRemoveRoutes);
