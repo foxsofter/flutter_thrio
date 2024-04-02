@@ -239,21 +239,21 @@ class ThrioNavigatorImplement {
 
     final handled =
         await _pushToHandler(url, params, animated, completer, (index) async {
-      result?.call(index);
       if (index > 0) {
         await removeAll(url: url, excludeIndex: index);
       }
+      result?.call(index);
     });
     if (!handled) {
       Future<void> pushFuture() {
         final resultCompleter = Completer();
         _pushToNative<TParams, TPopParams>(url, params, animated, completer)
             .then<void>((index) async {
-          resultCompleter.complete();
-          result?.call(index);
           if (index > 0) {
             await removeAll(url: url, excludeIndex: index);
           }
+          resultCompleter.complete();
+          result?.call(index);
         });
         return resultCompleter.future;
       }
@@ -855,24 +855,20 @@ class ThrioNavigatorImplement {
     required String url,
     int excludeIndex = 0,
   }) async {
-    Future<int> removeFuture() async {
-      if (url.isEmpty) {
-        return 0;
-      }
-      var total = 0;
-      var isMatch = false;
-      final all =
-          (await allRoutes(url: url)).where((it) => it.index != excludeIndex);
-      for (final r in all) {
-        isMatch = await _sendChannel.remove(url: r.url, index: r.index);
-        if (isMatch) {
-          total += 1;
-        }
-      }
-      return total;
+    if (url.isEmpty) {
+      return 0;
     }
-
-    return _taskQueue.add<int>(removeFuture).then((value) => value ?? 0);
+    var total = 0;
+    var isMatch = false;
+    final all =
+        (await allRoutes(url: url)).where((it) => it.index != excludeIndex);
+    for (final r in all) {
+      isMatch = await _sendChannel.remove(url: r.url, index: r.index);
+      if (isMatch) {
+        total += 1;
+      }
+    }
+    return total;
   }
 
   Future<bool> remove({
