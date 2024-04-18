@@ -1,3 +1,7 @@
+## 4.10.0
+
+- feat: upgrade to flutter 3.19.x
+
 ## 4.9.3
 
 - fix: try to fix push single dismiss
