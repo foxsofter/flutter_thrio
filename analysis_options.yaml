@@ -25,7 +25,7 @@ linter:
     avoid_catches_without_on_clauses: true # avoid 禁止无约束捕获异常
     avoid_catching_errors: true # avoid 禁止捕获Error
     avoid_classes_with_only_static_members: true # avoid 禁止类中只定义静态成员
-    # avoid_double_and_int_checks: true # 
+    # avoid_double_and_int_checks: true #
     avoid_empty_else: true # avoid 禁止空 else 结构体
     avoid_equals_and_hash_code_on_mutable_classes: true # avoid
     avoid_field_initializers_in_const_classes: true # avoid 对于 const 使用 get 减少无用成员变量, !!! JS不能遵循
@@ -41,8 +41,6 @@ linter:
     avoid_relative_lib_imports: true # 禁止相对路径导包
     avoid_renaming_method_parameters: true # 禁止重写方法重命名参数名
     avoid_return_types_on_setters: true # 禁止 set 方法有返回类型
-    avoid_returning_null: true # 禁止返回 null
-    avoid_returning_null_for_future: true
     avoid_returning_null_for_void: true
     avoid_returning_this: true # 禁止返回 this
     avoid_setters_without_getters: true # 禁止定义 set 无 get
@@ -74,13 +72,11 @@ linter:
     flutter_style_todos: true # 使用 Flutter 风格 TODO
     hash_and_equals: true # 如果重写 hashCode 必须重写 == 操作符, 反之亦然
     implementation_imports: true # 禁止导入其他库实现细节文件
-    iterable_contains_unrelated_type: true # 禁止使用 contains 判断和 Iterable 不同的参数类型
     join_return_with_assignment: true # 可能时合并返回体
     library_names: true # 库名使用 下划线命名法
     library_prefixes: true # 使用 下划线命名法 导库
     library_private_types_in_public_api: false
     # lines_longer_than_80_chars: true # 行宽80字符
-    list_remove_unrelated_type: true # 禁止使用 remove 删除和 Iterable 不同的参数类型
     literal_only_boolean_expressions: true # 禁止条件判断编译时固定的 bool
     no_adjacent_strings_in_list: true # 不要在list定义时使用相邻字符串,使用 +
     no_duplicate_case_values: true # 不要使用多个相同的 case 值
