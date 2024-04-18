@@ -100,6 +100,7 @@ mixin NavigatorWillPopMixin<T extends StatefulWidget> on State<T> {
   @override
   void dispose() {
     _added = false;
+    PopScope s;
     _route?.removeScopedWillPopCallback(onWillPop);
     _callback?.call();
     super.dispose();

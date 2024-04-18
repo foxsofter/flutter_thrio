@@ -82,7 +82,7 @@ class NavigatorTabBarView extends StatefulWidget {
 
 class _NavigatorTabBarViewState extends State<NavigatorTabBarView> {
   TabController? _controller;
-  late PageController _pageController;
+  PageController? _pageController;
   List<Widget>? _childrenWithKey;
   int? _currentIndex;
   int _warpUnderwayCount = 0;
@@ -93,12 +93,6 @@ class _NavigatorTabBarViewState extends State<NavigatorTabBarView> {
   // dispose the old one. In that case the old controller's animation will be
   // null and should not be accessed.
   bool get _controllerIsValid => _controller?.animation != null;
-
-  /// One widget per tab.
-  ///
-  /// Its length must match the length of the [TabBar.tabs]
-  /// list, as well as the [controller]'s [TabController.length].
-  final List<Widget> children = <Widget>[];
 
   void _updateTabController() {
     final newController =
@@ -131,7 +125,7 @@ class _NavigatorTabBarViewState extends State<NavigatorTabBarView> {
 
   void _jumpToPage(int page) {
     _warpUnderwayCount += 1;
-    _pageController.jumpToPage(page);
+    _pageController!.jumpToPage(page);
     _warpUnderwayCount -= 1;
   }
 
@@ -141,7 +135,8 @@ class _NavigatorTabBarViewState extends State<NavigatorTabBarView> {
     required Curve curve,
   }) async {
     _warpUnderwayCount += 1;
-    await _pageController.animateToPage(page, duration: duration, curve: curve);
+    await _pageController!
+        .animateToPage(page, duration: duration, curve: curve);
     _warpUnderwayCount -= 1;
   }
 
@@ -156,10 +151,14 @@ class _NavigatorTabBarViewState extends State<NavigatorTabBarView> {
     super.didChangeDependencies();
     _updateTabController();
     _currentIndex = _controller!.index;
-    _pageController = PageController(
-      initialPage: _currentIndex!,
-      viewportFraction: widget.viewportFraction,
-    );
+    if (_pageController == null) {
+      _pageController = PageController(
+        initialPage: _currentIndex!,
+        viewportFraction: widget.viewportFraction,
+      );
+    } else {
+      _pageController!.jumpToPage(_currentIndex!);
+    }
   }
 
   @override
@@ -169,6 +168,13 @@ class _NavigatorTabBarViewState extends State<NavigatorTabBarView> {
       _updateTabController();
       _currentIndex = _controller!.index;
       _jumpToPage(_currentIndex!);
+    }
+    if (widget.viewportFraction != oldWidget.viewportFraction) {
+      _pageController?.dispose();
+      _pageController = PageController(
+        initialPage: _currentIndex!,
+        viewportFraction: widget.viewportFraction,
+      );
     }
     // While a warp is under way, we stop updating the tab page contents.
     // This is tracked in https://github.com/flutter/flutter/issues/31269.
@@ -184,6 +190,7 @@ class _NavigatorTabBarViewState extends State<NavigatorTabBarView> {
       _controller!.animation!.removeListener(_handleTabControllerAnimationTick);
     }
     _controller = null;
+    _pageController?.dispose();
     // We don't own the _controller Animation, so it's not disposed here.
     super.dispose();
   }
@@ -209,7 +216,7 @@ class _NavigatorTabBarViewState extends State<NavigatorTabBarView> {
   }
 
   void _warpToCurrentIndex() {
-    if (!mounted || _pageController.page == _currentIndex!.toDouble()) {
+    if (!mounted || _pageController!.page == _currentIndex!.toDouble()) {
       return;
     }
 
@@ -276,7 +283,7 @@ class _NavigatorTabBarViewState extends State<NavigatorTabBarView> {
 
   void _syncControllerOffset() {
     _controller!.offset =
-        clampDouble(_pageController.page! - _controller!.index, -1.0, 1.0);
+        clampDouble(_pageController!.page! - _controller!.index, -1.0, 1.0);
   }
 
   // Called when the PageView scrolls
@@ -289,18 +296,22 @@ class _NavigatorTabBarViewState extends State<NavigatorTabBarView> {
       return false;
     }
 
+    if (!_controllerIsValid) {
+      return false;
+    }
+
     _scrollUnderwayCount += 1;
+    final page = _pageController!.page!;
     if (notification is ScrollUpdateNotification &&
         !_controller!.indexIsChanging) {
-      final pageChanged =
-          (_pageController.page! - _controller!.index).abs() > 1.0;
+      final pageChanged = (page - _controller!.index).abs() > 1.0;
       if (pageChanged) {
-        _controller!.index = _pageController.page!.round();
+        _controller!.index = page.round();
         _currentIndex = _controller!.index;
       }
       _syncControllerOffset();
     } else if (notification is ScrollEndNotification) {
-      _controller!.index = _pageController.page!.round();
+      _controller!.index = page.round();
       _currentIndex = _controller!.index;
       if (!_controller!.indexIsChanging) {
         _syncControllerOffset();
@@ -329,7 +340,7 @@ class _NavigatorTabBarViewState extends State<NavigatorTabBarView> {
         }
         return true;
       }());
-    });
+    }, debugLabel: 'NavigatorTabBarView.validChildrenCountCheck');
     _debugHasScheduledValidChildrenCountCheck = true;
     return true;
   }
