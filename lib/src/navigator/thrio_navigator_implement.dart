@@ -111,9 +111,9 @@ class ThrioNavigatorImplement {
 
   NavigatorWidgetState? get navigatorState => _stateKey.currentState;
 
-  final _pushBeginHandlers = RegistrySet();
+  final _pushBeginHandlers = RegistrySet<NavigatorPushHandle>();
 
-  final _pushReturnHandlers = RegistrySet();
+  final _pushReturnHandlers = RegistrySet<NavigatorPushHandle>();
 
   final poppedResults = <String, NavigatorParamsCallback>{};
 
