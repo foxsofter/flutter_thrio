@@ -77,22 +77,22 @@ internal class PageObserverChannel constructor(
     }
 
     override fun willAppear(routeSettings: RouteSettings) {
-        val arguments = routeSettings.toArgumentsWithParams(null)
+        val arguments = routeSettings.toArgumentsWithoutParams()
         channel.invokeMethod("willAppear", arguments)
     }
 
     override fun didAppear(routeSettings: RouteSettings) {
-        val arguments = routeSettings.toArgumentsWithParams(null)
+        val arguments = routeSettings.toArgumentsWithoutParams()
         channel.invokeMethod("didAppear", arguments)
     }
 
     override fun willDisappear(routeSettings: RouteSettings) {
-        val arguments = routeSettings.toArgumentsWithParams(null)
+        val arguments = routeSettings.toArgumentsWithoutParams()
         channel.invokeMethod("willDisappear", arguments)
     }
 
     override fun didDisappear(routeSettings: RouteSettings) {
-        val arguments = routeSettings.toArgumentsWithParams(null)
+        val arguments = routeSettings.toArgumentsWithoutParams()
         channel.invokeMethod("didDisappear", arguments)
     }
 }

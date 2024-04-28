@@ -102,6 +102,8 @@ NS_ASSUME_NONNULL_BEGIN
         }
         id params = [arguments[@"params"] isKindOfClass:NSNull.class] ? nil : arguments[@"params"];
         BOOL animated = [arguments[@"animated"] boolValue];
+        NSString *fromURL = arguments[@"fromURL"];
+        NSString *prevURL = arguments[@"prevURL"];
         NavigatorVerbose(@"on push: %@", url);
         __strong typeof(weakself) strongSelf = weakself;
         [ThrioNavigator _pushUrl:url
@@ -113,6 +115,8 @@ NS_ASSUME_NONNULL_BEGIN
                 result(idx);
             }
         }
+                         fromURL:fromURL
+                         prevURL:prevURL
                     poppedResult:nil];
     }];
 }

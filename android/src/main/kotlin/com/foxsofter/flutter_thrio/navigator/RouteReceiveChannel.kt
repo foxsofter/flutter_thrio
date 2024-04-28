@@ -66,11 +66,15 @@ internal class RouteReceiveChannel(
             val url = arguments["url"] as String
             val params = arguments["params"]
             val animated = arguments["animated"] == true
+            val fromURL = arguments["fromURL"] as String?
+            val prevURL = arguments["prevURL"] as String?
             NavigationController.Push.push(
                 url,
                 params,
                 animated,
-                channel.entrypoint
+                channel.entrypoint,
+                fromURL,
+                prevURL,
             ) {
                 result(it)
             }

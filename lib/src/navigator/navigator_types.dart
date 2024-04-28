@@ -67,6 +67,7 @@ typedef NavigatorRoutePushHandle = Future<NavigatorRoutePushHandleType>
 
 /// Signature of push begin/return handler with url.
 typedef NavigatorPushHandle = Future<void> Function<TParams>(
-  String url,
+  String url, {
   TParams? params,
-);
+  String? fromURL,
+});

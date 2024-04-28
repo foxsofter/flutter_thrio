@@ -51,6 +51,11 @@ class NavigatorRouteReceiveChannel {
           'push: url->${routeSettings.url} '
           'index->${routeSettings.index}',
         );
+        if (routeSettings.prevURL?.isEmpty ?? true) {
+          final prevSettings =
+              await ThrioNavigatorImplement.shared().lastRoute();
+          routeSettings.prevURL = prevSettings?.url;
+        }
         routeSettings.params =
             _deserializeParams(routeSettings.url, routeSettings.params);
         final animated = arguments?['animated'] == true;

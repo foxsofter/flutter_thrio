@@ -69,6 +69,8 @@ NS_ASSUME_NONNULL_BEGIN
              animated:(BOOL)animated
        fromEntrypoint:(NSString *_Nullable)fromEntrypoint
                result:(ThrioNumberCallback _Nullable)result
+              fromURL:(NSString *_Nullable)fromURL
+              prevURL:(NSString *_Nullable)prevURL
          poppedResult:(ThrioIdCallback _Nullable)poppedResult {
     @synchronized (self) {
         UIViewController *viewController = [self thrio_createNativeViewControllerWithUrl:url params:params];
@@ -79,6 +81,8 @@ NS_ASSUME_NONNULL_BEGIN
                                   animated:animated
                             fromEntrypoint:fromEntrypoint
                                     result:result
+                                   fromURL:fromURL
+                                   prevURL:prevURL
                               poppedResult:poppedResult];
         } else {
             NSString *entrypoint = kNavigatorDefaultEntrypoint;
@@ -103,6 +107,8 @@ NS_ASSUME_NONNULL_BEGIN
                                              animated:animated
                                        fromEntrypoint:fromEntrypoint
                                                result:resultBlock
+                                              fromURL:fromURL
+                                              prevURL:prevURL
                                          poppedResult:poppedResult];
             } else {
                 __weak typeof(self) weakself = self;
@@ -116,6 +122,8 @@ NS_ASSUME_NONNULL_BEGIN
                                                 animated:animated
                                           fromEntrypoint:fromEntrypoint
                                                   result:result
+                                                 fromURL:fromURL
+                                                 prevURL:prevURL
                                             poppedResult:poppedResult];
                 };
                 [NavigatorFlutterEngineFactory.shared startupWithEntrypoint:entrypoint readyBlock:readyBlock];
@@ -522,8 +530,8 @@ NS_ASSUME_NONNULL_BEGIN
         [self thrio_pushViewController:viewController animated:animated];
         return;
     }
-    if (!self.topViewController || !self.topViewController.thrio_hidesNavigationBar_ || 
-    ![viewController.thrio_hidesNavigationBar_ isEqualToNumber:self.topViewController.thrio_hidesNavigationBar_]) {
+    if (!self.topViewController || !self.topViewController.thrio_hidesNavigationBar_ ||
+        ![viewController.thrio_hidesNavigationBar_ isEqualToNumber:self.topViewController.thrio_hidesNavigationBar_]) {
         [self setNavigationBarHidden:viewController.thrio_hidesNavigationBar_.boolValue animated:NO];
     }
     
@@ -621,7 +629,7 @@ NS_ASSUME_NONNULL_BEGIN
         if ([previousVC isKindOfClass:NavigatorFlutterViewController.class]) {
             [NavigatorFlutterEngineFactory.shared pushViewController:(NavigatorFlutterViewController *)previousVC];
         }
-
+        
         UIViewController *vc;
         if (animated) {
             [CATransaction begin];
@@ -686,7 +694,7 @@ NS_ASSUME_NONNULL_BEGIN
             }
         }
     }
-        
+    
     [self thrio_setViewControllers:viewControllers];
 }
 
@@ -754,6 +762,8 @@ NS_ASSUME_NONNULL_BEGIN
                         animated:(BOOL)animated
                   fromEntrypoint:(NSString *_Nullable)fromEntrypoint
                           result:(ThrioNumberCallback _Nullable)result
+                         fromURL:(NSString *_Nullable)fromURL
+                         prevURL:(NSString *_Nullable)prevURL
                     poppedResult:(ThrioIdCallback _Nullable)poppedResult {
     if (viewController) {
         NavigatorPageRoute *lastRoute = [ThrioNavigator getLastRouteByUrl:url];
@@ -772,7 +782,10 @@ NS_ASSUME_NONNULL_BEGIN
             if (result) {
                 result(idx);
             }
-        } poppedResult:poppedResult];
+        }
+                              fromURL:fromURL
+                              prevURL:prevURL
+                         poppedResult:poppedResult];
     }
 }
 

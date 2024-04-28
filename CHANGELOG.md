@@ -1,3 +1,7 @@
+## 4.11.0
+
+- feat: add fromURL and prevURL for RouteSettings
+
 ## 4.10.0
 
 - feat: upgrade to flutter 3.19.x

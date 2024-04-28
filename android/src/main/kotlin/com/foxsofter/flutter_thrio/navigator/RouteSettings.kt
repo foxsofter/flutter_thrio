@@ -28,33 +28,35 @@ import com.foxsofter.flutter_thrio.module.ModuleJsonDeserializers
 data class RouteSettings(val url: String, val index: Int) {
 
     var params: Any? = null
+    var fromURL: String? = null
+    var prevURL: String? = null
     var animated: Boolean = true
     var isNested: Boolean = false
 
     val name get() = "$index $url"
 
-    fun toArguments(): Map<String, Any?> = mapOf(
-        "url" to url,
-        "index" to index,
-        "animated" to animated,
-        "isNested" to isNested,
-        "params" to params
-    )
-
-    fun toArgumentsWithParams(params: Any?): Map<String, Any?> = when (params) {
-        null -> mapOf(
-            "url" to url,
-            "index" to index,
-            "animated" to animated,
-            "isNested" to isNested
-        )
-        else -> mapOf(
+    fun toArguments(): Map<String, Any?> {
+       val args = mutableMapOf(
             "url" to url,
             "index" to index,
             "animated" to animated,
             "isNested" to isNested,
-            "params" to params
+            "params" to params,
         )
+        if (fromURL?.isNotEmpty() == true) args["fromURL"] = fromURL
+        if (prevURL?.isNotEmpty() == true) args["prevURL"] = prevURL
+        return  args.toMap()
+    }
+
+    fun toArgumentsWithoutParams(): Map<String, Any?>  {
+        val args = mutableMapOf<String, Any?>(
+            "url" to url,
+            "index" to index,
+            "animated" to animated,
+        )
+        if (fromURL?.isNotEmpty() == true) args["fromURL"] = fromURL
+        if (prevURL?.isNotEmpty() == true) args["prevURL"] = prevURL
+        return  args.toMap()
     }
 
     fun toArgumentsWith(newUrl: String, newIndex: Int): Map<String, Any?> = mapOf(
@@ -64,7 +66,6 @@ data class RouteSettings(val url: String, val index: Int) {
         "newUrl" to newUrl,
         "newIndex" to newIndex,
     )
-
 
     override fun equals(other: Any?): Boolean {
         return other != null && other is RouteSettings && url == other.url && index == other.index
@@ -85,9 +86,13 @@ data class RouteSettings(val url: String, val index: Int) {
             val params = ModuleJsonDeserializers.deserializeParams(arguments["params"])
             val animated =
                 if (arguments["animated"] != null) arguments["animated"] as Boolean else false
+            val fromURL = arguments["fromURL"] as String?
+            val prevURL = arguments["prevURL"] as String?
             return RouteSettings(url, index).also {
                 it.params = params
                 it.animated = animated
+                if (fromURL != null) it.fromURL = fromURL
+                if (prevURL != null) it.prevURL = prevURL
             }
         }
     }

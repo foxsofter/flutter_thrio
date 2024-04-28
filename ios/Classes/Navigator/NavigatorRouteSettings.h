@@ -28,12 +28,16 @@ NS_ASSUME_NONNULL_BEGIN
 + (instancetype)settingsWithUrl:(NSString *)url
                           index:(NSNumber *_Nullable)index
                          nested:(BOOL)nested
-                         params:(id _Nullable)params;
+                         params:(id _Nullable)params
+                        fromURL:(NSString *_Nullable)fromURL
+                        prevURL:(NSString *_Nullable)prevURL;
 
 - (instancetype)initWithUrl:(NSString *)url
                       index:(NSNumber *_Nullable)index
                      nested:(BOOL)nested
-                     params:(id _Nullable)params;
+                     params:(id _Nullable)params
+                    fromURL:(NSString *_Nullable)fromURL
+                    prevURL:(NSString *_Nullable)prevURL;
 
 - (instancetype)init NS_UNAVAILABLE;
 
@@ -54,6 +58,10 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, assign, readonly) BOOL nested;
 
 @property (nonatomic, copy, readonly, nullable) id params;
+
+@property (nonatomic, copy, readonly) NSString *fromURL;
+
+@property (nonatomic, copy, readonly) NSString *prevURL;
 
 - (BOOL)isEqualToRouteSettings:(NavigatorRouteSettings *)other;
 

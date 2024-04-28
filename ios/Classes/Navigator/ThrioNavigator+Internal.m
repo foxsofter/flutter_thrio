@@ -62,10 +62,15 @@ NS_ASSUME_NONNULL_BEGIN
         animated:(BOOL)animated
   fromEntrypoint:fromEntrypoint
           result:(ThrioNumberCallback _Nullable)result
+         fromURL:(NSString *_Nullable)fromURL
+         prevURL:(NSString *_Nullable)prevURL
     poppedResult:(ThrioIdCallback _Nullable)poppedResult
 {
     UINavigationController *nvc = self.navigationController;
     [self.navigationControllers addAndRemoveObject:nvc];
+    if (!prevURL) {
+        prevURL = [ThrioNavigator lastRoute].settings.url;
+    }
     [nvc thrio_pushUrl:url
                 params:params
               animated:animated
@@ -74,7 +79,10 @@ NS_ASSUME_NONNULL_BEGIN
         if (result) {
             result(idx);
         }
-    } poppedResult:poppedResult];
+    }
+               fromURL:fromURL
+               prevURL:prevURL
+          poppedResult:poppedResult];
 }
 
 + (void)_notifyUrl:(NSString *_Nullable)url

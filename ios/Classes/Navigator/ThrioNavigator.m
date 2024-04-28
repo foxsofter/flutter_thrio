@@ -44,6 +44,8 @@ NS_ASSUME_NONNULL_BEGIN
           animated:YES
     fromEntrypoint:nil
             result:nil
+           fromURL:nil
+           prevURL:nil
       poppedResult:nil];
 }
 
@@ -53,6 +55,8 @@ NS_ASSUME_NONNULL_BEGIN
           animated:YES
     fromEntrypoint:nil
             result:result
+           fromURL:nil
+           prevURL:nil
       poppedResult:nil];
 }
 
@@ -62,6 +66,8 @@ NS_ASSUME_NONNULL_BEGIN
           animated:YES
     fromEntrypoint:nil
             result:nil
+           fromURL:nil
+           prevURL:nil
       poppedResult:poppedResult];
 }
 
@@ -71,6 +77,8 @@ NS_ASSUME_NONNULL_BEGIN
           animated:YES
     fromEntrypoint:nil
             result:nil
+           fromURL:nil
+           prevURL:nil
       poppedResult:nil];
 }
 
@@ -82,6 +90,8 @@ NS_ASSUME_NONNULL_BEGIN
           animated:YES
     fromEntrypoint:nil
             result:result
+           fromURL:nil
+           prevURL:nil
       poppedResult:nil];
 }
 
@@ -93,6 +103,8 @@ NS_ASSUME_NONNULL_BEGIN
           animated:YES
     fromEntrypoint:nil
             result:nil
+           fromURL:nil
+           prevURL:nil
       poppedResult:poppedResult];
 }
 
@@ -105,6 +117,8 @@ NS_ASSUME_NONNULL_BEGIN
           animated:YES
     fromEntrypoint:nil
             result:result
+           fromURL:nil
+           prevURL:nil
       poppedResult:poppedResult];
 }
 
@@ -114,6 +128,8 @@ NS_ASSUME_NONNULL_BEGIN
           animated:animated
     fromEntrypoint:nil
             result:nil
+           fromURL:nil
+           prevURL:nil
       poppedResult:nil];
 }
 
@@ -125,6 +141,8 @@ NS_ASSUME_NONNULL_BEGIN
           animated:animated
     fromEntrypoint:nil
             result:result
+           fromURL:nil
+           prevURL:nil
       poppedResult:nil];
 }
 
@@ -136,6 +154,8 @@ NS_ASSUME_NONNULL_BEGIN
           animated:animated
     fromEntrypoint:nil
             result:nil
+           fromURL:nil
+           prevURL:nil
       poppedResult:poppedResult];
 }
 
@@ -148,6 +168,8 @@ NS_ASSUME_NONNULL_BEGIN
           animated:animated
     fromEntrypoint:nil
             result:result
+           fromURL:nil
+           prevURL:nil
       poppedResult:poppedResult];
 }
 
@@ -159,6 +181,8 @@ NS_ASSUME_NONNULL_BEGIN
           animated:animated
     fromEntrypoint:nil
             result:nil
+           fromURL:nil
+           prevURL:nil
       poppedResult:nil];
 }
 
@@ -171,6 +195,8 @@ NS_ASSUME_NONNULL_BEGIN
           animated:animated
     fromEntrypoint:nil
             result:result
+           fromURL:nil
+           prevURL:nil
       poppedResult:nil];
 }
 
@@ -183,6 +209,8 @@ NS_ASSUME_NONNULL_BEGIN
           animated:animated
     fromEntrypoint:nil
             result:nil
+           fromURL:nil
+           prevURL:nil
       poppedResult:poppedResult];
 }
 
@@ -190,12 +218,15 @@ NS_ASSUME_NONNULL_BEGIN
           params:(id)params
         animated:(BOOL)animated
           result:(ThrioNumberCallback)result
+         fromURL:(NSString *_Nullable)fromURL
     poppedResult:(ThrioIdCallback)poppedResult {
     [self _pushUrl:url
             params:params
           animated:animated
     fromEntrypoint:nil
             result:result
+           fromURL:fromURL
+           prevURL:nil
       poppedResult:poppedResult];
 }
 
@@ -482,6 +513,9 @@ NS_ASSUME_NONNULL_BEGIN
 + (FlutterEngine *)getEngineByViewContontroller:(NavigatorFlutterViewController *)viewController
                                  withEntrypoint:(NSString *)entrypoint {
     return [NavigatorFlutterEngineFactory.shared getEngineByEntrypoint:entrypoint].flutterEngine;
+}
+
++ (void)pushUrl:(nonnull NSString *)url params:(nonnull id)params animated:(BOOL)animated result:(nonnull ThrioNumberCallback)result poppedResult:(nonnull ThrioIdCallback)poppedResult {
 }
 
 @end

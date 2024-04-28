@@ -50,12 +50,14 @@ abstract class ThrioNavigator {
     TParams? params,
     bool animated = true,
     NavigatorIntCallback? result,
+    String? fromURL,
   }) =>
       ThrioNavigatorImplement.shared().push<TParams, TPopParams>(
         url: url,
         params: params,
         animated: animated,
         result: result,
+        fromURL: fromURL,
       );
 
   /// Push the page onto the navigation stack, and remove all old page.
@@ -68,12 +70,14 @@ abstract class ThrioNavigator {
     TParams? params,
     bool animated = true,
     NavigatorIntCallback? result,
+    String? fromURL,
   }) =>
       ThrioNavigatorImplement.shared().pushSingle<TParams, TPopParams>(
         url: url,
         params: params,
         animated: animated,
         result: result,
+        fromURL: fromURL,
       );
 
   /// Push the page onto the navigation stack, and remove the top page.
@@ -86,12 +90,14 @@ abstract class ThrioNavigator {
     TParams? params,
     bool animated = true,
     NavigatorIntCallback? result,
+    String? fromURL,
   }) =>
       ThrioNavigatorImplement.shared().pushReplace<TParams, TPopParams>(
         url: url,
         params: params,
         animated: animated,
         result: result,
+        fromURL: fromURL,
       );
 
   /// Push the page onto the navigation stack, and remove until the last page with `toUrl`.
@@ -105,6 +111,7 @@ abstract class ThrioNavigator {
     TParams? params,
     bool animated = true,
     NavigatorIntCallback? result,
+    String? fromURL,
   }) =>
       ThrioNavigatorImplement.shared().pushAndRemoveTo<TParams, TPopParams>(
         url: url,
@@ -112,6 +119,7 @@ abstract class ThrioNavigator {
         params: params,
         animated: animated,
         result: result,
+        fromURL: fromURL,
       );
 
   /// Push the page onto the navigation stack, and remove until the first page with `toUrl`.
@@ -125,6 +133,7 @@ abstract class ThrioNavigator {
     TParams? params,
     bool animated = true,
     NavigatorIntCallback? result,
+    String? fromURL,
   }) =>
       ThrioNavigatorImplement.shared()
           .pushAndRemoveToFirst<TParams, TPopParams>(
@@ -133,6 +142,7 @@ abstract class ThrioNavigator {
         params: params,
         animated: animated,
         result: result,
+        fromURL: fromURL,
       );
 
   /// Push the page onto the navigation stack, and remove until the last page with `toUrl` satisfies the `predicate`.
@@ -146,6 +156,7 @@ abstract class ThrioNavigator {
     TParams? params,
     bool animated = true,
     NavigatorIntCallback? result,
+    String? fromURL,
   }) =>
       ThrioNavigatorImplement.shared().pushAndRemoveUntil<TParams, TPopParams>(
         url: url,
@@ -153,6 +164,7 @@ abstract class ThrioNavigator {
         params: params,
         animated: animated,
         result: result,
+        fromURL: fromURL,
       );
 
   /// Push the page onto the navigation stack, and remove until the first page with `toUrl` satisfies the `predicate`.
@@ -166,6 +178,7 @@ abstract class ThrioNavigator {
     TParams? params,
     bool animated = true,
     NavigatorIntCallback? result,
+    String? fromURL,
   }) =>
       ThrioNavigatorImplement.shared()
           .pushAndRemoveUntilFirst<TParams, TPopParams>(
@@ -174,6 +187,7 @@ abstract class ThrioNavigator {
         params: params,
         animated: animated,
         result: result,
+        fromURL: fromURL,
       );
 
   /// Send a notification to all page.

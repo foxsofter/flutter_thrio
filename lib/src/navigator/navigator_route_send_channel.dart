@@ -40,13 +40,16 @@ class NavigatorRouteSendChannel {
     required String url,
     TParams? params,
     bool animated = true,
+    String? fromURL,
   }) async {
     final arguments = <String, dynamic>{
       'url': url,
       'animated': animated,
       'params': _serializeParams<TParams>(url: url, params: params),
     };
-
+    if (fromURL?.isNotEmpty == true) {
+      arguments['fromURL'] = fromURL;
+    }
     return _channel
         .invokeMethod<int>('push', arguments)
         .then((value) => value ?? 0);

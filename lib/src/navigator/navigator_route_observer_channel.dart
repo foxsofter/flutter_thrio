@@ -50,30 +50,30 @@ class NavigatorRouteObserverChannel with NavigatorRouteObserver {
 
   @override
   void didPush(RouteSettings routeSettings) => _channel.invokeMethod<bool>(
-      'didPush', routeSettings.toArguments()..remove('params'));
+      'didPush', routeSettings.toArgumentsWithoutParams());
 
   @override
   void didPop(RouteSettings routeSettings) {
     verbose('didPop: ${routeSettings.name}');
     _channel.invokeMethod<bool>(
-        'didPop', routeSettings.toArguments()..remove('params'));
+        'didPop', routeSettings.toArgumentsWithoutParams());
   }
 
   @override
   void didPopTo(RouteSettings routeSettings) => _channel.invokeMethod<bool>(
-      'didPopTo', routeSettings.toArguments()..remove('params'));
+      'didPopTo', routeSettings.toArgumentsWithoutParams());
 
   @override
   void didRemove(RouteSettings routeSettings) => _channel.invokeMethod<bool>(
-      'didRemove', routeSettings.toArguments()..remove('params'));
+      'didRemove', routeSettings.toArgumentsWithoutParams());
 
   @override
   void didReplace(
     RouteSettings newRouteSettings,
     RouteSettings oldRouteSettings,
   ) {
-    final oldArgs = oldRouteSettings.toArguments()..remove('params');
-    final newArgs = newRouteSettings.toArguments()..remove('params');
+    final oldArgs = oldRouteSettings.toArgumentsWithoutParams();
+    final newArgs = newRouteSettings.toArgumentsWithoutParams();
     _channel.invokeMethod<bool>('didReplace', {
       'oldRouteSettings': oldArgs,
       'newRouteSettings': newArgs,

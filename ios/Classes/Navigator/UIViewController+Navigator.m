@@ -84,6 +84,8 @@ NS_ASSUME_NONNULL_BEGIN
              animated:(BOOL)animated
        fromEntrypoint:(NSString *_Nullable)fromEntrypoint
                result:(ThrioNumberCallback _Nullable)result
+              fromURL:(NSString * _Nullable)fromURL
+              prevURL:(NSString *_Nullable)prevURL
          poppedResult:(ThrioIdCallback _Nullable)poppedResult {
     if (self.thrio_routeType != NavigatorRouteTypeNone) {
         if (result) {
@@ -95,7 +97,9 @@ NS_ASSUME_NONNULL_BEGIN
     NavigatorRouteSettings *settings = [NavigatorRouteSettings settingsWithUrl:url
                                                                          index:index
                                                                         nested:self.thrio_firstRoute != nil
-                                                                        params:params];
+                                                                        params:params
+                                                                       fromURL:fromURL
+                                                                       prevURL:prevURL];
     NavigatorPageRoute *newRoute = [NavigatorPageRoute routeWithSettings:settings];
     newRoute.fromEntrypoint = fromEntrypoint;
     newRoute.poppedResult = poppedResult;
@@ -396,7 +400,9 @@ NS_ASSUME_NONNULL_BEGIN
                 NavigatorRouteSettings *newSettings = [NavigatorRouteSettings settingsWithUrl:newUrl
                                                                                         index:newIndex
                                                                                        nested:oldRoute.settings.nested
-                                                                                       params:nil];
+                                                                                       params:nil
+                                                                                      fromURL:nil
+                                                                                      prevURL:nil];
                 [[oldRoute initWithSettings:newSettings] removeNotify];
             }
             if (result) {

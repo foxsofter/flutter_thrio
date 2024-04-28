@@ -47,13 +47,13 @@ class NavigatorPageObserverChannel {
   final ThrioChannel _channel;
 
   void willAppear(RouteSettings routeSettings, NavigatorRouteType routeType) {
-    final arguments = routeSettings.toArguments()..remove('params');
+    final arguments = routeSettings.toArgumentsWithoutParams();
     arguments['routeType'] = routeType.toString().split('.').last;
     _channel.invokeMethod<dynamic>('willAppear', arguments);
   }
 
   void didAppear(RouteSettings routeSettings, NavigatorRouteType routeType) {
-    final arguments = routeSettings.toArguments()..remove('params');
+    final arguments = routeSettings.toArgumentsWithoutParams();
     arguments['routeType'] = routeType.toString().split('.').last;
     _channel.invokeMethod<dynamic>('didAppear', arguments);
   }
@@ -62,13 +62,13 @@ class NavigatorPageObserverChannel {
     RouteSettings routeSettings,
     NavigatorRouteType routeType,
   ) {
-    final arguments = routeSettings.toArguments()..remove('params');
+    final arguments = routeSettings.toArgumentsWithoutParams();
     arguments['routeType'] = routeType.toString().split('.').last;
     _channel.invokeMethod<dynamic>('willDisappear', arguments);
   }
 
   void didDisappear(RouteSettings routeSettings, NavigatorRouteType routeType) {
-    final arguments = routeSettings.toArguments()..remove('params');
+    final arguments = routeSettings.toArgumentsWithoutParams();
     arguments['routeType'] = routeType.toString().split('.').last;
     _channel.invokeMethod<dynamic>('didDisappear', arguments);
   }

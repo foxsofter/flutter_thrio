@@ -51,22 +51,22 @@ internal class RouteObserverChannel constructor(
     }
 
     override fun didPush(routeSettings: RouteSettings) {
-        val arguments = routeSettings.toArgumentsWithParams(null)
+        val arguments = routeSettings.toArgumentsWithoutParams()
         channel.invokeMethod("didPush", arguments)
     }
 
     override fun didPop(routeSettings: RouteSettings) {
-        val arguments = routeSettings.toArgumentsWithParams(null)
+        val arguments = routeSettings.toArgumentsWithoutParams()
         channel.invokeMethod("didPop", arguments)
     }
 
     override fun didPopTo(routeSettings: RouteSettings) {
-        val arguments = routeSettings.toArgumentsWithParams(null)
+        val arguments = routeSettings.toArgumentsWithoutParams()
         channel.invokeMethod("didPopTo", arguments)
     }
 
     override fun didRemove(routeSettings: RouteSettings) {
-        val arguments = routeSettings.toArgumentsWithParams(null)
+        val arguments = routeSettings.toArgumentsWithoutParams()
         channel.invokeMethod("didRemove", arguments)
     }
 

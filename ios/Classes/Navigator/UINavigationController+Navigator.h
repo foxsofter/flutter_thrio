@@ -32,6 +32,8 @@ NS_ASSUME_NONNULL_BEGIN
              animated:(BOOL)animated
        fromEntrypoint:(NSString *_Nullable)fromEntrypoint
                result:(ThrioNumberCallback _Nullable)result
+              fromURL:(NSString *_Nullable)fromURL
+              prevURL:(NSString *_Nullable)prevURL
          poppedResult:(ThrioIdCallback _Nullable)poppedResult;
 
 - (BOOL)thrio_notifyUrl:(NSString *_Nullable)url
