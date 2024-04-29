@@ -34,6 +34,7 @@ NS_ASSUME_NONNULL_BEGIN
                result:(ThrioNumberCallback _Nullable)result
               fromURL:(NSString *_Nullable)fromURL
               prevURL:(NSString *_Nullable)prevURL
+             innerURL:(NSString *_Nullable)innerURL
          poppedResult:(ThrioIdCallback _Nullable)poppedResult;
 
 - (BOOL)thrio_notifyUrl:(NSString *_Nullable)url

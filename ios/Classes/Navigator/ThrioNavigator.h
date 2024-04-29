@@ -329,13 +329,13 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// Pop a flutter page from the navigation stack.
 ///
-+ (void)popParams:(id)params result:(ThrioBoolCallback)result;
++ (void)popFlutterParams:(id)params result:(ThrioBoolCallback)result;
 
 /// Pop a flutter page from the navigation stack.
 ///
-+ (void)popParams:(id)params
-         animated:(BOOL)animated
-           result:(ThrioBoolCallback)result;
++ (void)popFlutterParams:(id)params
+                animated:(BOOL)animated
+                  result:(ThrioBoolCallback)result;
 
 
 #pragma mark - popTo methods

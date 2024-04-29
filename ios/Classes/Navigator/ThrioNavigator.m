@@ -46,6 +46,7 @@ NS_ASSUME_NONNULL_BEGIN
             result:nil
            fromURL:nil
            prevURL:nil
+          innerURL:nil
       poppedResult:nil];
 }
 
@@ -57,6 +58,7 @@ NS_ASSUME_NONNULL_BEGIN
             result:result
            fromURL:nil
            prevURL:nil
+          innerURL:nil
       poppedResult:nil];
 }
 
@@ -68,6 +70,7 @@ NS_ASSUME_NONNULL_BEGIN
             result:nil
            fromURL:nil
            prevURL:nil
+          innerURL:nil
       poppedResult:poppedResult];
 }
 
@@ -79,6 +82,7 @@ NS_ASSUME_NONNULL_BEGIN
             result:nil
            fromURL:nil
            prevURL:nil
+          innerURL:nil
       poppedResult:nil];
 }
 
@@ -92,6 +96,7 @@ NS_ASSUME_NONNULL_BEGIN
             result:result
            fromURL:nil
            prevURL:nil
+          innerURL:nil
       poppedResult:nil];
 }
 
@@ -105,6 +110,7 @@ NS_ASSUME_NONNULL_BEGIN
             result:nil
            fromURL:nil
            prevURL:nil
+          innerURL:nil
       poppedResult:poppedResult];
 }
 
@@ -119,6 +125,7 @@ NS_ASSUME_NONNULL_BEGIN
             result:result
            fromURL:nil
            prevURL:nil
+          innerURL:nil
       poppedResult:poppedResult];
 }
 
@@ -130,6 +137,7 @@ NS_ASSUME_NONNULL_BEGIN
             result:nil
            fromURL:nil
            prevURL:nil
+          innerURL:nil
       poppedResult:nil];
 }
 
@@ -143,6 +151,7 @@ NS_ASSUME_NONNULL_BEGIN
             result:result
            fromURL:nil
            prevURL:nil
+          innerURL:nil
       poppedResult:nil];
 }
 
@@ -156,6 +165,7 @@ NS_ASSUME_NONNULL_BEGIN
             result:nil
            fromURL:nil
            prevURL:nil
+          innerURL:nil
       poppedResult:poppedResult];
 }
 
@@ -170,6 +180,7 @@ NS_ASSUME_NONNULL_BEGIN
             result:result
            fromURL:nil
            prevURL:nil
+          innerURL:nil
       poppedResult:poppedResult];
 }
 
@@ -183,6 +194,7 @@ NS_ASSUME_NONNULL_BEGIN
             result:nil
            fromURL:nil
            prevURL:nil
+          innerURL:nil
       poppedResult:nil];
 }
 
@@ -197,6 +209,7 @@ NS_ASSUME_NONNULL_BEGIN
             result:result
            fromURL:nil
            prevURL:nil
+          innerURL:nil
       poppedResult:nil];
 }
 
@@ -211,6 +224,7 @@ NS_ASSUME_NONNULL_BEGIN
             result:nil
            fromURL:nil
            prevURL:nil
+          innerURL:nil
       poppedResult:poppedResult];
 }
 
@@ -227,6 +241,7 @@ NS_ASSUME_NONNULL_BEGIN
             result:result
            fromURL:fromURL
            prevURL:nil
+          innerURL:nil
       poppedResult:poppedResult];
 }
 

@@ -1,6 +1,6 @@
 name: flutter_thrio
 description: Thrio makes it easy and fast to add flutter to existing mobile applications, and provide a simple and consistent navigator APIs.
-version: 4.11.0
+version: 4.12.0
 homepage: https://github.com/flutter-thrio/flutter_thrio
 
 environment:

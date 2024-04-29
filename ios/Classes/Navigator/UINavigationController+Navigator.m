@@ -71,6 +71,7 @@ NS_ASSUME_NONNULL_BEGIN
                result:(ThrioNumberCallback _Nullable)result
               fromURL:(NSString *_Nullable)fromURL
               prevURL:(NSString *_Nullable)prevURL
+             innerURL:(NSString *_Nullable)innerURL
          poppedResult:(ThrioIdCallback _Nullable)poppedResult {
     @synchronized (self) {
         UIViewController *viewController = [self thrio_createNativeViewControllerWithUrl:url params:params];
@@ -83,6 +84,7 @@ NS_ASSUME_NONNULL_BEGIN
                                     result:result
                                    fromURL:fromURL
                                    prevURL:prevURL
+                                  innerURL:innerURL
                               poppedResult:poppedResult];
         } else {
             NSString *entrypoint = kNavigatorDefaultEntrypoint;
@@ -109,6 +111,7 @@ NS_ASSUME_NONNULL_BEGIN
                                                result:resultBlock
                                               fromURL:fromURL
                                               prevURL:prevURL
+                                             innerURL:innerURL
                                          poppedResult:poppedResult];
             } else {
                 __weak typeof(self) weakself = self;
@@ -124,6 +127,7 @@ NS_ASSUME_NONNULL_BEGIN
                                                   result:result
                                                  fromURL:fromURL
                                                  prevURL:prevURL
+                                                innerURL:innerURL
                                             poppedResult:poppedResult];
                 };
                 [NavigatorFlutterEngineFactory.shared startupWithEntrypoint:entrypoint readyBlock:readyBlock];
@@ -764,6 +768,7 @@ NS_ASSUME_NONNULL_BEGIN
                           result:(ThrioNumberCallback _Nullable)result
                          fromURL:(NSString *_Nullable)fromURL
                          prevURL:(NSString *_Nullable)prevURL
+                        innerURL:(NSString *_Nullable)innerURL
                     poppedResult:(ThrioIdCallback _Nullable)poppedResult {
     if (viewController) {
         NavigatorPageRoute *lastRoute = [ThrioNavigator getLastRouteByUrl:url];
@@ -785,6 +790,7 @@ NS_ASSUME_NONNULL_BEGIN
         }
                               fromURL:fromURL
                               prevURL:prevURL
+                             innerURL:innerURL
                          poppedResult:poppedResult];
     }
 }

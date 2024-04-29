@@ -67,6 +67,9 @@ NS_ASSUME_NONNULL_BEGIN
                                                animated:NO
                                          fromEntrypoint:entrypoint
                                                  result:nil
+                                                fromURL:nil
+                                                prevURL:nil
+                                               innerURL:nil
                                            poppedResult:nil];
         };
         
@@ -89,6 +92,9 @@ NS_ASSUME_NONNULL_BEGIN
                          animated:NO
                    fromEntrypoint:nil
                            result:nil
+                          fromURL:nil
+                          prevURL:nil
+                         innerURL:nil
                      poppedResult:nil];
             }
         } afterLifecycle:ThrioViewControllerLifecycleViewDidAppear];

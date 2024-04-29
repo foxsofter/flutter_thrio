@@ -64,6 +64,7 @@ NS_ASSUME_NONNULL_BEGIN
           result:(ThrioNumberCallback _Nullable)result
          fromURL:(NSString *_Nullable)fromURL
          prevURL:(NSString *_Nullable)prevURL
+        innerURL:(NSString *_Nullable)innerURL
     poppedResult:(ThrioIdCallback _Nullable)poppedResult
 {
     UINavigationController *nvc = self.navigationController;
@@ -82,6 +83,7 @@ NS_ASSUME_NONNULL_BEGIN
     }
                fromURL:fromURL
                prevURL:prevURL
+              innerURL:innerURL
           poppedResult:poppedResult];
 }
 

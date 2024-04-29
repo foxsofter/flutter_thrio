@@ -35,14 +35,14 @@ object ThrioNavigator {
         params: T? = null,
         animated: Boolean = true,
         fromURL: String? = null,
-        prevURL: String? = null,
         poppedResult: NullableAnyCallback? = null,
         result: NullableIntCallback = {}
     ) = NavigationController.Push.push<T>(
         url, params, animated,
         NAVIGATION_NATIVE_ENTRYPOINT,
         fromURL,
-        prevURL,
+        null,
+        null,
         NAVIGATION_ROUTE_PAGE_ID_NONE,
         poppedResult,
         result
@@ -53,14 +53,14 @@ object ThrioNavigator {
         url: String,
         animated: Boolean = true,
         fromURL: String? = null,
-        prevURL: String? = null,
         poppedResult: NullableAnyCallback? = null,
         result: NullableIntCallback = {}
     ) = NavigationController.Push.push(
         url, null, animated,
         NAVIGATION_NATIVE_ENTRYPOINT,
         fromURL,
-        prevURL,
+        null,
+        null,
         NAVIGATION_ROUTE_PAGE_ID_NONE,
         poppedResult,
         result

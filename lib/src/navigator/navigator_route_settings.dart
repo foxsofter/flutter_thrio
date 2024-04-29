@@ -69,6 +69,8 @@ extension NavigatorRouteSettings on RouteSettings {
       final fromURL = fromURLValue is String ? fromURLValue : null;
       final prevURLValue = arguments['prevURL'];
       final prevURL = prevURLValue is String ? prevURLValue : null;
+      final innerURLValue = arguments['innerURL'];
+      final innerURL = innerURLValue is String ? innerURLValue : null;
       final args = <String, dynamic>{
         'isNested': isNested,
         'animated': animated,
@@ -81,6 +83,9 @@ extension NavigatorRouteSettings on RouteSettings {
       }
       if (prevURL?.isNotEmpty == true) {
         args['prevURL'] = prevURL;
+      }
+      if (innerURL?.isNotEmpty == true) {
+        args['innerURL'] = innerURL;
       }
       return RouteSettings(
         name: '$index $url',
@@ -120,6 +125,9 @@ extension NavigatorRouteSettings on RouteSettings {
     }
     if (prevURL?.isNotEmpty == true) {
       args['prevURL'] = prevURL;
+    }
+    if (innerURL?.isNotEmpty == true) {
+      args['innerURL'] = innerURL;
     }
     return args;
   }
@@ -228,6 +236,21 @@ extension NavigatorRouteSettings on RouteSettings {
     final args = arguments;
     if (args != null && args is Map) {
       args['prevURL'] = value;
+    }
+  }
+
+  String? get innerURL {
+    final args = arguments;
+    if (args != null && args is Map) {
+      return args['innerURL'] as String?;
+    }
+    return null;
+  }
+
+  set innerURL(String? value) {
+    final args = arguments;
+    if (args != null && args is Map) {
+      args['innerURL'] = value;
     }
   }
 }

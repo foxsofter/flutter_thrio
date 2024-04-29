@@ -104,6 +104,7 @@ NS_ASSUME_NONNULL_BEGIN
         BOOL animated = [arguments[@"animated"] boolValue];
         NSString *fromURL = arguments[@"fromURL"];
         NSString *prevURL = arguments[@"prevURL"];
+        NSString *innerURL = arguments[@"innerURL"];
         NavigatorVerbose(@"on push: %@", url);
         __strong typeof(weakself) strongSelf = weakself;
         [ThrioNavigator _pushUrl:url
@@ -117,6 +118,7 @@ NS_ASSUME_NONNULL_BEGIN
         }
                          fromURL:fromURL
                          prevURL:prevURL
+                        innerURL:innerURL
                     poppedResult:nil];
     }];
 }

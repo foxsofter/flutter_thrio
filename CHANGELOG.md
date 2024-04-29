@@ -1,3 +1,7 @@
+## 4.12.0
+
+- feat: add innerURL for RouteSettings
+
 ## 4.11.0
 
 - feat: add fromURL and prevURL for RouteSettings

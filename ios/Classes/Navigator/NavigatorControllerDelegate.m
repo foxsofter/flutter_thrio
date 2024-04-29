@@ -71,7 +71,7 @@
 - (UIInterfaceOrientation)navigationControllerPreferredInterfaceOrientationForPresentation:(UINavigationController *)navigationController {
     if (self.originDelegate && ![self.originDelegate isEqual:self]) {
         if ([self.originDelegate respondsToSelector:@selector(navigationControllerPreferredInterfaceOrientationForPresentation:)]) {
-            return [self.originDelegate navigationControllerSupportedInterfaceOrientations:navigationController];
+            return [self.originDelegate navigationControllerPreferredInterfaceOrientationForPresentation:navigationController];
         }
     }
     return UIInterfaceOrientationUnknown;
