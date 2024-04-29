@@ -246,11 +246,4 @@ extension NavigatorRouteSettings on RouteSettings {
     }
     return null;
   }
-
-  set innerURL(String? value) {
-    final args = arguments;
-    if (args != null && args is Map) {
-      args['innerURL'] = value;
-    }
-  }
 }

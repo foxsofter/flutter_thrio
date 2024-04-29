@@ -158,8 +158,14 @@ class ThrioNavigatorImplement {
     bool animated = true,
     NavigatorIntCallback? result,
     String? fromURL,
+    String? innerURL,
   }) async {
-    await _onPushBeginHandle(url: url, params: params, fromURL: fromURL);
+    await _onPushBeginHandle(
+      url: url,
+      params: params,
+      fromURL: fromURL,
+      innerURL: innerURL,
+    );
 
     final completer = Completer<TPopParams?>();
 
@@ -170,6 +176,7 @@ class ThrioNavigatorImplement {
       completer: completer,
       result: result,
       fromURL: fromURL,
+      innerURL: innerURL,
     );
     if (!handled) {
       Future<void> pushFuture() {
@@ -180,6 +187,7 @@ class ThrioNavigatorImplement {
           animated: animated,
           completer: completer,
           fromURL: fromURL,
+          innerURL: innerURL,
         ).then((index) {
           resultCompleter.complete();
           result?.call(index);
@@ -197,9 +205,10 @@ class ThrioNavigatorImplement {
     required String url,
     TParams? params,
     String? fromURL,
+    String? innerURL,
   }) async {
     for (final handle in _pushBeginHandlers) {
-      await handle(url, params: params, fromURL: fromURL);
+      await handle(url, params: params, fromURL: fromURL, innerURL: innerURL);
     }
   }
 
@@ -207,9 +216,10 @@ class ThrioNavigatorImplement {
     required String url,
     TParams? params,
     String? fromURL,
+    String? innerURL,
   }) async {
     for (final handle in _pushReturnHandlers) {
-      await handle(url, params: params, fromURL: fromURL);
+      await handle(url, params: params, fromURL: fromURL, innerURL: innerURL);
     }
   }
 
@@ -220,6 +230,7 @@ class ThrioNavigatorImplement {
     bool animated = true,
     NavigatorIntCallback? result,
     String? fromURL,
+    String? innerURL,
   }) async {
     final queryParametersAll = handler.queryParamsDecoded
         ? uri.queryParametersAll
@@ -230,6 +241,8 @@ class ThrioNavigatorImplement {
       params: params,
       animated: animated,
       result: result,
+      fromURL: fromURL,
+      innerURL: innerURL,
     );
   }
 
@@ -239,8 +252,14 @@ class ThrioNavigatorImplement {
     bool animated = true,
     NavigatorIntCallback? result,
     String? fromURL,
+    String? innerURL,
   }) async {
-    await _onPushBeginHandle(url: url, params: params, fromURL: fromURL);
+    await _onPushBeginHandle(
+      url: url,
+      params: params,
+      fromURL: fromURL,
+      innerURL: innerURL,
+    );
 
     final completer = Completer<TPopParams?>();
 
@@ -256,6 +275,7 @@ class ThrioNavigatorImplement {
         result?.call(index);
       },
       fromURL: fromURL,
+      innerURL: innerURL,
     );
     if (!handled) {
       Future<void> pushFuture() {
@@ -266,6 +286,7 @@ class ThrioNavigatorImplement {
           animated: animated,
           completer: completer,
           fromURL: fromURL,
+          innerURL: innerURL,
         ).then<void>((index) async {
           if (index > 0) {
             await removeAll(url: url, excludeIndex: index);
@@ -288,8 +309,14 @@ class ThrioNavigatorImplement {
     bool animated = true,
     NavigatorIntCallback? result,
     String? fromURL,
+    String? innerURL,
   }) async {
-    await _onPushBeginHandle(url: url, params: params, fromURL: fromURL);
+    await _onPushBeginHandle(
+      url: url,
+      params: params,
+      fromURL: fromURL,
+      innerURL: innerURL,
+    );
 
     final completer = Completer<TPopParams>();
 
@@ -309,6 +336,7 @@ class ThrioNavigatorImplement {
         result?.call(index);
       },
       fromURL: fromURL,
+      innerURL: innerURL,
     );
     if (!handled) {
       Future<void> pushFuture() async {
@@ -323,6 +351,7 @@ class ThrioNavigatorImplement {
           animated: animated,
           completer: completer,
           fromURL: fromURL,
+          innerURL: innerURL,
         ).then((index) async {
           resultCompleter.complete();
           if (index > 0) {
@@ -346,8 +375,14 @@ class ThrioNavigatorImplement {
     bool animated = true,
     NavigatorIntCallback? result,
     String? fromURL,
+    String? innerURL,
   }) async {
-    await _onPushBeginHandle(url: url, params: params, fromURL: fromURL);
+    await _onPushBeginHandle(
+      url: url,
+      params: params,
+      fromURL: fromURL,
+      innerURL: innerURL,
+    );
 
     final completer = Completer<TPopParams>();
 
@@ -369,6 +404,7 @@ class ThrioNavigatorImplement {
         result?.call(index);
       },
       fromURL: fromURL,
+      innerURL: innerURL,
     );
     if (!handled) {
       Future<void> pushFuture() async {
@@ -385,6 +421,7 @@ class ThrioNavigatorImplement {
           animated: animated,
           completer: completer,
           fromURL: fromURL,
+          innerURL: innerURL,
         ).then((index) async {
           resultCompleter.complete();
           if (index > 0) {
@@ -408,8 +445,14 @@ class ThrioNavigatorImplement {
     bool animated = true,
     NavigatorIntCallback? result,
     String? fromURL,
+    String? innerURL,
   }) async {
-    await _onPushBeginHandle(url: url, params: params, fromURL: fromURL);
+    await _onPushBeginHandle(
+      url: url,
+      params: params,
+      fromURL: fromURL,
+      innerURL: innerURL,
+    );
 
     final completer = Completer<TPopParams>();
 
@@ -430,6 +473,7 @@ class ThrioNavigatorImplement {
         result?.call(index);
       },
       fromURL: fromURL,
+      innerURL: innerURL,
     );
     if (!handled) {
       Future<void> pushFuture() async {
@@ -446,6 +490,7 @@ class ThrioNavigatorImplement {
           animated: animated,
           completer: completer,
           fromURL: fromURL,
+          innerURL: innerURL,
         ).then((index) async {
           resultCompleter.complete();
           if (index > 0) {
@@ -469,8 +514,14 @@ class ThrioNavigatorImplement {
     bool animated = true,
     NavigatorIntCallback? result,
     String? fromURL,
+    String? innerURL,
   }) async {
-    await _onPushBeginHandle(url: url, params: params, fromURL: fromURL);
+    await _onPushBeginHandle(
+      url: url,
+      params: params,
+      fromURL: fromURL,
+      innerURL: innerURL,
+    );
 
     final completer = Completer<TPopParams>();
 
@@ -493,6 +544,7 @@ class ThrioNavigatorImplement {
         result?.call(index);
       },
       fromURL: fromURL,
+      innerURL: innerURL,
     );
     if (!handled) {
       Future<void> pushFuture() async {
@@ -510,6 +562,7 @@ class ThrioNavigatorImplement {
           animated: animated,
           completer: completer,
           fromURL: fromURL,
+          innerURL: innerURL,
         ).then((index) async {
           resultCompleter.complete();
           if (index > 0) {
@@ -533,8 +586,14 @@ class ThrioNavigatorImplement {
     bool animated = true,
     NavigatorIntCallback? result,
     String? fromURL,
+    String? innerURL,
   }) async {
-    await _onPushBeginHandle(url: url, params: params, fromURL: fromURL);
+    await _onPushBeginHandle(
+      url: url,
+      params: params,
+      fromURL: fromURL,
+      innerURL: innerURL,
+    );
 
     final completer = Completer<TPopParams>();
 
@@ -557,6 +616,7 @@ class ThrioNavigatorImplement {
         result?.call(index);
       },
       fromURL: fromURL,
+      innerURL: innerURL,
     );
     if (!handled) {
       Future<void> pushFuture() async {
@@ -574,6 +634,7 @@ class ThrioNavigatorImplement {
           animated: animated,
           completer: completer,
           fromURL: fromURL,
+          innerURL: innerURL,
         ).then((index) async {
           resultCompleter.complete();
           if (index > 0) {
@@ -597,6 +658,7 @@ class ThrioNavigatorImplement {
     required Completer<TPopParams?> completer,
     NavigatorIntCallback? result,
     String? fromURL,
+    String? innerURL,
   }) async {
     var handled = false;
     final uri = Uri.parse(url);
@@ -619,6 +681,8 @@ class ThrioNavigatorImplement {
             index = idx;
             result?.call(index);
           },
+          fromURL: fromURL,
+          innerURL: innerURL,
         );
         if (index != navigatorResultTypeNotHandled) {
           handled = true;
@@ -636,6 +700,7 @@ class ThrioNavigatorImplement {
     required bool animated,
     required Completer<TPopParams?> completer,
     String? fromURL,
+    String? innerURL,
   }) {
     final qidx = url.indexOf('?');
     final ps = params ?? <String, dynamic>{};
@@ -649,7 +714,12 @@ class ThrioNavigatorImplement {
       noQueryUrl = url.substring(0, qidx);
     }
     unawaited(completer.future.then((value) {
-      _onPushReturnHandle(url: url, params: params, fromURL: fromURL);
+      _onPushReturnHandle(
+        url: url,
+        params: params,
+        fromURL: fromURL,
+        innerURL: innerURL,
+      );
     }));
 
     return _sendChannel
@@ -658,6 +728,7 @@ class ThrioNavigatorImplement {
       params: ps,
       animated: animated,
       fromURL: fromURL,
+      innerURL: innerURL,
     )
         .then((index) {
       if (index > 0) {

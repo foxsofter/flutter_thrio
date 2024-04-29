@@ -41,6 +41,7 @@ class NavigatorRouteSendChannel {
     TParams? params,
     bool animated = true,
     String? fromURL,
+    String? innerURL,
   }) async {
     final arguments = <String, dynamic>{
       'url': url,
@@ -49,6 +50,9 @@ class NavigatorRouteSendChannel {
     };
     if (fromURL?.isNotEmpty == true) {
       arguments['fromURL'] = fromURL;
+    }
+    if (innerURL?.isNotEmpty == true) {
+      arguments['innerURL'] = innerURL;
     }
     return _channel
         .invokeMethod<int>('push', arguments)

@@ -43,6 +43,7 @@ typedef NavigatorRouteCustomHandler = FutureOr<TPopParams?>
   bool animated,
   NavigatorIntCallback? result,
   String? fromURL,
+  String? innerURL,
 });
 
 final _queryParamsDecodedOf = Expando<bool>();

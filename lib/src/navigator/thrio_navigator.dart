@@ -51,6 +51,7 @@ abstract class ThrioNavigator {
     bool animated = true,
     NavigatorIntCallback? result,
     String? fromURL,
+    String? innerURL,
   }) =>
       ThrioNavigatorImplement.shared().push<TParams, TPopParams>(
         url: url,
@@ -71,6 +72,7 @@ abstract class ThrioNavigator {
     bool animated = true,
     NavigatorIntCallback? result,
     String? fromURL,
+    String? innerURL,
   }) =>
       ThrioNavigatorImplement.shared().pushSingle<TParams, TPopParams>(
         url: url,
@@ -78,6 +80,7 @@ abstract class ThrioNavigator {
         animated: animated,
         result: result,
         fromURL: fromURL,
+        innerURL: innerURL,
       );
 
   /// Push the page onto the navigation stack, and remove the top page.

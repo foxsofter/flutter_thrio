@@ -70,4 +70,5 @@ typedef NavigatorPushHandle = Future<void> Function<TParams>(
   String url, {
   TParams? params,
   String? fromURL,
+  String? innerURL,
 });
