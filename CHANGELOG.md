@@ -1,3 +1,7 @@
+## 4.13.0
+
+- feat: push support innerURL parameter
+
 ## 4.12.0
 
 - feat: add innerURL for RouteSettings
