@@ -117,6 +117,8 @@ extension NavigatorRouteSettings on RouteSettings {
 
   Map<String, dynamic> toArgumentsWithoutParams() {
     final args = <String, dynamic>{
+      'url': url,
+      'index': index,
       'isNested': isNested,
       'animated': animated,
     };
