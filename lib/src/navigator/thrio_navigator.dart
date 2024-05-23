@@ -335,10 +335,12 @@ abstract class ThrioNavigator {
   ///
   static Future<bool> popTo({
     required String url,
+    int? index,
     bool animated = true,
   }) =>
       ThrioNavigatorImplement.shared().popTo(
         url: url,
+        index: index,
         animated: animated,
       );
 

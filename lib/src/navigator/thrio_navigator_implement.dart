@@ -906,14 +906,19 @@ class ThrioNavigatorImplement {
     TParams? params,
     bool animated = true,
   }) =>
-      _sendChannel.maybePop<TParams>(params: params, animated: animated);
+      _sendChannel.maybePop<TParams>(
+        params: params,
+        animated: animated,
+      );
 
   Future<bool> pop<TParams>({
     TParams? params,
     bool animated = true,
   }) {
-    Future<bool> popFuture() =>
-        _sendChannel.pop<TParams>(params: params, animated: animated);
+    Future<bool> popFuture() => _sendChannel.pop<TParams>(
+          params: params,
+          animated: animated,
+        );
     return _taskQueue.add<bool>(popFuture).then((value) => value ?? false);
   }
 
@@ -921,8 +926,10 @@ class ThrioNavigatorImplement {
     TParams? params,
     bool animated = true,
   }) {
-    Future<bool> popFuture() =>
-        _sendChannel.popFlutter<TParams>(params: params, animated: animated);
+    Future<bool> popFuture() => _sendChannel.popFlutter<TParams>(
+          params: params,
+          animated: animated,
+        );
     return _taskQueue.add<bool>(popFuture).then((value) => value ?? false);
   }
 
@@ -935,7 +942,10 @@ class ThrioNavigatorImplement {
         return false;
       }
       return _sendChannel.popTo(
-          url: rootRoute.url, index: rootRoute.index, animated: animated);
+        url: rootRoute.url,
+        index: rootRoute.index,
+        animated: animated,
+      );
     }
 
     return _taskQueue.add<bool>(popToFuture).then((value) => value ?? false);
@@ -943,10 +953,14 @@ class ThrioNavigatorImplement {
 
   Future<bool> popTo({
     required String url,
+    int? index,
     bool animated = true,
   }) {
-    Future<bool> popToFuture() =>
-        _sendChannel.popTo(url: url, animated: animated);
+    Future<bool> popToFuture() => _sendChannel.popTo(
+          url: url,
+          index: index ?? 0,
+          animated: animated,
+        );
     return _taskQueue.add<bool>(popToFuture).then((value) => value ?? false);
   }
 

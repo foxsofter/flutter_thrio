@@ -1,3 +1,7 @@
+## 4.14.0
+
+- feat: popTo, popUntil support index parameter
+
 ## 4.13.0
 
 - feat: push support innerURL parameter
