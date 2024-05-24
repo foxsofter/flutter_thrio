@@ -1,4 +1,4 @@
-// Copyright (c) 2023 foxsofter.
+// Copyright (c) 2024 foxsofter.
 //
 // ignore_for_file: avoid_as
 
