@@ -174,6 +174,8 @@ extension NavigatorRouteSettings on RouteSettings {
         // 补充 / 使其成为正常的 url
         if (!u.startsWith('/')) {
           _urlOf[this] = '/$u';
+        } else {
+          _urlOf[this] = u;
         }
       }
     }
