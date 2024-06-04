@@ -1,3 +1,7 @@
+## 4.15.1
+
+- fix: push with innerURL not working
+
 ## 4.15.0
 
 - feat: just publish new version

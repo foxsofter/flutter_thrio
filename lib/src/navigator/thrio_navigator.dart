@@ -59,6 +59,7 @@ abstract class ThrioNavigator {
         animated: animated,
         result: result,
         fromURL: fromURL,
+        innerURL: innerURL,
       );
 
   /// Push the page onto the navigation stack, and remove all old page.
