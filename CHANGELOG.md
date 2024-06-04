@@ -1,3 +1,7 @@
+## 4.15.2
+
+- fix: url is missing / at the beginning
+
 ## 4.15.1
 
 - fix: push with innerURL not working

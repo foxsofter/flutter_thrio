@@ -165,12 +165,17 @@ extension NavigatorRouteSettings on RouteSettings {
 
   String get url {
     if (_urlOf[this] == null) {
+      var u = '';
       final settingsName = name;
-      _urlOf[this] = settingsName == null ||
-              settingsName.isEmpty ||
-              !settingsName.contains(' ')
-          ? ''
-          : settingsName.split(' ').last;
+      if (settingsName != null &&
+          settingsName.isNotEmpty &&
+          settingsName.contains(' ')) {
+        u = settingsName.split(' ').last;
+        // 补充 / 使其成为正常的 url
+        if (!u.startsWith('/')) {
+          _urlOf[this] = '/$u';
+        }
+      }
     }
     return _urlOf[this]!;
   }
