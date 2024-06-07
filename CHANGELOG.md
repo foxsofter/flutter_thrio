@@ -1,3 +1,7 @@
+## 4.15.4
+
+- fix: `_isSelectedOf` and `_isPushedOf` get error
+
 ## 4.15.3
 
 - fix: url is missing / at the beginning
