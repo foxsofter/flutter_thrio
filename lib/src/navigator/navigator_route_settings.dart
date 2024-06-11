@@ -179,7 +179,7 @@ extension NavigatorRouteSettings on RouteSettings {
         }
       }
     }
-    return _urlOf[this]!;
+    return _urlOf[this] ?? '';
   }
 
   int get index {
