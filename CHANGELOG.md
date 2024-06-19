@@ -1,3 +1,7 @@
+## 4.15.6
+
+- fix: revert RouteSettings isSelected impl
+
 ## 4.15.5
 
 - fix: url return empty string while null
