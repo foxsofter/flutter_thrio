@@ -1,3 +1,8 @@
+
+## 4.15.7
+
+- fix: get url exception
+
 ## 4.15.6
 
 - fix: revert RouteSettings isSelected impl
