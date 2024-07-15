@@ -43,6 +43,8 @@ internal data class PageRouteHolder(
 
     var activity: WeakReference<out Activity>? = null
 
+    var isInPIP = false
+
     fun hasRoute(url: String? = null, index: Int? = null): Boolean = when (url) {
         null -> routes.isNotEmpty()
         else -> routes.any {

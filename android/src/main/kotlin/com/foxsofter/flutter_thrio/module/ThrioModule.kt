@@ -23,6 +23,7 @@
 
 package com.foxsofter.flutter_thrio.module
 
+import android.app.Activity
 import android.app.Application
 import com.foxsofter.flutter_thrio.extension.canTransToFlutter
 import com.foxsofter.flutter_thrio.navigator.ActivityDelegate
@@ -35,7 +36,8 @@ open class ThrioModule {
         internal val root by lazy { ThrioModule() }
 
         @JvmStatic
-        fun init(module: ThrioModule, context: Application) {
+        fun init(module: ThrioModule, context: Application, inPipPredicate: (Activity)->Boolean = {false}) {
+            FlutterEngineFactory.isInPipPredicate = inPipPredicate
             context.registerActivityLifecycleCallbacks(ActivityDelegate)
             root.moduleContext = ModuleContext()
             root.registerModule(module, root.moduleContext)
@@ -43,7 +45,8 @@ open class ThrioModule {
         }
 
         @JvmStatic
-        fun initMultiEngine(module: ThrioModule, context: Application) {
+        fun initMultiEngine(module: ThrioModule, context: Application, inPipPredicate: (Activity)->Boolean = {false}) {
+            FlutterEngineFactory.isInPipPredicate = inPipPredicate
             FlutterEngineFactory.isMultiEngineEnabled = true
             init(module, context)
         }

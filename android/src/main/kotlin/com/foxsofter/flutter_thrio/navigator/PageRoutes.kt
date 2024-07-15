@@ -66,7 +66,7 @@ internal object PageRoutes : Application.ActivityLifecycleCallbacks {
     }
 
     fun lastRouteHolder(url: String? = null, index: Int? = null): PageRouteHolder? = when (url) {
-        null -> routeHolders.lastOrNull()
+        null -> routeHolders.lastOrNull { !it.isInPIP }
         else -> routeHolders.lastOrNull { it.hasRoute(url, index) }
     }
 
@@ -442,6 +442,7 @@ internal object PageRoutes : Application.ActivityLifecycleCallbacks {
                 }
                 val holder = PageRouteHolder(pageId, activity.javaClass, entrypoint).also {
                     it.activity = WeakReference(activity)
+                    it.isInPIP = FlutterEngineFactory.isInPipPredicate(activity)
                 }
                 routeHolders.add(holder)
             }

@@ -36,6 +36,8 @@ object FlutterEngineFactory : PageObserver, RouteObserver {
 
     internal var isMultiEngineEnabled = false
 
+    internal lateinit var isInPipPredicate: (Activity) -> Boolean
+
     // 仅用于让 ThrioFlutterFragmentActivity 调用
     fun provideEngine(activity: Activity): io.flutter.embedding.engine.FlutterEngine {
         val entrypoint = getEntrypoint(activity.intent.getEntrypoint())
