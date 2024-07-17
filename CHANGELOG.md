@@ -2,6 +2,7 @@
 ## 4.16.0
 
 - feat: android support pip
+- fix: didRemove throw not a subtype of type NavigatorRoute in type cast
 
 ## 4.15.7
 

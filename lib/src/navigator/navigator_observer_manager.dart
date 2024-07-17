@@ -182,18 +182,25 @@ class NavigatorObserverManager extends NavigatorObserver {
       if (_currentRemoveRoutes.length == 1) {
         Future(() {
           if (_currentRemoveRoutes.length == 1) {
-            // ignore: avoid_as
-            final lastRoute = pageRoutes.last as NavigatorRoute;
-            if (lastRoute.routeType == NavigatorRouteType.popTo) {
-              if (pageRoutes.last.settings.url != '/') {
-                verbose('didPopTo: url->${pageRoutes.last.settings.url} '
-                    'index->${pageRoutes.last.settings.index}');
+            final lastRoute = pageRoutes.last;
+            if (lastRoute is NavigatorRoute) {
+              if (lastRoute.routeType == NavigatorRouteType.popTo) {
+                if (pageRoutes.last.settings.url != '/') {
+                  verbose('didPopTo: url->${pageRoutes.last.settings.url} '
+                      'index->${pageRoutes.last.settings.index}');
+                  ThrioNavigatorImplement.shared()
+                    ..routeChannel.didPopTo(pageRoutes.last.settings)
+                    ..pageChannel.didAppear(
+                      pageRoutes.last.settings,
+                      NavigatorRouteType.popTo,
+                    );
+                }
+              } else {
+                verbose('didRemove: url->${route.settings.url} '
+                    'index->${route.settings.index}');
                 ThrioNavigatorImplement.shared()
-                  ..routeChannel.didPopTo(pageRoutes.last.settings)
-                  ..pageChannel.didAppear(
-                    pageRoutes.last.settings,
-                    NavigatorRouteType.popTo,
-                  );
+                    .routeChannel
+                    .didRemove(route.settings);
               }
               lastRoute.routeType = null;
             } else {
