@@ -402,9 +402,9 @@ class NavigatorWidgetState extends State<NavigatorWidget> {
         if (params.containsKey('__thrio_TParams__')) {
           // ignore: avoid_as
           final typeString = params['__thrio_TParams__'] as String;
-          final paramsObjs = ThrioModule.get<JsonDeserializer<dynamic>>(
-                  url: url, key: typeString)
-              ?.call(params.cast<String, dynamic>());
+          final paramsObjs =
+              ThrioModule.get<JsonDeserializer<dynamic>>(key: typeString)
+                  ?.call(params.cast<String, dynamic>());
           poppedResultCallback(paramsObjs);
           return;
         }

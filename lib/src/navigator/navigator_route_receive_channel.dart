@@ -211,9 +211,9 @@ class NavigatorRouteReceiveChannel {
         // ignore: avoid_as
         final typeString = params['__thrio_TParams__'] as String;
         if (typeString.isNotEmpty) {
-          final paramsObj = ThrioModule.get<JsonDeserializer<dynamic>>(
-                  url: url, key: typeString)
-              ?.call(params.cast<String, dynamic>());
+          final paramsObj =
+              ThrioModule.get<JsonDeserializer<dynamic>>(key: typeString)
+                  ?.call(params.cast<String, dynamic>());
           if (paramsObj != null) {
             return paramsObj;
           }
