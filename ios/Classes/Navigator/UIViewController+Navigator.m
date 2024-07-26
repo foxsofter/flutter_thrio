@@ -94,7 +94,6 @@ NS_ASSUME_NONNULL_BEGIN
         }
     }
     self.thrio_routeType = NavigatorRouteTypePushing;
-    
     NavigatorRouteSettings *settings = [NavigatorRouteSettings settingsWithUrl:url
                                                                          index:index
                                                                         params:params
@@ -105,6 +104,7 @@ NS_ASSUME_NONNULL_BEGIN
                                                                       innerURL:innerURL];
     NavigatorPageRoute *newRoute = [NavigatorPageRoute routeWithSettings:settings];
     newRoute.fromEntrypoint = fromEntrypoint;
+    newRoute.fromPageId = [self hash];
     newRoute.poppedResult = poppedResult;
     
     if ([self isKindOfClass:NavigatorFlutterViewController.class]) {
