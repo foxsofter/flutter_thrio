@@ -22,6 +22,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
+import '../extension/thrio_list.dart';
 import '../module/thrio_module.dart';
 import 'navigator_page_observer.dart';
 import 'navigator_route_settings.dart';
@@ -180,14 +181,28 @@ class _NavigatorPageViewState extends State<NavigatorPageView> {
       _checkRouteSettings(widget.routeSettings);
       _mapRouteSettings(widget.routeSettings);
 
-      // 重置索引
+      // 重算索引
+      final isSame = widget.routeSettings.compareTo(
+        oldWidget.routeSettings,
+        (a, b) => a.name == b.name,
+      );
+
       currentIndex = widget._realController.initialPage;
       if (widget._realController.positions.isNotEmpty) {
-        final idx = widget._realController.page?.round();
-        if (idx != null) {
+        var idx = widget._realController.page?.round();
+        if (idx == null) {
+          // 如果 name 都是一样的，保留选中状态
+          if (isSame) {
+            idx = oldWidget._realController.page?.round();
+            if (idx != null) {
+              currentIndex = idx;
+            }
+          }
+        } else {
           currentIndex = idx;
         }
       }
+
       current = routeSettings[currentIndex];
 
       _initSelectedState();

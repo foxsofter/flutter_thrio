@@ -34,4 +34,19 @@ extension ThrioList<E> on List<E> {
     }
     return list;
   }
+
+  bool compareTo(List<E> other, bool Function(E a, E b) test) {
+    if (other.length != length) {
+      return false;
+    }
+    if (identical(this, other)) {
+      return true;
+    }
+    for (var index = 0; index < other.length; index += 1) {
+      if (!test(this[index], other[index])) {
+        return false;
+      }
+    }
+    return true;
+  }
 }
