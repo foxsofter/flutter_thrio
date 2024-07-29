@@ -182,24 +182,27 @@ class _NavigatorPageViewState extends State<NavigatorPageView> {
       _mapRouteSettings(widget.routeSettings);
 
       // 重算索引
-      final isSame = widget.routeSettings.compareTo(
-        oldWidget.routeSettings,
-        (a, b) => a.name == b.name,
-      );
-
       currentIndex = widget._realController.initialPage;
+      var isSetIndex = false;
       if (widget._realController.positions.isNotEmpty) {
-        var idx = widget._realController.page?.round();
-        if (idx == null) {
-          // 如果 name 都是一样的，保留选中状态
-          if (isSame) {
-            idx = oldWidget._realController.page?.round();
-            if (idx != null) {
-              currentIndex = idx;
-            }
-          }
-        } else {
+        final idx = widget._realController.page?.round();
+        if (idx != null) {
           currentIndex = idx;
+          isSetIndex = true;
+        }
+      }
+      // 未设定新的 page，尝试恢复旧的 index
+      if (!isSetIndex) {
+        final isSame = widget.routeSettings.compareTo(
+          oldWidget.routeSettings,
+          (a, b) => a.name == b.name,
+        );
+        // 如果 name 都是一样的，保留选中状态
+        if (isSame) {
+          final idx = oldWidget._realController.page?.round();
+          if (idx != null) {
+            currentIndex = idx;
+          }
         }
       }
 
