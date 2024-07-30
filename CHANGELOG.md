@@ -1,3 +1,7 @@
+## 4.16.2
+
+- feat: restore NavigatorPageView current page for widget update
+
 ## 4.16.1
 
 - feat: get JsonDeserializer without ur
