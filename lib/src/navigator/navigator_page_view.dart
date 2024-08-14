@@ -101,8 +101,7 @@ class _NavigatorPageViewState extends State<NavigatorPageView> {
   List<RouteSettings> get routeSettings =>
       _currentNames.map((it) => _nameSettings[it]!).toList();
 
-  late RouteSettings current =
-      routeSettings[widget._realController.initialPage];
+  RouteSettings get current => routeSettings[currentIndex];
 
   late int currentIndex = widget._realController.initialPage;
 
@@ -206,8 +205,6 @@ class _NavigatorPageViewState extends State<NavigatorPageView> {
         }
       }
 
-      current = routeSettings[currentIndex];
-
       _initSelectedState();
     }
     if (oldWidget.controller == null) {
@@ -254,18 +251,17 @@ class _NavigatorPageViewState extends State<NavigatorPageView> {
   }
 
   void onPageChanged(int idx) {
-    currentIndex = idx;
-
-    final sts = routeSettings[currentIndex];
-    if (sts.name != current.name) {
-      final oldRouteSettings = current;
-      current = sts;
-      widget.onPageChanged?.call(currentIndex, sts);
-      _changedToDisappear(oldRouteSettings);
-      oldRouteSettings.isSelected = false;
-      current.isSelected = true;
-      _changedToAppear(current);
+    if (idx == currentIndex) {
+      return;
     }
+    final sts = routeSettings[idx];
+    final oldRouteSettings = current;
+    currentIndex = idx;
+    widget.onPageChanged?.call(currentIndex, sts);
+    _changedToDisappear(oldRouteSettings);
+    oldRouteSettings.isSelected = false;
+    current.isSelected = true;
+    _changedToAppear(current);
   }
 
   void _changedToAppear(RouteSettings routeSettings) {
