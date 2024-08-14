@@ -1,3 +1,7 @@
+## 4.16.3
+
+- fix: try to fix NavigatorPageView RangeError
+
 ## 4.16.2
 
 - feat: restore NavigatorPageView current page for widget update
