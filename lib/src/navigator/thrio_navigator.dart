@@ -32,13 +32,14 @@ import 'thrio_navigator_implement.dart';
 abstract class ThrioNavigator {
   /// Register a handle called before push.
   ///
-  static VoidCallback registerPushBeginHandle(NavigatorPushHandle handle) =>
+  static VoidCallback registerPushBeginHandle(
+          NavigatorPushBeginHandle handle) =>
       ThrioNavigatorImplement.shared().registerPushBeginHandle(handle);
 
   /// Register a handle called before the push return.
   ///
-  static VoidCallback registerPushReturnHandle(NavigatorPushHandle handle) =>
-      ThrioNavigatorImplement.shared().registerPushReturnHandle(handle);
+  static VoidCallback registerPushEndHandle(NavigatorPushEndHandle handle) =>
+      ThrioNavigatorImplement.shared().registerPushEndHandle(handle);
 
   /// Push the page onto the navigation stack.
   ///

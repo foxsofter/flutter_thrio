@@ -21,6 +21,8 @@
 
 // ignore_for_file: avoid_positional_boolean_parameters
 
+import 'dart:async';
+
 import 'package:flutter/widgets.dart';
 
 import 'navigator_route.dart';
@@ -65,10 +67,23 @@ typedef NavigatorRoutePushHandle = Future<NavigatorRoutePushHandleType>
   bool animated,
 });
 
-/// Signature of push begin/return handler with url.
-typedef NavigatorPushHandle = Future<void> Function<TParams>(
+/// Signature of push begin handler with url.
+///
+/// return a new url for redirect.
+///
+typedef NavigatorPushBeginHandle = Future<String?> Function<TParams>(
   String url, {
   TParams? params,
   String? fromURL,
   String? innerURL,
+});
+
+/// Signature of push end handler.
+///
+typedef NavigatorPushEndHandle = Future<void> Function<TParams, TPopParams>(
+  String url, {
+  TParams? params,
+  String? fromURL,
+  String? innerURL,
+  TPopParams? popResult,
 });

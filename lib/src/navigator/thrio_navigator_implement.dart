@@ -32,7 +32,7 @@ import '../extension/thrio_uri_string.dart';
 import '../module/module_anchor.dart';
 import '../module/module_types.dart';
 import '../module/thrio_module.dart';
-import '../registry/registry_set.dart';
+import '../registry/registry_order_set.dart';
 import 'navigator_dialog_route.dart';
 import 'navigator_material_app.dart';
 import 'navigator_observer_manager.dart';
@@ -111,9 +111,9 @@ class ThrioNavigatorImplement {
 
   NavigatorWidgetState? get navigatorState => _stateKey.currentState;
 
-  final _pushBeginHandlers = RegistrySet<NavigatorPushHandle>();
+  final _pushBeginHandlers = RegistryOrderSet<NavigatorPushBeginHandle>();
 
-  final _pushReturnHandlers = RegistrySet<NavigatorPushHandle>();
+  final _pushEndHandlers = RegistryOrderSet<NavigatorPushEndHandle>();
 
   final poppedResults = <String, NavigatorParamsCallback>{};
 
@@ -146,11 +146,11 @@ class ThrioNavigatorImplement {
     _channel.invokeMethod<bool>('ready');
   }
 
-  VoidCallback registerPushBeginHandle(NavigatorPushHandle handle) =>
+  VoidCallback registerPushBeginHandle(NavigatorPushBeginHandle handle) =>
       _pushBeginHandlers.registry(handle);
 
-  VoidCallback registerPushReturnHandle(NavigatorPushHandle handle) =>
-      _pushReturnHandlers.registry(handle);
+  VoidCallback registerPushEndHandle(NavigatorPushEndHandle handle) =>
+      _pushEndHandlers.registry(handle);
 
   Future<TPopParams?> push<TParams, TPopParams>({
     required String url,
@@ -160,7 +160,7 @@ class ThrioNavigatorImplement {
     String? fromURL,
     String? innerURL,
   }) async {
-    await _onPushBeginHandle(
+    final newURL = await _onPushBeginHandle(
       url: url,
       params: params,
       fromURL: fromURL,
@@ -170,7 +170,7 @@ class ThrioNavigatorImplement {
     final completer = Completer<TPopParams?>();
 
     final handled = await _pushToHandler(
-      url: url,
+      url: newURL,
       params: params,
       animated: animated,
       completer: completer,
@@ -182,7 +182,7 @@ class ThrioNavigatorImplement {
       Future<void> pushFuture() {
         final resultCompleter = Completer();
         _pushToNative<TParams, TPopParams>(
-          url: url,
+          url: newURL,
           params: params,
           animated: animated,
           completer: completer,
@@ -201,25 +201,40 @@ class ThrioNavigatorImplement {
     return completer.future;
   }
 
-  Future<void> _onPushBeginHandle<TParams>({
+  Future<String> _onPushBeginHandle<TParams>({
     required String url,
     TParams? params,
     String? fromURL,
     String? innerURL,
   }) async {
-    for (final handle in _pushBeginHandlers) {
-      await handle(url, params: params, fromURL: fromURL, innerURL: innerURL);
+    final reversed = _pushBeginHandlers.reversed;
+    var newURL = url;
+    for (final handle in reversed) {
+      final ret = await handle(url,
+          params: params, fromURL: fromURL, innerURL: innerURL);
+      if (ret != null) {
+        newURL = ret;
+      }
     }
+    return newURL;
   }
 
-  Future<void> _onPushReturnHandle<TParams>({
+  Future<void> _onPushReturnHandle<TParams, TPopParams>({
     required String url,
     TParams? params,
     String? fromURL,
     String? innerURL,
+    TPopParams? popResult,
   }) async {
-    for (final handle in _pushReturnHandlers) {
-      await handle(url, params: params, fromURL: fromURL, innerURL: innerURL);
+    final reversed = _pushEndHandlers.reversed;
+    for (final handle in reversed) {
+      await handle(
+        url,
+        params: params,
+        fromURL: fromURL,
+        innerURL: innerURL,
+        popResult: popResult,
+      );
     }
   }
 
@@ -719,6 +734,7 @@ class ThrioNavigatorImplement {
         params: params,
         fromURL: fromURL,
         innerURL: innerURL,
+        popResult: value,
       );
     }));
 

@@ -1,6 +1,6 @@
 // The MIT License (MIT)
 //
-// Copyright (c) 2019 Hellobike Group
+// Copyright (c) 2024 foxsofter
 //
 // Permission is hereby granted, free of charge, to any person obtaining a
 // copy of this software and associated documentation files (the "Software"),
@@ -22,13 +22,14 @@
 import 'dart:collection';
 import 'package:flutter/foundation.dart';
 
-class RegistrySet<T> with IterableMixin<T> {
-  final Set<T> _sets = {};
+class RegistryOrderSet<T> with IterableMixin<T> {
+  final List<T> _sets = [];
 
   VoidCallback registry(T value) {
     assert(value != null, 'value must not be null.');
-
-    _sets.add(value);
+    _sets
+      ..remove(value)
+      ..add(value);
     return () {
       _sets.remove(value);
     };
@@ -36,10 +37,10 @@ class RegistrySet<T> with IterableMixin<T> {
 
   VoidCallback registryAll(Set<T> values) {
     assert(values.isNotEmpty, 'values must not be null or empty');
-
+    values.forEach(_sets.remove);
     _sets.addAll(values);
     return () {
-      _sets.removeAll(values);
+      values.forEach(_sets.remove);
     };
   }
 
@@ -47,4 +48,6 @@ class RegistrySet<T> with IterableMixin<T> {
 
   @override
   Iterator<T> get iterator => _sets.iterator;
+
+  Iterable<T> get reversed => _sets.reversed;
 }

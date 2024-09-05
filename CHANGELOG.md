@@ -1,3 +1,8 @@
+## 4.17.0
+
+- feat: support redirect by NavigatorPushBeginHandle
+- feat: support popResult by NavigatorPushEndHandle
+
 ## 4.16.3
 
 - fix: try to fix NavigatorPageView RangeError
