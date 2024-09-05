@@ -1,3 +1,7 @@
+## 4.18.0
+
+- feat: all push support url redirect
+
 ## 4.17.2
 
 - feat: do not reverse execution NavigatorPushBeginHandle and NavigatorPushEndHandle
