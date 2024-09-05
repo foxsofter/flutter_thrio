@@ -207,9 +207,8 @@ class ThrioNavigatorImplement {
     String? fromURL,
     String? innerURL,
   }) async {
-    final reversed = _pushBeginHandlers.reversed;
     var newURL = url;
-    for (final handle in reversed) {
+    for (final handle in _pushBeginHandlers) {
       final ret = await handle(
         newURL,
         params: params,
@@ -230,8 +229,7 @@ class ThrioNavigatorImplement {
     String? innerURL,
     TPopParams? popResult,
   }) async {
-    final reversed = _pushEndHandlers.reversed;
-    for (final handle in reversed) {
+    for (final handle in _pushEndHandlers) {
       await handle(
         url,
         params: params,

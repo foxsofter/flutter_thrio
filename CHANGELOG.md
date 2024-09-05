@@ -1,3 +1,7 @@
+## 4.17.2
+
+- feat: do not reverse execution NavigatorPushBeginHandle and NavigatorPushEndHandle
+
 ## 4.17.1
 
 - feat: NavigatorPushBeginHandle url redirect takes effect immediately
