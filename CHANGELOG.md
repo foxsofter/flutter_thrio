@@ -1,3 +1,7 @@
+## 4.17.1
+
+- feat: NavigatorPushBeginHandle url redirect takes effect immediately
+
 ## 4.17.0
 
 - feat: support redirect by NavigatorPushBeginHandle

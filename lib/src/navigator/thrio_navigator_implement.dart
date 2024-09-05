@@ -210,8 +210,12 @@ class ThrioNavigatorImplement {
     final reversed = _pushBeginHandlers.reversed;
     var newURL = url;
     for (final handle in reversed) {
-      final ret = await handle(url,
-          params: params, fromURL: fromURL, innerURL: innerURL);
+      final ret = await handle(
+        newURL,
+        params: params,
+        fromURL: fromURL,
+        innerURL: innerURL,
+      );
       if (ret != null) {
         newURL = ret;
       }
