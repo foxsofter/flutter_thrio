@@ -32,7 +32,7 @@ import '../extension/thrio_uri_string.dart';
 import '../module/module_anchor.dart';
 import '../module/module_types.dart';
 import '../module/thrio_module.dart';
-import '../registry/registry_order_set.dart';
+import '../collection/registry_order_set.dart';
 import 'navigator_dialog_route.dart';
 import 'navigator_material_app.dart';
 import 'navigator_observer_manager.dart';

@@ -24,7 +24,7 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 
 import '../exception/thrio_exception.dart';
-import '../registry/registry_map.dart';
+import '../collection/registry_map.dart';
 import 'module_anchor.dart';
 import 'thrio_module.dart';
 

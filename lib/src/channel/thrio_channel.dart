@@ -24,7 +24,7 @@ import 'dart:async';
 import 'package:flutter/services.dart';
 
 import '../navigator/navigator_logger.dart';
-import '../registry/registry_map.dart';
+import '../collection/registry_map.dart';
 
 typedef MethodHandler = Future<dynamic> Function([
   Map<String, dynamic>? arguments,
