@@ -52,12 +52,14 @@ mixin ThrioModule {
     String? entrypoint,
     void Function(String)? onModuleInitStart,
     void Function(String)? onModuleInitEnd,
+    Duration? moduleAsyncInitDelayed,
   }) async {
     if (anchor.modules.length == 1) {
       throw ThrioException('init method can only be called once.');
     }
     ThrioModule._onModuleInitStart = onModuleInitStart;
     ThrioModule._onModuleInitEnd = onModuleInitEnd;
+    ThrioModule._moduleAsyncInitDelayed = moduleAsyncInitDelayed;
 
     final moduleContext = entrypoint == null
         ? ModuleContext()
@@ -142,6 +144,10 @@ mixin ThrioModule {
   /// Call at module init end.
   static void Function(String)? get onModuleInitEnd => _onModuleInitEnd;
   static void Function(String)? _onModuleInitEnd;
+
+  /// duration for delay call [onModuleAsyncInit]
+  static Duration? get moduleAsyncInitDelayed => _moduleAsyncInitDelayed;
+  static Duration? _moduleAsyncInitDelayed;
 
   /// A function for registering a module, which will call
   /// the `onModuleRegister` function of the `module`.
@@ -235,8 +241,16 @@ mixin ThrioModule {
       onModuleInitEnd?.call(module.url);
       await module.initModule();
     }
-    for (final module in values) {
-      unawaited(module.onModuleAsyncInit(module._moduleContext));
+    if (_moduleAsyncInitDelayed != null) {
+      Future.delayed(_moduleAsyncInitDelayed!, () {
+        for (final module in values) {
+          unawaited(module.onModuleAsyncInit(module._moduleContext));
+        }
+      });
+    } else {
+      for (final module in values) {
+        unawaited(module.onModuleAsyncInit(module._moduleContext));
+      }
     }
   }
 
