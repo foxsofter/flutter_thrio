@@ -1,3 +1,7 @@
+## 4.19.0
+
+- feat: support delay call onModuleAsyncInit
+
 ## 4.18.0
 
 - feat: all push support url redirect
