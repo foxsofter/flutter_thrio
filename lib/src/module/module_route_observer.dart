@@ -21,8 +21,8 @@
 
 import 'package:flutter/foundation.dart';
 
-import '../navigator/navigator_route_observer.dart';
 import '../collection/registry_set.dart';
+import '../navigator/navigator_route_observer.dart';
 import 'thrio_module.dart';
 
 mixin ModuleRouteObserver on ThrioModule {

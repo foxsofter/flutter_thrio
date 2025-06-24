@@ -26,13 +26,13 @@ import 'package:flutter/widgets.dart';
 
 import '../async/async_task_queue.dart';
 import '../channel/thrio_channel.dart';
+import '../collection/registry_order_set.dart';
 import '../exception/thrio_exception.dart';
 import '../extension/thrio_iterable.dart';
 import '../extension/thrio_uri_string.dart';
 import '../module/module_anchor.dart';
 import '../module/module_types.dart';
 import '../module/thrio_module.dart';
-import '../collection/registry_order_set.dart';
 import 'navigator_dialog_route.dart';
 import 'navigator_material_app.dart';
 import 'navigator_observer_manager.dart';

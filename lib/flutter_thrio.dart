@@ -23,6 +23,9 @@ library flutter_thrio;
 
 export 'src/async/async_task_queue.dart';
 export 'src/channel/thrio_channel.dart';
+export 'src/collection/registry_map.dart';
+export 'src/collection/registry_set.dart';
+export 'src/collection/registry_set_map.dart';
 export 'src/extension/thrio_build_context.dart';
 export 'src/extension/thrio_dynamic.dart';
 export 'src/extension/thrio_list.dart';
@@ -67,6 +70,3 @@ export 'src/navigator/navigator_types.dart';
 export 'src/navigator/navigator_will_pop.dart';
 export 'src/navigator/navigator_will_pop_mixin.dart';
 export 'src/navigator/thrio_navigator.dart';
-export 'src/collection/registry_map.dart';
-export 'src/collection/registry_set.dart';
-export 'src/collection/registry_set_map.dart';

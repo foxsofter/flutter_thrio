@@ -23,8 +23,8 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 
-import '../exception/thrio_exception.dart';
 import '../collection/registry_map.dart';
+import '../exception/thrio_exception.dart';
 import 'module_anchor.dart';
 import 'thrio_module.dart';
 

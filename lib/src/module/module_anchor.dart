@@ -23,6 +23,9 @@
 
 import 'package:flutter/widgets.dart';
 
+import '../collection/registry_order_map.dart';
+import '../collection/registry_set.dart';
+import '../collection/registry_set_map.dart';
 import '../navigator/navigator_page_observer.dart';
 import '../navigator/navigator_route.dart';
 import '../navigator/navigator_route_observer.dart';
@@ -30,9 +33,6 @@ import '../navigator/navigator_route_settings.dart';
 import '../navigator/navigator_types.dart';
 import '../navigator/navigator_url_template.dart';
 import '../navigator/thrio_navigator_implement.dart';
-import '../collection/registry_order_map.dart';
-import '../collection/registry_set.dart';
-import '../collection/registry_set_map.dart';
 import 'module_json_deserializer.dart';
 import 'module_json_serializer.dart';
 import 'module_page_builder.dart';

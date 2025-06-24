@@ -21,9 +21,9 @@
 
 import 'package:flutter/foundation.dart';
 
+import '../collection/registry_order_map.dart';
 import '../exception/thrio_exception.dart';
 import '../navigator/navigator_url_template.dart';
-import '../collection/registry_order_map.dart';
 import 'module_types.dart';
 import 'thrio_module.dart';
 
