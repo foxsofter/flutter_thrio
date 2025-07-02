@@ -9,7 +9,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_thrio/flutter_thrio.dart';
-import 'package:image_picker/image_picker.dart';
 
 import '../../../route.dart';
 import '../../../types/people.dart';
@@ -327,24 +326,6 @@ class _HomePageState extends State<HomePage>
                               color: Colors.grey,
                               child: const Text(
                                 'canPop',
-                                style: TextStyle(
-                                    fontSize: 22, color: Colors.black),
-                              )),
-                        ),
-                        InkWell(
-                          onTap: () async {
-                            final picker = ImagePicker();
-
-                            final images = await picker.pickMultiImage();
-                            if (images.isEmpty) {}
-                            debugPrint('images: ${images.length}');
-                          },
-                          child: Container(
-                              padding: const EdgeInsets.all(8),
-                              margin: const EdgeInsets.all(8),
-                              color: Colors.grey,
-                              child: const Text(
-                                'pick image',
                                 style: TextStyle(
                                     fontSize: 22, color: Colors.black),
                               )),

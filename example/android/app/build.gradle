@@ -23,12 +23,12 @@ if (flutterVersionName == null) {
 
 def flutterCompileSdkVersion = localProperties.getProperty('flutter.targetSdkVersion')
 if (flutterCompileSdkVersion == null) {
-    flutterCompileSdkVersion = 'android-33'
+    flutterCompileSdkVersion = 'android-34'
 }
 
 def flutterMinSdkVersion = localProperties.getProperty('flutter.minSdkVersion')
 if (flutterMinSdkVersion == null) {
-    flutterMinSdkVersion = '19'
+    flutterMinSdkVersion = '21'
 }
 
 def flutterTargetSdkVersion = localProperties.getProperty('flutter.targetSdkVersion')
@@ -80,7 +80,6 @@ android {
             signingConfig signingConfigs.debug
         }
     }
-    buildToolsVersion '33.0.0'
     namespace 'com.foxsofter.flutter_thrio_example'
 }
 
@@ -90,7 +89,7 @@ flutter {
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation 'androidx.appcompat:appcompat:1.6.0'
-    implementation 'com.google.android.material:material:1.7.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.4'
+    implementation 'androidx.appcompat:appcompat:1.7.1'
+    implementation 'com.google.android.material:material:1.12.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.2.1'
 }

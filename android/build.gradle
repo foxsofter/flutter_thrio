@@ -5,7 +5,7 @@ version '1.0.0'
 buildscript {
     ext {
         agp_version = '7.3.0'
-        kotlin_version = '1.8.0'
+        kotlin_version = '1.9.20'
     }
     repositories {
         google()
@@ -29,7 +29,8 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 
 android {
-    compileSdkVersion 32
+    namespace 'com.foxsofter.flutter_thrio'
+    compileSdk 32
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -50,6 +51,6 @@ android {
 }
 
 dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.8.0"
+    implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.9.20'
     implementation 'com.google.android.material:material:1.7.0'
 }
