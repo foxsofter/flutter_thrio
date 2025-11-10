@@ -42,7 +42,7 @@ A flutter plugin which enables hybrid integration of flutter for existing ios or
                            "Classes/Navigator/UIViewController+WillPopCallback.h",
                            "Classes/Registry/*.h"]
   s.dependency "Flutter"
-  s.platform = :ios, "9.0"
+  s.platform = :ios, "13.0"
 
   # Flutter.framework does not contain a i386 slice.
   s.pod_target_xcconfig = { "DEFINES_MODULE" => "YES", "EXCLUDED_ARCHS[sdk=iphonesimulator*]" => "i386" }
