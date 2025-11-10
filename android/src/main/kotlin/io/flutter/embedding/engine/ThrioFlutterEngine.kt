@@ -31,7 +31,8 @@ open class ThrioFlutterEngine private constructor(context: Context, flutterJNI: 
             dartEntrypoint.dartEntrypointFunctionName,
             dartEntrypoint.dartEntrypointLibrary,
             initialRoute,
-            arguments
+            arguments,
+            engineId + 1
         )
         return ThrioFlutterEngine(context, newFlutterJNI)
     }
