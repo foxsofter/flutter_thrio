@@ -1,3 +1,9 @@
+plugins {
+    id 'com.android.application'
+    id 'org.jetbrains.kotlin.android'
+    id 'dev.flutter.flutter-gradle-plugin'
+}
+
 def localProperties = new Properties()
 def localPropertiesFile = rootProject.file('local.properties')
 if (localPropertiesFile.exists()) {
@@ -23,12 +29,12 @@ if (flutterVersionName == null) {
 
 def flutterCompileSdkVersion = localProperties.getProperty('flutter.targetSdkVersion')
 if (flutterCompileSdkVersion == null) {
-    flutterCompileSdkVersion = 'android-34'
+    flutterCompileSdkVersion = 'android-35'
 }
 
 def flutterMinSdkVersion = localProperties.getProperty('flutter.minSdkVersion')
 if (flutterMinSdkVersion == null) {
-    flutterMinSdkVersion = '21'
+    flutterMinSdkVersion = '23'
 }
 
 def flutterTargetSdkVersion = localProperties.getProperty('flutter.targetSdkVersion')
@@ -36,9 +42,7 @@ if (flutterTargetSdkVersion == null) {
     flutterTargetSdkVersion = '32'
 }
 
-apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android'
-apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
+def kotlin_version = '2.1.0'
 
 android {
     compileSdkPreview compileSdkVersion
