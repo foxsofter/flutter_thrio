@@ -401,13 +401,14 @@ class ThrioNavigatorImplement {
       innerURL: innerURL,
     );
 
-    final completer = Completer<TPopParams>();
-
     final routes = await allRoutes();
     final route = routes.lastWhereOrNull((it) => it.url == toUrl);
     if (route == null) {
       result?.call(0);
+      return null;
     }
+
+    final completer = Completer<TPopParams>();
 
     final handled = await _pushToHandler(
       url: newURL,
@@ -425,13 +426,14 @@ class ThrioNavigatorImplement {
     );
     if (!handled) {
       Future<void> pushFuture() async {
-        final resultCompleter = Completer();
         final routes = await allRoutes();
         final route = routes.lastWhereOrNull((it) => it.url == toUrl);
         if (route == null) {
           result?.call(0);
-          resultCompleter.complete();
+          return;
         }
+
+        final resultCompleter = Completer();
         unawaited(_pushToNative<TParams, TPopParams>(
           url: newURL,
           params: params,
@@ -471,13 +473,15 @@ class ThrioNavigatorImplement {
       innerURL: innerURL,
     );
 
-    final completer = Completer<TPopParams>();
-
     final routes = await allRoutes();
     final route = routes.firstWhereOrNull((it) => it.url == toUrl);
     if (route == null) {
       result?.call(0);
+      return null;
     }
+
+    final completer = Completer<TPopParams>();
+
     final handled = await _pushToHandler(
       url: newURL,
       params: params,
@@ -494,13 +498,14 @@ class ThrioNavigatorImplement {
     );
     if (!handled) {
       Future<void> pushFuture() async {
-        final resultCompleter = Completer();
         final routes = await allRoutes();
         final route = routes.firstWhereOrNull((it) => it.url == toUrl);
         if (route == null) {
           result?.call(0);
-          resultCompleter.complete();
+          return;
         }
+
+        final resultCompleter = Completer();
         unawaited(_pushToNative<TParams, TPopParams>(
           url: newURL,
           params: params,
@@ -540,14 +545,15 @@ class ThrioNavigatorImplement {
       innerURL: innerURL,
     );
 
-    final completer = Completer<TPopParams>();
-
     final routes = await allRoutes();
     final route =
         routes.lastWhereOrNull((it) => it.url.isNotEmpty && predicate(it.url));
     if (route == null) {
       result?.call(0);
+      return null;
     }
+
+    final completer = Completer<TPopParams>();
 
     final handled = await _pushToHandler(
       url: newURL,
@@ -565,14 +571,15 @@ class ThrioNavigatorImplement {
     );
     if (!handled) {
       Future<void> pushFuture() async {
-        final resultCompleter = Completer();
         final routes = await allRoutes();
         final route = routes
             .lastWhereOrNull((it) => it.url.isNotEmpty && predicate(it.url));
         if (route == null) {
-          resultCompleter.complete();
           result?.call(0);
+          return;
         }
+
+        final resultCompleter = Completer();
         unawaited(_pushToNative<TParams, TPopParams>(
           url: newURL,
           params: params,
@@ -612,14 +619,15 @@ class ThrioNavigatorImplement {
       innerURL: innerURL,
     );
 
-    final completer = Completer<TPopParams>();
-
     final routes = await allRoutes();
     final route =
         routes.firstWhereOrNull((it) => it.url.isNotEmpty && predicate(it.url));
     if (route == null) {
       result?.call(0);
+      return null;
     }
+
+    final completer = Completer<TPopParams>();
 
     final handled = await _pushToHandler(
       url: newURL,
@@ -637,14 +645,15 @@ class ThrioNavigatorImplement {
     );
     if (!handled) {
       Future<void> pushFuture() async {
-        final resultCompleter = Completer();
         final routes = await allRoutes();
         final route = routes
             .firstWhereOrNull((it) => it.url.isNotEmpty && predicate(it.url));
         if (route == null) {
-          resultCompleter.complete();
           result?.call(0);
+          return;
         }
+
+        final resultCompleter = Completer();
         unawaited(_pushToNative<TParams, TPopParams>(
           url: newURL,
           params: params,
