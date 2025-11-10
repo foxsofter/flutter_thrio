@@ -88,7 +88,6 @@ linter:
     one_member_abstracts: true # 使用 typedef 定义只有一个方法的抽象类(接口)
     only_throw_errors: true # 只允许 throw Error 和 Exception
     overridden_fields: true # 不允许重写变量
-    package_api_docs: true # 给所有公共APIs添加文档
     package_names: true # 包名使用 下划线命名法
     package_prefixed_library_names: true # 库名包名前缀
     parameter_assignments: true # 禁止为方法参数分配新值
